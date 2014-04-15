@@ -10,5 +10,4 @@ setup(name='bet',
       author = 'Steven Mattis',
       author_email ='steve.a.mattis@gmail.com',
       url= 'https://github.com/smattis/BET',
-      packages =['bet', 'bet.sampling', 'bet.calculateP', 'bet.plotP', 'bet.loadBalance'],
-      package_dir={'':'bet'})
+      packages =['bet', 'bet.sampling', 'bet.calculateP', 'bet.plotP', 'bet.loadBalance'])
