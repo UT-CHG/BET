@@ -13,6 +13,7 @@ measure $P_{\Lambda}$.
 """
 import numpy as np
 import scipy.spatial as spatial
+import pyhull
 
 def simple_fun_rho_D(data, true_Q, M=50, bin_ratio=0.2):
     """
@@ -108,7 +109,7 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples,
     :param int num_l_emulate: The number of iid samples used to parition the
         parameter space
     :rtype: tuple
-    :returns: (P, lambda_emulate, io_ptr, emulate_ptr)
+    :returns: (P, lambda_emulate, io_ptr, emulate_ptr, lam_vol)
 
     """
 
@@ -153,6 +154,78 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples,
                 P[IItemp] = rho_D_M[i]*lam_vol(IItemp)/sum(lam_vol(IItemp))
 
     return (P, lambda_emulate, io_ptr, emulate_ptr, lam_vol)
+
+def prob_samples_ex(samples, data, rho_D_M, d_distr_samples,
+        lam_domain, d_Tree=None): 
+    """
+    Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}}), the probability
+    assoicated with a set of voronoi cells defined by ``num_l_emulate`` iid
+    samples (\lambda_{emulate}).
+
+    :param samples: The samples in parameter space for which the model was run.
+    :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+    :param data: The data from running the model given the samples.
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param rho_D_M: The simple function approximation of rho_D
+    :type rho_D_M: :class:`~numpy.ndarray` of shape  (mdim, M) 
+    :param d_distr_samples: The samples in the data space that define a
+        parition of D to for the simple function approximation
+    :type d_distr_samples: :class:`~numpy.ndarray` of shape  (mdim, M) 
+    :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :param lam_domain: The domain for each parameter for the model.
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
+    :returns: (P, io_ptr, lam_vol)
+
+    """
+
+    if d_Tree == None:
+        d_Tree = spatial.KDTree(d_distr_samples)
+        
+    # Determine which inputs go to which M bins using the QoI
+    #io_ptr = dsearchn(d_distr_samples, data);
+    io_ptr = d_Tree.query(data)
+
+    # Calcuate the bounding region for the parameters
+    lam_bound = np.copy(samples)
+    lam_width = lam_domain[:,1]-lam_domain[:,0]
+    nbins = d_distr_samples.shape[1]
+    # Add fake samples outside of lam_domain to close Voronoi tesselations.
+    pts_per_edge = nbins
+    sides = np.zeros((2,pts_per_edge))
+    for i in range(lam_domain.shape[0]):
+        sides[i,:] = np.linspace(lam_domain[i,0], lam_domain[i,1], pts_per_edge)
+    # add midpoints
+    for i in range(lam_domain.shape[0]):
+        new_pt = sides
+        new_pt[i,:] = np.repeat(lam_domain[i,0]-lam_width[i]/pts_per_edge,pts_per_edge,0).transpose() 
+        lam_bound = np.vstack((lam_bound,new_pt))
+        new_pt = sides
+        new_pt[i,:] = np.repeat(lam_domain[i,1]-lam_width[i]/pts_per_edge,pts_per_edge,0).transpose() 
+        lam_bound = np.vstack((lam_bound,new_pt))
+        
+    # add corners
+    corners = np.zeros((2**lam_domain.shape[0], lam_domain.shape[0]))
+    for i in range(lam_domain.shape[0]):
+        corners[i,:] = lam_domain[i,np.repeat(np.hstack((np.ones((1,2**(i-1))),2*np.ones((1,2**(i-1))))), 2**(lam_domain.shape[0]-i),0).tranpose()]
+        corners[i,:] +=lam_width[i]*np.repeat(np.hstack((np.ones((1,2**(i-1))),-np.ones((1,2**(i-1))))), 2**(lam_domain.shape[0]-i)/pts_per_edge,0).transpose()
+
+    lam_bound = np.vstack((lam_bound, corners))
+    
+    # Calculate the Voronoi diagram for samples. Calculate the volumes of 
+    # the convex hulls of the corresponding Voronoi regions.
+    lam_vol = np.zeros((samples.shape[-1],))
+    for i in range((samples.shape[-1])):
+        vornoi = spatial.Voronoi(lam_bound)
+        lam_vol[i] = float(pyhull.qconvex('Qt FA', vornoi.vertices).split()[-1])
+    
+    # Calculate probabilities.
+    P = np.zeros((samples.shape[-1],))
+    for i in range(rho_D_M.shape[0]):
+        Itemp = np.equal(io_ptr, i)
+        P[Itemp] = rho_D_M[i]*lam_vol(Itemp)/np.sum(lam_vol(Itemp))
+    P = P/np.sum(P)
+
+    return (P, io_ptr, lam_vol)
 
 def prob_samples_mc(samples, data, rho_D_M, d_distr_samples,
         lam_domain, num_l_emulate=1e7, d_Tree=None): 
