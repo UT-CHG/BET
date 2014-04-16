@@ -86,7 +86,6 @@ def simple_fun_rho_D(data, true_Q, M=50, bin_ratio=0.2):
     # solving the model EVER! This can be done "offline" so to speak.
     return (d_distr_prob, d_distr_samples, d_Tree)
 
-
 def prob_emulated(samples, data, rho_D_M, d_distr_samples,
         lam_domain, num_l_emulate=1e7, d_Tree=None): 
     """
@@ -143,14 +142,61 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples,
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
     lam_vol = lam_vol/num_l_emulate
 
+    # Calculate Probabilties
     P = np.zeros((num_l_emulate,))
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
-        IItemp = np.equal(emulate_ptr, Itemp)
-        P[IItemp] = rho_D_M[i]*lam_vol(IItemp)/sum(lam_vol(IItemp))
+        if np.any(Itemp):
+            # TODO: I think there's an error here in the indexing
+            IItemp = np.equal(emulate_ptr, Itemp)
+            if np.any(IItemp):
+                P[IItemp] = rho_D_M[i]*lam_vol(IItemp)/sum(lam_vol(IItemp))
 
-    return (P, lambda_emulate, io_ptr, emulate_ptr)
+    return (P, lambda_emulate, io_ptr, emulate_ptr, lam_vol)
 
+def prob_samples_mc(samples, data, rho_D_M, d_distr_samples,
+        lam_domain, num_l_emulate=1e7, d_Tree=None): 
+    """
+    Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{samples}}), the probability
+    assoicated with a set of voronoi cells defined by the model solves at
+    $\lambda_{samples}$ where the volumes of these voronoi cells are
+    approximated using MC integration.
+
+    :param samples: The samples in parameter space for which the model was run.
+    :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+    :param data: The data from running the model given the samples.
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param rho_D_M: The simple function approximation of rho_D
+    :type rho_D_M: :class:`~numpy.ndarray` of shape  (mdim, M) 
+    :param d_distr_samples: The samples in the data space that define a
+        parition of D to for the simple function approximation
+    :type d_distr_samples: :class:`~numpy.ndarray` of shape  (mdim, M) 
+    :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :param lam_domain: The domain for each parameter for the model.
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
+    :param int num_l_emulate: The number of iid samples used to parition the
+        parameter space
+    :rtype: tuple of :class:`~numpy.ndarray` of sizes (num_samples,),
+        (num_samples,), (ndim, num_l_emulate), (num_samples,), (num_l_emulate,)
+    :returns: (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr) where P is the
+        probability associated with samples, lam_vol the volumes associated
+        with the samples, io_ptr a pointer from data to M bins, and emulate_ptr
+        a pointer from emulated samples to samples (in parameter space)
+
+    """
+    # Calculate pointers and volumes
+    (P, lambda_emulate, io_ptr, emulate_ptr, lam_vol) = prob_emulated(samples,
+            data, rho_D_M, d_distr_samples, lam_domain, num_l_emulate,
+            d_Tree)
+   
+    # Calculate Probabilities
+    P = np.zeros((samples.shape[-1],))
+    for i in range(rho_D_M.shape[0]):
+        Itemp = np.equal(io_ptr, i)
+        if np.any(Itemp):
+            P[Itemp] = rho_D_M[i]*lam_vol(Itemp)/sum(lam_vol(Itemp))
+
+    return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 
 
 
