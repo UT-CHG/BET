@@ -76,6 +76,7 @@ def hist_regular(data, distr_samples, nbins):
     check to make sure  each bin has about 1 data sample per bin, if not
     recompute bins
     (hist, edges) = histdd(distr_samples, bins)
+    http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd
     determine d_distr_samples from edges
     """
     pass
