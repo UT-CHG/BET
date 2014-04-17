@@ -13,9 +13,29 @@ measure $P_{\Lambda}$.
 """
 import numpy as np
 import scipy.spatial as spatial
-import pyhull
 
-def prob_emulated(samples, data, rho_D_M, d_distr_samples,
+
+def emulate_iid_lebesgue(lam_domain, num_l_emulate):
+    """
+    Parition the parameter space using emulated samples into many voronoi cells.
+    These samples are iid so that we can apply the standard MC                                       
+    assumuption/approximation
+
+    :param lam_domain: The domain for each parameter for the model.
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
+    :param num_l_emulate: The number of emulated samples.
+    :type num_l_emulate: :int 
+    """
+    lam_width = lam_domain[:,1]-lam_domain[:,0]
+    lambda_left = np.repeat([lam_domain[:,0]], num_l_emulate,0)#.transpose()
+    lambda_right = np.repeat([lam_domain[:,1]], num_l_emulate,0)#.transpose()
+    l_center = (lambda_right+lambda_left)/2.0
+    lambda_emulate = (lambda_right-lambda_left)
+    lambda_emulate = lambda_emulate * np.random.random(lambda_emulate.shape)
+    lambda_emulate = lambda_emulate + lambda_left
+    return lambda_emulate 
+
+def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
         lambda_emulate=None, d_Tree=None): 
     """
     Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}}), the probability
@@ -48,31 +68,26 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples,
         
     # Determine which inputs go to which M bins using the QoI
     #io_ptr = dsearchn(d_distr_samples, data);
-    io_ptr = d_Tree.query(data)
-
-    # Parition the space using emulated samples into many voronoi cells
-    # These samples are iid so that we can apply the standard MC
-    # assumuption/approximation.
-    lam_width = lam_domain[:,1]-lam_domain[:,0]
-    lambda_left = np.repeat([lam_domain[:,0]], num_l_emulate,0).transpose()
-    lambda_right = np.repeat([lam_domain[:,1]], num_l_emulate,0).transpose()
-    l_center = (lambda_right+lambda_left)/2.0
-    lambda_emulate = (lambda_right-lambda_left)
-    lambda_emulate = lambda_emulate * np.random.random(lambda_emulate.shape)
-    lambda_emulate = lambda_emulate + lambda_left
+    (tree_length,io_ptr) = d_Tree.query(data)
     
     # Determine which emulated samples match with which model run samples
     l_Tree = spatial.KDTree(samples)
-    emulate_ptr = l_Tree.query(lambda_emulate)
-
+    (tree_length,emulate_ptr) = l_Tree.query(lambda_emulate)
     # Calculate Probabilties
-    P = np.zeros((num_l_emulate,))
-    for i in range(rho_D_M.shape[0]):
+
+
+    P = np.zeros((lambda_emulate.shape[0],))
+    d_distr_emu_ptr = np.zeros(emulate_ptr.shape)
+    for i in range(rho_D_M.shape[0]): 
         Itemp = np.equal(io_ptr, i)
+        l_ind = np.arange(len(Itemp))[Itemp]
+        d_distr_emu_ptr[l_ind] =i*np.ones(l_ind.shape)
+    for i in range(rho_D_M.shape[0]):
+        Itemp  = np.equal(d_distr_emu_ptr, i)
         if np.any(Itemp):
-            IItemp = np.equal(emulate_ptr, Itemp)
-            if np.any(IItemp):
-                P[IItemp] = rho_D_M[i]/np.sum(IItemp)
+            P[Itemp]= rho_D_M[i]/np.sum(Itemp)
+
+
 
     return (P, lambda_emulate, io_ptr, emulate_ptr)
 
@@ -145,6 +160,7 @@ def prob_samples_qhull(samples, data, rho_D_M, d_distr_samples,
     :returns: (P, io_ptr, lam_vol)
 
     """
+    import pyhull
 
     if d_Tree == None:
         d_Tree = spatial.KDTree(d_distr_samples)
