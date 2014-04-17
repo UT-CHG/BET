@@ -8,4 +8,4 @@ This subpackage contains
 * :class:`adaptive_sampling` inherits from :class:`~bet.sampling.sampling`
     adaptively generates samples.
 """
-__all__ = ['sampling', 'adaptive_sampling']
+__all__ = ['sampling', 'adaptiveSampling']
