@@ -1,4 +1,7 @@
-def unif_unif(data, true_Q, M=50, bin_ratio=0.2):
+import numpy as np
+import scipy.spatial as spatial
+
+def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate = 1E6):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
     uniform probability density centered at true_Q with bin_ratio of the width of D
@@ -10,6 +13,7 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2):
         number here like 50.
     :param double bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
+    :param int num_d_emulate: Number of samples used to emulate using an MC assumption
     :param data: Array containing QoI data where the QoI is mdim diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param true_Q: $Q(\lambda_{true})$
@@ -36,8 +40,8 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2):
     # uniform densities below. This was just to setup a discretization of D in
     # some random way so that I put bins near where the output probability is
     # (why would I care about binning zero probability events?).
-    distr_right = np.repeat([true_Q+bin_size*.75], M, 0).transpose()
-    distr_left = np.repeat([true_Q-bin_size*.75], M, 0).transpose()
+    distr_right = np.repeat([true_Q+bin_size*.75], M, 0)#.transpose()
+    distr_left = np.repeat([true_Q-bin_size*.75], M, 0)#.transpose()
     distr_center = (distr_right+distr_left)/2.0
     d_distr_samples = (distr_right-distr_left)
     d_distr_samples = d_distr_samples * np.random.random(distr_right.shape)
@@ -45,9 +49,8 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2):
 
     # Now compute probabilities for rho_{D,M} by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation
-    num_d_emulate = 1E6
-    distr_right = np.repeat([true_Q+bin_size*0.5], num_d_emulate, 0).transpose()
-    distr_left = np.repeat([true_Q-bin_size*0.5], num_d_emulate, 0).transpose()
+    distr_right = np.repeat([true_Q+bin_size*0.5], num_d_emulate, 0)#.transpose()
+    distr_left = np.repeat([true_Q-bin_size*0.5], num_d_emulate, 0)#.transpose()
     distr_center = (distr_right+distr_left)/2.0
     d_distr_emulate = (distr_right-distr_left)
     d_distr_emulate = d_distr_emulate * np.random.random(distr_right.shape)
