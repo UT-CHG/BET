@@ -71,7 +71,7 @@ def loadmat(save_file, model = None):
         data = mdat['data']
     else:
         data = None
-    sampler = basic(mdat['num_samples'], None)    
+    sampler = sampler(mdat['num_samples'], None)    
     return (sampler, samples, data)
 
 class sampler(object):
@@ -116,9 +116,9 @@ class sampler(object):
     def _plot_2D(self, samples, sample_nos, rD, p_true, save, show,
             xlabel, ylabel, filename):
         if sample_nos==None:
-            sample_nos = range(samples.shape[1])
+            sample_nos = range(samples.shape[0])
         rD = rD[sample_nos]
-        plt.scatter(samples[0,sample_nos],samples[1,sample_nos],c=rD,
+        plt.scatter(samples[sample_nos, 0],samples[sample_nos, 1],c=rD,
                 cmap=plt.cm.Oranges_r)
         plt.colorbar()
         if p_true != None:
@@ -182,7 +182,7 @@ class sampler(object):
         xlabel = r'$q_1$'
         ylabel = r'$q_2$'
         savename = 'data_samples_cs.eps'
-        self._plot_2D(data.transpose(), sample_nos, rD, Q_true,
+        self._plot_2D(data, sample_nos, rD, Q_true,
                 save, show, xlabel, ylabel, savename)
 
     def random_samples(self, sample_type, param_min, param_max,
@@ -214,19 +214,17 @@ class sampler(object):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (ndim, num_samples)
+            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
             and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
 
         """
         # Create N samples
-        param_left = np.repeat([param_min], self.num_samples,
-                0).transpose()
-        param_right = np.repeat([param_max], self.num_samples,
-                0).transpose()
+        param_left = np.repeat([param_min], self.num_samples, 0)
+        param_right = np.repeat([param_max], self.num_samples, 0)
         samples = (param_right-param_left)
          
         if sample_type == "lhs":
-            samples = samples * lhs(param_min.shape[0],
+            samples = samples * lhs(param_min.shape[-1],
                     self.num_samples, criterion).transpose()
         elif sample_type == "random" or "r":
             samples = samples * np.random.random(param_left.shape) 
@@ -252,7 +250,7 @@ class sampler(object):
         """
         
         # Update the number of samples
-        self.num_samples = samples.shape[-1]
+        self.num_samples = samples.shape[0]
 
         # Solve the model at the samples
         data = self.lb_model(samples)
