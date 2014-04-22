@@ -137,13 +137,202 @@ class sampler(bsam.sampler):
         savename = 'data_samples_cs.eps'
         super(sampler, self)._plot_2D(data, sample_nos, rD,
                 Q_true, save, show, xlabel, ylabel, savename)
-   
-    def generalized_chains(self, inital_sample_type, param_min, param_max,
-            t_kernel, heuristic, savefile, criterion='center'):
+
+    def run_gen(self, heur_list, rho_D, maximum, param_min, param_max,
+            t_kernel, savefile, initial_sample_type="lhs", criterion='center'):
         """
-        Basic adaptive sampling algorithm.
+        Generates samples using generalized chains and a list of different
+        heuristics.
+
+        :param list() heur_list: List of heuristics.
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns a
+            :class:`numpy.ndarray`
+        :param double maximum: maximum value of rho_D
+        :param param_min: minimum value for each parameter dimension
+        :type param_min: np.array (ndim,)
+        :param param_max: maximum value for each parameter dimension
+        :type param_max: np.array (ndim,)
+        :param t_kernel: method for creating new parameter steps using
+            given a step size based on the paramter domain size
+        :type t_kernel: :class:~`t_kernel`
+        :param function heuristic: functional that acts on the data used to
+            determine the proposed change to the ``step_size``
+        :param string savefile: filename to save samples and data
+        :param string initial_sample_type: type of initial sample random (or r),
+            latin hypercube(lhs), or space-filling curve(TBD)
+         :param string criterion: latin hypercube criterion see 
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :rtype: tuple
+        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+
+        """
+        # generalized chains
+        results = list()
+        r_step_size = list()
+        results_rD = list()
+        mean_ss = list()
+        for heur in heur_list:
+            (samples, data, step_sizes) = self.generalized_chains(
+                    param_min, param_max, t_kernel, heur, savefile,
+                    initial_sample_type, criterion)
+            results.append((samples, data))
+            r_step_size.append(step_sizes)
+            results_rD.append(int(sum(rho_D(data)/maximum)))
+            mean_ss.append(np.mean(step_sizes))
+        sort_ind = np.argsort(results_rD)
+        return (results, r_step_size, results_rD, sort_ind, mean_ss)
+
+    def run_reseed(self, heur_list, rho_D, maximum, param_min, param_max,
+            t_kernel, savefile, initial_sample_type="lhs", criterion='center',
+            reseed=3):
+        """
+        Generates samples using reseeded chains and a list of different
+        heuristics.
+
+        :param list() heur_list: List of heuristics.
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns a
+            :class:`numpy.ndarray`
+        :param double maximum: maximum value of rho_D
+        :param param_min: minimum value for each parameter dimension
+        :type param_min: np.array (ndim,)
+        :param param_max: maximum value for each parameter dimension
+        :type param_max: np.array (ndim,)
+        :param t_kernel: method for creating new parameter steps using
+            given a step size based on the paramter domain size
+        :type t_kernel: :class:~`t_kernel`
+        :param function heuristic: functional that acts on the data used to
+            determine the proposed change to the ``step_size``
+        :param string savefile: filename to save samples and data
+        :param string initial_sample_type: type of initial sample random (or r),
+            latin hypercube(lhs), or space-filling curve(TBD)
+         :param string criterion: latin hypercube criterion see 
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :rtype: tuple
+        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+
+        """
+        results = list()
+        # reseeding sampling
+        results = list()
+        r_step_size = list()
+        results_rD = list()
+        mean_ss = list()
+        for heur in heur_list:
+            (samples, data, step_sizes) = self.reseed_chains(
+                    param_min, param_max, t_kernel, heur, savefile,
+                    initial_sample_type, criterion, reseed)
+            results.append((samples, data))
+            r_step_size.append(step_sizes)
+            results_rD.append(int(sum(rho_D(data)/maximum)))
+            mean_ss.append(np.mean(step_sizes))
+        sort_ind = np.argsort(results_rD)
+        return (results, r_step_size, results_rD, sort_ind, mean_ss)
+
+    def run_tk(self, init_ratio, min_ratio, max_ratio, rho_D, maximum,
+            param_min, param_max, heuristic, savefile,
+            initial_sample_type="lhs", criterion='center'):
+        """
+        Generates samples using generalized chains and
+        :class:`~bet.sampling.transition_kernel` created using
+        the `init_ratio`, `min_ratio`, and `max_ratio` parameters.
+    
+        :param list() init_ratio: Initial step size ratio compared to the
+            parameter domain.
+        :param list() min_ratio: Minimum step size compared to the initial step
+            size.
+        :param list() max_ratio: Maximum step size compared to the maximum step
+            size.
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns a
+            :class:`numpy.ndarray`
+        :param double maximum: maximum value of rho_D
+        :param param_min: minimum value for each parameter dimension
+        :type param_min: np.array (ndim,)
+        :param param_max: maximum value for each parameter dimension
+        :type param_max: np.array (ndim,)
+        :param t_kernel: method for creating new parameter steps using
+            given a step size based on the paramter domain size
+        :type t_kernel: :class:~`t_kernel`
+        :param function heuristic: functional that acts on the data used to
+            determine the proposed change to the ``step_size``
+        :param string savefile: filename to save samples and data
+        :param string initial_sample_type: type of initial sample random (or r),
+            latin hypercube(lhs), or space-filling curve(TBD)
+         :param string criterion: latin hypercube criterion see 
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :rtype: tuple
+        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+
+        """
+        results = list()
+        r_step_size = list()
+        results_rD = list()
+        mean_ss = list()
+        for i, j, k  in zip(init_ratio, min_ratio, max_ratio):
+            tk = transition_kernel(i,j,k)
+            (samples, data, step_sizes) = self.generalized_chains(
+                    param_min, param_max, tk, heuristic, savefile,
+                    initial_sample_type, criterion)
+            results.append((samples, data))
+            r_step_size.append(step_sizes)
+            results_rD.append(int(sum(rho_D(data)/maximum)))
+            mean_ss.append(np.mean(step_sizes))
+        sort_ind = np.argsort(results_rD)
+        return (results, r_step_size, results_rD, sort_ind, mean_ss)
+
+    def run_inc_dec(self, increase, decrease, tolerance, rho_D, maximum,
+            param_min, param_max, t_kernel, savefile,
+            initial_sample_type="lhs", criterion='center'):
+        """
+        Generates samples using generalized chains and
+        :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic` created using
+        the `increase`, `decrease`, and `tolerance` parameters.
+
+        :param list() increase: the multiple to increase the step size by
+        :param list() decrease: the multiple to decrease the step size by
+        :param list() tolerance: a tolerance used to determine if two
+            different values are close
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns a
+            :class:`numpy.ndarray`
+        :param double maximum: maximum value of rho_D
+        :param param_min: minimum value for each parameter dimension
+        :type param_min: np.array (ndim,)
+        :param param_max: maximum value for each parameter dimension
+        :type param_max: np.array (ndim,)
+        :param t_kernel: method for creating new parameter steps using
+            given a step size based on the paramter domain size
+        :type t_kernel: :class:~`t_kernel`
+        :param function heuristic: functional that acts on the data used to
+            determine the proposed change to the ``step_size``
+        :param string savefile: filename to save samples and data
+        :param string initial_sample_type: type of initial sample random (or r),
+            latin hypercube(lhs), or space-filling curve(TBD)
+         :param string criterion: latin hypercube criterion see 
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :rtype: tuple
+        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+
+        """
+        heur_list = list()
+        for i, j in zip(increase, decrease):
+            heur_list.append(rhoD_heuristic(maximum, rho_D, tolerance,
+                increase=increase[i], decrease=decrease[i]))
+        return self.run_gen(self, heur_list, param_min, param_max, t_kernel,
+                savefile, initial_sample_type, criterion)
+
+    def generalized_chains(self, param_min, param_max, t_kernel, heuristic,
+            savefile, initial_sample_type="lhs", criterion='center'):
+        """
+        Basic adaptive sampling algorithm using generalized chains.
        
-        :param string inital_sample_type: type of initial sample random (or r),
+        :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
@@ -159,7 +348,7 @@ class sampler(bsam.sampler):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (num_samples ,ndim)
+            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
             and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
 
         """
@@ -178,7 +367,7 @@ class sampler(bsam.sampler):
         # hypercube/space-filling curve to fully explore parameter space - not
         # necessarily random). Call these Samples_old.
         (samples_old, data_old) = super(sampler, self).random_samples(self,
-                inital_sample_type, param_min, param_max, savefile, criterion)
+                initial_sample_type, param_min, param_max, savefile, criterion)
         samples = samples_old
         data = data_old
         (heur_old, proposal) = heuristic.delta_step(data_old, None)
@@ -223,12 +412,12 @@ class sampler(bsam.sampler):
             samples_old = samples_new
         return (samples, data)
 
-    def reseed_chains(self, inital_sample_type, param_min, param_max,
-            t_kernel, heuristic, savefile, criterion='center', reseed=1):
+    def reseed_chains(self, param_min, param_max, t_kernel, heuristic,
+            savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
         Basic adaptive sampling algorithm.
        
-        :param string inital_sample_type: type of initial sample random (or r),
+        :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
@@ -251,6 +440,27 @@ class sampler(bsam.sampler):
         """
         pass
 
+def heuristics(Q_true, rho_D, maximum):
+    """
+    Generates a list of heurstic objects.
+
+    :param Q_true: true parameter value
+    :type Q_true: :class:`np.ndarray`
+    :param rho_D: probability density on D
+    :type rho_D: callable function that takes a :class:`np.array` and returns
+        a class:`np.ndarray`
+    :param double maximum: maximum value of rho_D
+    :rtype: list()
+    :returns: [maxima_mean_heuristic, rhoD_heuristic, maxima_heuristic,
+        multi_dist_heuristic]
+
+    """
+    heur_list = list()
+    heur_list.append(maxima_mean_heuristic(np.array([Q_true]), rho_D))
+    heur_list.append(rhoD_heuristic(maximum, rho_D))
+    heur_list.append(maxima_heuristic(np.array([Q_true]), rho_D))
+    heur_list.append(multi_dist_heuristic())
+    return heur_list
 
 class transition_kernel(object):
     """
@@ -265,7 +475,7 @@ class transition_kernel(object):
     init_ratio
         Initial step size ratio compared to the parameter domain.
     min_ratio
-        Minimum step size compared to the inital step size.
+        Minimum step size compared to the initial step size.
     max_ratio
         Maximum step size compared to the maximum step size.
     """
