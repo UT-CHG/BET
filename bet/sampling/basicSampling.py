@@ -13,6 +13,23 @@ import scipy as sio
 from pyDOE import lhs
 import matplotlib.pyplot as plt
 
+def compare_yield(sort_ind, sample_quality, run_param):
+    """
+    Compare the quality of samples where ``sample_quality`` is the measure of
+    quality by which the sets of samples have been indexed and ``sort_ind`` is
+    an array of the sorted indicies.
+
+    :param list() sort_int: indicies that index ``sample_quality`` in sorted
+        order
+    :param list() sample_quality: a measure of quality by which the sets of 
+        samples are sorted
+    :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
+        information used to generate the sets of samples to be displayed
+
+    """
+    for i in reversed(sort_ind):
+        print i, sample_quality[i], np.round(run_param[i], 3)
+
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
     Estimates the number of samples in high probability regions of D.
