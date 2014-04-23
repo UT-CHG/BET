@@ -321,9 +321,10 @@ class sampler(bsam.sampler):
 
         """
         heur_list = list()
-        for i, j in zip(increase, decrease):
-            heur_list.append(rhoD_heuristic(maximum, rho_D, tolerance,
-                increase=increase[i], decrease=decrease[i]))
+        for i, j, z in zip(increase, decrease):
+            heur_list.append(rhoD_heuristic(maximum, rho_D,
+                tolerance=tolerance[i],increase=increase[i],
+                decrease=decrease[i])) 
         return self.run_gen(self, heur_list, param_min, param_max, t_kernel,
                 savefile, initial_sample_type, criterion)
 
