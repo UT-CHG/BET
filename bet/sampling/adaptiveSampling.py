@@ -84,60 +84,6 @@ class sampler(bsam.sampler):
         mdict['samples_per_batch'] = self.samples_per_batch
         mdict['sample_batch_no'] = self.sample_batch_no
         
-    def show_param_2D(self, samples, data, rho_D = None, p_true=None,
-            sample_nos=None, save=True, show=True):
-        """
-        Plot samples in parameter space and colors them either by rho_D or by
-        sample batch number.
-
-        :param samples: Samples to plot
-        :type samples: :class:`np.ndarray`
-        :param data: Data associated with ``samples``
-        :type data: :class:`np.ndarray`
-        :param list sample_nos: sample numbers to plot
-        :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns a
-            :class:`np.ndarray`
-        :param p_true: true parameter value
-        :type p_true: :class:`np.ndarray`
-
-        """
-        if rho_D!=None:
-            rD = rho_D(data)
-        else:
-            rD = self.sample_batch_no[sample_nos]
-        xlabel = r'$\lambda_1$'
-        ylabel = r'$\lambda_2$'
-        savename = 'param_samples_cs.eps'
-        super(sampler, self)._plot_2D(samples, sample_nos, rD, p_true,
-                save, show, xlabel, ylabel, savename)
-
-    def show_data_2D(self, data, rho_D=None, Q_true=None, sample_nos=None,
-            save=True, show=True):
-        """
-        Plot samples in data space and colors them either by rho_D or by
-        sample batch number.
-
-        :param data: Data associated with ``samples``
-        :type data: :class:`np.ndarray`
-        :param list sample_nos: sample numbers to plot
-        :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns a
-            :class:`np.ndarray`
-        :param Q_true: true parameter value
-        :type Q_true: :class:`np.ndarray`
-
-        """   
-        if rho_D!=None:
-            rD = rho_D(data)
-        else:
-            rD = self.sample_batch_no[sample_nos]
-        xlabel = r'$q_1$'
-        ylabel = r'$q_2$'
-        savename = 'data_samples_cs.eps'
-        super(sampler, self)._plot_2D(data, sample_nos, rD,
-                Q_true, save, show, xlabel, ylabel, savename)
-
     def run_gen(self, heur_list, rho_D, maximum, param_min, param_max,
             t_kernel, savefile, initial_sample_type="lhs", criterion='center'):
         """
@@ -321,10 +267,8 @@ class sampler(bsam.sampler):
 
         """
         heur_list = list()
-        for i, j, z in zip(increase, decrease):
-            heur_list.append(rhoD_heuristic(maximum, rho_D,
-                tolerance=tolerance[i],increase=increase[i],
-                decrease=decrease[i])) 
+        for i, j, z in zip(increase, decrease, tolerance):
+            heur_list.append(rhoD_heuristic(maximum, rho_D, i, j, z) 
         return self.run_gen(self, heur_list, param_min, param_max, t_kernel,
                 savefile, initial_sample_type, criterion)
 
