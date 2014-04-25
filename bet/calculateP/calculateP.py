@@ -177,17 +177,23 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
     # add midpoints
     for i in range(lam_domain.shape[0]):
         new_pt = sides
-        new_pt[i,:] = np.repeat(lam_domain[i,0]-lam_width[i]/pts_per_edge,pts_per_edge,0).transpose() 
+        new_pt[i,:] = np.repeat(lam_domain[i,0]-lam_width[i]/pts_per_edge,
+                pts_per_edge,0).transpose() 
         lam_bound = np.vstack((lam_bound,new_pt))
         new_pt = sides
-        new_pt[i,:] = np.repeat(lam_domain[i,1]-lam_width[i]/pts_per_edge,pts_per_edge,0).transpose() 
+        new_pt[i,:] = np.repeat(lam_domain[i,1]-lam_width[i]/pts_per_edge,
+                pts_per_edge,0).transpose() 
         lam_bound = np.vstack((lam_bound,new_pt))
         
     # add corners
     corners = np.zeros((2**lam_domain.shape[0], lam_domain.shape[0]))
     for i in range(lam_domain.shape[0]):
-        corners[i,:] = lam_domain[i,np.repeat(np.hstack((np.ones((1,2**(i-1))),2*np.ones((1,2**(i-1))))), 2**(lam_domain.shape[0]-i),0).transpose()]
-        corners[i,:] +=lam_width[i]*np.repeat(np.hstack((np.ones((1,2**(i-1))),-np.ones((1,2**(i-1))))), 2**(lam_domain.shape[0]-i)/pts_per_edge,0).transpose()
+        corners[i,:] = lam_domain[i,np.repeat(np.hstack((np.ones((1,2**(i-1))),
+            2*np.ones((1,2**(i-1))))),
+            2**(lam_domain.shape[0]-i),0).transpose()] 
+        corners[i,:] +=lam_width[i]*np.repeat(np.hstack((np.ones((1,2**(i-1))),
+            -np.ones((1,2**(i-1))))),
+            2**(lam_domain.shape[0]-i)/pts_per_edge,0).transpose()
 
     lam_bound = np.vstack((lam_bound, corners))
     
