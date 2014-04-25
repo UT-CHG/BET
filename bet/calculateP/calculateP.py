@@ -73,9 +73,8 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     # Determine which emulated samples match with which model run samples
     l_Tree = spatial.KDTree(samples)
     (tree_length,emulate_ptr) = l_Tree.query(lambda_emulate)
+    
     # Calculate Probabilties
-
-
     P = np.zeros((lambda_emulate.shape[0],))
     d_distr_emu_ptr = np.zeros(emulate_ptr.shape)
     for i in range(rho_D_M.shape[0]): 
@@ -86,8 +85,6 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
         Itemp  = np.equal(d_distr_emu_ptr, i)
         if np.any(Itemp):
             P[Itemp]= rho_D_M[i]/np.sum(Itemp)
-
-
 
     return (P, lambda_emulate, io_ptr, emulate_ptr)
 
@@ -135,7 +132,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
 
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 
-def prob_samples_qhull(samples, data, rho_D_M, d_distr_samples,
+def prob_qhull(samples, data, rho_D_M, d_distr_samples,
         lam_domain, d_Tree=None): 
     """
     Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}}), the probability
@@ -208,9 +205,9 @@ def prob_samples_qhull(samples, data, rho_D_M, d_distr_samples,
         P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/np.sum(lam_vol[Itemp])
     P = P/np.sum[P]
 
-    return (P, io_ptr, lam_vol)
+    return (P, lam_vol, io_ptr)
 
-def prob_samples_mc(samples, data, rho_D_M, d_distr_samples,
+def prob_mc(samples, data, rho_D_M, d_distr_samples,
         lam_domain, lambda_emulate=None, d_Tree=None): 
     """
     Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{samples}}), the probability
