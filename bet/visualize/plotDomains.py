@@ -72,11 +72,11 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
 
-    fig =plt.figure()
+    fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], c=color, cmap=plt.cm.Oranges_r)
-    ax.colorbar()
+    #ax.colorbar()
     if p_true != None:
         ax.scatter(p_true[0], p_true[1], p_true[2], c='b')
     if save:
