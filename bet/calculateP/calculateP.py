@@ -116,10 +116,8 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
 
     """
     # Calculate pointers and volumes
-    # DO NOT CALL HERE WITH NUM_L_EMULATE(?)
-    (P, lambda_emulate, io_ptr, emulate_ptr) = prob_emulated(samples,
-            data, rho_D_M, d_distr_samples, lam_domain,
-            d_Tree)
+    (P, lambda_emulate, io_ptr, emulate_ptr) = prob_emulated(samples, data,
+            rho_D_M, d_distr_samples, lam_domain, None, d_Tree)
     
     # Apply the standard MC approximation 
     lam_vol = np.ones((samples.shape[0],))
