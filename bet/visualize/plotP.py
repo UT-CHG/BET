@@ -39,6 +39,7 @@ def plot_marginal_probs(P_samples,
                         lam_domain,
                         nbins=20,
                         filename = "file",
+                        lam_true = None,
                         plot_surface= False):
         
     """
@@ -96,13 +97,22 @@ def plot_marginal_probs(P_samples,
                 marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
             marginals[(i,j)] = marg
 
-    # for k,(i,j) in enumerate(marginals.keys()):
-    #     fig = plt.figure(k)
-    #     ax = fig.add_subplot(111)
-    #     X = bins[i]
-    #     Y = bins[j]
-    #     X,Y = np.meshgrid(X,Y)
-    #     ax.plot_grid(X, Y, marginals[(i,j)])
+ 
+
+    for k,(i,j) in enumerate(marginals.keys()):
+        fig = plt.figure(k)
+        ax = fig.add_subplot(111)
+        X = bins[i]
+        Y = bins[j]
+        X,Y = np.meshgrid(X,Y, indexing='ij')
+        quadmesh=ax.pcolormesh(X, Y, marginals[(i,j)],cmap=cm.coolwarm)
+        plt.xlabel(r'$\lambda_{' + `i+1` + '}$') 
+        plt.ylabel(r'$\lambda_{' + `j+1` + '}$')
+        fig.colorbar(quadmesh,ax=ax, label=r'$P_{' + `i+1` +',' + `j+1` + '}$')
+        fig.savefig(filename + "_2D_" + `i` + "_" + `j` + ".eps")
+        plt.show()
+    # import pdb
+    # pdb.set_trace()
 
 
     if plot_surface:
@@ -111,7 +121,7 @@ def plot_marginal_probs(P_samples,
             ax = fig.gca(projection='3d')
             X = bins[i]
             Y = bins[j]
-            X,Y = np.meshgrid(X,Y)
+            X,Y = np.meshgrid(X,Y, indexing='ij')
             # import pdb
             # pdb.set_trace()
 
@@ -121,7 +131,10 @@ def plot_marginal_probs(P_samples,
             linewidth=0, antialiased=False)
             ax.zaxis.set_major_locator(LinearLocator(10))
             ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-
-            fig.colorbar(surf, shrink=0.5, aspect=5)
+            ax.set_xlabel(r'$\lambda_{' + `i+1` + '}$') 
+            ax.set_ylabel(r'$\lambda_{' + `j+1` + '}$')
+            ax.set_zlabel(r'$P_{' + `i+1` +',' + `j+1` + '}$')
+            plt.backgroundcolor='w'
+            fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P_{' + `i+1` +',' + `j+1` + '}$')
             fig.savefig(filename + "_surf_"+ `i` + "_" +`j` + ".eps")
             plt.show()
