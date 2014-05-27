@@ -14,6 +14,7 @@ import unittest
 import bet.calculateP.calculateP as calcP
 import numpy sa np
 import scipy.spatial as spatial
+import numpy.testing as nptest
 
 class TestEmulateIIDLebesgue(unittest.TestCase):
     """
@@ -73,19 +74,19 @@ class TestProb(unittest.TestCase):
         """
         # Create model associated inputs (samples, data, lam_domain)
         data_domain = np.array([[0.0, 1.0], [-1.0, 1.0], [-1.0, 0.0]])
-        lam_domain = np.array([[.1, .2], [3, 4], [50, 60]])
+        self.lam_domain = np.array([[.1, .2], [3, 4], [50, 60]])
         # iid samples
-        u_samples = None #calcP.emulate_iid_lebesgue(lam_domain,
+        self.u_samples = None #calcP.emulate_iid_lebesgue(lam_domain,
                 #20**lam_domain.shape[0])
         # regular grid samples
         lam1 = np.linspace(lam_domain[0, 0], lam_domain[0, 1], 20)
         lam2 = np.linspace(lam_domain[1, 0], lam_domain[1, 1], 20)
         lam3 = np.linspace(lam_domain[2, 0], lam_domain[2, 1], 20)
         lam1, lam2, lam3 = np.meshgrid(lam1, lam2, lam3)
-        r_samples = np.column_stack((lam1.ravel(), lam2.ravel(), lam3.ravel())
+        self.r_samples = np.column_stack((lam1.ravel(), lam2.ravel(), lam3.ravel()))
         # linear model
-        rl_data = np.dot(r_samples, data_domain)
-        ul_data = np.dot(r_samples, data_domain)
+        self.rl_data = np.dot(r_samples, data_domain)
+        self.ul_data = np.dot(r_samples, data_domain)
         # non-linear model
         def nonlinear_model(l_data):
             n_data = l_data
@@ -93,32 +94,100 @@ class TestProb(unittest.TestCase):
             n_data[:,1] = np.square(l_data[:,1])
             n_data[:,2] = l_data[:,0] - n_data[:,1]
             return n_data
-        rn_data = nonlinear_model(rl_data)
-        un_data = nonlinear_model(ul_data)
+        self.rn_data = nonlinear_model(rl_data)
+        self.un_data = nonlinear_model(ul_data)
     
         # Create rho_D_M associated inputs (rho_D_M, d_distr_samples, d_tree)
         # d_distr_samples (iid or regular)
+        self.u_dsamples = None
         data1 = np.linspace(data_domain[0, 0], data_domain[0, 1], 10)
         data2 = np.linspace(data_domain[1, 0], data_domain[1, 1], 10)
         data3 = np.linspace(data_domain[2, 0], data_domain[2, 1], 10)
         data1, data2, data3 = np.meshgrid(data1, data2, data3)
-        r_dsamples = np.column_stack((data1.ravel(), data2.ravel(), data3.ravel())
-        rd_tree = spatial.KDTree(r_dsamples)
+        self.r_dsamples = np.column_stack((data1.ravel(), data2.ravel(),
+            data3.ravel()))
+        self.rd_tree = spatial.KDTree(r_dsamples)
         # rho_D_M uniform or hyperrectangle
-
-
+        self.ru_rho = np.ones(r_dsamples.shape[0])
+        self.ru_rho = self.r_rho*np.product(data_domain[:,1]-data_domain[:,0])
+        self.rh_rho = None
+        self.uu_rho = None
+        self.uh_rho = None
         
         # Create lambda_emulate
         # iid
-        u_lambda_emulate = None #calcP.emulate_iid_lebesgue(lam_domain,
+        self.u_lambda_emulate = None #calcP.emulate_iid_lebesgue(lam_domain,
             #30**lam_domain.shape[0])
         # regular grid
         lam1 = np.linspace(lam_domain[0, 0], lam_domain[0, 1], 40)
         lam2 = np.linspace(lam_domain[1, 0], lam_domain[1, 1], 40)
         lam3 = np.linspace(lam_domain[2, 0], lam_domain[2, 1], 40)
         lam1, lam2, lam3 = np.meshgrid(lam1, lam2, lam3)
-        r_lambda_emulate = np.column_stack((lam1.ravel(), lam2.ravel(), lam3.ravel())
+        self.r_lambda_emulate = np.column_stack((lam1.ravel(), lam2.ravel(),
+            lam3.ravel()))
         
+    def test_prob_dtree(self):
+        # calculate with d_tree
+        (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                self.r_lambda_emulate, self.rd_tree)
+        # calculate without d_tree
+        (Pt, lemt, io_ptrt, emulate_ptrt) = calcP.prob_emulated(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                self.r_lambda_emulate)
+        # Compare results
+        nptest.assert_array_equal(P,Pt)
+        nptest.assert_array_equal(lem, lemt)
+        nptest.assert_array_equal(lem, self.r_lambda_emulate)
+        nptest.assert_array_equal(io_ptrt,ioptr)
+        nptest.assert_array_equal(emulate_ptr, emulate_ptrt)
+
+    def test_prob_emulate(self):
+        # calculate with samples
+        (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                self.r_samples, self.rd_tree)
+        # calculate without samples
+        (Pt, lemt, io_ptrt, emulate_ptrt) = calcP.prob_emulated(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain, 
+                d_tree = self.rd_tree)
+        # Compare results
+        nptest.assert_array_equal(P,Pt)
+        nptest.assert_array_equal(lem, lemt)
+        nptest.assert_array_equal(lem, self.r_lambda_emulate)
+        nptest.assert_array_equal(io_ptrt,ioptr)
+        nptest.assert_array_equal(emulate_ptr, emulate_ptrt)
+
+    def test_prob_compare_rg(self):
+        # Calculate prob emulated
+        (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                d_tree = self.rd_tree)
+        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                self.rd_tree)
+        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.r_samples,
+                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                self.r_samples, self.rd_tree)
+
+        # Compare results
+        nptest.assert_array_equal(P,P1)
+        nptest.assert_array_equal(P,P3)
+        nptest.assert_array_equal(P1,P3)
+
+        nptest.assert_array_equal(lam_vol1,lam_vol3)
+
+        nptest.assert_array_equal(lem,lem1)
+        nptest.assert_array_equal(lem,lem3)
+        nptest.assert_array_equal(lem1,lem3)
+
+        nptest.assert_array_equal(io_ptr,io_ptr1)
+        nptest.assert_array_equal(io_ptr,io_ptr3)
+        nptest.assert_array_equal(io_ptr1,io_ptr3)
+       
+        nptest.assert_array_equal(emulate_ptr,emulate_ptr1)
+        nptest.assert_array_equal(emulate_ptr,emulate_ptr3)
+        nptest.assert_array_equal(emulate_ptr1,emulate_ptr3)
 
 
 class TestVol(unittest.TestCase)
