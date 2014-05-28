@@ -84,7 +84,7 @@ def hist_regular(data, distr_samples, nbins):
     """
     pass
 
-def hist_normal(data, distr_samples, nbins):
+def hist_gaussian(data, distr_samples, nbins):
     """
     determine mean, standard deviation of distr_samples
     partition D into nbins of equal probability for N(mean, sigma)
@@ -101,3 +101,95 @@ def hist_unif(data, distr_samples, nbins):
     unif_unif can and should call this function
     """
     pass
+
+def gaussian_regular(data, true_Q, std, nbins, num_d_emulate = 1E6):
+    pass
+    return (d_distr_prob, d_distr_samples, d_Tree)
+
+def gaussian_gaussian(data, true_Q, std, nbins, num_d_emulate = 1E6):
+    pass
+    return (d_distr_prob, d_distr_samples, d_Tree)
+
+def gaussian_unif(data, true_Q, std, nbins, num_d_emulate = 1E6):
+    pass
+    return (d_distr_prob, d_distr_samples, d_Tree)
+
+def uniform_hyperrectangle(data, Q_true, bin_ratio):
+    """
+    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    uniform probability density centered at true_Q with bin_ratio of the width
+    of D.
+
+    Since rho_D is a uniform distribution on a hyperrectanlge we should be able
+    to represent it exactly with ``M = 3^{mdim}`` or rather
+    ``len(d_distr_samples) == mdim``.
+
+    :param double bin_ratio: The ratio used to determine the width of the
+        uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
+    :param int num_d_emulate: Number of samples used to emulate using an MC assumption
+    :param data: Array containing QoI data where the QoI is mdim diminsional
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param true_Q: $Q(\lambda_{true})$
+    :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    """
+    pass
+    return (d_distr_prob, d_distr_samples, d_Tree)
+
+def uniform_datadomain(data_domain):
+    """
+    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    uniform probability density over the entire ``data_domain``. Since rho_D is
+    a uniform distribution on a hyperrectanlge we should be able to represent
+    it exactly with ``M = 1`` or rather ``len(d_distr_samples) == 1``.
+    
+    :param data_domain: The domain for each QoI of the model.
+    :type data_domain: :class:`numpy.ndarray` of shape (2, mdim)
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    """
+    pass
+    return (d_distr_prob, d_distr_samples, d_Tree)
+
+def uniform_data_minmax(data):
+    """
+    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    uniform probability density over the entire ``data_domain``. Here the
+    ``data_domain`` is the hyperrectangle defined by minima and maxima of the
+    ``data`` in each dimension. Since rho_D is a uniform distribution on a
+    hyperrectanlge we should be able to represent it exactly with ``M = 1`` or
+    rather ``len(d_distr_samples) == 1``.
+    
+    :param data: Array containing QoI data where the QoI is mdim diminsional
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    """
+    pass
+    return uniform_datadomain(data_domain)
+
+def uniform_data(data):
+    """
+    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    uniform probability density over the entire ``data_domain``. Here the
+    ``data_domain`` is the union of voronoi cells defined by ``data``. In other
+    words we assign each sample the same probability, so ``M = len(data)`` or
+    rather ``len(d_distr_samples) == len(data)``. The purpose of this method is
+    to approximate uniform distributions over irregularly shaped domains.
+    
+    :param data: Array containing QoI data where the QoI is mdim diminsional
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    """
+    pass
+    return (d_distr_prob, d_distr_samples, d_Tree)
