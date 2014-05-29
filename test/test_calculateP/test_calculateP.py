@@ -120,12 +120,84 @@ class TestProb(unittest.TestCase):
         self.r_lambda_emulate = np.column_stack((lam1.ravel(), lam2.ravel(),
             lam3.ravel()))
 
-    def test_prob_analytic_linear(self):
+    def compare_to_unif_linear(result_P):
         """
-        Compare results to a analytic solution (linear model only).
+        Compare P from the algorithm to an analytic solution where $P_\mathcal{D}$ is uniform
+        over $\mathbf{D}$ (linear model only).
+
+        :param result_P: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result_P: :class:`numpy.ndarray`
+
         """
-        pass
+        nptest.assert_array_equal(result_P,
+                np.ones(result_P.shape)/float(len(result_P)))
         
+    def compare_to_unif_linear_ae(result_P):
+        """
+        Compare P from the algorithm to an analytic solution where $P_\mathcal{D}$ is uniform
+        over $\mathbf{D}$ (linear model only).
+
+        :param result_P: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result_P: :class:`numpy.ndarray`
+
+        """
+        nptest.assert_array_almost_equal_nulp(result_P,
+                np.ones(result_P.shape)/float(len(result_P)))
+
+    def compare_to_vol_linear(result_vol, lambda_domain):
+        """
+        Compare lambda_vol from the algorithm to an analytic solution(linear model only).
+
+        :param result_vol: lambda_vol from any of the methods in
+            :mod:`~bet.calculatevol.calculatevol`
+        :type result_vol: :class:`numpy.ndarray`
+
+        """
+        lambda_vol = np.product(lambda_domain[:,1]-lambda_domain[:,0])
+        lambda_vol = lambda_vol / float(len(result_vol))
+        nptest.assert_array_equal(result_vol,
+                np.ones(result_vol.shape)*lambda_vol)
+        
+    def compare_to_vol_linear_ae(result_vol, lambda_domain):
+        """
+        Compare ``lambda_vol`` from the algorithm to an analytic solution (linear model only).
+
+        :param result_vol: lambda_vol from any of the methods in
+            :mod:`~bet.calculatevol.calculatevol`
+        :type result_vol: :class:`numpy.ndarray`
+
+        """
+        lambda_vol = np.product(lambda_domain[:,1]-lambda_domain[:,0])
+        lambda_vol = lambda_vol / float(len(result_vol))
+        nptest.assert_array_almost_equal_nulp(result_vol,
+                np.ones(result_vol.shape)*lambda_vol)
+
+    def compare_to_mean_ae(result):
+        """
+        Compare result to the mean of that result
+ 
+        :param result: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result: :class:`numpy.ndarray`       
+        
+        """
+        nptest.assert_array_almost_equal_nulp(result,
+                np.mean(result)*np.ones(results.shape))
+     
+    def compare_to_mean(result):
+        """
+        Compare result to the mean of that result
+ 
+        :param result: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result: :class:`numpy.ndarray`       
+        
+        """
+        nptest.assert_array_equal(result,
+                np.mean(result)*np.ones(results.shape))
+   
     def test_prob_dtree(self):
         """
 
@@ -203,11 +275,12 @@ class TestProb(unittest.TestCase):
         nptest.assert_array_equal(P,P1)
         nptest.assert_array_equal(P,P3)
         nptest.assert_array_equal(P1,P3)
-        nptest.assert_array_equal(P, np.mean(P)*np.ones(P.shape))
+        self.compare_to_mean(P)
+        self.compare_to_unif_linear(P)
 
         nptest.assert_array_equal(lam_vol1,lam_vol3)
-        nptest.assert_array_equal(lam_vol1,
-                np.mean(lam_vol1)*np.ones(lam_vol1.shape))
+        self.compare_to_mean(lam_vol1)
+        self.compare_to_vol_linear(lam_vol1)
 
         nptest.assert_array_equal(lem,lem1)
         nptest.assert_array_equal(lem,lem3)
@@ -252,11 +325,14 @@ class TestProb(unittest.TestCase):
         nptest.assert_array_equal(P,P1)
         nptest.assert_array_equal(P,P3)
         nptest.assert_array_equal(P1,P3)
-        nptest.assert_array_almost_equal_nulp(P, np.mean(P)*np.ones(P.shape))
+        # Compare to mean
+        self.compare_to_mean_ae(P)
+        self.compare_to_unif_linear_ae(P)
 
         nptest.assert_array_equal(lam_vol1, lam_vol3)
-        nptest.assert_array_almost_equal_nulp(lam_vol1,
-                np.mean(lam_vol1)*np.ones(lam_vol1.shape))
+        # Compare to mean
+        self.compare_to_mean_ae(lam_vol1)
+        self.compare_to_vol_linear_ae(lam_vol1)
 
         nptest.assert_array_equal(lem,lem1)
         nptest.assert_array_equal(lem,lem3)
@@ -284,55 +360,35 @@ class TestProb(unittest.TestCase):
             package installed.
        
         """
-        # Calculate prob 
+        # Calculate prob (has no lambda_emulate)
         (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.u_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
                 self.ud_tree)
+
+        # Calculate prob_mc (has lambda_emulate)
         (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.u_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.u_samples, self.ud_tree)
+                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.u_lambda_emulate, self.ud_tree)
+
+        # Compare to mean
+        self.compare_to_mean_ae(P3)
+        self.compare_to_mean_ae(lam_vol3)
+
+        (P4, lam_vol4, lem4, io_ptr4, emulate_ptr4) = calc.prob_mc(self.u_samples,
+                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.u_lambda_emulate, self.ud_tree)
+
+        # Compare to mean
+        self.compare_to_mean_ae(P4)
+        self.compare_to_mean_ae(lam_vol4)
 
         # Compare results
         nptest.assert_array_almost_equal_nulp(P1,P3)
         nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol3)
-
-class TestVol(unittest.TestCase)
-    def tearDown(self):
-        """
-        Get rid of rho_D_M, d_distr_samples, d_tree
-        """
-        self.rho_D_M = None
-        self.d_distr_samples = None
-        self.d_tree = None
-
-class TestUnifVol(unittest.TestCase):
-    """
-    Tests ``prob_*`` methods using a uniform distribution on the entire
-    lam_domain
-    """
-    def setUp(self):
-        """
-        Creates rho_D_M, d_distr_samples, d_Tree
-        """
-        pass
-
-class TestModel(unittest.TestCase):
-    def tearDown(self):
-        """
-        Get rid of  samples, data, lam_domain, lambda_emulate
-        """
-        self.samples = None
-        self.data = None
-        self.lam_domain = None
-
-class TestLinearModel(TestModel):
-    """
-    Tests ``prob_*`` methods using a linear model
-    """
-    def setUp(self):
-        """
-        Creates samples, data, lam_domain, lambda_emulate
-        """
-        pass
-
+        
+        nptest.assert_array_almost_equal_nulp(P4,P3)
+        nptest.assert_array_almost_equal_nulp(lam_vol4,lam_vol3)
+        
+        nptest.assert_array_almost_equal_nulp(P1,P4)
+        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol4)
 
