@@ -95,16 +95,19 @@ def plot_marginal_probs(P_samples,
     #     for j in range(num_samples):
     #         bin_ptr[j][i]
     #histograms, bins = np.histogramdd(samples, nbins)
-    for i in range(num_samples):
-        for j in range(num_dim):
-            go = True
-            k = 0
-            while go: #for k in range(nbins[j]):
-                if samples[i][j] <= bins[j][k+1]:
-                    bin_ptr[i][j] = k
-                    go = False
-                else:
-                    k += 1
+    # for i in range(num_samples):
+    #     for j in range(num_dim):
+    #         go = True
+    #         k = 0
+    #         while go: #for k in range(nbins[j]):
+    #             if samples[i][j] <= bins[j][k+1]:
+    #                 bin_ptr[i][j] = k
+    #                 go = False
+    #             else:
+    #                 k += 1
+    for j in range(num_dim):
+        bin_ptr[:,j] = np.searchsorted(bins[j], samples[:,j])
+    bin_ptr -= 1
                     
     marginals = {}
     for i in range(num_dim):
@@ -112,46 +115,49 @@ def plot_marginal_probs(P_samples,
             marg = np.zeros((nbins[i]+1, nbins[j]+1))
             for k in range(num_samples):
                 marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
+            marg = comm.allreduce(marg,marg, op=MPI.SUM)
             marginals[(i,j)] = marg
 
  
-
-    for k,(i,j) in enumerate(marginals.keys()):
-        fig = plt.figure(k)
-        ax = fig.add_subplot(111)
-        X = bins[i]
-        Y = bins[j]
-        X,Y = np.meshgrid(X,Y, indexing='ij')
-        quadmesh=ax.pcolormesh(X, Y, marginals[(i,j)],cmap=cm.coolwarm)
-        plt.xlabel(r'$\lambda_{' + `i+1` + '}$') 
-        plt.ylabel(r'$\lambda_{' + `j+1` + '}$')
-        fig.colorbar(quadmesh,ax=ax, label=r'$P_{' + `i+1` +',' + `j+1` + '}$')
-        fig.savefig(filename + "_2D_" + `i` + "_" + `j` + ".eps")
-        plt.show()
-    # import pdb
-    # pdb.set_trace()
-
-
-    if plot_surface:
+    if rank == 0:
         for k,(i,j) in enumerate(marginals.keys()):
             fig = plt.figure(k)
-            ax = fig.gca(projection='3d')
+            ax = fig.add_subplot(111)
             X = bins[i]
             Y = bins[j]
             X,Y = np.meshgrid(X,Y, indexing='ij')
-            # import pdb
-            # pdb.set_trace()
+            quadmesh=ax.pcolormesh(X, Y, marginals[(i,j)],cmap=cm.coolwarm)
+            plt.xlabel(r'$\lambda_{' + `i+1` + '}$') 
+            plt.ylabel(r'$\lambda_{' + `j+1` + '}$')
+            fig.colorbar(quadmesh,ax=ax, label=r'$P_{' + `i+1` +',' + `j+1` + '}$')
+            fig.savefig(filename + "_2D_" + `i` + "_" + `j` + ".eps")
+            if interactive:
+                plt.show()
+        # import pdb
+        # pdb.set_trace()
 
-            #zz=np.vstack((marginals[(i,j)], np.zeros((nbins[i],))))#,np.zeros((nbins[j]+1,)).transpose()))
-            #pdb.set_trace()
-            surf = ax.plot_surface(X, Y, marginals[(i,j)], rstride=1, cstride=1, cmap=cm.coolwarm,
-            linewidth=0, antialiased=False)
-            ax.zaxis.set_major_locator(LinearLocator(10))
-            ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-            ax.set_xlabel(r'$\lambda_{' + `i+1` + '}$') 
-            ax.set_ylabel(r'$\lambda_{' + `j+1` + '}$')
-            ax.set_zlabel(r'$P_{' + `i+1` +',' + `j+1` + '}$')
-            plt.backgroundcolor='w'
-            fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P_{' + `i+1` +',' + `j+1` + '}$')
-            fig.savefig(filename + "_surf_"+ `i` + "_" +`j` + ".eps")
-            plt.show()
+
+        if plot_surface:
+            for k,(i,j) in enumerate(marginals.keys()):
+                fig = plt.figure(k)
+                ax = fig.gca(projection='3d')
+                X = bins[i]
+                Y = bins[j]
+                X,Y = np.meshgrid(X,Y, indexing='ij')
+                # import pdb
+                # pdb.set_trace()
+
+                #zz=np.vstack((marginals[(i,j)], np.zeros((nbins[i],))))#,np.zeros((nbins[j]+1,)).transpose()))
+                #pdb.set_trace()
+                surf = ax.plot_surface(X, Y, marginals[(i,j)], rstride=1, cstride=1, cmap=cm.coolwarm,
+                linewidth=0, antialiased=False)
+                ax.zaxis.set_major_locator(LinearLocator(10))
+                ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+                ax.set_xlabel(r'$\lambda_{' + `i+1` + '}$') 
+                ax.set_ylabel(r'$\lambda_{' + `j+1` + '}$')
+                ax.set_zlabel(r'$P_{' + `i+1` +',' + `j+1` + '}$')
+                plt.backgroundcolor='w'
+                fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P_{' + `i+1` +',' + `j+1` + '}$')
+                fig.savefig(filename + "_surf_"+ `i` + "_" +`j` + ".eps")
+                if interactive:
+                    plt.show()
