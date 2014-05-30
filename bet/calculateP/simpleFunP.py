@@ -1,5 +1,9 @@
 import numpy as np
 import scipy.spatial as spatial
+from mpi4py import MPI
+comm = MPI.COMM_WORLD
+size = comm.Get_size()
+rank = comm.Get_rank()
 
 def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate = 1E6):
     """
@@ -40,21 +44,16 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate = 1E6):
     # uniform densities below. This was just to setup a discretization of D in
     # some random way so that I put bins near where the output probability is
     # (why would I care about binning zero probability events?).
-    distr_right = np.repeat([true_Q+bin_size*.75], M, 0)#.transpose()
-    distr_left = np.repeat([true_Q-bin_size*.75], M, 0)#.transpose()
-    distr_center = (distr_right+distr_left)/2.0
-    d_distr_samples = (distr_right-distr_left)
-    d_distr_samples = d_distr_samples * np.random.random(distr_right.shape)
-    d_distr_samples = d_distr_samples + distr_left
+    if rank==0:
+        d_distr_samples = 1.5*bin_size*(np.random.random((M,data.shape[1]))-0.5)+true_Q
+    else:
+        d_distr_samples = None
+    d_distr_samples = comm.bcast(d_distr_samples, root=0)
 
     # Now compute probabilities for rho_{D,M} by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation
-    distr_right = np.repeat([true_Q+bin_size*0.5], num_d_emulate, 0)#.transpose()
-    distr_left = np.repeat([true_Q-bin_size*0.5], num_d_emulate, 0)#.transpose()
-    distr_center = (distr_right+distr_left)/2.0
-    d_distr_emulate = (distr_right-distr_left)
-    d_distr_emulate = d_distr_emulate * np.random.random(distr_right.shape)
-    d_distr_emulate = d_distr_emulate + distr_left
+    num_d_emulate = int(num_d_emulate/size)+1
+    d_distr_emulate = bin_size*(np.random.random((num_d_emulate,data.shape[1]))-0.5)+true_Q
 
     # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
     #k = dsearchn(d_distr_samples, d_distr_emulate)
@@ -66,12 +65,13 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate = 1E6):
 
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines rho_{D,M}
-    d_distr_prob = count_neighbors / num_d_emulate
+    count_neighbors= comm.allreduce(count_neighbors, count_neighbors, op=MPI.SUM)
+    rho_D_M = count_neighbors / (num_d_emulate*size)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
     # above, while informed by the sampling of the map Q, do not require
     # solving the model EVER! This can be done "offline" so to speak.
-    return (d_distr_prob, d_distr_samples, d_Tree)
+    return (rho_D_M, d_distr_samples, d_Tree)
 
 def hist_regular(data, distr_samples, nbins):
     """
@@ -106,9 +106,68 @@ def gaussian_regular(data, true_Q, std, nbins, num_d_emulate = 1E6):
     pass
     return (d_distr_prob, d_distr_samples, d_Tree)
 
-def gaussian_gaussian(data, true_Q, std, nbins, num_d_emulate = 1E6):
-    pass
-    return (d_distr_prob, d_distr_samples, d_Tree)
+def multivariate_gaussian(x, mean, std):
+    dim = len(mean)
+    detDiagCovMatrix = np.sqrt(np.prod(np.diag(std(std))))
+    frac = (2.0*np.pi)**(-dim/2.0)  * (1.0/detDiagCovMatrix)
+    fprime = x-mean
+    return frac*np.exp(-0.5*np.dot(fprime, 1.0/np.diag(std*std)))
+
+def normal_normal(true_Q, M, std, num_d_emulate = 1E6):
+    """
+    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    multivariat probability density centered at true_Q with standard deviation std
+    using M bins sampled from the given normal distribution.
+
+    :param int M: Defines number M samples in D used to define rho_{D,M}
+        The choice of M is something of an "art" - play around with it
+        and you can get reasonable results with a relatively small
+        number here like 50.
+ 
+    :param int num_d_emulate: Number of samples used to emulate using an MC assumption
+    :param true_Q: $Q(\lambda_{true})$
+    :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :param std: The standard deviation of each QoI
+    :type std: :class:`~numpy.ndarray` of size (mdim,)
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+
+    """
+    # Create M smaples defining M bins in D used to define rho_{D,M}
+    # rho_D is assumed to be a multi-variate normal distribution with mean
+    # true_Q and standard deviation std.
+
+    d_distr_samples = np.zeros((M, len(true_Q)))
+    if rank ==0:
+        for i in range(len(true_Q)):
+            d_distr_samples[:,i] = np.random.normal(true_Q[i], std[i], M) 
+    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+
+ 
+    # Now compute probabilities for rho_{D,M} by sampling from rho_D
+    # First generate samples of rho_D - I sometimes call this emulation  
+    num_d_emulate = int(num_d_emulate/size)+1
+    d_distr_emulate = np.zeros((num_d_emulate, len(true_Q)))
+    for i in range(len(true_Q)):
+        d_distr_emulate[:,i] = np.random.normal(true_Q[i], std[i], num_d_emulate) 
+
+    # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
+    d_Tree = spatial.KDTree(d_distr_samples)
+    k = d_Tree.query(d_distr_emulate)
+    count_neighbors = np.zeros((M,))
+    for i in range(M):
+        count_neighbors[i] = np.sum(np.equal(k,i))
+    # Now define probability of the d_distr_samples
+    # This together with d_distr_samples defines rho_{D,M}
+    count_neighbors= comm.allreduce(count_neighbors, count_neighbors, op=MPI.SUM)
+    rho_D_M = count_neighbors / (num_d_emulate*size)
+    
+    # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
+    # above, while informed by the sampling of the map Q, do not require
+    # solving the model EVER! This can be done "offline" so to speak.
+    return (rho_D_M, d_distr_samples, d_Tree)
 
 def gaussian_unif(data, true_Q, std, nbins, num_d_emulate = 1E6):
     pass
