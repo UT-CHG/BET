@@ -4,7 +4,22 @@ This module provides methods for plotting probabilities.
 
 import matplotlib.pyplot as plt
 import numpy as np
+from mpi4py import MPI
+comm = MPI.COMM_WORLD
+size = comm.Get_size()
+rank = comm.Get_rank()
 
+def get_global_values(array):
+    global_array = np.zeros(array.shape)
+    global_array[:] = array
+    for i in range(1,size):
+        if rank == i:
+            comm.Send([array, MPI.FLOAT], dest=0, tag=13)
+        elif rank == 0:
+            comm.Recv([array,MPI.FLOAT], source=i, tag=13)
+            global_array=np.vstack((global_array,array))
+    global_array=comm.bcast(global_array, root=0)
+    return global_array
 
 def plot_voronoi_probs(P_samples,
                        samples,
@@ -40,7 +55,9 @@ def plot_marginal_probs(P_samples,
                         nbins=20,
                         filename = "file",
                         lam_true = None,
-                        plot_surface= False):
+                        plot_surface= False,
+                        interactive = True,
+                        lambda_label=None):
         
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
