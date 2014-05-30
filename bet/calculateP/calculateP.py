@@ -27,7 +27,11 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     :param lam_domain: The domain for each parameter for the model.
     :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
     :param num_l_emulate: The number of emulated samples.
-    :type num_l_emulate: :int 
+    :type num_l_emulate: int
+
+    :rtype: :class:`~numpy.ndarray` of shape (num_l_emulate, ndim)
+    :returns: a set of samples for emulation
+
     """
     num_l_emulate = int(num_l_emulate/size)+1
     lam_width = lam_domain[:,1]-lam_domain[:,0]

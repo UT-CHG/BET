@@ -9,7 +9,7 @@ assume the measure on both spaces in Lebesgue.
 """
 
 import numpy as np
-import scipy as sio
+import scipy.io as sio
 from pyDOE import lhs
 import matplotlib.pyplot as plt
 
@@ -131,7 +131,7 @@ class sampler(object):
         mdict['num_samples'] = self.num_samples
 
     def random_samples(self, sample_type, param_min, param_max,
-            savefile, criterion='center'):
+            savefile, num_samples = None, criterion='center'):
         """
         Sampling algorithm with three basic options
 
@@ -164,13 +164,15 @@ class sampler(object):
 
         """
         # Create N samples
-        param_left = np.repeat([param_min], self.num_samples, 0)
-        param_right = np.repeat([param_max], self.num_samples, 0)
+        if num_samples == None:
+            num_samples = self.num_samples
+        param_left = np.repeat([param_min], num_samples, 0)
+        param_right = np.repeat([param_max], num_samples, 0)
         samples = (param_right-param_left)
          
         if sample_type == "lhs":
             samples = samples * lhs(param_min.shape[-1],
-                    self.num_samples, criterion).transpose()
+                    num_samples, criterion)
         elif sample_type == "random" or "r":
             samples = samples * np.random.random(param_left.shape) 
         samples = samples + param_left

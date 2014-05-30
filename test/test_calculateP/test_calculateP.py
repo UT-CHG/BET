@@ -291,47 +291,47 @@ class TestProb(object):
         # RESULTS WHERE SAMPLES = LAMBDA_EMULATE
         # samples are on a regular grid
         # result_wtree, result_wsamples, result_emulated_rg
-        result_emulated_rg = calcP.prob_emulated(self.r_samples, self.r_data,
+        self.result_emulated_rg = calcP.prob_emulated(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.r_samples, self.d_Tree)
-        result_wtree = result_emulated_rg
-        result_wsamples = result_emulated_rg
-        result_wotree = calcP.prob_emulated(self.r_samples, self.r_data,
+        self.result_wtree = result_emulated_rg
+        self.result_wsamples = result_emulated_rg
+        self.result_wotree = calcP.prob_emulated(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.r_samples)
-        result_wosamples = calcP.prob_emulated(self.r_samples, self.r_data,
+        self.result_wosamples = calcP.prob_emulated(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain)
 
-        result_prob_rg = calcP.prob(self.r_samples, self.r_data,
+        self.result_prob_rg = calcP.prob(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.d_Tree)
-        result_mc_rg = calcP.prob_mc(self.r_samples, self.r_data,
+        self.result_mc_rg = calcP.prob_mc(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.r_samples, self.d_Tree)
 
         # samples are iid
-        result_emulated_iid = calcP.prob_emulated(self.u_samples, self.u_data,
+        self.result_emulated_iid = calcP.prob_emulated(self.u_samples, self.u_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.u_samples, self.d_Tree)
-        result_prob_iid = calcP.prob(self.u_samples, self.u_data,
+        self.result_prob_iid = calcP.prob(self.u_samples, self.u_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.d_Tree)
-        result_mc_iid = calcP.prob_mc(self.u_samples, self.u_data,
+        self.result_mc_iid = calcP.prob_mc(self.u_samples, self.u_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.u_samples, self.d_Tree)
 
         # RESULTS WHERE SAMPLES != LAMBDA_EMULATE
         # result_emu_samples_emulatedsamples
-        result_emu_rg_rg = calcP.prob_mc(self.r_samples, self.r_data,
+        self.result_emu_rg_rg = calcP.prob_mc(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.r_lambda_emulate, self.d_Tree)
-        result_emu_rg_iid = calcP.prob_mc(self.r_samples, self.r_data,
+        self.result_emu_rg_iid = calcP.prob_mc(self.r_samples, self.r_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.u_lambda_emulate, self.d_Tree)
-        result_emu_iid_rg = calcP.prob_mc(self.u_samples, self.u_data,
+        self.result_emu_iid_rg = calcP.prob_mc(self.u_samples, self.u_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.r_lambda_emulate, self.d_Tree)
-        result_emu_iid_iid = calcP.prob_mc(self.u_samples, self.u_data,
+        self.result_emu_iid_iid = calcP.prob_mc(self.u_samples, self.u_data,
                 self.rho_D_M, self.d_distr_samples, self.lam_domain,
                 self.u_lambda_emulate, self.d_Tree)
 
@@ -433,9 +433,6 @@ class TestProbUnifLinear(LinearModel, unittest.TestCase):
         nptest.assert_array_almost_equal_nulp(result_P,
                 np.ones(result_P.shape)/float(len(result_P)))
 
-    def test_compare_to_analytic_solution(self):
-        pass
-   
     def test_prob_dtree(self):
         """
 
@@ -454,7 +451,7 @@ class TestProbUnifLinear(LinearModel, unittest.TestCase):
         ``lambda_emulate`` when ``lambda_emulate == samples``.
 
         """
-        compare_prob_emulate(result_wsamples, result_wosamples)
+        compare_prob_emulate(self.result_wsamples, self.result_wosamples)
 
     def test_prob_rg(self):
         """
@@ -472,39 +469,8 @@ class TestProbUnifLinear(LinearModel, unittest.TestCase):
             package installed.
 
         """
-        # Calculate prob 
-        (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                d_tree = self.ud_tree)
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.r_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.ud_tree)
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.r_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.r_samples, self.ud_tree)
-
-        # Compare results
-        nptest.assert_array_equal(P,P1)
-        nptest.assert_array_equal(P,P3)
-        nptest.assert_array_equal(P1,P3)
-        self.compare_to_mean(P)
-        self.compare_to_unif_linear(P)
-
-        nptest.assert_array_equal(lam_vol1,lam_vol3)
-        self.compare_to_mean(lam_vol1)
-        self.compare_to_vol_linear(lam_vol1)
-
-        nptest.assert_array_equal(lem,lem1)
-        nptest.assert_array_equal(lem,lem3)
-        nptest.assert_array_equal(lem1,lem3)
-
-        nptest.assert_array_equal(io_ptr,io_ptr1)
-        nptest.assert_array_equal(io_ptr,io_ptr3)
-        nptest.assert_array_equal(io_ptr1,io_ptr3)
-       
-        nptest.assert_array_equal(emulate_ptr,emulate_ptr1)
-        nptest.assert_array_equal(emulate_ptr,emulate_ptr3)
-        nptest.assert_array_equal(emulate_ptr1,emulate_ptr3)
+        compare_prob(self.result_emulated_rg, self.result_prob_rg,self.result_mc_rg)
+        compare_volume_rg(self.results_prob_rg, self.result_mc_rg)
 
     def test_prob_iid(self):
         """
@@ -522,47 +488,15 @@ class TestProbUnifLinear(LinearModel, unittest.TestCase):
             package installed.
 
         """
-        # Calculate prob 
-        (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.u_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                d_tree = self.ud_tree)
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.u_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.ud_tree)
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.u_samples,
-                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.u_samples, self.ud_tree)
-
-        # Compare results
-        nptest.assert_array_equal(P,P1)
-        nptest.assert_array_equal(P,P3)
-        nptest.assert_array_equal(P1,P3)
-        # Compare to mean
-        self.compare_to_mean_ae(P)
-        self.compare_to_unif_linear_ae(P)
-
-        nptest.assert_array_equal(lam_vol1, lam_vol3)
-        # Compare to mean
-        self.compare_to_mean_ae(lam_vol1)
-        self.compare_to_vol_linear_ae(lam_vol1)
-
-        nptest.assert_array_equal(lem,lem1)
-        nptest.assert_array_equal(lem,lem3)
-        nptest.assert_array_equal(lem1,lem3)
-
-        nptest.assert_array_equal(io_ptr,io_ptr1)
-        nptest.assert_array_equal(io_ptr,io_ptr3)
-        nptest.assert_array_equal(io_ptr1,io_ptr3)
-       
-        nptest.assert_array_equal(emulate_ptr,emulate_ptr1)
-        nptest.assert_array_equal(emulate_ptr,emulate_ptr3)
-        nptest.assert_array_equal(emulate_ptr1,emulate_ptr3)
-
-    def test_compare_iid_rg(self):
+        compare_prob(self.result_emulated_iid, self.result_prob_iid,
+                self.result_mc_iid)
+        compare_volume_ae(self.results_prob_iid, self.result_mc_iid)
+ 
+    def test_l_emulate_rg(self):
         """
         Compare results when lambda_emulate != samples
             
-            * samples are i.i.d. or on a regular grid
+            * samples are on a regular grid
             * lambda_emulate is i.i.d. or on a regular grid
        
        .. note::
@@ -572,6 +506,12 @@ class TestProbUnifLinear(LinearModel, unittest.TestCase):
             package installed.
        
         """
+        compare_lambda_emulate(self.result_prob_rg, self.result_emu_rg_rg,
+                self.result_emu_rg_iid)
+        compare_volume_ae(
+        compare_volume_ae(
+        compare_volume_ae(
+
         # Calculate prob (has no lambda_emulate)
         (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.u_samples,
                 self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
@@ -602,5 +542,8 @@ class TestProbUnifLinear(LinearModel, unittest.TestCase):
         nptest.assert_array_almost_equal_nulp(lam_vol4,lam_vol3)
         
         nptest.assert_array_almost_equal_nulp(P1,P4)
-        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol4)
+        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol4
+                )
 
+    def test_compare_to_analytic_solution(self):
+        pass
