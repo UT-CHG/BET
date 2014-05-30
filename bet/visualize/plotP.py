@@ -102,6 +102,7 @@ def plot_marginal_probs(P_samples,
     for i in range(num_dim):
         for j in range(i+1, num_dim):
             marg = np.zeros((nbins[i]+1, nbins[j]+1))
+            # This may be sped up with logical indices
             for k in range(num_samples):
                 marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
             marg = comm.allreduce(marg,marg, op=MPI.SUM)
