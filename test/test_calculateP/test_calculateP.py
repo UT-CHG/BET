@@ -98,22 +98,16 @@ class TestProb(unittest.TestCase):
         self.un_data = nonlinear_model(ul_data)
     
         # Create rho_D_M associated inputs (rho_D_M, d_distr_samples, d_tree)
-        # d_distr_samples (iid or regular)
-        self.u_dsamples = None
-        data1 = np.linspace(data_domain[0, 0], data_domain[0, 1], 10)
-        data2 = np.linspace(data_domain[1, 0], data_domain[1, 1], 10)
-        data3 = np.linspace(data_domain[2, 0], data_domain[2, 1], 10)
-        data1, data2, data3 = np.meshgrid(data1, data2, data3)
-        self.r_dsamples = np.column_stack((data1.ravel(), data2.ravel(),
-            data3.ravel()))
-        self.rd_tree = spatial.KDTree(r_dsamples)
         # rho_D_M uniform or hyperrectangle
-        self.ru_rho = np.ones(r_dsamples.shape[0])
-        self.ru_rho = self.r_rho*np.product(data_domain[:,1]-data_domain[:,0])
-        self.rh_rho = None
-        self.uu_rho = None
-        self.uh_rho = None
-        
+        # UNIFORM
+        self.u_dsamples = np.mean(data_domain, 1)
+        self.u_rho = 1
+        self.ud_tree = spatial.KDTree(u_dsamples)
+        # HYPERRECTANGLE
+        self.r_dsamples = None
+        self.r_rho = None
+        self.rd_tree = spatial.KDTree(r_dsamples)
+
         # Create lambda_emulate
         # iid
         self.u_lambda_emulate = None #calcP.emulate_iid_lebesgue(lam_domain,
@@ -125,15 +119,100 @@ class TestProb(unittest.TestCase):
         lam1, lam2, lam3 = np.meshgrid(lam1, lam2, lam3)
         self.r_lambda_emulate = np.column_stack((lam1.ravel(), lam2.ravel(),
             lam3.ravel()))
+
+    def compare_to_unif_linear(result_P):
+        """
+        Compare P from the algorithm to an analytic solution where $P_\mathcal{D}$ is uniform
+        over $\mathbf{D}$ (linear model only).
+
+        :param result_P: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result_P: :class:`numpy.ndarray`
+
+        """
+        nptest.assert_array_equal(result_P,
+                np.ones(result_P.shape)/float(len(result_P)))
         
+    def compare_to_unif_linear_ae(result_P):
+        """
+        Compare P from the algorithm to an analytic solution where $P_\mathcal{D}$ is uniform
+        over $\mathbf{D}$ (linear model only).
+
+        :param result_P: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result_P: :class:`numpy.ndarray`
+
+        """
+        nptest.assert_array_almost_equal_nulp(result_P,
+                np.ones(result_P.shape)/float(len(result_P)))
+
+    def compare_to_vol_linear(result_vol, lambda_domain):
+        """
+        Compare lambda_vol from the algorithm to an analytic solution(linear model only).
+
+        :param result_vol: lambda_vol from any of the methods in
+            :mod:`~bet.calculatevol.calculatevol`
+        :type result_vol: :class:`numpy.ndarray`
+
+        """
+        lambda_vol = np.product(lambda_domain[:,1]-lambda_domain[:,0])
+        lambda_vol = lambda_vol / float(len(result_vol))
+        nptest.assert_array_equal(result_vol,
+                np.ones(result_vol.shape)*lambda_vol)
+        
+    def compare_to_vol_linear_ae(result_vol, lambda_domain):
+        """
+        Compare ``lambda_vol`` from the algorithm to an analytic solution (linear model only).
+
+        :param result_vol: lambda_vol from any of the methods in
+            :mod:`~bet.calculatevol.calculatevol`
+        :type result_vol: :class:`numpy.ndarray`
+
+        """
+        lambda_vol = np.product(lambda_domain[:,1]-lambda_domain[:,0])
+        lambda_vol = lambda_vol / float(len(result_vol))
+        nptest.assert_array_almost_equal_nulp(result_vol,
+                np.ones(result_vol.shape)*lambda_vol)
+
+    def compare_to_mean_ae(result):
+        """
+        Compare result to the mean of that result
+ 
+        :param result: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result: :class:`numpy.ndarray`       
+        
+        """
+        nptest.assert_array_almost_equal_nulp(result,
+                np.mean(result)*np.ones(results.shape))
+     
+    def compare_to_mean(result):
+        """
+        Compare result to the mean of that result
+ 
+        :param result: P from any of the methods in
+            :mod:`~bet.calculateP.calculateP`
+        :type result: :class:`numpy.ndarray`       
+        
+        """
+        nptest.assert_array_equal(result,
+                np.mean(result)*np.ones(results.shape))
+   
     def test_prob_dtree(self):
+        """
+
+        Make sure the output from
+        :meth:`bet.calcuateP.calculateP.prob_emulated` matches with and without
+        option arguments.
+
+        """
         # calculate with d_tree
         (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
-                self.r_lambda_emulate, self.rd_tree)
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.r_lambda_emulate, self.ud_tree)
         # calculate without d_tree
         (Pt, lemt, io_ptrt, emulate_ptrt) = calcP.prob_emulated(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
                 self.r_lambda_emulate)
         # Compare results
         nptest.assert_array_equal(P,Pt)
@@ -143,14 +222,21 @@ class TestProb(unittest.TestCase):
         nptest.assert_array_equal(emulate_ptr, emulate_ptrt)
 
     def test_prob_emulate(self):
+        """
+
+        Make sure the output from
+        :meth:`bet.calcuateP.calculateP.prob_emulated` matches with and without
+        ``lambda_emulate`` when ``lambda_emulate == samples``.
+
+        """
         # calculate with samples
         (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
-                self.r_samples, self.rd_tree)
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.r_samples, self.ud_tree)
         # calculate without samples
         (Pt, lemt, io_ptrt, emulate_ptrt) = calcP.prob_emulated(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain, 
-                d_tree = self.rd_tree)
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain, 
+                d_tree = self.ud_tree)
         # Compare results
         nptest.assert_array_equal(P,Pt)
         nptest.assert_array_equal(lem, lemt)
@@ -158,24 +244,43 @@ class TestProb(unittest.TestCase):
         nptest.assert_array_equal(io_ptrt,ioptr)
         nptest.assert_array_equal(emulate_ptr, emulate_ptrt)
 
-    def test_prob_compare_rg(self):
-        # Calculate prob emulated
+    def test_prob_rg(self):
+        """
+
+        Make sure that the output from 
+        :meth:`~bet.calculateP.calculateP.prob_emulated`,
+        :meth:`~bet.calculateP.calculateP.prob`,
+        :meth:`~bet.calculateP.calculateP.prob_mc` matches when the samples are
+        all on a regular grid when ``lambda_emulate == samples``.
+
+        .. note::
+            This method also needs to include
+            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
+            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
+            package installed.
+
+        """
+        # Calculate prob 
         (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
-                d_tree = self.rd_tree)
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                d_tree = self.ud_tree)
         (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
-                self.rd_tree)
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.ud_tree)
         (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.r_samples,
-                self.rl_data, self.ru_rho, self.r_dsamples, self.lam_domain,
-                self.r_samples, self.rd_tree)
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.r_samples, self.ud_tree)
 
         # Compare results
         nptest.assert_array_equal(P,P1)
         nptest.assert_array_equal(P,P3)
         nptest.assert_array_equal(P1,P3)
+        self.compare_to_mean(P)
+        self.compare_to_unif_linear(P)
 
         nptest.assert_array_equal(lam_vol1,lam_vol3)
+        self.compare_to_mean(lam_vol1)
+        self.compare_to_vol_linear(lam_vol1)
 
         nptest.assert_array_equal(lem,lem1)
         nptest.assert_array_equal(lem,lem3)
@@ -189,44 +294,101 @@ class TestProb(unittest.TestCase):
         nptest.assert_array_equal(emulate_ptr,emulate_ptr3)
         nptest.assert_array_equal(emulate_ptr1,emulate_ptr3)
 
+    def test_prob_iid(self):
+        """
 
-class TestVol(unittest.TestCase)
-    def tearDown(self):
-        """
-        Get rid of rho_D_M, d_distr_samples, d_tree
-        """
-        self.rho_D_M = None
-        self.d_distr_samples = None
-        self.d_tree = None
+        Make sure that the output from 
+        :meth:`~bet.calculateP.calculateP.prob_emulated`,
+        :meth:`~bet.calculateP.calculateP.prob`,
+        :meth:`~bet.calculateP.calculateP.prob_mc` matches when the samples are
+        i.i.d. with respect to the Lebesgue measure when ``lambda_emulate == samples``.
 
-class TestUnifVol(unittest.TestCase):
-    """
-    Tests ``prob_*`` methods using a uniform distribution on the entire
-    lam_domain
-    """
-    def setUp(self):
-        """
-        Creates rho_D_M, d_distr_samples, d_Tree
-        """
-        pass
+        .. note::
+            This method also needs to include
+            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
+            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
+            package installed.
 
-class TestModel(unittest.TestCase):
-    def tearDown(self):
         """
-        Get rid of  samples, data, lam_domain, lambda_emulate
-        """
-        self.samples = None
-        self.data = None
-        self.lam_domain = None
+        # Calculate prob 
+        (P, lem, io_ptr, emulate_ptr) = calcP.prob_emulated(self.u_samples,
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                d_tree = self.ud_tree)
+        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.u_samples,
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.ud_tree)
+        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.u_samples,
+                self.rl_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.u_samples, self.ud_tree)
 
-class TestLinearModel(TestModel):
-    """
-    Tests ``prob_*`` methods using a linear model
-    """
-    def setUp(self):
-        """
-        Creates samples, data, lam_domain, lambda_emulate
-        """
-        pass
+        # Compare results
+        nptest.assert_array_equal(P,P1)
+        nptest.assert_array_equal(P,P3)
+        nptest.assert_array_equal(P1,P3)
+        # Compare to mean
+        self.compare_to_mean_ae(P)
+        self.compare_to_unif_linear_ae(P)
 
+        nptest.assert_array_equal(lam_vol1, lam_vol3)
+        # Compare to mean
+        self.compare_to_mean_ae(lam_vol1)
+        self.compare_to_vol_linear_ae(lam_vol1)
+
+        nptest.assert_array_equal(lem,lem1)
+        nptest.assert_array_equal(lem,lem3)
+        nptest.assert_array_equal(lem1,lem3)
+
+        nptest.assert_array_equal(io_ptr,io_ptr1)
+        nptest.assert_array_equal(io_ptr,io_ptr3)
+        nptest.assert_array_equal(io_ptr1,io_ptr3)
+       
+        nptest.assert_array_equal(emulate_ptr,emulate_ptr1)
+        nptest.assert_array_equal(emulate_ptr,emulate_ptr3)
+        nptest.assert_array_equal(emulate_ptr1,emulate_ptr3)
+
+    def test_compare_iid_rg(self):
+        """
+        Compare results when lambda_emulate != samples
+            
+            * samples are i.i.d. or on a regular grid
+            * lambda_emulate is i.i.d. or on a regular grid
+       
+       .. note::
+            This method also needs to include
+            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
+            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
+            package installed.
+       
+        """
+        # Calculate prob (has no lambda_emulate)
+        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.u_samples,
+                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.ud_tree)
+
+        # Calculate prob_mc (has lambda_emulate)
+        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.u_samples,
+                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.u_lambda_emulate, self.ud_tree)
+
+        # Compare to mean
+        self.compare_to_mean_ae(P3)
+        self.compare_to_mean_ae(lam_vol3)
+
+        (P4, lam_vol4, lem4, io_ptr4, emulate_ptr4) = calc.prob_mc(self.u_samples,
+                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
+                self.u_lambda_emulate, self.ud_tree)
+
+        # Compare to mean
+        self.compare_to_mean_ae(P4)
+        self.compare_to_mean_ae(lam_vol4)
+
+        # Compare results
+        nptest.assert_array_almost_equal_nulp(P1,P3)
+        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol3)
+        
+        nptest.assert_array_almost_equal_nulp(P4,P3)
+        nptest.assert_array_almost_equal_nulp(lam_vol4,lam_vol3)
+        
+        nptest.assert_array_almost_equal_nulp(P1,P4)
+        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol4)
 
