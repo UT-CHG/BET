@@ -79,7 +79,7 @@ class sampler(bsam.sampler):
         :param dict() mdict: dictonary of sampler parameters
 
         """
-        super(sampler, self).update_mdict(self, mdict)
+        super(sampler, self).update_mdict(mdict)
         mdict['num_batches'] = self.num_batches
         mdict['samples_per_batch'] = self.samples_per_batch
         mdict['sample_batch_no'] = self.sample_batch_no
@@ -302,9 +302,9 @@ class sampler(bsam.sampler):
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition kernel type)
         # Calculate domain size
-        param_left = np.repeat([param_min], self.num_samples, 0)
-        param_right = np.repeat([param_max], self.num_samples, 0)
-        param_width = param_max - param_min
+        param_left = np.repeat([param_min], self.samples_per_batch, 0)
+        param_right = np.repeat([param_max], self.samples_per_batch, 0)
+        param_width = param_right - param_left
         # Calculate step_size
         max_ratio = t_kernel.max_ratio
         min_ratio = t_kernel.min_ratio
@@ -313,8 +313,9 @@ class sampler(bsam.sampler):
         # Initiative first batch of N samples (maybe taken from latin
         # hypercube/space-filling curve to fully explore parameter space - not
         # necessarily random). Call these Samples_old.
-        (samples_old, data_old) = super(sampler, self).random_samples(self,
-                initial_sample_type, param_min, param_max, savefile, criterion)
+        (samples_old, data_old) = super(sampler, self).random_samples(
+                initial_sample_type, param_min, param_max, savefile,
+                self.samples_per_batch, criterion)
         samples = samples_old
         data = data_old
         (heur_old, proposal) = heuristic.delta_step(data_old, None)
@@ -453,14 +454,13 @@ class transition_kernel(object):
         :returns: samples_new
 
         """
-        samples_per_batch = samples_old.shape[0]
         # calculate maximum step size
-        step_size = step_ratio*np.repeat([param_width], samples_per_batch, 0)
+        step_size = np.repeat([step_ratio], 2, 0).transpose()*param_width
         # check to see if step will take you out of parameter space
         # calculate maximum proposed step
         samples_right = samples_old + 0.5*step_size
         samples_left = samples_old - 0.5*step_size
-        # Is the new sample greater than the right limit?
+        # Is the new sample greaters than the right limit?
         far_right = samples_right >= param_right
         far_left = samples_left <= param_left
         # If the samples could leave the domain then truncate the box defining
