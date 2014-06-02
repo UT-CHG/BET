@@ -358,7 +358,7 @@ class sampler(bsam.sampler):
 
             # samples_old = samples_new
             samples_old = samples_new
-        return (samples, data)
+        return (samples, data, all_step_ratios)
 
     def reseed_chains(self, param_min, param_max, t_kernel, heuristic,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):

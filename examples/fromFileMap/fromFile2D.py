@@ -79,7 +79,7 @@ sampler = aps.sampler(num_samples, num_batches, model)
 
 # Get samples
 inital_sample_type = "lhs"
-(samples, data) = sampler.generalized_chains(param_min, param_max,
+(samples, data, all_step_ratios) = sampler.generalized_chains(param_min, param_max,
         transition_kernel, heuristic_rD, sample_save_file, inital_sample_type)
 
 # Read in points_true and plot results
