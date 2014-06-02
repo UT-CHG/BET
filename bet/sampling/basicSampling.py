@@ -13,7 +13,7 @@ import scipy.io as sio
 from pyDOE import lhs
 import matplotlib.pyplot as plt
 
-def compare_yield(sort_ind, sample_quality, run_param):
+def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
     Compare the quality of samples where ``sample_quality`` is the measure of
     quality by which the sets of samples have been indexed and ``sort_ind`` is
@@ -27,6 +27,9 @@ def compare_yield(sort_ind, sample_quality, run_param):
         information used to generate the sets of samples to be displayed
 
     """
+    if column_headings == None:
+        column_headings = "Run parameters"
+    print "Sample Set No., Quality, "+ column_headings
     for i in reversed(sort_ind):
         print i, sample_quality[i], np.round(run_param[i], 3)
 
