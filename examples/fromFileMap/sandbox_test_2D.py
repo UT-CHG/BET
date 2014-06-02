@@ -2,7 +2,8 @@
 # import necessary modules
 import numpy as np
 import polysim.pyADCIRC.basic as basic
-import polysim.run_framework.adaptive_sampling as aps
+import bet.sampling.adaptiveSampling as asam
+import bet.sampling.basicSampling as bsam
 import scipy.io as sio
 import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
@@ -38,7 +39,7 @@ for s in station_nums:
     stations.append(all_stations[s])
 
 # Create Transition Kernel
-transition_kernel = aps.transition_kernel(.5, .5**5, 1.0)
+transition_kernel = asam.transition_kernel(.5, .5**5, 1.0)
 
 # Read in Q_true and Q to create the appropriate rho_D 
 mdat = sio.loadmat('Q_2D')
@@ -69,47 +70,49 @@ def rho_D(outputs):
     max_values = np.repeat(maximum, outputs.shape[0], 0)
     return inside.astype('float64')*max_values
 
-heuristic_mm = aps.maxima_mean_heuristic(np.array([Q_true]), rho_D)
-heuristic_rD = aps.rhoD_heuristic(maximum, rho_D)
-heuristic_m = aps.maxima_heuristic(np.array([Q_true]), rho_D)
-heuristic_md = aps.multi_dist_heuristic()
+heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_true]), rho_D)
+heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
+heuristic_m = asam.maxima_heuristic(np.array([Q_true]), rho_D)
+heuristic_md = asam.multi_dist_heuristic()
 heur_list = [heuristic_mm, heuristic_rD, heuristic_m, heuristic_md]
 
 # Create sampler
-num_batches = 125
-samples_per_batch = 80
-num_samples = num_batches*samples_per_batch
-sampler = aps.adaptiveSamples(num_batches, samples_per_batch, model)
+chain_length = 125
+num_chains = 80
+num_samples = chain_length*num_chains
+sampler = asam.sampler(num_samples, chain_length, model)
 inital_sample_type = "lhs"
 
 # Get samples
 # Run with varying heuristics
 gen_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
-        param_max, t_kernel, savefile)
+        param_max, transition_kernel, sample_save_file)
 #run_reseed_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
-#        param_max, t_kernel, savefile, reseed=3)
+#        param_max, t_kernel, sample_save_file, reseed=3)
 
 # Run with varying transition kernels bounds
 init_ratio = [0.1, 0.25, 0.5]
 min_ratio = [2e-3, 2e-5, 2e-8]
 max_ratio = [.5, .75, 1.0]
 tk_results = sampler.run_tk(init_ratio, min_ratio, max_ratio, rho_D,
-        maxiumum, param_min, param_max, heuristic_rD, save_file)
+        maximum, param_min, param_max, heuristic_rD, sample_save_file)
 
 # Run with varying increase/decrease ratios and tolerances for a rhoD_heuristic
 increase = [1.0, 2.0, 4.0]
 decrease = [0.5, 0.5e2, 0.5e3]
 tolerance = [1e-4, 1e-6, 1e-8]
 incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
-        maximum, param_min, param_max, heuristic_rD, save_file)
+        maximum, param_min, param_max, transition_kernel, sample_save_file)
 
 # Compare the quality of several sets of samples
 result_list = [gen_results, tk_results, incdec_results]
 
 print "Compare yield of sample sets with various heuristics"
-sampler.compare_yield(gen_results[3], gen_results[2], gen_results[4])
-sampler.compare_yield(tk_results[3], tk_results[2], tk_results[4])
-sampler.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
+bsam.compare_yield(gen_results[3], gen_results[2], gen_results[4])
+print "Compare yield of sample sets with various transition kernels bounds"
+bsam.compare_yield(tk_results[3], tk_results[2], tk_results[4])
+print "Compare yield of sample sets with variouos increase/decrease ratios"
+bsam.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
 
 # Read in points_true and plot results
 p_true = mdat['points_true']
