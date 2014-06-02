@@ -268,8 +268,11 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     P = np.zeros((samples.shape[0],))
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
+        # Prevent a divide by zero error
+        Itemp_sum = np.sum(lam_vol[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
         if np.any(Itemp):
-            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/np.sum(lam_vol[Itemp])
+            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 
