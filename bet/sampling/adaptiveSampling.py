@@ -580,7 +580,7 @@ class rhoD_heuristic(heuristic):
             return (heur_new, proposal.transpose())
 
 
-class maxima_heuristic(object):
+class maxima_heuristic(heuristic):
     """
     We assume we know the maxima of the distribution rho_D on the QoI and that
     the goal is to determine inverse regions of high probability accurately (in
@@ -612,9 +612,7 @@ class maxima_heuristic(object):
         self.MAXIMA = maxima
         self.num_maxima = maxima.shape[0]
         self.rho_max = rho_D(maxima)
-        self.TOL = tolerance
-        self.increase = increase
-        self.decrease = decrease
+        super(maxima_heuristic, self).__init__(tolerance, increase, decrease)
         self.sort_ascending = True
 
     def delta_step(self, data_new, heur_old=None):
@@ -661,7 +659,7 @@ class maxima_heuristic(object):
         return (heur_new, proposal)
 
 
-class maxima_mean_heuristic(object):
+class maxima_mean_heuristic(maxima_heuristic):
     """
     We assume we know the maxima of the distribution rho_D on the QoI and that
     the goal is to determine inverse regions of high probability accurately (in
@@ -690,16 +688,11 @@ class maxima_mean_heuristic(object):
         """
         Initialization
         """
-        self.MAXIMA = maxima
-        self.num_maxima = maxima.shape[0]
-        self.rho_max = rho_D(maxima)
-        self.TOL = tolerance
-        self.increase = increase
-        self.decrease = decrease
         self.radius = None
         self.mean = None
         self.batch_num = 0
-        self.sort_ascending = True
+        super(maxima_mean_heuristic, self).__init__(maxima, rho_D, tolerance, increase, 
+            decrease)
 
     def reset(self):
         """
@@ -774,7 +767,7 @@ class maxima_mean_heuristic(object):
         return (heur_new, proposal)
 
 
-class multi_dist_heuristic(object):
+class multi_dist_heuristic(heuristic):
     """
     The goal is to make a sampling that is robust to different types of
     distributions on QoI, i.e., we do not know a priori where the regions of
@@ -811,9 +804,8 @@ class multi_dist_heuristic(object):
         self.radius = None
         self.mean = None
         self.batch_num = 0
-        self.TOL = tolerance
-        self.increase = increase
-        self.decrease = decrease
+        super(multi_dist_heuristic, self).__init__(tolerance, increase,
+                decrease)
 
     def reset(self):
         """
