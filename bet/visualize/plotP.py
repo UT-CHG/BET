@@ -120,7 +120,7 @@ def plot_marginal_probs(P_samples,
             quadmesh=ax.pcolormesh(X, Y, marginals[(i,j)],cmap=cm.coolwarm)
 
             if lam_true != None:
-                ax.plot(lam_true[i], lam_true[j], 'gs', markersize=10)
+                ax.plot(lam_true[i], lam_true[j], 'ko', markersize=10)
             if lambda_label==None:
                 label1 = '$\lambda_{' + `i+1` + '}$'
                 label2 = '$\lambda_{' + `j+1` + '}$'
