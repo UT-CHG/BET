@@ -11,16 +11,15 @@ size = comm.Get_size()
 rank = comm.Get_rank()
 
 def get_global_values(array):
-    global_array = np.zeros(array.shape)
-    global_array[:] = array
-    for i in range(1,size):
-        if rank == i:
-            comm.Send([array, MPI.FLOAT], dest=0, tag=13)
-        elif rank == 0:
-            comm.Recv([array,MPI.FLOAT], source=i, tag=13)
-            global_array=np.vstack((global_array,array))
-    global_array=comm.bcast(global_array, root=0)
-    return global_array
+    """
+    Concatenates local array into global arrays.
+
+    :param array: Array.
+    :type P_samples: :class:`~numpy.ndarray` 
+    """
+
+    array=comm.allgather(array,array)   
+    return np.vstack(array)
 
 def plot_voronoi_probs(P_samples,
                        samples,
@@ -119,6 +118,7 @@ def plot_marginal_probs(P_samples,
             Y = bins[j]
             X,Y = np.meshgrid(X,Y, indexing='ij')
             quadmesh=ax.pcolormesh(X, Y, marginals[(i,j)],cmap=cm.coolwarm)
+
             if lam_true != None:
                 ax.plot(lam_true[i], lam_true[j], 'gs', markersize=10)
             if lambda_label==None:
@@ -127,9 +127,10 @@ def plot_marginal_probs(P_samples,
             else:
                 label1 = lambda_label[i]
                 label2 = lambda_label[j]
-            plt.xlabel(label1) 
-            plt.ylabel(label2)
+            ax.set_xlabel(label1) 
+            ax.set_ylabel(label2)
             fig.colorbar(quadmesh,ax=ax, label='$P$')
+            plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0], lam_domain[j][1]])
             fig.savefig(filename + "_2D_" + `i` + "_" + `j` + ".eps")
             if interactive:
                 plt.show()
