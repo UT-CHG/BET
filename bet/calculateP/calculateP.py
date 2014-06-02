@@ -81,11 +81,11 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     P = np.zeros((lambda_emulate.shape[0],))
     d_distr_emu_ptr = np.zeros(emulate_ptr.shape)
     io_ptr_inverse = np.zeros(io_ptr.shape)
-    for i in range(rho_D_M.shape[0]): 
-        Itemp = np.equal(io_ptr, i)
-        l_ind = np.nonzero(Itemp)
-        io_ptr_inverse[l_ind] = i
-    d_distr_emu_ptr= io_ptr_inverse[emulate_ptr] 
+    # for i in range(rho_D_M.shape[0]): 
+    #     Itemp = np.equal(io_ptr, i)
+    #     l_ind = np.nonzero(Itemp)
+    #     io_ptr_inverse[l_ind] = i
+    d_distr_emu_ptr= io_ptr[emulate_ptr] #io_ptr_inverse[emulate_ptr] 
     for i in range(rho_D_M.shape[0]):
         Itemp  = np.equal(d_distr_emu_ptr, i)
         Itemp_sum = np.sum(Itemp)
