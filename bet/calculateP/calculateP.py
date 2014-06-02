@@ -271,7 +271,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         # Prevent a divide by zero error
         Itemp_sum = np.sum(lam_vol[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
-        if np.any(Itemp):
+        if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
