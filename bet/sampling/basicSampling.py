@@ -41,11 +41,16 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
         :class:`np.ndarray`
     :param list sample_nos: sample numbers to plot
 
+    :rtype: int
+    :returns: Estimate of number of samples in the high probability area.
+
     """
     if sample_nos==None:
         sample_nos = range(data.shape[0])
     rD = rho_D(data[sample_nos,:])
-    print "Samples in box "+str(int(sum(rD)/maximum))
+    adjusted_total_prob = int(sum(rD)/maximum)
+    print "Samples in box "+str(adjusted_total_prob)
+    return adjusted_total_prob
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
@@ -57,13 +62,19 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
         :class:`np.ndarray`
     :param list sample_nos_list: list of sample numbers to plot (list of lists)
 
+    :rtype: list of int
+    :returns: Estimate of number of samples in the high probability area.
+
     """
+    ajusted_total_prob = list()
     if sample_nos_list:
         for result, sample_nos in zip(results_list, sample_nos_list):
-            in_high_prob(result[1], rho_D, maximum, sample_nos)
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
+                sample_nos))
     else:
         for result in results_list:
-            in_high_prob(result[1], rho_D, maximum)
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
+    return adjusted_total_prob
 
 def loadmat(save_file, model = None):
     """
