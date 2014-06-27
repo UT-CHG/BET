@@ -31,11 +31,15 @@ def scatter_2D(samples, sample_nos, color, p_true, save, show,
     if sample_nos==None:
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
-    plt.scatter(samples[sample_nos, 0],samples[sample_nos, 1],c=color,
-            cmap=plt.cm.Oranges_r)
-    plt.colorbar()
+    plt.scatter(samples[sample_nos, 0],samples[sample_nos, 1],c=color, s=10,
+            #edgecolor='none',
+            alpha=.75,
+            linewidth = .1,
+            cmap=plt.cm.Oranges)#Oranges_r)
+    cbar = plt.colorbar()
+    cbar.set_label(r'$\rho_\mathcal{D}(Q)$')
     if p_true != None:
-        plt.scatter(p_true[0], p_true[1], c='b')
+        plt.scatter(p_true[0], p_true[1], c='g')
     if save:
         plt.autoscale(tight=True)
         plt.xlabel(xlabel)
@@ -75,15 +79,16 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
-            samples[sample_nos, 2], c=color, cmap=plt.cm.Oranges_r)
-    #ax.colorbar()
+            samples[sample_nos, 2], s=10, alpha=.75, linewidth=.1, c=color,
+            cmap=plt.cm.Oranges) #ax.colorbar()
     if p_true != None:
-        ax.scatter(p_true[0], p_true[1], p_true[2], c='b')
+        ax.scatter(p_true[0], p_true[1], p_true[2], c='g')
+        
+    ax.autoscale(tight=True)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_zlabel(zlabel)
     if save:
-        ax.autoscale(tight=True)
-        ax.set_xlabel(xlabel)
-        ax.set_ylabel(ylabel)
-        ax.set_zlabel(zlabel)
         plt.savefig(filename, bbox_inches='tight', transparent=True,
                 pad_inches=0)
     if show:
@@ -92,7 +97,7 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
         plt.close()
    
 def show_param(samples, data, rho_D = None, p_true=None,
-        sample_nos=None, save=True, show=True):
+        sample_nos=None, save=True, show=False, lnums=None):
     """
     Plot samples in parameter space and colors them either by rho_D or by
     sample batch number.
@@ -114,19 +119,21 @@ def show_param(samples, data, rho_D = None, p_true=None,
    
     if rho_D!=None:
         rD = rho_D(data)
-    xlabel = r'$\lambda_1$'
-    ylabel = r'$\lambda_2$'
+    if lnums == None:
+        lnums = 1+np.array(range(data.shape[1]))
+    xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
+    ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
     if data.shape[1]==2:
         scatter_2D(samples, sample_nos, rD, p_true, save, show, xlabel, ylabel,
                 savename)
     elif data.shape[1]==3:
-        zlabel = r'$\lambda_3$'
+        zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
         scatter_3D(samples, sample_nos, rD, p_true, save, show, xlabel, ylabel,
                 zlabel, savename)
 
 def show_data(data, rho_D=None, Q_true=None, sample_nos=None,
-        save=True, show=True):
+        save=True, show=False, Q_nums=None):
     """
     Plot samples in data space and colors them either by rho_D or by
     sample batch number.
@@ -145,14 +152,16 @@ def show_data(data, rho_D=None, Q_true=None, sample_nos=None,
     """   
     if rho_D!=None:
         rD = rho_D(data)
-    xlabel = r'$q_1$'
-    ylabel = r'$q_2$'
+    if  Q_nums == None:
+        Q_nums = range(data.shape[1])
+    xlabel = r'$q_{'+str(Q_nums[0]+1)+'}$'
+    ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
     if data.shape[1]==2:
         scatter_2D(data, sample_nos, rD, Q_true, save, show, xlabel, ylabel,
             savename)
     elif data.shape[1]==3:
-        zlabel = r'$q_3$'
+        zlabel = r'$q_{'+str(Q_nums[2]+1)+'}$'
         scatter_3D(data, sample_nos, rD, Q_true, save, show, xlabel, ylabel,
                 zlabel, savename)
 
