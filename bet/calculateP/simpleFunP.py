@@ -1,5 +1,6 @@
 import numpy as np
 import scipy.spatial as spatial
+import bet.calculateP.voronoiHistogram as vHist
 from mpi4py import MPI
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
@@ -243,7 +244,7 @@ def gaussian_unif(data, true_Q, std, nbins, num_d_emulate = 1E6):
     pass
     return (d_distr_prob, d_distr_samples, d_Tree)
 
-def uniform_hyperrectangle(data, Q_true, bin_ratio):
+def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
     uniform probability density centered at true_Q with bin_ratio of the width
@@ -260,13 +261,25 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio):
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param true_Q: $Q(\lambda_{true})$
     :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
+
     """
-    pass
-    return (d_distr_prob, d_distr_samples, d_Tree)
+    data_max = np.max(data, 0)
+    data_min = np.min(data, 0)
+    sur_domain = np.zeros((data.shape[1],2))
+    sur_domain[:, 0] = data_min
+    sur_domain[:, 1] = data_max
+    points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
+            Q_true, bin_ratio, sur_domain)
+    edges = vHist.edges_regular(center_pts_per_edge, center, r_ratio, sur_domain)
+    volumes = vHist.histogramdd_volumes(edges, points)
+    return vHist(points, volumes, rect_domain)
 
 def uniform_datadomain(data_domain):
     """

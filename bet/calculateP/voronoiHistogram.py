@@ -87,7 +87,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         points = None
         print "There is no current implementation for dimension > 4."
 
-    return (points, interior_and_layer1)
+    return (points, interior_and_layer1, rect_domain)
 
 def center_and_layer2_points(center_pts_per_edge, center, r_ratio, sur_domain):
     """
@@ -315,6 +315,7 @@ def points_from_edges(edges):
         = product(nbins_per_dim)
 
     """
+    #TODO: Implement me.
     # create a point inside each of the bins defined by the edges
     centers = list()
     for e in edges:
@@ -336,7 +337,7 @@ def histogramdd_volumes(edges, points):
     :rtype: :class:`numpy.ndarray` of shape (len(points),)
 
     """
-    H, bins = np.histogramdd(points, edges, normed=False)
+    H, _ = np.histogramdd(points, edges, normed=False)
     volume = 1/(H*points.shape[0])
     # works as long as points are created with 'ij' indexing in meshgrid
     volume = volume.ravel()
