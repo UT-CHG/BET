@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import numpy as np
+from scipy import spatial
 
 def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     """
@@ -16,8 +17,8 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         additional two points will be added to create the bounding layer
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param double r_ratio: ratio of the length of the sides of the hyperrectangle to
-        the surrounding domain
+    :param double r_ratio: ratio of the length of the sides of the
+        hyperrectangle to the surrounding domain
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
@@ -32,27 +33,30 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     if r_ratio > 1:
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
     # determine the width of the surrounding domain
-    sur_width = sur_domain[:,1]-sur_domain[:,0]
+    sur_width = sur_domain[:, 1]-sur_domain[:, 0]
     # determine the hyperrectangle defined by center and r_ratio
     rect_width = r_ratio*sur_width
     rect_domain = np.empty(sur_domain.shape)
-    rect_domain[:,0] = center - .5*rect_width
-    rect_domain[:,1] = center + .5*rect_width
+    rect_domain[:, 0] = center - .5*rect_width
+    rect_domain[:, 1] = center + .5*rect_width
     
-    if np.all(np.greater_equal(sur_domain[:,0], rect_domain[:,0])):
+    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
-    elif np.all(np.less_equal(sur_domain[:,1], rect_domain[:,1])):
+    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
 
     # determine the locations of the points for the 1st bounding layer
-    layer1_left = rect_domain[:,0]-rect_width/(2*center_pts_per_edge)
-    layer1_right = rect_domain[:,1]+rect_width/(2*center_pts_per_edge)
+    layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
+    layer1_right = rect_domain[:, 1]+rect_width/(2*center_pts_per_edge)
 
     interior_and_layer1 = list()
     for dim in xrange(sur_domain.shape[0]):
@@ -75,7 +79,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
                 indexing='ij') 
         points = np.vstack((x.ravel(), y.ravel(), z.ravel()))
     elif sur_domain.shape[0] == 4:
-         x, y, z, u = np.meshgrid(interior_and_layer1[0],
+        x, y, z, u = np.meshgrid(interior_and_layer1[0],
                 interior_and_layer1[1], interior_and_layer1[2],
                 interior_and_layer1[3], indexing='ij')
         points = np.vstack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
@@ -102,8 +106,8 @@ def center_and_layer2_points(center_pts_per_edge, center, r_ratio, sur_domain):
         additional two points will be added to create the bounding layer
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param double r_ratio: ratio of the length of the sides of the hyperrectangle to
-        the surrounding domain
+    :param double r_ratio: ratio of the length of the sides of the
+        hyperrectangle to the surrounding domain
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
@@ -119,37 +123,40 @@ def center_and_layer2_points(center_pts_per_edge, center, r_ratio, sur_domain):
     if r_ratio > 1:
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
     # determine the width of the surrounding domain
-    sur_width = sur_domain[:,1]-sur_domain[:,0]
+    sur_width = sur_domain[:, 1]-sur_domain[:, 0]
     # determine the hyperrectangle defined by center and r_ratio
     rect_width = r_ratio*sur_width
     rect_domain = np.empty(sur_domain.shape)
-    rect_domain[:,0] = center - .5*rect_width
-    rect_domain[:,1] = center + .5*rect_width
+    rect_domain[:, 0] = center - .5*rect_width
+    rect_domain[:, 1] = center + .5*rect_width
     
-    if np.all(np.greater_equal(sur_domain[:,0], rect_domain[:,0])):
+    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
-    elif np.all(np.less_equal(sur_domain[:,1], rect_domain[:,1])):
+    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
 
     # determine the locations of the points for the 1st bounding layer
-    layer1_left = rect_domain[:,0]-rect_width/(2*center_pts_per_edge)
-    layer1_right = rect_domain[:,1]+rect_width/(2*center_pts_per_edge)
+    layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
+    layer1_right = rect_domain[:, 1]+rect_width/(2*center_pts_per_edge)
 
     if r_ratio < 1:
         # determine the distance from the 1st layer to the boundary of the
         # surrounding domain
-        dist2sur_left = sur_domain[:,0]-layer1_left
-        dist2sur_right = sur_domain[:,1]-layer1_right
+        dist2sur_left = sur_domain[:, 0]-layer1_left
+        dist2sur_right = sur_domain[:, 1]-layer1_right
 
         # detemine the locations of the points for the 2nd boundary layer
         layer2_left = layer1_left + 2*dist2sur_left
-        layer2_right = layer2_right + 2*dist2sur_right
+        layer2_right = layer1_right + 2*dist2sur_right
 
     interior_and_layer1 = list()
     interior_and_doublelayer = list()
@@ -182,7 +189,7 @@ def center_and_layer2_points(center_pts_per_edge, center, r_ratio, sur_domain):
                 indexing='ij') 
         points = np.vstack((x.ravel(), y.ravel(), z.ravel()))
     elif sur_domain.shape[0] == 4:
-         x, y, z, u = np.meshgrid(interior_and_doublelayer[0],
+        x, y, z, u = np.meshgrid(interior_and_doublelayer[0],
                 interior_and_doublelayer[1], interior_and_doublelayer[2],
                 interior_and_doublelayer[3], indexing='ij')
         points = np.vstack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
@@ -210,8 +217,8 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
         additional two points will be added to create the bounding layer
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param double r_ratio: ratio of the length of the sides of the hyperrectangle to
-        the surrounding domain
+    :param double r_ratio: ratio of the length of the sides of the
+        hyperrectangle to the surrounding domain
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
@@ -227,37 +234,40 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     if r_ratio > 1:
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
     # determine the width of the surrounding domain
-    sur_width = sur_domain[:,1]-sur_domain[:,0]
+    sur_width = sur_domain[:, 1]-sur_domain[:, 0]
     # determine the hyperrectangle defined by center and r_ratio
     rect_width = r_ratio*sur_width
     rect_domain = np.empty(sur_domain.shape)
-    rect_domain[:,0] = center - .5*rect_width
-    rect_domain[:,1] = center + .5*rect_width
+    rect_domain[:, 0] = center - .5*rect_width
+    rect_domain[:, 1] = center + .5*rect_width
     
-    if np.all(np.greater_equal(sur_domain[:,0], rect_domain[:,0])):
+    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
-    elif np.all(np.less_equal(sur_domain[:,1], rect_domain[:,1])):
+    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
+        print msg
         return None
 
     rect_edges = list()
     rect_and_sur_edges = list()
     for dim in xrange(sur_domain.shape[0]):
         # create interior points and 1st layer
-        int_l1 = np.linspace(rect[dim,0],
-            rect[dim,1], center_pts_per_edge[dim]+1)
+        int_l1 = np.linspace(rect_domain[dim, 0],
+            rect_domain[dim, 1], center_pts_per_edge[dim]+1)
         rect_edges.append(int_l1)
         if r_ratio < 1:
             # add layers together using indexing fu
             int_l2 = np.zeros((int_l1.shape[0]+2,))
             int_l2[1:-1] = int_l1
-            int_l2[0] = sur_domain[dim,0]
-            int_l2[-1] = sur_domain[dim,1]
+            int_l2[0] = sur_domain[dim, 0]
+            int_l2[-1] = sur_domain[dim, 1]
             rect_and_sur_edges.append(int_l2)
         else:
             rect_and_sur_edges.append(int_l1)
@@ -273,8 +283,8 @@ def edges_from_points(points):
         these bins in each dimensions
     :type points: list of dim :class:`numpy.ndarray`s of shape (nbins+2,)
 
-    :returns: edges, A sequence of arrays describing the edges of bins along each
-        dimension.
+    :returns: edges, A sequence of arrays describing the edges of bins along
+        each dimension.
     :rtype edges: A list() containing mdim :class:`numpy.ndarray`s of shape
         (nbins_per_dim+1,)
 
@@ -309,7 +319,6 @@ def points_from_edges(edges):
     centers = list()
     for e in edges:
         centers.append((e[1:]+e[:-1])/2)
-    points = np.empty(dimensions)
 
 def histogramdd_volumes(edges, points):
     """
@@ -355,7 +364,7 @@ def simple_fun_approximation_uniform(points, volumes, rect_domain):
 
     """
 
-    rect_left = np.repeat([rect_domain[:,0]], points.shape[0], 0)
+    rect_left = np.repeat([rect_domain[:, 0]], points.shape[0], 0)
     rect_right = np.repeat([rect_domain[:1,]], points.shape[0], 0)
     rect_left = np.all(np.greater_equal(points, rect_left), axis=1)
     rect_right = np.all(np.less_equal(points, rect_right), axis=1)
