@@ -341,7 +341,7 @@ def histogramdd_volumes(edges, points):
     volume = 1/(H*points.shape[0])
     # works as long as points are created with 'ij' indexing in meshgrid
     volume = volume.ravel()
-    return volume
+    return H, volume
 
 def simple_fun_approximation_uniform(points, volumes, rect_domain):
     """

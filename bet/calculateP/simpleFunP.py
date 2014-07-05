@@ -251,8 +251,8 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
     of D.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
-    to represent it exactly with ``M = 3^{mdim}`` or rather
-    ``len(d_distr_samples) == mdim``.
+    to represent it exactly with ``M = 3^mdim`` or rather
+    ``len(d_distr_samples) == 3^mdim``.
 
     :param double bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
@@ -277,16 +277,17 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
     sur_domain[:, 1] = data_max
     points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
             Q_true, bin_ratio, sur_domain)
-    edges = vHist.edges_regular(center_pts_per_edge, center, r_ratio, sur_domain)
-    volumes = vHist.histogramdd_volumes(edges, points)
+    edges = vHist.edges_regular(center_pts_per_edge, Q_true, r_ratio, sur_domain)
+    _, volumes = vHist.histogramdd_volumes(edges, points)
     return vHist(points, volumes, rect_domain)
 
-def uniform_datadomain(data_domain):
+def uniform_datadomain(data_domain, center_pts_per_edge=1):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
     uniform probability density over the entire ``data_domain``. Since rho_D is
     a uniform distribution on a hyperrectanlge we should be able to represent
-    it exactly with ``M = 1`` or rather ``len(d_distr_samples) == 1``.
+    it exactly with ``M = 3^mdim`` or rather ``len(d_distr_samples) ==
+    3^mdim``.
     
     :param data_domain: The domain for each QoI of the model.
     :type data_domain: :class:`numpy.ndarray` of shape (2, mdim)
@@ -294,28 +295,48 @@ def uniform_datadomain(data_domain):
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
-    """
-    pass
-    return (d_distr_prob, d_distr_samples, d_Tree)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
 
-def uniform_data_minmax(data):
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    
+    """
+    center = (data_max+data_min)/2
+    r_ratio = 1
+    points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
+            center, bin_ratio, data_domain)
+    edges = vHist.edges_regular(center_pts_per_edge, center, r_ratio, data_domain)
+    _, volumes = vHist.histogramdd_volumes(edges, points)
+    return vHist(points, volumes, rect_domain)
+
+def uniform_data_minmax(data, center_pts_per_edge=1):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
     uniform probability density over the entire ``data_domain``. Here the
     ``data_domain`` is the hyperrectangle defined by minima and maxima of the
     ``data`` in each dimension. Since rho_D is a uniform distribution on a
-    hyperrectanlge we should be able to represent it exactly with ``M = 1`` or
-    rather ``len(d_distr_samples) == 1``.
+    hyperrectanlge we should be able to represent it exactly with ``M =
+    3^mdim`` or rather ``len(d_distr_samples) == 3^mdim``.
     
     :param data: Array containing QoI data where the QoI is mdim diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
-    pass
-    return uniform_datadomain(data_domain)
+    data_max = np.max(data, 0)
+    data_min = np.min(data, 0)
+    sur_domain = np.zeros((data.shape[1],2))
+    sur_domain[:, 0] = data_min
+    sur_domain[:, 1] = data_max
+    return uniform_datadomain(sur_domain, center_pts_per_edge)
 
 def uniform_data(data):
     """
@@ -328,10 +349,14 @@ def uniform_data(data):
     
     :param data: Array containing QoI data where the QoI is mdim diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
-    pass
-    return (d_distr_prob, d_distr_samples, d_Tree)
+    d_distr_prob = np.ones((data.shape[1],))
+    d_Tree = spatial.KDTree(points)
+    return (d_distr_prob, data, d_Tree)
