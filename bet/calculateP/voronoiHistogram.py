@@ -72,17 +72,17 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     elif sur_domain.shape[0] == 2:
         x, y = np.meshgrid(interior_and_layer1[0],
                 interior_and_layer1[1], indexing='ij')
-        points = np.vstack((x.ravel(), y.ravel()))
+        points = np.column_stack((x.ravel(), y.ravel()))
     elif sur_domain.shape[0] == 3:
         x, y, z = np.meshgrid(interior_and_layer1[0],
                 interior_and_layer1[1], interior_and_layer1[2],
                 indexing='ij') 
-        points = np.vstack((x.ravel(), y.ravel(), z.ravel()))
+        points = np.column_stack((x.ravel(), y.ravel(), z.ravel()))
     elif sur_domain.shape[0] == 4:
         x, y, z, u = np.meshgrid(interior_and_layer1[0],
                 interior_and_layer1[1], interior_and_layer1[2],
                 interior_and_layer1[3], indexing='ij')
-        points = np.vstack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
+        points = np.column_stack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
     else:
         points = None
         print "There is no current implementation for dimension > 4."
@@ -182,17 +182,17 @@ def center_and_layer2_points(center_pts_per_edge, center, r_ratio, sur_domain):
     elif sur_domain.shape[0] == 2:
         x, y = np.meshgrid(interior_and_doublelayer[0],
                 interior_and_doublelayer[1], indexing='ij')
-        points = np.vstack((x.ravel(), y.ravel()))
+        points = np.column_stack((x.ravel(), y.ravel()))
     elif sur_domain.shape[0] == 3:
         x, y, z = np.meshgrid(interior_and_doublelayer[0],
                 interior_and_doublelayer[1], interior_and_doublelayer[2],
                 indexing='ij') 
-        points = np.vstack((x.ravel(), y.ravel(), z.ravel()))
+        points = np.column_stack((x.ravel(), y.ravel(), z.ravel()))
     elif sur_domain.shape[0] == 4:
         x, y, z, u = np.meshgrid(interior_and_doublelayer[0],
                 interior_and_doublelayer[1], interior_and_doublelayer[2],
                 interior_and_doublelayer[3], indexing='ij')
-        points = np.vstack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
+        points = np.column_stack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
     else:
         points = None
         print "There is no current implementation for dimension > 4."
@@ -337,13 +337,22 @@ def histogramdd_volumes(edges, points):
     :rtype: :class:`numpy.ndarray` of shape (len(points),)
 
     """
-    H, _ = np.histogramdd(points, edges, normed=False)
+    # adjust edges
+    points_max = np.max(points, 0)
+    points_min = np.min(points, 0)
+    for dim, e in enumerate(edges):
+        if e[0] >= points_min[dim]:
+            e[0] = points_min[dim]-1
+        if e[-1] <= points_max[dim]:
+            e[-1] = points_max[dim]+1
+
+    H, _ = np.histogramdd(points, edges, normed=True)
     volume = 1/(H*points.shape[0])
     # works as long as points are created with 'ij' indexing in meshgrid
     volume = volume.ravel()
-    return H, volume
+    return H, volume, edges
 
-def simple_fun_approximation_uniform(points, volumes, rect_domain):
+def simple_fun_uniform(points, volumes, rect_domain):
     """
     Given a set of points, the volumes associated with these points, and
     ``rect_domain`` creates a simple function approximation of a uniform
@@ -366,7 +375,7 @@ def simple_fun_approximation_uniform(points, volumes, rect_domain):
     """
 
     rect_left = np.repeat([rect_domain[:, 0]], points.shape[0], 0)
-    rect_right = np.repeat([rect_domain[:1,]], points.shape[0], 0)
+    rect_right = np.repeat([rect_domain[:,1]], points.shape[0], 0)
     rect_left = np.all(np.greater_equal(points, rect_left), axis=1)
     rect_right = np.all(np.less_equal(points, rect_right), axis=1)
     inside = np.logical_and(rect_left, rect_right)

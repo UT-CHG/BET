@@ -277,9 +277,9 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
     sur_domain[:, 1] = data_max
     points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
             Q_true, bin_ratio, sur_domain)
-    edges = vHist.edges_regular(center_pts_per_edge, Q_true, r_ratio, sur_domain)
-    _, volumes = vHist.histogramdd_volumes(edges, points)
-    return vHist(points, volumes, rect_domain)
+    edges = vHist.edges_regular(center_pts_per_edge, Q_true, bin_ratio, sur_domain)
+    _, volumes, _ = vHist.histogramdd_volumes(edges, points)
+    return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
 def uniform_datadomain(data_domain, center_pts_per_edge=1):
     """
@@ -305,12 +305,12 @@ def uniform_datadomain(data_domain, center_pts_per_edge=1):
     
     """
     center = (data_max+data_min)/2
-    r_ratio = 1
+    bin_ratio = 1
     points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
             center, bin_ratio, data_domain)
-    edges = vHist.edges_regular(center_pts_per_edge, center, r_ratio, data_domain)
-    _, volumes = vHist.histogramdd_volumes(edges, points)
-    return vHist(points, volumes, rect_domain)
+    edges = vHist.edges_regular(center_pts_per_edge, center, bin_ratio, data_domain)
+    _, volumes, _ = vHist.histogramdd_volumes(edges, points)
+    return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
 def uniform_data_minmax(data, center_pts_per_edge=1):
     """
