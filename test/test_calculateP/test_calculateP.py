@@ -47,7 +47,24 @@ class test_emulate_iid_lebesgue(unittest.TestCase):
         np.assertLessEqual(4.0, np.max(lambda_emulate[1, :]))
         np.assertLessEqual(.5, np.max(lambda_emulate[2, :]))
 
-# 
+# calculate P using a uniform distribution over the data space
+# calculate P using a uniform distribution over a hyperrectangle subdomain for the data space
+# calculate P using a linear map for the QoI map
+
+# prob_emulated with option where lambda_emulate=None
+# prob_emulated with option where d_Tree=None
+# prob_emulated with both optional inputs None
+# test on regular grid of samples and iid grid of samples
+# make sure probabilties and lam_vol follow the MC assumption (i.e. for uniform
+# over the entire space they should all be the same, the hyperrectangle case
+# will be different)
+# make sure lambda_emulate is correct
+# make sure io_ptr and emulate_ptr are correct
+
+# compare the P calculated by the different methods on the same samples 
+
+# add a skip thing to the tests involving qhull so that it only runs if that
+# package is installed
 
 class test_unif_vol(unittest.TestCase):
     """
