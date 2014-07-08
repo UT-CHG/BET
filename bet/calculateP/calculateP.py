@@ -13,7 +13,10 @@ measure $P_{\Lambda}$.
 """
 import numpy as np
 import scipy.spatial as spatial
-
+from mpi4py import MPI
+comm = MPI.COMM_WORLD
+size = comm.Get_size()
+rank = comm.Get_rank()
 
 def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     """
@@ -24,15 +27,15 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     :param lam_domain: The domain for each parameter for the model.
     :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
     :param num_l_emulate: The number of emulated samples.
-    :type num_l_emulate: :int 
+    :type num_l_emulate: int
+
+    :rtype: :class:`~numpy.ndarray` of shape (num_l_emulate, ndim)
+    :returns: a set of samples for emulation
+
     """
+    num_l_emulate = int(num_l_emulate/size)+1
     lam_width = lam_domain[:,1]-lam_domain[:,0]
-    lambda_left = np.repeat([lam_domain[:,0]], num_l_emulate,0)#.transpose()
-    lambda_right = np.repeat([lam_domain[:,1]], num_l_emulate,0)#.transpose()
-    l_center = (lambda_right+lambda_left)/2.0
-    lambda_emulate = (lambda_right-lambda_left)
-    lambda_emulate = lambda_emulate * np.random.random(lambda_emulate.shape)
-    lambda_emulate = lambda_emulate + lambda_left
+    lambda_emulate = lam_width*np.random.random((num_l_emulate, lam_domain.shape[0]))+lam_domain[:,0]
     return lambda_emulate 
 
 def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
@@ -77,14 +80,18 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     # Calculate Probabilties
     P = np.zeros((lambda_emulate.shape[0],))
     d_distr_emu_ptr = np.zeros(emulate_ptr.shape)
-    for i in range(rho_D_M.shape[0]): 
-        Itemp = np.equal(io_ptr, i)
-        l_ind = np.arange(len(Itemp))[Itemp]
-        d_distr_emu_ptr[l_ind] =i*np.ones(l_ind.shape)
+    io_ptr_inverse = np.zeros(io_ptr.shape)
+    # for i in range(rho_D_M.shape[0]): 
+    #     Itemp = np.equal(io_ptr, i)
+    #     l_ind = np.nonzero(Itemp)
+    #     io_ptr_inverse[l_ind] = i
+    d_distr_emu_ptr= io_ptr[emulate_ptr] #io_ptr_inverse[emulate_ptr] 
     for i in range(rho_D_M.shape[0]):
         Itemp  = np.equal(d_distr_emu_ptr, i)
-        if np.any(Itemp):
-            P[Itemp]= rho_D_M[i]/np.sum(Itemp)
+        Itemp_sum = np.sum(Itemp)
+        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
+        if Itemp_sum > 0:
+            P[Itemp]= rho_D_M[i]/Itemp_sum
 
     return (P, lambda_emulate, io_ptr, emulate_ptr)
 
@@ -125,8 +132,10 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
     P = np.zeros((samples.shape[0],))
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
-        if np.any(Itemp):
-            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/np.sum(lam_vol[Itemp])
+        Itemp_sum = np.sum(lam_vol[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
+        if Itemp_sum > 0:
+            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum #np.sum(lam_vol[Itemp])
 
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 
@@ -227,10 +236,10 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     :type rho_D_M: :class:`~numpy.ndarray` of shape  (M, mdim) 
     :param d_distr_samples: The samples in the data space that define a
         parition of D to for the simple function approximation
-    :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdimM) 
+    :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
     :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
     :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:`~numpy.ndarray` of shape (2, mdim)
+    :type lam_domain: :class:`~numpy.ndarray` of shape (2, ndim)
     :param int num_l_emulate: The number of iid samples used to parition the
         parameter space
     :rtype: tuple of :class:`~numpy.ndarray` of sizes (num_samples,),
@@ -249,17 +258,21 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     # Apply the standard MC approximation to determine the number of emulated
     # samples per model run sample. This is for approximating 
     # \mu_\Lambda(A_i \intersect b_j)
-    lam_vol = np.zeros((len(lambda_emulate),))
+    lam_vol = np.zeros((samples.shape[0],)) #lambda_emulate),))
     for i in range(samples.shape[0]):
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
-    lam_vol = lam_vol/len(lambda_emulate)
+    lam_vol = comm.allreduce(lam_vol, lam_vol, op=MPI.SUM)
+    lam_vol = lam_vol/(len(lambda_emulate)*size)
 
     # Calculate Probabilities
     P = np.zeros((samples.shape[0],))
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
-        if np.any(Itemp):
-            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/np.sum(lam_vol[Itemp])
+        # Prevent a divide by zero error
+        Itemp_sum = np.sum(lam_vol[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
+        if Itemp_sum > 0:
+            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 

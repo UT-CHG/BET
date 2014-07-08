@@ -9,11 +9,11 @@ assume the measure on both spaces in Lebesgue.
 """
 
 import numpy as np
-import scipy as sio
+import scipy.io as sio
 from pyDOE import lhs
 import matplotlib.pyplot as plt
 
-def compare_yield(sort_ind, sample_quality, run_param):
+def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
     Compare the quality of samples where ``sample_quality`` is the measure of
     quality by which the sets of samples have been indexed and ``sort_ind`` is
@@ -27,6 +27,9 @@ def compare_yield(sort_ind, sample_quality, run_param):
         information used to generate the sets of samples to be displayed
 
     """
+    if column_headings == None:
+        column_headings = "Run parameters"
+    print "Sample Set No., Quality, "+ column_headings
     for i in reversed(sort_ind):
         print i, sample_quality[i], np.round(run_param[i], 3)
 
@@ -41,11 +44,16 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
         :class:`np.ndarray`
     :param list sample_nos: sample numbers to plot
 
+    :rtype: int
+    :returns: Estimate of number of samples in the high probability area.
+
     """
     if sample_nos==None:
         sample_nos = range(data.shape[0])
     rD = rho_D(data[sample_nos,:])
-    print "Samples in box "+str(int(sum(rD)/maximum))
+    adjusted_total_prob = int(sum(rD)/maximum)
+    print "Samples in box "+str(adjusted_total_prob)
+    return adjusted_total_prob
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
@@ -57,13 +65,19 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
         :class:`np.ndarray`
     :param list sample_nos_list: list of sample numbers to plot (list of lists)
 
+    :rtype: list of int
+    :returns: Estimate of number of samples in the high probability area.
+
     """
+    ajusted_total_prob = list()
     if sample_nos_list:
         for result, sample_nos in zip(results_list, sample_nos_list):
-            in_high_prob(result[1], rho_D, maximum, sample_nos)
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
+                sample_nos))
     else:
         for result in results_list:
-            in_high_prob(result[1], rho_D, maximum)
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
+    return adjusted_total_prob
 
 def loadmat(save_file, model = None):
     """
@@ -131,7 +145,7 @@ class sampler(object):
         mdict['num_samples'] = self.num_samples
 
     def random_samples(self, sample_type, param_min, param_max,
-            savefile, criterion='center'):
+            savefile, num_samples = None, criterion='center'):
         """
         Sampling algorithm with three basic options
 
@@ -164,13 +178,15 @@ class sampler(object):
 
         """
         # Create N samples
-        param_left = np.repeat([param_min], self.num_samples, 0)
-        param_right = np.repeat([param_max], self.num_samples, 0)
+        if num_samples == None:
+            num_samples = self.num_samples
+        param_left = np.repeat([param_min], num_samples, 0)
+        param_right = np.repeat([param_max], num_samples, 0)
         samples = (param_right-param_left)
          
         if sample_type == "lhs":
             samples = samples * lhs(param_min.shape[-1],
-                    self.num_samples, criterion).transpose()
+                    num_samples, criterion)
         elif sample_type == "random" or "r":
             samples = samples * np.random.random(param_left.shape) 
         samples = samples + param_left

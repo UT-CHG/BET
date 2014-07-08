@@ -43,7 +43,7 @@ def loadmat(save_file, lb_model=None):
     else:
         data = None
     # recreate the sampler
-    sampler = sampler(mdat['num_samples'], mdat['num_batches'],
+    sampler = sampler(mdat['num_samples'], mdat['chain_length'],
             lb_model)
     
     return (sampler, samples, data)
@@ -53,23 +53,23 @@ class sampler(bsam.sampler):
     This class provides methods for adaptive sampling of parameter space to
     provide samples to be used by algorithms to solve inverse problems. 
     
-    num_batches
+    chain_length
         number of batches of samples
-    samples_per_batch
+    num_chains
         number of samples per batch (either a single int or a list of int)
     lb_model
         :class:`~bet.loadBalance.load_balance` runs the model at a given set of
         parameter samples and returns data """
-    def __init__(self, num_samples, num_batches, lb_model):
+    def __init__(self, num_samples, chain_length, lb_model):
         """
         Initialization
         """
         super(sampler, self).__init__(lb_model, num_samples)
-        self.num_batches = num_batches
-        self.samples_per_batch = int(math.ceil(num_samples/float(num_batches)))
-        self.num_samples = num_batches * self.samples_per_batch
+        self.chain_length = chain_length
+        self.num_chains = int(math.ceil(num_samples/float(chain_length)))
+        self.num_samples = chain_length * self.num_chains
         self.lb_model = lb_model
-        self.sample_batch_no = np.repeat(range(self.samples_per_batch), num_batches,
+        self.sample_batch_no = np.repeat(range(self.num_chains), chain_length,
                 0)
 
     def update_mdict(self, mdict):
@@ -79,9 +79,9 @@ class sampler(bsam.sampler):
         :param dict() mdict: dictonary of sampler parameters
 
         """
-        super(sampler, self).update_mdict(self, mdict)
-        mdict['num_batches'] = self.num_batches
-        mdict['samples_per_batch'] = self.samples_per_batch
+        super(sampler, self).update_mdict(mdict)
+        mdict['chain_length'] = self.chain_length
+        mdict['num_chains'] = self.num_chains
         mdict['sample_batch_no'] = self.sample_batch_no
         
     def run_gen(self, heur_list, rho_D, maximum, param_min, param_max,
@@ -269,10 +269,8 @@ class sampler(bsam.sampler):
         heur_list = list()
         for i, j, z in zip(increase, decrease, tolerance):
             heur_list.append(rhoD_heuristic(maximum, rho_D, i, j, z)) 
-
-        return self.run_gen(self, heur_list, param_min, param_max, t_kernel,
-                savefile, initial_sample_type, criterion)
-                          
+        return self.run_gen(heur_list, rho_D, maximum, param_min, param_max,
+                t_kernel, savefile, initial_sample_type, criterion)
 
     def generalized_chains(self, param_min, param_max, t_kernel, heuristic,
             savefile, initial_sample_type="lhs", criterion='center'):
@@ -302,28 +300,29 @@ class sampler(bsam.sampler):
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition kernel type)
         # Calculate domain size
-        param_left = np.repeat([param_min], self.num_samples, 0)
-        param_right = np.repeat([param_max], self.num_samples, 0)
-        param_width = param_max - param_min
+        param_left = np.repeat([param_min], self.num_chains, 0)
+        param_right = np.repeat([param_max], self.num_chains, 0)
+        param_width = param_right - param_left
         # Calculate step_size
         max_ratio = t_kernel.max_ratio
         min_ratio = t_kernel.min_ratio
-        step_ratio = t_kernel.init_ratio
+        step_ratio = t_kernel.init_ratio*np.ones(self.num_chains)
 
         # Initiative first batch of N samples (maybe taken from latin
         # hypercube/space-filling curve to fully explore parameter space - not
         # necessarily random). Call these Samples_old.
-        (samples_old, data_old) = super(sampler, self).random_samples(self,
-                initial_sample_type, param_min, param_max, savefile, criterion)
+        (samples_old, data_old) = super(sampler, self).random_samples(
+                initial_sample_type, param_min, param_max, savefile,
+                self.num_chains, criterion)
         samples = samples_old
         data = data_old
+        all_step_ratios = step_ratio
         (heur_old, proposal) = heuristic.delta_step(data_old, None)
-        all_step_ratios = step_ratio*np.ones(self.samples_per_batch)
 
         mdat = dict()
         self.update_mdict(mdat)
          
-        for batch in xrange(1, self.num_batches):
+        for batch in xrange(1, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition kernel and step_ratio. Call these samples samples_new.
             samples_new = t_kernel.step(step_ratio, param_width,
@@ -343,10 +342,10 @@ class sampler(bsam.sampler):
             step_ratio[step_ratio < min_ratio] = min_ratio
 
             # Save and export concatentated arrays
-            if self.num_batches < 4:
+            if self.chain_length < 4:
                 pass
-            elif (batch+1)%(self.num_batches/4) == 0:
-                print str(batch+1)+"th batch of "+str(self.num_batches)+" batches"
+            elif (batch+1)%(self.chain_length/4) == 0:
+                print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new), axis=1)
             data = np.concatenate((data, data_new))
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
@@ -357,7 +356,7 @@ class sampler(bsam.sampler):
 
             # samples_old = samples_new
             samples_old = samples_new
-        return (samples, data)
+        return (samples, data, all_step_ratios)
 
     def reseed_chains(self, param_min, param_max, t_kernel, heuristic,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
@@ -453,14 +452,13 @@ class transition_kernel(object):
         :returns: samples_new
 
         """
-        samples_per_batch = samples_old.shape[0]
         # calculate maximum step size
-        step_size = step_ratio*np.repeat([param_width], samples_per_batch, 0)
+        step_size = np.repeat([step_ratio], param_width.shape[1], 0).transpose()*param_width
         # check to see if step will take you out of parameter space
         # calculate maximum proposed step
         samples_right = samples_old + 0.5*step_size
         samples_left = samples_old - 0.5*step_size
-        # Is the new sample greater than the right limit?
+        # Is the new sample greaters than the right limit?
         far_right = samples_right >= param_right
         far_left = samples_left <= param_left
         # If the samples could leave the domain then truncate the box defining
@@ -502,7 +500,7 @@ class heuristic(object):
         This method determines the proposed change in step size. 
 
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (samples_per_batch, mdim)
+        :type data_new: :class:`np.array` of shape (num_chains, mdim)
         :param heur_old: heuristic evaluated at previous step
         :rtype: typle
         :returns: (heur_new, proposal)
@@ -550,7 +548,7 @@ class rhoD_heuristic(heuristic):
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (samples_per_batch, mdim)
+        :type data_new: :class:`np.array` of shape (num_chains, mdim)
         :param heur_old: heuristic evaluated at previous step
         :rtype: tuple
         :returns: (heur_new, proposal)
@@ -580,7 +578,7 @@ class rhoD_heuristic(heuristic):
             return (heur_new, proposal.transpose())
 
 
-class maxima_heuristic(object):
+class maxima_heuristic(heuristic):
     """
     We assume we know the maxima of the distribution rho_D on the QoI and that
     the goal is to determine inverse regions of high probability accurately (in
@@ -612,9 +610,7 @@ class maxima_heuristic(object):
         self.MAXIMA = maxima
         self.num_maxima = maxima.shape[0]
         self.rho_max = rho_D(maxima)
-        self.TOL = tolerance
-        self.increase = increase
-        self.decrease = decrease
+        super(maxima_heuristic, self).__init__(tolerance, increase, decrease)
         self.sort_ascending = True
 
     def delta_step(self, data_new, heur_old=None):
@@ -622,7 +618,7 @@ class maxima_heuristic(object):
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (samples_per_batch, mdim)
+        :type data_new: :class:`np.array` of shape (num_chains, mdim)
         :param heur_old: heuristic evaluated at previous step
         :rtype: tuple
         :returns: (heur_new, proposal)
@@ -661,7 +657,7 @@ class maxima_heuristic(object):
         return (heur_new, proposal)
 
 
-class maxima_mean_heuristic(object):
+class maxima_mean_heuristic(maxima_heuristic):
     """
     We assume we know the maxima of the distribution rho_D on the QoI and that
     the goal is to determine inverse regions of high probability accurately (in
@@ -690,16 +686,11 @@ class maxima_mean_heuristic(object):
         """
         Initialization
         """
-        self.MAXIMA = maxima
-        self.num_maxima = maxima.shape[0]
-        self.rho_max = rho_D(maxima)
-        self.TOL = tolerance
-        self.increase = increase
-        self.decrease = decrease
         self.radius = None
         self.mean = None
-        self.batch_num = 0
-        self.sort_ascending = True
+        self.current_clength = 0
+        super(maxima_mean_heuristic, self).__init__(maxima, rho_D, tolerance, increase, 
+            decrease)
 
     def reset(self):
         """
@@ -708,14 +699,14 @@ class maxima_mean_heuristic(object):
         """
         self.radius = None
         self.mean = None
-        self.batch_num = 0
+        self.current_clength = 0
 
     def delta_step(self, data_new, heur_old=None):
         """
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (samples_per_batch, mdim)
+        :type data_new: :class:`np.array` of shape (num_chains, mdim)
         :param heur_old: heuristic evaluated at previous step
         :rtype: tuple
         :returns: (heur_new, proposal)
@@ -723,7 +714,7 @@ class maxima_mean_heuristic(object):
         """
         # Evaluate heuristic for new data.
         heur_new = np.zeros((data_new.shape[0]))
-        self.batch_num = self.batch_num + 1
+        self.current_clength = self.current_clength + 1
 
         for i in xrange(data_new.shape[0]):
             # calculate distance from each of the maxima
@@ -746,8 +737,8 @@ class maxima_mean_heuristic(object):
             return (heur_new, None)
         else:
             # update the estimate of the mean
-            self.mean = (self.batch_num-1)*self.mean + np.mean(data_new, 0)
-            self.mean = self.mean / self.batch_num
+            self.mean = (self.current_clength-1)*self.mean + np.mean(data_new, 0)
+            self.mean = self.mean / self.current_clength
             # calculate the distance from the mean
             vec_from_mean = data_new - np.repeat([self.mean],
                     data_new.shape[0], 0)
@@ -774,7 +765,7 @@ class maxima_mean_heuristic(object):
         return (heur_new, proposal)
 
 
-class multi_dist_heuristic(object):
+class multi_dist_heuristic(heuristic):
     """
     The goal is to make a sampling that is robust to different types of
     distributions on QoI, i.e., we do not know a priori where the regions of
@@ -792,7 +783,7 @@ class multi_dist_heuristic(object):
         current estimate of the radius of D (1/2 the diameter of D)
     mean
         current estimate of the mean QoI
-    batch_num
+    current_clength
         current batch number
     TOL 
         a tolerance used to determine if two different values are close
@@ -810,10 +801,9 @@ class multi_dist_heuristic(object):
         """
         self.radius = None
         self.mean = None
-        self.batch_num = 0
-        self.TOL = tolerance
-        self.increase = increase
-        self.decrease = decrease
+        self.current_clength = 0
+        super(multi_dist_heuristic, self).__init__(tolerance, increase,
+                decrease)
 
     def reset(self):
         """
@@ -822,14 +812,14 @@ class multi_dist_heuristic(object):
         """
         self.radius = None
         self.mean = None
-        self.batch_num = 0
+        self.current_clength = 0
 
     def delta_step(self, data_new, heur_old=None):
         """
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (samples_per_batch, mdim)
+        :type data_new: :class:`np.array` of shape (num_chains, mdim)
         :param heur_old: QoI evaluated at previous step
         :rtype: tuple
         :returns: (heur_new, proposal)
@@ -837,7 +827,7 @@ class multi_dist_heuristic(object):
         """
         # Evaluate heuristic for new data.
         heur_new = data_new
-        self.batch_num = self.batch_num + 1
+        self.current_clength = self.current_clength + 1
 
         if heur_old == None:
             proposal = None
@@ -850,8 +840,8 @@ class multi_dist_heuristic(object):
             self.radius = np.max(np.linalg.norm(vec_from_mean, 2, 1)) 
         else:
             # update the estimate of the mean
-            self.mean = (self.batch_num-1)*self.mean + np.mean(data_new, 0)
-            self.mean = self.mean / self.batch_num
+            self.mean = (self.current_clength-1)*self.mean + np.mean(data_new, 0)
+            self.mean = self.mean / self.current_clength
             # calculate the distance from the mean
             vec_from_mean = heur_new - np.repeat([self.mean],
                     heur_new.shape[0], 0)
