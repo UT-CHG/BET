@@ -49,6 +49,15 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         np.assertLessEqual(4.0, np.max(lambda_emulate[1, :]))
         np.assertLessEqual(.5, np.max(lambda_emulate[2, :]))
 
+# make sure probabilties and lam_vol follow the MC assumption (i.e. for uniform
+# over the entire space they should all be the same, the hyperrectangle case
+# will be different)
+
+# compare the P calculated by the different methods on the same samples 
+
+# add a skip thing to the tests involving qhull so that it only runs if that
+# package is installed
+
 # test where P is uniform over the entire domain
 # test where P is uniform over a hyperrectangle subdomain
 # test with and without optional arguments, together and separatly
