@@ -145,5 +145,34 @@ various inital, minimum, and maximum step size ratios::
     tk_results = sampler.run_tk(init_ratio, min_ratio, max_ratio, rho_D,
             maximum, param_min, param_max, heuristic_rD, sample_save_file)
 
-We can explore a single heuristic with varying values of 
+We can explore a single heuristic with varying values of ratios for increasing
+and decreasing the step size (i.e. the size of the hyperrectangle to draw a new
+step from using a transition kernel)::
+
+    increase = [1.0, 2.0, 4.0]
+    decrease = [0.5, 0.5e2, 0.5e3]
+    tolerance = [1e-4, 1e-6, 1e-8]
+    incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
+        maximum, param_min, param_max, transition_kernel, sample_save_file)
+
+..note:: The above examples just use a ``zip`` combination of the lists uses to
+define varying parameters for the heuristics and transition kernels. To explore
+the product of these lists you need to use ``numpy.meshgrid`` and
+``numpy.ravel`` or a similar process.
+
+To compare the results in terms of yield or the total number of samples
+generated in the region of interest we can use
+`~bet.sampling.basicSampling.compare_yield` to display the results to screen::
+
+    # Compare the quality of several sets of samples
+    print "Compare yield of sample sets with various heuristics"
+    bsam.compare_yield(gen_results[3], gen_results[2], gen_results[4])
+    print "Compare yield of sample sets with various transition kernels bounds"
+    bsam.compare_yield(tk_results[3], tk_results[2], tk_results[4])
+    print "Compare yield of sample sets with variouos increase/decrease ratios"
+    bsam.compare_yield(incdec_results[3], incdec_results[2],incdec_results[4])
+
+Here `~bet.sampling.basicSampling.compare_yield` simply displays to screen the
+``sample_quality`` and ``run_param`` sorted by ``sample_quality`` and indexed
+by ``sort_ind``. 
 
