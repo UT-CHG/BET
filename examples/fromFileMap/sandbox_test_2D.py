@@ -105,8 +105,6 @@ incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
         maximum, param_min, param_max, transition_kernel, sample_save_file)
 
 # Compare the quality of several sets of samples
-result_list = [gen_results, tk_results, incdec_results]
-
 print "Compare yield of sample sets with various heuristics"
 bsam.compare_yield(gen_results[3], gen_results[2], gen_results[4])
 print "Compare yield of sample sets with various transition kernels bounds"
