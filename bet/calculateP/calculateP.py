@@ -66,6 +66,8 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     
     if lambda_emulate == None:
         lambda_emulate = samples
+    if len(d_distr_samples.shape) == 1:
+        d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
     if d_Tree == None:
         d_Tree = spatial.KDTree(d_distr_samples)
         
@@ -164,6 +166,8 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
 
     """
     import pyhull
+    if len(d_distr_samples.shape) == 1:
+        d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
 
     if d_Tree == None:
         d_Tree = spatial.KDTree(d_distr_samples)

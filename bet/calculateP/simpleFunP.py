@@ -159,6 +159,9 @@ def normal_normal(true_Q, M, std, num_d_emulate = 1E6):
         d_distr_emulate[:,i] = np.random.normal(true_Q[i], std[i], num_d_emulate) 
 
     # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
+    if len(d_distr_samples.shape) == 1:
+        d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
+
     d_Tree = spatial.KDTree(d_distr_samples)
     (length,k) = d_Tree.query(d_distr_emulate)
     count_neighbors = np.zeros((M,))
@@ -222,6 +225,9 @@ def unif_normal(true_Q, M, std, num_d_emulate = 1E6):
         d_distr_emulate[:,i] = np.random.normal(true_Q[i], std[i], num_d_emulate) 
 
     # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
+    if len(d_distr_samples.shape) == 1:
+        d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
+
     d_Tree = spatial.KDTree(d_distr_samples)
     (length,k) = d_Tree.query(d_distr_emulate)
     count_neighbors = np.zeros((M,))
@@ -358,5 +364,7 @@ def uniform_data(data):
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     d_distr_prob = np.ones((data.shape[1],))
-    d_Tree = spatial.KDTree(points)
+    if len(d_distr_samples.shape) == 1:
+        d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
+    d_Tree = spatial.KDTree(d_distr_samples)
     return (d_distr_prob, data, d_Tree)

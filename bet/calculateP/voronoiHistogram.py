@@ -341,10 +341,16 @@ def histogramdd_volumes(edges, points):
     points_max = np.max(points, 0)
     points_min = np.min(points, 0)
     for dim, e in enumerate(edges):
-        if e[0] >= points_min[dim]:
-            e[0] = points_min[dim]-1
-        if e[-1] <= points_max[dim]:
-            e[-1] = points_max[dim]+1
+        if dim == 0:
+            if e[0] >= points_min:
+                e[0] = points_min-1
+            if e[-1] <= points_max:
+                e[-1] = points_max+1
+        else:
+            if e[0] >= points_min[dim]:
+                e[0] = points_min[dim]-1
+            if e[-1] <= points_max[dim]:
+                e[-1] = points_max[dim]+1
 
     H, _ = np.histogramdd(points, edges, normed=True)
     volume = 1/(H*points.shape[0])
@@ -381,6 +387,9 @@ def simple_fun_uniform(points, volumes, rect_domain):
     inside = np.logical_and(rect_left, rect_right)
     rho_D_M = np.zeros(volumes.shape)
     rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside])
+
+    if len(points.shape) == 1:
+        points = np.expand_dims(points, axis=1)
     d_Tree = spatial.KDTree(points)
     return (rho_D_M, points, d_Tree)
 
