@@ -29,6 +29,8 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate = 1E6):
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1)   
     # Determine the appropriate bin size for this QoI
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
@@ -276,8 +278,11 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1)
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
+
     sur_domain = np.zeros((data.shape[1],2))
     sur_domain[:, 0] = data_min
     sur_domain[:, 1] = data_max
@@ -337,6 +342,8 @@ def uniform_data_minmax(data, center_pts_per_edge=1):
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1)
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
     sur_domain = np.zeros((data.shape[1],2))

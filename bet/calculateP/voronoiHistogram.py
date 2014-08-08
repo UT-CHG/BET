@@ -341,7 +341,7 @@ def histogramdd_volumes(edges, points):
     points_max = np.max(points, 0)
     points_min = np.min(points, 0)
     for dim, e in enumerate(edges):
-        if dim == 0:
+        if len(edges) == 1:
             if e[0] >= points_min:
                 e[0] = points_min-1
             if e[-1] <= points_max:
@@ -382,8 +382,8 @@ def simple_fun_uniform(points, volumes, rect_domain):
 
     rect_left = np.repeat([rect_domain[:, 0]], points.shape[0], 0)
     rect_right = np.repeat([rect_domain[:,1]], points.shape[0], 0)
-    rect_left = np.all(np.greater_equal(points, rect_left), axis=1)
-    rect_right = np.all(np.less_equal(points, rect_right), axis=1)
+    rect_left = np.all(np.greater_equal(points, rect_left), axis=0)
+    rect_right = np.all(np.less_equal(points, rect_right), axis=0)
     inside = np.logical_and(rect_left, rect_right)
     rho_D_M = np.zeros(volumes.shape)
     rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside])
