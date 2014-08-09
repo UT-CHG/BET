@@ -379,17 +379,17 @@ def simple_fun_uniform(points, volumes, rect_domain):
         `d_Tree` is the :class:`~scipy.spatial.KDTree` for points
 
     """
-
+    if len(points.shape) == 1:
+        points = np.expand_dims(points, axis=1)
+   
     rect_left = np.repeat([rect_domain[:, 0]], points.shape[0], 0)
     rect_right = np.repeat([rect_domain[:,1]], points.shape[0], 0)
-    rect_left = np.all(np.greater_equal(points, rect_left), axis=0)
-    rect_right = np.all(np.less_equal(points, rect_right), axis=0)
+    rect_left = np.all(np.greater_equal(points, rect_left), axis=1)
+    rect_right = np.all(np.less_equal(points, rect_right), axis=1)
     inside = np.logical_and(rect_left, rect_right)
     rho_D_M = np.zeros(volumes.shape)
     rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside])
 
-    if len(points.shape) == 1:
-        points = np.expand_dims(points, axis=1)
     d_Tree = spatial.KDTree(points)
     return (rho_D_M, points, d_Tree)
 
