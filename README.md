@@ -1,6 +1,8 @@
 BET
 ===
 
+BET is in active development. Hence, some features are still being added and you may find bugs we have overlooked. If you find something please report these problems to us through github so that we can fix them. Thanks!
+
 Butler, Estep, Tavener Method
 
 To compile documenation run::
