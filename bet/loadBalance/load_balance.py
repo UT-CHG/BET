@@ -8,3 +8,5 @@ This module handles the following
     read and preprocess data (model specific)
 
 """
+class load_balance():
+    pass
