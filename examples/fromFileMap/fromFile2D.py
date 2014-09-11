@@ -62,6 +62,6 @@ inital_sample_type = "lhs"
 
 # Read in points_true and plot results
 p_true = mdat['points_true']
-p_true = p_true[5:7,15]
+p_true = p_true[5:7, 15]
 
         
