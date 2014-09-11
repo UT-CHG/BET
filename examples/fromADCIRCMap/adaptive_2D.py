@@ -1,12 +1,11 @@
 #! /usr/bin/env python
 # import necessary modules
-import polysim.run_framework.domain as dom
-import polysim.run_framework.random_wall_Q as rmw
+import polyadcirc.run_framework.domain as dom
+import polyadcirc.run_framework.random_wall_Q as rmw
 import numpy as np
-import polysim.pyADCIRC.basic as basic
+import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
-import math
 
 adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
 grid_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/inputs/poly_walls'
@@ -99,16 +98,16 @@ def rho_D(outputs):
 chain_length = 125
 num_chains = 80
 num_samples = chain_length*num_chains
-sampler = asam.adaptiveSamples(num_batches, chain_lenth, model)
+sampler = asam.adaptiveSamples(num_samples, chain_length, model)
 
 print sampler.num_batches
 print sampler.samples_per_batch
 
 # Get samples
-inital_sample_type = "lhs"
+initial_sample_type = "lhs"
 # Create Transition Kernel
 transition_kernel = asam.transition_kernel(0.5, .5**5, 0.50)
-heuristic = asam.rhoD_heuristic(maximum, rho_D,1e-4,1.5,.1) 
+heuristic = asam.rhoD_heuristic(maximum, rho_D, 1e-4, 1.5, .1) 
 (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
         param_max, transition_kernel, heuristic, sample_save_file,
         initial_sample_type)

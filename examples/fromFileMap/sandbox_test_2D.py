@@ -1,13 +1,11 @@
 #! /usr/bin/env python
 # import necessary modules
 import numpy as np
-import polysim.pyADCIRC.basic as basic
+import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
-import matplotlib.pyplot as plt
 from scipy.interpolate import griddata
-import math
 
 sample_save_file = 'sandbox2d'
 
@@ -114,6 +112,6 @@ bsam.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
 
 # Read in points_true and plot results
 p_true = mdat['points_true']
-p_true = p_true[5:7,15]
+p_true = p_true[5:7, 15]
 
         

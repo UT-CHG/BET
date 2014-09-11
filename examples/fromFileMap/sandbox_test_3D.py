@@ -2,14 +2,11 @@
 # -*- coding: utf-8 -*-
 # import necessary modules
 import numpy as np
-import polysim.pyADCIRC.basic as basic
+import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
-#import matplotlib.pyplot as plt
-#from mpl_toolkits.mplot3d import Axes3D
 from scipy.interpolate import griddata
-#import math
 
 sample_save_file = 'sandbox3d'
 

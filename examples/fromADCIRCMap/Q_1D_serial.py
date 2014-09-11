@@ -16,7 +16,7 @@ print "Finished loading data"
 
 def postprocess(station_nums, true_num):
     
-    filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
+    filename = 'P_q'+str(station_nums[0]+1)+'_q'
     if len(station_nums) == 3:
         filename += '_q'+str(station_nums[2]+1)
     filename += '_truth_'+str(true_num+1)
@@ -27,8 +27,9 @@ def postprocess(station_nums, true_num):
     # Create Simple function approximation
     # Save points used to parition D for simple function approximation and the
     # approximation itself (this can be used to make close comparisions...)
-    (rho_D_M, d_distr_samples, d_Tree) = sfun.uniform_hyperrectangle(data, q_true,
-            bin_ratio=0.15, center_pts_per_edge=np.ones((data.shape[1],)))
+    (rho_D_M, d_distr_samples, d_Tree) = sfun.uniform_hyperrectangle(data,
+            q_true, bin_ratio=0.15,
+            center_pts_per_edge=np.ones((data.shape[1],)))
 
     num_l_emulate = 1e6
     lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
@@ -41,8 +42,8 @@ def postprocess(station_nums, true_num):
     mdict['lambda_emulate'] = lambda_emulate
 
     # Calculate P on lambda emulate
-    (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data, rho_D_M,
-            d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+    (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data,
+            rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
     print "Calculating prob_emulated"
     mdict['P0'] = P0
     mdict['lem0'] = lem0
@@ -81,5 +82,5 @@ true_nums = true_nums.ravel()
 stations = stations.ravel()
 
 for tnum, stat in zip(true_nums, stations):
-    postprocess([0, stat], tnum)
+    postprocess([0], tnum)
 

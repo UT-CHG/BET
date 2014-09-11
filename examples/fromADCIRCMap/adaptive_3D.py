@@ -1,14 +1,11 @@
 #! /usr/bin/env python
 # import necessary modules
-import polysim.run_framework.domain as dom
-import polysim.run_framework.random_wall_Q as rmw
+import polyadcirc.run_framework.domain as dom
+import polyadcirc.run_framework.random_wall_Q as rmw
 import numpy as np
-import polysim.pyADCIRC.basic as basic
-import bet.sampling.adaptive_sampling as asam
+import polyadcirc.pyADCIRC.basic as basic
+import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
-import matplotlib.pyplot as plt
-from scipy.interpolate import griddata
-import math
 
 adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
 grid_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/inputs/poly_walls'
@@ -31,8 +28,8 @@ num_of_parallel_runs = (TpN*NoN)/nprocs
 domain = dom.domain(grid_dir)
 domain.update()
 main_run = rmw.runSet(grid_dir, save_dir, basis_dir, num_of_parallel_runs,
-        base_dir = adcirc_dir, script_name = script)
-main_run.initialize_random_field_directories(num_procs = nprocs)
+        base_dir=adcirc_dir, script_name=script)
+main_run.initialize_random_field_directories(num_procs=nprocs)
 
 # set up saving
 sample_save_file = 'full_run_3D'
@@ -78,9 +75,9 @@ def model(sample):
     # box_limits [xmin, xmax, ymin, ymax, wall_height]
     wall_points = np.outer([xmin, xmax, ymax, ymax, wall_height],
             np.ones(sample.shape[1]))
-    wall_points[2,:] = sample[0,:] 
+    wall_points[2, :] = sample[0, :] 
     # [lam1, lam2, lam3]
-    mann_pts = np.vstack((sample[[1,2],:], lam3*np.ones(sample.shape[1])))
+    mann_pts = np.vstack((sample[[1, 2], :], lam3*np.ones(sample.shape[1])))
     return main_run.run_nobatch_q(domain, wall_points, mann_pts,
             model_save_file, num_procs=nprocs, procs_pnode=ppnode,
             stations=stations, TpN=TpN)
@@ -108,10 +105,11 @@ print sampler.num_batches
 print sampler.samples_per_batch
 
 # Get samples
-inital_sample_type = "lhs"
+initial_sample_type = "lhs"
 transition_kernel = asam.transition_kernel(0.5, .5**3, 0.5)
 (samples, data, step_sizes) = sampler.generalized_chains(param_min, param_max,
-        transition_kernel, heuristic_rD, sample_save_file, initial_sample_type)
+        transition_kernel, heuristic_rD, sample_save_file,
+        initial_sample_type)
 asam.in_box(data, rho_D, maximum)
 
 
