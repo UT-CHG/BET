@@ -1,7 +1,7 @@
 #! /usr/bin/env python
 # import necessary modules
 import numpy as np
-import bet.sampling.adaptiveSampling as aps
+import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
 from scipy.interpolate import griddata
 
@@ -16,7 +16,7 @@ param_max = lam_domain[:, 1]
 station_nums = [0, 5] # 1, 6
 
 # Create Transition Kernel
-transition_kernel = aps.transition_kernel(.5, .5**5, 1.0)
+transition_kernel = asam.transition_kernel(.5, .5**5, 1.0)
 
 # Read in Q_true and Q to create the appropriate rho_D 
 mdat = sio.loadmat('Q_2D')
@@ -47,13 +47,13 @@ def rho_D(outputs):
     max_values = np.repeat(maximum, outputs.shape[0], 0)
     return inside.astype('float64')*max_values
 
-heuristic_rD = aps.rhoD_heuristic(maximum, rho_D)
+heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
 
 # Create sampler
 chain_length = 125
 num_chains = 80
 num_samples = chain_length*num_chains
-sampler = aps.sampler(num_samples, chain_length, model)
+sampler = asam.sampler(num_samples, chain_length, model)
 
 # Get samples
 inital_sample_type = "lhs"

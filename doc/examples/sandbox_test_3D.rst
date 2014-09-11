@@ -3,8 +3,7 @@ Example: Generalized Chains with a 3,3-dimensional data,parameter space
 =======================================================================
 
 This example demonstrates the adaptive generation of samples using the
-algorithm described in `Quantifying Uncertainty of Land Classification within
-the Advanced Circulation (ADCIRC) Model I <>`_ and :ref:`adaptive-sampling`.
+algorithm described in :ref:`adaptive-sampling`.
 
 Generating a single set of adaptive samples
 -------------------------------------------
@@ -49,7 +48,7 @@ In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
         return interp_values 
 
 Next, we implicty designate the region of interest :math:`\Lambda_k =
-Q^{-1}(D_k}` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
+Q^{-1}(D_k)` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
 through the use of some heuristic. In this instance we choose our heuristic
 :math:`p_k(Q) = \rho_\mathcal{D}(Q)`, see
 :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic`.
@@ -61,7 +60,7 @@ We choose some :math:`\lambda_{true}` and let :math:`Q_{true} = Q(\lambda_{true}
 
 We define a rectangle, :math:`R_{true} \subset \mathcal{D}` centered at
 :math:`Q(\lambda_{true})` with sides 15% the length of :math:`q_1` and
-:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}}`::
+:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}`::
 
     bin_ratio = 0.15
     bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
@@ -171,7 +170,7 @@ generated in the region of interest we can use
     print "Compare yield of sample sets with variouos increase/decrease ratios"
     bsam.compare_yield(incdec_results[3], incdec_results[2],incdec_results[4])
 
-Here `~bet.sampling.basicSampling.compare_yield` simply displays to screen the
+Here :meth:`~bet.sampling.basicSampling.compare_yield` simply displays to screen the
 ``sample_quality`` and ``run_param`` sorted by ``sample_quality`` and indexed
 by ``sort_ind``. 
 

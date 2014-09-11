@@ -3,8 +3,7 @@ Example: Generalized Chains with a 2,2-dimensional data,parameter space
 =======================================================================
 
 This example demonstrates the adaptive generation of samples using the
-algorithm described in `Quantifying Uncertainty of Land Classification within
-the Advanced Circulation (ADCIRC) Model I <>`_ and :ref:`adaptive-sampling`.
+algorithm described in :ref:`adaptive-sampling`.
 
 Generating a single set of adaptive samples
 -------------------------------------------
@@ -19,7 +18,7 @@ The modules required by this example are::
 
     import numpy as np
     import polysim.pyADCIRC.basic as basic
-    import bet.sampling.adaptiveSampling as aps
+    import bet.sampling.adaptiveSampling as asam
     import scipy.io as sio
     import matplotlib.pyplot as plt
     from scipy.interpolate import griddata
@@ -50,7 +49,7 @@ In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
         return interp_values 
 
 Next, we implicty designate the region of interest :math:`\Lambda_k =
-Q^{-1}(D_k}` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
+Q^{-1}(D_k)` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
 through the use of some heuristic. In this instance we choose our heuristic
 :math:`p_k(Q) = \rho_\mathcal{D}(Q)`, see
 :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic`.
@@ -62,7 +61,7 @@ We choose some :math:`\lambda_{true}` and let :math:`Q_{true} = Q(\lambda_{true}
 
 We define a rectangle, :math:`R_{true} \subset \mathcal{D}` centered at
 :math:`Q(\lambda_{true})` with sides 15% the length of :math:`q_1` and
-:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}}`::
+:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}`::
 
     bin_ratio = 0.15
     bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
@@ -77,7 +76,7 @@ We define a rectangle, :math:`R_{true} \subset \mathcal{D}` centered at
         max_values = np.repeat(maximum, outputs.shape[0], 0)
         return inside.astype('float64')*max_values
 
-    heuristic_rD = aps.rhoD_heuristic(maximum, rho_D)
+    heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
 
 Given a (M, mdim) data vector
 :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic` expects that ``rho_D``
@@ -91,7 +90,7 @@ sampling chains that are each 125 samples long::
     chain_length = 125
     num_chains = 80
     num_samples = chain_length*num_chains
-    sampler = aps.sampler(num_samples, chain_length, model)
+    sampler = asam.sampler(num_samples, chain_length, model)
 
 We create the :mod:`~bet.sampling.adaptiveSampling.transition_kernel` with an
 initial step size ratio of 0.5 and a minimum, maximum step size ratio of
@@ -99,7 +98,7 @@ initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 samples out side of the bounded parameter domain, ``lambda_domain`` ::
 
     # Create Transition Kernel
-    transition_kernel = aps.transition_kernel(.5, .5**5, 1.0)
+    transition_kernel = asam.transition_kernel(.5, .5**5, 1.0)
 
 We choose an initial sample type to seed the sampling chains::
 
@@ -172,7 +171,7 @@ generated in the region of interest we can use
     print "Compare yield of sample sets with variouos increase/decrease ratios"
     bsam.compare_yield(incdec_results[3], incdec_results[2],incdec_results[4])
 
-Here `~bet.sampling.basicSampling.compare_yield` simply displays to screen the
+Here :meth:`~bet.sampling.basicSampling.compare_yield` simply displays to screen the
 ``sample_quality`` and ``run_param`` sorted by ``sample_quality`` and indexed
 by ``sort_ind``. 
 
