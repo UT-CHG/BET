@@ -11,7 +11,6 @@ assume the measure on both spaces in Lebesgue.
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
-import matplotlib.pyplot as plt
 
 def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
@@ -48,16 +47,17 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     :returns: Estimate of number of samples in the high probability area.
 
     """
-    if sample_nos==None:
+    if sample_nos == None:
         sample_nos = range(data.shape[0])
-    rD = rho_D(data[sample_nos,:])
+    rD = rho_D(data[sample_nos, :])
     adjusted_total_prob = int(sum(rD)/maximum)
     print "Samples in box "+str(adjusted_total_prob)
     return adjusted_total_prob
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
-    Estimates the number of samples in high probability regions of D for a list of results.
+    Estimates the number of samples in high probability regions of D for a list
+    of results.
 
     :param list results_list: list of (results, data) tuples
     :param rho_D: probability density on D
@@ -69,7 +69,7 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     :returns: Estimate of number of samples in the high probability area.
 
     """
-    ajusted_total_prob = list()
+    adjusted_total_prob = list()
     if sample_nos_list:
         for result, sample_nos in zip(results_list, sample_nos_list):
             adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
@@ -79,13 +79,14 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
             adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
     return adjusted_total_prob
 
-def loadmat(save_file, model = None):
+def loadmat(save_file, model=None):
     """
     Loads data from ``save_file`` into a
     :class:`~polysim.run_framework.adaptive_samplers.adaptiveSamples` object.
 
     :param string save_file: file name
-    :param model: runs the model at a given set of parameter samples and returns data
+    :param model: runs the model at a given set of parameter samples and
+        returns data 
     :rtype: tuple
     :returns: (sampler, samples, data)
 
@@ -96,14 +97,14 @@ def loadmat(save_file, model = None):
     if mdat.has_key('samples'):
         samples = mdat['samples']
     else:
-        samples = None
+        samples=None
     # load the data
     if mdat.has_key('data'):
         data = mdat['data']
     else:
-        data = None
-    sampler = sampler(mdat['num_samples'], None)    
-    return (sampler, samples, data)
+        data=None
+    loaded_sampler = sampler(model, mdat['num_samples'])    
+    return (loaded_sampler, samples, data)
 
 class sampler(object):
     """
@@ -145,7 +146,7 @@ class sampler(object):
         mdict['num_samples'] = self.num_samples
 
     def random_samples(self, sample_type, param_min, param_max,
-            savefile, num_samples = None, criterion='center'):
+            savefile, num_samples=None, criterion='center'):
         """
         Sampling algorithm with three basic options
 

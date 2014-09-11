@@ -92,8 +92,8 @@ class sampler(bsam.sampler):
 
         :param list() heur_list: List of heuristics.
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns a
-            :class:`numpy.ndarray`
+        :type rho_D: callable function that takes a :class:`np.array` and
+            returns a :class:`numpy.ndarray`
         :param double maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
@@ -139,8 +139,8 @@ class sampler(bsam.sampler):
 
         :param list() heur_list: List of heuristics.
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns a
-            :class:`numpy.ndarray`
+        :type rho_D: callable function that takes a :class:`np.array` and
+            returns a :class:`numpy.ndarray`
         :param double maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
@@ -193,8 +193,8 @@ class sampler(bsam.sampler):
         :param list() max_ratio: Maximum step size compared to the maximum step
             size.
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns a
-            :class:`numpy.ndarray`
+        :type rho_D: callable function that takes a :class:`np.array` and
+            returns a :class:`numpy.ndarray`
         :param double maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
