@@ -82,7 +82,7 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
 def loadmat(save_file, model=None):
     """
     Loads data from ``save_file`` into a
-    :class:`~polysim.run_framework.adaptive_samplers.adaptiveSamples` object.
+    :class:`~bet.basicSampling.sampler` object.
 
     :param string save_file: file name
     :param model: runs the model at a given set of parameter samples and

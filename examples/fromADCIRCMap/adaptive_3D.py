@@ -5,6 +5,7 @@ import polyadcirc.run_framework.random_wall_Q as rmw
 import numpy as np
 import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
+import bet.sampling.basicSampling as bsam
 import scipy.io as sio
 
 adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
@@ -99,10 +100,11 @@ heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
 chain_length = 125
 num_chains = 80
 num_samples = chain_length*num_chains
-sampler = asam.adaptiveSamples(num_samples, chain_length, model)
+sampler = asam.sampler(num_samples, chain_length, model)
 
-print sampler.num_batches
-print sampler.samples_per_batch
+print sampler.num_samples
+print sampler.chain_length
+print sampler.num_chains
 
 # Get samples
 initial_sample_type = "lhs"
@@ -110,7 +112,7 @@ transition_kernel = asam.transition_kernel(0.5, .5**3, 0.5)
 (samples, data, step_sizes) = sampler.generalized_chains(param_min, param_max,
         transition_kernel, heuristic_rD, sample_save_file,
         initial_sample_type)
-asam.in_box(data, rho_D, maximum)
+bsam.in_high_prob(data, rho_D, maximum)
 
 
 

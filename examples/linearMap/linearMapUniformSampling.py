@@ -1,9 +1,9 @@
 import numpy as np
 import bet.calculateP as calculateP
-import bet.visualize as visualize
+import bet.vis as vis
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
-import bet.visualize.plotP as plotP
+import bet.vis.plotP as plotP
 lam_domain= np.array([[0.0, 1.0],
                       [0.0, 1.0],
                       [0.0, 1.0]])
@@ -29,25 +29,17 @@ data= np.dot(samples,Q_map)
 import pdb
 
 (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.unif_unif(data=data,
-                                                                         true_Q = true_Q,
-                                                                         M = 10,
-                                                                         bin_ratio = 0.2,
-                                                                         num_d_emulate = 1E4)
+        true_Q=true_Q, M=10, bin_ratio=0.2, num_d_emulate=1E4)
 
 #lambda_emulate = calculateP.calculateP.emulate_iid_lebesgue(lambda_domain=lambda_domain,
 #                                                            num_l_emulate = 1E4)
-(P, lam_vol, lambda_emulate, io_ptr, emulate_ptr) = calculateP.prob(samples=samples,
-                                                                               data=data,
-                                                                               rho_D_M = d_distr_prob,
-                                                                               d_distr_samples = d_distr_samples,
-                                                                               lam_domain = lam_domain,
-                                                                               d_Tree = d_Tree)
-plotP.plot_marginal_probs(P_samples = P,
-                    samples = samples,
-                    lam_domain = lam_domain,
-                    nbins = [10, 10, 10],
-                    filename = "linearMap",
-                    plot_surface=True)
+(P, lam_vol, lambda_emulate, io_ptr, emulate_ptr) = calculateP.prob(samples=samples, 
+        data=data, rho_D_M = d_distr_prob, d_distr_samples = d_distr_samples,
+        lam_domain=lam_domain, d_Tree=d_Tree)
+
+plotP.plot_marginal_probs(P_samples = P, samples = samples, lam_domain =
+        lam_domain, nbins = [10, 10, 10], filename = "linearMap",
+        plot_surface=True)
 
 
 

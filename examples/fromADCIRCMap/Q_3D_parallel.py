@@ -1,6 +1,6 @@
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
-import bet.visualize.plotP as pp
+import bet.vis.plotP as pp
 import numpy as np
 import scipy.io as sio
 from mpi4py import MPI
