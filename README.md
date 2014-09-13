@@ -5,11 +5,19 @@ BET is in active development. Hence, some features are still being added and you
 
 Butler, Estep, Tavener Method
 
-To compile documenation run::
+This code has been documented with Sphinx. To build documentation run 
+``make html`` in the ``doc/`` folder.
+All documentation is contained in ``doc/_build/_html`` 
+To build/update the documentation use the following commands::
 
     sphinx-apidoc -f -o doc bet
     cd doc/
-    makehtml
-    makehtml
+    make html
+    make html
 
 This creates the relevant documentation at ``BET/doc/_build/html``.
+
+You will need to run sphinx-apidoc anytime a new module or method in the source code has been added. If only the *.rst files have changed then you can simply run ``make html`` twice in the doc folder.
+
+Useful scripts are contained in ``examples/``
+
