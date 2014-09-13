@@ -1,1 +1,1 @@
-__all__ = ['sampling', 'calculateP', 'plotP', 'loadBalance']
+__all__ = ['sampling', 'calculateP', 'vis', 'loadBalance']

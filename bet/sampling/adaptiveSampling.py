@@ -14,8 +14,6 @@ We employ an approach based on using multiple sample chains.
 import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
-from pyDOE import lhs
-import matplotlib.pyplot as plt
 import math
 
 def loadmat(save_file, lb_model=None):
@@ -43,10 +41,10 @@ def loadmat(save_file, lb_model=None):
     else:
         data = None
     # recreate the sampler
-    sampler = sampler(mdat['num_samples'], mdat['chain_length'],
+    new_sampler = sampler(mdat['num_samples'], mdat['chain_length'],
             lb_model)
     
-    return (sampler, samples, data)
+    return (new_sampler, samples, data)
 
 class sampler(bsam.sampler):
     """
@@ -220,7 +218,7 @@ class sampler(bsam.sampler):
         results_rD = list()
         mean_ss = list()
         for i, j, k  in zip(init_ratio, min_ratio, max_ratio):
-            tk = transition_kernel(i,j,k)
+            tk = transition_kernel(i, j, k)
             (samples, data, step_sizes) = self.generalized_chains(
                     param_min, param_max, tk, heuristic, savefile,
                     initial_sample_type, criterion)
@@ -244,8 +242,8 @@ class sampler(bsam.sampler):
         :param list() tolerance: a tolerance used to determine if two
             different values are close
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns a
-            :class:`numpy.ndarray`
+        :type rho_D: callable function that takes a :class:`np.array` and
+            returns a :class:`numpy.ndarray`
         :param double maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
@@ -272,7 +270,7 @@ class sampler(bsam.sampler):
         return self.run_gen(heur_list, rho_D, maximum, param_min, param_max,
                 t_kernel, savefile, initial_sample_type, criterion)
 
-    def generalized_chains(self, param_min, param_max, t_kernel, heuristic,
+    def generalized_chains(self, param_min, param_max, t_kernel, heur,
             savefile, initial_sample_type="lhs", criterion='center'):
         """
         Basic adaptive sampling algorithm using generalized chains.
@@ -286,7 +284,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
+        :param function heur: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
@@ -317,7 +315,7 @@ class sampler(bsam.sampler):
         samples = samples_old
         data = data_old
         all_step_ratios = step_ratio
-        (heur_old, proposal) = heuristic.delta_step(data_old, None)
+        (heur_old, proposal) = heur.delta_step(data_old, None)
 
         mdat = dict()
         self.update_mdict(mdat)
@@ -334,7 +332,7 @@ class sampler(bsam.sampler):
             # Make some decision about changing step_size(k).  There are
             # multiple ways to do this.
             # Determine step size
-            (heur_old, proposal) = heuristic.delta_step(data_new, heur_old)
+            (heur_old, proposal) = heur.delta_step(data_new, heur_old)
             step_ratio = proposal*step_ratio
             # Is the ratio greater than max?
             step_ratio[step_ratio > max_ratio] = max_ratio
@@ -358,7 +356,7 @@ class sampler(bsam.sampler):
             samples_old = samples_new
         return (samples, data, all_step_ratios)
 
-    def reseed_chains(self, param_min, param_max, t_kernel, heuristic,
+    def reseed_chains(self, param_min, param_max, t_kernel, heur,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
         Basic adaptive sampling algorithm.
@@ -372,7 +370,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
+        :param function heur: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
@@ -453,7 +451,8 @@ class transition_kernel(object):
 
         """
         # calculate maximum step size
-        step_size = np.repeat([step_ratio], param_width.shape[1], 0).transpose()*param_width
+        step_size = np.repeat([step_ratio], param_width.shape[1],
+                0).transpose()*param_width
         # check to see if step will take you out of parameter space
         # calculate maximum proposed step
         samples_right = samples_old + 0.5*step_size
@@ -466,7 +465,7 @@ class transition_kernel(object):
         samples_right[far_right] = param_right[far_right]
         samples_left[far_left] = param_left[far_left]
         samples_width = samples_right-samples_left
-        samples_center = (samples_right+samples_left)/2.0
+        #samples_center = (samples_right+samples_left)/2.0
         samples_new = samples_width * np.random.random(samples_old.shape)
         samples_new = samples_new + samples_left
         
@@ -629,7 +628,7 @@ class maxima_heuristic(heuristic):
 
         for i in xrange(data_new.shape[0]):
             # calculate distance from each of the maxima
-            vec_from_maxima = np.repeat([data_new[i,:]], self.num_maxima, 0)
+            vec_from_maxima = np.repeat([data_new[i, :]], self.num_maxima, 0)
             vec_from_maxima = vec_from_maxima - self.MAXIMA
             # weight distances by 1/rho_D(maxima)
             dist_from_maxima = np.linalg.norm(vec_from_maxima, 2,
@@ -689,8 +688,8 @@ class maxima_mean_heuristic(maxima_heuristic):
         self.radius = None
         self.mean = None
         self.current_clength = 0
-        super(maxima_mean_heuristic, self).__init__(maxima, rho_D, tolerance, increase, 
-            decrease)
+        super(maxima_mean_heuristic, self).__init__(maxima, rho_D, tolerance,
+                increase, decrease)
 
     def reset(self):
         """
@@ -718,7 +717,7 @@ class maxima_mean_heuristic(maxima_heuristic):
 
         for i in xrange(data_new.shape[0]):
             # calculate distance from each of the maxima
-            vec_from_maxima = np.repeat([data_new[i,:]], self.num_maxima, 0)
+            vec_from_maxima = np.repeat([data_new[i, :]], self.num_maxima, 0)
             vec_from_maxima = vec_from_maxima - self.MAXIMA
             # weight distances by 1/rho_D(maxima)
             dist_from_maxima = np.linalg.norm(vec_from_maxima, 2,
@@ -737,7 +736,8 @@ class maxima_mean_heuristic(maxima_heuristic):
             return (heur_new, None)
         else:
             # update the estimate of the mean
-            self.mean = (self.current_clength-1)*self.mean + np.mean(data_new, 0)
+            self.mean = (self.current_clength-1)*self.mean + np.mean(data_new,
+                    0) 
             self.mean = self.mean / self.current_clength
             # calculate the distance from the mean
             vec_from_mean = data_new - np.repeat([self.mean],

@@ -1,15 +1,14 @@
 """
 This module provides methods for calulating the probability
-measure $P_{\Lambda}$.
+measure $P_{Lambda}$.
 
-* :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates the
-    probability for a set of emulation points.
-* :mod:`~bet.calculateP.calculateP.prob_samples_ex` calculates the exact volumes of the
-    interior voronoi cells and estimates the volumes of the exterior voronoi
-    cells by using a set of bounding points
-* :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of the voronoi cells
-    using MC integration
-
+* :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
+    the probability for a set of emulation points.
+* :mod:`~bet.calculateP.calculateP.prob_samples_ex` calculates the exact
+    volumes of the interior voronoi cells and estimates the volumes of the
+    exterior voronoi cells by using a set of bounding points
+* :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
+    the voronoi cells using MC integration
 """
 import numpy as np
 import scipy.spatial as spatial
@@ -34,16 +33,17 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
 
     """
     num_l_emulate = int(num_l_emulate/size)+1
-    lam_width = lam_domain[:,1]-lam_domain[:,0]
-    lambda_emulate = lam_width*np.random.random((num_l_emulate, lam_domain.shape[0]))+lam_domain[:,0]
+    lam_width = lam_domain[:, 1] - lam_domain[:, 0]
+    lambda_emulate = lam_width*np.random.random((num_l_emulate,
+        lam_domain.shape[0]))+lam_domain[:, 0] 
     return lambda_emulate 
 
 def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
         lambda_emulate=None, d_Tree=None): 
     """
-    Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}}), the probability
+    Calculates P_{Lambda}(\mathcal{V}_{lambda_{emulate}}), the probability
     assoicated with a set of voronoi cells defined by ``num_l_emulate`` iid
-    samples (\lambda_{emulate}).
+    samples (lambda_{emulate}).
 
     :param samples: The samples in parameter space for which the model was run.
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
@@ -73,35 +73,35 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
         
     # Determine which inputs go to which M bins using the QoI
     #io_ptr = dsearchn(d_distr_samples, data);
-    (tree_length,io_ptr) = d_Tree.query(data)
+    (_, io_ptr) = d_Tree.query(data)
     
     # Determine which emulated samples match with which model run samples
     l_Tree = spatial.KDTree(samples)
-    (tree_length,emulate_ptr) = l_Tree.query(lambda_emulate)
+    (tree_length, emulate_ptr) = l_Tree.query(lambda_emulate)
     
     # Calculate Probabilties
     P = np.zeros((lambda_emulate.shape[0],))
     d_distr_emu_ptr = np.zeros(emulate_ptr.shape)
-    io_ptr_inverse = np.zeros(io_ptr.shape)
+    #io_ptr_inverse = np.zeros(io_ptr.shape)
     # for i in range(rho_D_M.shape[0]): 
     #     Itemp = np.equal(io_ptr, i)
     #     l_ind = np.nonzero(Itemp)
     #     io_ptr_inverse[l_ind] = i
-    d_distr_emu_ptr= io_ptr[emulate_ptr] #io_ptr_inverse[emulate_ptr] 
+    d_distr_emu_ptr = io_ptr[emulate_ptr] #io_ptr_inverse[emulate_ptr] 
     for i in range(rho_D_M.shape[0]):
-        Itemp  = np.equal(d_distr_emu_ptr, i)
+        Itemp = np.equal(d_distr_emu_ptr, i)
         Itemp_sum = np.sum(Itemp)
         Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
-            P[Itemp]= rho_D_M[i]/Itemp_sum
+            P[Itemp] = rho_D_M[i]/Itemp_sum
 
     return (P, lambda_emulate, io_ptr, emulate_ptr)
 
 def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None): 
     """
-    Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{samples}}), the probability
+    Calculates P_{Lambda}(\mathcal{V}_{lambda_{samples}}), the probability
     assoicated with a set of voronoi cells defined by the model solves at
-    $\lambda_{samples}$ where the volumes of these voronoi cells are assumed to
+    $lambda_{samples}$ where the volumes of these voronoi cells are assumed to
     be equal under the MC assumption.
 
     :param samples: The samples in parameter space for which the model was run.
@@ -137,16 +137,16 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
         Itemp_sum = np.sum(lam_vol[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
-            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum #np.sum(lam_vol[Itemp])
+            P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
 
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 
 def prob_qhull(samples, data, rho_D_M, d_distr_samples,
         lam_domain, d_Tree=None): 
     """
-    Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}}), the probability
+    Calculates P_{Lambda}(\mathcal{V}_{lambda_{emulate}}), the probability
     assoicated with a set of voronoi cells defined by ``num_l_emulate`` iid
-    samples (\lambda_{emulate}).
+    samples (lambda_{emulate}).
 
     This method is only intended when ``lam_domain`` is a generalized rectangle.
 
@@ -178,33 +178,34 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
 
     # Calcuate the bounding region for the parameters
     lam_bound = np.copy(samples)
-    lam_width = lam_domain[:,1]-lam_domain[:,0]
+    lam_width = lam_domain[:, 1] - lam_domain[:, 0]
     nbins = d_distr_samples.shape[1]
     # Add fake samples outside of lam_domain to close Voronoi tesselations.
     pts_per_edge = nbins
-    sides = np.zeros((2,pts_per_edge))
+    sides = np.zeros((2, pts_per_edge))
     for i in range(lam_domain.shape[0]):
-        sides[i,:] = np.linspace(lam_domain[i,0], lam_domain[i,1], pts_per_edge)
+        sides[i, :] = np.linspace(lam_domain[i, 0], lam_domain[i, 1],
+                pts_per_edge)
     # add midpoints
     for i in range(lam_domain.shape[0]):
         new_pt = sides
-        new_pt[i,:] = np.repeat(lam_domain[i,0]-lam_width[i]/pts_per_edge,
-                pts_per_edge,0).transpose() 
-        lam_bound = np.vstack((lam_bound,new_pt))
+        new_pt[i, :] = np.repeat(lam_domain[i, 0] - lam_width[i]/pts_per_edge,
+                pts_per_edge, 0).transpose() 
+        lam_bound = np.vstack((lam_bound, new_pt))
         new_pt = sides
-        new_pt[i,:] = np.repeat(lam_domain[i,1]-lam_width[i]/pts_per_edge,
-                pts_per_edge,0).transpose() 
-        lam_bound = np.vstack((lam_bound,new_pt))
+        new_pt[i, :] = np.repeat(lam_domain[i, 1] - lam_width[i]/pts_per_edge,
+                pts_per_edge, 0).transpose() 
+        lam_bound = np.vstack((lam_bound, new_pt))
         
     # add corners
     corners = np.zeros((2**lam_domain.shape[0], lam_domain.shape[0]))
     for i in range(lam_domain.shape[0]):
-        corners[i,:] = lam_domain[i,np.repeat(np.hstack((np.ones((1,2**(i-1))),
-            2*np.ones((1,2**(i-1))))),
-            2**(lam_domain.shape[0]-i),0).transpose()] 
-        corners[i,:] +=lam_width[i]*np.repeat(np.hstack((np.ones((1,2**(i-1))),
-            -np.ones((1,2**(i-1))))),
-            2**(lam_domain.shape[0]-i)/pts_per_edge,0).transpose()
+        corners[i, :] = lam_domain[i, np.repeat(np.hstack((np.ones((1,
+            2**(i-1))), 2*np.ones((1, 2**(i - 1))))), 
+            2**(lam_domain.shape[0]-i), 0).transpose()] 
+        corners[i, :] += lam_width[i]*np.repeat(np.hstack((np.ones((1,
+            2**(i-1))), -np.ones((1, 2**(i - 1))))),
+            2**(lam_domain.shape[0]-i)/pts_per_edge, 0).transpose()
 
     lam_bound = np.vstack((lam_bound, corners))
     
@@ -227,9 +228,9 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
 def prob_mc(samples, data, rho_D_M, d_distr_samples,
         lam_domain, lambda_emulate=None, d_Tree=None): 
     """
-    Calculates P_{\Lambda}(\mathcal{V}_{\lambda_{samples}}), the probability
+    Calculates P_{Lambda}(\mathcal{V}_{lambda_{samples}}), the probability
     assoicated with a set of voronoi cells defined by the model solves at
-    $\lambda_{samples}$ where the volumes of these voronoi cells are
+    $lambda_{samples}$ where the volumes of these voronoi cells are
     approximated using MC integration.
 
     :param samples: The samples in parameter space for which the model was run.
@@ -261,7 +262,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     
     # Apply the standard MC approximation to determine the number of emulated
     # samples per model run sample. This is for approximating 
-    # \mu_\Lambda(A_i \intersect b_j)
+    # \mu_Lambda(A_i \intersect b_j)
     lam_vol = np.zeros((samples.shape[0],)) #lambda_emulate),))
     for i in range(samples.shape[0]):
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))

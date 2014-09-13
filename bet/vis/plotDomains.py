@@ -1,12 +1,11 @@
-import matplotlib.tri as tri
-import numpy as np
-import matplotlib.pyplot as plt
-from mpl_toolkits.mplot3d import Axes3D
-
 """
 Methods used to plot two-dimensional domains and/or two-dimensional
 slices/projections of domains.
 """
+
+import matplotlib.tri as tri
+import numpy as np
+import matplotlib.pyplot as plt
 
 def scatter_2D(samples, sample_nos, color, p_true, save, show,
         xlabel, ylabel, filename):
@@ -28,14 +27,12 @@ def scatter_2D(samples, sample_nos, color, p_true, save, show,
     :param string filename: filename to save the figure as
 
     """
-    if sample_nos==None:
+    if sample_nos == None:
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
-    plt.scatter(samples[sample_nos, 0],samples[sample_nos, 1],c=color, s=10,
+    plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color, s=10,
             #edgecolor='none',
-            alpha=.75,
-            linewidth = .1,
-            cmap=plt.cm.Oranges)#Oranges_r)
+            alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)#Oranges_r)
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(Q)$')
     if p_true != None:
@@ -72,7 +69,7 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
     :param string filename: filename to save the figure as
 
     """
-    if sample_nos==None:
+    if sample_nos == None:
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
 
@@ -96,8 +93,8 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
     else:
         plt.close()
    
-def show_param(samples, data, rho_D = None, p_true=None,
-        sample_nos=None, save=True, show=False, lnums=None):
+def show_param(samples, data, rho_D=None, p_true=None, sample_nos=None,
+        save=True, show=False, lnums=None):
     """
     Plot samples in parameter space and colors them either by rho_D or by
     sample batch number.
@@ -117,17 +114,17 @@ def show_param(samples, data, rho_D = None, p_true=None,
 
     """
    
-    if rho_D!=None:
+    if rho_D != None:
         rD = rho_D(data)
     if lnums == None:
         lnums = 1+np.array(range(data.shape[1]))
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
-    if data.shape[1]==2:
+    if data.shape[1] == 2:
         scatter_2D(samples, sample_nos, rD, p_true, save, show, xlabel, ylabel,
                 savename)
-    elif data.shape[1]==3:
+    elif data.shape[1] == 3:
         zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
         scatter_3D(samples, sample_nos, rD, p_true, save, show, xlabel, ylabel,
                 zlabel, savename)
@@ -150,17 +147,17 @@ def show_data(data, rho_D=None, Q_true=None, sample_nos=None,
     :param boolean show: flag whether or not to show the figure
 
     """   
-    if rho_D!=None:
+    if rho_D != None:
         rD = rho_D(data)
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
     xlabel = r'$q_{'+str(Q_nums[0]+1)+'}$'
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
-    if data.shape[1]==2:
+    if data.shape[1] == 2:
         scatter_2D(data, sample_nos, rD, Q_true, save, show, xlabel, ylabel,
             savename)
-    elif data.shape[1]==3:
+    elif data.shape[1] == 3:
         zlabel = r'$q_{'+str(Q_nums[2]+1)+'}$'
         scatter_3D(data, sample_nos, rD, Q_true, save, show, xlabel, ylabel,
                 zlabel, savename)
@@ -189,21 +186,21 @@ def show_data_domain_multi(samples, data, Q_true, Q_nums=None,
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
 
-    triangulation = tri.Triangulation(samples[0,:], samples[1,:])
+    triangulation = tri.Triangulation(samples[0, :], samples[1, :])
     triangles = triangulation.triangles
 
     for i in Q_nums:
         
-        plt.tricontourf(data[:,0],data[:,i], np.zeros((data.shape[0],)),
-                triangles=triangles, colors = 'grey') 
+        plt.tricontourf(data[:, 0], data[:, i], np.zeros((data.shape[0],)),
+                triangles=triangles, colors='grey') 
         plt.autoscale(tight=True)
         plt.xlabel(r'$q_1$')
-        ylabel=r'$q_{'+str(i+1)+r'}$'
+        plt.ylabel(r'$q_{'+str(i+1)+r'}$')
 
         filenames = [img_folder+'domain_q1_'+str(i)+'.eps',
                 img_folder+'q1_q'+str(i)+'_domain_Q_cs.eps']
             
-        show_data_domain_2D(samples, data[:,[0, i]], Q_true[:,[0, i]],
+        show_data_domain_2D(samples, data[:, [0, i]], Q_true[:, [0, i]],
             true_markers, true_colors, ylabel=r'$q_{'+str(i+1)+r'}$',
             triangles=triangles, save=True, show=False, filenames=filenames)
 
@@ -233,14 +230,14 @@ def show_data_domain_2D(samples, data, Q_true, true_markers=['^', 's', 'o'],
 
     """
 
-    if triangles==None:
-        triangulation = tri.Triangulation(samples[:,0],samples[:,1])
+    if triangles == None:
+        triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
         triangles = triangulation.triangles
-    if filenames==None:
+    if filenames == None:
         filenames = ['domain_q1_q2_cs.eps', 'q1_q2_domain_Q_cs.eps']
     # Create figure
-    plt.tricontourf(data[:,0],data[:,1], np.zeros((data.shape[0],)),
-            triangles=triangles, colors = 'grey') 
+    plt.tricontourf(data[:, 0], data[:, 1], np.zeros((data.shape[0],)),
+            triangles=triangles, colors='grey') 
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
@@ -248,7 +245,7 @@ def show_data_domain_2D(samples, data, Q_true, true_markers=['^', 's', 'o'],
             pad_inches=0)
     # Add truth markers
     for i in xrange(Q_true.shape[0]):
-        plt.scatter(Q_true[i,0],Q_true[i,1], s = 60, c=true_colors[i],
+        plt.scatter(Q_true[i, 0], Q_true[i, 1], s=60, c=true_colors[i],
                 marker=true_markers[i])
     if save:
         plt.savefig(filenames[1], bbox_inches='tight', transparent=True,

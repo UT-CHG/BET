@@ -97,12 +97,12 @@ def loadmat(save_file, model=None):
     if mdat.has_key('samples'):
         samples = mdat['samples']
     else:
-        samples=None
+        samples = None
     # load the data
     if mdat.has_key('data'):
         data = mdat['data']
     else:
-        data=None
+        data = None
     loaded_sampler = sampler(model, mdat['num_samples'])    
     return (loaded_sampler, samples, data)
 
