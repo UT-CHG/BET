@@ -14,6 +14,8 @@ Contents:
 
    overview
    examples/*
+   examples/fromFileMap/*
+   examples/fromADCIRCMap/*
    todo_list
 
 .. todo:: Flesh out documentation.
