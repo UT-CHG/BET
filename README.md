@@ -15,7 +15,7 @@ To build/update the documentation use the following commands::
     make html
     make html
 
-This creates the relevant documentation at ``BET/doc/_build/html``.
+This creates the relevant documentation at ``BET/gh-pages/html/html``.
 
 You will need to run sphinx-apidoc anytime a new module or method in the source code has been added. If only the *.rst files have changed then you can simply run ``make html`` twice in the doc folder.
 
