@@ -14,6 +14,7 @@ Contents:
 
    overview
    examples/*
+   examples/linearMap/*
    examples/fromFileMap/*
    examples/fromADCIRCMap/*
    todo_list

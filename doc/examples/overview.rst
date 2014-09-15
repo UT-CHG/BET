@@ -3,7 +3,7 @@ Linear Map Example
 =======================================
 
 See :download:`linear map example
-<../../linearMap/linearMapUnifromSampling.py>` for an example using a linear
+<../../examples/linearMap/linearMapUniformSampling.py>` for an example using a linear
 map.
 
 ==============================================
@@ -17,9 +17,11 @@ The files for these examples can be found in ``examples/fromFileMap`` and
 Idealized Inlet Physical Domain
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-..todo:: 
+.. todo:: 
+
     Description of the model, physical inlet domain, data space, and parameter
     space for the examples using the idealized inlet.
+
 
 Adaptive Sampling Examples
 ~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -38,13 +40,14 @@ Example submission files are included as ``filename.sbatch``:
 Visualization Examples
 ~~~~~~~~~~~~~~~~~~~~~~
 
-..todo::
+.. todo::
+
     Write visualization examples for :mod:`~bet.vis.plotP` and
-    :mod:`~bet.vis.plotDomain`.
+    :mod:`~bet.vis.plotDomains`.
 
 Examples Estimating :math:`P_\Lambda`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    * :ref:`Q_1D`
-    * :ref:`Q_2D`
-    * :ref:`Q_3D`
+    * :ref:`q1D`
+    * :ref:`q2D`
+    * :ref:`q3D`
