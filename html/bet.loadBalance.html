@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bet.loadBalance package &mdash; BET 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BET 0.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bet-loadbalance-package">
+<h1>bet.loadBalance package<a class="headerlink" href="#bet-loadbalance-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-bet.loadBalance.lb_PADCIRC">
+<span id="bet-loadbalance-lb-padcirc-module"></span><h2>bet.loadBalance.lb_PADCIRC module<a class="headerlink" href="#module-bet.loadBalance.lb_PADCIRC" title="Permalink to this headline">¶</a></h2>
+<p>This is a placeholder. See the <tt class="docutils literal"><span class="pre">run_framework</span></tt> subpackage of <a class="reference external" href="http://lcgraham.github.io/PolyADCIRC/">PolyADCIRC</a> and the examples in
+<tt class="docutils literal"><span class="pre">examples/fromADCIRCMap</span></tt> for a yet to be generalized prototype.</p>
+</div>
+<div class="section" id="module-bet.loadBalance.load_balance">
+<span id="bet-loadbalance-load-balance-module"></span><h2>bet.loadBalance.load_balance module<a class="headerlink" href="#module-bet.loadBalance.load_balance" title="Permalink to this headline">¶</a></h2>
+<dl class="docutils">
+<dt>This module handles the following</dt>
+<dd>store HPC topology
+set up file structure for data, parameter fields
+compose parameter fields
+prep computational domain(s) (model specific)
+run model (model specific)
+read and preprocess data (model specific)</dd>
+</dl>
+<dl class="class">
+<dt id="bet.loadBalance.load_balance.load_balance">
+<em class="property">class </em><tt class="descclassname">bet.loadBalance.load_balance.</tt><tt class="descname">load_balance</tt><a class="headerlink" href="#bet.loadBalance.load_balance.load_balance" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+<div class="section" id="module-contents">
+<h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
+<span class="target" id="module-bet.loadBalance"></span><p>This subpackage contains</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><tt class="xref py py-class docutils literal"><span class="pre">load_balance</span></tt></a> an interface to control the scheduling and load</dt>
+<dd><p class="first last">balancing of model runs on an HPC infrastructure</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><tt class="xref py py-mod docutils literal"><span class="pre">lb_DIAMOND</span></tt> implements the <a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><tt class="xref py py-class docutils literal"><span class="pre">load_balance</span></tt></a> infrastructure</dt>
+<dd><p class="first last">for the DIAMOND model</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="#module-bet.loadBalance.lb_PADCIRC" title="bet.loadBalance.lb_PADCIRC"><tt class="xref py py-mod docutils literal"><span class="pre">lb_PADCIRC</span></tt></a> implements the <a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><tt class="xref py py-class docutils literal"><span class="pre">load_balance</span></tt></a> infrastructure</dt>
+<dd><p class="first last">for the PADCIRC model</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">bet.loadBalance package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-bet.loadBalance.lb_PADCIRC">bet.loadBalance.lb_PADCIRC module</a></li>
+<li><a class="reference internal" href="#module-bet.loadBalance.load_balance">bet.loadBalance.load_balance module</a></li>
+<li><a class="reference internal" href="#module-contents">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/bet.loadBalance.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
+      Last updated on Sep 15, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

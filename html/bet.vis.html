@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>bet.vis package &mdash; BET 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BET 0.0 documentation" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="bet-vis-package">
+<h1>bet.vis package<a class="headerlink" href="#bet-vis-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-bet.vis.plotDomains">
+<span id="bet-vis-plotdomains-module"></span><h2>bet.vis.plotDomains module<a class="headerlink" href="#module-bet.vis.plotDomains" title="Permalink to this headline">¶</a></h2>
+<p>Methods used to plot two-dimensional domains and/or two-dimensional
+slices/projections of domains.</p>
+<dl class="function">
+<dt id="bet.vis.plotDomains.scatter_2D">
+<tt class="descclassname">bet.vis.plotDomains.</tt><tt class="descname">scatter_2D</tt><big>(</big><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_true</em>, <em>save</em>, <em>show</em>, <em>xlabel</em>, <em>ylabel</em>, <em>filename</em><big>)</big><a class="headerlink" href="#bet.vis.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Two-dimensional scatter plot of <tt class="docutils literal"><span class="pre">samples</span></tt> colored by <tt class="docutils literal"><span class="pre">color</span></tt> (usually
+an array of rho_D values).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Samples to plot</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
+<li><strong>color</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; array to color the samples by</li>
+<li><strong>p_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true parameter value</li>
+<li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
+<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotDomains.scatter_3D">
+<tt class="descclassname">bet.vis.plotDomains.</tt><tt class="descname">scatter_3D</tt><big>(</big><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_true</em>, <em>save</em>, <em>show</em>, <em>xlabel</em>, <em>ylabel</em>, <em>zlabel</em>, <em>filename</em><big>)</big><a class="headerlink" href="#bet.vis.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Three-dimensional scatter plot of <tt class="docutils literal"><span class="pre">samples</span></tt> colored by <tt class="docutils literal"><span class="pre">color</span></tt> (usually
+an array of rho_D values).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Samples to plot</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
+<li><strong>color</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; array to color the samples by</li>
+<li><strong>p_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true parameter value</li>
+<li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
+<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>zlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; z-axis label</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotDomains.show_data">
+<tt class="descclassname">bet.vis.plotDomains.</tt><tt class="descname">show_data</tt><big>(</big><em>data</em>, <em>rho_D=None</em>, <em>Q_true=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>show=False</em>, <em>Q_nums=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotDomains.show_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot samples in data space and colors them either by rho_D or by
+sample batch number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Data associated with <tt class="docutils literal"><span class="pre">samples</span></tt></li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
+<li><strong>rho_D</strong> (callable function that takes a <tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> and returns a
+<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; probability density on D</li>
+<li><strong>Q_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true data value</li>
+<li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
+<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotDomains.show_data_domain_2D">
+<tt class="descclassname">bet.vis.plotDomains.</tt><tt class="descname">show_data_domain_2D</tt><big>(</big><em>samples, data, Q_true, true_markers=['^', 's', 'o'], true_colors=['r', 'g', 'b'], xlabel='$q_1$', ylabel='$q_2', triangles=None, save=True, show=True, filenames=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the data domain D using a triangulation based on the generating
+samples with a marker for various <tt class="docutils literal"><span class="pre">Q_true</span></tt>. Assumes that the first
+dimension of data is $q_1$.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (ndim, num_samples)) &#8211; Samples to plot</li>
+<li><strong>data</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Data associated with <tt class="docutils literal"><span class="pre">samples</span></tt></li>
+<li><strong>Q_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true data value</li>
+<li><strong>true_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <tt class="docutils literal"><span class="pre">Q_true</span></tt></li>
+<li><strong>true_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <tt class="docutils literal"><span class="pre">Q_true</span></tt></li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>triangles</strong> (<tt class="xref py py-class docutils literal"><span class="pre">tri.Triuangulation.triangles</span></tt>) &#8211; triangulation defined by <tt class="docutils literal"><span class="pre">samples</span></tt></li>
+<li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
+<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>filenames</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; file names for the unmarked and marked domain plots</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotDomains.show_data_domain_multi">
+<tt class="descclassname">bet.vis.plotDomains.</tt><tt class="descname">show_data_domain_multi</tt><big>(</big><em>samples, data, Q_true, Q_nums=None, img_folder='figs/', true_markers=['^', 's', 'o'], true_colors=['r', 'g', 'b']</em><big>)</big><a class="headerlink" href="#bet.vis.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot the data domain D using a triangulation based on the generating
+samples where $Q={q_1, q_i}$ for <tt class="docutils literal"><span class="pre">i=Q_nums</span></tt>, with a marker for various
+<tt class="docutils literal"><span class="pre">Q_true</span></tt>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (ndim, num_samples)) &#8211; Samples to plot</li>
+<li><strong>data</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Data associated with <tt class="docutils literal"><span class="pre">samples</span></tt></li>
+<li><strong>Q_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true data value</li>
+<li><strong>Q_nums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; dimensions of the QoI to plot</li>
+<li><strong>img_folder</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; folder to save the plots to</li>
+<li><strong>true_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <tt class="docutils literal"><span class="pre">Q_true</span></tt></li>
+<li><strong>true_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <tt class="docutils literal"><span class="pre">Q_true</span></tt></li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotDomains.show_param">
+<tt class="descclassname">bet.vis.plotDomains.</tt><tt class="descname">show_param</tt><big>(</big><em>samples</em>, <em>data</em>, <em>rho_D=None</em>, <em>p_true=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>show=False</em>, <em>lnums=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotDomains.show_param" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot samples in parameter space and colors them either by rho_D or by
+sample batch number.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Samples to plot</li>
+<li><strong>data</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; Data associated with <tt class="docutils literal"><span class="pre">samples</span></tt></li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
+<li><strong>rho_D</strong> (callable function that takes a <tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> and returns a
+<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; probability density on D</li>
+<li><strong>p_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true parameter value</li>
+<li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
+<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.vis.plotP">
+<span id="bet-vis-plotp-module"></span><h2>bet.vis.plotP module<a class="headerlink" href="#module-bet.vis.plotP" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for plotting probabilities.</p>
+<dl class="function">
+<dt id="bet.vis.plotP.get_global_values">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">get_global_values</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.get_global_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates local array into global arrays.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> &#8211; Array.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.plot_marginal_probs">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">plot_marginal_probs</tt><big>(</big><em>P_samples</em>, <em>samples</em>, <em>lam_domain</em>, <em>nbins=20</em>, <em>filename='file'</em>, <em>lam_true=None</em>, <em>plot_surface=False</em>, <em>interactive=True</em>, <em>lambda_label=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.plot_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes plots of every pair of marginals (or joint in 2d case) of
+input probability measure defined by P_samples on a rectangular grid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>P_samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples,)</em>) &#8211; Probabilities.</li>
+<li><strong>samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples, ndim)</em>) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
+<li><strong>nbins</strong> (<em>:int</em>) &#8211; Number of bins in each direction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.plot_voronoi_probs">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">plot_voronoi_probs</tt><big>(</big><em>P_samples</em>, <em>samples</em>, <em>lam_domain</em>, <em>nbins=20</em>, <em>plot_surface=False</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.plot_voronoi_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes plots of the joint probabilies of input probability measure
+defined by P_samples for 2d cases. post_process - is an input that only
+applies to the 2d case  w.r.t. the Voronoi cells.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>P_samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples,)</em>) &#8211; Probabilities.</li>
+<li><strong>samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples, ndim)</em>) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
+<li><strong>nbins</strong> (<em>:int</em>) &#8211; Number of bins in each direction.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.vis">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.vis" title="Permalink to this headline">¶</a></h2>
+<p>This subpackage contains</p>
+<ul class="simple">
+<li><a class="reference internal" href="#module-bet.vis.plotP" title="bet.vis.plotP"><tt class="xref py py-class docutils literal"><span class="pre">plotP</span></tt></a> plots P and/or volumes of voronoi cells</li>
+<li><a class="reference internal" href="#module-bet.vis.plotDomains" title="bet.vis.plotDomains"><tt class="xref py py-class docutils literal"><span class="pre">plotDomains</span></tt></a> plots the data domain D in 2D</li>
+</ul>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">bet.vis package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-bet.vis.plotDomains">bet.vis.plotDomains module</a></li>
+<li><a class="reference internal" href="#module-bet.vis.plotP">bet.vis.plotP module</a></li>
+<li><a class="reference internal" href="#module-bet.vis">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="_sources/bet.vis.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
+      Last updated on Sep 15, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>

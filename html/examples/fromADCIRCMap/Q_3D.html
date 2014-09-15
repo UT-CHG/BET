@@ -1,0 +1,221 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Example: Estimate the parameter space probabiliy density with a 3D data space &mdash; BET 0.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../',
+        VERSION:     '0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BET 0.0 documentation" href="../../index.html" />
+    <link rel="next" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" href="adaptive_2D.html" />
+    <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="adaptive_2D.html" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="Q_2D.html" title="Example: Estimate the parameter space probabiliy density with a 2D data space"
+             accesskey="P">previous</a> |</li>
+        <li><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="example-estimate-the-parameter-space-probabiliy-density-with-a-3d-data-space">
+<span id="q3d"></span><h1>Example: Estimate the parameter space probabiliy density with  a 3D data space<a class="headerlink" href="#example-estimate-the-parameter-space-probabiliy-density-with-a-3d-data-space" title="Permalink to this headline">¶</a></h1>
+<p>In these examples the parameter space <span class="math">\(\Lambda \subset \mathbb{R}^3\)</span> is 3
+dimensional.</p>
+<div class="section" id="serial-example">
+<h2>Serial Example<a class="headerlink" href="#serial-example" title="Permalink to this headline">¶</a></h2>
+<p>This example demostrates how to estimate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> using
+<a class="reference internal" href="../../bet.calculateP.html#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><tt class="xref py py-meth docutils literal"><span class="pre">prob()</span></tt></a> where</p>
+<div class="math">
+\[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
+<p>See <a class="reference download internal" href="../../_downloads/Q_3D_serial.py"><tt class="xref download docutils literal"><span class="pre">Q_3D_serial.py</span></tt></a>
+for the example source code. Since example is essentially the same as
+<a class="reference internal" href="Q_2D.html#q2d"><em>Example: Estimate the parameter space probabiliy density with  a 2D data space</em></a> we will only highlight the differences between the two.</p>
+<p>Instead of loading data for a 2-dimensional parameter space we load data for a
+3-dimensional data space:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_3D&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We define the parameter domain <span class="math">\(\Lambda\)</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>Also the <tt class="docutils literal"><span class="pre">postprocess(station_nums,</span> <span class="pre">ref_num)</span></tt> function in this case only uses
+<a class="reference internal" href="../../bet.calculateP.html#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><tt class="xref py py-meth docutils literal"><span class="pre">prob()</span></tt></a>.</p>
+</div>
+<div class="section" id="parallel-example">
+<h2>Parallel Example<a class="headerlink" href="#parallel-example" title="Permalink to this headline">¶</a></h2>
+<p>This example demostrates how to estimate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> using
+<a class="reference internal" href="../../bet.calculateP.html#bet.calculateP.calculateP.prob_mc" title="bet.calculateP.calculateP.prob_mc"><tt class="xref py py-meth docutils literal"><span class="pre">prob_mc()</span></tt></a> where</p>
+<div class="math">
+\[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
+<p>See <a class="reference download internal" href="../../_downloads/Q_3D_serial.py"><tt class="xref download docutils literal"><span class="pre">Q_3D_parallel.py</span></tt></a>
+for the example source code. Since example is essentially the same as
+<a class="reference internal" href="Q_2D.html#q2d"><em>Example: Estimate the parameter space probabiliy density with  a 2D data space</em></a> we will only highlight the differences between the two.</p>
+<p>This is example takes advantage of the embarrisingly parallel nature of the
+algorithm(s) used to estimate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> and the volumes
+of <span class="math">\(\mathcal{V}_j\)</span>. To do this we need to import two additional modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bet.vis.plotP</span> <span class="kn">as</span> <span class="nn">pp</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="kn">as</span> <span class="nn">sio</span>
+<span class="kn">from</span> <span class="nn">mpi4py</span> <span class="kn">import</span> <span class="n">MPI</span>
+
+<span class="n">comm</span> <span class="o">=</span> <span class="n">MPI</span><span class="o">.</span><span class="n">COMM_WORLD</span>
+<span class="n">rank</span> <span class="o">=</span> <span class="n">comm</span><span class="o">.</span><span class="n">Get_rank</span><span class="p">()</span>
+</pre></div>
+</div>
+<p>Instead of loading data for a 2-dimensional parameter space we load data for a
+3-dimensional data space:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_3D&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We define the parameter domain <span class="math">\(\Lambda\)</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>Within the <tt class="docutils literal"><span class="pre">postprocess(station_nums,</span> <span class="pre">ref_num)</span></tt> function in this case we only use
+<a class="reference internal" href="../../bet.calculateP.html#bet.calculateP.calculateP.prob_mc" title="bet.calculateP.calculateP.prob_mc"><tt class="xref py py-meth docutils literal"><span class="pre">prob_mc()</span></tt></a>. Since this script is parallel we
+need to use <a class="reference internal" href="../../bet.vis.html#bet.vis.plotP.get_global_values" title="bet.vis.plotP.get_global_values"><tt class="xref py py-meth docutils literal"><span class="pre">get_global_values()</span></tt></a> to concatenate the arrays
+spread out across the processors into a single array:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lambda_emulate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">lambda_emulate</span><span class="p">)</span>
+<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;num_l_emulate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lambda_emulate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;P3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">P3</span><span class="p">)</span>
+<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lam_vol3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">lam_vol3</span><span class="p">)</span>
+<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;io_ptr3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">pp</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">io_ptr3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Furthermore, we only want to write out the solution using a single processor:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="n">sio</span><span class="o">.</span><span class="n">savemat</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">mdict</span><span class="p">,</span> <span class="n">do_compression</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="example-solutions">
+<h2>Example solutions<a class="headerlink" href="#example-solutions" title="Permalink to this headline">¶</a></h2>
+<p>Finally, we calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> for the 15th reference
+solution at <span class="math">\(Q = (q_1, q_5, q_2), (q_1, q_5), (q_1, q_5, q_{12}), (q_1,
+q_9, q_7),\)</span> and <span class="math">\((q_1, q_9, q_{12})\)</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ref_num</span> <span class="o">=</span> <span class="mi">14</span>
+
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c"># 1, 5, 2</span>
+<span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
+
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c"># 1, 5</span>
+<span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
+
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="c"># 1, 5, 12</span>
+<span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
+
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="c"># 1, 9, 7</span>
+<span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
+
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="c"># 1, 9, 12</span>
+<span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Example: Estimate the parameter space probabiliy density with  a 3D data space</a><ul>
+<li><a class="reference internal" href="#serial-example">Serial Example</a></li>
+<li><a class="reference internal" href="#parallel-example">Parallel Example</a></li>
+<li><a class="reference internal" href="#example-solutions">Example solutions</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="Q_2D.html"
+                        title="previous chapter">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="adaptive_2D.html"
+                        title="next chapter">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></p>
+  <h3>This Page</h3>
+  <ul class="this-page-menu">
+    <li><a href="../../_sources/examples/fromADCIRCMap/Q_3D.txt"
+           rel="nofollow">Show Source</a></li>
+  </ul>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="adaptive_2D.html" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="Q_2D.html" title="Example: Estimate the parameter space probabiliy density with a 2D data space"
+             >previous</a> |</li>
+        <li><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
+      Last updated on Sep 15, 2014.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
