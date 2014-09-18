@@ -13,7 +13,7 @@ If you have a
 `zip file <https://github.com/smattis/BET/archive/master.zip>`_ you can install
 BET using::
 
-    python setup.py --install
+    python setup.py install
 
 from the package root directory. The BET package is currently NOT avaiable in
 the `Python Package Index <http://pypi.python.org/pypi/Sphinx>`_ this may
