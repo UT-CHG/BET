@@ -2,14 +2,10 @@
 This module provides methods for creating simple funciton approximations to be
 used by :mod:`~bet.calculateP.calculateP`.
 """
-
+from bet.vis.Comm import *
 import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
-from mpi4py import MPI
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
 
 def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     """
