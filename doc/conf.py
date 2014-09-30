@@ -29,7 +29,7 @@ extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage',
 'sphinx.ext.mathjax', 'sphinx.ext.intersphinx']
 
 intersphinx_mapping = {'python': ('https://docs.python.org/2.7', None),
-        'polyadcirc' : ('http://lcgraham.github.io/PolyADCIRC/', None)
+        'polyadcirc' : ('http://ut-chg.github.io/PolyADCIRC', None)
         }
 
 todo_include_todos = True
