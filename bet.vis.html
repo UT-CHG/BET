@@ -215,22 +215,104 @@ sample batch number.</p>
 <span id="bet-vis-plotp-module"></span><h2>bet.vis.plotP module<a class="headerlink" href="#module-bet.vis.plotP" title="Permalink to this headline">¶</a></h2>
 <p>This module provides methods for plotting probabilities.</p>
 <dl class="function">
-<dt id="bet.vis.plotP.get_global_values">
-<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">get_global_values</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.get_global_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Concatenates local array into global arrays.</p>
+<dt id="bet.vis.plotP.calculate_1D_marginal_probs">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">calculate_1D_marginal_probs</tt><big>(</big><em>P_samples</em>, <em>samples</em>, <em>lam_domain</em>, <em>nbins=20</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.calculate_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates every single marginal of
+input probability measure defined by P_samples on a 1D grid.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> &#8211; Array.</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>P_samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples,)</em>) &#8211; Probabilities.</li>
+<li><strong>samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples, ndim)</em>) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
+<li><strong>nbins</strong> (<em>:int or :class:&#8217;~numpy.ndarray&#8217; of shape (ndim,)</em>) &#8211; Number of bins in each direction.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(bins, marginals)</p>
+</td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
 <dl class="function">
-<dt id="bet.vis.plotP.plot_marginal_probs">
-<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">plot_marginal_probs</tt><big>(</big><em>P_samples</em>, <em>samples</em>, <em>lam_domain</em>, <em>nbins=20</em>, <em>filename='file'</em>, <em>lam_true=None</em>, <em>plot_surface=False</em>, <em>interactive=True</em>, <em>lambda_label=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.plot_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.vis.plotP.calculate_2D_marginal_probs">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">calculate_2D_marginal_probs</tt><big>(</big><em>P_samples</em>, <em>samples</em>, <em>lam_domain</em>, <em>nbins=20</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.calculate_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates every pair of marginals (or joint in 2d case) of
+input probability measure defined by P_samples on a rectangular grid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>P_samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples,)</em>) &#8211; Probabilities.</li>
+<li><strong>samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples, ndim)</em>) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
+<li><strong>nbins</strong> (<em>:int or :class:&#8217;~numpy.ndarray&#8217; of shape (ndim,)</em>) &#8211; Number of bins in each direction.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(bins, marginals)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.get_global_values">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">get_global_values</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.get_global_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates local arrays into global array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> &#8211; Array.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">:class:&#8217;~numpy.ndarray&#8217;</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.plot_1D_marginal_probs">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">plot_1D_marginal_probs</tt><big>(</big><em>marginals</em>, <em>bins</em>, <em>lam_domain</em>, <em>filename='file'</em>, <em>lam_true=None</em>, <em>interactive=True</em>, <em>lambda_label=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.plot_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes plots of every single marginal probability of
+input probability measure defined by P_samples on a 1D  grid.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>marginals</strong> (<em>dictionary with int as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 1D marginal probabilities</li>
+<li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
+<li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Prefix for output files.</li>
+<li><strong>lam_true</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim,) or None</em>) &#8211; True parameters.</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; Whether or not to display interactive plots.</li>
+<li><strong>lambda_label</strong> (<em>list of length nbins of strings or None</em>) &#8211; Label for each parameter for plots.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.plot_2D_marginal_probs">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">plot_2D_marginal_probs</tt><big>(</big><em>marginals</em>, <em>bins</em>, <em>lam_domain</em>, <em>filename='file'</em>, <em>lam_true=None</em>, <em>plot_surface=False</em>, <em>interactive=True</em>, <em>lambda_label=None</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.plot_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This makes plots of every pair of marginals (or joint in 2d case) of
 input probability measure defined by P_samples on a rectangular grid.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -238,10 +320,13 @@ input probability measure defined by P_samples on a rectangular grid.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>P_samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples,)</em>) &#8211; Probabilities.</li>
-<li><strong>samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples, ndim)</em>) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>marginals</strong> (<em>dictionary with tuples of 2 integers as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 2D marginal probabilities</li>
+<li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,2)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
 <li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
-<li><strong>nbins</strong> (<em>:int</em>) &#8211; Number of bins in each direction.</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Prefix for output files.</li>
+<li><strong>lam_true</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim,) or None</em>) &#8211; True parameters.</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; Whether or not to display interactive plots.</li>
+<li><strong>lambda_label</strong> (<em>list of length nbins of strings or None</em>) &#8211; Label for each parameter for plots.</li>
 </ul>
 </td>
 </tr>
@@ -265,6 +350,56 @@ applies to the 2d case  w.r.t. the Voronoi cells.</p>
 <li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
 <li><strong>nbins</strong> (<em>:int</em>) &#8211; Number of bins in each direction.</li>
 </ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.smooth_marginals_1D">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">smooth_marginals_1D</tt><big>(</big><em>marginals</em>, <em>bins</em>, <em>sigma=10.0</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.smooth_marginals_1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function smooths 1D marginal probabilities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>marginals</strong> (<em>dictionary with int as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 1D marginal probabilities</li>
+<li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
+<li><strong>sigma</strong> (<em>:float or :class:&#8217;~numpy.ndarray&#8217; of shape (ndim,)</em>) &#8211; Smoothing parameter in each direction.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">dict</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">marginals_smooth</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.vis.plotP.smooth_marginals_2D">
+<tt class="descclassname">bet.vis.plotP.</tt><tt class="descname">smooth_marginals_2D</tt><big>(</big><em>marginals</em>, <em>bins</em>, <em>sigma=10.0</em><big>)</big><a class="headerlink" href="#bet.vis.plotP.smooth_marginals_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function smooths 2D marginal probabilities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>marginals</strong> (<em>dictionary with tuples of 2 integers as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 2D marginal probabilities</li>
+<li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
+<li><strong>sigma</strong> (<em>:float or :class:&#8217;~numpy.ndarray&#8217; of shape (ndim,)</em>) &#8211; Smoothing parameter in each direction.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">dict</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">marginals_smooth</p>
 </td>
 </tr>
 </tbody>
