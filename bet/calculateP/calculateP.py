@@ -10,12 +10,9 @@ measure $P_{Lambda}$.
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
     the voronoi cells using MC integration
 """
+from bet.vis.Comm import *
 import numpy as np
 import scipy.spatial as spatial
-from mpi4py import MPI
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
 
 def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     """

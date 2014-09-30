@@ -1,15 +1,11 @@
 """
 This module provides methods for plotting probabilities. 
 """
-
+from bet.vis.Comm import *
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
 import math
-from mpi4py import MPI
-comm = MPI.COMM_WORLD
-size = comm.Get_size()
-rank = comm.Get_rank()
 
 def get_global_values(array):
     """
