@@ -64,12 +64,12 @@ stations = []
 for s in station_nums:
     stations.append(all_stations[s])
 
-# Read in Q_true and Q to create the appropriate rho_D 
+# Read in Q_ref and Q to create the appropriate rho_D 
 mdat = sio.loadmat('Q_2D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
-Q_true = mdat['Q_true']
-Q_true = Q_true[15, station_nums] # 16th/20
+Q_ref = mdat['Q_true']
+Q_ref = Q_ref[15, station_nums] # 16th/20
 bin_ratio = .15
 bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
 
@@ -87,8 +87,8 @@ def model(sample):
 # Create rho_D
 maximum = 1/np.product(bin_size)
 def rho_D(outputs):
-    rho_left = np.repeat([Q_true-.5*bin_size], outputs.shape[0], 0)
-    rho_right = np.repeat([Q_true+.5*bin_size], outputs.shape[0], 0)
+    rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
+    rho_right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
     rho_left = np.all(np.greater_equal(outputs, rho_left), axis=1)
     rho_right = np.all(np.less_equal(outputs, rho_right), axis=1)
     inside = np.logical_and(rho_left, rho_right)

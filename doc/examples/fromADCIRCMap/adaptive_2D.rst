@@ -18,37 +18,98 @@ the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 
 The modules required by this example are::
 
+    import polyadcirc.run_framework.domain as dom
+    import polyadcirc.run_framework.random_wall_Q as rmw
     import numpy as np
-    import polysim.pyADCIRC.basic as basic
+    import polyadcirc.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
+    import bet.sampling.basicSampling as bsam
     import scipy.io as sio
-    import matplotlib.pyplot as plt
-    from scipy.interpolate import griddata
-    import math
+
+The next big section of code uses
+:class:`~polyadcirc.run_framework.randoma_wall_Q` to create the "model" that
+:class:`~bet.sampling.adaptiveSampling.sampler`
+interrogates for data::
+
+    adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
+    grid_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/inputs/poly_walls'
+    save_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/runs/adaptive_random_2D'
+    basis_dir = adcirc_dir +'/ADCIRC_landuse/Inlet_b2/gap/beach_walls_2lands'
+    # assume that in.prep* files are one directory up from basis_dir
+    script = "adaptive_random_2D.sh"
+    # set up saving
+    model_save_file = 'py_save_file'
+    sample_save_file = 'full_run'
+
+    # Select file s to record/save
+    timeseries_files = []#["fort.63"]
+    nontimeseries_files = ["maxele.63"]#, "timemax63"]
+
+    # NoNx12/TpN where NoN is number of nodes and TpN is tasks per node, 12 is
+    the
+    # number of cores per node See -pe line in submission_script <TpN>way<NoN x
+    # 12>
+    nprocs = 4 # number of processors per PADCIRC run
+    ppnode = 16
+    NoN = 20
+    TpN = 16 # must be 16 unless using N option
+    num_of_parallel_runs = (TpN*NoN)/nprocs
+
+    domain = dom.domain(grid_dir)
+    domain.update()
+    main_run = rmw.runSet(grid_dir, save_dir, basis_dir, num_of_parallel_runs,
+            base_dir=adcirc_dir, script_name=script)
+    main_run.initialize_random_field_directories(num_procs=nprocs)
 
 The compact (bounded, finite-dimensional) paramter space is::
 
-    # [[min \lambda_1, max \lambda_1], [min \lambda_2, max \lambda_2]]
+    # Set minima and maxima
     lam_domain = np.array([[.07, .15], [.1, .2]])
+    lam3 = 0.012
+    ymin = -1050
+    xmin = 1420
+    xmax = 1580
+    ymax = 1500
+    wall_height = -2.5
+
     param_min = lam_domain[:, 0]
     param_max = lam_domain[:, 1]
 
-In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
-(q_1(\lambda), q_6(\lambda))` using data read from a ``.mat`` :download:`file
-<../../../examples/fromFileMap/Q_2D.mat>`::
+Specify the observation stations to use to record data to be used as QoI::
 
+    # Create stations
+    stat_x = np.concatenate((1900*np.ones((7,)), [1200], 1300*np.ones((3,)),
+	[1500])) 
+    stat_y = np.array([1200, 600, 300, 0, -300, -600, -1200, 0, 1200,
+	    0, -1200, -1400])
+    all_stations = []
+    for x, y in zip(stat_x, stat_y):
+	all_stations.append(basic.location(x, y))
+
+    # Select only the stations I care about this will lead to better sampling
     station_nums = [0, 5] # 1, 6
+    stations = []
+    for s in station_nums:
+	stations.append(all_stations[s])
+
+    # Read in Q_ref and Q to create the appropriate rho_D 
     mdat = sio.loadmat('Q_2D')
     Q = mdat['Q']
     Q = Q[:, station_nums]
+
+In this example we use :class:`~polyadcirc.run_framework.random_wall_Q` for the
+QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` ::
+
     # Create experiment model
-    points = mdat['points']
-    def model(inputs):
-        interp_values = np.empty((inputs.shape[0], Q.shape[1])) 
-        for i in xrange(Q.shape[1]):
-            interp_values[:, i] = griddata(points.transpose(), Q[:, i],
-                inputs)
-        return interp_values 
+    def model(sample):
+	# box_limits [xmin, xmax, ymin, ymax, wall_height]
+	wall_points = np.outer([xmin, xmax, ymin, ymax, wall_height],
+		np.ones(sample.shape[1]))
+	# [lam1, lam2, lam3]
+	mann_pts = np.vstack((sample, lam3*np.ones(sample.shape[1])))
+	return main_run.run_nobatch_q(domain, wall_points, mann_pts,
+		model_save_file, num_procs=nprocs, procs_pnode=ppnode,
+		stations=stations, TpN=TpN)
 
 Next, we implicty designate the region of interest :math:`\Lambda_k =
 Q^{-1}(D_k)` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
@@ -56,22 +117,22 @@ through the use of some heuristic. In this instance we choose our heuristic
 :math:`p_k(Q) = \rho_\mathcal{D}(Q)`, see
 :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic`.
 
-We choose some :math:`\lambda_{true}` and let :math:`Q_{true} = Q(\lambda_{true})`::
+We choose some :math:`\lambda_{ref}` and let :math:`Q_{ref} = Q(\lambda_{ref})`::
 
-    Q_true = mdat['Q_true']
-    Q_true = Q_true[15, station_nums] # 16th/20
+    Q_ref = mdat['Q_true']
+    Q_ref = Q_ref[15, station_nums] # 16th/20
 
-We define a rectangle, :math:`R_{true} \subset \mathcal{D}` centered at
-:math:`Q(\lambda_{true})` with sides 15% the length of :math:`q_1` and
-:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}`::
+We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
+:math:`Q(\lambda_{ref})` with sides 15% the length of :math:`q_1` and
+:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}`::
 
     bin_ratio = 0.15
     bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
     # Create heuristic
     maximum = 1/np.product(bin_size)
     def rho_D(outputs):
-        rho_left = np.repeat([Q_true-.5*bin_size], outputs.shape[0], 0)
-        rho_right = np.repeat([Q_true+.5*bin_size], outputs.shape[0], 0)
+        rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
+        rho_right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
         rho_left = np.all(np.greater_equal(outputs, rho_left), axis=1)
         rho_right = np.all(np.less_equal(outputs, rho_right),axis=1)
         inside = np.logical_and(rho_left, rho_right)
@@ -126,9 +187,9 @@ omitted for brevity.
 
 We can explore several types of heuristics::
 
-    heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_true]), rho_D)
+    heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_ref]), rho_D)
     heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
-    heuristic_m = asam.maxima_heuristic(np.array([Q_true]), rho_D)
+    heuristic_m = asam.maxima_heuristic(np.array([Q_ref]), rho_D)
     heuristic_md = asam.multi_dist_heuristic()
     heur_list = [heuristic_mm, heuristic_rD, heuristic_m, heuristic_md]
     # Get samples
