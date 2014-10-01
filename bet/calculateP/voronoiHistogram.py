@@ -17,8 +17,9 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         additional two points will be added to create the bounding layer
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param double r_ratio: ratio of the length of the sides of the
+    :param r_ratio: ratio of the length of the sides of the
         hyperrectangle to the surrounding domain
+    :type r_ratio: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
@@ -30,7 +31,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         (center_pts_per_edge+2,).
 
     """
-    if r_ratio > 1:
+    if np.all(np.greater(r_ratio, 1):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
@@ -89,116 +90,6 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
 
     return (points, interior_and_layer1, rect_domain)
 
-def center_and_layer2_points(center_pts_per_edge, center, r_ratio, sur_domain):
-    """
-    Generates a regular grid of center points that define the voronoi
-    tesselation of exactly the interior of a hyperrectangle centered at
-    ``center`` with sides of length ``r_ratio*sur_width`` and the layers
-    of voronoi cells that bound these interior cells. The resulting voronoi
-    tesselation exactly represents the hyperrectangle. The bounding voronoi
-    cells are made finite by bounding them with an  additional layer to
-    represent ``sur_domain``.
-    
-    This method can also be used to tile ``sur_domain`` with points to define
-    voronoi regions if the user sets ``r_ratio = 1``.
-
-    :param list() center_pts_per_edge: number of center points per edge and
-        additional two points will be added to create the bounding layer
-    :param center: location of the center of the hyperrectangle
-    :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param double r_ratio: ratio of the length of the sides of the
-        hyperrectangle to the surrounding domain
-    :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain
-    :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
-
-    :rtype: tuple
-    :returns (points, interior_and_layer1, interior_and_doublelayer) where
-        where points is an :class:`numpy.ndarray` of shape (num_points, dim),
-        interior_and_layer1 and interior_and_layer2 are lists of dim
-        :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,) and
-        (center_pts_per_edge+4,) respectively.
-
-    """
-    if r_ratio > 1:
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    # determine the width of the surrounding domain
-    sur_width = sur_domain[:, 1]-sur_domain[:, 0]
-    # determine the hyperrectangle defined by center and r_ratio
-    rect_width = r_ratio*sur_width
-    rect_domain = np.empty(sur_domain.shape)
-    rect_domain[:, 0] = center - .5*rect_width
-    rect_domain[:, 1] = center + .5*rect_width
-    
-    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-
-    # determine the locations of the points for the 1st bounding layer
-    layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
-    layer1_right = rect_domain[:, 1]+rect_width/(2*center_pts_per_edge)
-
-    if r_ratio < 1:
-        # determine the distance from the 1st layer to the boundary of the
-        # surrounding domain
-        dist2sur_left = sur_domain[:, 0]-layer1_left
-        dist2sur_right = sur_domain[:, 1]-layer1_right
-
-        # detemine the locations of the points for the 2nd boundary layer
-        layer2_left = layer1_left + 2*dist2sur_left
-        layer2_right = layer1_right + 2*dist2sur_right
-
-    interior_and_layer1 = list()
-    interior_and_doublelayer = list()
-    for dim in xrange(sur_domain.shape[0]):
-        # create interior points and 1st layer
-        int_l1 = np.linspace(layer1_left[dim],
-            layer1_right[dim], center_pts_per_edge[dim]+2)
-        interior_and_layer1.append(int_l1)
-        if r_ratio < 1:
-            # add layers together using indexing fu
-            int_l2 = np.zeros((int_l1.shape[0]+2,))
-            int_l2[1:-1] = int_l1
-            int_l2[0] = layer2_left[dim]
-            int_l2[-1] = layer2_right[dim]
-            interior_and_doublelayer.append(int_l2)
-        else:
-            interior_and_doublelayer.append(int_l1)
-
-    # use meshgrid to make the hyperrectangle shells
-    # TODO: add a nice mdimensional implementation
-    if sur_domain.shape[0] == 1:
-        points = interior_and_doublelayer[0]
-    elif sur_domain.shape[0] == 2:
-        x, y = np.meshgrid(interior_and_doublelayer[0],
-                interior_and_doublelayer[1], indexing='ij')
-        points = np.column_stack((x.ravel(), y.ravel()))
-    elif sur_domain.shape[0] == 3:
-        x, y, z = np.meshgrid(interior_and_doublelayer[0],
-                interior_and_doublelayer[1], interior_and_doublelayer[2],
-                indexing='ij') 
-        points = np.column_stack((x.ravel(), y.ravel(), z.ravel()))
-    elif sur_domain.shape[0] == 4:
-        x, y, z, u = np.meshgrid(interior_and_doublelayer[0],
-                interior_and_doublelayer[1], interior_and_doublelayer[2],
-                interior_and_doublelayer[3], indexing='ij')
-        points = np.column_stack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
-    else:
-        points = None
-        print "There is no current implementation for dimension > 4."
-
-    return (points, interior_and_layer1, interior_and_doublelayer)
-
 def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     """
     Generates a sequence of arrays describing the edges of the finite voronoi
@@ -217,8 +108,9 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
         additional two points will be added to create the bounding layer
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param double r_ratio: ratio of the length of the sides of the
+    :param r_ratio: ratio of the length of the sides of the
         hyperrectangle to the surrounding domain
+    :type r_ratio: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
@@ -231,7 +123,7 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
         (center_pts_per_edge+4,) respectively.
 
     """
-    if r_ratio > 1:
+    if np.all(np.greater(r_ratio, 1):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
@@ -262,7 +154,7 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
         int_l1 = np.linspace(rect_domain[dim, 0],
             rect_domain[dim, 1], center_pts_per_edge[dim]+1)
         rect_edges.append(int_l1)
-        if r_ratio < 1:
+        if np.all(np.less(r_ratio, 1)):
             # add layers together using indexing fu
             int_l2 = np.zeros((int_l1.shape[0]+2,))
             int_l2[1:-1] = int_l1

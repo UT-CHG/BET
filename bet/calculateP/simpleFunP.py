@@ -9,16 +9,17 @@ import bet.calculateP.voronoiHistogram as vHist
 
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}` where :math:`\rho_{\mathcal{D},M}` is a
     uniform probability density centered at Q_ref with bin_ratio of the width
     of D using M uniformly spaced bins.
 
-    :param int M: Defines number M samples in D used to define rho_{D,M}
+    :param int M: Defines number M samples in D used to define :math:`\rho_{\mathcal{D},M}`
         The choice of M is something of an "art" - play around with it
         and you can get reasonable results with a relatively small
         number here like 50.
-    :param double bin_ratio: The ratio used to determine the width of the
+    :param bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
+    :type bin_ratio: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param data: Array containing QoI data where the QoI is mdim
@@ -39,7 +40,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     data_min = np.min(data, 0)
     bin_size = (data_max-data_min)*bin_ratio
 
-    # Create M samples defining M bins in D used to define rho_{D,M}
+    # Create M samples defining M bins in D used to define :math:`\rho_{\mathcal{D},M}`
     # This choice of rho_D was based on looking at Q(Lambda) and getting a
     # sense of what a reasonable amount of error was for this problem. Notice I
     # use uniform distributions of various lengths depending on which
@@ -57,7 +58,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         d_distr_samples = None
     d_distr_samples = comm.bcast(d_distr_samples, root=0)
 
-    # Now compute probabilities for rho_{D,M} by sampling from rho_D
+    # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation
     num_d_emulate = int(num_d_emulate/size)+1
     d_distr_emulate = bin_size*(np.random.random((num_d_emulate,
@@ -72,7 +73,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Now define probability of the d_distr_samples
-    # This together with d_distr_samples defines rho_{D,M}
+    # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
     count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
             op=MPI.SUM) 
     rho_D_M = count_neighbors / (num_d_emulate*size)
@@ -124,12 +125,12 @@ def multivariate_gaussian(x, mean, std):
 
 def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}` where :math:`\rho_{\mathcal{D},M}` is a
     multivariate normal probability density centered at Q_ref with 
     standard deviation std using M bins sampled from the given normal 
     distribution.
 
-    :param int M: Defines number M samples in D used to define rho_{D,M}
+    :param int M: Defines number M samples in D used to define :math:`\rho_{\mathcal{D},M}`
         The choice of M is something of an "art" - play around with it
         and you can get reasonable results with a relatively small
         number here like 50.
@@ -147,7 +148,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
 
     """
     import scipy.stats as stats
-    # Create M smaples defining M bins in D used to define rho_{D,M}
+    # Create M smaples defining M bins in D used to define :math:`\rho_{\mathcal{D},M}`
     # rho_D is assumed to be a multi-variate normal distribution with mean
     # Q_ref and standard deviation std.
 
@@ -160,7 +161,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     d_distr_samples = comm.bcast(d_distr_samples, root=0)
 
  
-    # Now compute probabilities for rho_{D,M} by sampling from rho_D
+    # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation  
     num_d_emulate = int(num_d_emulate/size)+1
     d_distr_emulate = np.zeros((num_d_emulate, len(Q_ref)))
@@ -182,7 +183,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
         volumes[i] = np.sum(1.0/stats.multivariate_normal.pdf(d_distr_emulate[Itemp, 
             :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
-    # This together with d_distr_samples defines rho_{D,M}
+    # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
     count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
             op=MPI.SUM) 
     volumes = comm.allreduce(volumes, volumes, op=MPI.SUM)
@@ -196,12 +197,12 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
 
 def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}` where :math:`\rho_{\mathcal{D},M}` is a
     multivariate normal probability density centered at Q_ref with 
     standard deviation std using M bins sampled from a uniform distribution
     with a size 4 standard deviations in each direction.
 
-    :param int M: Defines number M samples in D used to define rho_{D,M}
+    :param int M: Defines number M samples in D used to define :math:`\rho_{\mathcal{D},M}`
         The choice of M is something of an "art" - play around with it
         and you can get reasonable results with a relatively small
         number here like 50.
@@ -219,7 +220,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
 
     """
     import scipy.stats as stats
-    # Create M smaples defining M bins in D used to define rho_{D,M}
+    # Create M smaples defining M bins in D used to define :math:`\rho_{\mathcal{D},M}`
     # rho_D is assumed to be a multi-variate normal distribution with mean
     # Q_ref and standard deviation std.
 
@@ -231,7 +232,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     d_distr_samples = comm.bcast(d_distr_samples, root=0)
 
  
-    # Now compute probabilities for rho_{D,M} by sampling from rho_D
+    # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation  
     num_d_emulate = int(num_d_emulate/size)+1
     d_distr_emulate = np.zeros((num_d_emulate, len(Q_ref)))
@@ -252,7 +253,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
         count_neighbors[i] = np.sum(Itemp)
         
     # Now define probability of the d_distr_samples
-    # This together with d_distr_samples defines rho_{D,M}
+    # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
     count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
             op=MPI.SUM) 
     rho_D_M = count_neighbors/(size*num_d_emulate)
@@ -266,18 +267,64 @@ def gaussian_unif(data, Q_ref, std, nbins, num_d_emulate=1E6):
     pass
     #return (d_distr_prob, d_distr_samples, d_Tree)
 
+def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
+    """
+    Creates a simple funciton appoximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
+    hyperrectangular domain specified by domain.
+
+    Since :math:`\rho_\mathcal{D}` is a uniform distribution on a
+    hyperrectangle we should we able to represent it exactly with
+    :math:`M=3^{m}` where m is the dimension of the data space or rather
+    ``len(d_distr_samples) == 3**mdim`.
+
+    :param data: Array containing QoI data where the QoI is mdim diminsional
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param domain: The domain overwhich :math:`\rho_\mathcal{D}` is
+        uniform.
+    :type domain: :class:`numpy.ndarray` of shape (2, mdim)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    """
+    # determine the center of the domain
+    if len(domain.shape) == 1:
+        domain = np.expand_dims(domain, axis=1)
+    domain_center = np.mean(domain, 0)
+    domain_min = np.min(domain, 0)
+    domain_max = np.max(domain, 0)
+    domain_lengths = domain_max - domain_min
+   
+    # determine the ratio of the lengths of the domain to the lengths of the
+    # hyperrectangle containing the data
+     if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1)
+    data_max = np.max(data, 0)
+    data_min = np.min(data, 0)
+    data_lengths = data_max - data_min
+    bin_ratios = domain_lengths/data_lengths
+
+    return uniform_hyperrectangle(data, domain_center, bin_ratios,
+            center_pts_per_edge)
+
 def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    uniform probability density centered at Q_ref with bin_ratio of the width
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
+    centered at Q_ref with bin_ratio of the width
     of D.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
     to represent it exactly with ``M = 3^mdim`` or rather
     ``len(d_distr_samples) == 3^mdim``.
 
-    :param double bin_ratio: The ratio used to determine the width of the
+    :param bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
+    :type bin_ratio: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param data: Array containing QoI data where the QoI is mdim diminsional
@@ -289,8 +336,8 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
     if len(data.shape) == 1:
@@ -310,10 +357,11 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
 
 def uniform_datadomain(data_domain, center_pts_per_edge=1):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    uniform probability density over the entire ``data_domain``. Since rho_D is
-    a uniform distribution on a hyperrectanlge we should be able to represent
-    it exactly with ``M = 3^mdim`` or rather ``len(d_distr_samples) ==
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
+    the entire ``data_domain``. Since rho_D is a uniform distribution on a
+    hyperrectanlge we should be able to represent it exactly with ``M =
+    3^mdim`` or rather ``len(d_distr_samples) ==
     3^mdim``.
     
     :param data_domain: The domain for each QoI of the model.
@@ -327,8 +375,8 @@ def uniform_datadomain(data_domain, center_pts_per_edge=1):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     
     """
     if len(data.shape) == 1:
@@ -346,12 +394,13 @@ def uniform_datadomain(data_domain, center_pts_per_edge=1):
 
 def uniform_data_minmax(data, center_pts_per_edge=1):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    uniform probability density over the entire ``data_domain``. Here the
-    ``data_domain`` is the hyperrectangle defined by minima and maxima of the
-    ``data`` in each dimension. Since rho_D is a uniform distribution on a
-    hyperrectanlge we should be able to represent it exactly with ``M =
-    3^mdim`` or rather ``len(d_distr_samples) == 3^mdim``.
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
+    the entire ``data_domain``. Here the ``data_domain`` is the hyperrectangle
+    defined by minima and maxima of the ``data`` in each dimension. Since rho_D
+    is a uniform distribution on a hyperrectanlge we should be able to
+    represent it exactly with ``M = 3^mdim`` or rather ``len(d_distr_samples)
+    == 3^mdim``.
     
     :param data: Array containing QoI data where the QoI is mdim diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
@@ -360,8 +409,8 @@ def uniform_data_minmax(data, center_pts_per_edge=1):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1)
@@ -374,12 +423,13 @@ def uniform_data_minmax(data, center_pts_per_edge=1):
 
 def uniform_data(data):
     """
-    Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    uniform probability density over the entire ``data_domain``. Here the
-    ``data_domain`` is the union of voronoi cells defined by ``data``. In other
-    words we assign each sample the same probability, so ``M = len(data)`` or
-    rather ``len(d_distr_samples) == len(data)``. The purpose of this method is
-    to approximate uniform distributions over irregularly shaped domains.
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
+    the entire ``data_domain``. Here the ``data_domain`` is the union of
+    voronoi cells defined by ``data``. In other words we assign each sample the
+    same probability, so ``M = len(data)`` or rather ``len(d_distr_samples) ==
+    len(data)``. The purpose of this method is to approximate uniform
+    distributions over irregularly shaped domains.
     
     :param data: Array containing QoI data where the QoI is mdim diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
@@ -388,8 +438,8 @@ def uniform_data(data):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     d_distr_prob = np.ones((data.shape[1],))
     if len(data.shape) == 1:
