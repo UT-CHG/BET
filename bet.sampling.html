@@ -60,10 +60,10 @@ inverse mapping. Each sample consists of a parameter coordinate, data
 coordinate pairing. We assume the measure of both spaces is Lebesgue.</p>
 <p>We employ an approach based on using multiple sample chains.</p>
 <dl class="class">
-<dt id="bet.sampling.adaptiveSampling.heuristic">
-<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">heuristic</tt><big>(</big><em>tolerance=1e-08</em>, <em>increase=1.0</em>, <em>decrease=1.0</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.heuristic" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.kernel">
+<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">kernel</tt><big>(</big><em>tolerance=1e-08</em>, <em>increase=1.0</em>, <em>decrease=1.0</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
-<p>Parent class for heuristics to determine change in step size. This class
+<p>Parent class for kernels to determine change in step size. This class
 provides a method for determining the proposed change in step size. Since
 this is simply a skeleton parent class it does not change the step size at
 all.</p>
@@ -76,8 +76,8 @@ all.</p>
 <dd>the multiple to decrease the step size by</dd>
 </dl>
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.heuristic.delta_step">
-<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>heur_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.heuristic.delta_step" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.kernel.delta_step">
+<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>kern_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -85,14 +85,14 @@ all.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_new</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>heur_old</strong> &#8211; heuristic evaluated at previous step</li>
+<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">typle</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(heur_new, proposal)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
 </td>
 </tr>
 </tbody>
@@ -102,15 +102,15 @@ all.</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="bet.sampling.adaptiveSampling.heuristics">
-<tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">heuristics</tt><big>(</big><em>Q_true</em>, <em>rho_D</em>, <em>maximum</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.heuristics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a list of heurstic objects.</p>
+<dt id="bet.sampling.adaptiveSampling.kernels">
+<tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">kernels</tt><big>(</big><em>Q_ref</em>, <em>rho_D</em>, <em>maximum</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a list of kernstic objects.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Q_true</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; true parameter value</li>
+<li><strong>Q_ref</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></tt>) &#8211; reference parameter value</li>
 <li><strong>rho_D</strong> (callable function that takes a <tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> and returns
 a class:<cite>np.ndarray</cite>) &#8211; probability density on D</li>
 <li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
@@ -120,8 +120,8 @@ a class:<cite>np.ndarray</cite>) &#8211; probability density on D</li>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list()</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[maxima_mean_heuristic, rhoD_heuristic, maxima_heuristic,
-multi_dist_heuristic]</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[maxima_mean_kernel, rhoD_kernel, maxima_kernel,
+multi_dist_kernel]</p>
 </td>
 </tr>
 </tbody>
@@ -155,9 +155,9 @@ returns data</li>
 </dd></dl>
 
 <dl class="class">
-<dt id="bet.sampling.adaptiveSampling.maxima_heuristic">
-<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">maxima_heuristic</tt><big>(</big><em>maxima</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_heuristic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.heuristic" title="bet.sampling.adaptiveSampling.heuristic"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.heuristic</span></tt></a></p>
+<dt id="bet.sampling.adaptiveSampling.maxima_kernel">
+<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">maxima_kernel</tt><big>(</big><em>maxima</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></tt></a></p>
 <p>We assume we know the maxima of the distribution rho_D on the QoI and that
 the goal is to determine inverse regions of high probability accurately (in
 terms of getting the measure correct). This class provides a method for
@@ -179,8 +179,8 @@ np.array of shape (num_maxima, mdim)</dd>
 <dd>the multiple to decrease the step size by</dd>
 </dl>
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.maxima_heuristic.delta_step">
-<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>heur_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_heuristic.delta_step" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.maxima_kernel.delta_step">
+<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>kern_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -188,14 +188,14 @@ np.array of shape (num_maxima, mdim)</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_new</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>heur_old</strong> &#8211; heuristic evaluated at previous step</li>
+<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(heur_new, proposal)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
 </td>
 </tr>
 </tbody>
@@ -205,9 +205,9 @@ np.array of shape (num_maxima, mdim)</dd>
 </dd></dl>
 
 <dl class="class">
-<dt id="bet.sampling.adaptiveSampling.maxima_mean_heuristic">
-<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">maxima_mean_heuristic</tt><big>(</big><em>maxima</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_heuristic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.maxima_heuristic" title="bet.sampling.adaptiveSampling.maxima_heuristic"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.maxima_heuristic</span></tt></a></p>
+<dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel">
+<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">maxima_mean_kernel</tt><big>(</big><em>maxima</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.maxima_kernel" title="bet.sampling.adaptiveSampling.maxima_kernel"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.maxima_kernel</span></tt></a></p>
 <p>We assume we know the maxima of the distribution rho_D on the QoI and that
 the goal is to determine inverse regions of high probability accurately (in
 terms of getting the measure correct). This class provides a method for
@@ -229,8 +229,8 @@ np.array of shape (num_maxima, mdim)</dd>
 <dd>the multiple to decrease the step size by</dd>
 </dl>
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.maxima_mean_heuristic.delta_step">
-<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>heur_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_heuristic.delta_step" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.delta_step">
+<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>kern_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -238,14 +238,14 @@ np.array of shape (num_maxima, mdim)</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_new</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>heur_old</strong> &#8211; heuristic evaluated at previous step</li>
+<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(heur_new, proposal)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
 </td>
 </tr>
 </tbody>
@@ -253,8 +253,8 @@ np.array of shape (num_maxima, mdim)</dd>
 </dd></dl>
 
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.maxima_mean_heuristic.reset">
-<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_heuristic.reset" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the the batch number and the estimates of the mean and maximum
 distance from the mean.</p>
 </dd></dl>
@@ -262,9 +262,9 @@ distance from the mean.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="bet.sampling.adaptiveSampling.multi_dist_heuristic">
-<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">multi_dist_heuristic</tt><big>(</big><em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.multi_dist_heuristic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.heuristic" title="bet.sampling.adaptiveSampling.heuristic"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.heuristic</span></tt></a></p>
+<dt id="bet.sampling.adaptiveSampling.multi_dist_kernel">
+<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">multi_dist_kernel</tt><big>(</big><em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.multi_dist_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></tt></a></p>
 <p>The goal is to make a sampling that is robust to different types of
 distributions on QoI, i.e., we do not know a priori where the regions of
 high probability are in D. This class provides a method for determining the
@@ -291,8 +291,8 @@ sensitivity, so take larger step sizes.</p>
 <dd>the multiple to decrease the step size by</dd>
 </dl>
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.multi_dist_heuristic.delta_step">
-<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>heur_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.multi_dist_heuristic.delta_step" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.multi_dist_kernel.delta_step">
+<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>kern_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.multi_dist_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -300,14 +300,14 @@ sensitivity, so take larger step sizes.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_new</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>heur_old</strong> &#8211; QoI evaluated at previous step</li>
+<li><strong>kern_old</strong> &#8211; QoI evaluated at previous step</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(heur_new, proposal)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
 </td>
 </tr>
 </tbody>
@@ -315,8 +315,8 @@ sensitivity, so take larger step sizes.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.multi_dist_heuristic.reset">
-<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.multi_dist_heuristic.reset" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.multi_dist_kernel.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.multi_dist_kernel.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the the batch number and the estimates of the mean and maximum
 distance from the mean.</p>
 </dd></dl>
@@ -324,9 +324,9 @@ distance from the mean.</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="bet.sampling.adaptiveSampling.rhoD_heuristic">
-<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">rhoD_heuristic</tt><big>(</big><em>maximum</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_heuristic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.heuristic" title="bet.sampling.adaptiveSampling.heuristic"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.heuristic</span></tt></a></p>
+<dt id="bet.sampling.adaptiveSampling.rhoD_kernel">
+<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">rhoD_kernel</tt><big>(</big><em>maximum</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><tt class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></tt></a></p>
 <p>We assume we know the distribution rho_D on the QoI and that the goal is to
 determine inverse regions of high probability accurately (in terms of
 getting the measure correct). This class provides a method for determining
@@ -348,8 +348,8 @@ closer, then we can reduce the step_size(k) by 1/2.</p>
 <dd>the multiple to decrease the step size by</dd>
 </dl>
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.rhoD_heuristic.delta_step">
-<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>heur_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_heuristic.delta_step" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.rhoD_kernel.delta_step">
+<tt class="descname">delta_step</tt><big>(</big><em>data_new</em>, <em>kern_old=None</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -357,14 +357,14 @@ closer, then we can reduce the step_size(k) by 1/2.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data_new</strong> (<tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>heur_old</strong> &#8211; heuristic evaluated at previous step</li>
+<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(heur_new, proposal)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
 </td>
 </tr>
 </tbody>
@@ -390,7 +390,7 @@ parameter samples and returns data</dd>
 </dl>
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.generalized_chains">
-<tt class="descname">generalized_chains</tt><big>(</big><em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>heur</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">generalized_chains</tt><big>(</big><em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>kern</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic adaptive sampling algorithm using generalized chains.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -403,7 +403,7 @@ latin hypercube(lhs), or space-filling curve(TBD)</li>
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
 <li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>heur</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kern</strong> (<em>function</em>) &#8211; functional that acts on the data used to
 determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; latin hypercube criterion see 
@@ -425,7 +425,7 @@ and <tt class="docutils literal"><span class="pre">data_samples</span></tt> is n
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.reseed_chains">
-<tt class="descname">reseed_chains</tt><big>(</big><em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>heur</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em>, <em>reseed=1</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.reseed_chains" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">reseed_chains</tt><big>(</big><em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>kern</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em>, <em>reseed=1</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.reseed_chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic adaptive sampling algorithm.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -438,7 +438,7 @@ latin hypercube(lhs), or space-filling curve(TBD)</li>
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
 <li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>heur</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kern</strong> (<em>function</em>) &#8211; functional that acts on the data used to
 determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <p>latin hypercube criterion see 
@@ -462,15 +462,15 @@ and <tt class="docutils literal"><span class="pre">data_samples</span></tt> is n
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.run_gen">
-<tt class="descname">run_gen</tt><big>(</big><em>heur_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_gen" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run_gen</tt><big>(</big><em>kern_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_gen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using generalized chains and a list of different
-heuristics.</p>
+kernels.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>heur_list</strong> (<em>list()</em>) &#8211; List of heuristics.</li>
+<li><strong>kern_list</strong> (<em>list()</em>) &#8211; List of kernels.</li>
 <li><strong>rho_D</strong> (callable function that takes a <tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> and
 returns a <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt>) &#8211; probability density on D</li>
 <li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
@@ -478,7 +478,7 @@ returns a <tt class="xref py py-class docutils literal"><span class="pre">numpy.
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
 <li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>heuristic</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kernel</strong> (<em>function</em>) &#8211; functional that acts on the data used to
 determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -514,7 +514,7 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 <dt id="bet.sampling.adaptiveSampling.sampler.run_inc_dec">
 <tt class="descname">run_inc_dec</tt><big>(</big><em>increase</em>, <em>decrease</em>, <em>tolerance</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_inc_dec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using generalized chains and
-<a class="reference internal" href="#bet.sampling.adaptiveSampling.rhoD_heuristic" title="bet.sampling.adaptiveSampling.rhoD_heuristic"><tt class="xref py py-class docutils literal"><span class="pre">rhoD_heuristic</span></tt></a> created using
+<a class="reference internal" href="#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><tt class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></tt></a> created using
 the <cite>increase</cite>, <cite>decrease</cite>, and <cite>tolerance</cite> parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -532,7 +532,7 @@ returns a <tt class="xref py py-class docutils literal"><span class="pre">numpy.
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
 <li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>heuristic</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kernel</strong> (<em>function</em>) &#8211; functional that acts on the data used to
 determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -566,15 +566,15 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.run_reseed">
-<tt class="descname">run_reseed</tt><big>(</big><em>heur_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em>, <em>reseed=3</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_reseed" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run_reseed</tt><big>(</big><em>kern_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em>, <em>reseed=3</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_reseed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using reseeded chains and a list of different
-heuristics.</p>
+kernels.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>heur_list</strong> (<em>list()</em>) &#8211; List of heuristics.</li>
+<li><strong>kern_list</strong> (<em>list()</em>) &#8211; List of kernels.</li>
 <li><strong>rho_D</strong> (callable function that takes a <tt class="xref py py-class docutils literal"><span class="pre">np.array</span></tt> and
 returns a <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt>) &#8211; probability density on D</li>
 <li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
@@ -582,7 +582,7 @@ returns a <tt class="xref py py-class docutils literal"><span class="pre">numpy.
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
 <li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>heuristic</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kernel</strong> (<em>function</em>) &#8211; functional that acts on the data used to
 determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -616,9 +616,9 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.run_tk">
-<tt class="descname">run_tk</tt><big>(</big><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>heuristic</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_tk" title="Permalink to this definition">¶</a></dt>
+<tt class="descname">run_tk</tt><big>(</big><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_tk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using generalized chains and
-<tt class="xref py py-class docutils literal"><span class="pre">transition_kernel</span></tt> created using
+<tt class="xref py py-class docutils literal"><span class="pre">transition_set</span></tt> created using
 the <cite>init_ratio</cite>, <cite>min_ratio</cite>, and <cite>max_ratio</cite> parameters.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -638,7 +638,7 @@ returns a <tt class="xref py py-class docutils literal"><span class="pre">numpy.
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
 <li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>heuristic</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kernel</strong> (<em>function</em>) &#8211; functional that acts on the data used to
 determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -687,15 +687,15 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 </dd></dl>
 
 <dl class="class">
-<dt id="bet.sampling.adaptiveSampling.transition_kernel">
-<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">transition_kernel</tt><big>(</big><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_kernel" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.transition_set">
+<em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">transition_set</tt><big>(</big><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
 <p>Basic class that is used to create a step to move from samples_old to
 samples_new based. This class generates steps for a random walk using a
 very basic algorithm. Future classes will inherit from this one with
 different implementations of the
 :meth:~`polysim.run_framework.apdative_sampling.step` method.</p>
-<p>This basic transition kernel is designed without a preferential direction.</p>
+<p>This basic transition set is designed without a preferential direction.</p>
 <dl class="docutils">
 <dt>init_ratio</dt>
 <dd>Initial step size ratio compared to the parameter domain.</dd>
@@ -705,8 +705,8 @@ different implementations of the
 <dd>Maximum step size compared to the maximum step size.</dd>
 </dl>
 <dl class="method">
-<dt id="bet.sampling.adaptiveSampling.transition_kernel.step">
-<tt class="descname">step</tt><big>(</big><em>step_ratio</em>, <em>param_width</em>, <em>param_left</em>, <em>param_right</em>, <em>samples_old</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_kernel.step" title="Permalink to this definition">¶</a></dt>
+<dt id="bet.sampling.adaptiveSampling.transition_set.step">
+<tt class="descname">step</tt><big>(</big><em>step_ratio</em>, <em>param_width</em>, <em>param_left</em>, <em>param_right</em>, <em>samples_old</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate <tt class="docutils literal"><span class="pre">num_samples</span></tt> new steps using <tt class="docutils literal"><span class="pre">step_ratio</span></tt> and
 <tt class="docutils literal"><span class="pre">param_width</span></tt> to calculate the <tt class="docutils literal"><span class="pre">step</span> <span class="pre">size</span></tt>. Each step will have a
 random direction.</p>
@@ -888,10 +888,6 @@ latin hypercube(lhs), regular grid (rg), or space-filling
 curve(TBD)</li>
 <li><strong>param_min</strong> (<em>np.array (ndim,)</em>) &#8211; minimum value for each parameter dimension</li>
 <li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
-<li><strong>t_kernel</strong> (<em>:class:~`t_kernel`</em>) &#8211; method for creating new parameter steps using
-given a step size based on the paramter domain size</li>
-<li><strong>heuristic</strong> (<em>function</em>) &#8211; functional that acts on the data used to
-determine the proposed change to the <tt class="docutils literal"><span class="pre">step_size</span></tt></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <p>latin hypercube criterion see 
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
@@ -1051,7 +1047,7 @@ at a specified set of parameter samples.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Sep 30, 2014.
+      Last updated on Oct 01, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

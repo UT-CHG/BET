@@ -98,35 +98,35 @@ the QoI map <span class="math">\(Q(\lambda) = (q_1(\lambda), q_6(\lambda))\)</sp
 </div>
 <p>Next, we implicty designate the region of interest <span class="math">\(\Lambda_k =
 Q^{-1}(D_k)\)</span> in <span class="math">\(\Lambda\)</span> for some <span class="math">\(D_k \subset \mathcal{D}\)</span>
-through the use of some heuristic. In this instance we choose our heuristic
+through the use of some kernel. In this instance we choose our kernel
 <span class="math">\(p_k(Q) = \rho_\mathcal{D}(Q)\)</span>, see
-<a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_heuristic" title="bet.sampling.adaptiveSampling.rhoD_heuristic"><tt class="xref py py-class docutils literal"><span class="pre">rhoD_heuristic</span></tt></a>.</p>
-<p>We choose some <span class="math">\(\lambda_{true}\)</span> and let <span class="math">\(Q_{true} = Q(\lambda_{true})\)</span>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Q_true</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q_true&#39;</span><span class="p">]</span>
-<span class="n">Q_true</span> <span class="o">=</span> <span class="n">Q_true</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span> <span class="c"># 16th/20</span>
+<a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><tt class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></tt></a>.</p>
+<p>We choose some <span class="math">\(\lambda_{ref}\)</span> and let <span class="math">\(Q_{ref} = Q(\lambda_{ref})\)</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Q_ref</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q_true&#39;</span><span class="p">]</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span> <span class="c"># 16th/20</span>
 </pre></div>
 </div>
-<p>We define a rectangle, <span class="math">\(R_{true} \subset \mathcal{D}\)</span> centered at
-<span class="math">\(Q(\lambda_{true})\)</span> with sides 15% the length of <span class="math">\(q_1\)</span> and
-<span class="math">\(q_6\)</span>. Set <span class="math">\(\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}\)</span>:</p>
+<p>We define a rectangle, <span class="math">\(R_{ref} \subset \mathcal{D}\)</span> centered at
+<span class="math">\(Q(\lambda_{ref})\)</span> with sides 15% the length of <span class="math">\(q_1\)</span> and
+<span class="math">\(q_6\)</span>. Set <span class="math">\(\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}\)</span>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.15</span>
 <span class="n">bin_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">*</span><span class="n">bin_ratio</span>
-<span class="c"># Create heuristic</span>
+<span class="c"># Create kernel</span>
 <span class="n">maximum</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">bin_size</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">rho_D</span><span class="p">(</span><span class="n">outputs</span><span class="p">):</span>
-    <span class="n">rho_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">Q_true</span><span class="o">-.</span><span class="mi">5</span><span class="o">*</span><span class="n">bin_size</span><span class="p">],</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="n">rho_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">Q_true</span><span class="o">+.</span><span class="mi">5</span><span class="o">*</span><span class="n">bin_size</span><span class="p">],</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">rho_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">Q_ref</span><span class="o">-.</span><span class="mi">5</span><span class="o">*</span><span class="n">bin_size</span><span class="p">],</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
+    <span class="n">rho_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">Q_ref</span><span class="o">+.</span><span class="mi">5</span><span class="o">*</span><span class="n">bin_size</span><span class="p">],</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
     <span class="n">rho_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">greater_equal</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">rho_left</span><span class="p">),</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">rho_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">rho_right</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">rho_left</span><span class="p">,</span> <span class="n">rho_right</span><span class="p">)</span>
     <span class="n">max_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">inside</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">max_values</span>
 
-<span class="n">heuristic_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_heuristic</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
+<span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Given a (M, mdim) data vector
-<a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_heuristic" title="bet.sampling.adaptiveSampling.rhoD_heuristic"><tt class="xref py py-class docutils literal"><span class="pre">rhoD_heuristic</span></tt></a> expects that <tt class="docutils literal"><span class="pre">rho_D</span></tt>
+<a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><tt class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></tt></a> expects that <tt class="docutils literal"><span class="pre">rho_D</span></tt>
 will return a <tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (M,).</p>
 <p>Next, we create the <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><tt class="xref py py-mod docutils literal"><span class="pre">sampler</span></tt></a>. This
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><tt class="xref py py-mod docutils literal"><span class="pre">sampler</span></tt></a> will create 80 independent
@@ -138,12 +138,12 @@ sampling chains that are each 125 samples long:</p>
 <span class="n">sampler</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">chain_length</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We create the <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.transition_kernel" title="bet.sampling.adaptiveSampling.transition_kernel"><tt class="xref py py-mod docutils literal"><span class="pre">transition_kernel</span></tt></a> with an
+<p>We create the <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><tt class="xref py py-mod docutils literal"><span class="pre">transition_set</span></tt></a> with an
 initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 <tt class="docutils literal"><span class="pre">.5**5</span></tt> and 1.0 respectively. Note that this algorithm will not generate
 samples out side of the bounded parameter domain, <tt class="docutils literal"><span class="pre">lambda_domain</span></tt></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Create Transition Kernel</span>
-<span class="n">transition_kernel</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">transition_kernel</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">transition_set</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">transition_set</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We choose an initial sample type to seed the sampling chains:</p>
@@ -153,7 +153,7 @@ samples out side of the bounded parameter domain, <tt class="docutils literal"><
 <p>Finally, we adaptively generate the samples using
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="bet.sampling.adaptiveSampling.sampler.generalized_chains"><tt class="xref py py-meth docutils literal"><span class="pre">generalized_chains()</span></tt></a>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">all_step_ratios</span><span class="p">)</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">generalized_chains</span><span class="p">(</span><span class="n">param_min</span><span class="p">,</span>
-    <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_kernel</span><span class="p">,</span> <span class="n">heuristic_rD</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">,</span>
+    <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_set</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">,</span>
     <span class="n">inital_sample_type</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -161,56 +161,56 @@ samples out side of the bounded parameter domain, <tt class="docutils literal"><
 <div class="section" id="generating-and-comparing-several-sets-of-adaptive-samples">
 <h2>Generating and comparing several sets of adaptive samples<a class="headerlink" href="#generating-and-comparing-several-sets-of-adaptive-samples" title="Permalink to this headline">¶</a></h2>
 <p>In some instances the user may want to generate and compare several sets of
-adaptive samples using a surrogate model to determine what the best heuristic,
-transition kernel, number of generalized chains, and chain length are before
+adaptive samples using a surrogate model to determine what the best kernel,
+transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
 <a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><tt class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></tt></a>. The set up in
 <a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><tt class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></tt></a> is very similar to the
 set up in <a class="reference download internal" href="../../_downloads/fromFile2D.py"><tt class="xref download docutils literal"><span class="pre">fromFile2D</span></tt></a> and is
 omitted for brevity.</p>
-<p>We can explore several types of heuristics:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">heuristic_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_heuristic</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_true</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
-<span class="n">heuristic_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_heuristic</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
-<span class="n">heuristic_m</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_heuristic</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_true</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
-<span class="n">heuristic_md</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">multi_dist_heuristic</span><span class="p">()</span>
-<span class="n">heur_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">heuristic_mm</span><span class="p">,</span> <span class="n">heuristic_rD</span><span class="p">,</span> <span class="n">heuristic_m</span><span class="p">,</span> <span class="n">heuristic_md</span><span class="p">]</span>
+<p>We can explore several types of kernels:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">kernel_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
+<span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
+<span class="n">kernel_m</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
+<span class="n">kernel_md</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">multi_dist_kernel</span><span class="p">()</span>
+<span class="n">kern_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">kernel_mm</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">kernel_m</span><span class="p">,</span> <span class="n">kernel_md</span><span class="p">]</span>
 <span class="c"># Get samples</span>
-<span class="c"># Run with varying heuristics</span>
-<span class="n">gen_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_gen</span><span class="p">(</span><span class="n">heur_list</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span>
-        <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_kernel</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
+<span class="c"># Run with varying kernels</span>
+<span class="n">gen_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_gen</span><span class="p">(</span><span class="n">kern_list</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span>
+        <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_set</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We can explore <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.transition_kernel" title="bet.sampling.adaptiveSampling.transition_kernel"><tt class="xref py py-class docutils literal"><span class="pre">transition_kernel</span></tt></a> with
+<p>We can explore <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><tt class="xref py py-class docutils literal"><span class="pre">transition_set</span></tt></a> with
 various inital, minimum, and maximum step size ratios:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Run with varying transition kernels bounds</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># Run with varying transition sets bounds</span>
 <span class="n">init_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
 <span class="n">min_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2e-3</span><span class="p">,</span> <span class="mf">2e-5</span><span class="p">,</span> <span class="mf">2e-8</span><span class="p">]</span>
 <span class="n">max_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="n">tk_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_tk</span><span class="p">(</span><span class="n">init_ratio</span><span class="p">,</span> <span class="n">min_ratio</span><span class="p">,</span> <span class="n">max_ratio</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span>
-        <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span> <span class="n">param_max</span><span class="p">,</span> <span class="n">heuristic_rD</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
+        <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span> <span class="n">param_max</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>We can explore a single heuristic with varying values of ratios for increasing
+<p>We can explore a single kernel with varying values of ratios for increasing
 and decreasing the step size (i.e. the size of the hyperrectangle to draw a new
-step from using a transition kernel):</p>
+step from using a transition set):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">increase</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
 <span class="n">decrease</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5e2</span><span class="p">,</span> <span class="mf">0.5e3</span><span class="p">]</span>
 <span class="n">tolerance</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">]</span>
 <span class="n">incdec_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_inc_dec</span><span class="p">(</span><span class="n">increase</span><span class="p">,</span> <span class="n">decrease</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span>
-    <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span> <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_kernel</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
+    <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span> <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_set</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>..note:: The above examples just use a <tt class="docutils literal"><span class="pre">zip</span></tt> combination of the lists uses to
-define varying parameters for the heuristics and transition kernels. To explore
+define varying parameters for the kernels and transition sets. To explore
 the product of these lists you need to use <tt class="docutils literal"><span class="pre">numpy.meshgrid</span></tt> and
 <tt class="docutils literal"><span class="pre">numpy.ravel</span></tt> or a similar process.</p>
 <p>To compare the results in terms of yield or the total number of samples
 generated in the region of interest we can use
 <cite>~bet.sampling.basicSampling.compare_yield</cite> to display the results to screen:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Compare the quality of several sets of samples</span>
-<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with various heuristics&quot;</span>
+<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with various kernels&quot;</span>
 <span class="n">bsam</span><span class="o">.</span><span class="n">compare_yield</span><span class="p">(</span><span class="n">gen_results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">gen_results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">gen_results</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with various transition kernels bounds&quot;</span>
+<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with various transition sets bounds&quot;</span>
 <span class="n">bsam</span><span class="o">.</span><span class="n">compare_yield</span><span class="p">(</span><span class="n">tk_results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">tk_results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">tk_results</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 <span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with variouos increase/decrease ratios&quot;</span>
 <span class="n">bsam</span><span class="o">.</span><span class="n">compare_yield</span><span class="p">(</span><span class="n">incdec_results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">incdec_results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">incdec_results</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
@@ -285,7 +285,7 @@ by <tt class="docutils literal"><span class="pre">sort_ind</span></tt>.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Sep 30, 2014.
+      Last updated on Oct 01, 2014.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
