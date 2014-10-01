@@ -301,7 +301,7 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
    
     # determine the ratio of the lengths of the domain to the lengths of the
     # hyperrectangle containing the data
-     if len(data.shape) == 1:
+    if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1)
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)

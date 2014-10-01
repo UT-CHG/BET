@@ -31,7 +31,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         (center_pts_per_edge+2,).
 
     """
-    if np.all(np.greater(r_ratio, 1):
+    if np.all(np.greater(r_ratio, 1)):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
