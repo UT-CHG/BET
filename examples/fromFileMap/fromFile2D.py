@@ -16,7 +16,7 @@ param_max = lam_domain[:, 1]
 station_nums = [0, 5] # 1, 6
 
 # Create Transition Kernel
-transition_kernel = asam.transition_kernel(.5, .5**5, 1.0)
+transition_set = asam.transition_set(.5, .5**5, 1.0)
 
 # Read in Q_ref and Q to create the appropriate rho_D 
 mdat = sio.loadmat('Q_2D')
@@ -36,7 +36,7 @@ def model(inputs):
                 inputs)
     return interp_values 
 
-# Create heuristic
+# Create kernel
 maximum = 1/np.product(bin_size)
 def rho_D(outputs):
     rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
@@ -47,7 +47,7 @@ def rho_D(outputs):
     max_values = np.repeat(maximum, outputs.shape[0], 0)
     return inside.astype('float64')*max_values
 
-heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
+kernel_rD = asam.rhoD_kernel(maximum, rho_D)
 
 # Create sampler
 chain_length = 125
@@ -58,7 +58,7 @@ sampler = asam.sampler(num_samples, chain_length, model)
 # Get samples
 inital_sample_type = "lhs"
 (samples, data, all_step_ratios) = sampler.generalized_chains(param_min, param_max,
-        transition_kernel, heuristic_rD, sample_save_file, inital_sample_type)
+        transition_set, kernel_rD, sample_save_file, inital_sample_type)
 
 # Read in points_ref and plot results
 p_ref = mdat['points_true']

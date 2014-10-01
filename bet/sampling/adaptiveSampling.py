@@ -82,13 +82,13 @@ class sampler(bsam.sampler):
         mdict['num_chains'] = self.num_chains
         mdict['sample_batch_no'] = self.sample_batch_no
         
-    def run_gen(self, heur_list, rho_D, maximum, param_min, param_max,
+    def run_gen(self, kern_list, rho_D, maximum, param_min, param_max,
             t_kernel, savefile, initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and a list of different
-        heuristics.
+        kernels.
 
-        :param list() heur_list: List of heuristics.
+        :param list() kern_list: List of kernels.
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`np.array` and
             returns a :class:`numpy.ndarray`
@@ -100,7 +100,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
+        :param function kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
@@ -117,9 +117,9 @@ class sampler(bsam.sampler):
         r_step_size = list()
         results_rD = list()
         mean_ss = list()
-        for heur in heur_list:
+        for kern in kern_list:
             (samples, data, step_sizes) = self.generalized_chains(
-                    param_min, param_max, t_kernel, heur, savefile,
+                    param_min, param_max, t_kernel, kern, savefile,
                     initial_sample_type, criterion)
             results.append((samples, data))
             r_step_size.append(step_sizes)
@@ -128,14 +128,14 @@ class sampler(bsam.sampler):
         sort_ind = np.argsort(results_rD)
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
-    def run_reseed(self, heur_list, rho_D, maximum, param_min, param_max,
+    def run_reseed(self, kern_list, rho_D, maximum, param_min, param_max,
             t_kernel, savefile, initial_sample_type="lhs", criterion='center',
             reseed=3):
         """
         Generates samples using reseeded chains and a list of different
-        heuristics.
+        kernels.
 
-        :param list() heur_list: List of heuristics.
+        :param list() kern_list: List of kernels.
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`np.array` and
             returns a :class:`numpy.ndarray`
@@ -147,7 +147,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
+        :param function kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
@@ -165,9 +165,9 @@ class sampler(bsam.sampler):
         r_step_size = list()
         results_rD = list()
         mean_ss = list()
-        for heur in heur_list:
+        for kern in kern_list:
             (samples, data, step_sizes) = self.reseed_chains(
-                    param_min, param_max, t_kernel, heur, savefile,
+                    param_min, param_max, t_kernel, kern, savefile,
                     initial_sample_type, criterion, reseed)
             results.append((samples, data))
             r_step_size.append(step_sizes)
@@ -177,11 +177,11 @@ class sampler(bsam.sampler):
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
     def run_tk(self, init_ratio, min_ratio, max_ratio, rho_D, maximum,
-            param_min, param_max, heuristic, savefile,
+            param_min, param_max, kernel, savefile,
             initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and
-        :class:`~bet.sampling.transition_kernel` created using
+        :class:`~bet.sampling.transition_set` created using
         the `init_ratio`, `min_ratio`, and `max_ratio` parameters.
     
         :param list() init_ratio: Initial step size ratio compared to the
@@ -201,7 +201,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
+        :param function kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
@@ -218,9 +218,9 @@ class sampler(bsam.sampler):
         results_rD = list()
         mean_ss = list()
         for i, j, k  in zip(init_ratio, min_ratio, max_ratio):
-            tk = transition_kernel(i, j, k)
+            tk = transition_set(i, j, k)
             (samples, data, step_sizes) = self.generalized_chains(
-                    param_min, param_max, tk, heuristic, savefile,
+                    param_min, param_max, tk, kernel, savefile,
                     initial_sample_type, criterion)
             results.append((samples, data))
             r_step_size.append(step_sizes)
@@ -234,7 +234,7 @@ class sampler(bsam.sampler):
             initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and
-        :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic` created using
+        :class:`~bet.sampling.adaptiveSampling.rhoD_kernel` created using
         the `increase`, `decrease`, and `tolerance` parameters.
 
         :param list() increase: the multiple to increase the step size by
@@ -252,7 +252,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
+        :param function kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
@@ -264,13 +264,13 @@ class sampler(bsam.sampler):
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
 
         """
-        heur_list = list()
+        kern_list = list()
         for i, j, z in zip(increase, decrease, tolerance):
-            heur_list.append(rhoD_heuristic(maximum, rho_D, i, j, z)) 
-        return self.run_gen(heur_list, rho_D, maximum, param_min, param_max,
+            kern_list.append(rhoD_kernel(maximum, rho_D, i, j, z)) 
+        return self.run_gen(kern_list, rho_D, maximum, param_min, param_max,
                 t_kernel, savefile, initial_sample_type, criterion)
 
-    def generalized_chains(self, param_min, param_max, t_kernel, heur,
+    def generalized_chains(self, param_min, param_max, t_kernel, kern,
             savefile, initial_sample_type="lhs", criterion='center'):
         """
         Basic adaptive sampling algorithm using generalized chains.
@@ -284,7 +284,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heur: functional that acts on the data used to
+        :param function kern: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
@@ -296,7 +296,7 @@ class sampler(bsam.sampler):
 
         """
         # Initialize Nx1 vector Step_size = something reasonable (based on size
-        # of domain and transition kernel type)
+        # of domain and transition set type)
         # Calculate domain size
         param_left = np.repeat([param_min], self.num_chains, 0)
         param_right = np.repeat([param_max], self.num_chains, 0)
@@ -315,14 +315,14 @@ class sampler(bsam.sampler):
         samples = samples_old
         data = data_old
         all_step_ratios = step_ratio
-        (heur_old, proposal) = heur.delta_step(data_old, None)
+        (kern_old, proposal) = kern.delta_step(data_old, None)
 
         mdat = dict()
         self.update_mdict(mdat)
          
         for batch in xrange(1, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
-            # transition kernel and step_ratio. Call these samples samples_new.
+            # transition set and step_ratio. Call these samples samples_new.
             samples_new = t_kernel.step(step_ratio, param_width,
                     param_left, param_right, samples_old)
             
@@ -332,7 +332,7 @@ class sampler(bsam.sampler):
             # Make some decision about changing step_size(k).  There are
             # multiple ways to do this.
             # Determine step size
-            (heur_old, proposal) = heur.delta_step(data_new, heur_old)
+            (kern_old, proposal) = kern.delta_step(data_new, kern_old)
             step_ratio = proposal*step_ratio
             # Is the ratio greater than max?
             step_ratio[step_ratio > max_ratio] = max_ratio
@@ -356,7 +356,7 @@ class sampler(bsam.sampler):
             samples_old = samples_new
         return (samples, data, all_step_ratios)
 
-    def reseed_chains(self, param_min, param_max, t_kernel, heur,
+    def reseed_chains(self, param_min, param_max, t_kernel, kern,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
         Basic adaptive sampling algorithm.
@@ -370,7 +370,7 @@ class sampler(bsam.sampler):
         :param t_kernel: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_kernel: :class:~`t_kernel`
-        :param function heur: functional that acts on the data used to
+        :param function kern: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
@@ -384,9 +384,9 @@ class sampler(bsam.sampler):
         """
         pass
 
-def heuristics(Q_ref, rho_D, maximum):
+def kernels(Q_ref, rho_D, maximum):
     """
-    Generates a list of heurstic objects.
+    Generates a list of kernstic objects.
 
     :param Q_ref: reference parameter value
     :type Q_ref: :class:`np.ndarray`
@@ -395,18 +395,18 @@ def heuristics(Q_ref, rho_D, maximum):
         a class:`np.ndarray`
     :param double maximum: maximum value of rho_D
     :rtype: list()
-    :returns: [maxima_mean_heuristic, rhoD_heuristic, maxima_heuristic,
-        multi_dist_heuristic]
+    :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel,
+        multi_dist_kernel]
 
     """
-    heur_list = list()
-    heur_list.append(maxima_mean_heuristic(np.array([Q_ref]), rho_D))
-    heur_list.append(rhoD_heuristic(maximum, rho_D))
-    heur_list.append(maxima_heuristic(np.array([Q_ref]), rho_D))
-    heur_list.append(multi_dist_heuristic())
-    return heur_list
+    kern_list = list()
+    kern_list.append(maxima_mean_kernel(np.array([Q_ref]), rho_D))
+    kern_list.append(rhoD_kernel(maximum, rho_D))
+    kern_list.append(maxima_kernel(np.array([Q_ref]), rho_D))
+    kern_list.append(multi_dist_kernel())
+    return kern_list
 
-class transition_kernel(object):
+class transition_set(object):
     """
     Basic class that is used to create a step to move from samples_old to
     samples_new based. This class generates steps for a random walk using a
@@ -414,7 +414,7 @@ class transition_kernel(object):
     different implementations of the
     :meth:~`polysim.run_framework.apdative_sampling.step` method.
 
-    This basic transition kernel is designed without a preferential direction.
+    This basic transition set is designed without a preferential direction.
 
     init_ratio
         Initial step size ratio compared to the parameter domain.
@@ -471,9 +471,9 @@ class transition_kernel(object):
         
         return samples_new
 
-class heuristic(object):
+class kernel(object):
     """
-    Parent class for heuristics to determine change in step size. This class
+    Parent class for kernels to determine change in step size. This class
     provides a method for determining the proposed change in step size. Since
     this is simply a skeleton parent class it does not change the step size at
     all.
@@ -494,20 +494,20 @@ class heuristic(object):
         self.increase = increase
         self.decrease = decrease
 
-    def delta_step(self, data_new, heur_old=None):
+    def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
 
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`np.array` of shape (num_chains, mdim)
-        :param heur_old: heuristic evaluated at previous step
+        :param kern_old: kernel evaluated at previous step
         :rtype: typle
-        :returns: (heur_new, proposal)
+        :returns: (kern_new, proposal)
 
         """
         return (None, np.ones((data_new.shape[0],)))
 
-class rhoD_heuristic(heuristic):
+class rhoD_kernel(kernel):
     """
     We assume we know the distribution rho_D on the QoI and that the goal is to
     determine inverse regions of high probability accurately (in terms of
@@ -540,44 +540,44 @@ class rhoD_heuristic(heuristic):
         self.MAX = maximum
         self.rho_D = rho_D
         self.sort_ascending = False
-        super(rhoD_heuristic, self).__init__(tolerance, increase, decrease)
+        super(rhoD_kernel, self).__init__(tolerance, increase, decrease)
 
-    def delta_step(self, data_new, heur_old=None):
+    def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`np.array` of shape (num_chains, mdim)
-        :param heur_old: heuristic evaluated at previous step
+        :param kern_old: kernel evaluated at previous step
         :rtype: tuple
-        :returns: (heur_new, proposal)
+        :returns: (kern_new, proposal)
 
         """
-        # Evaluate heuristic for new data.
-        heur_new = self.rho_D(data_new)
+        # Evaluate kernel for new data.
+        kern_new = self.rho_D(data_new)
 
-        if heur_old == None:
-            return (heur_new, None)
+        if kern_old == None:
+            return (kern_new, None)
         else:
-            heur_diff = (heur_new-heur_old)/self.MAX
-            # Compare to heuristic for old data.
-            # Is the heuristic NOT close?
-            heur_close = np.logical_not(np.isclose(heur_diff, 0,
+            kern_diff = (kern_new-kern_old)/self.MAX
+            # Compare to kernel for old data.
+            # Is the kernel NOT close?
+            kern_close = np.logical_not(np.isclose(kern_diff, 0,
                 atol=self.TOL))
-            heur_max = np.isclose(heur_new, self.MAX, atol=self.TOL)
-            # Is the heuristic greater/lesser?
-            heur_greater = np.logical_and(heur_diff > 0, heur_close)
-            heur_greater = np.logical_or(heur_greater, heur_max)
-            heur_lesser = np.logical_and(heur_diff < 0, heur_close)
+            kern_max = np.isclose(kern_new, self.MAX, atol=self.TOL)
+            # Is the kernel greater/lesser?
+            kern_greater = np.logical_and(kern_diff > 0, kern_close)
+            kern_greater = np.logical_or(kern_greater, kern_max)
+            kern_lesser = np.logical_and(kern_diff < 0, kern_close)
 
             # Determine step size
-            proposal = np.ones(heur_new.shape)
-            proposal[heur_greater] = self.decrease
-            proposal[heur_lesser] = self.increase
-            return (heur_new, proposal.transpose())
+            proposal = np.ones(kern_new.shape)
+            proposal[kern_greater] = self.decrease
+            proposal[kern_lesser] = self.increase
+            return (kern_new, proposal.transpose())
 
 
-class maxima_heuristic(heuristic):
+class maxima_kernel(kernel):
     """
     We assume we know the maxima of the distribution rho_D on the QoI and that
     the goal is to determine inverse regions of high probability accurately (in
@@ -609,22 +609,22 @@ class maxima_heuristic(heuristic):
         self.MAXIMA = maxima
         self.num_maxima = maxima.shape[0]
         self.rho_max = rho_D(maxima)
-        super(maxima_heuristic, self).__init__(tolerance, increase, decrease)
+        super(maxima_kernel, self).__init__(tolerance, increase, decrease)
         self.sort_ascending = True
 
-    def delta_step(self, data_new, heur_old=None):
+    def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`np.array` of shape (num_chains, mdim)
-        :param heur_old: heuristic evaluated at previous step
+        :param kern_old: kernel evaluated at previous step
         :rtype: tuple
-        :returns: (heur_new, proposal)
+        :returns: (kern_new, proposal)
 
         """
-        # Evaluate heuristic for new data.
-        heur_new = np.zeros((data_new.shape[0]))
+        # Evaluate kernel for new data.
+        kern_new = np.zeros((data_new.shape[0]))
 
         for i in xrange(data_new.shape[0]):
             # calculate distance from each of the maxima
@@ -633,30 +633,30 @@ class maxima_heuristic(heuristic):
             # weight distances by 1/rho_D(maxima)
             dist_from_maxima = np.linalg.norm(vec_from_maxima, 2,
                 1)/self.rho_max
-            # set heur_new to be the minimum of weighted distances from maxima
-            heur_new[i] = np.min(dist_from_maxima)
+            # set kern_new to be the minimum of weighted distances from maxima
+            kern_new[i] = np.min(dist_from_maxima)
 
-        if heur_old == None:
-            return (heur_new, None)
+        if kern_old == None:
+            return (kern_new, None)
         else:
-            heur_diff = (heur_new-heur_old)
-            # Compare to heuristic for old data.
-            # Is the heuristic NOT close?
-            heur_close = np.logical_not(np.isclose(heur_diff, 0,
+            kern_diff = (kern_new-kern_old)
+            # Compare to kernel for old data.
+            # Is the kernel NOT close?
+            kern_close = np.logical_not(np.isclose(kern_diff, 0,
                 atol=self.TOL))
-            # Is the heuristic greater/lesser?
-            heur_greater = np.logical_and(heur_diff > 0, heur_close)
-            heur_lesser = np.logical_and(heur_diff < 0, heur_close)
+            # Is the kernel greater/lesser?
+            kern_greater = np.logical_and(kern_diff > 0, kern_close)
+            kern_lesser = np.logical_and(kern_diff < 0, kern_close)
             # Determine step size
-            proposal = np.ones(heur_new.shape)
-            # if further than heur_old then increase
-            proposal[heur_greater] = self.increase
-            # if closer than heur_old then decrease
-            proposal[heur_lesser] = self.decrease
-        return (heur_new, proposal)
+            proposal = np.ones(kern_new.shape)
+            # if further than kern_old then increase
+            proposal[kern_greater] = self.increase
+            # if closer than kern_old then decrease
+            proposal[kern_lesser] = self.decrease
+        return (kern_new, proposal)
 
 
-class maxima_mean_heuristic(maxima_heuristic):
+class maxima_mean_kernel(maxima_kernel):
     """
     We assume we know the maxima of the distribution rho_D on the QoI and that
     the goal is to determine inverse regions of high probability accurately (in
@@ -688,7 +688,7 @@ class maxima_mean_heuristic(maxima_heuristic):
         self.radius = None
         self.mean = None
         self.current_clength = 0
-        super(maxima_mean_heuristic, self).__init__(maxima, rho_D, tolerance,
+        super(maxima_mean_kernel, self).__init__(maxima, rho_D, tolerance,
                 increase, decrease)
 
     def reset(self):
@@ -700,19 +700,19 @@ class maxima_mean_heuristic(maxima_heuristic):
         self.mean = None
         self.current_clength = 0
 
-    def delta_step(self, data_new, heur_old=None):
+    def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`np.array` of shape (num_chains, mdim)
-        :param heur_old: heuristic evaluated at previous step
+        :param kern_old: kernel evaluated at previous step
         :rtype: tuple
-        :returns: (heur_new, proposal)
+        :returns: (kern_new, proposal)
 
         """
-        # Evaluate heuristic for new data.
-        heur_new = np.zeros((data_new.shape[0]))
+        # Evaluate kernel for new data.
+        kern_new = np.zeros((data_new.shape[0]))
         self.current_clength = self.current_clength + 1
 
         for i in xrange(data_new.shape[0]):
@@ -722,10 +722,10 @@ class maxima_mean_heuristic(maxima_heuristic):
             # weight distances by 1/rho_D(maxima)
             dist_from_maxima = np.linalg.norm(vec_from_maxima, 2,
                 1)/self.rho_max
-            # set heur_new to be the minimum of weighted distances from maxima
-            heur_new[i] = np.min(dist_from_maxima)
+            # set kern_new to be the minimum of weighted distances from maxima
+            kern_new[i] = np.min(dist_from_maxima)
 
-        if heur_old == None:
+        if kern_old == None:
             # calculate the mean
             self.mean = np.mean(data_new, 0)
             # calculate the distance from the mean
@@ -733,7 +733,7 @@ class maxima_mean_heuristic(maxima_heuristic):
                     data_new.shape[0], 0)
             # estimate the radius of D
             self.radius = np.max(np.linalg.norm(vec_from_mean, 2, 1))
-            return (heur_new, None)
+            return (kern_new, None)
         else:
             # update the estimate of the mean
             self.mean = (self.current_clength-1)*self.mean + np.mean(data_new,
@@ -746,26 +746,26 @@ class maxima_mean_heuristic(maxima_heuristic):
             self.radius = max(np.max(np.linalg.norm(vec_from_mean, 2, 1)),
                     self.radius)
             # calculate the relative change in distance
-            heur_diff = (heur_new-heur_old)
+            kern_diff = (kern_new-kern_old)
             # normalize by the radius of D (IF POSSIBLE)
-            heur_diff = heur_diff #/ self.radius
-            # Compare to heuristic for old data.
-            # Is the heuristic NOT close?
-            heur_close = np.logical_not(np.isclose(heur_diff, 0,
+            kern_diff = kern_diff #/ self.radius
+            # Compare to kernel for old data.
+            # Is the kernel NOT close?
+            kern_close = np.logical_not(np.isclose(kern_diff, 0,
                 atol=self.TOL))
-            # Is the heuristic greater/lesser?
-            heur_greater = np.logical_and(heur_diff > 0, heur_close)
-            heur_lesser = np.logical_and(heur_diff < 0, heur_close)
+            # Is the kernel greater/lesser?
+            kern_greater = np.logical_and(kern_diff > 0, kern_close)
+            kern_lesser = np.logical_and(kern_diff < 0, kern_close)
             # Determine step size
-            proposal = np.ones(heur_new.shape)
-            # if further than heur_old then increase
-            proposal[heur_greater] = self.increase
-            # if closer than heur_old then decrease
-            proposal[heur_lesser] = self.decrease
-        return (heur_new, proposal)
+            proposal = np.ones(kern_new.shape)
+            # if further than kern_old then increase
+            proposal[kern_greater] = self.increase
+            # if closer than kern_old then decrease
+            proposal[kern_lesser] = self.decrease
+        return (kern_new, proposal)
 
 
-class multi_dist_heuristic(heuristic):
+class multi_dist_kernel(kernel):
     """
     The goal is to make a sampling that is robust to different types of
     distributions on QoI, i.e., we do not know a priori where the regions of
@@ -802,7 +802,7 @@ class multi_dist_heuristic(heuristic):
         self.radius = None
         self.mean = None
         self.current_clength = 0
-        super(multi_dist_heuristic, self).__init__(tolerance, increase,
+        super(multi_dist_kernel, self).__init__(tolerance, increase,
                 decrease)
 
     def reset(self):
@@ -814,28 +814,28 @@ class multi_dist_heuristic(heuristic):
         self.mean = None
         self.current_clength = 0
 
-    def delta_step(self, data_new, heur_old=None):
+    def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`np.array` of shape (num_chains, mdim)
-        :param heur_old: QoI evaluated at previous step
+        :param kern_old: QoI evaluated at previous step
         :rtype: tuple
-        :returns: (heur_new, proposal)
+        :returns: (kern_new, proposal)
 
         """
-        # Evaluate heuristic for new data.
-        heur_new = data_new
+        # Evaluate kernel for new data.
+        kern_new = data_new
         self.current_clength = self.current_clength + 1
 
-        if heur_old == None:
+        if kern_old == None:
             proposal = None
             # calculate the mean
             self.mean = np.mean(data_new, 0)
             # calculate the distance from the mean
-            vec_from_mean = heur_new - np.repeat([self.mean],
-                    heur_new.shape[0], 0)
+            vec_from_mean = kern_new - np.repeat([self.mean],
+                    kern_new.shape[0], 0)
             # estimate the radius of D
             self.radius = np.max(np.linalg.norm(vec_from_mean, 2, 1)) 
         else:
@@ -843,27 +843,27 @@ class multi_dist_heuristic(heuristic):
             self.mean = (self.current_clength-1)*self.mean + np.mean(data_new, 0)
             self.mean = self.mean / self.current_clength
             # calculate the distance from the mean
-            vec_from_mean = heur_new - np.repeat([self.mean],
-                    heur_new.shape[0], 0)
+            vec_from_mean = kern_new - np.repeat([self.mean],
+                    kern_new.shape[0], 0)
             # esitmate the radius of D
             self.radius = max(np.max(np.linalg.norm(vec_from_mean, 2, 1)),
                     self.radius)
             # calculate the relative change in QoI
-            heur_diff = (heur_new-heur_old)
+            kern_diff = (kern_new-kern_old)
             # normalize by the radius of D
-            heur_diff = np.linalg.norm(vec_from_mean, 2, 1)#/self.radius
-            # Compare to heuristic for old data.
-            # Is the heuristic NOT close?
-            heur_close = np.logical_not(np.isclose(heur_diff, 0,
+            kern_diff = np.linalg.norm(vec_from_mean, 2, 1)#/self.radius
+            # Compare to kernel for old data.
+            # Is the kernel NOT close?
+            kern_close = np.logical_not(np.isclose(kern_diff, 0,
                 atol=self.TOL))
-            # Is the heuristic greater/lesser?
-            heur_greater = np.logical_and(heur_diff > 0, heur_close)
-            heur_lesser = np.logical_and(heur_diff < 0, heur_close)
+            # Is the kernel greater/lesser?
+            kern_greater = np.logical_and(kern_diff > 0, kern_close)
+            kern_lesser = np.logical_and(kern_diff < 0, kern_close)
             # Determine step size
-            proposal = np.ones(heur_diff.shape)
-            proposal[heur_greater] = self.decrease
-            proposal[heur_lesser] = self.increase
-        return (heur_new, proposal)
+            proposal = np.ones(kern_diff.shape)
+            proposal[kern_greater] = self.decrease
+            proposal[kern_lesser] = self.increase
+        return (kern_new, proposal)
 
 
 

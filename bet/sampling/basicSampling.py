@@ -164,11 +164,6 @@ class sampler(object):
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
-            given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
-        :param function heuristic: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_

@@ -83,7 +83,7 @@ def model(sample):
             model_save_file, num_procs=nprocs, procs_pnode=ppnode,
             stations=stations, TpN=TpN)
 
-# Create heuristic
+# Create kernel
 maximum = 1/np.product(bin_size)
 def rho_D(outputs):
     rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
@@ -94,7 +94,7 @@ def rho_D(outputs):
     max_values = np.repeat(maximum, outputs.shape[0], 0)
     return inside.astype('float64')*max_values
 
-heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
+kernel_rD = asam.rhoD_kernel(maximum, rho_D)
 
 # Create sampler
 chain_length = 125
@@ -108,9 +108,9 @@ print sampler.num_chains
 
 # Get samples
 initial_sample_type = "lhs"
-transition_kernel = asam.transition_kernel(0.5, .5**3, 0.5)
+transition_set = asam.transition_set(0.5, .5**3, 0.5)
 (samples, data, step_sizes) = sampler.generalized_chains(param_min, param_max,
-        transition_kernel, heuristic_rD, sample_save_file,
+        transition_set, kernel_rD, sample_save_file,
         initial_sample_type)
 bsam.in_high_prob(data, rho_D, maximum)
 

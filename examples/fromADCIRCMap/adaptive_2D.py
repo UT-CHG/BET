@@ -108,10 +108,10 @@ print sampler.num_chains
 # Get samples
 initial_sample_type = "lhs"
 # Create Transition Kernel
-transition_kernel = asam.transition_kernel(0.5, .5**5, 0.50)
-heuristic = asam.rhoD_heuristic(maximum, rho_D, 1e-4, 1.5, .1) 
+transition_set = asam.transition_set(0.5, .5**5, 0.50)
+kernel = asam.rhoD_kernel(maximum, rho_D, 1e-4, 1.5, .1) 
 (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
-        param_max, transition_kernel, heuristic, sample_save_file,
+        param_max, transition_set, kernel, sample_save_file,
         initial_sample_type)
 
 bsam.in_high_prob(data, rho_D, maximum)

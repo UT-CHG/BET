@@ -113,9 +113,9 @@ QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` ::
 
 Next, we implicty designate the region of interest :math:`\Lambda_k =
 Q^{-1}(D_k)` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
-through the use of some heuristic. In this instance we choose our heuristic
+through the use of some kernel. In this instance we choose our kernel
 :math:`p_k(Q) = \rho_\mathcal{D}(Q)`, see
-:class:`~bet.sampling.adaptiveSampling.rhoD_heuristic`.
+:class:`~bet.sampling.adaptiveSampling.rhoD_kernel`.
 
 We choose some :math:`\lambda_{ref}` and let :math:`Q_{ref} = Q(\lambda_{ref})`::
 
@@ -128,7 +128,7 @@ We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
 
     bin_ratio = 0.15
     bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
-    # Create heuristic
+    # Create kernel
     maximum = 1/np.product(bin_size)
     def rho_D(outputs):
         rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
@@ -139,10 +139,10 @@ We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
         max_values = np.repeat(maximum, outputs.shape[0], 0)
         return inside.astype('float64')*max_values
 
-    heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
+    kernel_rD = asam.rhoD_kernel(maximum, rho_D)
 
 Given a (M, mdim) data vector
-:class:`~bet.sampling.adaptiveSampling.rhoD_heuristic` expects that ``rho_D``
+:class:`~bet.sampling.adaptiveSampling.rhoD_kernel` expects that ``rho_D``
 will return a :class:`~numpy.ndarray` of shape (M,). 
 
 Next, we create the :mod:`~bet.sampling.adaptiveSampling.sampler`. This
@@ -155,13 +155,13 @@ sampling chains that are each 125 samples long::
     num_samples = chain_length*num_chains
     sampler = asam.sampler(num_samples, chain_length, model)
 
-We create the :mod:`~bet.sampling.adaptiveSampling.transition_kernel` with an
+We create the :mod:`~bet.sampling.adaptiveSampling.transition_set` with an
 initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 ``.5**5`` and 1.0 respectively. Note that this algorithm will not generate
 samples out side of the bounded parameter domain, ``lambda_domain`` ::
 
     # Create Transition Kernel
-    transition_kernel = asam.transition_kernel(.5, .5**5, 1.0)
+    transition_set = asam.transition_set(.5, .5**5, 1.0)
 
 We choose an initial sample type to seed the sampling chains::
 
@@ -171,54 +171,54 @@ Finally, we adaptively generate the samples using
 :meth:`~bet.sampling.adaptiveSampling.sampler.generalized_chains`::
 
     (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
-        param_max, transition_kernel, heuristic_rD, sample_save_file,
+        param_max, transition_set, kernel_rD, sample_save_file,
         inital_sample_type)
 
 Generating and comparing several sets of adaptive samples
 ---------------------------------------------------------
 In some instances the user may want to generate and compare several sets of
-adaptive samples using a surrogate model to determine what the best heuristic,
-transition kernel, number of generalized chains, and chain length are before
+adaptive samples using a surrogate model to determine what the best kernel,
+transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
 :download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>`. The set up in
 :download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>` is very similar to the
 set up in :download:`fromFile2D <../../../examples/fromFileMap/fromFile2D.py>` and is
 omitted for brevity.
 
-We can explore several types of heuristics::
+We can explore several types of kernels::
 
-    heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_ref]), rho_D)
-    heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
-    heuristic_m = asam.maxima_heuristic(np.array([Q_ref]), rho_D)
-    heuristic_md = asam.multi_dist_heuristic()
-    heur_list = [heuristic_mm, heuristic_rD, heuristic_m, heuristic_md]
+    kernel_mm = asam.maxima_mean_kernel(np.array([Q_ref]), rho_D)
+    kernel_rD = asam.rhoD_kernel(maximum, rho_D)
+    kernel_m = asam.maxima_kernel(np.array([Q_ref]), rho_D)
+    kernel_md = asam.multi_dist_kernel()
+    kern_list = [kernel_mm, kernel_rD, kernel_m, kernel_md]
     # Get samples
-    # Run with varying heuristics
-    gen_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
-            param_max, transition_kernel, sample_save_file)
+    # Run with varying kernels
+    gen_results = sampler.run_gen(kern_list, rho_D, maximum, param_min,
+            param_max, transition_set, sample_save_file)
 
-We can explore :class:`~bet.sampling.adaptiveSampling.transition_kernel` with
+We can explore :class:`~bet.sampling.adaptiveSampling.transition_set` with
 various inital, minimum, and maximum step size ratios::
 
-    # Run with varying transition kernels bounds
+    # Run with varying transition sets bounds
     init_ratio = [0.1, 0.25, 0.5]
     min_ratio = [2e-3, 2e-5, 2e-8]
     max_ratio = [.5, .75, 1.0]
     tk_results = sampler.run_tk(init_ratio, min_ratio, max_ratio, rho_D,
-            maximum, param_min, param_max, heuristic_rD, sample_save_file)
+            maximum, param_min, param_max, kernel_rD, sample_save_file)
 
-We can explore a single heuristic with varying values of ratios for increasing
+We can explore a single kernel with varying values of ratios for increasing
 and decreasing the step size (i.e. the size of the hyperrectangle to draw a new
-step from using a transition kernel)::
+step from using a transition set)::
 
     increase = [1.0, 2.0, 4.0]
     decrease = [0.5, 0.5e2, 0.5e3]
     tolerance = [1e-4, 1e-6, 1e-8]
     incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
-        maximum, param_min, param_max, transition_kernel, sample_save_file)
+        maximum, param_min, param_max, transition_set, sample_save_file)
 
 ..note:: The above examples just use a ``zip`` combination of the lists uses to
-define varying parameters for the heuristics and transition kernels. To explore
+define varying parameters for the kernels and transition sets. To explore
 the product of these lists you need to use ``numpy.meshgrid`` and
 ``numpy.ravel`` or a similar process.
 
@@ -227,9 +227,9 @@ generated in the region of interest we can use
 `~bet.sampling.basicSampling.compare_yield` to display the results to screen::
 
     # Compare the quality of several sets of samples
-    print "Compare yield of sample sets with various heuristics"
+    print "Compare yield of sample sets with various kernels"
     bsam.compare_yield(gen_results[3], gen_results[2], gen_results[4])
-    print "Compare yield of sample sets with various transition kernels bounds"
+    print "Compare yield of sample sets with various transition sets bounds"
     bsam.compare_yield(tk_results[3], tk_results[2], tk_results[4])
     print "Compare yield of sample sets with variouos increase/decrease ratios"
     bsam.compare_yield(incdec_results[3], incdec_results[2],incdec_results[4])
