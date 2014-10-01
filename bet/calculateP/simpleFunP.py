@@ -355,43 +355,6 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
-def uniform_datadomain(data_domain, center_pts_per_edge=1):
-    """
-    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
-    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
-    the entire ``data_domain``. Since rho_D is a uniform distribution on a
-    hyperrectanlge we should be able to represent it exactly with ``M =
-    3^mdim`` or rather ``len(d_distr_samples) ==
-    3^mdim``.
-    
-    :param data_domain: The domain for each QoI of the model.
-    :type data_domain: :class:`numpy.ndarray` of shape (2, mdim)
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
-    :param list() center_pts_per_edge: number of center points per edge and
-        additional two points will be added to create the bounding layer
-
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
-        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
-        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
-    
-    """
-    if len(data.shape) == 1:
-        data = np.expand_dims(data, axis=1)
-    data_max = np.max(data, 0)
-    data_min = np.min(data, 0)
-    center = (data_max+data_min)/2
-    bin_ratio = 1
-    points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
-            center, bin_ratio, data_domain)
-    edges = vHist.edges_regular(center_pts_per_edge, center, bin_ratio,
-            data_domain) 
-    _, volumes, _ = vHist.histogramdd_volumes(edges, points)
-    return vHist.simple_fun_uniform(points, volumes, rect_domain)
-
 def uniform_data_minmax(data, center_pts_per_edge=1):
     """
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`

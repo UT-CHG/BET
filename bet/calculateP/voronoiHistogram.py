@@ -123,7 +123,7 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
         (center_pts_per_edge+4,) respectively.
 
     """
-    if np.all(np.greater(r_ratio, 1):
+    if np.all(np.greater(r_ratio, 1)):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
