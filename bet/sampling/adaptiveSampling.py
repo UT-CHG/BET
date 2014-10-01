@@ -384,12 +384,12 @@ class sampler(bsam.sampler):
         """
         pass
 
-def heuristics(Q_true, rho_D, maximum):
+def heuristics(Q_ref, rho_D, maximum):
     """
     Generates a list of heurstic objects.
 
-    :param Q_true: true parameter value
-    :type Q_true: :class:`np.ndarray`
+    :param Q_ref: reference parameter value
+    :type Q_ref: :class:`np.ndarray`
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns
         a class:`np.ndarray`
@@ -400,9 +400,9 @@ def heuristics(Q_true, rho_D, maximum):
 
     """
     heur_list = list()
-    heur_list.append(maxima_mean_heuristic(np.array([Q_true]), rho_D))
+    heur_list.append(maxima_mean_heuristic(np.array([Q_ref]), rho_D))
     heur_list.append(rhoD_heuristic(maximum, rho_D))
-    heur_list.append(maxima_heuristic(np.array([Q_true]), rho_D))
+    heur_list.append(maxima_heuristic(np.array([Q_ref]), rho_D))
     heur_list.append(multi_dist_heuristic())
     return heur_list
 

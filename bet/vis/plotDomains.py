@@ -7,7 +7,7 @@ import matplotlib.tri as tri
 import numpy as np
 import matplotlib.pyplot as plt
 
-def scatter_2D(samples, sample_nos, color, p_true, save, show,
+def scatter_2D(samples, sample_nos, color, p_ref, save, show,
         xlabel, ylabel, filename):
     """
     Two-dimensional scatter plot of ``samples`` colored by ``color`` (usually
@@ -18,8 +18,8 @@ def scatter_2D(samples, sample_nos, color, p_true, save, show,
     :param list sample_nos: sample numbers to plot
     :param color: array to color the samples by
     :type color: :class:`np.ndarray`
-    :param p_true: true parameter value
-    :type p_true: :class:`np.ndarray`
+    :param p_ref: reference parameter value
+    :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
     :param boolean show: flag whether or not to show the figure
     :param string xlabel: x-axis label
@@ -35,8 +35,8 @@ def scatter_2D(samples, sample_nos, color, p_true, save, show,
             alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)#Oranges_r)
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(Q)$')
-    if p_true != None:
-        plt.scatter(p_true[0], p_true[1], c='g')
+    if p_ref != None:
+        plt.scatter(p_ref[0], p_ref[1], c='g')
     if save:
         plt.autoscale(tight=True)
         plt.xlabel(xlabel)
@@ -48,7 +48,7 @@ def scatter_2D(samples, sample_nos, color, p_true, save, show,
     else:
         plt.close()
 
-def scatter_3D(samples, sample_nos, color, p_true, save, show,
+def scatter_3D(samples, sample_nos, color, p_ref, save, show,
         xlabel, ylabel, zlabel, filename):
     """
     Three-dimensional scatter plot of ``samples`` colored by ``color`` (usually
@@ -59,8 +59,8 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
     :param list sample_nos: sample numbers to plot
     :param color: array to color the samples by
     :type color: :class:`np.ndarray`
-    :param p_true: true parameter value
-    :type p_true: :class:`np.ndarray`
+    :param p_ref: reference parameter value
+    :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
     :param boolean show: flag whether or not to show the figure
     :param string xlabel: x-axis label
@@ -78,8 +78,8 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], s=10, alpha=.75, linewidth=.1, c=color,
             cmap=plt.cm.Oranges) #ax.colorbar()
-    if p_true != None:
-        ax.scatter(p_true[0], p_true[1], p_true[2], c='g')
+    if p_ref != None:
+        ax.scatter(p_ref[0], p_ref[1], p_ref[2], c='g')
         
     ax.autoscale(tight=True)
     ax.set_xlabel(xlabel)
@@ -93,7 +93,7 @@ def scatter_3D(samples, sample_nos, color, p_true, save, show,
     else:
         plt.close()
    
-def show_param(samples, data, rho_D=None, p_true=None, sample_nos=None,
+def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
         save=True, show=False, lnums=None):
     """
     Plot samples in parameter space and colors them either by rho_D or by
@@ -107,8 +107,8 @@ def show_param(samples, data, rho_D=None, p_true=None, sample_nos=None,
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`np.ndarray`
-    :param p_true: true parameter value
-    :type p_true: :class:`np.ndarray`
+    :param p_ref: reference parameter value
+    :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
     :param boolean show: flag whether or not to show the figure
 
@@ -122,14 +122,14 @@ def show_param(samples, data, rho_D=None, p_true=None, sample_nos=None,
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
     if data.shape[1] == 2:
-        scatter_2D(samples, sample_nos, rD, p_true, save, show, xlabel, ylabel,
+        scatter_2D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
                 savename)
     elif data.shape[1] == 3:
         zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
-        scatter_3D(samples, sample_nos, rD, p_true, save, show, xlabel, ylabel,
+        scatter_3D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
                 zlabel, savename)
 
-def show_data(data, rho_D=None, Q_true=None, sample_nos=None,
+def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, show=False, Q_nums=None):
     """
     Plot samples in data space and colors them either by rho_D or by
@@ -141,8 +141,8 @@ def show_data(data, rho_D=None, Q_true=None, sample_nos=None,
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`np.ndarray`
-    :param Q_true: true data value
-    :type Q_true: :class:`np.ndarray`
+    :param Q_ref: reference data value
+    :type Q_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
     :param boolean show: flag whether or not to show the figure
 
@@ -155,31 +155,31 @@ def show_data(data, rho_D=None, Q_true=None, sample_nos=None,
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
     if data.shape[1] == 2:
-        scatter_2D(data, sample_nos, rD, Q_true, save, show, xlabel, ylabel,
+        scatter_2D(data, sample_nos, rD, Q_ref, save, show, xlabel, ylabel,
             savename)
     elif data.shape[1] == 3:
         zlabel = r'$q_{'+str(Q_nums[2]+1)+'}$'
-        scatter_3D(data, sample_nos, rD, Q_true, save, show, xlabel, ylabel,
+        scatter_3D(data, sample_nos, rD, Q_ref, save, show, xlabel, ylabel,
                 zlabel, savename)
 
-def show_data_domain_multi(samples, data, Q_true, Q_nums=None,
-        img_folder='figs/', true_markers=['^', 's', 'o'],
-        true_colors=['r', 'g', 'b']):
+def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
+        img_folder='figs/', ref_markers=['^', 's', 'o'],
+        ref_colors=['r', 'g', 'b']):
     """
     Plot the data domain D using a triangulation based on the generating
     samples where $Q={q_1, q_i}$ for ``i=Q_nums``, with a marker for various
-    ``Q_true``. 
+    ``Q_ref``. 
 
     :param samples: Samples to plot
     :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
-    :param Q_true: true data value
-    :type Q_true: :class:`np.ndarray`
+    :param Q_ref: reference data value
+    :type Q_ref: :class:`np.ndarray`
     :param list Q_nums: dimensions of the QoI to plot
     :param string img_folder: folder to save the plots to
-    :param list true_markers: list of marker types for ``Q_true``
-    :param list true_colors: list of colors for ``Q_true``
+    :param list ref_markers: list of marker types for ``Q_ref``
+    :param list ref_colors: list of colors for ``Q_ref``
 
     """
     
@@ -200,26 +200,26 @@ def show_data_domain_multi(samples, data, Q_true, Q_nums=None,
         filenames = [img_folder+'domain_q1_'+str(i)+'.eps',
                 img_folder+'q1_q'+str(i)+'_domain_Q_cs.eps']
             
-        show_data_domain_2D(samples, data[:, [0, i]], Q_true[:, [0, i]],
-            true_markers, true_colors, ylabel=r'$q_{'+str(i+1)+r'}$',
+        show_data_domain_2D(samples, data[:, [0, i]], Q_ref[:, [0, i]],
+            ref_markers, ref_colors, ylabel=r'$q_{'+str(i+1)+r'}$',
             triangles=triangles, save=True, show=False, filenames=filenames)
 
-def show_data_domain_2D(samples, data, Q_true, true_markers=['^', 's', 'o'],
-        true_colors=['r', 'g', 'b'], xlabel=r'$q_1$', ylabel=r'$q_2',
+def show_data_domain_2D(samples, data, Q_ref, ref_markers=['^', 's', 'o'],
+        ref_colors=['r', 'g', 'b'], xlabel=r'$q_1$', ylabel=r'$q_2',
         triangles=None, save=True, show=True, filenames=None):
     """
     Plot the data domain D using a triangulation based on the generating
-    samples with a marker for various ``Q_true``. Assumes that the first
+    samples with a marker for various ``Q_ref``. Assumes that the first
     dimension of data is $q_1$.
 
     :param samples: Samples to plot
     :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
-    :param Q_true: true data value
-    :type Q_true: :class:`np.ndarray`
-    :param list true_markers: list of marker types for ``Q_true``
-    :param list true_colors: list of colors for ``Q_true``
+    :param Q_ref: reference data value
+    :type Q_ref: :class:`np.ndarray`
+    :param list ref_markers: list of marker types for ``Q_ref``
+    :param list ref_colors: list of colors for ``Q_ref``
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param triangles: triangulation defined by ``samples``
@@ -244,9 +244,9 @@ def show_data_domain_2D(samples, data, Q_true, true_markers=['^', 's', 'o'],
     plt.savefig(filenames[0], bbox_inches='tight', transparent=True,
             pad_inches=0)
     # Add truth markers
-    for i in xrange(Q_true.shape[0]):
-        plt.scatter(Q_true[i, 0], Q_true[i, 1], s=60, c=true_colors[i],
-                marker=true_markers[i])
+    for i in xrange(Q_ref.shape[0]):
+        plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
+                marker=ref_markers[i])
     if save:
         plt.savefig(filenames[1], bbox_inches='tight', transparent=True,
             pad_inches=0)

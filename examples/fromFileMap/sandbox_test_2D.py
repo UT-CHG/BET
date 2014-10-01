@@ -39,12 +39,12 @@ for s in station_nums:
 # Create Transition Kernel
 transition_kernel = asam.transition_kernel(.5, .5**5, 1.0)
 
-# Read in Q_true and Q to create the appropriate rho_D 
+# Read in Q_ref and Q to create the appropriate rho_D 
 mdat = sio.loadmat('Q_2D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
-Q_true = mdat['Q_true']
-Q_true = Q_true[15, station_nums] # 16th/20
+Q_ref = mdat['Q_true']
+Q_ref = Q_ref[15, station_nums] # 16th/20
 bin_ratio = 0.15
 bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
 
@@ -60,17 +60,17 @@ def model(inputs):
 # Create heuristic
 maximum = 1/np.product(bin_size)
 def rho_D(outputs):
-    rho_left = np.repeat([Q_true-.5*bin_size], outputs.shape[0], 0)
-    rho_right = np.repeat([Q_true+.5*bin_size], outputs.shape[0], 0)
+    rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
+    rho_right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
     rho_left = np.all(np.greater_equal(outputs, rho_left), axis=1)
     rho_right = np.all(np.less_equal(outputs, rho_right), axis=1)
     inside = np.logical_and(rho_left, rho_right)
     max_values = np.repeat(maximum, outputs.shape[0], 0)
     return inside.astype('float64')*max_values
 
-heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_true]), rho_D)
+heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_ref]), rho_D)
 heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
-heuristic_m = asam.maxima_heuristic(np.array([Q_true]), rho_D)
+heuristic_m = asam.maxima_heuristic(np.array([Q_ref]), rho_D)
 heuristic_md = asam.multi_dist_heuristic()
 heur_list = [heuristic_mm, heuristic_rD, heuristic_m, heuristic_md]
 
@@ -110,8 +110,8 @@ bsam.compare_yield(tk_results[3], tk_results[2], tk_results[4])
 print "Compare yield of sample sets with variouos increase/decrease ratios"
 bsam.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
 
-# Read in points_true and plot results
-p_true = mdat['points_true']
-p_true = p_true[5:7, 15]
+# Read in points_ref and plot results
+p_ref = mdat['points_true']
+p_ref = p_ref[5:7, 15]
 
         

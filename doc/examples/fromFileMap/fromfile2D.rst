@@ -56,22 +56,22 @@ through the use of some heuristic. In this instance we choose our heuristic
 :math:`p_k(Q) = \rho_\mathcal{D}(Q)`, see
 :class:`~bet.sampling.adaptiveSampling.rhoD_heuristic`.
 
-We choose some :math:`\lambda_{true}` and let :math:`Q_{true} = Q(\lambda_{true})`::
+We choose some :math:`\lambda_{ref}` and let :math:`Q_{ref} = Q(\lambda_{ref})`::
 
-    Q_true = mdat['Q_true']
-    Q_true = Q_true[15, station_nums] # 16th/20
+    Q_ref = mdat['Q_true']
+    Q_ref = Q_ref[15, station_nums] # 16th/20
 
-We define a rectangle, :math:`R_{true} \subset \mathcal{D}` centered at
-:math:`Q(\lambda_{true})` with sides 15% the length of :math:`q_1` and
-:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{true}}(q)}{||\mathbf{1}_{R_{true}}||}`::
+We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
+:math:`Q(\lambda_{ref})` with sides 15% the length of :math:`q_1` and
+:math:`q_6`. Set :math:`\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}`::
 
     bin_ratio = 0.15
     bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
     # Create heuristic
     maximum = 1/np.product(bin_size)
     def rho_D(outputs):
-        rho_left = np.repeat([Q_true-.5*bin_size], outputs.shape[0], 0)
-        rho_right = np.repeat([Q_true+.5*bin_size], outputs.shape[0], 0)
+        rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
+        rho_right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
         rho_left = np.all(np.greater_equal(outputs, rho_left), axis=1)
         rho_right = np.all(np.less_equal(outputs, rho_right),axis=1)
         inside = np.logical_and(rho_left, rho_right)
@@ -126,9 +126,9 @@ omitted for brevity.
 
 We can explore several types of heuristics::
 
-    heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_true]), rho_D)
+    heuristic_mm = asam.maxima_mean_heuristic(np.array([Q_ref]), rho_D)
     heuristic_rD = asam.rhoD_heuristic(maximum, rho_D)
-    heuristic_m = asam.maxima_heuristic(np.array([Q_true]), rho_D)
+    heuristic_m = asam.maxima_heuristic(np.array([Q_ref]), rho_D)
     heuristic_md = asam.multi_dist_heuristic()
     heur_list = [heuristic_mm, heuristic_rD, heuristic_m, heuristic_md]
     # Get samples

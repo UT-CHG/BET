@@ -25,11 +25,11 @@ n2 = 30
 # QoI map
 Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])
 
-# true QoI
-true_Q =  np.array([0.422, 0.9385])
+# reference QoI
+Q_ref =  np.array([0.422, 0.9385])
 
-# true parameters
-true_lam = [0.5, 0.5, 0.5]
+# reference parameters
+ref_lam = [0.5, 0.5, 0.5]
 
 #set up samples
 vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
@@ -43,7 +43,7 @@ data= np.dot(samples,Q_map)
 
 # uniform simple function approx
 (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.unif_unif(data=data,
-                                                               true_Q=true_Q, M=10, bin_ratio=0.2, num_d_emulate=1E5)
+                                                               Q_ref=Q_ref, M=10, bin_ratio=0.2, num_d_emulate=1E5)
 # create emulated points
 lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain,
                                                  num_l_emulate = 1E5)

@@ -7,10 +7,10 @@ import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
 
-def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate=1E6):
+def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    uniform probability density centered at true_Q with bin_ratio of the width
+    uniform probability density centered at Q_ref with bin_ratio of the width
     of D using M uniformly spaced bins.
 
     :param int M: Defines number M samples in D used to define rho_{D,M}
@@ -24,8 +24,8 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :param data: Array containing QoI data where the QoI is mdim
         diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
-    :param true_Q: $Q(lambda_{true})$
-    :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :param Q_ref: $Q(lambda_reference})$
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
@@ -52,7 +52,7 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     # (why would I care about binning zero probability events?).
     if rank == 0:
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
-            data.shape[1]))-0.5)+true_Q 
+            data.shape[1]))-0.5)+Q_ref 
     else:
         d_distr_samples = None
     d_distr_samples = comm.bcast(d_distr_samples, root=0)
@@ -61,7 +61,7 @@ def unif_unif(data, true_Q, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     # First generate samples of rho_D - I sometimes call this emulation
     num_d_emulate = int(num_d_emulate/size)+1
     d_distr_emulate = bin_size*(np.random.random((num_d_emulate,
-        data.shape[1]))-0.5) + true_Q
+        data.shape[1]))-0.5) + Q_ref
 
     # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
     #k = dsearchn(d_distr_samples, d_distr_emulate)
@@ -111,7 +111,7 @@ def hist_unif(data, distr_samples, nbins):
     """
     pass
 
-def gaussian_regular(data, true_Q, std, nbins, num_d_emulate=1E6):
+def gaussian_regular(data, Q_ref, std, nbins, num_d_emulate=1E6):
     pass
     #return (d_distr_prob, d_distr_samples, d_Tree)
 
@@ -122,10 +122,10 @@ def multivariate_gaussian(x, mean, std):
     fprime = x-mean
     return frac*np.exp(-0.5*np.dot(fprime, 1.0/np.diag(std*std)))
 
-def normal_normal(true_Q, M, std, num_d_emulate=1E6):
+def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    multivariate normal probability density centered at true_Q with 
+    multivariate normal probability density centered at Q_ref with 
     standard deviation std using M bins sampled from the given normal 
     distribution.
 
@@ -136,8 +136,8 @@ def normal_normal(true_Q, M, std, num_d_emulate=1E6):
  
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
-    :param true_Q: $Q(lambda_{true})$
-    :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :param Q_ref: $Q(lambda_{reference})$
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
@@ -149,23 +149,23 @@ def normal_normal(true_Q, M, std, num_d_emulate=1E6):
     import scipy.stats as stats
     # Create M smaples defining M bins in D used to define rho_{D,M}
     # rho_D is assumed to be a multi-variate normal distribution with mean
-    # true_Q and standard deviation std.
+    # Q_ref and standard deviation std.
 
     covariance = np.diag(std*std)
 
-    d_distr_samples = np.zeros((M, len(true_Q)))
+    d_distr_samples = np.zeros((M, len(Q_ref)))
     if rank == 0:
-        for i in range(len(true_Q)):
-            d_distr_samples[:, i] = np.random.normal(true_Q[i], std[i], M) 
+        for i in range(len(Q_ref)):
+            d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M) 
     d_distr_samples = comm.bcast(d_distr_samples, root=0)
 
  
     # Now compute probabilities for rho_{D,M} by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation  
     num_d_emulate = int(num_d_emulate/size)+1
-    d_distr_emulate = np.zeros((num_d_emulate, len(true_Q)))
-    for i in range(len(true_Q)):
-        d_distr_emulate[:, i] = np.random.normal(true_Q[i], std[i],
+    d_distr_emulate = np.zeros((num_d_emulate, len(Q_ref)))
+    for i in range(len(Q_ref)):
+        d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i],
                 num_d_emulate) 
 
     # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
@@ -180,7 +180,7 @@ def normal_normal(true_Q, M, std, num_d_emulate=1E6):
         Itemp = np.equal(k, i)
         count_neighbors[i] = np.sum(Itemp)
         volumes[i] = np.sum(1.0/stats.multivariate_normal.pdf(d_distr_emulate[Itemp, 
-            :], true_Q, covariance))
+            :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines rho_{D,M}
     count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
@@ -194,10 +194,10 @@ def normal_normal(true_Q, M, std, num_d_emulate=1E6):
     # solving the model EVER! This can be done "offline" so to speak.
     return (rho_D_M, d_distr_samples, d_Tree)
 
-def unif_normal(true_Q, M, std, num_d_emulate=1E6):
+def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    multivariate normal probability density centered at true_Q with 
+    multivariate normal probability density centered at Q_ref with 
     standard deviation std using M bins sampled from a uniform distribution
     with a size 4 standard deviations in each direction.
 
@@ -208,8 +208,8 @@ def unif_normal(true_Q, M, std, num_d_emulate=1E6):
  
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
-    :param true_Q: $Q(lambda_{true})$
-    :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :param Q_ref: $Q(lambda_{reference})$
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
@@ -221,22 +221,22 @@ def unif_normal(true_Q, M, std, num_d_emulate=1E6):
     import scipy.stats as stats
     # Create M smaples defining M bins in D used to define rho_{D,M}
     # rho_D is assumed to be a multi-variate normal distribution with mean
-    # true_Q and standard deviation std.
+    # Q_ref and standard deviation std.
 
     bin_size = 4.0*std
-    d_distr_samples = np.zeros((M, len(true_Q)))
+    d_distr_samples = np.zeros((M, len(Q_ref)))
     if rank == 0:
         d_distr_samples = bin_size*(np.random.random((M, 
-            len(true_Q)))-0.5)+true_Q
+            len(Q_ref)))-0.5)+Q_ref
     d_distr_samples = comm.bcast(d_distr_samples, root=0)
 
  
     # Now compute probabilities for rho_{D,M} by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation  
     num_d_emulate = int(num_d_emulate/size)+1
-    d_distr_emulate = np.zeros((num_d_emulate, len(true_Q)))
-    for i in range(len(true_Q)):
-        d_distr_emulate[:, i] = np.random.normal(true_Q[i], std[i], 
+    d_distr_emulate = np.zeros((num_d_emulate, len(Q_ref)))
+    for i in range(len(Q_ref)):
+        d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i], 
                 num_d_emulate) 
 
     # Now bin samples of rho_D in the M bins of D to compute rho_{D, M}
@@ -262,14 +262,14 @@ def unif_normal(true_Q, M, std, num_d_emulate=1E6):
     # solving the model EVER! This can be done "offline" so to speak.
     return (rho_D_M, d_distr_samples, d_Tree)
 
-def gaussian_unif(data, true_Q, std, nbins, num_d_emulate=1E6):
+def gaussian_unif(data, Q_ref, std, nbins, num_d_emulate=1E6):
     pass
     #return (d_distr_prob, d_distr_samples, d_Tree)
 
-def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
+def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     """
     Creates a simple function approximation of rho_{D,M} where rho_{D,M} is a
-    uniform probability density centered at true_Q with bin_ratio of the width
+    uniform probability density centered at Q_ref with bin_ratio of the width
     of D.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
@@ -282,8 +282,8 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
         assumption 
     :param data: Array containing QoI data where the QoI is mdim diminsional
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
-    :param true_Q: $Q(lambda_{true})$
-    :type true_Q: :class:`~numpy.ndarray` of size (mdim,)
+    :param Q_ref: $Q(lambda_{reference})$
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
@@ -302,8 +302,8 @@ def uniform_hyperrectangle(data, Q_true, bin_ratio, center_pts_per_edge=1):
     sur_domain[:, 0] = data_min
     sur_domain[:, 1] = data_max
     points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
-            Q_true, bin_ratio, sur_domain)
-    edges = vHist.edges_regular(center_pts_per_edge, Q_true, bin_ratio,
+            Q_ref, bin_ratio, sur_domain)
+    edges = vHist.edges_regular(center_pts_per_edge, Q_ref, bin_ratio,
             sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     return vHist.simple_fun_uniform(points, volumes, rect_domain)

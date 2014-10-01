@@ -141,7 +141,7 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     return (bins, marginals)
 
 def plot_1D_marginal_probs(marginals, bins, lam_domain,
-        filename="file", lam_true=None, interactive=True,
+        filename="file", lam_ref=None, interactive=True,
         lambda_label=None):
         
     """
@@ -156,8 +156,8 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
     :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
     :param filename: Prefix for output files.
     :type filename: str
-    :param lam_true: True parameters.
-    :type lam_true: :class:'~numpy.ndarray' of shape (ndim,) or None
+    :param lam_ref: True parameters.
+    :type lam_ref: :class:'~numpy.ndarray' of shape (ndim,) or None
     :param interactive: Whether or not to display interactive plots.
     :type interactive: boolean
     :param lambda_label: Label for each parameter for plots.
@@ -177,8 +177,8 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
             P_normalizer = quad(f, lam_domain[i][0], lam_domain[i][1])[0]
             X = np.linspace(lam_domain[i][0], lam_domain[i][1])
             ax.plot(X, f(X)/P_normalizer)
-            if lam_true != None:
-                ax.plot(lam_true[i], 0.0, 'ko', markersize=10)
+            if lam_ref != None:
+                ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
                 label1 = '$\lambda_{' + `i+1` + '}$'
             else:
@@ -190,7 +190,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
                 plt.show()
 
 def plot_2D_marginal_probs(marginals, bins, lam_domain,
-        filename="file", lam_true=None, plot_surface=False, interactive=True,
+        filename="file", lam_ref=None, plot_surface=False, interactive=True,
         lambda_label=None):
         
     """
@@ -205,8 +205,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
     :param filename: Prefix for output files.
     :type filename: str
-    :param lam_true: True parameters.
-    :type lam_true: :class:'~numpy.ndarray' of shape (ndim,) or None
+    :param lam_ref: True parameters.
+    :type lam_ref: :class:'~numpy.ndarray' of shape (ndim,) or None
     :param interactive: Whether or not to display interactive plots.
     :type interactive: boolean
     :param lambda_label: Label for each parameter for plots.
@@ -229,8 +229,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             quadmesh = ax.imshow(marginals[(i, j)]/((lam_domain[i][1]-lam_domain[i][0])*(lam_domain[j][1]-lam_domain[j][0])), interpolation='bicubic', cmap=cm.coolwarm, extent = [lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]],origin='lower', vmax=marginals[(i, j)].max(), vmin=marginals[(i, j)].min())
 
-            if lam_true != None:
-                ax.plot(lam_true[i], lam_true[j], 'ko', markersize=10)
+            if lam_ref != None:
+                ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
             if lambda_label == None:
                 label1 = '$\lambda_{' + `i+1` + '}$'
                 label2 = '$\lambda_{' + `j+1` + '}$'
