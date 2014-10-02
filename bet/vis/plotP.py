@@ -7,18 +7,6 @@ import numpy as np
 import copy
 import math
 
-def get_global_values(array):
-    """
-    Concatenates local arrays into global array.
-
-    :param array: Array.
-    :type P_samples: :class:'~numpy.ndarray' 
-    :rtype: :class:'~numpy.ndarray' 
-    :returns: array
-    """
-
-    array = comm.allgather(array, array)   
-    return np.vstack(array)
 
 def plot_voronoi_probs(P_samples, samples, lam_domain, nbins=20,
         plot_surface=False):

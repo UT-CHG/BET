@@ -241,7 +241,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
     :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
     :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:`~numpy.ndarray` of shape (2, ndim)
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim,2)
     :param int num_l_emulate: The number of iid samples used to parition the
         parameter space
     :rtype: tuple of :class:`~numpy.ndarray` of sizes (num_samples,),
