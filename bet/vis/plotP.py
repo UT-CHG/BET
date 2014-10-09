@@ -161,7 +161,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
         for i in index:
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
-            f = interp1d(bins[i], marginals[i], kind='cubic')
+            f = interp1d(bins[i], marginals[i]) 
             P_normalizer = quad(f, lam_domain[i][0], lam_domain[i][1])[0]
             X = np.linspace(lam_domain[i][0], lam_domain[i][1])
             ax.plot(X, f(X)/P_normalizer)
@@ -213,9 +213,10 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             ax = fig.add_subplot(111)
             X = bins[i]
             Y = bins[j]
-            X, Y = np.meshgrid(X, Y, indexing='ij')
-            quadmesh = ax.imshow(marginals[(i, j)]/((lam_domain[i][1]-lam_domain[i][0])*(lam_domain[j][1]-lam_domain[j][0])), interpolation='bicubic', cmap=cm.coolwarm, extent = [lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
-                lam_domain[j][1]],origin='lower', vmax=marginals[(i, j)].max(), vmin=marginals[(i, j)].min())
+            X, Y = np.meshgrid(X, Y) 
+            boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
+            quadmesh = ax.imshow(marginals[(i, j)]/boxSize, interpolation='bicubic', cmap=cm.jet, extent = [lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
+                lam_domain[j][1]],origin='lower', vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i, j)].min()/boxSize)
 
             if lam_ref != None:
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
