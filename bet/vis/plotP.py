@@ -211,12 +211,9 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
         for k, (i, j) in enumerate(pairs):
             fig = plt.figure(k)
             ax = fig.add_subplot(111)
-            X = bins[i]
-            Y = bins[j]
-            X, Y = np.meshgrid(X, Y) 
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
-            quadmesh = ax.imshow(marginals[(i, j)]/boxSize, interpolation='bicubic', cmap=cm.jet, extent = [lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
-                lam_domain[j][1]],origin='lower', vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i, j)].min()/boxSize)
+            quadmesh = ax.imshow(marginals[(i, j)][-1::-1,:]/boxSize, interpolation='bicubic', cmap=cm.jet, extent = [lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
+                                                                                                                      lam_domain[j][1]],origin='lower', vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i, j)].min()/boxSize, aspect='auto')
 
             if lam_ref != None:
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
