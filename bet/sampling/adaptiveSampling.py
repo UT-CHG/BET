@@ -344,7 +344,7 @@ class sampler(bsam.sampler):
                 pass
             elif (batch+1)%(self.chain_length/4) == 0:
                 print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
-            samples = np.concatenate((samples, samples_new), axis=1)
+            samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
