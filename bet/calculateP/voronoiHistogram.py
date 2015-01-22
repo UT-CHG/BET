@@ -35,31 +35,12 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
         msg = "The hyperrectangle defined by this size is larger than the"
         msg += "original domain."
         print msg
-        #return None
-    # determine the width of the surrounding domain(dont need this for binsize)
-    #sur_width = sur_domain[:, 1]-sur_domain[:, 0]
+
     # determine the hyperrectangle defined by center and r_size
     rect_width = r_size*np.ones(sur_domain[:,0].shape)
     rect_domain = np.empty(sur_domain.shape)
-    print '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
-    print 'rect_width = ', rect_width
-    print '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
     rect_domain[:, 0] = center - .5*rect_width
     rect_domain[:, 1] = center + .5*rect_width
-    
-    '''
-    #we dont care if the bin extends outside of the domain.
-    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
-        msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
-        msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    '''
 
     # determine the locations of the points for the 1st bounding layer
     layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
@@ -97,7 +78,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
     return (points, interior_and_layer1, rect_domain)
 
 
-def center_and_layer1_points_binratio(center_pts_per_edge, center, r_ratio, sur_domain):
+def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     """
     Generates a regular grid of center points that define the voronoi
     tesselation of exactly the interior of a hyperrectangle centered at
@@ -130,31 +111,14 @@ def center_and_layer1_points_binratio(center_pts_per_edge, center, r_ratio, sur_
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
-        #return None
+
     # determine the width of the surrounding domain
     sur_width = sur_domain[:, 1]-sur_domain[:, 0]
     # determine the hyperrectangle defined by center and r_ratio
     rect_width = r_ratio*sur_width
-    print '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
-    print 'rect_width = ', rect_width
-    print '%%%%%%%%%%%%%%%%%%%%%%%%%%%%%'
     rect_domain = np.empty(sur_domain.shape)
     rect_domain[:, 0] = center - .5*rect_width
     rect_domain[:, 1] = center + .5*rect_width
-    
-    '''
-    #We dont care if the bin extends outside the domain.
-    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    '''
 
     # determine the locations of the points for the 1st bounding layer
     layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
@@ -224,34 +188,12 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
         (center_pts_per_edge+4,) respectively.
 
     """
-    '''
-    if np.all(np.greater(r_size, 1)):
-        msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
-        print msg
-        #return None
-    '''
-    # determine the width of the surrounding domain
-    #sur_width = sur_domain[:, 1]-sur_domain[:, 0]
+
     # determine the hyperrectangle defined by center and r_size
     rect_width = r_size*np.ones(sur_domain[:,0].shape)
     rect_domain = np.empty(sur_domain.shape)
     rect_domain[:, 0] = center - .5*rect_width
     rect_domain[:, 1] = center + .5*rect_width
-    
-    '''
-    #Dont care if bin extends outside of domain.
-    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
-        msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
-        msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
-        print msg
-        return None
-    '''
 
     rect_edges = list()
     rect_and_sur_edges = list()
@@ -269,7 +211,7 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
 
     return rect_and_sur_edges
 
-def edges_regular_binratio(center_pts_per_edge, center, r_ratio, sur_domain):
+def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     """
     Generates a sequence of arrays describing the edges of the finite voronoi
     cells in each direction. The voronoi tesselation is defined by regular grid
@@ -306,7 +248,7 @@ def edges_regular_binratio(center_pts_per_edge, center, r_ratio, sur_domain):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
-        #return None
+
     # determine the width of the surrounding domain
     sur_width = sur_domain[:, 1]-sur_domain[:, 0]
     # determine the hyperrectangle defined by center and r_ratio
@@ -319,12 +261,12 @@ def edges_regular_binratio(center_pts_per_edge, center, r_ratio, sur_domain):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
-        #return None
+
     elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += "original domain."
         print msg
-        #return None
+
 
     rect_edges = list()
     rect_and_sur_edges = list()

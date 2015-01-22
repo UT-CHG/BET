@@ -323,7 +323,7 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
     ``len(d_distr_samples) == 3^mdim``.
 
     :param bin_size: The size used to determine the width of the
-        uniform distributiion ``
+        uniform distribution 
     :type bin_size: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
@@ -355,7 +355,7 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
-def uniform_hyperrectangle_binratio(data, Q_ref, bin_ratio, center_pts_per_edge=1):
+def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     """
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -392,9 +392,9 @@ def uniform_hyperrectangle_binratio(data, Q_ref, bin_ratio, center_pts_per_edge=
     sur_domain = np.zeros((data.shape[1], 2))
     sur_domain[:, 0] = data_min
     sur_domain[:, 1] = data_max
-    points, _, rect_domain = vHist.center_and_layer1_points_binratio(center_pts_per_edge, 
+    points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
             Q_ref, bin_ratio, sur_domain)
-    edges = vHist.edges_regular_binratio(center_pts_per_edge, Q_ref, bin_ratio,
+    edges = vHist.edges_regular(center_pts_per_edge, Q_ref, bin_ratio,
             sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     return vHist.simple_fun_uniform(points, volumes, rect_domain)
