@@ -88,7 +88,8 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(d_distr_emu_ptr, i)
         Itemp_sum = np.sum(Itemp)
-        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
+        comm.Allreduce([Itemp_sum, MPI.DOUBLE], [Itemp_sum,
+            MPI.DOUBLE], op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]/Itemp_sum
 
@@ -132,7 +133,8 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
         Itemp_sum = np.sum(lam_vol[Itemp])
-        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
+        comm.Allreduce([Itemp_sum, MPI.DOUBLE], [Itemp_sum,
+            MPI.DOUBLE], op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
 
@@ -263,7 +265,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     lam_vol = np.zeros((samples.shape[0],)) #lambda_emulate),))
     for i in range(samples.shape[0]):
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
-    lam_vol = comm.allreduce(lam_vol, lam_vol, op=MPI.SUM)
+    comm.Allreduce([lam_vol, MPI.DOUBLE], [lam_vol, MPI.DOUBLE], op=MPI.SUM)
     lam_vol = lam_vol/(len(lambda_emulate)*size)
 
     # Calculate Probabilities
@@ -272,7 +274,8 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         Itemp = np.equal(io_ptr, i)
         # Prevent a divide by zero error
         Itemp_sum = np.sum(lam_vol[Itemp])
-        Itemp_sum = comm.allreduce(Itemp_sum, Itemp_sum, op=MPI.SUM)
+        comm.Allreduce([Itemp_sum, MPI.DOUBLE], [Itemp_sum,
+            MPI.DOUBLE], op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 

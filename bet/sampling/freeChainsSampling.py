@@ -15,10 +15,9 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.sampling.adaptiveSampling as asam
-import math
+import math, os
+from bet.vis.Comm import *
 
-import bet.vis.Comm as comm
-import bet.vis.MPI as MPI
 size = comm.Get_size()
 rank = comm.Get_rank()
 
@@ -153,7 +152,7 @@ class sampler(asam.sampler):
         MYdata = data
         MYall_step_ratios = all_step_ratios
         # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-        samples = np.empty((num_samples, np.shape(MYsamples)[1], dtype=np.float64)
+        samples = np.empty((num_samples, np.shape(MYsamples)[1]), dtype=np.float64)
         # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
         data = np.empty((num_samples, np.shape(MYdata)[1]), dtype=np.float64)
         all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
