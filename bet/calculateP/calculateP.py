@@ -141,7 +141,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
 
-    return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
+    return (P, lam_vol, io_ptr, emulate_ptr)
 
 def prob_qhull(samples, data, rho_D_M, d_distr_samples,
         lam_domain, d_Tree=None): 
