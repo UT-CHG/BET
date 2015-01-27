@@ -15,6 +15,10 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import math
+from bet.vis.Comm import *
+
+size = comm.Get_size()
+rank = comm.Get_rank()
 
 def loadmat(save_file, lb_model=None):
     """
@@ -64,7 +68,8 @@ class sampler(bsam.sampler):
         """
         super(sampler, self).__init__(lb_model, num_samples)
         self.chain_length = chain_length
-        self.num_chains = int(math.ceil(num_samples/float(chain_length)))
+        self.num_chains_pproc = int(math.ceil(num_samples/float(chain_length*size)))
+        self.num_chains = size * self.num_chains_pproc
         self.num_samples = chain_length * self.num_chains
         self.lb_model = lb_model
         self.sample_batch_no = np.repeat(range(self.num_chains), chain_length,
@@ -290,41 +295,56 @@ class sampler(bsam.sampler):
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :rtype: tuple
-        :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-            and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
+        :returns: (``parameter_samples``, ``data_samples``, ``all_step_ratios``) where
+            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim),
+            ``data_samples`` is np.ndarray of shape (num_samples, mdim), and 
+            ``all_step_ratios`` is np.ndarray of shape (num_chains,
+            chain_length)
 
         """
+        if size > 1:
+            savefile = os.path.join(os.path.dirname(savefile),
+                    "proc{}{}".format(rank, os.path.basename(savefile)))
+
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
         # Calculate domain size
-        param_left = np.repeat([param_min], self.num_chains, 0)
-        param_right = np.repeat([param_max], self.num_chains, 0)
+        param_left = np.repeat([param_min], self.num_chains_pproc, 0)
+        param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
         # Calculate step_size
         max_ratio = t_kernel.max_ratio
         min_ratio = t_kernel.min_ratio
-        step_ratio = t_kernel.init_ratio*np.ones(self.num_chains)
-
+        step_ratio = t_kernel.init_ratio*np.ones(self.num_chains_pproc)
+       
         # Initiative first batch of N samples (maybe taken from latin
         # hypercube/space-filling curve to fully explore parameter space - not
         # necessarily random). Call these Samples_old.
         (samples_old, data_old) = super(sampler, self).random_samples(
                 initial_sample_type, param_min, param_max, savefile,
                 self.num_chains, criterion)
-        samples = samples_old
-        data = data_old
-        all_step_ratios = step_ratio
-        (kern_old, proposal) = kern.delta_step(data_old, None)
+        self.num_samples = self.chain_length * self.num_chains
+        comm.Barrier()
+        
+        # now split it all up
+        MYsamples_old = np.empty((np.shape(samples_old)[0]/size, np.shape(samples_old)[1]))
+        comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
+        MYdata_old = np.empty((np.shape(data_old)[0]/size, np.shape(data_old)[1]))
+        comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old,
+            MPI.DOUBLE])
 
+        samples = MYsamples_old
+        data = MYdata_old
+        all_step_ratios = step_ratio
+        (kern_old, proposal) = kern.delta_step(MYdata_old, None)
         mdat = dict()
         self.update_mdict(mdat)
-         
+
         for batch in xrange(1, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.
             samples_new = t_kernel.step(step_ratio, param_width,
-                    param_left, param_right, samples_old)
+                    param_left, param_right, MYsamples_old)
             
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
@@ -353,9 +373,29 @@ class sampler(bsam.sampler):
             super(sampler, self).save(mdat, savefile)
 
             # samples_old = samples_new
-            samples_old = samples_new
-        return (samples, data, all_step_ratios)
+            MYsamples_old = samples_new
 
+        # collect everything
+        MYsamples = np.copy(samples)
+        MYdata = np.copy(data)
+        MYall_step_ratios = np.copy(all_step_ratios)
+        # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
+        samples = np.empty((self.num_samples, np.shape(MYsamples)[1]), dtype=np.float64)
+        # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
+        data = np.empty((self.num_samples, np.shape(MYdata)[1]), dtype=np.float64)
+        all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
+        # now allgather
+        comm.Allgather([MYsamples, MPI.DOUBLE], [samples, MPI.DOUBLE])
+        comm.Allgather([MYdata, MPI.DOUBLE], [data, MPI.DOUBLE])
+        comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios, MPI.DOUBLE])
+
+        # save everything
+        mdat['step_ratios'] = all_step_ratios
+        mdat['samples'] = samples
+        mdat['data'] = data
+        super(sampler, self).save(mdat, savefile)
+
+        return (samples, data, all_step_ratios)
     def reseed_chains(self, param_min, param_max, t_kernel, kern,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
