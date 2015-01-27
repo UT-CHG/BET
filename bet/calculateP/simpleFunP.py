@@ -68,14 +68,16 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     #k = dsearchn(d_distr_samples, d_distr_emulate)
     d_Tree = spatial.KDTree(d_distr_samples)
     (_, k) = d_Tree.query(d_distr_emulate)
-    count_neighbors = np.zeros((M,))
+    count_neighbors = np.zeros((M,), dtype=np.float64)
     for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    comm.Allreduce([count_neighbors, MPI.DOUBLE], [count_neighbors, MPI.DOUBLE],
-            op=MPI.SUM) 
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+            op=MPI.SUM)
+    count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors / (num_d_emulate*size)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -184,9 +186,13 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
             :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    comm.Allreduce([count_neighbors, MPI.DOUBLE], [count_neighbors,
-        MPI.DOUBLE], op=MPI.SUM) 
-    comm.Allreduce([volumes, MPI.DOUBLE], [volumes, MPI.DOUBLE], op=MPI.SUM)
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+            op=MPI.SUM)
+    count_neighbors = ccount_neighbors
+    cvolumes = np.copy(volumes)
+    comm.Allreduce([volumes, MPI.DOUBLE], [cvolumes, MPI.DOUBLE], op=MPI.SUM)
+    volumes = cvolumes
     rho_D_M = count_neighbors*volumes 
     rho_D_M = rho_D_M/np.sum(rho_D_M)
     
@@ -254,8 +260,10 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
         
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    comm.Allreduce([count_neighbors, MPI.DOUBLE], [count_neighbors, MPI.DOUBLE],
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM) 
+    count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors/(size*num_d_emulate)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples

@@ -88,8 +88,10 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(d_distr_emu_ptr, i)
         Itemp_sum = np.sum(Itemp)
-        comm.Allreduce([Itemp_sum, MPI.DOUBLE], [Itemp_sum,
-            MPI.DOUBLE], op=MPI.SUM)
+        cItemp_sum = np.copy(Itemp_sum)
+        comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT],
+                op=MPI.SUM)
+        Itemp_sum = cItemp_sum
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]/Itemp_sum
 
@@ -133,8 +135,9 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
         Itemp_sum = np.sum(lam_vol[Itemp])
-        comm.Allreduce([Itemp_sum, MPI.DOUBLE], [Itemp_sum,
-            MPI.DOUBLE], op=MPI.SUM)
+        cItemp_sum = np.copy(Itemp_sum)
+        comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT], op=MPI.SUM)
+        Itemp_sum = cItemp_sum
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
 
@@ -265,7 +268,9 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     lam_vol = np.zeros((samples.shape[0],)) #lambda_emulate),))
     for i in range(samples.shape[0]):
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
-    comm.Allreduce([lam_vol, MPI.DOUBLE], [lam_vol, MPI.DOUBLE], op=MPI.SUM)
+    clam_vol = np.copy(lam_vol) 
+    comm.Allreduce([lam_vol, MPI.DOUBLE], [clam_vol, MPI.DOUBLE], op=MPI.SUM)
+    lam_vol = clam_vol
     lam_vol = lam_vol/(len(lambda_emulate)*size)
 
     # Calculate Probabilities
@@ -274,8 +279,9 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         Itemp = np.equal(io_ptr, i)
         # Prevent a divide by zero error
         Itemp_sum = np.sum(lam_vol[Itemp])
-        comm.Allreduce([Itemp_sum, MPI.DOUBLE], [Itemp_sum,
-            MPI.DOUBLE], op=MPI.SUM)
+        cItemp_sum = np.copy(Itemp_sum)
+        comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT], op=MPI.SUM)
+        lam_vol = clam_vol
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 
