@@ -15,11 +15,19 @@ class comm_for_no_mpi4py:
     def allreduce(self,val1, val2, op=None):
         return val1
     def bcast(self,val, root=0):
-        return val
+        return val   
+    def Allgather(self,val):
+        return val[0]
+    def Allreduce(self,val1, val2, op=None):
+        return val1[0]
+    def Bcast(self,val, root=0):
+        return va[0]
 
 class MPI_for_no_mpi4py:
     def __init__(self):
         self.SUM = None
+        self.DOUBLE = float
+        self.INT = int
         
 try:
     from mpi4py import MPI
