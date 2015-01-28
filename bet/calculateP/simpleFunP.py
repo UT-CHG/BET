@@ -9,14 +9,15 @@ import bet.calculateP.voronoiHistogram as vHist
 
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     """
-    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}` where :math:`\rho_{\mathcal{D},M}` is a
-    uniform probability density centered at Q_ref with bin_ratio of the width
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
+    centered at Q_ref with bin_ratio of the width
     of D using M uniformly spaced bins.
 
-    :param int M: Defines number M samples in D used to define :math:`\rho_{\mathcal{D},M}`
-        The choice of M is something of an "art" - play around with it
-        and you can get reasonable results with a relatively small
-        number here like 50.
+    :param int M: Defines number M samples in D used to define
+        :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
+        play around with it and you can get reasonable results with a
+        relatively small number here like 50.
     :param bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
     :type bin_ratio: double or list()
@@ -55,8 +56,8 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
             data.shape[1]))-0.5)+Q_ref 
     else:
-        d_distr_samples = None
-    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+        d_distr_samples = np.empty((M, data.shape[1]))
+    comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
     # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation
@@ -68,14 +69,16 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     #k = dsearchn(d_distr_samples, d_distr_emulate)
     d_Tree = spatial.KDTree(d_distr_samples)
     (_, k) = d_Tree.query(d_distr_emulate)
-    count_neighbors = np.zeros((M,))
+    count_neighbors = np.zeros((M,), dtype=np.float64)
     for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
-            op=MPI.SUM) 
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+            op=MPI.SUM)
+    count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors / (num_d_emulate*size)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -158,7 +161,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     if rank == 0:
         for i in range(len(Q_ref)):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M) 
-    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+    comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
  
     # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
@@ -184,9 +187,13 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
             :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
-            op=MPI.SUM) 
-    volumes = comm.allreduce(volumes, volumes, op=MPI.SUM)
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+            op=MPI.SUM)
+    count_neighbors = ccount_neighbors
+    cvolumes = np.copy(volumes)
+    comm.Allreduce([volumes, MPI.DOUBLE], [cvolumes, MPI.DOUBLE], op=MPI.SUM)
+    volumes = cvolumes
     rho_D_M = count_neighbors*volumes 
     rho_D_M = rho_D_M/np.sum(rho_D_M)
     
@@ -229,7 +236,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     if rank == 0:
         d_distr_samples = bin_size*(np.random.random((M, 
             len(Q_ref)))-0.5)+Q_ref
-    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+    comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
  
     # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
@@ -254,8 +261,10 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
         
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM) 
+    count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors/(size*num_d_emulate)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
