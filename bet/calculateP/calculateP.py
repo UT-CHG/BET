@@ -10,7 +10,7 @@ measure $P_{Lambda}$.
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
     the voronoi cells using MC integration
 """
-from bet.vis.Comm import *
+from bet.Comm import *
 import numpy as np
 import scipy.spatial as spatial
 

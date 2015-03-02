@@ -15,7 +15,7 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import math
-from bet.vis.Comm import *
+from bet.Comm import *
 
 size = comm.Get_size()
 rank = comm.Get_rank()

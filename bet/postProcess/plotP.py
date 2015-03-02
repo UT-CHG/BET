@@ -1,7 +1,7 @@
 """
 This module provides methods for plotting probabilities. 
 """
-from bet.vis.Comm import *
+from bet.Comm import *
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
@@ -273,7 +273,7 @@ def smooth_marginals_1D(marginals, bins,  sigma=10.0):
     index = copy.deepcopy(marginals.keys())
     index.sort()
     for i in index:    
-        nx = len(bins[i])
+        nx = len(bins[i])-1
         dx = bins[i][1] - bins[i][0]
         augx = math.ceil(3*sigma[i]/dx)
         x_kernel = np.linspace(-nx*dx/2, nx*dx/2, nx)
@@ -313,8 +313,8 @@ def smooth_marginals_2D(marginals, bins,  sigma=10.0):
     pairs = copy.deepcopy(marginals.keys())
     pairs.sort()
     for k, (i, j) in enumerate(pairs):   
-        nx = len(bins[i])
-        ny = len(bins[j])
+        nx = len(bins[i])-1
+        ny = len(bins[j])-1
         dx = bins[i][1] - bins[i][0]
         dy = bins[j][1] - bins[j][0]
 

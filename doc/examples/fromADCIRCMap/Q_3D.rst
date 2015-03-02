@@ -50,7 +50,7 @@ This is example takes advantage of the embarrisingly parallel nature of the
 algorithm(s) used to estimate :math:`\hat{\rho}_{\Lambda, j}` and the volumes
 of :math:`\mathcal{V}_j`. To do this we need to import two additional modules::
 
-    import bet.vis.plotP as pp
+    from bet import util
     import scipy.io as sio
     from mpi4py import MPI
 
@@ -68,14 +68,14 @@ We define the parameter domain :math:`\Lambda`::
 
 Within the ``postprocess(station_nums, ref_num)`` function in this case we only use 
 :meth:`~bet.calculateP.calculateP.prob_mc`. Since this script is parallel we
-need to use :meth:`~bet.vis.plotP.get_global_values` to concatenate the arrays
+need to use :meth:`~bet.postProcess.plotP.get_global_values` to concatenate the arrays
 spread out across the processors into a single array::
 
-    mdict['lambda_emulate'] = pp.get_global_values(lambda_emulate)   
+    mdict['lambda_emulate'] = util.get_global_values(lambda_emulate)   
     mdict['num_l_emulate'] = mdict['lambda_emulate'].shape[1]
-    mdict['P3'] = pp.get_global_values(P3)
-    mdict['lam_vol3'] = pp.get_global_values(lam_vol3)
-    mdict['io_ptr3'] = pp.get_global_values(io_ptr3)
+    mdict['P3'] = util.get_global_values(P3)
+    mdict['lam_vol3'] = util.get_global_values(lam_vol3)
+    mdict['io_ptr3'] = util.get_global_values(io_ptr3)
     
 Furthermore, we only want to write out the solution using a single processor::
 

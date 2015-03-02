@@ -42,8 +42,8 @@ Visualization Examples
 
 .. todo::
 
-    Write visualization examples for :mod:`~bet.vis.plotP` and
-    :mod:`~bet.vis.plotDomains`.
+    Write visualization examples for :mod:`~bet.postProcess.plotP` and
+    :mod:`~bet.postProcess.plotDomains`.
 
 Examples Estimating :math:`P_\Lambda`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
