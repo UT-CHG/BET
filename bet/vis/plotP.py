@@ -76,7 +76,7 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
         for k in range(num_samples):
             marg[bin_ptr[k][i]] += P_samples[k]
         marg = comm.allreduce(marg, marg, op=MPI.SUM)
-        marginals[i] = marg
+        marginals[i] = marg[:-1]
 
     return (bins, marginals)
 
@@ -124,7 +124,7 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
             for k in range(num_samples):
                 marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
             marg = comm.allreduce(marg, marg, op=MPI.SUM)
-            marginals[(i, j)] = marg
+            marginals[(i, j)] = marg[:-1,:-1]
 
     return (bins, marginals)
 
@@ -159,9 +159,10 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
         index = copy.deepcopy(marginals.keys())
         index.sort()
         for i in index:
+            x_range = np.linspace(lam_domain[i,0], lam_domain[i,1], len(bins[i])-1)
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
-            ax.plot(bins[i], marginals[i]/(bins[i][1]-bins[i][0]))
+            ax.plot(x_range,marginals[i]/(bins[i][1]-bins[i][0]))
             if lam_ref != None:
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
