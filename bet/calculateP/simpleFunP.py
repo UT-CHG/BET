@@ -9,14 +9,15 @@ import bet.calculateP.voronoiHistogram as vHist
 
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     """
-    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}` where :math:`\rho_{\mathcal{D},M}` is a
-    uniform probability density centered at Q_ref with bin_ratio of the width
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
+    centered at Q_ref with bin_ratio of the width
     of D using M uniformly spaced bins.
 
-    :param int M: Defines number M samples in D used to define :math:`\rho_{\mathcal{D},M}`
-        The choice of M is something of an "art" - play around with it
-        and you can get reasonable results with a relatively small
-        number here like 50.
+    :param int M: Defines number M samples in D used to define
+        :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
+        play around with it and you can get reasonable results with a
+        relatively small number here like 50.
     :param bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
     :type bin_ratio: double or list()
@@ -55,8 +56,8 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
             data.shape[1]))-0.5)+Q_ref 
     else:
-        d_distr_samples = None
-    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+        d_distr_samples = np.empty((M, data.shape[1]))
+    comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
     # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
     # First generate samples of rho_D - I sometimes call this emulation
@@ -68,14 +69,16 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     #k = dsearchn(d_distr_samples, d_distr_emulate)
     d_Tree = spatial.KDTree(d_distr_samples)
     (_, k) = d_Tree.query(d_distr_emulate)
-    count_neighbors = np.zeros((M,))
+    count_neighbors = np.zeros((M,), dtype=np.float64)
     for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
-            op=MPI.SUM) 
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+            op=MPI.SUM)
+    count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors / (num_d_emulate*size)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -158,7 +161,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     if rank == 0:
         for i in range(len(Q_ref)):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M) 
-    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+    comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
  
     # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
@@ -184,9 +187,13 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
             :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
-            op=MPI.SUM) 
-    volumes = comm.allreduce(volumes, volumes, op=MPI.SUM)
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+            op=MPI.SUM)
+    count_neighbors = ccount_neighbors
+    cvolumes = np.copy(volumes)
+    comm.Allreduce([volumes, MPI.DOUBLE], [cvolumes, MPI.DOUBLE], op=MPI.SUM)
+    volumes = cvolumes
     rho_D_M = count_neighbors*volumes 
     rho_D_M = rho_D_M/np.sum(rho_D_M)
     
@@ -229,7 +236,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     if rank == 0:
         d_distr_samples = bin_size*(np.random.random((M, 
             len(Q_ref)))-0.5)+Q_ref
-    d_distr_samples = comm.bcast(d_distr_samples, root=0)
+    comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
  
     # Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling from rho_D
@@ -254,8 +261,10 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
         
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
-    count_neighbors = comm.allreduce(count_neighbors, count_neighbors,
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM) 
+    count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors/(size*num_d_emulate)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -310,6 +319,50 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
 
     return uniform_hyperrectangle(data, domain_center, bin_ratios,
             center_pts_per_edge)
+
+def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1):
+    """
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
+    centered at Q_ref with bin_size of the width
+    of D.
+
+    Since rho_D is a uniform distribution on a hyperrectanlge we should be able
+    to represent it exactly with ``M = 3^mdim`` or rather
+    ``len(d_distr_samples) == 3^mdim``.
+
+    :param bin_size: The size used to determine the width of the
+        uniform distribution 
+    :type bin_size: double or list()
+    :param int num_d_emulate: Number of samples used to emulate using an MC
+        assumption 
+    :param data: Array containing QoI data where the QoI is mdim diminsional
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param Q_ref: $Q(lambda_{reference})$
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+
+    """
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1)
+    data_max = np.max(data, 0)
+    data_min = np.min(data, 0)
+
+    sur_domain = np.zeros((data.shape[1], 2))
+    sur_domain[:, 0] = data_min
+    sur_domain[:, 1] = data_max
+    points, _, rect_domain = vHist.center_and_layer1_points_binsize(center_pts_per_edge, 
+            Q_ref, bin_size, sur_domain)
+    edges = vHist.edges_regular_binsize(center_pts_per_edge, Q_ref, bin_size,
+            sur_domain) 
+    _, volumes, _ = vHist.histogramdd_volumes(edges, points)
+    return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
 def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     """
