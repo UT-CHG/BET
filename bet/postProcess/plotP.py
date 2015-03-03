@@ -75,8 +75,9 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
         # This may be sped up with logical indices
         for k in range(num_samples):
             marg[bin_ptr[k][i]] += P_samples[k]
-        marg = comm.Allreduce(marg, marg, op=MPI.SUM)
-        marginals[i] = marg[:-1]
+        marg_temp = np.copy(marg)
+        comm.Allreduce([marg, MPI.DOUBLE],[marg_temp, MPI.DOUBLE], op=MPI.SUM)
+        marginals[i] = marg_temp[:-1]
 
     return (bins, marginals)
 
@@ -123,8 +124,9 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
             # This may be sped up with logical indices
             for k in range(num_samples):
                 marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
-            marg = comm.Allreduce(marg, marg, op=MPI.SUM)
-            marginals[(i, j)] = marg[:-1,:-1]
+            marg_temp = np.copy(marg)
+            comm.Allreduce([marg, MPI.DOUBLE],[marg_temp, MPI.DOUBLE], op=MPI.SUM)
+            marginals[(i, j)] = marg_temp[:-1,:-1]
 
     return (bins, marginals)
 
