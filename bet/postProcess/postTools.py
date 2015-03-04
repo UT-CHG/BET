@@ -9,7 +9,9 @@ import math
 
 def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     """
-    This sorts the samples by probability density. It returns the sorted values.If the samples are iid, no volume data is needed. It is optional to sort the QoI data, but be sure to do so if using it later.
+    This sorts the samples by probability density. It returns the sorted values.
+    If the samples are iid, no volume data is needed. It is optional to sort the QoI 
+    data, but be sure to do so if using it later.
 
     :param P_samples: Probabilities.
     :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
@@ -38,7 +40,10 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
 
 def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=None):
     """
-    This calculates the highest probability samples whose probability sum to a given value. The number of high probability samples that sum to the value and the probabilities, samples, volumes, and data are returned.
+    This calculates the highest probability samples whose probability sum to a given value. 
+    The number of high probability samples that sum to the value and the probabilities, 
+    samples, volumes, and data are returned. This assumes that ``P_samples``, ``samples``, 
+    ``lam_vol``, and ``data`` have all be sorted using :meth:`~bet.postProcess.sort_by_rho`.
 
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
