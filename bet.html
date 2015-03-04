@@ -66,6 +66,14 @@
 <li class="toctree-l2"><a class="reference internal" href="bet.loadBalance.html#module-contents">Module contents</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="bet.postProcess.html">bet.postProcess package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains">bet.postProcess.plotDomains module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP">bet.postProcess.plotP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools">bet.postProcess.postTools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess">Module contents</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="bet.sampling.html">bet.sampling package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.adaptiveSampling">bet.sampling.adaptiveSampling module</a></li>
@@ -73,15 +81,112 @@
 <li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling">Module contents</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="bet.vis.html">bet.vis package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bet.vis.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.vis.html#module-bet.vis.plotDomains">bet.vis.plotDomains module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.vis.html#module-bet.vis.plotP">bet.vis.plotP module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.vis.html#module-bet.vis">Module contents</a></li>
-</ul>
-</li>
 </ul>
 </div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-bet.Comm">
+<span id="bet-comm-module"></span><h2>bet.Comm module<a class="headerlink" href="#module-bet.Comm" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a workaround for people without mpi4py installed 
+to run BET.</p>
+<dl class="class">
+<dt id="bet.Comm.MPI_for_no_mpi4py">
+<em class="property">class </em><tt class="descclassname">bet.Comm.</tt><tt class="descname">MPI_for_no_mpi4py</tt><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="class">
+<dt id="bet.Comm.comm_for_no_mpi4py">
+<em class="property">class </em><tt class="descclassname">bet.Comm.</tt><tt class="descname">comm_for_no_mpi4py</tt><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Allgather">
+<tt class="descname">Allgather</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allgather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Allreduce">
+<tt class="descname">Allreduce</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>op=None</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allreduce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Bcast">
+<tt class="descname">Bcast</tt><big>(</big><em>val</em>, <em>root=0</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Bcast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Get_rank">
+<tt class="descname">Get_rank</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_rank" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Get_size">
+<tt class="descname">Get_size</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_size" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Scatter">
+<tt class="descname">Scatter</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>root=0</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Scatter" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.allgather">
+<tt class="descname">allgather</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.allreduce">
+<tt class="descname">allreduce</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>op=None</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allreduce" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.bcast">
+<tt class="descname">bcast</tt><big>(</big><em>val</em>, <em>root=0</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.bcast" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.util">
+<span id="bet-util-module"></span><h2>bet.util module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="bet.util.get_global_values">
+<tt class="descclassname">bet.util.</tt><tt class="descname">get_global_values</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#bet.util.get_global_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates local arrays into global array.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>array</strong> &#8211; Array.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">:class:&#8217;~numpy.ndarray&#8217;</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.util.meshgrid_ndim">
+<tt class="descclassname">bet.util.</tt><tt class="descname">meshgrid_ndim</tt><big>(</big><em>X</em><big>)</big><a class="headerlink" href="#bet.util.meshgrid_ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return coordinate matrix from two or more coordinate vectors.
+Handles a maximum of 10 vectors.</p>
+<p>Make N-D coordinate arrays for vectorized evaluations of
+N-D scalar/vector fields over N-D grids, given
+one-dimensional coordinate arrays (x1, x2,..., xn).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><em>tuple</em></a>) &#8211; A tuple containing the 1d coordinate arrays</td>
+</tr>
+</tbody>
+</table>
+<p>:rtype <tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (num_grid_points,n)
+:returns: X_new</p>
+</dd></dl>
+
 </div>
 <div class="section" id="module-contents">
 <h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
@@ -98,6 +203,9 @@
   <ul>
 <li><a class="reference internal" href="#">bet package</a><ul>
 <li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-bet.Comm">bet.Comm module</a></li>
+<li><a class="reference internal" href="#module-bet.util">bet.util module</a></li>
 <li><a class="reference internal" href="#module-contents">Module contents</a></li>
 </ul>
 </li>
@@ -139,7 +247,7 @@
     </div>
     <div class="footer">
         &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Oct 01, 2014.
+      Last updated on Mar 04, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

@@ -62,7 +62,7 @@ coordinate pairing. We assume the measure of both spaces is Lebesgue.</p>
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.kernel">
 <em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">kernel</tt><big>(</big><em>tolerance=1e-08</em>, <em>increase=1.0</em>, <em>decrease=1.0</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Parent class for kernels to determine change in step size. This class
 provides a method for determining the proposed change in step size. Since
 this is simply a skeleton parent class it does not change the step size at
@@ -414,9 +414,11 @@ determine the proposed change to the <tt class="docutils literal"><span class="p
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<tt class="docutils literal"><span class="pre">parameter_samples</span></tt>, <tt class="docutils literal"><span class="pre">data_samples</span></tt>) where
-<tt class="docutils literal"><span class="pre">parameter_samples</span></tt> is np.ndarray of shape (num_samples, ndim)
-and <tt class="docutils literal"><span class="pre">data_samples</span></tt> is np.ndarray of shape (num_samples, mdim)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<tt class="docutils literal"><span class="pre">parameter_samples</span></tt>, <tt class="docutils literal"><span class="pre">data_samples</span></tt>, <tt class="docutils literal"><span class="pre">all_step_ratios</span></tt>) where
+<tt class="docutils literal"><span class="pre">parameter_samples</span></tt> is np.ndarray of shape (num_samples, ndim),
+<tt class="docutils literal"><span class="pre">data_samples</span></tt> is np.ndarray of shape (num_samples, mdim), and 
+<tt class="docutils literal"><span class="pre">all_step_ratios</span></tt> is np.ndarray of shape (num_chains,
+chain_length)</p>
 </td>
 </tr>
 </tbody>
@@ -427,6 +429,7 @@ and <tt class="docutils literal"><span class="pre">data_samples</span></tt> is n
 <dt id="bet.sampling.adaptiveSampling.sampler.reseed_chains">
 <tt class="descname">reseed_chains</tt><big>(</big><em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>kern</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em>, <em>reseed=1</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.reseed_chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic adaptive sampling algorithm.</p>
+<p>NOT YET IMPLEMENTED.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -569,6 +572,7 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 <tt class="descname">run_reseed</tt><big>(</big><em>kern_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>param_min</em>, <em>param_max</em>, <em>t_kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em>, <em>reseed=3</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_reseed" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using reseeded chains and a list of different
 kernels.</p>
+<p>THIS IS NOT OPERATIONAL DO NOT USE.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -689,7 +693,7 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.transition_set">
 <em class="property">class </em><tt class="descclassname">bet.sampling.adaptiveSampling.</tt><tt class="descname">transition_set</tt><big>(</big><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em><big>)</big><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>Basic class that is used to create a step to move from samples_old to
 samples_new based. This class generates steps for a random walk using a
 very basic algorithm. Future classes will inherit from this one with
@@ -849,7 +853,7 @@ returns data</li>
 <dl class="class">
 <dt id="bet.sampling.basicSampling.sampler">
 <em class="property">class </em><tt class="descclassname">bet.sampling.basicSampling.</tt><tt class="descname">sampler</tt><big>(</big><em>lb_model</em>, <em>num_samples=None</em><big>)</big><a class="headerlink" href="#bet.sampling.basicSampling.sampler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><tt class="xref py py-class docutils literal"><span class="pre">object</span></tt></a></p>
 <p>This class provides methods for adaptive sampling of parameter space to
 provide samples to be used by algorithms to solve inverse problems.</p>
 <dl class="docutils">
@@ -1047,7 +1051,7 @@ at a specified set of parameter samples.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Oct 01, 2014.
+      Last updated on Mar 04, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>
