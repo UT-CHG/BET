@@ -2,7 +2,7 @@
 This module provides methods for creating simple funciton approximations to be
 used by :mod:`~bet.calculateP.calculateP`.
 """
-from bet.vis.Comm import *
+from bet.Comm import *
 import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
@@ -319,6 +319,50 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
 
     return uniform_hyperrectangle(data, domain_center, bin_ratios,
             center_pts_per_edge)
+
+def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1):
+    """
+    Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
+    where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
+    centered at Q_ref with bin_size of the width
+    of D.
+
+    Since rho_D is a uniform distribution on a hyperrectanlge we should be able
+    to represent it exactly with ``M = 3^mdim`` or rather
+    ``len(d_distr_samples) == 3^mdim``.
+
+    :param bin_size: The size used to determine the width of the
+        uniform distribution 
+    :type bin_size: double or list()
+    :param int num_d_emulate: Number of samples used to emulate using an MC
+        assumption 
+    :param data: Array containing QoI data where the QoI is mdim diminsional
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param Q_ref: $Q(lambda_{reference})$
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+
+    :rtype: tuple
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+
+    """
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1)
+    data_max = np.max(data, 0)
+    data_min = np.min(data, 0)
+
+    sur_domain = np.zeros((data.shape[1], 2))
+    sur_domain[:, 0] = data_min
+    sur_domain[:, 1] = data_max
+    points, _, rect_domain = vHist.center_and_layer1_points_binsize(center_pts_per_edge, 
+            Q_ref, bin_size, sur_domain)
+    edges = vHist.edges_regular_binsize(center_pts_per_edge, Q_ref, bin_size,
+            sur_domain) 
+    _, volumes, _ = vHist.histogramdd_volumes(edges, points)
+    return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
 def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     """

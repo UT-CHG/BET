@@ -1,7 +1,7 @@
 """
 This module provides methods for plotting probabilities. 
 """
-from bet.vis.Comm import *
+from bet.Comm import *
 import matplotlib.pyplot as plt
 import numpy as np
 import copy
@@ -75,10 +75,9 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
         # This may be sped up with logical indices
         for k in range(num_samples):
             marg[bin_ptr[k][i]] += P_samples[k]
-        cmarg = np.copy(marg)
-        comm.Allreduce([marg, MPI.DOUBLE], [cmarg, MPI.DOUBLE], op=MPI.SUM)
-        marg = cmarg
-        marginals[i] = marg
+        marg_temp = np.copy(marg)
+        comm.Allreduce([marg, MPI.DOUBLE],[marg_temp, MPI.DOUBLE], op=MPI.SUM)
+        marginals[i] = marg_temp[:-1]
 
     return (bins, marginals)
 
@@ -125,11 +124,9 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
             # This may be sped up with logical indices
             for k in range(num_samples):
                 marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
-
-            cmarg = np.copy(marg)
-            comm.Allreduce([marg, MPI.DOUBLE], [cmarg, MPI.DOUBLE], op=MPI.SUM)
-            marg = cmarg
-            marginals[(i, j)] = marg
+            marg_temp = np.copy(marg)
+            comm.Allreduce([marg, MPI.DOUBLE],[marg_temp, MPI.DOUBLE], op=MPI.SUM)
+            marginals[(i, j)] = marg_temp[:-1,:-1]
 
     return (bins, marginals)
 
@@ -164,9 +161,10 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
         index = copy.deepcopy(marginals.keys())
         index.sort()
         for i in index:
+            x_range = np.linspace(lam_domain[i,0], lam_domain[i,1], len(bins[i])-1)
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
-            ax.plot(bins[i], marginals[i]/(bins[i][1]-bins[i][0]))
+            ax.plot(x_range,marginals[i]/(bins[i][1]-bins[i][0]))
             if lam_ref != None:
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
@@ -277,7 +275,7 @@ def smooth_marginals_1D(marginals, bins,  sigma=10.0):
     index = copy.deepcopy(marginals.keys())
     index.sort()
     for i in index:    
-        nx = len(bins[i])
+        nx = len(bins[i])-1
         dx = bins[i][1] - bins[i][0]
         augx = math.ceil(3*sigma[i]/dx)
         x_kernel = np.linspace(-nx*dx/2, nx*dx/2, nx)
@@ -317,8 +315,8 @@ def smooth_marginals_2D(marginals, bins,  sigma=10.0):
     pairs = copy.deepcopy(marginals.keys())
     pairs.sort()
     for k, (i, j) in enumerate(pairs):   
-        nx = len(bins[i])
-        ny = len(bins[j])
+        nx = len(bins[i])-1
+        ny = len(bins[j])-1
         dx = bins[i][1] - bins[i][0]
         dy = bins[j][1] - bins[j][0]
 

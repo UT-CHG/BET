@@ -1,9 +1,9 @@
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
-import bet.vis.plotP as pp
 import numpy as np
 import scipy.io as sio
 from mpi4py import MPI
+from bet import util
 
 comm = MPI.COMM_WORLD
 rank = comm.Get_rank()
@@ -48,11 +48,11 @@ def postprocess(station_nums, ref_num):
     mdict = dict()
     mdict['rho_D_M'] = rho_D_M
     mdict['d_distr_samples'] = d_distr_samples 
-    mdict['lambda_emulate'] = pp.get_global_values(lambda_emulate)   
+    mdict['lambda_emulate'] = util.get_global_values(lambda_emulate)   
     mdict['num_l_emulate'] = mdict['lambda_emulate'].shape[1]
-    mdict['P3'] = pp.get_global_values(P3)
-    mdict['lam_vol3'] = pp.get_global_values(lam_vol3)
-    mdict['io_ptr3'] = pp.get_global_values(io_ptr3)
+    mdict['P3'] = util.get_global_values(P3)
+    mdict['lam_vol3'] = util.get_global_values(lam_vol3)
+    mdict['io_ptr3'] = util.get_global_values(io_ptr3)
     mdict['emulate_ptr3'] = emulate_ptr3
         
     if rank == 0:
