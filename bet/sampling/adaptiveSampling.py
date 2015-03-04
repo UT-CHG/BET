@@ -140,6 +140,8 @@ class sampler(bsam.sampler):
         Generates samples using reseeded chains and a list of different
         kernels.
 
+        THIS IS NOT OPERATIONAL DO NOT USE.
+
         :param list() kern_list: List of kernels.
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`np.array` and
@@ -370,7 +372,7 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            super(sampler, self).save(mdat, savefile)
+            super(sampler, self).save(mdat, "p"+str(rank)+savefile)
 
             # samples_old = samples_new
             MYsamples_old = samples_new
@@ -396,10 +398,13 @@ class sampler(bsam.sampler):
         super(sampler, self).save(mdat, savefile)
 
         return (samples, data, all_step_ratios)
+
     def reseed_chains(self, param_min, param_max, t_kernel, kern,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
         Basic adaptive sampling algorithm.
+
+        NOT YET IMPLEMENTED.
        
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
