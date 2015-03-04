@@ -56,19 +56,3 @@ def get_global_values(array):
 
     array = comm.allgather(array, array)   
     return np.vstack(array)
-
-# def collect_probs(P_file,
-#                   lam_file,
-#                   file_nums):
-#     P = np.loadtxt(P_file + '0' + ".csv")
-#     lam = np.loadtxt(lam_file + '0' + ".csv")
-#     for i in range(1,file_nums):
-#         P = np.vstack((P, np.loadtxt(P_file + `i` + ".csv")))
-#         lam = np.vstack((lam,np.loadtxt(lam_file + `i` + ".csv")))
-    
-#     num = len(P)
-#     intervals = np.zeros((num+1,))
-#     for i in range(1,num):
-#         intervals[i] = intervals[i-1] + P[i]
-
-#     return (P, lam, intervals)
