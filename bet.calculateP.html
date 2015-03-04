@@ -187,7 +187,7 @@ approximated using MC integration.</p>
 <li><strong>d_distr_samples</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape  (M, mdim)) &#8211; The samples in the data space that define a
 parition of D to for the simple function approximation</li>
 <li><strong>d_Tree</strong> &#8211; <tt class="xref py py-class docutils literal"><span class="pre">KDTree</span></tt> for d_distr_samples</li>
-<li><strong>lam_domain</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (2, ndim)) &#8211; The domain for each parameter for the model.</li>
+<li><strong>lam_domain</strong> (<tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (ndim,2)) &#8211; The domain for each parameter for the model.</li>
 <li><strong>num_l_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of iid samples used to parition the
 parameter space</li>
 </ul>
@@ -398,26 +398,26 @@ the <tt class="xref py py-class docutils literal"><span class="pre">KDTree</span
 <tt class="descclassname">bet.calculateP.simpleFunP.</tt><tt class="descname">unif_unif</tt><big>(</big><em>data</em>, <em>Q_ref</em>, <em>M=50</em>, <em>bin_ratio=0.2</em>, <em>num_d_emulate=1000000.0</em><big>)</big><a class="headerlink" href="#bet.calculateP.simpleFunP.unif_unif" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
 <div>Creates a simple function approximation of :math:<a href="#id9"><span class="problematic" id="id10">`</span></a></div></blockquote>
-<p>ho_{mathcal{D},M}` where :math:`
-ho_{mathcal{D},M}` is a</p>
-<blockquote>
-<div><p>uniform probability density centered at Q_ref with bin_ratio of the width
+<dl class="docutils">
+<dt>ho_{mathcal{D},M}`</dt>
+<dd>where :math:<a href="#id11"><span class="problematic" id="id12">`</span></a></dd>
+<dt>ho_{mathcal{D},M}` is a uniform probability density</dt>
+<dd><p class="first">centered at Q_ref with bin_ratio of the width
 of D using M uniformly spaced bins.</p>
-<table class="docutils field-list" frame="void" rules="none">
+<table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">param int M:</th><td class="field-body">Defines number M samples in D used to define :math:<a href="#id11"><span class="problematic" id="id12">`</span></a></td>
+<tr class="field-odd field"><th class="field-name">param int M:</th><td class="field-body">Defines number M samples in D used to define
+:math:<a href="#id13"><span class="problematic" id="id14">`</span></a></td>
 </tr>
 </tbody>
 </table>
-</div></blockquote>
-<dl class="docutils">
-<dt>ho_{mathcal{D},M}`</dt>
+</dd>
+<dt>ho_{mathcal{D},M}` The choice of M is something of an &#8220;art&#8221; -</dt>
 <dd><blockquote class="first">
-<div>The choice of M is something of an &#8220;art&#8221; - play around with it
-and you can get reasonable results with a relatively small
-number here like 50.</div></blockquote>
+<div>play around with it and you can get reasonable results with a
+relatively small number here like 50.</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -457,10 +457,10 @@ the <tt class="xref py py-class docutils literal"><span class="pre">KDTree</span
 <dt id="bet.calculateP.simpleFunP.uniform_data">
 <tt class="descclassname">bet.calculateP.simpleFunP.</tt><tt class="descname">uniform_data</tt><big>(</big><em>data</em><big>)</big><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_data" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div>Creates a simple function approximation of :math:<a href="#id13"><span class="problematic" id="id14">`</span></a></div></blockquote>
+<div>Creates a simple function approximation of :math:<a href="#id15"><span class="problematic" id="id16">`</span></a></div></blockquote>
 <dl class="docutils">
 <dt>ho_{mathcal{D},M}`</dt>
-<dd>where :math:<a href="#id15"><span class="problematic" id="id16">`</span></a></dd>
+<dd>where :math:<a href="#id17"><span class="problematic" id="id18">`</span></a></dd>
 <dt>ho_{mathcal{D},M}` is a uniform probability density over</dt>
 <dd><p class="first">the entire <tt class="docutils literal"><span class="pre">data_domain</span></tt>. Here the <tt class="docutils literal"><span class="pre">data_domain</span></tt> is the union of
 voronoi cells defined by <tt class="docutils literal"><span class="pre">data</span></tt>. In other words we assign each sample the
@@ -495,10 +495,10 @@ is the <tt class="xref py py-class docutils literal"><span class="pre">KDTree</s
 <dt id="bet.calculateP.simpleFunP.uniform_hyperrectangle">
 <tt class="descclassname">bet.calculateP.simpleFunP.</tt><tt class="descname">uniform_hyperrectangle</tt><big>(</big><em>data</em>, <em>Q_ref</em>, <em>bin_ratio</em>, <em>center_pts_per_edge=1</em><big>)</big><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_hyperrectangle" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div>Creates a simple function approximation of :math:<a href="#id17"><span class="problematic" id="id18">`</span></a></div></blockquote>
+<div>Creates a simple function approximation of :math:<a href="#id19"><span class="problematic" id="id20">`</span></a></div></blockquote>
 <dl class="docutils">
 <dt>ho_{mathcal{D},M}`</dt>
-<dd>where :math:<a href="#id19"><span class="problematic" id="id20">`</span></a></dd>
+<dd>where :math:<a href="#id21"><span class="problematic" id="id22">`</span></a></dd>
 <dt>ho_{mathcal{D},M}` is a uniform probability density</dt>
 <dd><p class="first">centered at Q_ref with bin_ratio of the width
 of D.</p>
@@ -544,21 +544,72 @@ is the <tt class="xref py py-class docutils literal"><span class="pre">KDTree</s
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.calculateP.simpleFunP.uniform_hyperrectangle_binsize">
+<tt class="descclassname">bet.calculateP.simpleFunP.</tt><tt class="descname">uniform_hyperrectangle_binsize</tt><big>(</big><em>data</em>, <em>Q_ref</em>, <em>bin_size</em>, <em>center_pts_per_edge=1</em><big>)</big><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_hyperrectangle_binsize" title="Permalink to this definition">¶</a></dt>
+<dd><blockquote>
+<div>Creates a simple function approximation of :math:<a href="#id23"><span class="problematic" id="id24">`</span></a></div></blockquote>
+<dl class="docutils">
+<dt>ho_{mathcal{D},M}`</dt>
+<dd>where :math:<a href="#id25"><span class="problematic" id="id26">`</span></a></dd>
+<dt>ho_{mathcal{D},M}` is a uniform probability density</dt>
+<dd><p class="first">centered at Q_ref with bin_size of the width
+of D.</p>
+<p>Since rho_D is a uniform distribution on a hyperrectanlge we should be able
+to represent it exactly with <tt class="docutils literal"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">3^mdim</span></tt> or rather
+<tt class="docutils literal"><span class="pre">len(d_distr_samples)</span> <span class="pre">==</span> <span class="pre">3^mdim</span></tt>.</p>
+<table class="last docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">param bin_size:</th><td class="field-body">The size used to determine the width of the
+uniform distribution</td>
+</tr>
+<tr class="field-even field"><th class="field-name">type bin_size:</th><td class="field-body">double or list()</td>
+</tr>
+<tr class="field-odd field"><th class="field-name" colspan="2">param int num_d_emulate:</th></tr>
+<tr class="field-odd field"><td>&nbsp;</td><td class="field-body">Number of samples used to emulate using an MC
+assumption</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param data:</th><td class="field-body">Array containing QoI data where the QoI is mdim diminsional</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">type data:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of size (num_samples, mdim)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">param Q_ref:</th><td class="field-body">$Q(lambda_{reference})$</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">type Q_ref:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of size (mdim,)</td>
+</tr>
+<tr class="field-even field"><th class="field-name" colspan="2">param list() center_pts_per_edge:</th></tr>
+<tr class="field-even field"><td>&nbsp;</td><td class="field-body">number of center points per edge and
+additional two points will be added to create the bounding layer</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">rtype:</th><td class="field-body">tuple</td>
+</tr>
+<tr class="field-even field"><th class="field-name">returns:</th><td class="field-body">(rho_D_M, d_distr_samples, d_Tree) where <tt class="docutils literal"><span class="pre">rho_D_M</span></tt> and
+<tt class="docutils literal"><span class="pre">d_distr_samples</span></tt> are (mdim, M) <tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> and <cite>d_Tree</cite>
+is the <tt class="xref py py-class docutils literal"><span class="pre">KDTree</span></tt> for d_distr_samples</td>
+</tr>
+</tbody>
+</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_hyperrectangle_user">
 <tt class="descclassname">bet.calculateP.simpleFunP.</tt><tt class="descname">uniform_hyperrectangle_user</tt><big>(</big><em>data</em>, <em>domain</em>, <em>center_pts_per_edge=1</em><big>)</big><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_hyperrectangle_user" title="Permalink to this definition">¶</a></dt>
 <dd><blockquote>
-<div>Creates a simple funciton appoximation of :math:<a href="#id21"><span class="problematic" id="id22">`</span></a></div></blockquote>
+<div>Creates a simple funciton appoximation of :math:<a href="#id27"><span class="problematic" id="id28">`</span></a></div></blockquote>
 <dl class="docutils">
 <dt>ho_{mathcal{D},M}`</dt>
-<dd>where :math:<a href="#id23"><span class="problematic" id="id24">`</span></a></dd>
+<dd>where :math:<a href="#id29"><span class="problematic" id="id30">`</span></a></dd>
 <dt>ho{mathcal{D}, M}` is a uniform probablity density over the</dt>
 <dd><p class="first">hyperrectangular domain specified by domain.</p>
-<p class="last">Since :math:<a href="#id25"><span class="problematic" id="id26">`</span></a></p>
+<p class="last">Since :math:<a href="#id31"><span class="problematic" id="id32">`</span></a></p>
 </dd>
-<dt><a href="#id41"><span class="problematic" id="id42">ho_</span></a>mathcal{D}` is a uniform distribution on a</dt>
+<dt><a href="#id51"><span class="problematic" id="id52">ho_</span></a>mathcal{D}` is a uniform distribution on a</dt>
 <dd><p class="first">hyperrectangle we should we able to represent it exactly with
 <span class="math">\(M=3^{m}\)</span> where m is the dimension of the data space or rather
-<a href="#id27"><span class="problematic" id="id28">``</span></a>len(d_distr_samples) == 3**mdim`.</p>
+<a href="#id33"><span class="problematic" id="id34">``</span></a>len(d_distr_samples) == 3**mdim`.</p>
 <table class="last docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -567,12 +618,12 @@ is the <tt class="xref py py-class docutils literal"><span class="pre">KDTree</s
 </tr>
 <tr class="field-even field"><th class="field-name">type data:</th><td class="field-body"><tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of size (num_samples, mdim)</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">param domain:</th><td class="field-body">The domain overwhich :math:<a href="#id29"><span class="problematic" id="id30">`</span></a></td>
+<tr class="field-odd field"><th class="field-name">param domain:</th><td class="field-body">The domain overwhich :math:<a href="#id35"><span class="problematic" id="id36">`</span></a></td>
 </tr>
 </tbody>
 </table>
 </dd>
-<dt><a href="#id43"><span class="problematic" id="id44">ho_</span></a>mathcal{D}` is</dt>
+<dt><a href="#id53"><span class="problematic" id="id54">ho_</span></a>mathcal{D}` is</dt>
 <dd><blockquote class="first">
 <div>uniform.</div></blockquote>
 <table class="last docutils field-list" frame="void" rules="none">
@@ -633,7 +684,45 @@ surrounding domain</li>
 <dl class="docutils">
 <dt>:returns (points, interior_and_layer1) where where points is an</dt>
 <dd><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (num_points, dim), interior_and_layer1
-is a list() of dim :class:<a href="#id31"><span class="problematic" id="id32">`</span></a>numpy.ndarray`s of shape
+is a list() of dim :class:<a href="#id37"><span class="problematic" id="id38">`</span></a>numpy.ndarray`s of shape
+(center_pts_per_edge+2,).</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.voronoiHistogram.center_and_layer1_points_binsize">
+<tt class="descclassname">bet.calculateP.voronoiHistogram.</tt><tt class="descname">center_and_layer1_points_binsize</tt><big>(</big><em>center_pts_per_edge</em>, <em>center</em>, <em>r_size</em>, <em>sur_domain</em><big>)</big><a class="headerlink" href="#bet.calculateP.voronoiHistogram.center_and_layer1_points_binsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a regular grid of center points that define the voronoi
+tesselation of exactly the interior of a hyperrectangle centered at
+<tt class="docutils literal"><span class="pre">center</span></tt> with sides of length <tt class="docutils literal"><span class="pre">r_size</span></tt> and the layers
+of voronoi cells that bound these interior cells. The resulting voronoi
+tesselation exactly represents the hyperrectangle.</p>
+<p>This method can also be used to tile <tt class="docutils literal"><span class="pre">sur_domain</span></tt> with points to define
+voronoi regions if the user sets <tt class="docutils literal"><span class="pre">r_ratio</span> <span class="pre">=</span> <span class="pre">1</span></tt>. (use binratio)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
+additional two points will be added to create the bounding layer</li>
+<li><strong>center</strong> (<tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
+<li><strong>r_size</strong> (<em>double or list()</em>) &#8211; size of the length of the sides of the
+hyperrectangle to the surrounding domain</li>
+<li><strong>sur_domain</strong> (<tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
+surrounding domain</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>:returns (points, interior_and_layer1) where where points is an</dt>
+<dd><tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (num_points, dim), interior_and_layer1
+is a list() of dim :class:<a href="#id39"><span class="problematic" id="id40">`</span></a>numpy.ndarray`s of shape
 (center_pts_per_edge+2,).</dd>
 </dl>
 </dd></dl>
@@ -648,13 +737,13 @@ formed by voronoi cells along each dimensions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (list of dim :class:<a href="#id33"><span class="problematic" id="id34">`</span></a>numpy.ndarray`s of shape (nbins+2,)) &#8211; the coordindates of voronoi points that would generate
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (list of dim :class:<a href="#id41"><span class="problematic" id="id42">`</span></a>numpy.ndarray`s of shape (nbins+2,)) &#8211; the coordindates of voronoi points that would generate
 these bins in each dimensions</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">edges, A sequence of arrays describing the edges of bins along
 each dimension.</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Rtype edges:</th><td class="field-body">A list() containing mdim :class:<a href="#id35"><span class="problematic" id="id36">`</span></a>numpy.ndarray`s of shape
+<tr class="field-odd field"><th class="field-name">Rtype edges:</th><td class="field-body">A list() containing mdim :class:<a href="#id43"><span class="problematic" id="id44">`</span></a>numpy.ndarray`s of shape
 (nbins_per_dim+1,)</td>
 </tr>
 </tbody>
@@ -698,7 +787,49 @@ surrounding domain</li>
 <dt>:returns (points, interior_and_layer1, interior_and_doublelayer) where</dt>
 <dd>where points is an <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (num_points, dim),
 interior_and_layer1 and interior_and_layer2 are lists of dim
-:class:<a href="#id37"><span class="problematic" id="id38">`</span></a>numpy.ndarray`s of shape (center_pts_per_edge+2,) and
+:class:<a href="#id45"><span class="problematic" id="id46">`</span></a>numpy.ndarray`s of shape (center_pts_per_edge+2,) and
+(center_pts_per_edge+4,) respectively.</dd>
+</dl>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.voronoiHistogram.edges_regular_binsize">
+<tt class="descclassname">bet.calculateP.voronoiHistogram.</tt><tt class="descname">edges_regular_binsize</tt><big>(</big><em>center_pts_per_edge</em>, <em>center</em>, <em>r_size</em>, <em>sur_domain</em><big>)</big><a class="headerlink" href="#bet.calculateP.voronoiHistogram.edges_regular_binsize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a sequence of arrays describing the edges of the finite voronoi
+cells in each direction. The voronoi tesselation is defined by regular grid
+of center points that define the voronoi tesselation of exactly the
+interior of a hyperrectangle centered at <tt class="docutils literal"><span class="pre">center</span></tt> with sides of length
+<tt class="docutils literal"><span class="pre">r_size</span></tt> and the layers of voronoi cells that bound these
+interior cells. The resulting voronoi tesselation exactly represents the
+hyperrectangle. The bounding voronoi cells are made finite by bounding them
+with an  additional layer to represent <tt class="docutils literal"><span class="pre">sur_domain</span></tt>.</p>
+<p>This method can also be used to tile <tt class="docutils literal"><span class="pre">sur_domain</span></tt> with points to define
+voronoi regions if the user sets <tt class="docutils literal"><span class="pre">r_ratio</span> <span class="pre">=</span> <span class="pre">1</span></tt>. use binratio below</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
+additional two points will be added to create the bounding layer</li>
+<li><strong>center</strong> (<tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
+<li><strong>r_size</strong> (<em>double or list()</em>) &#8211; size of the length of the sides of the
+hyperrectangle to the surrounding domain</li>
+<li><strong>sur_domain</strong> (<tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
+surrounding domain</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">tuple</p>
+</td>
+</tr>
+</tbody>
+</table>
+<dl class="docutils">
+<dt>:returns (points, interior_and_layer1, interior_and_doublelayer) where</dt>
+<dd>where points is an <tt class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></tt> of shape (num_points, dim),
+interior_and_layer1 and interior_and_layer2 are lists of dim
+:class:<a href="#id47"><span class="problematic" id="id48">`</span></a>numpy.ndarray`s of shape (center_pts_per_edge+2,) and
 (center_pts_per_edge+4,) respectively.</dd>
 </dl>
 </dd></dl>
@@ -745,7 +876,7 @@ locations.</dd>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>edges</strong> (A list() containing mdim :class:<a href="#id39"><span class="problematic" id="id40">`</span></a>numpy.ndarray`s of shape
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>edges</strong> (A list() containing mdim :class:<a href="#id49"><span class="problematic" id="id50">`</span></a>numpy.ndarray`s of shape
 (nbins_per_dim+1,)) &#8211; A sequence of arrays describing the edges of bins along each
 dimension.</td>
 </tr>
@@ -866,7 +997,7 @@ measure $P_{Lambda}$.</p>
     </div>
     <div class="footer">
         &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Oct 01, 2014.
+      Last updated on Mar 04, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

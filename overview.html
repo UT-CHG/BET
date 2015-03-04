@@ -79,9 +79,10 @@ change in the future. This pacakge requires <a class="reference external" href="
   sampling/
     basicSampling.py
     adaptiveSampling.py
-  vis/
+  postProcess/
     plotP.py
     plotDomains.py
+    postTools
   loadBalance/        # !!! IN ACTIVE DEVELOPMENT !!!
     lb_PADCIRC.py
     load_balance.py
@@ -130,12 +131,13 @@ at a specified set of parameter samples.</p>
 </li>
 </ul>
 </div>
-<div class="section" id="module-bet.vis">
-<span id="vis-package"></span><h3><tt class="xref py py-mod docutils literal"><span class="pre">vis</span></tt> Package<a class="headerlink" href="#module-bet.vis" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="module-bet.postProcess">
+<span id="postprocess-package"></span><h3><tt class="xref py py-mod docutils literal"><span class="pre">postProcess</span></tt> Package<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h3>
 <p>This subpackage contains</p>
 <ul class="simple">
-<li><a class="reference internal" href="bet.vis.html#module-bet.vis.plotP" title="bet.vis.plotP"><tt class="xref py py-class docutils literal"><span class="pre">plotP</span></tt></a> plots P and/or volumes of voronoi cells</li>
-<li><a class="reference internal" href="bet.vis.html#module-bet.vis.plotDomains" title="bet.vis.plotDomains"><tt class="xref py py-class docutils literal"><span class="pre">plotDomains</span></tt></a> plots the data domain D in 2D</li>
+<li><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><tt class="xref py py-class docutils literal"><span class="pre">plotP</span></tt></a> plots P and/or volumes of voronoi cells</li>
+<li><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><tt class="xref py py-class docutils literal"><span class="pre">plotDomains</span></tt></a> plots the data domain D in 2D</li>
+<li><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><tt class="xref py py-class docutils literal"><span class="pre">postTools</span></tt></a> has tools for postprocessing</li>
 </ul>
 </div>
 <div class="section" id="module-bet.loadBalance">
@@ -182,15 +184,15 @@ at a specified set of parameter samples.</p>
 <h2>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
 <div class="highlight-python"><div class="highlight"><pre>matplotlib
-  \-cm (bet.vis.plotP)
-  \-pyplot (bet.vis.plotDomains,bet.vis.plotP)
-  \-ticker (bet.vis.plotP)
-  \-tri (bet.vis.plotDomains)
+  \-cm (bet.postProcess.plotP)
+  \-pyplot (bet.postProcess.plotDomains,bet.postProcess.plotP)
+  \-ticker (bet.postProcess.plotP)
+  \-tri (bet.postProcess.plotDomains)
 mpi4py
-  \-MPI (bet.calculateP.calculateP,bet.vis.plotP,bet.calculateP.simpleFunP)
+  \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
 mpl_toolkits
-  \-mplot3d (bet.vis.plotP)
-numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.vis.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.vis.plotDomains,bet.calculateP.simpleFunP)
+  \-mplot3d (bet.postProcess.plotP)
+numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP)
 pyDOE (bet.sampling.basicSampling)
 scipy
   \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
@@ -215,7 +217,7 @@ scipy
 <li><a class="reference internal" href="#code-overview">Code Overview</a><ul>
 <li><a class="reference internal" href="#calculatep-package"><tt class="docutils literal"><span class="pre">calculateP</span></tt> Package</a></li>
 <li><a class="reference internal" href="#module-bet.sampling"><tt class="docutils literal"><span class="pre">sampling</span></tt> Package</a></li>
-<li><a class="reference internal" href="#module-bet.vis"><tt class="docutils literal"><span class="pre">vis</span></tt> Package</a></li>
+<li><a class="reference internal" href="#module-bet.postProcess"><tt class="docutils literal"><span class="pre">postProcess</span></tt> Package</a></li>
 <li><a class="reference internal" href="#module-bet.loadBalance"><tt class="docutils literal"><span class="pre">loadBalance</span></tt> Package</a></li>
 </ul>
 </li>
@@ -273,7 +275,7 @@ scipy
     </div>
     <div class="footer">
         &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Sep 30, 2014.
+      Last updated on Mar 04, 2015.
       Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
     </div>
   </body>

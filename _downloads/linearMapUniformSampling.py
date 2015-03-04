@@ -8,10 +8,10 @@ in the paramter space are calculated using emulated points.
 
 import numpy as np
 import bet.calculateP as calculateP
-import bet.vis as vis
+import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
-import bet.vis.plotP as plotP
+import bet.postProcess.plotP as plotP
 
 # parameter domain
 lam_domain= np.array([[0.0, 1.0],
@@ -43,10 +43,10 @@ data= np.dot(samples,Q_map)
 
 # uniform simple function approx
 (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.unif_unif(data=data,
-                                                               Q_ref=Q_ref, M=10, bin_ratio=0.2, num_d_emulate=1E5)
+                                                               Q_ref=Q_ref, M=10, bin_ratio=0.2, num_d_emulate=1E4)
 # create emulated points
 lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain,
-                                                 num_l_emulate = 1E5)
+                                                 num_l_emulate = 1E4)
 # calculate probablities
 (P,  lambda_emulate, io_ptr, emulate_ptr) = calculateP.prob_emulated(samples=samples, 
         data=data, rho_D_M = d_distr_prob, d_distr_samples = d_distr_samples,

@@ -34,9 +34,10 @@ The package layout is as follows::
     sampling/
       basicSampling.py  
       adaptiveSampling.py
-    vis/
+    postProcess/
       plotP.py  
       plotDomains.py 
+      postTools
     loadBalance/        # !!! IN ACTIVE DEVELOPMENT !!!
       lb_PADCIRC.py  
       load_balance.py  
@@ -55,10 +56,10 @@ Code Overview
 
 .. automodule:: bet.sampling
 
-:mod:`vis` Package
+:mod:`postProcess` Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: bet.vis
+.. automodule:: bet.postProcess
 
 :mod:`loadBalance` Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,15 +88,15 @@ This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scip
 ::    
   
     matplotlib 
-      \-cm (bet.vis.plotP)
-      \-pyplot (bet.vis.plotDomains,bet.vis.plotP)
-      \-ticker (bet.vis.plotP)
-      \-tri (bet.vis.plotDomains)
+      \-cm (bet.postProcess.plotP)
+      \-pyplot (bet.postProcess.plotDomains,bet.postProcess.plotP)
+      \-ticker (bet.postProcess.plotP)
+      \-tri (bet.postProcess.plotDomains)
     mpi4py 
-      \-MPI (bet.calculateP.calculateP,bet.vis.plotP,bet.calculateP.simpleFunP)
+      \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
     mpl_toolkits 
-      \-mplot3d (bet.vis.plotP)
-    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.vis.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.vis.plotDomains,bet.calculateP.simpleFunP)
+      \-mplot3d (bet.postProcess.plotP)
+    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP)
     pyDOE (bet.sampling.basicSampling)
     scipy 
       \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
