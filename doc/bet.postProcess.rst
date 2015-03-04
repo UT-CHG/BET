@@ -1,11 +1,11 @@
 bet.postProcess package
-===============
+=======================
 
 Submodules
 ----------
 
 bet.postProcess.plotDomains module
---------------------------
+----------------------------------
 
 .. automodule:: bet.postProcess.plotDomains
     :members:
@@ -13,7 +13,7 @@ bet.postProcess.plotDomains module
     :show-inheritance:
 
 bet.postProcess.plotP module
---------------------
+----------------------------
 
 .. automodule:: bet.postProcess.plotP
     :members:
@@ -21,7 +21,7 @@ bet.postProcess.plotP module
     :show-inheritance:
 
 bet.postProcess.postTools module
---------------------
+--------------------------------
 
 .. automodule:: bet.postProcess.postTools
     :members:
