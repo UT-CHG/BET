@@ -1,5 +1,5 @@
 import numpy as np
-from bet.vis.Comm import *
+from bet.Comm import *
 
 """
 The module contains general tools for BET.

@@ -2,7 +2,7 @@
 This module provides methods for creating simple funciton approximations to be
 used by :mod:`~bet.calculateP.calculateP`.
 """
-from bet.vis.Comm import *
+from bet.Comm import *
 import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist

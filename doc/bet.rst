@@ -9,7 +9,7 @@ Subpackages
     bet.calculateP
     bet.loadBalance
     bet.sampling
-    bet.vis
+    bet.postProcess
 
 Module contents
 ---------------
