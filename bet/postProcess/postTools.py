@@ -5,6 +5,7 @@ from bet.Comm import *
 import numpy as np
 import copy
 import math
+import scipy.io as scio
 
 
 def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
@@ -38,7 +39,7 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
 
     return (P_samples, samples, lam_vol, data)
 
-def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=None):
+def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=None, sort=True):
     """
     This calculates the highest probability samples whose probability sum to a given value. 
     The number of high probability samples that sum to the value and the probabilities, 
@@ -59,6 +60,10 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=N
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
+
+    if sort:
+        (P_samples, samples, lam_vol, data) = sort_by_rho(P_samples, samples, lam_vol, data)
+
     P_sum = np.cumsum(P_samples)
     num_samples = np.sum(P_sum <= top_percentile)
     P_samples = P_samples[0:num_samples]
@@ -71,10 +76,11 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=N
     return  (num_samples, P_samples, samples, lam_vol, data)
     
 
-def save_parallel_probs(P_samples,
-                        samples,
-                        P_file,
-                        lam_file):
+def save_parallel_probs_csv(P_samples,
+                            samples,
+                            P_file,
+                            lam_file,
+                            compress=False):
     """
     Saves probabilites and samples from parallel runs in individual .csv files for each process.
 
@@ -86,16 +92,23 @@ def save_parallel_probs(P_samples,
     :type P_file: str
     :param lam_file: file prefix for samples
     :type lam_file: str
+    :param compress: Compress file
+    :type compress: Boolean
     :returns: None
     """
+    if compress:
+        suffix = '.csv.gz'
+    else:
+        suffix = '.csv'
 
-    np.savetxt(P_file + `rank` + '.csv' ,P_samples, delimiter = ',')
-    np.savetxt(lam_file + `rank` + '.csv' ,samples, delimiter = ',')
+    np.savetxt(P_file + `rank` + suffix ,P_samples, delimiter = ',')
+    np.savetxt(lam_file + `rank` + suffix ,samples, delimiter = ',')
 
-def collect_parallel_probs(P_file,
-                           lam_file,
-                           file_nums,
-                           save = False):
+def collect_parallel_probs_csv(P_file,
+                               lam_file,
+                               num_files,
+                               save = False,
+                               compress=False):
     """
     Collects probabilities and samples saved in .csv format from parallel runs into single arrays.
 
@@ -103,21 +116,80 @@ def collect_parallel_probs(P_file,
     :type P_file: str
     :param lam_file: file prefix for samples
     :type lam_file: str
-    :param file_nums: number of files
-    :type file_nums: int
+    :param num_files: number of files
+    :type num_files: int
     :param save: Save collected arrays as a .csv file.
     :type save: Boolean
+    :param compress: Compress file
+    :type compress: Boolean
     :rtype: tuple 
     :returns (P, lam)
     """
-    P = np.loadtxt(P_file + '0' + ".csv")
-    lam = np.loadtxt(lam_file + '0' + ".csv")
-    for i in range(1,file_nums):
-        P = np.vstack((P, np.loadtxt(P_file + `i` + ".csv")))
-        lam = np.vstack((lam,np.loadtxt(lam_file + `i` + ".csv")))
+    if compress:
+        suffix = '.csv.gz'
+    else:
+        suffix = '.csv'
+
+    P = np.loadtxt(P_file + '0' + suffix)
+    lam = np.loadtxt(lam_file + '0' + suffix)
+    for i in range(1,num_files):
+        P = np.vstack((P, np.loadtxt(P_file + `i` + suffix)))
+        lam = np.vstack((lam,np.loadtxt(lam_file + `i` + suffix)))
 
     if save:
-        np.savetxt(P_file + 'all' + ".csv")
-        np.savetxt(lam_file + 'all' + ".csv")
+        np.savetxt(P_file + 'all' + suffix)
+        np.savetxt(lam_file + 'all' + suffix)
+
+    return (P, lam)
+
+def save_parallel_probs_mat(P_samples,
+                            samples,
+                            file_prefix,
+                            compress=False):
+    """
+    Saves probabilites and samples from parallel runs in individual .mat files for each process.
+
+    :param P_samples: Probabilities.
+    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :param samples: The samples in parameter space for which the model was run.
+    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :param file_prefix: file prefix for probabilities
+    :type file_prefix: str
+    :returns: None
+    """
+    file_dict={"P_samples": P_samples,
+               "samples": samples}
+    sio.savemat(file_prefix + `rank` , file_dict, do_compression=compress)
+
+def collect_parallel_probs_mat(file_prefix,
+                               num_files,
+                               save = False,
+                               compress = False):
+    """
+    Collects probabilities and samples saved in .mat format from parallel runs into single arrays.
+
+    :param file_prefix: file prefix 
+    :type file_prefix: str
+    :param num_files: number of files
+    :type num_files: int
+    :param save: Save collected arrays as a .mat file.
+    :type save: Boolean
+    :param compress: Compress file
+    :type compress: Boolean
+    :rtype: tuple 
+    :returns (P, lam)
+    """
+    file_dict = sio.io.loadmat(file_prefix + "0")
+    P = file_dict["P_samples"]
+    lam = file_dict["samples"]
+    for i in range(1,num_files):
+        file_dict = sio.io.loadmat(file_prefix + `i`)
+        P = np.vstack((P, file_dict["P_samples"]))
+        lam = np.vstack((lam,file_dict["samples"]))
+
+    if save:
+        file_dict = {"P_samples": P,
+               "samples": lam}
+        sio.savemat(file_prefix + "all", file_dict, do_compression=compress)
 
     return (P, lam)
