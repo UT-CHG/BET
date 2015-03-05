@@ -281,7 +281,6 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         Itemp_sum = np.sum(lam_vol[Itemp])
         cItemp_sum = np.copy(Itemp_sum)
         comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT], op=MPI.SUM)
-        lam_vol = clam_vol
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 
