@@ -88,10 +88,7 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(d_distr_emu_ptr, i)
         Itemp_sum = np.sum(Itemp)
-        cItemp_sum = np.copy(Itemp_sum)
-        comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT],
-                op=MPI.SUM)
-        Itemp_sum = cItemp_sum
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]/Itemp_sum
 
@@ -135,9 +132,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
         Itemp_sum = np.sum(lam_vol[Itemp])
-        cItemp_sum = np.copy(Itemp_sum)
-        comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT], op=MPI.SUM)
-        Itemp_sum = cItemp_sum
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
 
@@ -279,8 +274,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         Itemp = np.equal(io_ptr, i)
         # Prevent a divide by zero error
         Itemp_sum = np.sum(lam_vol[Itemp])
-        cItemp_sum = np.copy(Itemp_sum)
-        comm.Allreduce([Itemp_sum, MPI.INT], [cItemp_sum, MPI.INT], op=MPI.SUM)
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum
 
