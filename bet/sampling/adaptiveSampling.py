@@ -14,7 +14,7 @@ We employ an approach based on using multiple sample chains.
 import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
-import math
+import math, os
 from bet.Comm import *
 
 size = comm.Get_size()

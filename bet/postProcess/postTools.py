@@ -5,7 +5,7 @@ from bet.Comm import *
 import numpy as np
 import copy
 import math
-import scipy.io as scio
+import scipy.io as sio
 
 
 def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
@@ -65,7 +65,7 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=N
         (P_samples, samples, lam_vol, data) = sort_by_rho(P_samples, samples, lam_vol, data)
 
     P_sum = np.cumsum(P_samples)
-    num_samples = np.sum(P_sum <= top_percentile)
+    num_samples = np.sum(np.logical_and(0.0 < P_sum, P_sum <= top_percentile))
     P_samples = P_samples[0:num_samples]
     samples = samples[0:num_samples,:]
     if lam_vol != None:
@@ -137,8 +137,8 @@ def collect_parallel_probs_csv(P_file,
         lam = np.vstack((lam,np.loadtxt(lam_file + `i` + suffix)))
 
     if save:
-        np.savetxt(P_file + 'all' + suffix)
-        np.savetxt(lam_file + 'all' + suffix)
+        np.savetxt(P_file + 'all' + suffix, P)
+        np.savetxt(lam_file + 'all' + suffix, lam)
 
     return (P, lam)
 
