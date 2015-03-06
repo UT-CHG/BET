@@ -69,7 +69,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     #k = dsearchn(d_distr_samples, d_distr_emulate)
     d_Tree = spatial.KDTree(d_distr_samples)
     (_, k) = d_Tree.query(d_distr_emulate)
-    count_neighbors = np.zeros((M,), dtype=np.float64)
+    count_neighbors = np.zeros((M,), dtype=np.int)
     for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
@@ -79,7 +79,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM)
     count_neighbors = ccount_neighbors
-    rho_D_M = count_neighbors / (num_d_emulate*size)
+    rho_D_M = count_neighbors.astype(np.float64) / float(num_d_emulate*size)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
     # above, while informed by the sampling of the map Q, do not require
@@ -178,7 +178,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
 
     d_Tree = spatial.KDTree(d_distr_samples)
     (_, k) = d_Tree.query(d_distr_emulate)
-    count_neighbors = np.zeros((M,))
+    count_neighbors = np.zeros((M,), dtype=np.int)
     volumes = np.zeros((M,))
     for i in range(M):
         Itemp = np.equal(k, i)
@@ -194,7 +194,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     cvolumes = np.copy(volumes)
     comm.Allreduce([volumes, MPI.DOUBLE], [cvolumes, MPI.DOUBLE], op=MPI.SUM)
     volumes = cvolumes
-    rho_D_M = count_neighbors*volumes 
+    rho_D_M = count_neighbors.astype(np.float64)*volumes 
     rho_D_M = rho_D_M/np.sum(rho_D_M)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -253,7 +253,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
 
     d_Tree = spatial.KDTree(d_distr_samples)
     (_, k) = d_Tree.query(d_distr_emulate)
-    count_neighbors = np.zeros((M,))
+    count_neighbors = np.zeros((M,), dtype=np.int)
     #volumes = np.zeros((M,))
     for i in range(M):
         Itemp = np.equal(k, i)
@@ -265,7 +265,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM) 
     count_neighbors = ccount_neighbors
-    rho_D_M = count_neighbors/(size*num_d_emulate)
+    rho_D_M = count_neighbors.astype(np.float64)/float(size*num_d_emulate)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
     # above, while informed by the sampling of the map Q, do not require
