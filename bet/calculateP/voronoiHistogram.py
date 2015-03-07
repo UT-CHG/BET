@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import numpy as np
 from scipy import spatial
+import bet.util as util
 
 def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_domain):
     """
@@ -54,26 +55,10 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
         interior_and_layer1.append(int_l1)
 
     # use meshgrid to make the hyperrectangle shells
-    # TODO: add a nice mdimensional implementation
     if sur_domain.shape[0] == 1:
         points = interior_and_layer1[0]
-    elif sur_domain.shape[0] == 2:
-        x, y = np.meshgrid(interior_and_layer1[0],
-                interior_and_layer1[1], indexing='ij')
-        points = np.column_stack((x.ravel(), y.ravel()))
-    elif sur_domain.shape[0] == 3:
-        x, y, z = np.meshgrid(interior_and_layer1[0],
-                interior_and_layer1[1], interior_and_layer1[2],
-                indexing='ij') 
-        points = np.column_stack((x.ravel(), y.ravel(), z.ravel()))
-    elif sur_domain.shape[0] == 4:
-        x, y, z, u = np.meshgrid(interior_and_layer1[0],
-                interior_and_layer1[1], interior_and_layer1[2],
-                interior_and_layer1[3], indexing='ij')
-        points = np.column_stack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
     else:
-        points = None
-        print "There is no current implementation for dimension > 4."
+        points = util.meshgrid_ndim(interior_and_layer1)
 
     return (points, interior_and_layer1, rect_domain)
 
@@ -132,27 +117,10 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         interior_and_layer1.append(int_l1)
 
     # use meshgrid to make the hyperrectangle shells
-    # TODO: add a nice mdimensional implementation
     if sur_domain.shape[0] == 1:
         points = interior_and_layer1[0]
-    elif sur_domain.shape[0] == 2:
-        x, y = np.meshgrid(interior_and_layer1[0],
-                interior_and_layer1[1], indexing='ij')
-        points = np.column_stack((x.ravel(), y.ravel()))
-    elif sur_domain.shape[0] == 3:
-        x, y, z = np.meshgrid(interior_and_layer1[0],
-                interior_and_layer1[1], interior_and_layer1[2],
-                indexing='ij') 
-        points = np.column_stack((x.ravel(), y.ravel(), z.ravel()))
-    elif sur_domain.shape[0] == 4:
-        x, y, z, u = np.meshgrid(interior_and_layer1[0],
-                interior_and_layer1[1], interior_and_layer1[2],
-                interior_and_layer1[3], indexing='ij')
-        points = np.column_stack((x.ravel(), y.ravel(), z.ravel(), u.ravel()))
     else:
-        points = None
-        print "There is no current implementation for dimension > 4."
-
+        points = util.meshgrid_ndim(interior_and_layer1)
     return (points, interior_and_layer1, rect_domain)
 
 def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
