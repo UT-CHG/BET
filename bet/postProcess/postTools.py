@@ -5,7 +5,7 @@ from bet.Comm import *
 import numpy as np
 import copy
 import math
-import scipy.io as scio
+import scipy.io as sio
 
 
 def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
@@ -137,8 +137,8 @@ def collect_parallel_probs_csv(P_file,
         lam = np.vstack((lam,np.loadtxt(lam_file + `i` + suffix)))
 
     if save:
-        np.savetxt(P_file + 'all' + suffix)
-        np.savetxt(lam_file + 'all' + suffix)
+        np.savetxt(P_file + 'all' + suffix, P)
+        np.savetxt(lam_file + 'all' + suffix, lam)
 
     return (P, lam)
 
