@@ -190,7 +190,7 @@ class sampler(object):
         samples = samples + param_left
         return self.user_samples(samples, savefile)
 
-    def user_samples(self, samples, savefile, pflag=True):
+    def user_samples(self, samples, savefile):
         """
         Samples the model at ``samples`` and saves the results.
 
@@ -204,10 +204,6 @@ class sampler(object):
         :param samples: samples to evaluate the model at
         :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
         :param string savefile: filename to save samples and data
-        :param boolean pflag: Flag for parallel implementation type. True uses
-            LOWERCASE :module:`mpi4py` methods. False uses UPPERCASE
-            :module:`mpi4py` methods, which require that num_samples is
-            divisibl
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
             ``parameter_samples`` is np.ndarray of shape (ndim, num_samples)
