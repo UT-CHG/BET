@@ -220,9 +220,9 @@ class sampler(object):
         if size == 0:
             data = self.lb_model(samples)
         elif self.num_samples%size == 0:
-            my_samples = np.empty(samples.shape[0]/size, samples.shape[1])
+            my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
             comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
-            my_data = self.lb_model(samples)
+            my_data = self.lb_model(my_samples)
             data = np.empty((self.num_samples, my_data.shape[1]),
                     dtype=np.float64)
             comm.Allgather([my_data, MPI.DOUBLE], [data, MPI.DOUBLE])
