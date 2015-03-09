@@ -11,6 +11,8 @@ assume the measure on both spaces in Lebesgue.
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
+import bet.util as util
+from bet.Comm import *
 
 def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
@@ -188,7 +190,7 @@ class sampler(object):
         samples = samples + param_left
         return self.user_samples(samples, savefile)
 
-    def user_samples(self, samples, savefile):
+    def user_samples(self, samples, savefile, pflag=True):
         """
         Samples the model at ``samples`` and saves the results.
 
@@ -196,9 +198,16 @@ class sampler(object):
         Numpy and other Python packages. Instead of reimplementing them here we
         provide sampler that utilizes user specified samples.
 
+        Note: Parallel implementation with changes ordering of
+        the samples if ``samples.shape[0]`` is not divisible by ``size``.
+
         :param samples: samples to evaluate the model at
         :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
         :param string savefile: filename to save samples and data
+        :param boolean pflag: Flag for parallel implementation type. True uses
+            LOWERCASE :module:`mpi4py` methods. False uses UPPERCASE
+            :module:`mpi4py` methods, which require that num_samples is
+            divisibl
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
             ``parameter_samples`` is np.ndarray of shape (ndim, num_samples)
@@ -208,9 +217,26 @@ class sampler(object):
         
         # Update the number of samples
         self.num_samples = samples.shape[0]
+        size = comm.Get_size()
+        rank = comm.Get_rank()
 
         # Solve the model at the samples
-        data = self.lb_model(samples)
+        if size == 0:
+            data = self.lb_model(samples)
+        elif self.num_samples%size == 0:
+            my_samples = np.empty(samples.shape[0]/size, samples.shape[1])
+            comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
+            my_data = self.lb_model(samples)
+            data = np.empty((self.num_samples, my_data.shape[1]),
+                    dtype=np.float64)
+            comm.Allgather([my_data, MPI.DOUBLE], [data, MPI.DOUBLE])
+        else:
+            my_index = range(0+rank, self.num_samples, size)
+            my_samples = samples[my_index, :]
+            my_data = self.lb_model(samples)
+            data = util.get_global_values(my_data)
+            samples = util.get_global_values(my_data)
+
 
         mdat = dict()
         self.update_mdict(mdat)
