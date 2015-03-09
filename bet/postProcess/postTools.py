@@ -26,10 +26,11 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     :returns: (P_samples, samples, lam_vol, data)
 
     """
+    nnz = np.sum(P_samples>0)
     if lam_vol == None:
-        indices = np.argsort(P_samples)[::-1]
+        indices = np.argsort(P_samples)[::-1][0:nnz]
     else:
-        indices = np.argsort(P_samples/lam_vol)[::-1]
+        indices = np.argsort(P_samples/lam_vol)[::-1][0:nnz]
     P_samples = P_samples[indices]
     samples = samples[indices,:]
     if lam_vol != None:
