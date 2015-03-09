@@ -217,7 +217,7 @@ class sampler(object):
         rank = comm.Get_rank()
 
         # Solve the model at the samples
-            data = self.lb_model(samples)
+        data = self.lb_model(samples)
         """
         if size == 0:
             data = self.lb_model(samples)
