@@ -217,6 +217,8 @@ class sampler(object):
         rank = comm.Get_rank()
 
         # Solve the model at the samples
+            data = self.lb_model(samples)
+        """
         if size == 0:
             data = self.lb_model(samples)
         elif self.num_samples%size == 0:
@@ -232,7 +234,7 @@ class sampler(object):
             my_data = self.lb_model(samples)
             data = util.get_global_values(my_data)
             samples = util.get_global_values(my_data)
-
+        """
 
         mdat = dict()
         self.update_mdict(mdat)
