@@ -148,7 +148,7 @@ class sampler(object):
         mdict['num_samples'] = self.num_samples
 
     def random_samples(self, sample_type, param_min, param_max,
-            savefile, num_samples=None, criterion='center'):
+            savefile, num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
 
@@ -169,6 +169,9 @@ class sampler(object):
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param boolean parallel: Flag for parallel implementation. Uses
+            lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
+            divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
             ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
@@ -188,9 +191,9 @@ class sampler(object):
         elif sample_type == "random" or "r":
             samples = samples * np.random.random(param_left.shape) 
         samples = samples + param_left
-        return self.user_samples(samples, savefile)
+        return self.user_samples(samples, savefile, parallel)
 
-    def user_samples(self, samples, savefile):
+    def user_samples(self, samples, savefile, parallel=False):
         """
         Samples the model at ``samples`` and saves the results.
 
@@ -204,6 +207,9 @@ class sampler(object):
         :param samples: samples to evaluate the model at
         :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
         :param string savefile: filename to save samples and data
+        :param boolean parallel: Flag for parallel implementation. Uses
+            lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
+            divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
             ``parameter_samples`` is np.ndarray of shape (ndim, num_samples)
@@ -217,30 +223,29 @@ class sampler(object):
         rank = comm.Get_rank()
 
         # Solve the model at the samples
-        data = self.lb_model(samples)
-        """
-        if size == 0:
+        if not(parallel) or size == 1:
             data = self.lb_model(samples)
-        elif self.num_samples%size == 0:
+        elif parallel and self.num_samples%size == 0:
             my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
             comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
             my_data = self.lb_model(my_samples)
             data = np.empty((self.num_samples, my_data.shape[1]),
                     dtype=np.float64)
             comm.Allgather([my_data, MPI.DOUBLE], [data, MPI.DOUBLE])
-        else:
+        elif parallel:
             my_index = range(0+rank, self.num_samples, size)
             my_samples = samples[my_index, :]
-            my_data = self.lb_model(samples)
+            my_data = self.lb_model(my_samples)
             data = util.get_global_values(my_data)
             samples = util.get_global_values(my_data)
-        """
 
         mdat = dict()
         self.update_mdict(mdat)
         mdat['samples'] = samples
         mdat['data'] = data
-        self.save(mdat, savefile)
+
+        if rank == 0:
+            self.save(mdat, savefile)
         
         return (samples, data)
 
