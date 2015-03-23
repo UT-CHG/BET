@@ -12,7 +12,7 @@ class comm_for_no_mpi4py:
         return 0 
     def allgather(self,val):
         return val
-    def allreduce(self,val1, val2, op=None):
+    def allreduce(self,val1, op=None):
         return val1
     def bcast(self,val, root=0):
         return val   
