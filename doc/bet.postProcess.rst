@@ -1,38 +1,35 @@
-bet.postProcess package
-=======================
+postProcess Package
+===================
 
-Submodules
-----------
+:mod:`postProcess` Package
+--------------------------
 
-bet.postProcess.plotDomains module
-----------------------------------
+.. automodule:: bet.postProcess
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`plotDomains` Module
+-------------------------
 
 .. automodule:: bet.postProcess.plotDomains
     :members:
     :undoc-members:
     :show-inheritance:
 
-bet.postProcess.plotP module
-----------------------------
+:mod:`plotP` Module
+-------------------
 
 .. automodule:: bet.postProcess.plotP
     :members:
     :undoc-members:
     :show-inheritance:
 
-bet.postProcess.postTools module
---------------------------------
+:mod:`postTools` Module
+-----------------------
 
 .. automodule:: bet.postProcess.postTools
     :members:
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: bet.postProcess
-    :members:
-    :undoc-members:
-    :show-inheritance:

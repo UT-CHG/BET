@@ -1,38 +1,35 @@
-bet.calculateP package
-======================
+calculateP Package
+==================
 
-Submodules
-----------
+:mod:`calculateP` Package
+-------------------------
 
-bet.calculateP.calculateP module
---------------------------------
+.. automodule:: bet.calculateP
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`calculateP` Module
+------------------------
 
 .. automodule:: bet.calculateP.calculateP
     :members:
     :undoc-members:
     :show-inheritance:
 
-bet.calculateP.simpleFunP module
---------------------------------
+:mod:`simpleFunP` Module
+------------------------
 
 .. automodule:: bet.calculateP.simpleFunP
     :members:
     :undoc-members:
     :show-inheritance:
 
-bet.calculateP.voronoiHistogram module
---------------------------------------
+:mod:`voronoiHistogram` Module
+------------------------------
 
 .. automodule:: bet.calculateP.voronoiHistogram
     :members:
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: bet.calculateP
-    :members:
-    :undoc-members:
-    :show-inheritance:

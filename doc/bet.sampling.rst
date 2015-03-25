@@ -1,30 +1,27 @@
-bet.sampling package
-====================
+sampling Package
+================
 
-Submodules
-----------
+:mod:`sampling` Package
+-----------------------
 
-bet.sampling.adaptiveSampling module
-------------------------------------
+.. automodule:: bet.sampling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`adaptiveSampling` Module
+------------------------------
 
 .. automodule:: bet.sampling.adaptiveSampling
     :members:
     :undoc-members:
     :show-inheritance:
 
-bet.sampling.basicSampling module
----------------------------------
+:mod:`basicSampling` Module
+---------------------------
 
 .. automodule:: bet.sampling.basicSampling
     :members:
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
----------------
-
-.. automodule:: bet.sampling
-    :members:
-    :undoc-members:
-    :show-inheritance:
