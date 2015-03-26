@@ -8,7 +8,7 @@
     
     <title>bet.loadBalance package &mdash; BET 0.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -23,11 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="index.html" /> 
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BET 0.0 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -36,14 +40,14 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="bet-loadbalance-package">
 <h1>bet.loadBalance package<a class="headerlink" href="#bet-loadbalance-package" title="Permalink to this headline">¶</a></h1>
@@ -52,8 +56,8 @@
 </div>
 <div class="section" id="module-bet.loadBalance.lb_PADCIRC">
 <span id="bet-loadbalance-lb-padcirc-module"></span><h2>bet.loadBalance.lb_PADCIRC module<a class="headerlink" href="#module-bet.loadBalance.lb_PADCIRC" title="Permalink to this headline">¶</a></h2>
-<p>This is a placeholder. See the <tt class="docutils literal"><span class="pre">run_framework</span></tt> subpackage of <a class="reference external" href="http://lcgraham.github.io/PolyADCIRC/">PolyADCIRC</a> and the examples in
-<tt class="docutils literal"><span class="pre">examples/fromADCIRCMap</span></tt> for a yet to be generalized prototype.</p>
+<p>This is a placeholder. See the <code class="docutils literal"><span class="pre">run_framework</span></code> subpackage of <a class="reference external" href="http://lcgraham.github.io/PolyADCIRC/">PolyADCIRC</a> and the examples in
+<code class="docutils literal"><span class="pre">examples/fromADCIRCMap</span></code> for a yet to be generalized prototype.</p>
 </div>
 <div class="section" id="module-bet.loadBalance.load_balance">
 <span id="bet-loadbalance-load-balance-module"></span><h2>bet.loadBalance.load_balance module<a class="headerlink" href="#module-bet.loadBalance.load_balance" title="Permalink to this headline">¶</a></h2>
@@ -68,7 +72,7 @@ read and preprocess data (model specific)</dd>
 </dl>
 <dl class="class">
 <dt id="bet.loadBalance.load_balance.load_balance">
-<em class="property">class </em><tt class="descclassname">bet.loadBalance.load_balance.</tt><tt class="descname">load_balance</tt><a class="headerlink" href="#bet.loadBalance.load_balance.load_balance" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">bet.loadBalance.load_balance.</code><code class="descname">load_balance</code><a class="headerlink" href="#bet.loadBalance.load_balance.load_balance" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </div>
@@ -77,19 +81,19 @@ read and preprocess data (model specific)</dd>
 <span class="target" id="module-bet.loadBalance"></span><p>This subpackage contains</p>
 <ul>
 <li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><tt class="xref py py-class docutils literal"><span class="pre">load_balance</span></tt></a> an interface to control the scheduling and load</dt>
+<dt><a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a> an interface to control the scheduling and load</dt>
 <dd><p class="first last">balancing of model runs on an HPC infrastructure</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><tt class="xref py py-mod docutils literal"><span class="pre">lb_DIAMOND</span></tt> implements the <a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><tt class="xref py py-class docutils literal"><span class="pre">load_balance</span></tt></a> infrastructure</dt>
+<dt><code class="xref py py-mod docutils literal"><span class="pre">lb_DIAMOND</span></code> implements the <a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a> infrastructure</dt>
 <dd><p class="first last">for the DIAMOND model</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.loadBalance.lb_PADCIRC" title="bet.loadBalance.lb_PADCIRC"><tt class="xref py py-mod docutils literal"><span class="pre">lb_PADCIRC</span></tt></a> implements the <a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><tt class="xref py py-class docutils literal"><span class="pre">load_balance</span></tt></a> infrastructure</dt>
+<dt><a class="reference internal" href="#module-bet.loadBalance.lb_PADCIRC" title="bet.loadBalance.lb_PADCIRC"><code class="xref py py-mod docutils literal"><span class="pre">lb_PADCIRC</span></code></a> implements the <a class="reference internal" href="#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a> infrastructure</dt>
 <dd><p class="first last">for the PADCIRC model</p>
 </dd>
 </dl>
@@ -102,7 +106,7 @@ read and preprocess data (model specific)</dd>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -115,12 +119,14 @@ read and preprocess data (model specific)</dd>
 </li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/bet.loadBalance.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bet.loadBalance.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -137,22 +143,20 @@ read and preprocess data (model specific)</dd>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Mar 04, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      &copy;2014, Lindley Graham, Steven Mattis, Troy Butler.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="_sources/bet.loadBalance.txt"
+          rel="nofollow">Page source</a></li>
     </div>
+
+    
+
+    
   </body>
 </html>

@@ -8,7 +8,7 @@
     
     <title>bet package &mdash; BET 0.0 documentation</title>
     
-    <link rel="stylesheet" href="_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -23,11 +23,15 @@
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="index.html" /> 
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="BET 0.0 documentation" href="index.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -36,14 +40,14 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="bet-package">
 <h1>bet package<a class="headerlink" href="#bet-package" title="Permalink to this headline">¶</a></h1>
@@ -93,55 +97,55 @@
 to run BET.</p>
 <dl class="class">
 <dt id="bet.Comm.MPI_for_no_mpi4py">
-<em class="property">class </em><tt class="descclassname">bet.Comm.</tt><tt class="descname">MPI_for_no_mpi4py</tt><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">bet.Comm.</code><code class="descname">MPI_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="class">
 <dt id="bet.Comm.comm_for_no_mpi4py">
-<em class="property">class </em><tt class="descclassname">bet.Comm.</tt><tt class="descname">comm_for_no_mpi4py</tt><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
+<em class="property">class </em><code class="descclassname">bet.Comm.</code><code class="descname">comm_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
 <dd><dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Allgather">
-<tt class="descname">Allgather</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allgather" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Allgather</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allgather" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Allreduce">
-<tt class="descname">Allreduce</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>op=None</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allreduce" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Allreduce</code><span class="sig-paren">(</span><em>val1</em>, <em>val2</em>, <em>op=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allreduce" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Bcast">
-<tt class="descname">Bcast</tt><big>(</big><em>val</em>, <em>root=0</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Bcast" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Bcast</code><span class="sig-paren">(</span><em>val</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Bcast" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Get_rank">
-<tt class="descname">Get_rank</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_rank" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Get_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_rank" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Get_size">
-<tt class="descname">Get_size</tt><big>(</big><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_size" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Get_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_size" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Scatter">
-<tt class="descname">Scatter</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>root=0</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Scatter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">Scatter</code><span class="sig-paren">(</span><em>val1</em>, <em>val2</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Scatter" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.allgather">
-<tt class="descname">allgather</tt><big>(</big><em>val</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
+<code class="descname">allgather</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.allreduce">
-<tt class="descname">allreduce</tt><big>(</big><em>val1</em>, <em>val2</em>, <em>op=None</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allreduce" title="Permalink to this definition">¶</a></dt>
+<code class="descname">allreduce</code><span class="sig-paren">(</span><em>val1</em>, <em>op=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allreduce" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.bcast">
-<tt class="descname">bcast</tt><big>(</big><em>val</em>, <em>root=0</em><big>)</big><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.bcast" title="Permalink to this definition">¶</a></dt>
+<code class="descname">bcast</code><span class="sig-paren">(</span><em>val</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.bcast" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -151,7 +155,7 @@ to run BET.</p>
 <span id="bet-util-module"></span><h2>bet.util module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h2>
 <dl class="function">
 <dt id="bet.util.get_global_values">
-<tt class="descclassname">bet.util.</tt><tt class="descname">get_global_values</tt><big>(</big><em>array</em><big>)</big><a class="headerlink" href="#bet.util.get_global_values" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.util.</code><code class="descname">get_global_values</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.get_global_values" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenates local arrays into global array.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
@@ -169,7 +173,7 @@ to run BET.</p>
 
 <dl class="function">
 <dt id="bet.util.meshgrid_ndim">
-<tt class="descclassname">bet.util.</tt><tt class="descname">meshgrid_ndim</tt><big>(</big><em>X</em><big>)</big><a class="headerlink" href="#bet.util.meshgrid_ndim" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.util.</code><code class="descname">meshgrid_ndim</code><span class="sig-paren">(</span><em>X</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.meshgrid_ndim" title="Permalink to this definition">¶</a></dt>
 <dd><p>Return coordinate matrix from two or more coordinate vectors.
 Handles a maximum of 10 vectors.</p>
 <p>Make N-D coordinate arrays for vectorized evaluations of
@@ -183,7 +187,7 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 </tr>
 </tbody>
 </table>
-<p>:rtype <tt class="xref py py-class docutils literal"><span class="pre">ndarray</span></tt> of shape (num_grid_points,n)
+<p>:rtype <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_grid_points,n)
 :returns: X_new</p>
 </dd></dl>
 
@@ -197,7 +201,7 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
@@ -211,12 +215,14 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 </li>
 </ul>
 
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="_sources/bet.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/bet.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
       <input type="text" name="q" />
@@ -233,22 +239,20 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Mar 04, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      &copy;2014, Lindley Graham, Steven Mattis, Troy Butler.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="_sources/bet.txt"
+          rel="nofollow">Page source</a></li>
     </div>
+
+    
+
+    
   </body>
 </html>
