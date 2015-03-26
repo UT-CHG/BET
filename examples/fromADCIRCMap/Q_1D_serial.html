@@ -8,7 +8,7 @@
     
     <title>Example: Estimate the parameter space probabiliy density with a 1D data space &mdash; BET 0.0 documentation</title>
     
-    <link rel="stylesheet" href="../../_static/default.css" type="text/css" />
+    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
     
     <script type="text/javascript">
@@ -23,13 +23,17 @@
     <script type="text/javascript" src="../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <link rel="top" title="BET 0.0 documentation" href="../../index.html" />
     <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html" />
-    <link rel="prev" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space" href="../fromFileMap/fromfile3D.html" /> 
+    <link rel="prev" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space" href="../fromFileMap/fromfile3D.html" />
+   
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+
   </head>
-  <body>
-    <div class="related">
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
         <li class="right" style="margin-right: 10px">
@@ -44,14 +48,14 @@
         <li class="right" >
           <a href="../fromFileMap/fromfile3D.html" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space"
              accesskey="P">previous</a> |</li>
-        <li><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
     <div class="document">
       <div class="documentwrapper">
         <div class="bodywrapper">
-          <div class="body">
+          <div class="body" role="main">
             
   <div class="section" id="example-estimate-the-parameter-space-probabiliy-density-with-a-1d-data-space">
 <span id="q1d"></span><h1>Example: Estimate the parameter space probabiliy density with  a 1D data space<a class="headerlink" href="#example-estimate-the-parameter-space-probabiliy-density-with-a-1d-data-space" title="Permalink to this headline">¶</a></h1>
@@ -63,7 +67,7 @@ This example demostrates three different methods to estimate
 \[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
 <p>These methods are distinguished primarily by the way <span class="math">\(\mathcal{V}_j\)</span> are
 defined and the approximation of the volume of <span class="math">\(\mathcal{V}_j\)</span>. See
-<a class="reference download internal" href="../../_downloads/Q_1D_serial.py"><tt class="xref download docutils literal"><span class="pre">Q_1D_serial.py</span></tt></a> for the example source code.</p>
+<a class="reference download internal" href="../../_downloads/Q_1D_serial.py"><code class="xref download docutils literal"><span class="pre">Q_1D_serial.py</span></code></a> for the example source code.</p>
 <p>First, import the necessary packages and modules:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="kn">as</span> <span class="nn">calcP</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="kn">as</span> <span class="nn">sfun</span>
@@ -81,16 +85,16 @@ defined and the approximation of the volume of <span class="math">\(\mathcal{V}_
 <span class="n">samples</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;points&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>We will to the <tt class="docutils literal"><span class="pre">samples</span></tt> above as <span class="math">\(\lambda_{samples} = \{ \lambda^{(j)
-} \}, j = 1, \ldots, N\)</span>. These <tt class="docutils literal"><span class="pre">samples</span></tt> are the points in parameter space
-where we solve the forward model to generate the data <tt class="docutils literal"><span class="pre">Q</span></tt> where <span class="math">\(Q_j =
+<p>We will to the <code class="docutils literal"><span class="pre">samples</span></code> above as <span class="math">\(\lambda_{samples} = \{ \lambda^{(j)
+} \}, j = 1, \ldots, N\)</span>. These <code class="docutils literal"><span class="pre">samples</span></code> are the points in parameter space
+where we solve the forward model to generate the data <code class="docutils literal"><span class="pre">Q</span></code> where <span class="math">\(Q_j =
 Q(\lambda^{(j)})\)</span>.</p>
 <p>Define the parameter domain <span class="math">\(\Lambda\)</span>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
 </pre></div>
 </div>
-<p>For ease of use we have created a function, <tt class="docutils literal"><span class="pre">postprocess(station_nums,</span>
-<span class="pre">ref_num)</span></tt> so that we can loop through different QoI (maximum water surface
+<p>For ease of use we have created a function, <code class="docutils literal"><span class="pre">postprocess(station_nums,</span>
+<span class="pre">ref_num)</span></code> so that we can loop through different QoI (maximum water surface
 height at various measurement stations) and reference solutions (point in data
 space around which we center a uniform probability solution. The function is
 defined as follows:</p>
@@ -189,7 +193,7 @@ to visualize estimates of <span class="math">\(\rho_\Lambda\)</span>:</p>
           </div>
         </div>
       </div>
-      <div class="sphinxsidebar">
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
   <h4>Previous topic</h4>
   <p class="topless"><a href="../fromFileMap/fromfile3D.html"
@@ -197,12 +201,14 @@ to visualize estimates of <span class="math">\(\rho_\Lambda\)</span>:</p>
   <h4>Next topic</h4>
   <p class="topless"><a href="Q_2D.html"
                         title="next chapter">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></p>
-  <h3>This Page</h3>
-  <ul class="this-page-menu">
-    <li><a href="../../_sources/examples/fromADCIRCMap/Q_1D_serial.txt"
-           rel="nofollow">Show Source</a></li>
-  </ul>
-<div id="searchbox" style="display: none">
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../../_sources/examples/fromADCIRCMap/Q_1D_serial.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../search.html" method="get">
       <input type="text" name="q" />
@@ -219,28 +225,20 @@ to visualize estimates of <span class="math">\(\rho_\Lambda\)</span>:</p>
       </div>
       <div class="clearer"></div>
     </div>
-    <div class="related">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             >index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="Q_2D.html" title="Example: Estimate the parameter space probabiliy density with a 2D data space"
-             >next</a> |</li>
-        <li class="right" >
-          <a href="../fromFileMap/fromfile3D.html" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space"
-             >previous</a> |</li>
-        <li><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>
     <div class="footer">
-        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Mar 04, 2015.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+      &copy;2014, Lindley Graham, Steven Mattis, Troy Butler.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
+      
+      |
+      <a href="../../_sources/examples/fromADCIRCMap/Q_1D_serial.txt"
+          rel="nofollow">Page source</a></li>
     </div>
+
+    
+
+    
   </body>
 </html>
