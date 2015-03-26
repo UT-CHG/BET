@@ -26,7 +26,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns (points, interior_and_layer1) where where points is an
+    :returns: (points, interior_and_layer1) where where points is an
         :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
         is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,).
@@ -86,7 +86,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns (points, interior_and_layer1) where where points is an
+    :returns: (points, interior_and_layer1) where where points is an
         :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
         is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,).
@@ -149,7 +149,7 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns (points, interior_and_layer1, interior_and_doublelayer) where
+    :returns: (points, interior_and_layer1, interior_and_doublelayer) where
         where points is an :class:`numpy.ndarray` of shape (num_points, dim),
         interior_and_layer1 and interior_and_layer2 are lists of dim
         :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,) and
@@ -205,7 +205,7 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns (points, interior_and_layer1, interior_and_doublelayer) where
+    :returns: (points, interior_and_layer1, interior_and_doublelayer) where
         where points is an :class:`numpy.ndarray` of shape (num_points, dim),
         interior_and_layer1 and interior_and_layer2 are lists of dim
         :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,) and
