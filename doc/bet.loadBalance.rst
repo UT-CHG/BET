@@ -1,27 +1,30 @@
-loadBalance Package
-===================
+bet.loadBalance package
+=======================
 
-:mod:`loadBalance` Package
---------------------------
+Submodules
+----------
 
-.. automodule:: bet.loadBalance
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`lb_PADCIRC` Module
-------------------------
+bet.loadBalance.lb_PADCIRC module
+---------------------------------
 
 .. automodule:: bet.loadBalance.lb_PADCIRC
     :members:
     :undoc-members:
     :show-inheritance:
 
-:mod:`load_balance` Module
---------------------------
+bet.loadBalance.load_balance module
+-----------------------------------
 
 .. automodule:: bet.loadBalance.load_balance
     :members:
     :undoc-members:
     :show-inheritance:
 
+
+Module contents
+---------------
+
+.. automodule:: bet.loadBalance
+    :members:
+    :undoc-members:
+    :show-inheritance:

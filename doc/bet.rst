@@ -1,29 +1,5 @@
-bet Package
+bet package
 ===========
-
-:mod:`bet` Package
-------------------
-
-.. automodule:: bet.__init__
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`Comm` Module
-------------------
-
-.. automodule:: bet.Comm
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`util` Module
-------------------
-
-.. automodule:: bet.util
-    :members:
-    :undoc-members:
-    :show-inheritance:
 
 Subpackages
 -----------
@@ -35,3 +11,30 @@ Subpackages
     bet.postProcess
     bet.sampling
 
+Submodules
+----------
+
+bet.Comm module
+---------------
+
+.. automodule:: bet.Comm
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bet.util module
+---------------
+
+.. automodule:: bet.util
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+Module contents
+---------------
+
+.. automodule:: bet
+    :members:
+    :undoc-members:
+    :show-inheritance:
