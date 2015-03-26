@@ -41,17 +41,20 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     data_min = np.min(data, 0)
     bin_size = (data_max-data_min)*bin_ratio
 
-    # Create M samples defining M bins in D used to define :math:`\rho_{\mathcal{D},M}`
-    # This choice of rho_D was based on looking at Q(Lambda) and getting a
-    # sense of what a reasonable amount of error was for this problem. Notice I
-    # use uniform distributions of various lengths depending on which
-    # measurement I chose from the 4 I made above. Also, this does not have to
-    # be random. I can choose these bins deterministically but that doesn't
-    # scale well typically. These are also just chosen to determine bins and do
-    # not necessarily have anything to do with probabilities. I use "smaller"
-    # uniform densities below. This was just to setup a discretization of D in
-    # some random way so that I put bins near where the output probability is
-    # (why would I care about binning zero probability events?).
+    '''
+    Create M samples defining M "bins" in D used to define :math:`\rho_{\mathcal{D},M}`
+    This does not have to be random, but here we assume this to be the case.
+    We can choose these bins deterministically but that fails to scale well
+    in most cases. Note that these are chosen for the sole purpose of determining
+    determining the bins used to create the approximation to rho_D and does
+    not necessarily have anything to do with probabilities other than the
+    fact that the probability of each of these bins is then computed using
+    rho_D. We call these M samples "d_distr_samples" because they are samples
+    on the data space denoted by D and the distr implies these samples are chosen
+    to create the approximation to the probability measure (distribution) on D.
+    Note that we create these samples in a set containing the hyperrectangle
+    in order to get output cells with zero probability.
+    '''
     if rank == 0:
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
             data.shape[1]))-0.5)+Q_ref 
@@ -397,6 +400,12 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
         data = np.expand_dims(data, axis=1)
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
+
+    # TO-DO: Check for inputted center_pts_per_edge in case given as list
+    # or as numpy array to see if dimensions match data space dimensions and
+    # that positive integer values are being used. Also, create this change
+    # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1. 
+    center_pts_per_edge = np.ones((data.shape[1])) * center_pts_per_edge
 
     sur_domain = np.zeros((data.shape[1], 2))
     sur_domain[:, 0] = data_min
