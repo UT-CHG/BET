@@ -1,6 +1,6 @@
-"""
+r"""
 This subpackage provides classes and methods for calulating the probability
-measure $P_{\Lambda}$.
+measure :math:`P_{\Lambda}`.
 
 * :mod:`~bet.calculateP.calculateP` provides methods for approximating probability
     densities 
