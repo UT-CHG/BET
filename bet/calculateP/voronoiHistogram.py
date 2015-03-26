@@ -64,7 +64,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
 
 
 def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
-    """
+    r"""
     Generates a regular grid of center points that define the voronoi
     tesselation of exactly the interior of a hyperrectangle centered at
     ``center`` with sides of length ``r_ratio*sur_width`` and the layers

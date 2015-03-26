@@ -28,8 +28,11 @@ import sys, os
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.todo', 'sphinx.ext.coverage',
 'sphinx.ext.mathjax', 'sphinx.ext.intersphinx']
 
+intersphinx_cache_limit = 10 #days to keep cached inventories
 intersphinx_mapping = {'python': ('https://docs.python.org/2.7', None),
-        'polyadcirc' : ('http://ut-chg.github.io/PolyADCIRC', None)
+        'polyadcirc' : ('http://ut-chg.github.io/PolyADCIRC', None),
+         'matplotlib':('http://matplotlib.sourceforge.net', None),
+                  'numpy':('http://docs.scipy.org/doc/numpy',None)
         }
 
 todo_include_todos = True
