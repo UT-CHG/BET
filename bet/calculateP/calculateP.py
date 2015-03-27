@@ -1,6 +1,6 @@
 """
 This module provides methods for calulating the probability
-measure $P_{Lambda}$.
+measure $P_{Lambda}$. RANDOM CHECK.
 
 * :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
     the probability for a set of emulation points.
@@ -18,7 +18,7 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     """
     Parition the parameter space using emulated samples into many voronoi cells.
     These samples are iid so that we can apply the standard MC                                       
-    assumuption/approximation
+    assumuption/approximation. BLAH BLAH
 
     :param lam_domain: The domain for each parameter for the model.
     :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
