@@ -38,6 +38,10 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
 def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
         lambda_emulate=None, d_Tree=None): 
     r"""
+
+    TODO: remove lam_domain as an argument, make sure to fix in all examples
+    and tests
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
     probability assoicated with a set of voronoi cells defined by
     ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
@@ -74,16 +78,11 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     
     # Determine which emulated samples match with which model run samples
     l_Tree = spatial.KDTree(samples)
-    (tree_length, emulate_ptr) = l_Tree.query(lambda_emulate)
+    (_, emulate_ptr) = l_Tree.query(lambda_emulate)
     
     # Calculate Probabilties
     P = np.zeros((lambda_emulate.shape[0],))
     d_distr_emu_ptr = np.zeros(emulate_ptr.shape)
-    #io_ptr_inverse = np.zeros(io_ptr.shape)
-    # for i in range(rho_D_M.shape[0]): 
-    #     Itemp = np.equal(io_ptr, i)
-    #     l_ind = np.nonzero(Itemp)
-    #     io_ptr_inverse[l_ind] = i
     d_distr_emu_ptr = io_ptr[emulate_ptr] #io_ptr_inverse[emulate_ptr] 
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(d_distr_emu_ptr, i)
@@ -96,6 +95,10 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
 
 def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None): 
     r"""
+    
+    TODO: remove lam_domain as an argument, make sure to fix in all examples
+    and tests
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability assoicated with a set of voronoi cells defined by the model
     solves at :math:`(\lambda_{samples})` where the volumes of these voronoi
@@ -122,7 +125,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
 
     """
     # Calculate pointers and volumes
-    (P, lambda_emulate, io_ptr, emulate_ptr) = prob_emulated(samples, data,
+    (P, _, io_ptr, emulate_ptr) = prob_emulated(samples, data,
             rho_D_M, d_distr_samples, lam_domain, None, d_Tree)
     
     # Apply the standard MC approximation 
@@ -141,6 +144,9 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
 def prob_qhull(samples, data, rho_D_M, d_distr_samples,
         lam_domain, d_Tree=None): 
     r"""
+
+    TODO: FIX OR REMOVE
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
     probability assoicated with a set of voronoi cells defined by
     ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
@@ -170,7 +176,6 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
         d_Tree = spatial.KDTree(d_distr_samples)
         
     # Determine which inputs go to which M bins using the QoI
-    #io_ptr = dsearchn(d_distr_samples, data);
     io_ptr = d_Tree.query(data)
 
     # Calcuate the bounding region for the parameters
@@ -224,7 +229,7 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
 
 def prob_mc(samples, data, rho_D_M, d_distr_samples,
         lam_domain, lambda_emulate=None, d_Tree=None): 
-    """
+    r"""
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability assoicated with a set of voronoi cells defined by the model
     solves at :math:`(\lambda_{samples})` where the volumes of these voronoi
@@ -260,7 +265,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     # Apply the standard MC approximation to determine the number of emulated
     # samples per model run sample. This is for approximating 
     # \mu_Lambda(A_i \intersect b_j)
-    lam_vol = np.zeros((samples.shape[0],)) #lambda_emulate),))
+    lam_vol = np.zeros((samples.shape[0],)) 
     for i in range(samples.shape[0]):
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
     clam_vol = np.copy(lam_vol) 
