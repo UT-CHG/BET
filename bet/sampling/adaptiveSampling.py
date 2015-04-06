@@ -133,6 +133,7 @@ class sampler(bsam.sampler):
         sort_ind = np.argsort(results_rD)
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
+    # TODO This appears to be an unused function
     def run_reseed(self, kern_list, rho_D, maximum, param_min, param_max,
             t_kernel, savefile, initial_sample_type="lhs", criterion='center',
             reseed=3):
@@ -311,6 +312,7 @@ class sampler(bsam.sampler):
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
         # Calculate domain size
+        # TODO The following could probably be done in one line
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
@@ -374,7 +376,6 @@ class sampler(bsam.sampler):
             mdat['data'] = data
             super(sampler, self).save(mdat, "p"+str(rank)+savefile)
 
-            # samples_old = samples_new
             MYsamples_old = samples_new
 
         # collect everything
@@ -398,7 +399,8 @@ class sampler(bsam.sampler):
         super(sampler, self).save(mdat, savefile)
 
         return (samples, data, all_step_ratios)
-
+        
+    #TODO MOve this function to a dev branch since it is not implemented.
     def reseed_chains(self, param_min, param_max, t_kernel, kern,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
