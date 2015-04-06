@@ -46,6 +46,9 @@ def meshgrid_ndim(X):
     
 def get_global_values(array):
     """
+    TODO: write a version that also works with captial mpi4py method calls
+    (optional?)
+
     Concatenates local arrays into global array.
 
     :param array: Array.

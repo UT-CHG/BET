@@ -1,11 +1,24 @@
 """
-Methods used to plot two-dimensional domains and/or two-dimensional
-slices/projections of domains.
+This module provides methods used to plot two-dimensional domains and/or
+two-dimensional slices/projections of domains.
+
+TODO : match method signatures with style in plotP
 """
 
 import matplotlib.tri as tri
 import numpy as np
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+
+markers = []
+for m in Line2D.markers:
+    try:
+        if len(m) == 1 and m != ' ':
+            markers.append(m)
+    except TypeError:
+        pass
+
+colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k')
 
 def scatter_2D(samples, sample_nos, color, p_ref, save, show,
         xlabel, ylabel, filename):
@@ -31,8 +44,7 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, show,
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
     plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color, s=10,
-            #edgecolor='none',
-            alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)#Oranges_r)
+            alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(Q)$')
     if p_ref != None:
@@ -77,7 +89,7 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, show,
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], s=10, alpha=.75, linewidth=.1, c=color,
-            cmap=plt.cm.Oranges) #ax.colorbar()
+            cmap=plt.cm.Oranges)
     if p_ref != None:
         ax.scatter(p_ref[0], p_ref[1], p_ref[2], c='g')
         
@@ -96,6 +108,9 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, show,
 def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
         save=True, show=False, lnums=None):
     """
+    TODO: add options for higher dimensional visualization or at least for
+    showing pairwise or tripletwise parameter point clouds
+
     Plot samples in parameter space and colors them either by rho_D or by
     sample batch number.
 
@@ -132,6 +147,9 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
 def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, show=False, Q_nums=None):
     """
+    TODO: add options for higher dimensional visualization or at least for
+    showing pairwise or tripletwise sample point clouds
+
     Plot samples in data space and colors them either by rho_D or by
     sample batch number.
 
@@ -163,12 +181,15 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
                 zlabel, savename)
 
 def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
-        img_folder='figs/', ref_markers=['^', 's', 'o'],
-        ref_colors=['r', 'g', 'b']):
-    """
+        img_folder='figs/', ref_markers=None,
+        ref_colors=None):
+    r"""
+    TODO: add option for showing all pairs or altering which index for which
+    all pairs are shown
+
     Plot the data domain D using a triangulation based on the generating
-    samples where $Q={q_1, q_i}$ for ``i=Q_nums``, with a marker for various
-    ``Q_ref``. 
+    samples where :math:`Q={q_1, q_i}` for ``i=Q_nums``, with a marker for
+    various :math:`Q_{ref}`. 
 
     :param samples: Samples to plot
     :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
@@ -178,11 +199,14 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     :type Q_ref: :class:`np.ndarray`
     :param list Q_nums: dimensions of the QoI to plot
     :param string img_folder: folder to save the plots to
-    :param list ref_markers: list of marker types for ``Q_ref``
-    :param list ref_colors: list of colors for ``Q_ref``
+    :param list ref_markers: list of marker types for :math:`Q_{ref}`
+    :param list ref_colors: list of colors for :math:`Q_{ref}`
 
     """
-    
+    if ref_markers == None:
+        ref_markers = markers
+    if ref_colors == None:
+        ref_colors = colors
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
 
@@ -204,13 +228,13 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
             ref_markers, ref_colors, ylabel=r'$q_{'+str(i+1)+r'}$',
             triangles=triangles, save=True, show=False, filenames=filenames)
 
-def show_data_domain_2D(samples, data, Q_ref, ref_markers=['^', 's', 'o'],
-        ref_colors=['r', 'g', 'b'], xlabel=r'$q_1$', ylabel=r'$q_2',
+def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
+        ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2',
         triangles=None, save=True, show=True, filenames=None):
-    """
+    r"""
     Plot the data domain D using a triangulation based on the generating
-    samples with a marker for various ``Q_ref``. Assumes that the first
-    dimension of data is $q_1$.
+    samples with a marker for various :math:`Q_{ref}`. Assumes that the first
+    dimension of data is :math:`q_1`.
 
     :param samples: Samples to plot
     :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
@@ -218,8 +242,8 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=['^', 's', 'o'],
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
     :type Q_ref: :class:`np.ndarray`
-    :param list ref_markers: list of marker types for ``Q_ref``
-    :param list ref_colors: list of colors for ``Q_ref``
+    :param list ref_markers: list of marker types for :math:`Q_{ref}`
+    :param list ref_colors: list of colors for :math:`Q_{ref}`
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param triangles: triangulation defined by ``samples``
@@ -229,7 +253,10 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=['^', 's', 'o'],
     :param list filenames: file names for the unmarked and marked domain plots
 
     """
-
+    if ref_markers == None:
+        ref_markers = markers
+    if ref_colors == None:
+        ref_colors = colors
     if triangles == None:
         triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
         triangles = triangulation.triangles
