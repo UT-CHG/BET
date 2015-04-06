@@ -119,6 +119,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     '''
     return (rho_D_M, d_distr_samples, d_Tree)
 
+#TODO Empty function hist_regular 
 def hist_regular(data, distr_samples, nbins):
     """
     create nbins regulary spaced bins
@@ -130,6 +131,7 @@ def hist_regular(data, distr_samples, nbins):
     """
     pass
 
+# TODO Empty function hist_gaussian
 def hist_gaussian(data, distr_samples, nbins):
     """
     determine mean, standard deviation of distr_samples
@@ -141,6 +143,7 @@ def hist_gaussian(data, distr_samples, nbins):
     """
     pass
 
+# TODO Empty Function hist_unif
 def hist_unif(data, distr_samples, nbins):
     """
     same as hist_regular bit with uniformly spaced bins
@@ -148,10 +151,12 @@ def hist_unif(data, distr_samples, nbins):
     """
     pass
 
+# TODO Empty function gaussian_regular
 def gaussian_regular(data, Q_ref, std, nbins, num_d_emulate=1E6):
     pass
     #return (d_distr_prob, d_distr_samples, d_Tree)
 
+# TODO Comment or remove multivariate_gaussian
 def multivariate_gaussian(x, mean, std):
     dim = len(mean)
     detDiagCovMatrix = np.sqrt(np.prod(np.diag(std(std))))
@@ -306,6 +311,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     # solving the model EVER! This can be done "offline" so to speak.
     return (rho_D_M, d_distr_samples, d_Tree)
 
+# TODO gaussian_unif is a blank function
 def gaussian_unif(data, Q_ref, std, nbins, num_d_emulate=1E6):
     pass
     #return (d_distr_prob, d_distr_samples, d_Tree)
@@ -334,6 +340,7 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
         ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
+    # TODO following code could probably be reduced to a few lines
     # determine the center of the domain
     if len(domain.shape) == 1:
         domain = np.expand_dims(domain, axis=1)

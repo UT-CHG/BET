@@ -36,7 +36,8 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
         msg = "The hyperrectangle defined by this size is larger than the"
         msg += "original domain."
         print msg
-
+    
+    #TODO This can be done in fewer lines
     # determine the hyperrectangle defined by center and r_size
     rect_width = r_size*np.ones(sur_domain[:,0].shape)
     rect_domain = np.empty(sur_domain.shape)
@@ -62,7 +63,8 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
 
     return (points, interior_and_layer1, rect_domain)
 
-
+# TODO This and the previous function are almost identical. Maybe calculate r_size
+# from r_ratio and call the previous function.
 def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     r"""
     Generates a regular grid of center points that define the voronoi
@@ -123,6 +125,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         points = util.meshgrid_ndim(interior_and_layer1)
     return (points, interior_and_layer1, rect_domain)
 
+
 def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
     """
     Generates a sequence of arrays describing the edges of the finite voronoi
@@ -156,7 +159,7 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
         (center_pts_per_edge+4,) respectively.
 
     """
-
+    # TODO This is redoing stuff that was done when generating the points
     # determine the hyperrectangle defined by center and r_size
     rect_width = r_size*np.ones(sur_domain[:,0].shape)
     rect_domain = np.empty(sur_domain.shape)
@@ -178,7 +181,8 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
         rect_and_sur_edges.append(int_l2) 
 
     return rect_and_sur_edges
-
+# TODO This and the previous function are almost identical. Maybe calculate r_size
+# from r_ratio (or vice versa)  and call the previous function.
 def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     """
     Generates a sequence of arrays describing the edges of the finite voronoi
@@ -319,6 +323,7 @@ def histogramdd_volumes(edges, points):
     # adjust edges
     points_max = np.max(points, 0)
     points_min = np.min(points, 0)
+    # TODO replace with logical arrays to get rid of for loop.
     for dim, e in enumerate(edges):
         if len(edges) == 1:
             if e[0] >= points_min:
@@ -360,7 +365,7 @@ def simple_fun_uniform(points, volumes, rect_domain):
     """
     if len(points.shape) == 1:
         points = np.expand_dims(points, axis=1)
-   
+    # TODOthe lines below could be done in one or two lines.
     rect_left = np.repeat([rect_domain[:, 0]], points.shape[0], 0)
     rect_right = np.repeat([rect_domain[:,1]], points.shape[0], 0)
     rect_left = np.all(np.greater_equal(points, rect_left), axis=1)
