@@ -1,6 +1,6 @@
-"""
+r"""
 This module provides methods for calulating the probability
-measure $P_{Lambda}$. RANDOM CHECK.
+measure :math:`P_{\Lambda}`.
 
 * :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
     the probability for a set of emulation points.
@@ -18,7 +18,7 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     """
     Parition the parameter space using emulated samples into many voronoi cells.
     These samples are iid so that we can apply the standard MC                                       
-    assumuption/approximation. BLAH BLAH
+    assumuption/approximation.
 
     :param lam_domain: The domain for each parameter for the model.
     :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
@@ -37,10 +37,10 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
 
 def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
         lambda_emulate=None, d_Tree=None): 
-    """
-    Calculates P_{Lambda}(\mathcal{V}_{lambda_{emulate}}), the probability
-    assoicated with a set of voronoi cells defined by ``num_l_emulate`` iid
-    samples (lambda_{emulate}).
+    r"""
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
+    probability assoicated with a set of voronoi cells defined by
+    ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
 
     :param samples: The samples in parameter space for which the model was run.
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
@@ -95,11 +95,11 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     return (P, lambda_emulate, io_ptr, emulate_ptr)
 
 def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None): 
-    """
-    Calculates P_{Lambda}(\mathcal{V}_{lambda_{samples}}), the probability
-    assoicated with a set of voronoi cells defined by the model solves at
-    $lambda_{samples}$ where the volumes of these voronoi cells are assumed to
-    be equal under the MC assumption.
+    r"""
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
+    probability assoicated with a set of voronoi cells defined by the model
+    solves at :math:`(\lambda_{samples})` where the volumes of these voronoi
+    cells are assumed to be equal under the MC assumption.
 
     :param samples: The samples in parameter space for which the model was run.
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
@@ -140,10 +140,10 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
 
 def prob_qhull(samples, data, rho_D_M, d_distr_samples,
         lam_domain, d_Tree=None): 
-    """
-    Calculates P_{Lambda}(\mathcal{V}_{lambda_{emulate}}), the probability
-    assoicated with a set of voronoi cells defined by ``num_l_emulate`` iid
-    samples (lambda_{emulate}).
+    r"""
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
+    probability assoicated with a set of voronoi cells defined by
+    ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
 
     This method is only intended when ``lam_domain`` is a generalized rectangle.
 
@@ -225,10 +225,10 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
 def prob_mc(samples, data, rho_D_M, d_distr_samples,
         lam_domain, lambda_emulate=None, d_Tree=None): 
     """
-    Calculates P_{Lambda}(\mathcal{V}_{lambda_{samples}}), the probability
-    assoicated with a set of voronoi cells defined by the model solves at
-    $lambda_{samples}$ where the volumes of these voronoi cells are
-    approximated using MC integration.
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
+    probability assoicated with a set of voronoi cells defined by the model
+    solves at :math:`(\lambda_{samples})` where the volumes of these voronoi
+    cells are approximated using MC integration.
 
     :param samples: The samples in parameter space for which the model was run.
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
