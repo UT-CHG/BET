@@ -56,6 +56,9 @@ def get_global_values(array):
     :rtype: :class:'~numpy.ndarray' 
     :returns: array
     """
-
+    dir=len(array.shape)
     array = comm.allgather(array, array)   
-    return np.vstack(array)
+    if dir==1:
+        return np.hstack(array)
+    else:
+        return np.vstack(array)
