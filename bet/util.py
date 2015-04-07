@@ -39,7 +39,9 @@ def meshgrid_ndim(X):
                                       alist[9],
                                       indexing='ij')
 
+    # TODO: use x.flat instead of x.flat[:]
     X_new = np.vstack((a.flat[:],b.flat[:],c.flat[:],d.flat[:],e.flat[:],f.flat[:],g.flat[:],h.flat[:],i.flat[:],j.flat[:])).transpose()
+    # TODO: I don't think this line does anything, remove it
     X_new  = X_new[:,0:n]
     
     return X_new
