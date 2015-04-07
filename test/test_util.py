@@ -7,7 +7,6 @@ import bet.util as util
 from bet.Comm import *
 import numpy.testing as nptest
 import numpy as np
-from pkgutil import iter_modules
 
 def get_binary_rep(i, dim):
     """
@@ -47,14 +46,35 @@ def test_meshgrid_ndim():
 
 def test_get_global_values():
     """
+    TODO: make sure the newer version of util matches this test
+
     Tests :meth:`bet.util.get_global_values`.
     """
-    original_array = np.array([range(size*2)])
-    if rank > 0:
-        my_index = range(0+rank, len(original_array), size)
+    for i in xrange(5):
+        yield compare_get_global_values, i
+
+def compare_get_global_values(i):
+    """
+    Compares the results of get global values for a vector of shape ``(size*2,
+    i)``.
+    
+    :param int i: Dimension of the vector of length ``size*2``
+
+    """
+    if rank == 0:
+        if i == 0:
+            original_array = np.array(np.random.random((size*2,)))
+        else:
+            original_array = np.array(np.random.random((size*2,i)))
     else:
-        my_index = range(0+rank, len(original_array), size)
-    my_array = original_array[my_index]
+        original_array = None
+    original_array = comm.bcast(original_array)
+    my_len = original_array.shape[0]/size
+    my_index = range(0+rank*my_len, (rank+1)*my_len)
+    if i == 0:
+        my_array = original_array[my_index]
+    else:
+        my_array = original_array[my_index,:]
     recomposed_array = util.get_global_values(my_array)
     nptest.assert_array_equal(original_array, recomposed_array)
 

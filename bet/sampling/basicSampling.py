@@ -16,6 +16,8 @@ from bet.Comm import *
 
 def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
+    TODO: Maybe move to bet.postProcessing.postTools
+
     Compare the quality of samples where ``sample_quality`` is the measure of
     quality by which the sets of samples have been indexed and ``sort_ind`` is
     an array of the sorted indicies.
@@ -36,6 +38,8 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
 
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
+    TODO: Maybe move to bet.postProcessing.postTools
+
     Estimates the number of samples in high probability regions of D.
 
     :param data: Data associated with ``samples``
@@ -58,6 +62,8 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
+    TODO: Maybe move to bet.postProcessing.postTools
+
     Estimates the number of samples in high probability regions of D for a list
     of results.
 
@@ -96,6 +102,7 @@ def loadmat(save_file, model=None):
     # load the data from a *.mat file
     mdat = sio.loadmat(save_file)
     # load the samples
+    # TODO: calculate the number of samples rather than loading it
     if mdat.has_key('samples'):
         samples = mdat['samples']
     else:
@@ -201,18 +208,15 @@ class sampler(object):
         Numpy and other Python packages. Instead of reimplementing them here we
         provide sampler that utilizes user specified samples.
 
-        Note: Parallel implementation with changes ordering of
-        the samples if ``samples.shape[0]`` is not divisible by ``size``.
-
         :param samples: samples to evaluate the model at
-        :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+        :type samples: :class:`~numpy.ndarray` of shape (num_smaples, ndim)
         :param string savefile: filename to save samples and data
         :param boolean parallel: Flag for parallel implementation. Uses
             lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
             divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (ndim, num_samples)
+            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
             and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
 
         """
@@ -226,18 +230,38 @@ class sampler(object):
         if not(parallel) or size == 1:
             data = self.lb_model(samples)
         elif parallel and self.num_samples%size == 0:
-            my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
+            if len(samples.shape)  == 1:
+                my_samples = np.empty((samples.shape[0]/size, ))
+            else:
+                my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
             comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
             my_data = self.lb_model(my_samples)
-            data = np.empty((self.num_samples, my_data.shape[1]),
-                    dtype=np.float64)
+            if len(my_data.shape) == 1:
+                data = np.empty((self.num_samples,),
+                        dtype=np.float64)
+            else:
+                data = np.empty((self.num_samples, my_data.shape[1]),
+                        dtype=np.float64)
             comm.Allgather([my_data, MPI.DOUBLE], [data, MPI.DOUBLE])
         elif parallel:
-            my_index = range(0+rank, self.num_samples, size)
-            my_samples = samples[my_index, :]
+            my_len = self.num_samples/size
+            if rank != size-1:
+                my_index = range(0+rank*my_len, (rank+1)*my_len)
+            else:
+                my_index = range(0+rank*my_len, self.num_samples)
+            if len(my_samples.shape) == 1:
+                my_samples = samples[my_index, :]
+            else:
+                my_samples = samples[my_index, :]
             my_data = self.lb_model(my_samples)
             data = util.get_global_values(my_data)
             samples = util.get_global_values(my_data)
+        
+        # if data or samples are of shape (num_samples,) expand dimensions
+        if len(samples.shape) == 1:
+            samples = np.expand_dims(samples, axis=1)
+        if len(data.shape) == 1:
+            data = np.expand_dims(data, axis=1)
 
         mdat = dict()
         self.update_mdict(mdat)
