@@ -51,7 +51,7 @@ def get_global_values(array):
     TODO: write a version that also works with captial mpi4py method calls
     (optional?)
 
-    Concatenates local arrays into global array.
+    Concatenates local arrays into global array using :meth:`np.vstack`.
 
     :param array: Array.
     :type P_samples: :class:'~numpy.ndarray' 
