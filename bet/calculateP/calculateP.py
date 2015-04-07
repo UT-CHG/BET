@@ -64,6 +64,8 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     :returns: (P, lambda_emulate, io_ptr, emulate_ptr, lam_vol)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
     if lambda_emulate == None:
@@ -125,6 +127,8 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
         a pointer from emulated samples to samples (in parameter space)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
 
@@ -264,6 +268,8 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         a pointer from emulated samples to samples (in parameter space)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
     # Calculate pointers and volumes
