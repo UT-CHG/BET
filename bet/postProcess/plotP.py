@@ -57,6 +57,8 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     :returns: (bins, marginals)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
     num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
@@ -71,13 +73,17 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     # Create bins
     bins = []
     for i in range(num_dim):
-        bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1],
+        bins.append(np.linspace(lam_domain[i][0]-np.finfo(float).eps, lam_domain[i][1]+np.finfo(float).eps,
             nbins[i]+1))
     bin_ptr = np.zeros((num_samples, num_dim), dtype=np.int)
     # Bin samples
     for j in range(num_dim):
         bin_ptr[:, j] = np.searchsorted(bins[j], samples[:, j])
     bin_ptr -= 1
+    bins = []
+    for i in range(num_dim):
+        bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1],
+                                nbins[i]+1))
          
     # Calculate marginal probabilities 
     marginals = {}
@@ -110,6 +116,7 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     :returns: (bins, marginals)
 
     """
+
     num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
@@ -123,12 +130,16 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     # Create bins
     bins = []
     for i in range(num_dim):
-        bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1], nbins[i]+1))
+        bins.append(np.linspace(lam_domain[i][0]-np.finfo(float).eps, lam_domain[i][1]+np.finfo(float).eps, nbins[i]+1))
     bin_ptr = np.zeros((num_samples, num_dim), dtype=np.int)
     # Bin samples
     for j in range(num_dim):
         bin_ptr[:, j] = np.searchsorted(bins[j], samples[:, j])
     bin_ptr -= 1
+
+    bins = []
+    for i in range(num_dim):
+        bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1], nbins[i]+1))
          
     # Calculate marginal probabilities 
     marginals = {}
