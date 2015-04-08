@@ -45,8 +45,8 @@ def loadmat(save_file, lb_model=None):
     else:
         data = None
     # recreate the sampler
-    new_sampler = sampler(mdat['num_samples'], mdat['chain_length'],
-            lb_model)
+    new_sampler = sampler(mdat['num_samples'],
+            np.squeeze(mdat['chain_length']), lb_model)
     
     return (new_sampler, samples, data)
 

@@ -29,7 +29,7 @@ def test_loadmat_init():
     model = "this is not a model"
     
     num_samples = np.array([50, 60])
-    num_chains_pproc1, num_chains_pproc2 = int(np.ceil(num_samples/float(chain_length*size)))
+    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples/float(chain_length*size)).astype('int')
     num_chains1, num_chains2 = size * np.array([num_chains_pproc1,
         num_chains_pproc2])
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
@@ -119,7 +119,7 @@ def verify_samples(model, QoI_range, sampler, param_min, param_max,
     nptest.assert_array_equal(sampler.sample_batch_no,
             mdat['sampler_batch_no'])
 
-class Test_basic_sampler(unittest.TestCase):
+class Test_adaptive_sampler(unittest.TestCase):
     """
     Test :class:`bet.sampling.adaptiveSampling.sampler`.
     """
@@ -186,7 +186,7 @@ class Test_basic_sampler(unittest.TestCase):
         assert self.samplers[0].chain_length == mdict["chain_length"]
         assert self.samplers[0].num_chains == mdict["num_chains"]
         nptest.assert_array_equal(self.samplers[0].sample_batch_no,
-                np.repeat(range(self.smaplers[0].num_chains),
+                np.repeat(range(self.samplers[0].num_chains),
                     self.samplers[0].chain_length, 0))
     
     @unittest.skip("Implement me")
@@ -239,7 +239,7 @@ def test_kernels():
         pass
 
 @unittest.skip("Implement me")
-class test_transition_set(unittest):
+class test_transition_set(unittest.TestCase):
     @unittest.skip("Implement me")
     def test_init(self):
         pass
@@ -248,7 +248,7 @@ class test_transition_set(unittest):
         pass
 
 @unittest.skip("Implement me")
-class kernel(unittest):
+class kernel(unittest.TestCase):
     @unittest.skip("Implement me")
     def test_init(self):
         pass
@@ -256,18 +256,18 @@ class kernel(unittest):
         pass
 
 @unittest.skip("Implement me")
-class test_rhoD_kernsl(kernel):
+class test_rhoD_kernel(kernel):
     pass
 
 @unittest.skip("Implement me")
-class test_maxima_kernsl(kernel):
+class test_maxima_kernel(kernel):
     pass
 
 @unittest.skip("Implement me")
-class test_maxima_mean_kernsl(kernel):
+class test_maxima_mean_kernel(kernel):
     pass
 
 @unittest.skip("Implement me")
-class test_multi_dist_kernsl(kernel):
+class test_multi_dist_kernel(kernel):
     pass
 
