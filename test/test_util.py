@@ -2,7 +2,6 @@
 This module contains unittests for :mod:`~bet.util`
 """
 
-import unittest
 import bet.util as util
 from bet.Comm import *
 import numpy.testing as nptest
@@ -41,7 +40,7 @@ def test_meshgrid_ndim():
     equal to ``[0, 1]``.
     """
     for i in xrange(10):
-        x = [[0,1] for v in xrange(i+1)]
+        x = [[0, 1] for v in xrange(i+1)]
         yield compare_to_bin_rep, util.meshgrid_ndim(x)
 
 def test_get_global_values():
@@ -63,9 +62,9 @@ def compare_get_global_values(i):
     """
     if rank == 0:
         if i == 0:
-            original_array = np.array(np.random.random((size*2,)))
+            original_array = np.array(np.random.random((size*2, )))
         else:
-            original_array = np.array(np.random.random((size*2,i)))
+            original_array = np.array(np.random.random((size*2, i)))
     else:
         original_array = None
     original_array = comm.bcast(original_array)
@@ -74,7 +73,8 @@ def compare_get_global_values(i):
     if i == 0:
         my_array = original_array[my_index]
     else:
-        my_array = original_array[my_index,:]
+        my_array = original_array[my_index, :w
+                :]
     recomposed_array = util.get_global_values(my_array)
     nptest.assert_array_equal(original_array, recomposed_array)
 

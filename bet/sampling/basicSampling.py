@@ -55,7 +55,10 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
     if sample_nos == None:
         sample_nos = range(data.shape[0])
-    rD = rho_D(data[sample_nos, :])
+    if len(data.shape) == 1:
+        rD = rho_D(data[sample_nos])
+    else:
+        rD = rho_D(data[sample_nos, :])
     adjusted_total_prob = int(sum(rD)/maximum)
     print "Samples in box "+str(adjusted_total_prob)
     return adjusted_total_prob
