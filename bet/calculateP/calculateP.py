@@ -64,7 +64,10 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     :returns: (P, lambda_emulate, io_ptr, emulate_ptr, lam_vol)
 
     """
-    
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1) 
     if lambda_emulate == None:
         lambda_emulate = samples
     if len(d_distr_samples.shape) == 1:
@@ -124,6 +127,11 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
         a pointer from emulated samples to samples (in parameter space)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1) 
+
     # Calculate pointers and volumes
     (P, _, io_ptr, emulate_ptr) = prob_emulated(samples, data,
             rho_D_M, d_distr_samples, lam_domain, None, d_Tree)
@@ -132,12 +140,15 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
     lam_vol = np.ones((samples.shape[0],))
     # Calculate Probabilities
     P = np.zeros((samples.shape[0],))
+    # TODO Fix issue of unecessary mpi call
+
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)
         Itemp_sum = np.sum(lam_vol[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
+    lam_vol = (1.0/float(samples.shape[0]))*np.ones((samples.shape[0],))
 
     return (P, lam_vol, io_ptr, emulate_ptr)
 
@@ -257,6 +268,10 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         a pointer from emulated samples to samples (in parameter space)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
+    if len(data.shape) == 1:
+        data = np.expand_dims(data, axis=1) 
     # Calculate pointers and volumes
     (P, lambda_emulate, io_ptr, emulate_ptr) = prob_emulated(samples,
             data, rho_D_M, d_distr_samples, lam_domain, lambda_emulate,
@@ -274,6 +289,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     lam_vol = lam_vol/(len(lambda_emulate)*size)
 
     # Calculate Probabilities
+    # TODO Fix issue of unecessary mpi call
     P = np.zeros((samples.shape[0],))
     for i in range(rho_D_M.shape[0]):
         Itemp = np.equal(io_ptr, i)

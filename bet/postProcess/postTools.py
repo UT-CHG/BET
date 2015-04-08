@@ -26,6 +26,8 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     :returns: (P_samples, samples, lam_vol, data)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
     nnz = np.sum(P_samples > 0)
     if lam_vol == None:
         indices = np.argsort(P_samples)[::-1][0:nnz]
@@ -36,7 +38,9 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     if lam_vol != None:
         lam_vol = lam_vol[indices]
     if data != None:
-        data = data[indices]
+        if len(data.shape) == 1:
+            data = np.expand_dims(data, axis=1)
+        data = data[indices,:]
 
     return (P_samples, samples, lam_vol, data)
 
@@ -64,6 +68,8 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
     # TODO: should we trust the user or should we do a quick check of part of
     # the array to see if it's already sorted?
     if sort:
@@ -77,6 +83,8 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     if lam_vol != None:
         lam_vol = lam_vol[0:num_samples]
     if data != None:
+        if len(data.shape) == 1:
+            data = np.expand_dims(data, axis=1)
         data = data[0:num_samples, :]
         
     return  (num_samples, P_samples, samples, lam_vol, data)
