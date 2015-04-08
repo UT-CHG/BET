@@ -7,6 +7,7 @@ import numpy.testing as nptest
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
+from bet.Comm import *
 
 """
 TODO: rewrite loadmat test, rewrite init test, rewrite update_mdict test, write
@@ -29,7 +30,8 @@ def test_loadmat_init():
     
     num_samples = np.array([50, 60])
     num_chains_pproc1, num_chains_pproc2 = int(np.ceil(num_samples/float(chain_length*size)))
-    num_chains1, num_chains2 = size * num_chains_pproc
+    num_chains1, num_chains2 = size * np.array([num_chains_pproc1,
+        num_chains_pproc2])
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
         num_chains2])
 
@@ -42,7 +44,7 @@ def test_loadmat_init():
     assert loaded_sampler1.num_samples == num_samples1
     assert loaded_sampler1.chain_length == chain_length
     assert loaded_sampler1.num_chains_pproc == num_chains_pproc1
-    assert loaded_sampler1.num_chains = num_chains1
+    assert loaded_sampler1.num_chains == num_chains1
     nptest.assert_array_equal(np.repeat(range(num_chains1), chain_length, 0),
             loaded_sampler1.sample_batch_no)
     assert loaded_sampler1.lb_model == None
@@ -53,43 +55,43 @@ def test_loadmat_init():
     assert loaded_sampler2.num_samples == num_samples2
     assert loaded_sampler2.chain_length == chain_length
     assert loaded_sampler2.num_chains_pproc == num_chains_pproc2
-    assert loaded_sampler2.num_chains = num_chains2
+    assert loaded_sampler2.num_chains == num_chains2
     nptest.assert_array_equal(np.repeat(range(num_chains2), chain_length, 0),
             loaded_sampler2.sample_batch_no)
     os.remove('testfile1.mat')
     os.remove('testfile2.mat')
 
-def verify_random_samples(model, QoI_range, sampler, param_min, param_max,
+def verify_samples(model, QoI_range, sampler, param_min, param_max,
         t_set, savefile, initial_sample_type):
 
     # create indicator function
     Q_ref = QoI_range*0.5
     bin_size = 0.15*QoI_range
-    maxiumum = 1/np.product(bin_size)
+    maximum = 1/np.product(bin_size)
     def ifun(outputs):
         left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
         right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
         left = np.all(np.greater_equal(outputs, left), axis=1)
         right = np.all(np.less_equal(outputs, right), axis=1)
         inside = np.logial_and(left, right)
-        max_values = np.repeate(maxium, outputs.shape[0], 0)
+        max_values = np.repeate(maximum, outputs.shape[0], 0)
         return inside.astype('float64')*max_values
         
     # create rhoD_kernel
-    kernel_rD = asam.rhoD_kernel(maxium, ifun)
+    kernel_rD = asam.rhoD_kernel(maximum, ifun)
 
     # run generalized chains
     (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
-            param_max, t_set, kernel_rD, savefile, inital_sample_type)
+            param_max, t_set, kernel_rD, savefile, initial_sample_type)
 
     # check dimensions of samples
     assert samples.shape == (sampler.num_samples, len(param_min))
 
     # are the samples in bounds?
-    param_left = np.repeat([param_min], num_samples, 0)
-    param_right = np.repeat([param_max], num_samples, 0)
-    assert np.all(my_samples <= param_right)
-    assert np.all(my_samples >= param_left)
+    param_left = np.repeat([param_min], sampler.num_samples, 0)
+    param_right = np.repeat([param_max], sampler.num_samples, 0)
+    assert np.all(samples <= param_right)
+    assert np.all(samples >= param_left)
 
     # check dimensions of data
     assert data.shape == (sampler.num_samples, len(QoI_range))
@@ -104,9 +106,8 @@ def verify_random_samples(model, QoI_range, sampler, param_min, param_max,
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = {}
     if size > 1:
-        mdat =
-        sio.loadmat(os.path.join(os.path.dirname(savefile),"proc{}{}".format(rank,
-            os.path.basename(savefile))))
+        mdat = sio.loadmat(os.path.join(os.path.dirname(savefile),
+            "proc{}{}".format(rank, os.path.basename(savefile))))
     else:
         mdat = sio.loadmat(savefile)
     nptest.assert_array_equal(samples, mdat['samples'])
@@ -149,7 +150,7 @@ class Test_basic_sampler(unittest.TestCase):
         self.savefiles = ["11t11", "1t1", "3to1", "3to2", "10to4"]
         self.models = [map_1t1, map_1t1, map_3t1, map_3t2, map_10t4]
         self.QoI_range = [np.array([2.0]), np.array([2.0]), np.array([3.0]),
-                np.array([2.0, 1.0]), np.array([2.0, 2.0, 2.0, 4.0])
+                np.array([2.0, 1.0]), np.array([2.0, 2.0, 2.0, 4.0])]
 
         # define parameters for the adaptive sampler
 
@@ -173,7 +174,7 @@ class Test_basic_sampler(unittest.TestCase):
                 for proc in range(size):
                     proc_savefile = os.path.join(os.path.dirname(f),
                             "proc{}{}".format(rank,
-                                os.path.basename(savefile)))
+                                os.path.basename(f)))
 
     def test_update(self):
         """
@@ -185,7 +186,8 @@ class Test_basic_sampler(unittest.TestCase):
         assert self.samplers[0].chain_length == mdict["chain_length"]
         assert self.samplers[0].num_chains == mdict["num_chains"]
         nptest.assert_array_equal(self.samplers[0].sample_batch_no,
-                np.repeat(range(num_chains), chain_length, 0))
+                np.repeat(range(self.smaplers[0].num_chains),
+                    self.samplers[0].chain_length, 0))
     
     @unittest.skip("Implement me")
     def test_run_gen(self):
@@ -227,7 +229,7 @@ class Test_basic_sampler(unittest.TestCase):
         test_list = zip(self.models, self.QoI_range, self.samplers,
                 param_min_list, param_max_list, self.savefiles)
 
-        for model, sampler, param_min, param_max, savefile, rho_D in test_list:
+        for model, QoI_range, sampler, param_min, param_max, savefile, rho_D in test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
                         yield verify_samples, model, QoI_range, sampler,
                         param_min, param_max, t_set, savefile, initial_sample_type
@@ -239,18 +241,18 @@ def test_kernels():
 @unittest.skip("Implement me")
 class test_transition_set(unittest):
     @unittest.skip("Implement me")
-    def test_init():
+    def test_init(self):
         pass
     @unittest.skip("Implement me")
-    def test_step():
+    def test_step(self):
         pass
 
 @unittest.skip("Implement me")
 class kernel(unittest):
     @unittest.skip("Implement me")
-    def test_init():
+    def test_init(self):
         pass
-    def test_delta_step():
+    def test_delta_step(self):
         pass
 
 @unittest.skip("Implement me")
