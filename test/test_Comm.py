@@ -1,3 +1,4 @@
+# Lindley Graham 04/07/2015
 """
 This module contains unittests for :mod:`~bet.Comm`
 """

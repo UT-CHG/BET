@@ -1,5 +1,6 @@
+# Lindley Graham 04/07/2015
 """
-This module contains unittests for :mod:`~bet.util`
+This module contains unittests for :mod:`~bet.sampling.basicSampling:`
 """
 
 import unittest, os

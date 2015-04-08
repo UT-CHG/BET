@@ -126,20 +126,22 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
     :param boolean show: flag whether or not to show the figure
+    :param list lnums: integers representing parameter domain coordinate
+        numbers
 
     """
    
     if rho_D != None:
         rD = rho_D(data)
     if lnums == None:
-        lnums = 1+np.array(range(data.shape[1]))
+        lnums = 1+np.array(range(samples.shape[1]))
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
-    if data.shape[1] == 2:
+    if samples.shape[1] == 2:
         scatter_2D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
                 savename)
-    elif data.shape[1] == 3:
+    elif samples.shape[1] == 3:
         zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
         scatter_3D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
                 zlabel, savename)
