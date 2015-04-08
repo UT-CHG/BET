@@ -56,50 +56,18 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         self.assertLessEqual(np.max(self.lambda_emulate[:,1]), 4.0)
         self.assertLessEqual(np.max(self.lambda_emulate[:,2]), 0.5)
 
-class TestProbMethod_3to2(unittest.TestCase):
-    """
-    Sets up 3 to 2 map problem.
-    """
-    def setUp(self):
-        self.samples = np.loadtxt("datafiles/3to2_samples.txt.gz")
-        self.data = np.loadtxt("datafiles/3to2_data.txt.gz")
-        Q_ref =  np.array([0.422, 0.9385])
-        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
-        self.lam_domain= np.array([[0.0, 1.0],
-                                   [0.0, 1.0],
-                                   [0.0, 1.0]])
-        import numpy.random as rnd
-        rnd.seed(1)
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
-                                                  num_l_emulate = 1000)
-class Test_prob_3to2(TestProbMethod_3to2):
-    """
-    Test :meth:`bet.calculateP.calculateP.prob` on 3 to 2 map.
-    """
-    def setUp(self):
-        """
-        Set up problem.
-        """
-        super(Test_prob_3to2, self).setUp()
-        (self.P, self.lam_vol , _ , _ ) = calcP.prob(samples=self.samples,
-                                                     data=self.data,
-                                                     rho_D_M = self.d_distr_prob,
-                                                     d_distr_samples = self.d_distr_samples,
-                                                     lam_domain = self.lam_domain,
-                                                     d_Tree = self.d_Tree)
-        self.P_ref = np.loadtxt("datafiles/3to2_prob.txt.gz")
-
+class prob:
     def test_prob_sum_to_1(self):
         """
         Test to see if the prob. sums to 1.
         """
         nptest.assert_almost_equal(np.sum(self.P),1.0)
+    @unittest.skipIf(size > 1, 'Only run in serial')
     def test_P_matches_true(self):
         """
         Test against reference probs. (Only in serial)
         """
-        if size == 1:
-            nptest.assert_almost_equal(self.P_ref,self.P)
+        nptest.assert_almost_equal(self.P_ref,self.P)
     def test_vol_sum_to_1(self):
         """
         Test that volume ratios sum to 1.
@@ -111,25 +79,7 @@ class Test_prob_3to2(TestProbMethod_3to2):
         """
         self.assertEqual(np.sum(np.less(self.P,0)),0)
 
-class Test_prob_emulated_3to2(TestProbMethod_3to2):
-    """
-    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 2 map.
-    """
-    def setUp(self):
-        """
-        Set up 3 to 2 map.
-        """
-        super(Test_prob_emulated_3to2, self).setUp()
-        (self.P_emulate, self.lambda_emulate, _ , _) = calcP.prob_emulated(samples=self.samples,
-                                                              data=self.data,
-                                                              rho_D_M = self.d_distr_prob,
-                                                              d_distr_samples = self.d_distr_samples,
-                                                              lam_domain = self.lam_domain,
-                                                              lambda_emulate = self.lambda_emulate,
-                                                              d_Tree = self.d_Tree)
-        self.P_emulate_ref=np.loadtxt("datafiles/3to2_prob_emulated.txt.gz")
-        self.P_emulate = util.get_global_values(self.P_emulate)
-
+class prob_emulated:
     def test_P_sum_to_1(self):
         """
         Test that prob. sums to 1.
@@ -147,24 +97,7 @@ class Test_prob_emulated_3to2(TestProbMethod_3to2):
         """
         self.assertEqual(np.sum(np.less(self.P_emulate,0)),0)
 
-class Test_prob_mc_3to2(TestProbMethod_3to2):
-    """
-    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 2 map.
-    """
-    def setUp(self):
-        """
-        Set up 3 to 2 problem.
-        """
-        super(Test_prob_mc_3to2, self).setUp()
-        (self.P, self.lam_vol , _ , _, _) = calcP.prob_mc(samples=self.samples,
-                                                           data=self.data,
-                                                           rho_D_M = self.d_distr_prob,
-                                                           d_distr_samples = self.d_distr_samples,
-                                                           lam_domain = self.lam_domain,
-                                                           lambda_emulate = self.lambda_emulate,
-                                                           d_Tree = self.d_Tree)
-        self.P_ref = np.loadtxt("datafiles/3to2_prob_mc.txt.gz")
-
+class prob_mc:
     def test_P_sum_to_1(self):
         """
         Test that probs sum to 1.
@@ -186,6 +119,87 @@ class Test_prob_mc_3to2(TestProbMethod_3to2):
         Test that all probs are non-negative.
         """
         self.assertEqual(np.sum(np.less(self.P,0)),0)
+        
+    
+
+class TestProbMethod_3to2(unittest.TestCase):
+    """
+    Sets up 3 to 2 map problem.
+    """
+    def setUp(self):
+        self.samples = np.loadtxt("datafiles/3to2_samples.txt.gz")
+        self.data = np.loadtxt("datafiles/3to2_data.txt.gz")
+        Q_ref =  np.array([0.422, 0.9385])
+        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+        self.lam_domain= np.array([[0.0, 1.0],
+                                   [0.0, 1.0],
+                                   [0.0, 1.0]])
+        import numpy.random as rnd
+        rnd.seed(1)
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
+                                                  num_l_emulate = 1000)
+
+
+    
+class Test_prob_3to2(TestProbMethod_3to2,prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on 3 to 2 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_3to2, self).setUp()
+        (self.P, self.lam_vol , _ , _ ) = calcP.prob(samples=self.samples,
+                                                     data=self.data,
+                                                     rho_D_M = self.d_distr_prob,
+                                                     d_distr_samples = self.d_distr_samples,
+                                                     lam_domain = self.lam_domain,
+                                                     d_Tree = self.d_Tree)
+        self.P_ref = np.loadtxt("datafiles/3to2_prob.txt.gz")
+
+
+
+class Test_prob_emulated_3to2(TestProbMethod_3to2, prob_emulated):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 2 map.
+    """
+    def setUp(self):
+        """
+        Set up 3 to 2 map.
+        """
+        super(Test_prob_emulated_3to2, self).setUp()
+        (self.P_emulate, self.lambda_emulate, _ , _) = calcP.prob_emulated(samples=self.samples,
+                                                              data=self.data,
+                                                              rho_D_M = self.d_distr_prob,
+                                                              d_distr_samples = self.d_distr_samples,
+                                                              lam_domain = self.lam_domain,
+                                                              lambda_emulate = self.lambda_emulate,
+                                                              d_Tree = self.d_Tree)
+        self.P_emulate_ref=np.loadtxt("datafiles/3to2_prob_emulated.txt.gz")
+        self.P_emulate = util.get_global_values(self.P_emulate)
+
+
+
+class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 2 map.
+    """
+    def setUp(self):
+        """
+        Set up 3 to 2 problem.
+        """
+        super(Test_prob_mc_3to2, self).setUp()
+        (self.P, self.lam_vol , _ , _, _) = calcP.prob_mc(samples=self.samples,
+                                                           data=self.data,
+                                                           rho_D_M = self.d_distr_prob,
+                                                           d_distr_samples = self.d_distr_samples,
+                                                           lam_domain = self.lam_domain,
+                                                           lambda_emulate = self.lambda_emulate,
+                                                           d_Tree = self.d_Tree)
+        self.P_ref = np.loadtxt("datafiles/3to2_prob_mc.txt.gz")
+
+ 
 
 class TestProbMethod_3to1(unittest.TestCase):
     """
@@ -206,7 +220,7 @@ class TestProbMethod_3to1(unittest.TestCase):
         rnd.seed(1)
         self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
                                                   num_l_emulate = 1000)
-class Test_prob_3to1(TestProbMethod_3to1):
+class Test_prob_3to1(TestProbMethod_3to1, prob):
     """
     Test :meth:`bet.calculateP.calculateP.prob` on a 3 to 1 map.
     """
@@ -223,30 +237,8 @@ class Test_prob_3to1(TestProbMethod_3to1):
                                                      d_Tree = self.d_Tree)
         self.P_ref = np.loadtxt("datafiles/3to1_prob.txt.gz")
 
-    def test_prob_sum_to_1(self):
-        """
-        Test that probs. sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P),1.0)
-    def test_P_matches_true(self):
-        """
-        Test that probs match reference data.
-        """
-        if size==1:
-            nptest.assert_almost_equal(self.P_ref,self.P)
-    def test_vol_sum_to_1(self):
-        """
-        Test that volume ratios sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-    def test_prob_pos(self):
-        """
-        Test that probs. are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P,0)),0)
 
-
-class Test_prob_emulated_3to1(TestProbMethod_3to1):
+class Test_prob_emulated_3to1(TestProbMethod_3to1, prob_emulated):
     """
     Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 1 map.
     """
@@ -265,26 +257,9 @@ class Test_prob_emulated_3to1(TestProbMethod_3to1):
         self.P_emulate_ref=np.loadtxt("datafiles/3to1_prob_emulated.txt.gz")
         self.P_emulate = util.get_global_values(self.P_emulate)
 
-    def test_P_sum_to_1(self):
-        """
-        Test the probs sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P_emulate),1.0)
 
-    def test_P_matches_true(self):
-        """
-        Test the probs. match reference values.
-        """
-        if size==1:
-            nptest.assert_almost_equal(self.P_emulate_ref,self.P_emulate)
 
-    def test_prob_pos(self):
-        """
-        Test that all probs are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P_emulate,0)),0)
-
-class Test_prob_mc_3to1(TestProbMethod_3to1):
+class Test_prob_mc_3to1(TestProbMethod_3to1, prob_mc):
     """
     Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 1 map.
     """
@@ -302,31 +277,7 @@ class Test_prob_mc_3to1(TestProbMethod_3to1):
                                                            d_Tree = self.d_Tree)
         self.P_ref = np.loadtxt("datafiles/3to1_prob_mc.txt.gz")
 
-    def test_P_sum_to_1(self):
-        """
-        Test that probs sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P),1.0)
-
-    def test_P_matches_true(self):
-        """
-        Test that probs match reference vals.
-        """
-        if size==1:
-            nptest.assert_almost_equal(self.P_ref,self.P)
-
-    def test_vol_sum_to_1(self):
-        """
-        Test that volume ratios sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-
-    def test_prob_pos(self):
-        """
-        Test that all probs are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P,0)),0)
-
+  
 class TestProbMethod_10to4(unittest.TestCase):
     """
     Sets up 10 to 4 map problem.
@@ -347,7 +298,11 @@ class TestProbMethod_10to4(unittest.TestCase):
         Q_ref =  np.mean(self.data, axis=0)
         (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
 
-class Test_prob_10to4(TestProbMethod_10to4):
+    @unittest.skip("No reference data")
+    def test_P_matches_true(self):
+        pass
+
+class Test_prob_10to4(TestProbMethod_10to4, prob):
     """
     Test :meth:`bet.calculateP.calculateP.prob` on a 10 to 4 map.
     """
@@ -363,25 +318,9 @@ class Test_prob_10to4(TestProbMethod_10to4):
                                                      lam_domain = self.lam_domain,
                                                      d_Tree = self.d_Tree)
 
-    def test_prob_sum_to_1(self):
-        """
-        Test that probs sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P),1.0)
+    
 
-    def test_vol_sum_to_1(self):
-        """
-        Test that volume ratios sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-
-    def test_prob_pos(self):
-        """
-        Test that all probs are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P,0)),0)
-
-class Test_prob_emulated_10to4(TestProbMethod_10to4):
+class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
     """
     Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 10 to 4 map.
     """
@@ -400,19 +339,10 @@ class Test_prob_emulated_10to4(TestProbMethod_10to4):
                                                               d_Tree = self.d_Tree)
         self.P_emulate = util.get_global_values(self.P_emulate)
 
-    def test_P_sum_to_1(self):
-        """
-        Test that probs. sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P_emulate),1.0)
 
-    def test_prob_pos(self):
-        """
-        Test that all probs are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P_emulate,0)),0)
 
-class Test_prob_mc_10to4(TestProbMethod_10to4):
+
+class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
     """
     Test :meth:`bet.calculateP.calculateP.prob_mc` on a 10 to 4 map.
     """
@@ -429,23 +359,6 @@ class Test_prob_mc_10to4(TestProbMethod_10to4):
                                                            lambda_emulate = self.lambda_emulate,
                                                            d_Tree = self.d_Tree)
 
-    def test_P_sum_to_1(self):
-        """
-        Test the probs. sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P),1.0)
-
-    def test_vol_sum_to_1(self):
-        """
-        Test that volume ratios sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-
-    def test_prob_pos(self):
-        """
-        Test that probs. are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P,0)),0)
 
 class TestProbMethod_1to1(unittest.TestCase):
     """
@@ -466,8 +379,11 @@ class TestProbMethod_1to1(unittest.TestCase):
         self.data = 2.0*self.samples
         Q_ref =  np.mean(self.data, axis=0)
         (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+    @unittest.skip("No reference data")
+    def test_P_matches_true(self):
+        pass
 
-class Test_prob_1to1(TestProbMethod_1to1):
+class Test_prob_1to1(TestProbMethod_1to1, prob):
     """
     Test :meth:`bet.calculateP.calculateP.prob` on a 1 to 1 map.
     """
@@ -483,25 +399,8 @@ class Test_prob_1to1(TestProbMethod_1to1):
                                                      lam_domain = self.lam_domain,
                                                      d_Tree = self.d_Tree)
 
-    def test_prob_sum_to_1(self):
-        """
-        Test that probs sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P),1.0)
 
-    def test_vol_sum_to_1(self):
-        """
-        Test that volume ratios sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-
-    def test_prob_pos(self):
-        """
-        Test that all probs are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P,0)),0)
-
-class Test_prob_emulated_1to1(TestProbMethod_1to1):
+class Test_prob_emulated_1to1(TestProbMethod_1to1, prob_emulated):
     """
     Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 1 to 1 map.
     """
@@ -520,19 +419,8 @@ class Test_prob_emulated_1to1(TestProbMethod_1to1):
                                                               d_Tree = self.d_Tree)
         self.P_emulate = util.get_global_values(self.P_emulate)
 
-    def test_P_sum_to_1(self):
-        """
-        Test that probs. sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P_emulate),1.0)
 
-    def test_prob_pos(self):
-        """
-        Test that all probs are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P_emulate,0)),0)
-
-class Test_prob_mc_1to1(TestProbMethod_1to1):
+class Test_prob_mc_1to1(TestProbMethod_1to1, prob_mc):
     """
     Test :meth:`bet.calculateP.calculateP.prob_mc` on a 1 to 1 map.
     """
@@ -549,20 +437,4 @@ class Test_prob_mc_1to1(TestProbMethod_1to1):
                                                            lambda_emulate = self.lambda_emulate,
                                                            d_Tree = self.d_Tree)
 
-    def test_P_sum_to_1(self):
-        """
-        Test the probs. sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.P),1.0)
 
-    def test_vol_sum_to_1(self):
-        """
-        Test that volume ratios sum to 1.
-        """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-
-    def test_prob_pos(self):
-        """
-        Test that probs. are non-negative.
-        """
-        self.assertEqual(np.sum(np.less(self.P,0)),0)

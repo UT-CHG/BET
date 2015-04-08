@@ -137,7 +137,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
             rho_D_M, d_distr_samples, lam_domain, None, d_Tree)
     
     # Apply the standard MC approximation 
-    lam_vol = np.ones((samples.shape[0],1))
+    lam_vol = np.ones((samples.shape[0],))
     # Calculate Probabilities
     P = np.zeros((samples.shape[0],))
     # TODO Fix issue of unecessary mpi call
@@ -148,7 +148,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
             P[Itemp] = rho_D_M[i]*lam_vol[Itemp]/Itemp_sum 
-    lam_vol = (1.0/float(samples.shape[0]))*np.ones((samples.shape[0],1))
+    lam_vol = (1.0/float(samples.shape[0]))*np.ones((samples.shape[0],))
 
     return (P, lam_vol, io_ptr, emulate_ptr)
 
@@ -224,7 +224,7 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
     
     # Calculate the Voronoi diagram for samples. Calculate the volumes of 
     # the convex hulls of the corresponding Voronoi regions.
-    lam_vol = np.zeros((samples.shape[-1],1))
+    lam_vol = np.zeros((samples.shape[-1],))
     for i in range((samples.shape[0])):
         vornoi = spatial.Voronoi(lam_bound)
         lam_vol[i] = float(pyhull.qconvex('Qt FA', vornoi.vertices).split()[-1])
@@ -280,7 +280,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     # Apply the standard MC approximation to determine the number of emulated
     # samples per model run sample. This is for approximating 
     # \mu_Lambda(A_i \intersect b_j)
-    lam_vol = np.zeros((samples.shape[0],1)) 
+    lam_vol = np.zeros((samples.shape[0],)) 
     for i in range(samples.shape[0]):
         lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
     clam_vol = np.copy(lam_vol) 

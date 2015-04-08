@@ -163,7 +163,7 @@ class Test_calc_marg_2D(unittest.TestCase):
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False
-            nptest.assert_equal(go, True)
+        nptest.assert_equal(go, True)
 
     def test_plot_marginals_2D(self):
         """
@@ -180,4 +180,4 @@ class Test_calc_marg_2D(unittest.TestCase):
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False
-            nptest.assert_equal(go, True)
+        nptest.assert_equal(go, True)
