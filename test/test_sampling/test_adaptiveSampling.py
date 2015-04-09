@@ -11,6 +11,8 @@ import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
 from bet.Comm import *
 
+local_path = os.path.join(os.path.dirname(bet.__file__), "/../test/test_sampling")
+
 def test_loadmat_init():
     """
     Tests :meth:`bet.sampling.adaptiveSampling.loadmat` and
@@ -54,8 +56,8 @@ def test_loadmat_init():
     assert loaded_sampler2.num_chains == num_chains2
     nptest.assert_array_equal(np.repeat(range(num_chains2), chain_length, 0),
             loaded_sampler2.sample_batch_no)
-    os.remove('testfile1.mat')
-    os.remove('testfile2.mat')
+    os.remove(os.path.join(local_path, 'testfile1.mat'))
+    os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_samples(model, QoI_range, sampler, param_min, param_max,
         t_set, savefile, initial_sample_type):
@@ -102,7 +104,7 @@ def verify_samples(model, QoI_range, sampler, param_min, param_max,
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = {}
     if size > 1:
-        mdat = sio.loadmat(os.path.join(os.path.dirname(savefile),
+        mdat = sio.loadmat(os.path.join(local_path, os.path.dirname(savefile),
             "proc{}{}".format(rank, os.path.basename(savefile))))
     else:
         mdat = sio.loadmat(savefile)
@@ -168,8 +170,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         if size > 1:
             for f in self.savefiles:
                 for proc in range(size):
-                    proc_savefile = os.path.join(os.path.dirname(f),
-                            "proc{}{}".format(rank,
+                    proc_savefile = os.path.join(local_path,
+                            os.path.dirname(f), "proc{}{}".format(rank,
                                 os.path.basename(f)))
 
     def test_update(self):
