@@ -16,7 +16,7 @@ for d_distr_samples.
 import os, bet, unittest
 import bet.calculateP.simpleFunP as simpleFunP
 import numpy as np
-import numpy.test as nptest
+import numpy.testing as nptest
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
 '../test/test_calulateP')
