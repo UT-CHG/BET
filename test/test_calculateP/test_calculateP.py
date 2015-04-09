@@ -1,6 +1,6 @@
 # Steven Mattis and Lindley Graham 04/06/2015
 """
-This module contains tests for :module:`bet.caculcateP.calculateP`.
+This module contains tests for :module:`bet.calculateP.calculateP`.
 
 
 Most of these tests should make sure certain values are within a tolerance

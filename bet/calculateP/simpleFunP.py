@@ -43,7 +43,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
@@ -182,7 +182,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M``  is (M,) and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
@@ -259,7 +259,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
     ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
@@ -336,7 +336,7 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
         additional two points will be added to create the bounding layer
 
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
         ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
@@ -385,7 +385,7 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
         additional two points will be added to create the bounding layer
 
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
         ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
@@ -429,7 +429,7 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
         additional two points will be added to create the bounding layer
 
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
         ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
@@ -477,7 +477,7 @@ def uniform_data(data):
         additional two points will be added to create the bounding layer
 
     :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` and
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
         ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """

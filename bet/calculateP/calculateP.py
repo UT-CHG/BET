@@ -51,7 +51,7 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples, lam_domain,
     :param data: The data from running the model given the samples.
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param rho_D_M: The simple function approximation of rho_D
-    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,mdim) 
+    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,) 
     :param d_distr_samples: The samples in the data space that define a
         parition of D to for the simple function approximation
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
@@ -112,7 +112,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, lam_domain, d_Tree=None):
     :param data: The data from running the model given the samples.
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param rho_D_M: The simple function approximation of rho_D
-    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,mdim) 
+    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,) 
     :param d_distr_samples: The samples in the data space that define a
         parition of D to for the simple function approximation
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
@@ -169,7 +169,7 @@ def prob_qhull(samples, data, rho_D_M, d_distr_samples,
     :param data: The data from running the model given the samples.
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param rho_D_M: The simple function approximation of rho_D
-    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,mdim) 
+    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,) 
     :param d_distr_samples: The samples in the data space that define a
         parition of D to for the simple function approximation
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M,mdim) 
@@ -251,7 +251,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     :param data: The data from running the model given the samples.
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param rho_D_M: The simple function approximation of rho_D
-    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M, mdim) 
+    :type rho_D_M: :class:`~numpy.ndarray` of shape  (M,) 
     :param d_distr_samples: The samples in the data space that define a
         parition of D to for the simple function approximation
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
