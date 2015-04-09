@@ -6,15 +6,16 @@ This module contains tests for :module:`bet.postProcess.plotDomains`.
 Tests for the execution of plotting parameter and data domains.
 """
 
-import unittest, os, glob
+import unittest, os, glob, bet
 import bet.postProcess.plotDomains as plotDomains
 import bet.util as util
 import matplotlib.tri as tri
 from matplotlib.lines import Line2D
-
 import numpy as np
 import numpy.testing as nptest
 from bet.Comm import *
+
+local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
 class test_plotDomains(unittest.TestCase):
     """
@@ -69,8 +70,8 @@ class test_plotDomains(unittest.TestCase):
         figfiles = glob.glob('figs/*')
         filenames.extend(figfiles)
         for f in filenames:
-            if os.path.exists(f):
-                os.remove(f)
+            if os.path.exists(os.path.join(local_path, f)):
+                os.remove(os.path.join(local_path, f))
 
     def test_scatter_2D(self):
         """
