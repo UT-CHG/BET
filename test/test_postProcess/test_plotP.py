@@ -15,6 +15,8 @@ import scipy.spatial as spatial
 import numpy.testing as nptest
 import bet.util as util
 from bet.Comm import *
+import os
+
 
 class Test_calc_marg_1D(unittest.TestCase):
     """
@@ -159,8 +161,10 @@ class Test_calc_marg_2D(unittest.TestCase):
                                                               self.lam_domain,
                                                               nbins = 10)
         try:
-            plotP.plot_1D_marginal_probs(marginals, bins,self.lam_domain, interactive=False)
+            plotP.plot_1D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
             go = True
+            os.remove("file_1D_0.eps")
+            os.remove("file_1D_1.eps")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
@@ -176,8 +180,9 @@ class Test_calc_marg_2D(unittest.TestCase):
         marginals[(0,1)][0][0]=0.0
         marginals[(0,1)][0][1]*=2.0
         try:
-            plotP.plot_2D_marginal_probs(marginals, bins,self.lam_domain, interactive=False)
+            plotP.plot_2D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
             go = True
+            os.remove("file_2D_0_1.eps")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
