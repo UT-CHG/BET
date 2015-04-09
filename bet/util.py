@@ -27,6 +27,7 @@ def meshgrid_ndim(X):
         alist.append(X[i])
     for i in range(n, 10):
         alist.append(np.array([0]))
+
     a, b, c, d, e, f, g, h, i, j = np.meshgrid(alist[0],
                                                alist[1],
                                                alist[2],
@@ -39,6 +40,7 @@ def meshgrid_ndim(X):
                                                alist[9],
                                                indexing='ij')
 
+    # TODO: use x.flat instead of x.flat[:]
     X_new = np.vstack(
         (a.flat[:],
          b.flat[:],
@@ -50,6 +52,7 @@ def meshgrid_ndim(X):
          h.flat[:],
          i.flat[:],
          j.flat[:])).transpose()
+    # TODO: I don't think this line does anything, remove it
     X_new = X_new[:, 0:n]
 
     return X_new
@@ -60,7 +63,7 @@ def get_global_values(array):
     TODO: write a version that also works with captial mpi4py method calls
     (optional?)
 
-    Concatenates local arrays into global array.
+    Concatenates local arrays into global array using :meth:`np.vstack`.
 
     :param array: Array.
     :type P_samples: :class:'~numpy.ndarray'

@@ -45,8 +45,8 @@ def loadmat(save_file, lb_model=None):
     else:
         data = None
     # recreate the sampler
-    new_sampler = sampler(mdat['num_samples'], mdat['chain_length'],
-            lb_model)
+    new_sampler = sampler(mdat['num_samples'],
+            np.squeeze(mdat['chain_length']), lb_model)
     
     return (new_sampler, samples, data)
 
@@ -88,12 +88,13 @@ class sampler(bsam.sampler):
         mdict['sample_batch_no'] = self.sample_batch_no
         
     def run_gen(self, kern_list, rho_D, maximum, param_min, param_max,
-            t_kernel, savefile, initial_sample_type="lhs", criterion='center'):
+            t_set, savefile, initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and a list of different
         kernels.
 
-        :param list() kern_list: List of kernels.
+        :param list() kern_list: List of
+            :class:~`bet.sampling.adaptiveSampling.kernel` objects.
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`np.array` and
             returns a :class:`numpy.ndarray`
@@ -102,11 +103,9 @@ class sampler(bsam.sampler):
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
+        :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
-        :param function kernel: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
+        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -124,7 +123,7 @@ class sampler(bsam.sampler):
         mean_ss = list()
         for kern in kern_list:
             (samples, data, step_sizes) = self.generalized_chains(
-                    param_min, param_max, t_kernel, kern, savefile,
+                    param_min, param_max, t_set, kern, savefile,
                     initial_sample_type, criterion)
             results.append((samples, data))
             r_step_size.append(step_sizes)
@@ -135,7 +134,7 @@ class sampler(bsam.sampler):
 
     # TODO This appears to be an unused function
     def run_reseed(self, kern_list, rho_D, maximum, param_min, param_max,
-            t_kernel, savefile, initial_sample_type="lhs", criterion='center',
+            t_set, savefile, initial_sample_type="lhs", criterion='center',
             reseed=3):
         """
         Generates samples using reseeded chains and a list of different
@@ -143,7 +142,8 @@ class sampler(bsam.sampler):
 
         THIS IS NOT OPERATIONAL DO NOT USE.
 
-        :param list() kern_list: List of kernels.
+        :param list() kern_list: List of
+            :class:~`bet.sampling.adaptiveSampling.kernel` objects.
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`np.array` and
             returns a :class:`numpy.ndarray`
@@ -152,11 +152,9 @@ class sampler(bsam.sampler):
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
+        :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
-        :param function kernel: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
+        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -175,7 +173,7 @@ class sampler(bsam.sampler):
         mean_ss = list()
         for kern in kern_list:
             (samples, data, step_sizes) = self.reseed_chains(
-                    param_min, param_max, t_kernel, kern, savefile,
+                    param_min, param_max, t_set, kern, savefile,
                     initial_sample_type, criterion, reseed)
             results.append((samples, data))
             r_step_size.append(step_sizes)
@@ -206,11 +204,9 @@ class sampler(bsam.sampler):
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
-            given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
-        :param function kernel: functional that acts on the data used to
+        :param kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
+        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -226,9 +222,9 @@ class sampler(bsam.sampler):
         results_rD = list()
         mean_ss = list()
         for i, j, k  in zip(init_ratio, min_ratio, max_ratio):
-            tk = transition_set(i, j, k)
+            ts = transition_set(i, j, k)
             (samples, data, step_sizes) = self.generalized_chains(
-                    param_min, param_max, tk, kernel, savefile,
+                    param_min, param_max, ts, kernel, savefile,
                     initial_sample_type, criterion)
             results.append((samples, data))
             r_step_size.append(step_sizes)
@@ -238,7 +234,7 @@ class sampler(bsam.sampler):
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
     def run_inc_dec(self, increase, decrease, tolerance, rho_D, maximum,
-            param_min, param_max, t_kernel, savefile,
+            param_min, param_max, t_set, savefile,
             initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and
@@ -257,11 +253,9 @@ class sampler(bsam.sampler):
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
+        :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
-        :param function kernel: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
+        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -276,9 +270,9 @@ class sampler(bsam.sampler):
         for i, j, z in zip(increase, decrease, tolerance):
             kern_list.append(rhoD_kernel(maximum, rho_D, i, j, z)) 
         return self.run_gen(kern_list, rho_D, maximum, param_min, param_max,
-                t_kernel, savefile, initial_sample_type, criterion)
+                t_set, savefile, initial_sample_type, criterion)
 
-    def generalized_chains(self, param_min, param_max, t_kernel, kern,
+    def generalized_chains(self, param_min, param_max, t_set, kern,
             savefile, initial_sample_type="lhs", criterion='center'):
         """
         Basic adaptive sampling algorithm using generalized chains.
@@ -289,11 +283,12 @@ class sampler(bsam.sampler):
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
+        :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
+        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
         :param function kern: functional that acts on the data used to
             determine the proposed change to the ``step_size``
+        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
@@ -317,9 +312,9 @@ class sampler(bsam.sampler):
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
         # Calculate step_size
-        max_ratio = t_kernel.max_ratio
-        min_ratio = t_kernel.min_ratio
-        step_ratio = t_kernel.init_ratio*np.ones(self.num_chains_pproc)
+        max_ratio = t_set.max_ratio
+        min_ratio = t_set.min_ratio
+        step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
        
         # Initiative first batch of N samples (maybe taken from latin
         # hypercube/space-filling curve to fully explore parameter space - not
@@ -347,7 +342,7 @@ class sampler(bsam.sampler):
         for batch in xrange(1, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.
-            samples_new = t_kernel.step(step_ratio, param_width,
+            samples_new = t_set.step(step_ratio, param_width,
                     param_left, param_right, MYsamples_old)
             
             # Solve the model for the samples_new.
@@ -401,27 +396,30 @@ class sampler(bsam.sampler):
         return (samples, data, all_step_ratios)
         
     #TODO MOve this function to a dev branch since it is not implemented.
-    def reseed_chains(self, param_min, param_max, t_kernel, kern,
+    def reseed_chains(self, param_min, param_max, t_set, kern,
             savefile, initial_sample_type="lhs", criterion='center', reseed=1):
         """
         Basic adaptive sampling algorithm.
 
         NOT YET IMPLEMENTED.
-       
+
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
         :param param_min: minimum value for each parameter dimension
         :type param_min: np.array (ndim,)
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
-        :param t_kernel: method for creating new parameter steps using
+        :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_kernel: :class:~`t_kernel`
+        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
         :param function kern: functional that acts on the data used to
             determine the proposed change to the ``step_size``
+        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+
+
         :param int reseed: number of times to reseed the chains
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where

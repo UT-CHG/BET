@@ -126,20 +126,22 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
     :param boolean show: flag whether or not to show the figure
+    :param list lnums: integers representing parameter domain coordinate
+        numbers
 
     """
    
     if rho_D != None:
         rD = rho_D(data)
     if lnums == None:
-        lnums = 1+np.array(range(data.shape[1]))
+        lnums = 1+np.array(range(samples.shape[1]))
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
-    if data.shape[1] == 2:
+    if samples.shape[1] == 2:
         scatter_2D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
                 savename)
-    elif data.shape[1] == 3:
+    elif samples.shape[1] == 3:
         zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
         scatter_3D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
                 zlabel, savename)
@@ -192,7 +194,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     various :math:`Q_{ref}`. 
 
     :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
@@ -210,7 +212,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
 
-    triangulation = tri.Triangulation(samples[0, :], samples[1, :])
+    triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
     triangles = triangulation.triangles
 
     for i in Q_nums:
@@ -237,7 +239,7 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     dimension of data is :math:`q_1`.
 
     :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
