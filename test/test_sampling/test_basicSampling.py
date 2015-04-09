@@ -8,6 +8,9 @@ import numpy.testing as nptest
 import numpy as np
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
+import bet
+
+local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
 def test_in_high_prob():
     """
@@ -72,8 +75,10 @@ def test_loadmat():
     nptest.assert_array_equal(data2, None)
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
-    os.remove('testfile1.mat')
-    os.remove('testfile2.mat')
+    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+        os.remove(os.path.join(local_path, 'testfile1.mat'))
+    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+        os.remove(os.path.join(loca_path, 'testfile2.mat'))
 
 def verify_user_samples(model, sampler, samples, savefile, parallel):
     # evalulate the model at the samples directly
@@ -185,8 +190,8 @@ class Test_basic_sampler(unittest.TestCase):
 
     def tearDown(self):
         for f in self.savefiles:
-            if os.path.exists(f+".mat"):
-                os.remove(f+".mat")
+            if os.path.exists(os.path.join(local_path, f, ".mat")):
+                os.remove(os.path.join(local_path, f, ".mat"))
 
     def test_init(self):
         """
