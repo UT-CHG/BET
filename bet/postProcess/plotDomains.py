@@ -194,7 +194,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     various :math:`Q_{ref}`. 
 
     :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
@@ -212,7 +212,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
 
-    triangulation = tri.Triangulation(samples[0, :], samples[1, :])
+    triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
     triangles = triangulation.triangles
 
     for i in Q_nums:
@@ -239,7 +239,7 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     dimension of data is :math:`q_1`.
 
     :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value

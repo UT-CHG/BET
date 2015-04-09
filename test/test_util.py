@@ -74,8 +74,7 @@ def compare_get_global_values(i):
     if i == 0:
         my_array = original_array[my_index]
     else:
-        my_array = original_array[my_index, :w
-                :]
+        my_array = original_array[my_index, :]
     recomposed_array = util.get_global_values(my_array)
     nptest.assert_array_equal(original_array, recomposed_array)
 

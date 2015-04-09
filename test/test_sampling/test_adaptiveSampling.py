@@ -1,7 +1,7 @@
 # Lindley Graham 04/07/2015
 
 """
-This module contains unittests for :mod:`~bet.sampling.basicSampling`
+This module contains unittests for :mod:`~bet.sampling.adaptiveSampling`
 """
 
 import unittest, os
@@ -10,12 +10,6 @@ import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
 from bet.Comm import *
-
-"""
-TODO: rewrite loadmat test, rewrite init test, rewrite update_mdict test, write
-tests for run_BLAHBLAH, write test for generalized_chains, write a test stub
-for kernels but do not implement
-"""
 
 def test_loadmat_init():
     """
