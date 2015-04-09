@@ -75,8 +75,10 @@ def test_loadmat():
     nptest.assert_array_equal(data2, None)
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
-    os.remove(os.join(local_path, 'testfile1.mat'))
-    os.remove(os.join(loca_path, 'testfile2.mat'))
+    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+        os.remove(os.path.join(local_path, 'testfile1.mat'))
+    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+        os.remove(os.path.join(loca_path, 'testfile2.mat'))
 
 def verify_user_samples(model, sampler, samples, savefile, parallel):
     # evalulate the model at the samples directly

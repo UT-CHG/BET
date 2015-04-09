@@ -10,8 +10,9 @@ import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
 from bet.Comm import *
+import bet
 
-local_path = os.path.join(os.path.dirname(bet.__file__), "/../test/test_sampling")
+local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
 def test_loadmat_init():
     """
@@ -56,8 +57,10 @@ def test_loadmat_init():
     assert loaded_sampler2.num_chains == num_chains2
     nptest.assert_array_equal(np.repeat(range(num_chains2), chain_length, 0),
             loaded_sampler2.sample_batch_no)
-    os.remove(os.path.join(local_path, 'testfile1.mat'))
-    os.remove(os.path.join(local_path, 'testfile2.mat'))
+    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+        os.remove(os.path.join(local_path, 'testfile1.mat'))
+    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+        os.remove(os.path.join(loca_path, 'testfile2.mat'))
 
 def verify_samples(model, QoI_range, sampler, param_min, param_max,
         t_set, savefile, initial_sample_type):
