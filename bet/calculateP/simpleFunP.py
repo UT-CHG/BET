@@ -6,9 +6,12 @@ from bet.Comm import *
 import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
+import collections
 
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     r"""
+    TODO: THIS OCCASIONALLY FAILS test.test_calculateP.test_domain FIX ME
+
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
     a generalized rectangle centered at Q_ref.
@@ -44,7 +47,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     if len(data.shape) == 1:
@@ -175,7 +178,8 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
         relatively small number here like 50. 
-    :param int num_d_emulate: Number of samples used to emulate using an MC
+    :param:w
+    int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
@@ -183,7 +187,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M``  is (M,) and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
@@ -191,10 +195,18 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     r'''Create M smaples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
+    if not isinstance(Q_ref, collections.Iterable):
+        Q_ref = np.array([Q_ref])
+    if not isinstance(std, collections.Iterable):
+        std = np.array([std])
 
-    covariance = np.diag(std*std)
+    covariance = std**2
 
     d_distr_samples = np.zeros((M, len(Q_ref)))
+    print "d_distr_samples.shape", d_distr_samples.shape
+    print "Q_ref.shape", Q_ref.shape
+    print "std.shape", std.shape
+
     if rank == 0:
         for i in range(len(Q_ref)):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M) 
@@ -260,7 +272,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-    ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree` is
+    ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
@@ -337,7 +349,7 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     # TODO following code could probably be reduced to a few lines
@@ -386,7 +398,7 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
@@ -394,6 +406,14 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
         data = np.expand_dims(data, axis=1)
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
+
+    if not isinstance(center_pts_per_edge, collections.Iterable):
+        center_pts_per_edge = np.ones((data.shape[1])) * center_pts_per_edge
+    else:
+        if not len(center_pts_per_edge) == data.shape[1]:
+            center_pts_per_edge = np.ones((data.shape[1]))
+            print 'Warning: center_pts_per_edge dimension mismatch.'
+            print 'Using 1 in each dimension.'
 
     sur_domain = np.zeros((data.shape[1], 2))
     sur_domain[:, 0] = data_min
@@ -430,7 +450,7 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
@@ -443,7 +463,7 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     # or as numpy array to see if dimensions match data space dimensions and
     # that positive integer values are being used. Also, create this change
     # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
-    if not isinstance(center_pts_per_edge, np.ndarray):
+    if not isinstance(center_pts_per_edge, collections.Iterable):
         center_pts_per_edge = np.ones((data.shape[1])) * center_pts_per_edge
     else:
         if not len(center_pts_per_edge) == data.shape[1]:
@@ -478,7 +498,7 @@ def uniform_data(data):
 
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (mdim, M) :class:`~numpy.ndarray` and `d_Tree`
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     d_distr_prob = np.ones((data.shape[1],))
