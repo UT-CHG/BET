@@ -3,6 +3,9 @@ import numpy as np
 from scipy import spatial
 import bet.util as util
 
+# TODO: update documentation to make sure that the retuns and rtype are corrct
+# for each of the methods
+
 def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_domain):
     """
     Generates a regular grid of center points that define the voronoi
