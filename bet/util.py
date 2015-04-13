@@ -57,7 +57,6 @@ def meshgrid_ndim(X):
 
     return X_new
 
-
 def get_global_values(array):
     """
     TODO: write a version that also works with captial mpi4py method calls
@@ -76,3 +75,21 @@ def get_global_values(array):
         return np.hstack(array)
     else:
         return np.vstack(array)
+
+def fix_dimensions_vector(vector):
+    """
+    TODO: write and document me
+    """
+    pass
+def fix_dimensions_domain(domain):
+    """
+    TODO: write and document me
+    """
+    pass
+def fix_dimensions_data(data):
+    """
+    TODO: write and document me
+    """
+    pass
+
+

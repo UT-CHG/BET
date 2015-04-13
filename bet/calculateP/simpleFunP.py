@@ -8,6 +8,8 @@ import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
 import collections
 
+# TODO change bins_size to more informative name like bound_size?
+
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     r"""
     TODO: THIS OCCASIONALLY FAILS test.test_calculateP.test_domain FIX ME
@@ -356,11 +358,12 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
     # determine the center of the domain
     if len(domain.shape) == 1:
         domain = np.expand_dims(domain, axis=1)
+    # TODO make sure the shape of the domain is correct, if not transpose it
     domain_center = np.mean(domain, 0)
     domain_min = np.min(domain, 0)
     domain_max = np.max(domain, 0)
     domain_lengths = domain_max - domain_min
-   
+ 
     # determine the ratio of the lengths of the domain to the lengths of the
     # hyperrectangle containing the data
     if len(data.shape) == 1:
@@ -368,7 +371,19 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
     data_lengths = data_max - data_min
-    bin_ratios = domain_lengths/data_lengths
+    bin_ratios = domain_lengths/data_lengths  
+
+    # TODO: Check for inputted center_pts_per_edge in case given as list
+    # or as numpy array to see if dimensions match data space dimensions and
+    # that positive integer values are being used. Also, create this change
+    # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
+    if not isinstance(center_pts_per_edge, collections.Iterable):
+        center_pts_per_edge = np.ones((data.shape[1],)) * center_pts_per_edge
+    else:
+        if not len(center_pts_per_edge) == data.shape[1]:
+            center_pts_per_edge = np.ones((data.shape[1],))
+            print 'Warning: center_pts_per_edge dimension mismatch.'
+            print 'Using 1 in each dimension.'
 
     return uniform_hyperrectangle(data, domain_center, bin_ratios,
             center_pts_per_edge)
@@ -407,13 +422,20 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
 
+    # TODO: Check for inputted center_pts_per_edge in case given as list
+    # or as numpy array to see if dimensions match data space dimensions and
+    # that positive integer values are being used. Also, create this change
+    # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
     if not isinstance(center_pts_per_edge, collections.Iterable):
-        center_pts_per_edge = np.ones((data.shape[1])) * center_pts_per_edge
+        center_pts_per_edge = np.ones((data.shape[1],)) * center_pts_per_edge
     else:
         if not len(center_pts_per_edge) == data.shape[1]:
-            center_pts_per_edge = np.ones((data.shape[1]))
+            center_pts_per_edge = np.ones((data.shape[1],))
             print 'Warning: center_pts_per_edge dimension mismatch.'
             print 'Using 1 in each dimension.'
+    # TODO: see note above
+    if not isinstance(bin_size, collections.Iterable):
+        bin_size = bin_size*np.ones((data.shape[1],))
 
     sur_domain = np.zeros((data.shape[1], 2))
     sur_domain[:, 0] = data_min
@@ -459,7 +481,7 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     data_max = np.max(data, 0)
     data_min = np.min(data, 0)
 
-    # TO-DO: Check for inputted center_pts_per_edge in case given as list
+    # TODO: Check for inputted center_pts_per_edge in case given as list
     # or as numpy array to see if dimensions match data space dimensions and
     # that positive integer values are being used. Also, create this change
     # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
@@ -467,9 +489,11 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
         center_pts_per_edge = np.ones((data.shape[1])) * center_pts_per_edge
     else:
         if not len(center_pts_per_edge) == data.shape[1]:
-            center_pts_per_edge = np.ones((data.shape[1]))
+            center_pts_per_edge = np.ones((data.shape[1], ))
             print 'Warning: center_pts_per_edge dimension mismatch.'
             print 'Using 1 in each dimension.'
+    if not isinstance(bin_ratio, collections.Iterable):
+        bin_ratio = bin_ratio*np.ones((data.shape[1], ))
 
     sur_domain = np.zeros((data.shape[1], 2))
     sur_domain[:, 0] = data_min
@@ -501,8 +525,9 @@ def uniform_data(data):
         ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
-    d_distr_prob = np.ones((data.shape[1],))
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1)
+
+    d_distr_prob = np.ones((data.shape[0],), dtype=np.float)/data.shape[0]
     d_Tree = spatial.KDTree(data)
     return (d_distr_prob, data, d_Tree)
