@@ -13,16 +13,37 @@ import numpy.testing as nptest
 # make sure dimensions are correct
 # make sure the rect_domain is correct
 # make sure the bounding layer is correct 
+class test_center_and_layer1_points(unittest.TestCase):
+    def setUp(self):
+        pass
+    def test_dimensions(self):
+        pass
+    def test_domain(self):
+        pass
+    def test_bounding_layer(self):
+        pass
 
-
+class test_center_and_layer1_points_binsize(test_center_and_layer1_points):
+    def setUp(self):
+        self.r_ratio = None
+        super(center_and_layer1_points_binsize, self).setUp()
+        self.r_size = None
 
 # edges_regular_binsize
 # edges_regular
 # edges_from_points
-
 # make sure dimensions are correct
 # make sure int_l1 is correct
 # make sure int_l2 is correct
+class edges(object):
+    def test_dimensions(self):
+        pass
+
+class edges_regular(edges, unittest.TestCase):
+    def test_l1(self):
+        pass
+    def test_l2(self):
+        pass
 
 
 
@@ -30,6 +51,7 @@ import numpy.testing as nptest
 # make sure dimensions are correct
 # make sure shape is correct
 # make sure points are correct
+
 
 
 # histogrammdd_volumes
