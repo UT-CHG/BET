@@ -29,10 +29,11 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: (points, interior_and_layer1) where where points is an
+    :returns: (points, interior_and_layer1, rect_domain) where where points is an
         :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
         is a list() of dim :class:`numpy.ndarray`s of shape
-        (center_pts_per_edge+2,).
+        (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
+        shape (mdim, 2)
 
     """
     if np.all(np.greater(r_size, 1)):
@@ -47,6 +48,9 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
     rect_domain[:, 0] = center - .5*rect_width
     rect_domain[:, 1] = center + .5*rect_width
 
+    if not isinstance(center_pts_per_edge, np.ndarray):
+        center_pts_per_edge = np.array(center_pts_per_edge)
+
     # determine the locations of the points for the 1st bounding layer
     layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
     layer1_right = rect_domain[:, 1]+rect_width/(2*center_pts_per_edge)
@@ -59,11 +63,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
         interior_and_layer1.append(int_l1)
 
     # use meshgrid to make the hyperrectangle shells
-    if sur_domain.shape[0] == 1:
-        points = interior_and_layer1[0]
-    else:
-        points = util.meshgrid_ndim(interior_and_layer1)
-
+    points = util.meshgrid_ndim(interior_and_layer1)
     return (points, interior_and_layer1, rect_domain)
 
 # TODO This and the previous function are almost identical. Maybe calculate r_size
@@ -94,7 +94,8 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     :returns: (points, interior_and_layer1) where where points is an
         :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
         is a list() of dim :class:`numpy.ndarray`s of shape
-        (center_pts_per_edge+2,).
+        (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
+        shape (mdim, 2).
 
     """
     if np.all(np.greater(r_ratio, 1)):
@@ -122,10 +123,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
         interior_and_layer1.append(int_l1)
 
     # use meshgrid to make the hyperrectangle shells
-    if sur_domain.shape[0] == 1:
-        points = interior_and_layer1[0]
-    else:
-        points = util.meshgrid_ndim(interior_and_layer1)
+    points = util.meshgrid_ndim(interior_and_layer1)
     return (points, interior_and_layer1, rect_domain)
 
 
