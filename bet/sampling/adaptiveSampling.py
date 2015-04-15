@@ -1,3 +1,5 @@
+# TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
+# presuming it preserse order anywhere
 # -*- coding: utf-8 -*-
 # Lindley Graham 3/10/2014
 """

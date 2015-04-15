@@ -7,7 +7,8 @@ import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
 import collections
-
+# TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
+# presuming it preserse order anywhere
 # TODO change bins_size to more informative name like bound_size?
 
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):

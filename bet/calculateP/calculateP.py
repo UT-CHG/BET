@@ -1,3 +1,6 @@
+# TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
+# presuming it preserse order anywhere
+
 r"""
 This module provides methods for calulating the probability
 measure :math:`P_{\Lambda}`.
