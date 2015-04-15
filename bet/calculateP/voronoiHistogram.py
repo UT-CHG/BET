@@ -157,7 +157,7 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
         where points is an :class:`numpy.ndarray` of shape (num_points, dim),
         interior_and_layer1 and interior_and_layer2 are lists of dim
         :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,) and
-        (center_pts_per_edge+4,) respectively.
+        (center_pts_per_edge+3,) respectively.
 
     """
     # TODO This is redoing stuff that was done when generating the points
@@ -167,6 +167,15 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
     rect_domain[:, 0] = center - .5*rect_width
     rect_domain[:, 1] = center + .5*rect_width
 
+    if np.any(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
+        msg = "The hyperrectangle defined by this size is larger than the"
+        msg += "original domain."
+        print msg
+    elif np.any(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
+        msg = "The hyperrectangle defined by this size is larger than the"
+        msg += "original domain."
+        print msg
+    
     rect_edges = list()
     rect_and_sur_edges = list()
     for dim in xrange(sur_domain.shape[0]):
@@ -208,18 +217,19 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
-
+    TODO fix return documentation
     :rtype: tuple
+    TODO FIX description of the return to match what is acctually returned
     :returns: (points, interior_and_layer1, interior_and_doublelayer) where
         where points is an :class:`numpy.ndarray` of shape (num_points, dim),
         interior_and_layer1 and interior_and_layer2 are lists of dim
         :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,) and
-        (center_pts_per_edge+4,) respectively.
+        (center_pts_per_edge+3,) respectively.
 
     """
-    if np.all(np.greater(r_ratio, 1)):
+    if np.any(np.greater(r_ratio, 1)):
         msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
+        msg += "original domain. RATIO: {}".format(r_ratio)
         print msg
 
     # determine the width of the surrounding domain
@@ -230,17 +240,6 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     rect_domain[:, 0] = center - .5*rect_width
     rect_domain[:, 1] = center + .5*rect_width
     
-    if np.all(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-
-    elif np.all(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
-        print msg
-
-
     rect_edges = list()
     rect_and_sur_edges = list()
     for dim in xrange(sur_domain.shape[0]):
