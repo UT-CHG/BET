@@ -14,6 +14,7 @@ import bet.calculateP.voronoiHistogram as vHist
 import bet.util as util
 import numpy as np
 import numpy.testing as nptest
+from test.test_calculateP.test_simpleFunP import prob_uniform
 
 # Do below for dimensions 01, 1, 2, and 3
 class domain_1D(object):
@@ -683,11 +684,55 @@ class test_hddv_3D(domain_3D, histogramdd_volumes):
         super(test_hddv_3D, self).createDomain()
         super(test_hddv_3D, self).setUp()
 
-# simple_fun_uniform
-# make sure dimensions are correct
-# make sure rho_D_M sums to 1
-# make sure rho_D_M is nonnegative
+class simple_fun_uniform(prob_uniform):
+    """
+    Test :meth:'bet.calculateP.voronoiHistogram.simple_fun_uniform`
+    """
+    def setUp(self):
+        """
+        Set up the problem
+        """
+        points = list()
+        edges = list()
+        self.rect_domain = np.empty((self.mdim, 2))
+        for dim in xrange(self.mdim):
+            points_dim = np.linspace(self.sur_domain[dim, 0],
+                self.sur_domain[dim, 1], 4)
+            points.append(points_dim[1:-1])
+            edge = (points_dim[1:]+points_dim[:-1])/2.0
+            edges.append(edge)
+            self.rect_domain[dim, :] = edge[[0, -1]]
+        points = util.meshgrid_ndim(points)
+        H, _ = np.histogramdd(points, edges, normed=True)
+        volume = 1.0/(H*(2.0**self.mdim))
+        volumes = volume.ravel()
+        output = vHist.simple_fun_uniform(points, volumes, self.rect_domain)
+        self.rho_D_M, self.d_distr_samples, self.d_Tree = output
 
-
-
-
+class test_sfu_1D(domain_1D, simple_fun_uniform):
+    """
+    Test
+    :meth:`bet.calculateP.voronoiHistogram.simple_fun_uniform` for a 1D
+    domain.
+    """
+    def setUp(self):
+        super(test_sfu_1D, self).createDomain()
+        super(test_sfu_1D, self).setUp()
+class test_sfu_2D(domain_2D, simple_fun_uniform):
+    """
+    Test
+    :meth:`bet.calculateP.voronoiHistogram.simple_fun_uniform` for a 2D
+    domain.
+    """
+    def setUp(self):
+        super(test_sfu_2D, self).createDomain()
+        super(test_sfu_2D, self).setUp()
+class test_sfu_3D(domain_3D, simple_fun_uniform):
+    """
+    Test
+    :meth:`bet.calculateP.voronoiHistogram.simple_fun_uniform` for a 3D
+    domain.
+    """
+    def setUp(self):
+        super(test_sfu_3D, self).createDomain()
+        super(test_sfu_3D, self).setUp()
