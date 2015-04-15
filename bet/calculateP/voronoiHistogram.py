@@ -310,6 +310,7 @@ def histogramdd_volumes(edges, points):
     along each dimension and an 'ij' ordered sequence of points (1 per voronoi
     cell) returns a list of the volumes associated with these voronoic cells.
 
+    TODO fill this in
     :param edges: 
     :type edges:
     :param points: points used to define the voronoi tesselation (only the
@@ -327,17 +328,17 @@ def histogramdd_volumes(edges, points):
     for dim, e in enumerate(edges):
         if len(edges) == 1:
             if e[0] >= points_min:
-                e[0] = points_min-1
+                e[0] = points_min-np.finfo(float).eps
             if e[-1] <= points_max:
-                e[-1] = points_max+1
+                e[-1] = points_max+np.finfo(float).eps
         else:
             if e[0] >= points_min[dim]:
-                e[0] = points_min[dim]-1
+                e[0] = points_min[dim]-np.finfo(float).eps
             if e[-1] <= points_max[dim]:
-                e[-1] = points_max[dim]+1
+                e[-1] = points_max[dim]+np.finfo(float).eps
 
     H, _ = np.histogramdd(points, edges, normed=True)
-    volume = 1/(H*points.shape[0])
+    volume = 1.0/(H*points.shape[0]) # account for number of bins
     # works as long as points are created with 'ij' indexing in meshgrid
     volume = volume.ravel()
     return H, volume, edges

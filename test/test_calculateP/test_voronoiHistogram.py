@@ -57,13 +57,6 @@ class domain_3D(object):
         self.mdim = 3
         self.center_pts_per_edge = [1,2,1]
 
-# center_and_layer1_points_binsize
-# center_and_layer1_points
-
-# make sure dimensions are correct
-# make sure the rect_domain is correct
-# make sure the bounding layer is correct 
-#class center_and_layer1_points(unittest.TestCase):
 class center_and_layer1_points(object):
     """
     Test :meth:`bet.calculateP.voronoiHistogram.center_and_layer1_points`
@@ -308,12 +301,6 @@ class test_calps_double_3D(domain_3D, center_and_layer1_points_binsize_double):
         super(test_calps_double_3D, self).setUp()
 
 
-# edges_regular_binsize
-# edges_regular
-# edges_from_points
-# make sure dimensions are correct
-# make sure int_l1 is correct
-# make sure int_l2 is correct
 class edges(object):
     """
     Provides a method to test that the dimensions of the output (and the output
@@ -352,7 +339,6 @@ class edges_regular(edges):
         rect_domain = np.empty(self.sur_domain.shape)
         rect_domain[:, 0] = self.center - .5*rect_width
         rect_domain[:, 1] = self.center + .5*rect_width
-        print rect_domain
         self.my_edges = list()
         for dim in xrange(self.sur_domain.shape[0]):
             int_l1 = np.linspace(rect_domain[dim, 0], rect_domain[dim, 1],
@@ -538,6 +524,9 @@ class edges_from_points(edges):
     Test :meth:`bet.calculateP.edges_from_points`
     """
     def setUp(self):
+        """
+        Set up problem.
+        """
         points = list()
         self.my_edges = list()
         for dim in xrange(self.mdim):
@@ -548,6 +537,9 @@ class edges_from_points(edges):
         self.rect_and_sur_edges = vHist.edges_from_points(points)
 
     def test_dimensions(self):
+        """
+        Test dimensions of :meth:`bet.calculateP.edges_from_points`
+        """
         compare_dim = list()
         for edge, my_edge in zip(self.rect_and_sur_edges,
                 self.my_edges):
@@ -558,7 +550,7 @@ class test_efp_1D(domain_1D, edges_from_points):
     """
     Test
     :meth:`bet.calculateP.voronoiHistogram.edges_from_points` for a 1D
-    domain with r_ratio as a double.
+    domain.
     """
     def setUp(self):
         super(test_efp_1D, self).createDomain()
@@ -567,7 +559,7 @@ class test_efp_2D(domain_2D, edges_from_points):
     """
     Test
     :meth:`bet.calculateP.voronoiHistogram.edges_from_points` for a 2D
-    domain with r_ratio as a double.
+    domain.
     """
     def setUp(self):
         super(test_efp_2D, self).createDomain()
@@ -576,17 +568,120 @@ class test_efp_3D(domain_3D, edges_from_points):
     """
     Test
     :meth:`bet.calculateP.voronoiHistogram.edges_from_points` for a 3D
-    domain with r_ratio as a double.
+    domain.
     """
     def setUp(self):
         super(test_efp_3D, self).createDomain()
         super(test_efp_3D, self).setUp()
 
-# histogrammdd_volumes
-# make sure dimensions are correct
-# make sure H sums to 1
-# make sure volume sums to 1?
-# make sure volumes are nonnegative
+class histogramdd_volumes(object):
+    """
+    Test :meth:`bet.calculateP.voronoiHistogram.histogramdd_volumes`
+    """
+    def setUp(self):
+        points = list()
+        self.edges = list()
+        for dim in xrange(self.mdim):
+            points_dim = np.linspace(self.sur_domain[dim, 0],
+                self.sur_domain[dim, 1], 4)
+            points.append(points_dim[1:-1])
+            self.edges.append((points_dim[1:]+points_dim[:-1])/2.0)
+        self.points = util.meshgrid_ndim(points)
+        self.H, _ = np.histogramdd(self.points, self.edges, normed=True)
+        volume = 1.0/(self.H*(2.0**self.mdim))
+        self.volume = volume.ravel()
+        output = vHist.histogramdd_volumes(self.edges, self.points)
+        self.o_H, self.o_volume, self.o_edges = output
+
+    def test_dimensions_H(self):
+        """
+        Test the dimensions of H from
+        :meth:`bet.calculateP.histogramdd_volumes``
+        """
+        assert self.H.shape == self.o_H.shape
+
+    def test_dimensions_volume(self):
+        """
+        Test the dimensions of volume from
+        :meth:`bet.calculateP.histogramdd_volumes``
+        """
+        assert self.volume.shape == self.o_volume.shape
+
+    def test_dimensions_edges(self):
+        """
+        Test the dimensions of edges from
+        :meth:`bet.calculateP.histogramdd_volumes``
+        """
+        compare_dim = list()
+        for edge, my_edge in zip(self.o_edges, self.edges):
+            compare_dim.append(len(edge) == len(my_edge))
+        assert np.all(compare_dim)
+
+    def test_H_nonnegative(self):
+        """
+        Test that H from :meth:`bet.calculateP.histogramdd_volumes``
+        is nonnegative.
+        """
+        assert np.all(np.less(0.0, self.o_H))
+
+    def test_volumes_nonnegative(self):
+        """
+        Test that volume from :meth:`bet.calculateP.histogramdd_volumes``
+        is nonnegative.
+        """
+        assert np.all(np.less(0.0, self.o_volume))
+
+    def test_H(self):
+        """
+        Test that H from :meth:`bet.calculateP.histogramdd_volumes``
+        is correct.
+        """
+        assert np.allclose(self.H, self.o_H)
+
+    def test_volume(self):
+        """
+        Test that volume from :meth:`bet.calculateP.histogramdd_volumes``
+        is correct.
+        """
+        assert np.allclose(self.volume, self.o_volume)
+
+    def test_edges(self):
+        """
+        Test that the edges from :meth:`bet.calculateP.histogramdd_volumes``
+        are correct.
+        """
+        compare_dim = list()
+        for edge, my_edge in zip(self.o_edges, self.edges):
+            compare_dim.append(np.allclose(edge, my_edge))
+        assert np.all(compare_dim)
+
+class test_hddv_1D(domain_1D, histogramdd_volumes):
+    """
+    Test
+    :meth:`bet.calculateP.voronoiHistogram.histogramdd_volumes` for a 1D
+    domain.
+    """
+    def setUp(self):
+        super(test_hddv_1D, self).createDomain()
+        super(test_hddv_1D, self).setUp()
+class test_hddv_2D(domain_2D, histogramdd_volumes):
+    """
+    Test
+    :meth:`bet.calculateP.voronoiHistogram.histogramdd_volumes` for a 2D
+    domain.
+    """
+    def setUp(self):
+        super(test_hddv_2D, self).createDomain()
+        super(test_hddv_2D, self).setUp()
+class test_hddv_3D(domain_3D, histogramdd_volumes):
+    """
+    Test
+    :meth:`bet.calculateP.voronoiHistogram.histogramdd_volumes` for a 3D
+    domain.
+    """
+    def setUp(self):
+        super(test_hddv_3D, self).createDomain()
+        super(test_hddv_3D, self).setUp()
 
 # simple_fun_uniform
 # make sure dimensions are correct
