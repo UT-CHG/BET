@@ -78,6 +78,13 @@ def fix_dimensions_vector(vector):
     TODO: write and document me
     """
     pass
+
+def fix_dimensions_vector_array(vector):
+    """
+    TODO: write and document me
+    """
+    pass
+
 def fix_dimensions_domain(domain):
     """
     TODO: write and document me
