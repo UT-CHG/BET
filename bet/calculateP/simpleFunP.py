@@ -7,14 +7,12 @@ import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
 import collections
-# TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
-# presuming it preserse order anywhere
-# TODO change bins_size to more informative name like bound_size?
+import bet.util as util
+
+# TODO change bin_size to more informative name like bound_size?
 
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     r"""
-    TODO: THIS OCCASIONALLY FAILS test.test_calculateP.test_domain FIX ME
-
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
     a generalized rectangle centered at Q_ref.
@@ -53,12 +51,8 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
-    if len(data.shape) == 1:
-        data = np.expand_dims(data, axis=1)   
-    # Determine the appropriate bin size for this QoI
-    data_max = np.max(data, 0)
-    data_min = np.min(data, 0)
-    bin_size = (data_max-data_min)*bin_ratio
+    data = util.fix_dimensions_data(data)
+    bin_size = (np.max(data, 0) - np.min(data,0))*bin_ratio
 
     r'''
     Create M samples defining M Voronoi cells (i.e., "bins") in D used to 
@@ -123,52 +117,10 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     can then be stored and accessed later by the algorithm using a completely
     different set of parameter samples and model solves.
     '''
+    # TODO check that the parallel implementation of this is correct 
+    # TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
+    # presuming it preserse order anywhere
     return (rho_D_M, d_distr_samples, d_Tree)
-
-#TODO Empty function hist_regular 
-def hist_regular(data, distr_samples, nbins):
-    """
-    create nbins regulary spaced bins
-    check to make sure  each bin has about 1 data sample per bin, if not
-    recompute bins
-    (hist, edges) = histdd(distr_samples, bins)
-    http://docs.scipy.org/doc/numpy/reference/generated/numpy.histogramdd.html#numpy.histogramdd
-    determine d_distr_samples from edges
-    """
-    pass
-
-# TODO Empty function hist_gaussian
-def hist_gaussian(data, distr_samples, nbins):
-    """
-    determine mean, standard deviation of distr_samples
-    partition D into nbins of equal probability for N(mean, sigma)
-    check to make sure  each bin has about 1 data sample per bin, if not
-    recompute bins
-    (hist, edges) = histdd(distr_samples, bins)
-    determine d_distr_samples from edges
-    """
-    pass
-
-# TODO Empty Function hist_unif
-def hist_unif(data, distr_samples, nbins):
-    """
-    same as hist_regular bit with uniformly spaced bins
-    unif_unif can and should call this function
-    """
-    pass
-
-# TODO Empty function gaussian_regular
-def gaussian_regular(data, Q_ref, std, nbins, num_d_emulate=1E6):
-    pass
-    #return (d_distr_prob, d_distr_samples, d_Tree)
-
-# TODO Comment or remove multivariate_gaussian
-def multivariate_gaussian(x, mean, std):
-    dim = len(mean)
-    detDiagCovMatrix = np.sqrt(np.prod(np.diag(std(std))))
-    frac = (2.0*np.pi)**(-dim/2.0)  * (1.0/detDiagCovMatrix)
-    fprime = x-mean
-    return frac*np.exp(-0.5*np.dot(fprime, 1.0/np.diag(std*std)))
 
 def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     r"""
@@ -326,11 +278,6 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     # solving the model EVER! This can be done "offline" so to speak.
     return (rho_D_M, d_distr_samples, d_Tree)
 
-# TODO gaussian_unif is a blank function
-def gaussian_unif(data, Q_ref, std, nbins, num_d_emulate=1E6):
-    pass
-    #return (d_distr_prob, d_distr_samples, d_Tree)
-
 def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
     r"""
     Creates a simple funciton appoximation of :math:`\rho_{\mathcal{D},M}`
@@ -355,38 +302,13 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
         ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
-    # TODO following code could probably be reduced to a few lines
-    # determine the center of the domain
-    if len(domain.shape) == 1:
-        domain = np.expand_dims(domain, axis=1)
-    # TODO make sure the shape of the domain is correct, if not transpose it
+    # make sure the shape of the data and the domain are correct
+    data = util.fix_dimensions_data(data)
+    domain = util.fix_dimensions_data(domain, data.shape[1])
     domain_center = np.mean(domain, 0)
-    domain_min = np.min(domain, 0)
-    domain_max = np.max(domain, 0)
-    domain_lengths = domain_max - domain_min
+    domain_lengths = np.max(domain, 0) - np.min(domain, 0)
  
-    # determine the ratio of the lengths of the domain to the lengths of the
-    # hyperrectangle containing the data
-    if len(data.shape) == 1:
-        data = np.expand_dims(data, axis=1)
-    data_max = np.max(data, 0)
-    data_min = np.min(data, 0)
-    data_lengths = data_max - data_min
-    bin_ratios = domain_lengths/data_lengths  
-
-    # TODO: Check for inputted center_pts_per_edge in case given as list
-    # or as numpy array to see if dimensions match data space dimensions and
-    # that positive integer values are being used. Also, create this change
-    # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
-    if not isinstance(center_pts_per_edge, collections.Iterable):
-        center_pts_per_edge = np.ones((data.shape[1],)) * center_pts_per_edge
-    else:
-        if not len(center_pts_per_edge) == data.shape[1]:
-            center_pts_per_edge = np.ones((data.shape[1],))
-            print 'Warning: center_pts_per_edge dimension mismatch.'
-            print 'Using 1 in each dimension.'
-
-    return uniform_hyperrectangle(data, domain_center, bin_ratios,
+    return uniform_hyperrectangle_binsize(data, domain_center, domain_lengths,
             center_pts_per_edge)
 
 def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1):
@@ -418,15 +340,8 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
-    if len(data.shape) == 1:
-        data = np.expand_dims(data, axis=1)
-    data_max = np.max(data, 0)
-    data_min = np.min(data, 0)
+    data = util.fix_dimensions_data(data)
 
-    # TODO: Check for inputted center_pts_per_edge in case given as list
-    # or as numpy array to see if dimensions match data space dimensions and
-    # that positive integer values are being used. Also, create this change
-    # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
     if not isinstance(center_pts_per_edge, collections.Iterable):
         center_pts_per_edge = np.ones((data.shape[1],)) * center_pts_per_edge
     else:
@@ -434,13 +349,15 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
             center_pts_per_edge = np.ones((data.shape[1],))
             print 'Warning: center_pts_per_edge dimension mismatch.'
             print 'Using 1 in each dimension.'
-    # TODO: see note above
+    if np.any(np.less(center_pts_per_edge, 0)):
+            print 'Warning: center_pts_per_edge must be greater than 0'
     if not isinstance(bin_size, collections.Iterable):
         bin_size = bin_size*np.ones((data.shape[1],))
+    if np.any(np.less(bin_size, 0)):
+            print 'Warning: center_pts_per_edge must be greater than 0'
 
-    sur_domain = np.zeros((data.shape[1], 2))
-    sur_domain[:, 0] = data_min
-    sur_domain[:, 1] = data_max
+    sur_domain = np.array([np.min(data, 0),np.max(data, 0)]).transpose()
+
     points, _, rect_domain = vHist.center_and_layer1_points_binsize(center_pts_per_edge, 
             Q_ref, bin_size, sur_domain)
     edges = vHist.edges_regular_binsize(center_pts_per_edge, Q_ref, bin_size,
@@ -477,34 +394,15 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
-    if len(data.shape) == 1:
-        data = np.expand_dims(data, axis=1)
-    data_max = np.max(data, 0)
-    data_min = np.min(data, 0)
+    data = util.fix_dimensions_data(data)
 
-    # TODO: Check for inputted center_pts_per_edge in case given as list
-    # or as numpy array to see if dimensions match data space dimensions and
-    # that positive integer values are being used. Also, create this change
-    # elsewhere since center_pts_per_edge is only a scalar if dim(D)=1.
-    if not isinstance(center_pts_per_edge, collections.Iterable):
-        center_pts_per_edge = np.ones((data.shape[1])) * center_pts_per_edge
-    else:
-        if not len(center_pts_per_edge) == data.shape[1]:
-            center_pts_per_edge = np.ones((data.shape[1], ))
-            print 'Warning: center_pts_per_edge dimension mismatch.'
-            print 'Using 1 in each dimension.'
     if not isinstance(bin_ratio, collections.Iterable):
         bin_ratio = bin_ratio*np.ones((data.shape[1], ))
 
-    sur_domain = np.zeros((data.shape[1], 2))
-    sur_domain[:, 0] = data_min
-    sur_domain[:, 1] = data_max
-    points, _, rect_domain = vHist.center_and_layer1_points(center_pts_per_edge, 
-            Q_ref, bin_ratio, sur_domain)
-    edges = vHist.edges_regular(center_pts_per_edge, Q_ref, bin_ratio,
-            sur_domain) 
-    _, volumes, _ = vHist.histogramdd_volumes(edges, points)
-    return vHist.simple_fun_uniform(points, volumes, rect_domain)
+    sur_domain = np.array([np.min(data, 0),np.max(data, 0)]).transpose()
+    bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio 
+    return uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
+            center_pts_per_edge)
 
 def uniform_data(data):
     r"""
@@ -526,8 +424,7 @@ def uniform_data(data):
         ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
-    if len(data.shape) == 1:
-        data = np.expand_dims(data, axis=1)
+    data = util.fix_dimensions_data(data)
 
     d_distr_prob = np.ones((data.shape[0],), dtype=np.float)/data.shape[0]
     d_Tree = spatial.KDTree(data)

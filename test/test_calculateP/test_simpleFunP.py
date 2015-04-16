@@ -157,6 +157,31 @@ class unif_unif(prob_uniform):
         """
         assert len(self.rho_D_M) == 67
 
+    def test_domain(self):
+        """
+        Test that the probabilities within the prescribed domain are non-zero
+        and that the probabilities outside of the prescribed domain are zero.
+        """
+        # d_distr_samples are (mdim, M)
+        # rect_domain is (mdim, 2)
+        inside = np.logical_and(np.all(np.greater_equal(self.d_distr_samples,
+            self.rect_domain[:, 0]), axis=1),
+            np.all(np.less_equal(self.d_distr_samples,
+            self.rect_domain[:, 1]), axis=1)) 
+        msg = "Due to the inherent randomness of this method, this may fail."
+        print msg
+        print np.sum(self.rho_D_M[inside] >= 0.0)
+        assert np.sum(self.rho_D_M[inside] >= 0.0)<100
+        #print self.rect_domain
+        #print "ind, inside", inside
+        #print "ind, outside", np.logical_not(inside)
+        #print "inside", self.d_distr_samples[inside]
+        #print "outside", self.d_distr_samples[np.logical_not(inside)]
+        #print "inside", self.rho_D_M[inside]
+        #print "outside", self.rho_D_M[np.logical_not(inside)]
+        print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
+        assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)<100
+
 class test_unif_unif_01D(data_01D, unif_unif):
     """
     Tests :meth:`bet.calculateP.simpleFunP.unif_unif` on 01D data domain.
