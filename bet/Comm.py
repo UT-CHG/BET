@@ -108,6 +108,7 @@ class MPI_for_no_mpi4py(object):
         self.SUM = None
         self.DOUBLE = float
         self.INT = int
+        self.BOOL = bool
 
 try:
     from mpi4py import MPI

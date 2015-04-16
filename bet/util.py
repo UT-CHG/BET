@@ -4,6 +4,9 @@ The module contains general tools for BET.
 
 import numpy as np
 from bet.Comm import *
+import collections
+
+possible_types = {int:MPI.INT, float:MPI.DOUBLE}
 
 def meshgrid_ndim(X):
     """
@@ -54,11 +57,8 @@ def meshgrid_ndim(X):
 
     return X_new
 
-def get_global_values(array):
+def get_global_values(array, shape=None):
     """
-    TODO: write a version that also works with captial mpi4py method calls
-    (optional?)
-
     Concatenates local arrays into global array using :meth:`np.vstack`.
 
     :param array: Array.
@@ -66,34 +66,123 @@ def get_global_values(array):
     :rtype: :class:'~numpy.ndarray'
     :returns: array
     """
-    a_shape = len(array.shape)
-    array = comm.allgather(array, array)
-    if a_shape == 1:
-        return np.hstack(array)
+
+    # Figure out the subtype of the elements of the array
+    dtype = array.dtype
+    mpi_dtype = False
+    print dtype
+    for ptype in possible_types.iterkeys():
+        if np.issubdtype(dtype, ptype):
+            mpi_dtype = True
+            dtype = ptype
+
+    if shape == None or not mpi_dtype:
+        # do a lowercase allgather
+        a_shape = len(array.shape)
+        array = comm.allgather(array, array)
+        if a_shape == 1:
+            return np.hstack(array)
+        else:
+            return np.vstack(array)
     else:
-        return np.vstack(array)
+        # do an uppercase Allgather
+        whole_a = np.empty(shape, dtype=dtype)
+        print dtype
+        comm.Allgather([array, possible_types[dtype]], [whole_a,
+            possible_types[dtype]])
+        return array
 
 def fix_dimensions_vector(vector):
     """
-    TODO: write and document me
-    """
-    pass
+    Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
+    shape (N,).
 
-def fix_dimensions_vector_array(vector):
+    :param vector: numerical object
+    :rtype: :class:`numpy.ndarray`
+    :returns: array of shape (N,)
+
     """
-    TODO: write and document me
+    if not isinstance(vector, collections.Iterable):
+        vector = np.array([vector])
+    elif not isinstance(vector, np.ndarray):
+        vector = np.array(vector)
+    return vector
+
+def fix_dimensions_vector_2darray(vector):
     """
-    pass
+    Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
+    shape (N,1).
+
+    :param vector: numerical object
+    :rtype: :class:`numpy.ndarray`
+    :returns: array of shape (N,1)
+
+    """
+    vector = fix_dimensions_vector(vector)
+    if len(vector.shape) == 1:
+        vector = np.expand_dims(vector, axis=1)
+    return vector
 
 def fix_dimensions_domain(domain):
     """
-    TODO: write and document me
+    Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
+    shape (dim, 2).
+
+    :param vector: numerical object of at least length 2
+    :type vector: :class:`collections.Iterable`
+    :rtype: :class:`numpy.ndarray`
+    :retuns: array of shape (dim, 2)
+
     """
-    pass
-def fix_dimensions_data(data):
+    if not isinstance(domain, np.ndarray):
+        if len(domain) == 2:
+            print domain
+            domain = np.expand_dims(domain, axis=0)
+            print domain
+            print domain.shape
+        else:
+            raise TypeError("The length must be at least 2.")
+    elif len(domain.shape) == 1 and domain.shape[0] == 2:
+        domain = np.expand_dims(domain, axis=0)
+    elif len(domain.shape) == 2 and domain.shape[1] == 2:
+        pass # The shape is already correct!
+    elif len(domain.shape) == 2 and domain.shape[0] == 2:
+        domain = domain.transpose()
+    else:
+        raise TypeError("At least one dimension must have a length of 2.")
+    return domain
+
+def fix_dimensions_data(data, dim=None):
     """
-    TODO: write and document me
+    Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
+    shape (N, dim). 
+    
+    If ``dim`` is non-specified:
+    If ``data`` is a non-iterable number assumes that ``dim==1``.
+    If ``data`` is a numpy array with len(shape) == 1 assumes that ``dim==1``.
+    If ``data`` is a numpy array with len(shape) == 2 assumes that
+    ``dim==shape[1]``.
+
+
+    :param data: numerical object
+    :param int dim: The dimension of the "data" space.
+    :rtype: :class:`numpy.ndarray`
+    :returns: array of shape (N, dim)
+    
     """
-    pass
+    if dim == None:
+        if not isinstance(data, np.ndarray):
+            return fix_dimensions_vector_2darray(data)
+        elif len(data.shape) == 1:
+            return fix_dimensions_vector_2darray(data)
+        else:
+            return data
+
+    data = fix_dimensions_vector_2darray(data)
+    if data.shape[1] != dim:
+        return data.transpose()
+    else:
+        return data
+
 
 
