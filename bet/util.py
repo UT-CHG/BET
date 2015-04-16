@@ -1,10 +1,9 @@
-import numpy as np
-from bet.Comm import *
-
 """
 The module contains general tools for BET.
 """
 
+import numpy as np
+from bet.Comm import *
 
 def meshgrid_ndim(X):
     """
@@ -40,7 +39,6 @@ def meshgrid_ndim(X):
                                                alist[9],
                                                indexing='ij')
 
-    # TODO: use x.flat instead of x.flat[:]
     X_new = np.vstack(
         (a.flat[:],
          b.flat[:],
@@ -52,7 +50,6 @@ def meshgrid_ndim(X):
          h.flat[:],
          i.flat[:],
          j.flat[:])).transpose()
-    # TODO: I don't think this line does anything, remove it
     X_new = X_new[:, 0:n]
 
     return X_new
