@@ -258,7 +258,7 @@ class sampler(object):
                 my_samples = samples[my_index, :]
             my_data = self.lb_model(my_samples)
             data = util.get_global_values(my_data)
-            samples = util.get_global_values(my_data)
+            samples = util.get_global_values(my_samples)
         
         # if data or samples are of shape (num_samples,) expand dimensions
         if len(samples.shape) == 1:
