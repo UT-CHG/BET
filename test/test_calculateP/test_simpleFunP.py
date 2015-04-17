@@ -172,13 +172,6 @@ class unif_unif(prob_uniform):
         print msg
         print np.sum(self.rho_D_M[inside] >= 0.0)
         assert np.sum(self.rho_D_M[inside] >= 0.0)<100
-        #print self.rect_domain
-        #print "ind, inside", inside
-        #print "ind, outside", np.logical_not(inside)
-        #print "inside", self.d_distr_samples[inside]
-        #print "outside", self.d_distr_samples[np.logical_not(inside)]
-        #print "inside", self.rho_D_M[inside]
-        #print "outside", self.rho_D_M[np.logical_not(inside)]
         print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
         assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)<100
 

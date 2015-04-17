@@ -19,10 +19,11 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
     :param r_size: size of the length of the sides of the
-        hyperrectangle to the surrounding domain
+        hyperrectangle rect_domain to definie voronoi cells for
     :type r_size: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain
+        surrounding domain. The surrounding domain is the bounded domain
+        in the data space (i.e. the data domain).
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
@@ -33,7 +34,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
         shape (mdim, 2)
 
     """
-    # determine the hyperrectangle defined by center and r_size
+    # determine the hyperrectangle (rect_domain) defined by center and r_size
     rect_width = r_size*np.ones(sur_domain[:,0].shape)
     rect_domain = np.column_stack([center - .5*rect_width,
         center + .5*rect_width])
@@ -73,10 +74,11 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
     :param r_ratio: ratio of the length of the sides of the
-        hyperrectangle to the surrounding domain
+        hyperrectangle rect_domain to definie voronoi cells for
     :type r_ratio: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain
+        surrounding domain. The surrounding domain is the bounded domain
+        in the data space (i.e. the data domain).    
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
@@ -117,10 +119,11 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
     :param r_size: size of the length of the sides of the
-        hyperrectangle to the surrounding domain
+        hyperrectangle rect_domain to definie voronoi cells for
     :type r_size: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain
+        surrounding domain. The surrounding domain is the bounded domain
+        in the data space (i.e. the data domain).    
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
@@ -177,10 +180,11 @@ def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
     :param r_ratio: ratio of the length of the sides of the
-        hyperrectangle to the surrounding domain
+        hyperrectangle rect_domain to definie voronoi cells for
     :type r_ratio: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain
+        surrounding domain. The surrounding domain is the bounded domain
+        in the data space (i.e. the data domain).       
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
     :rtype: tuple
     :returns: interior_and_layer1 is a list of dim
