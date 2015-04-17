@@ -1,5 +1,3 @@
-# TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
-# presuming it preserse order anywhere
 # Lindley Graham 4/15/2014
 """
 This module contains functions for sampling. We assume we are given access to a
