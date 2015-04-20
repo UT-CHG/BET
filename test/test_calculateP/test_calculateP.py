@@ -64,7 +64,7 @@ class prob:
         Test to see if the prob. sums to 1.
         """
         nptest.assert_almost_equal(np.sum(self.P),1.0)
-    @unittest.skipIf(size > 1, 'Only run in serial')
+    #@unittest.skipIf(size > 1, 'Only run in serial')
     def test_P_matches_true(self):
         """
         Test against reference probs. (Only in serial)
@@ -152,12 +152,11 @@ class Test_prob_3to2(TestProbMethod_3to2,prob):
         Set up problem.
         """
         super(Test_prob_3to2, self).setUp()
-        (self.P, self.lam_vol , _ , _ ) = calcP.prob(samples=self.samples,
-                                                     data=self.data,
-                                                     rho_D_M = self.d_distr_prob,
-                                                     d_distr_samples = self.d_distr_samples,
-                                                     lam_domain = self.lam_domain,
-                                                     d_Tree = self.d_Tree)
+        (self.P, self.lam_vol , _  ) = calcP.prob(samples=self.samples,
+                                                  data=self.data,
+                                                  rho_D_M = self.d_distr_prob,
+                                                  d_distr_samples = self.d_distr_samples,
+                                                  d_Tree = self.d_Tree)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
 
 
@@ -175,7 +174,6 @@ class Test_prob_emulated_3to2(TestProbMethod_3to2, prob_emulated):
                                                               data=self.data,
                                                               rho_D_M = self.d_distr_prob,
                                                               d_distr_samples = self.d_distr_samples,
-                                                              lam_domain = self.lam_domain,
                                                               lambda_emulate = self.lambda_emulate,
                                                               d_Tree = self.d_Tree)
         self.P_emulate_ref=np.loadtxt(data_path + "/3to2_prob_emulated.txt.gz")
@@ -196,7 +194,6 @@ class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
                                                            data=self.data,
                                                            rho_D_M = self.d_distr_prob,
                                                            d_distr_samples = self.d_distr_samples,
-                                                           lam_domain = self.lam_domain,
                                                            lambda_emulate = self.lambda_emulate,
                                                            d_Tree = self.d_Tree)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob_mc.txt.gz")
@@ -231,11 +228,10 @@ class Test_prob_3to1(TestProbMethod_3to1, prob):
         Set up problem.
         """
         super(Test_prob_3to1, self).setUp()
-        (self.P, self.lam_vol , _ , _ ) = calcP.prob(samples=self.samples,
+        (self.P, self.lam_vol, _ ) = calcP.prob(samples=self.samples,
                                                      data=self.data,
                                                      rho_D_M = self.d_distr_prob,
                                                      d_distr_samples = self.d_distr_samples,
-                                                     lam_domain = self.lam_domain,
                                                      d_Tree = self.d_Tree)
         self.P_ref = np.loadtxt(data_path + "/3to1_prob.txt.gz")
 
@@ -253,7 +249,6 @@ class Test_prob_emulated_3to1(TestProbMethod_3to1, prob_emulated):
                                                               data=self.data,
                                                               rho_D_M = self.d_distr_prob,
                                                               d_distr_samples = self.d_distr_samples,
-                                                              lam_domain = self.lam_domain,
                                                               lambda_emulate = self.lambda_emulate,
                                                               d_Tree = self.d_Tree)
         self.P_emulate_ref=np.loadtxt(data_path + "/3to1_prob_emulated.txt.gz")
@@ -274,7 +269,6 @@ class Test_prob_mc_3to1(TestProbMethod_3to1, prob_mc):
                                                            data=self.data,
                                                            rho_D_M = self.d_distr_prob,
                                                            d_distr_samples = self.d_distr_samples,
-                                                           lam_domain = self.lam_domain,
                                                            lambda_emulate = self.lambda_emulate,
                                                            d_Tree = self.d_Tree)
         self.P_ref = np.loadtxt(data_path + "/3to1_prob_mc.txt.gz")
@@ -313,11 +307,10 @@ class Test_prob_10to4(TestProbMethod_10to4, prob):
         Set up problem.
         """
         super(Test_prob_10to4, self).setUp()
-        (self.P, self.lam_vol , _ , _ ) = calcP.prob(samples=self.samples,
+        (self.P, self.lam_vol , _ ) = calcP.prob(samples=self.samples,
                                                      data=self.data,
                                                      rho_D_M = self.d_distr_prob,
                                                      d_distr_samples = self.d_distr_samples,
-                                                     lam_domain = self.lam_domain,
                                                      d_Tree = self.d_Tree)
 
     
@@ -336,7 +329,6 @@ class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
                                                               data=self.data,
                                                               rho_D_M = self.d_distr_prob,
                                                               d_distr_samples = self.d_distr_samples,
-                                                              lam_domain = self.lam_domain,
                                                               lambda_emulate = self.lambda_emulate,
                                                               d_Tree = self.d_Tree)
         self.P_emulate = util.get_global_values(self.P_emulate)
@@ -357,7 +349,6 @@ class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
                                                            data=self.data,
                                                            rho_D_M = self.d_distr_prob,
                                                            d_distr_samples = self.d_distr_samples,
-                                                           lam_domain = self.lam_domain,
                                                            lambda_emulate = self.lambda_emulate,
                                                            d_Tree = self.d_Tree)
 
@@ -394,11 +385,10 @@ class Test_prob_1to1(TestProbMethod_1to1, prob):
         Set up problem.
         """
         super(Test_prob_1to1, self).setUp()
-        (self.P, self.lam_vol , _ , _ ) = calcP.prob(samples=self.samples,
+        (self.P, self.lam_vol, _ ) = calcP.prob(samples=self.samples,
                                                      data=self.data,
                                                      rho_D_M = self.d_distr_prob,
                                                      d_distr_samples = self.d_distr_samples,
-                                                     lam_domain = self.lam_domain,
                                                      d_Tree = self.d_Tree)
 
 
@@ -416,7 +406,6 @@ class Test_prob_emulated_1to1(TestProbMethod_1to1, prob_emulated):
                                                               data=self.data,
                                                               rho_D_M = self.d_distr_prob,
                                                               d_distr_samples = self.d_distr_samples,
-                                                              lam_domain = self.lam_domain,
                                                               lambda_emulate = self.lambda_emulate,
                                                               d_Tree = self.d_Tree)
         self.P_emulate = util.get_global_values(self.P_emulate)
@@ -435,7 +424,6 @@ class Test_prob_mc_1to1(TestProbMethod_1to1, prob_mc):
                                                            data=self.data,
                                                            rho_D_M = self.d_distr_prob,
                                                            d_distr_samples = self.d_distr_samples,
-                                                           lam_domain = self.lam_domain,
                                                            lambda_emulate = self.lambda_emulate,
                                                            d_Tree = self.d_Tree)
 
