@@ -285,5 +285,3 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
         plt.close()
 
 
-
-
