@@ -61,8 +61,8 @@ def test_loadmat():
     mdat2 = {'samples':np.random.random((6,1)), 'num_samples':6}
     model = "this is not a model"
 
-    sio.savemat('testfile1', mdat1)
-    sio.savemat('testfile2', mdat2)
+    sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
+    sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
     (loaded_sampler1, samples1, data1) = bsam.loadmat('testfile1')
     nptest.assert_array_equal(samples1, mdat1['samples'])
@@ -78,7 +78,7 @@ def test_loadmat():
     if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
         os.remove(os.path.join(local_path, 'testfile1.mat'))
     if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
-        os.remove(os.path.join(loca_path, 'testfile2.mat'))
+        os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_user_samples(model, sampler, samples, savefile, parallel):
     # evalulate the model at the samples directly
@@ -101,7 +101,7 @@ def verify_user_samples(model, sampler, samples, savefile, parallel):
     assert samples.shape[0] == sampler.num_samples
     # did the file get correctly saved?
 
-    mdat = sio.loadmat('savefile')
+    mdat = sio.loadmat(savefile)
     nptest.assert_array_equal(samples, mdat['samples'])
     nptest.assert_array_equal(data, mdat['data'])
     assert samples.shape[0] == sampler.num_samples
@@ -147,7 +147,7 @@ def verify_random_samples(model, sampler, sample_type, param_min, param_max,
     assert samples.shape[0] == sampler.num_samples
     # did the file get correctly saved?
 
-    mdat = sio.loadmat('savefile')
+    mdat = sio.loadmat(savefile)
     nptest.assert_array_equal(samples, mdat['samples'])
     nptest.assert_array_equal(data, mdat['data'])
     assert samples.shape[0] == sampler.num_samples
@@ -200,10 +200,6 @@ class Test_basic_sampler(unittest.TestCase):
         assert self.samplers[0].num_samples == 100
         assert self.samplers[0].lb_model == self.models[0]
         assert bsam.sampler(self.models[0], None).num_samples == None
-
-    @unittest.skip("Skipping testing saving")
-    def test_save(self):
-        pass
 
     def test_update(self):
         """
