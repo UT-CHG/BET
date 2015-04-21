@@ -30,6 +30,11 @@ def triangulation_area(triangulation):
     for tri_num, ttri in enumerate(triangulation.triangles):
         volumes[tri_num] = .5*np.linalg.norm(np.cross(points[ttri[0]]-points[ttri[1]],
             points[ttri[0]]-points[ttri[2]]))
+        if np.isnan(volumes[tri_num]):
+            print points[ttri[0]]-points[ttri[1]], points[ttri[0]]-points[ttri[2]]
+            print np.cross(points[ttri[0]]-points[ttri[1]],
+                points[ttri[0]]-points[ttri[2]])
+            print volumes[tri_num]
     return np.sum(volumes), volumes
 
 def find_interections(triangulation, rect_domain):
@@ -53,6 +58,7 @@ def find_interections(triangulation, rect_domain):
     """
     from shapely.geometry import Polygon
     from shapely.geometry import LinearRing
+    from shapely.geometry import Point 
     rect_domain_meshgrid = util.meshgrid_ndim(rect_domain)
     rect_poly = Polygon(rect_domain_meshgrid).convex_hull
 
@@ -61,8 +67,8 @@ def find_interections(triangulation, rect_domain):
     for triangle in triangulation.triangles:
         tri_poly = Polygon(zip(triangulation.x[triangle],
             triangulation.y[triangle]))
-        if rect_poly.contains(tri_poly):
-            for point in list(tri_poly.exterior.coords):
+        for point in list(tri_poly.exterior.coords):
+            if rect_poly.contains(Point(point)):
                 int_points.add(point)
         else:
             tring = LinearRing(tri_poly.exterior)
@@ -77,12 +83,17 @@ def find_interections(triangulation, rect_domain):
     int_points = np.array(list(int_points))
     return int_points, np.vstack((int_points, rect_domain_meshgrid))
 
-def determine_RoI_volumes(samples, data, rect_domain, param_domain=None):
+def determine_RoI_volumes(samples, data, rect_domain, param_domain=None,
+        show=False):
     r"""
     Determine the exact volume of a region of interest in the parameter space
     implicitly defined by a ``rect_domain`` in the data space. Both spaces must
     be two dimensional. The mapping between the data space and the parameter
     space is defined by the linear interpolation of (samples, data).
+
+    ..note:: 
+        In the event that ``rect_domain`` is outside the original convex hull
+        of data the ``rect_domain`` is trimmed to fit inside the convex hull.
 
     :param samples: Samples from the parameter space
     :type samples: :class:`np.ndarray` of shape (N, 2)
@@ -98,25 +109,51 @@ def determine_RoI_volumes(samples, data, rect_domain, param_domain=None):
     :returns: (volume of :math:`R`, volume of :math:`Q^{-1}(R)`, :math
     """
     # Determine triangulations of the samples and the data
-    samples_tri = tri.triangulation(samples[:, 0], samples[:, 1])
-    data_tri = tri.triangulation(data[:, 0], data[:, 1],
+    samples_tri = tri.Triangulation(samples[:, 0], samples[:, 1])
+    data_tri = tri.Triangulation(data[:, 0], data[:, 1],
             samples_tri.triangles)
     # Add the points of the data_tri that are interior/intersect the rect_domain
     _, rect_and_int_pts = find_interections(data_tri, rect_domain)
-    rect_tri = tri.triangulation(rect_and_int_pts[:, 0], rect_and_int_pts[:, 1])
+    rect_tri = tri.Triangulation(rect_and_int_pts[:, 0], rect_and_int_pts[:, 1])
+
+    if show:
+        bin_size = rect_domain[:,1]-rect_domain[:,0]
+        print np.prod(bin_size)
+        a, _ = triangulation_area(rect_tri)
+        print a
+        import matplotlib.pyplot as plt
+        plt.figure()
+        plt.triplot(data_tri, 'ro-')
+        plt.triplot(rect_tri, 'bo-')
+
     # Interpolate the fine the corresponding sample values
     rect_samples = np.empty(rect_and_int_pts.shape)
     rect_samples[:, 0] = griddata(data, samples[:, 0],
             rect_and_int_pts)
     rect_samples[:, 1] = griddata(data, samples[:, 1],
             rect_and_int_pts)
-    rect_samples_tri = tri.triangulation(rect_samples[:, 0], rect_samples[:, 1],
-            rect_tri)
+    # check for NaN (this happens if rect_domain contains points oustide the
+    # original convexhull formed by data)
+    not_nan_ind = np.logical_not(np.any(np.isnan(rect_samples), axis=1))
+    print np.sum(np.logical_not(not_nan_ind))
+
+    rect_tri = tri.Triangulation(rect_and_int_pts[not_nan_ind, 0],
+            rect_and_int_pts[not_nan_ind, 1])
+    rect_samples_tri = tri.Triangulation(rect_samples[not_nan_ind, 0],
+            rect_samples[not_nan_ind, 1],
+            rect_tri.triangles)
+
+    if show:
+        plt.triplot(rect_tri, 'go-')
+        plt.show()
+
     # Calculate volumes
-    data_rvol = triangulation_area(rect_tri)
-    samples_rvol = triangulation_area(rect_samples_tri)
+    data_rvol, _ = triangulation_area(rect_tri)
+    if show:
+        print data_rvol
+    samples_rvol, _ = triangulation_area(rect_samples_tri)
     # Calculate relative volume
-    if param_domain:
+    if param_domain != None:
         param_vol = np.prod(param_domain[:, 1]-param_domain[:, 0])
         r_samples_rvol = samples_rvol/param_vol
     else:
