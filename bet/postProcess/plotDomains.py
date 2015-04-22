@@ -2,13 +2,13 @@
 This module provides methods used to plot two-dimensional domains and/or
 two-dimensional slices/projections of domains.
 
-TODO : match method signatures with style in plotP
 """
 
 import matplotlib.tri as tri
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
+from itertools import combinations
 
 markers = []
 for m in Line2D.markers:
@@ -20,7 +20,7 @@ for m in Line2D.markers:
 
 colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k')
 
-def scatter_2D(samples, sample_nos, color, p_ref, save, show,
+def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
         xlabel, ylabel, filename):
     """
     Two-dimensional scatter plot of ``samples`` colored by ``color`` (usually
@@ -34,7 +34,7 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, show,
     :param p_ref: reference parameter value
     :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
-    :param boolean show: flag whether or not to show the figure
+    :param boolean interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string filename: filename to save the figure as
@@ -55,12 +55,12 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, show,
         plt.ylabel(ylabel)
         plt.savefig(filename, bbox_inches='tight', transparent=True,
                 pad_inches=0)
-    if show:
+    if interactive:
         plt.show()
     else:
         plt.close()
 
-def scatter_3D(samples, sample_nos, color, p_ref, save, show,
+def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
         xlabel, ylabel, zlabel, filename):
     """
     Three-dimensional scatter plot of ``samples`` colored by ``color`` (usually
@@ -74,7 +74,7 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, show,
     :param p_ref: reference parameter value
     :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
-    :param boolean show: flag whether or not to show the figure
+    :param boolean interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string zlabel: z-axis label
@@ -100,17 +100,14 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, show,
     if save:
         plt.savefig(filename, bbox_inches='tight', transparent=True,
                 pad_inches=0)
-    if show:
+    if interactive:
         plt.show()
     else:
         plt.close()
    
 def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
-        save=True, show=False, lnums=None):
+        save=True, interactive=False, lnums=None, showdim=None):
     """
-    TODO: add options for higher dimensional visualization or at least for
-    showing pairwise or tripletwise parameter point clouds
-
     Plot samples in parameter space and colors them either by rho_D or by
     sample batch number.
 
@@ -125,9 +122,11 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     :param p_ref: reference parameter value
     :type p_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
-    :param boolean show: flag whether or not to show the figure
+    :param boolean interactive: flag whether or not to show the figure
     :param list lnums: integers representing parameter domain coordinate
         numbers
+    :param int showdim: 2 or 3, flag showing pairwise or tripletwise parameter
+        sample clouds
 
     """
    
@@ -139,19 +138,31 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
     if samples.shape[1] == 2:
-        scatter_2D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
-                savename)
+        scatter_2D(samples, sample_nos, rD, p_ref, save, interactive, xlabel,
+                ylabel, savename)
     elif samples.shape[1] == 3:
         zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
-        scatter_3D(samples, sample_nos, rD, p_ref, save, show, xlabel, ylabel,
-                zlabel, savename)
+        scatter_3D(samples, sample_nos, rD, p_ref, save, interactive, xlabel,
+                ylabel, zlabel, savename)
+    elif samples.shape[1] > 2 and showdim == 2:
+        for x, y in combinations(lnums, 2):
+            xlabel = r'$\lambda_{'+str(x)+'}$'
+            ylabel = r'$\lambda_{'+str(y)+'}$'
+            savename = 'param_samples_l'+str(x)+'l'+str(y)+'_cs.eps'
+            scatter_2D(samples[:, [x, y]], sample_nos, rD, p_ref, save,
+                    interactive, xlabel, ylabel, savename)
+    elif samples.shape[1] > 3 and showdim == 3:
+        for x, y, z in combinations(lnums, 3):
+            xlabel = r'$\lambda_{'+str(x)+'}$'
+            ylabel = r'$\lambda_{'+str(y)+'}$'
+            zlabel = r'$\lambda_{'+str(z)+'}$'
+            savename = 'param_samples_l'+str(x)+'l'+str(y)+'l'+str(z)+'_cs.eps'
+            scatter_3D(samples[:, [x, y, z]], sample_nos, rD, p_ref, save,
+                    interactive, xlabel, ylabel, zlabel, savename)
 
 def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
-        save=True, show=False, Q_nums=None):
+        save=True, interactive=False, Q_nums=None, showdim=None):
     """
-    TODO: add options for higher dimensional visualization or at least for
-    showing pairwise or tripletwise sample point clouds
-
     Plot samples in data space and colors them either by rho_D or by
     sample batch number.
 
@@ -164,7 +175,10 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     :param Q_ref: reference data value
     :type Q_ref: :class:`np.ndarray`
     :param boolean save: flag whether or not to save the figure
-    :param boolean show: flag whether or not to show the figure
+    :param boolean interactive: flag whether or not to show the figure
+    :param list Q_nums: integers representing data domain coordinates
+    :param int showdim: 2 or 3, flag showing pairwise or tripletwise data
+        sample clouds
 
     """   
     if rho_D != None:
@@ -175,26 +189,39 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
     if data.shape[1] == 2:
-        scatter_2D(data, sample_nos, rD, Q_ref, save, show, xlabel, ylabel,
-            savename)
+        scatter_2D(data, sample_nos, rD, Q_ref, save, interactive, xlabel,
+                ylabel, savename)
     elif data.shape[1] == 3:
         zlabel = r'$q_{'+str(Q_nums[2]+1)+'}$'
-        scatter_3D(data, sample_nos, rD, Q_ref, save, show, xlabel, ylabel,
-                zlabel, savename)
+        scatter_3D(data, sample_nos, rD, Q_ref, save, interactive, xlabel,
+                ylabel, zlabel, savename)
+    elif data.shape[1] > 2 and showdim == 2:
+        for x, y in combinations(Q_nums, 2):
+            xlabel = r'$q_{'+str(x)+'}$'
+            ylabel = r'$q_{'+str(y)+'}$'
+            savename = 'data_sampqes_q'+str(x)+'q'+str(y)+'_cs.eps'
+            scatter_2D(data[:, [x, y]], sample_nos, rD, Q_ref, save,
+                    interactive, xlabel, ylabel, savename)
+    elif data.shape[1] > 3 and showdim == 3:
+        for x, y, z in combinations(Q_nums, 3):
+            xlabel = r'$q_{'+str(x)+'}$'
+            ylabel = r'$q_{'+str(y)+'}$'
+            zlabel = r'$q_{'+str(z)+'}$'
+            savename = 'data_sampqes_q'+str(x)+'q'+str(y)+'q'+str(z)+'_cs.eps'
+            scatter_3D(data[:, [x, y, z]], sample_nos, rD, Q_ref, save,
+                    interactive, xlabel, ylabel, zlabel, savename)
 
 def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
         img_folder='figs/', ref_markers=None,
-        ref_colors=None):
+        ref_colors=None, showdim=None):
     r"""
-    TODO: add option for showing all pairs or altering which index for which
-    all pairs are shown
-
     Plot the data domain D using a triangulation based on the generating
     samples where :math:`Q={q_1, q_i}` for ``i=Q_nums``, with a marker for
     various :math:`Q_{ref}`. 
 
     :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
+        uses the first two dimensions.
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
@@ -203,6 +230,9 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     :param string img_folder: folder to save the plots to
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
     :param list ref_colors: list of colors for :math:`Q_{ref}`
+    :param showdim: default 1. If int then flag to show all combinations with a
+        given dimension or if ``all`` show all combinations.
+    :type showdim: int or string
 
     """
     if ref_markers == None:
@@ -211,28 +241,52 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
         ref_colors = colors
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
+    if showdim == None:
+        showdim = 1
 
     triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
     triangles = triangulation.triangles
 
-    for i in Q_nums:
-        
-        plt.tricontourf(data[:, 0], data[:, i], np.zeros((data.shape[0],)),
-                triangles=triangles, colors='grey') 
-        plt.autoscale(tight=True)
-        plt.xlabel(r'$q_1$')
-        plt.ylabel(r'$q_{'+str(i+1)+r'}$')
+    
+    if type(showdim) == int:
+        for i in Q_nums:
+            plt.tricontourf(data[:, showdim], data[:, i],
+                    np.zeros((data.shape[0],)), triangles=triangles,
+                    colors='grey') 
+            plt.autoscale(tight=True)
+            xlabel = r'$q_{'+str(showdim+1)+r'}$'
+            ylabel = r'$q_{'+str(i+1)+r'}$'
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
 
-        filenames = [img_folder+'domain_q1_'+str(i)+'.eps',
-                img_folder+'q1_q'+str(i)+'_domain_Q_cs.eps']
-            
-        show_data_domain_2D(samples, data[:, [0, i]], Q_ref[:, [0, i]],
-            ref_markers, ref_colors, ylabel=r'$q_{'+str(i+1)+r'}$',
-            triangles=triangles, save=True, show=False, filenames=filenames)
+            filenames = [img_folder+'domain_q'+str(showdim+1)+'_'+str(i+1)+'.eps',
+                    img_folder+'q'+str(showdim+1)+'_q'+str(i+1)+'_domain_Q_cs.eps']
+                
+            show_data_domain_2D(samples, data[:, [showdim, i]], Q_ref[:,
+                [showdim, i]], ref_markers, ref_colors, xlabel=xlabel,
+                ylabel=ylabel, triangles=triangles, save=True,
+                interactive=False, filenames=filenames)
+    elif showdim == 'all' or showdim == 'ALL':
+        for x, y in combinations(Q_nums, 2):
+            plt.tricontourf(data[:, x], data[:, y], np.zeros((data.shape[0],)),
+                    triangles=triangles, colors='grey') 
+            plt.autoscale(tight=True)
+            xlabel = r'$q_{'+str(x+1)+r'}$'
+            ylabel = r'$q_{'+str(y+1)+r'}$'
+            plt.xlabel(xlabel)
+            plt.ylabel(ylabel)
+
+            filenames = [img_folder+'domain_q'+str(x+1)+'_'+str(y+1)+'.eps',
+                    img_folder+'q'+str(x+1)+'_q'+str(y+1)+'_domain_Q_cs.eps']
+                
+            show_data_domain_2D(samples, data[:, [x, y]], Q_ref[:,
+                [x, y]], ref_markers, ref_colors, xlabel=xlabel,
+                ylabel=ylabel, triangles=triangles, save=True,
+                interactive=False, filenames=filenames)
 
 def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2',
-        triangles=None, save=True, show=True, filenames=None):
+        triangles=None, save=True, interactive=True, filenames=None):
     r"""
     Plot the data domain D using a triangulation based on the generating
     samples with a marker for various :math:`Q_{ref}`. Assumes that the first
@@ -251,7 +305,7 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     :param triangles: triangulation defined by ``samples``
     :type triangles: :class:`tri.Triuangulation.triangles`
     :param boolean save: flag whether or not to save the figure
-    :param boolean show: flag whether or not to show the figure
+    :param boolean interactive: flag whether or not to show the figure
     :param list filenames: file names for the unmarked and marked domain plots
 
     """
@@ -279,7 +333,7 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     if save:
         plt.savefig(filenames[1], bbox_inches='tight', transparent=True,
             pad_inches=0)
-    if show:
+    if interactive:
         plt.show()
     else:
         plt.close()
