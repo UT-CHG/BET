@@ -301,12 +301,11 @@ class test_calps_double_3D(domain_3D, center_and_layer1_points_binsize_double):
         super(test_calps_double_3D, self).createDomain()
         super(test_calps_double_3D, self).setUp()
 
-
 class edges(object):
     """
-    Provides a method to test that the dimensions of the output (and the output
-    itself) from methods with the pattern
-    ``bet.calculateP.voronoiHistogram.edges_*`` are correct.
+     Provides a method to test that the dimensions of the output (and the
+     output itself) from methods with the pattern
+     ``bet.calculateP.voronoiHistogram.edges_*`` are correct.
     """
     def test_dimensions(self):
         """
@@ -336,7 +335,7 @@ class edges_regular(edges):
     """
     def create_output(self):
         sur_width = self.sur_domain[:,1]-self.sur_domain[:,0]
-        rect_width = self.r_ratio*sur_width
+        rect_width = 0.2*sur_width
         rect_domain = np.empty(self.sur_domain.shape)
         rect_domain[:, 0] = self.center - .5*rect_width
         rect_domain[:, 1] = self.center + .5*rect_width
@@ -349,176 +348,41 @@ class edges_regular(edges):
             int_l2[0] = self.sur_domain[dim, 0]
             int_l2[-1] = self.sur_domain[dim, 1]
             self.my_edges.append(int_l2)
+        self.rect_domain = rect_domain
     
     def setUp(self):
         self.create_output()
-        self.rect_and_sur_edges = vHist.edges_regular(self.center_pts_per_edge, self.center,
-                self.r_ratio, self.sur_domain)
+        self.rect_and_sur_edges = vHist.edges_regular(self.center_pts_per_edge,
+                self.rect_domain, self.sur_domain)
 
 
-class edges_regular_binsize(edges_regular):
-    """
-    Test :meth:`bet.calculateP.voronoiHistogram.edges_regular_binsize`
-    """
-    def setUp(self):
-        self.r_ratio = self.r_size/self.sur_domain[:,1]
-        super(edges_regular_binsize, self).create_output()
-        self.rect_and_sur_edges = vHist.edges_regular_binsize(self.center_pts_per_edge,
-                self.center, self.r_size, self.sur_domain)
-
-
-class edges_regular_double(edges_regular):
-    """
-    Provides set up for
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` when
-    r_ratio is a double.
-    """
-    def setUp(self):
-        self.r_ratio = 0.2
-        super(edges_regular_double, self).setUp()
-
-class edges_regular_list(edges_regular):
-    """
-    Provides set up for
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` when
-    r_ratio is a list.
-    """
-    def setUp(self):
-        self.r_ratio = 0.2*np.ones(self.mdim)
-        super(edges_regular_list, self).setUp()
-
-class edges_regular_binsize_list(edges_regular_binsize):
-    """
-    Provides set up for
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular_binsize` when
-    r_size is a list.
-    """
-    def setUp(self):
-        self.r_size = self.sur_domain[:,1]*.2
-        super(edges_regular_binsize_list, self).setUp()
-
-class edges_regular_binsize_double(edges_regular_binsize):
-    """
-    Provides set up for
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular_binsize` when
-    r_size is a double.
-    """
-    def setUp(self):
-        self.r_size = self.sur_domain[0,1]*.2
-        super(edges_regular_binsize_double, self).setUp()
-
-class test_er_list_1D(domain_1D, edges_regular_list):
+class test_er_1D(domain_1D, edges_regular):
     """
     Test
     :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 1D
-    domain with r_ratio as a list.
+    domain.
     """
     def setUp(self):
-        super(test_er_list_1D, self).createDomain()
-        super(test_er_list_1D, self).setUp()
-class test_er_list_2D(domain_2D, edges_regular_list):
+        super(test_er_1D, self).createDomain()
+        super(test_er_1D, self).setUp()
+class test_er_2D(domain_2D, edges_regular):
     """
     Test
     :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 2D
-    domain with r_ratio as a list.
+    domain .
     """
     def setUp(self):
-        super(test_er_list_2D, self).createDomain()
-        super(test_er_list_2D, self).setUp()
-class test_er_list_3D(domain_3D, edges_regular_list):
+        super(test_er_2D, self).createDomain()
+        super(test_er_2D, self).setUp()
+class test_er_3D(domain_3D, edges_regular):
     """
     Test
     :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 3D
-    domain with r_ratio as a list.
+    domain.
     """
     def setUp(self):
-        super(test_er_list_3D, self).createDomain()
-        super(test_er_list_3D, self).setUp()
-
-class test_er_double_1D(domain_1D, edges_regular_double):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 1D
-    domain with r_ratio as a double.
-    """
-    def setUp(self):
-        super(test_er_double_1D, self).createDomain()
-        super(test_er_double_1D, self).setUp()
-class test_er_double_2D(domain_2D, edges_regular_double):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 2D
-    domain with r_ratio as a double.
-    """
-    def setUp(self):
-        super(test_er_double_2D, self).createDomain()
-        super(test_er_double_2D, self).setUp()
-class test_er_double_3D(domain_3D, edges_regular_double):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 3D
-    domain with r_ratio as a double.
-    """
-    def setUp(self):
-        super(test_er_double_3D, self).createDomain()
-        super(test_er_double_3D, self).setUp()
-
-
-class test_ers_list_1D(domain_1D, edges_regular_binsize_list):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 1D
-    domain with r_ratio as a list.
-    """
-    def setUp(self):
-        super(test_ers_list_1D, self).createDomain()
-        super(test_ers_list_1D, self).setUp()
-class test_ers_list_2D(domain_2D, edges_regular_binsize_list):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 2D
-    domain with r_ratio as a list.
-    """
-    def setUp(self):
-        super(test_ers_list_2D, self).createDomain()
-        super(test_ers_list_2D, self).setUp()
-class test_ers_list_3D(domain_3D, edges_regular_binsize_list):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 3D
-    domain with r_ratio as a list.
-    """
-    def setUp(self):
-        super(test_ers_list_3D, self).createDomain()
-        super(test_ers_list_3D, self).setUp()
-
-class test_ers_double_1D(domain_1D, edges_regular_binsize_double):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 1D
-    domain with r_ratio as a double.
-    """
-    def setUp(self):
-        super(test_ers_double_1D, self).createDomain()
-        super(test_ers_double_1D, self).setUp()
-class test_ers_double_2D(domain_2D, edges_regular_binsize_double):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 2D
-    domain with r_ratio as a double.
-    """
-    def setUp(self):
-        super(test_ers_double_2D, self).createDomain()
-        super(test_ers_double_2D, self).setUp()
-class test_ers_double_3D(domain_3D, edges_regular_binsize_double):
-    """
-    Test
-    :meth:`bet.calculateP.voronoiHistogram.edges_regular` for a 3D
-    domain with r_ratio as a double.
-    """
-    def setUp(self):
-        super(test_ers_double_3D, self).createDomain()
-        super(test_ers_double_3D, self).setUp()
+        super(test_er_3D, self).createDomain()
+        super(test_er_3D, self).setUp()
 
 class edges_from_points(edges):
     """

@@ -33,11 +33,12 @@ def test_loadmat_init():
         num_chains_pproc2])
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
         num_chains2])
+    
+    sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
+    sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
-    sio.savemat('testfile1', mdat1)
-    sio.savemat('testfile2', mdat2)
-
-    (loaded_sampler1, samples1, data1) = asam.loadmat('testfile1')
+    (loaded_sampler1, samples1, data1) = asam.loadmat(os.path.join(local_path,
+        'testfile1'))
     nptest.assert_array_equal(samples1, mdat1['samples'])
     nptest.assert_array_equal(data1, mdat1['data'])
     assert loaded_sampler1.num_samples == num_samples1
@@ -48,7 +49,8 @@ def test_loadmat_init():
             loaded_sampler1.sample_batch_no)
     assert loaded_sampler1.lb_model == None
 
-    (loaded_sampler2, samples2, data2) = asam.loadmat('testfile2', model)
+    (loaded_sampler2, samples2, data2) = asam.loadmat(os.path.join(local_path,
+        'testfile2'), model)
     nptest.assert_array_equal(samples2, mdat2['samples'])
     nptest.assert_array_equal(data2, None)
     assert loaded_sampler2.num_samples == num_samples2
@@ -60,7 +62,7 @@ def test_loadmat_init():
     if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
         os.remove(os.path.join(local_path, 'testfile1.mat'))
     if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
-        os.remove(os.path.join(loca_path, 'testfile2.mat'))
+        os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_samples(model, QoI_range, sampler, param_min, param_max,
         t_set, savefile, initial_sample_type):
