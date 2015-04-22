@@ -9,7 +9,7 @@ import sys
 import scipy
 
 def calculate_gradients_rbf(samples, data, xeval, num_neighbors=None, RBF=None, ep=None):
-    """
+    r"""
 
     TO DO: vectorize first for loop?
 
@@ -72,7 +72,7 @@ def calculate_gradients_rbf(samples, data, xeval, num_neighbors=None, RBF=None, 
     return gradient_tensor
 
 def calculate_gradients_cfd(samples, data, xeval, r):
-    """
+    r"""
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
     in the parameter space for each QoI map.
