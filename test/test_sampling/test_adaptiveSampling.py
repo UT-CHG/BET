@@ -445,11 +445,10 @@ class test_kernels(unittest.TestCase):
         Test that the list of kernels is correctly created.
         """
         kern_list = asam.kernels(Q_ref, rhoD, maximum)
-        assert len(kern_list) == 4
+        assert len(kern_list) == 3
         assert type(kern_list[0]) == asam.maxima_mean_kernel
         assert type(kern_list[1]) == asam.rhoD_kernel
         assert type(kern_list[2]) == asam.maxima_kernel
-        assert type(kern_list[3]) == asam.multi_dist_kernel
 
 class data_1D(object):
     """
@@ -809,15 +808,6 @@ class test_maxima_mean_kernel_3D(maxima_mean_kernel, data_3D):
         """
         super(test_maxima_mean_kernel_3D, self).createData()
         super(test_maxima_mean_kernel_3D, self).setUp()
-
-
-
-@unittest.skip("Implement me")
-class multi_dist_kernel(kernel):
-    """
-    Write me
-    """
-    pass
 
 
 @unittest.skip("Implement me")
