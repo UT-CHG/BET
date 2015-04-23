@@ -9,6 +9,7 @@ import numpy as np
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
 import bet
+from bet.Comm import size
 
 local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
@@ -52,10 +53,13 @@ def test_in_high_prob_multi():
     nptest.assert_array_equal(np.array([3, 3, 3, 3]),
             bsam.in_high_prob_multi(results_list, rho_D, maximum))
 
+
+@unittest.skipIf(size > 1, 'Only run in serial')
 def test_loadmat():
     """
     Tests :meth:`bet.sampling.basicSampling.loadmat`
     """
+    np.random.seed(1)
     mdat1 = {'samples':np.random.random((5,1)),
             'data':np.random.random((5,1)), 'num_samples':5}
     mdat2 = {'samples':np.random.random((6,1)), 'num_samples':6}

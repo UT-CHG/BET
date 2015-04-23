@@ -35,15 +35,17 @@ def loadmat(save_file, lb_model=None):
     # load the samples
     if mdat.has_key('samples'):
         samples = mdat['samples']
+        num_samples = samples.shape[0]
     else:
         samples = None
+        num_samples = np.squeeze(mdat['num_samples'])
     # load the data
     if mdat.has_key('data'):
         data = mdat['data']
     else:
         data = None
     # recreate the sampler
-    new_sampler = sampler(mdat['num_samples'],
+    new_sampler = sampler(num_samples,
             np.squeeze(mdat['chain_length']), lb_model)
     
     return (new_sampler, samples, data)

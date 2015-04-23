@@ -16,16 +16,18 @@ import bet
 local_path = os.path.join(os.path.dirname(bet.__file__),
     "../test/test_sampling")
 
+@unittest.skipIf(size > 1, 'Only run in serial')
 def test_loadmat_init():
     """
     Tests :meth:`bet.sampling.adaptiveSampling.loadmat` and
     :meth:`bet.sampling.adaptiveSampling.sampler.init`.
     """
+    np.random.seed(1)
     chain_length = 10
-    mdat1 = {'samples':np.random.random((5, 1)),
-            'data':np.random.random((5, 1)), 'num_samples':50,
+    mdat1 = {'samples':np.random.random((50, 1)),
+            'data':np.random.random((50, 1)), 'num_samples':50,
             'chain_length':chain_length} 
-    mdat2 = {'samples':np.random.random((6, 1)),
+    mdat2 = {'samples':np.random.random((60, 1)),
                     'num_samples':60, 'chain_length':chain_length}
     model = "this is not a model"
     
@@ -211,8 +213,14 @@ class Test_adaptive_sampler(unittest.TestCase):
             for f in self.savefiles:
                 proc_savefile = os.path.join(local_path, os.path.dirname(f),
                         "proc{}{}".format(rank, os.path.basename(f)))
+                print proc_savefile
                 if os.path.exists(proc_savefile):
                     os.remove(proc_savefile)
+                proc_savefile = os.path.join(local_path, os.path.dirname(f),
+                        "p{}proc{}{}".format(rank, rank, os.path.basename(f)))
+                if os.path.exists(proc_savefile):
+                    os.remove(proc_savefile)
+                print proc_savefile
 
     def test_update(self):
         """
