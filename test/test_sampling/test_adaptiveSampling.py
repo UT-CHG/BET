@@ -810,21 +810,87 @@ class test_maxima_mean_kernel_3D(maxima_mean_kernel, data_3D):
         super(test_maxima_mean_kernel_3D, self).setUp()
 
 
-@unittest.skip("Implement me")
-class test_transition_set(unittest.TestCase):
+class transition_set(object):
     """
-    Write me
+    Tests :class:`bet.sampling.adaptiveSamplinng.transition_set`
     """
-    @unittest.skip("Implement me")
+    def setUp(self):
+        """
+        Set Up
+        """
+        self.t_set = asam.transition_set(.5, .5**5, 1.0) 
+
     def test_init(self):
         """
-        Write me
+        Tests the initialization of :class:`bet.sampling.adaptiveSamplinng.transition_set`
         """
-        pass
-    @unittest.skip("Implement me")
+        assert self.t_set.init_ratio == .5
+        assert self.t_set.min_ratio == .5**5
+        assert self.t_set.max_ratio == 1.0
+
     def test_step(self):
         """
-        Write me
+        Tests the method
+        :meth:`bet.sampling.adaptiveSampling.transition_set.step`
         """
-        pass
+        # define step_ratio, param_width, param_left, param_right, samples_old
+        # from data
+        param_left = np.repeat([self.data_domain[:, 0]], self.data.shape[0], 0)
+        param_right = np.repeat([self.data_domain[:, 1]], self.data.shape[0], 0)
+        param_width = param_right - param_left
+
+        step_ratio = 0.5*np.ones(self.data.shape[0],)
+        step_ratio[self.data.shape[0]/2:] = .1
+        step_size = np.repeat([step_ratio], param_width.shape[1],
+                0).transpose()*param_width
+        # take a step
+        samples_new = self.t_set.step(step_ratio, param_width, param_left,
+                param_right, self.data)
+
+        # make sure the proposed steps are inside the domain
+        # check dimensions of samples
+        assert samples_new.shape == self.data.shape
+
+        # are the samples in bounds?
+        assert np.all(samples_new <= param_right)
+        assert np.all(samples_new >= param_left)
+
+        # make sure the proposed steps are inside the box defined around their
+        # generating old samples
+        assert np.all(samples_new <= self.data+0.5*step_size)
+        assert np.all(samples_new >= self.data-0.5*step_size)
+
+
+class test_transition_set_1D(transition_set, data_1D):
+    """
+    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 1D data space.
+    """
+    def setUp(self):
+        """
+        Set up
+        """
+        super(test_transition_set_1D, self).createData()
+        super(test_transition_set_1D, self).setUp()
+      
+class test_transition_set_2D(transition_set, data_2D):
+    """
+    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 2D data space.
+    """
+    def setUp(self):
+        """
+        Set up
+        """
+        super(test_transition_set_2D, self).createData()
+        super(test_transition_set_2D, self).setUp()
+      
+class test_transition_set_3D(transition_set, data_3D):
+    """
+    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 3D data space.
+    """
+    def setUp(self):
+        """
+        Set up
+        """
+        super(test_transition_set_3D, self).createData()
+        super(test_transition_set_3D, self).setUp()
 

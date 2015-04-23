@@ -64,13 +64,15 @@ def test_loadmat():
     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
     sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
-    (loaded_sampler1, samples1, data1) = bsam.loadmat('testfile1')
+    (loaded_sampler1, samples1, data1) = bsam.loadmat(os.path.join(local_path,
+        'testfile1'))
     nptest.assert_array_equal(samples1, mdat1['samples'])
     nptest.assert_array_equal(data1, mdat1['data'])
     assert loaded_sampler1.num_samples == 5
     assert loaded_sampler1.lb_model == None
 
-    (loaded_sampler2, samples2, data2) = bsam.loadmat('testfile2', model)
+    (loaded_sampler2, samples2, data2) = bsam.loadmat(os.path.join(local_path,
+        'testfile2'), model)
     nptest.assert_array_equal(samples2, mdat2['samples'])
     nptest.assert_array_equal(data2, None)
     assert loaded_sampler2.num_samples == 6
