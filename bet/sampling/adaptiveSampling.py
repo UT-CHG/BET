@@ -576,7 +576,7 @@ class maxima_kernel(kernel):
 
     maxima
         locations of the maxima of rho_D on D
-        :class:`np.nsarray` of shape (num_maxima, mdim)
+        :class:`np.ndarray` of shape (num_maxima, mdim)
     rho_max
         rho_D(maxima), list of maximum values of rho_D
     tolerance 
