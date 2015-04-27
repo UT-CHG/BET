@@ -221,13 +221,6 @@ class test_unif_unif_3D(data_3D, unif_unif):
         super(test_unif_unif_3D, self).createData()
         super(test_unif_unif_3D, self).setUp()
 
-@unittest.skip("Implement or remove multivariate_gaussian method from module")
-class test_multivariate_gaussian(unittest.TestCase):
-    """
-    TODO: Write a test for multivariate_gaussian or remove from module
-    """
-    pass
-
 class normal_normal(prob):
     """
     Set up :meth:`bet.calculateP.simpleFunP.normal_normal` on data domain.

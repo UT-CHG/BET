@@ -82,7 +82,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: (points, interior_and_layer1) where where points is an
+    :returns: (points, interior_and_layer1, rect_domain) where where points is an
         :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
         is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
@@ -100,42 +100,35 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     return center_and_layer1_points_binsize(center_pts_per_edge, center,
             r_size, sur_domain)
 
-def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
+def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     """
     Generates a sequence of arrays describing the edges of the finite voronoi
     cells in each direction. The voronoi tesselation is defined by regular grid
     of center points that define the voronoi tesselation of exactly the
-    interior of a hyperrectangle centered at ``center`` with sides of length
-    ``r_size`` and the layers of voronoi cells that bound these
-    interior cells. The resulting voronoi tesselation exactly represents the
-    hyperrectangle. The bounding voronoi cells are made finite by bounding them
-    with an  additional layer to represent ``sur_domain``.
+    interior of a hyperrectangle  defined by ``rect_domain``  and the layers of
+    voronoi cells that bound these interior cells. The resulting voronoi
+    tesselation exactly represents the hyperrectangle. The bounding voronoi
+    cells are made finite by bounding them with an  additional layer to
+    represent ``sur_domain``.
     
     This method can also be used to tile ``sur_domain`` with points to define
     voronoi regions if the user sets ``r_ratio = 1``. use binratio below
 
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
-    :param center: location of the center of the hyperrectangle
-    :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param r_size: size of the length of the sides of the
-        hyperrectangle rect_domain to definie voronoi cells for
-    :type r_size: double or list()
+    :param rect_domain: The rectangular domain to define the voronoi
+        tesselation for. This domain should be contained in the ``sur_domain``.
+    :type rect_domain: :class:`numpy.ndarray` of shape (mdim, 2)
     :param sur_domain: minima and maxima of each dimension defining the
         surrounding domain. The surrounding domain is the bounded domain
         in the data space (i.e. the data domain).    
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: interior_and_layer1 is a list of dim
-        :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,)
-    """
-    # TODO This is redoing stuff that was done when generating the points
-    # determine the hyperrectangle defined by center and r_size
-    rect_width = r_size*np.ones(sur_domain[:,0].shape)
-    rect_domain = np.column_stack([center - .5*rect_width,
-        center + .5*rect_width])
+    :returns: interior_and_layer1 is a list of dim :class:`numpy.ndarray`s of
+        shape (center_pts_per_edge+2,)
 
+    """
     if np.any(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this size is larger than the"
         msg += "original domain."
@@ -160,46 +153,6 @@ def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
         rect_and_sur_edges.append(int_l2) 
 
     return rect_and_sur_edges
-
-def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
-    """
-    Generates a sequence of arrays describing the edges of the finite voronoi
-    cells in each direction. The voronoi tesselation is defined by regular grid
-    of center points that define the voronoi tesselation of exactly the
-    interior of a hyperrectangle centered at ``center`` with sides of length
-    ``r_ratio*sur_width`` and the layers of voronoi cells that bound these
-    interior cells. The resulting voronoi tesselation exactly represents the
-    hyperrectangle. The bounding voronoi cells are made finite by bounding them
-    with an  additional layer to represent ``sur_domain``.
-    
-    This method can also be used to tile ``sur_domain`` with points to define
-    voronoi regions if the user sets ``r_ratio = 1``.
-
-    :param list() center_pts_per_edge: number of center points per edge and
-        additional two points will be added to create the bounding layer
-    :param center: location of the center of the hyperrectangle
-    :type center: :class:`numpy.ndarray` of shape (mdim,)
-    :param r_ratio: ratio of the length of the sides of the
-        hyperrectangle rect_domain to definie voronoi cells for
-    :type r_ratio: double or list()
-    :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain. The surrounding domain is the bounded domain
-        in the data space (i.e. the data domain).       
-    :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
-    :rtype: tuple
-    :returns: interior_and_layer1 is a list of dim
-        :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,)
-
-    """
-    if np.any(np.greater(r_ratio, 1)):
-        msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain. RATIO: {}".format(r_ratio)
-        print msg
-    
-    # determine r_size from the width of the surrounding domain
-    r_size = r_ratio*(sur_domain[:, 1]-sur_domain[:, 0])
-
-    return edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain)
 
 def edges_from_points(points):
     """

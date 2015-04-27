@@ -9,8 +9,6 @@ import bet.calculateP.voronoiHistogram as vHist
 import collections
 import bet.util as util
 
-# TODO change bin_size to more informative name like bound_size?
-
 def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
@@ -117,9 +115,6 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     can then be stored and accessed later by the algorithm using a completely
     different set of parameter samples and model solves.
     '''
-    # TODO check that the parallel implementation of this is correct 
-    # TODO since mpi4py DOES NOT PRESERVE ORDERING double check that we are not
-    # presuming it preserse order anywhere
     return (rho_D_M, d_distr_samples, d_Tree)
 
 def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
@@ -360,8 +355,7 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
 
     points, _, rect_domain = vHist.center_and_layer1_points_binsize(center_pts_per_edge, 
             Q_ref, bin_size, sur_domain)
-    edges = vHist.edges_regular_binsize(center_pts_per_edge, Q_ref, bin_size,
-            sur_domain) 
+    edges = vHist.edges_regular(center_pts_per_edge, rect_domain, sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     return vHist.simple_fun_uniform(points, volumes, rect_domain)
 
