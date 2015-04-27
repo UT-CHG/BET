@@ -8,4 +8,4 @@ This subpackage contains
 * :class:`~bet.postProcess.postTools` has tools for postprocessing
 
 """
-__all__ = ['plotP', 'plotDomains', 'postTools']
+__all__ = ['plotP', 'plotDomains', 'postTools', 'dev_volume2d']

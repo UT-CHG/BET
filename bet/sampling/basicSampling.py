@@ -105,17 +105,18 @@ def loadmat(save_file, model=None):
     # load the data from a *.mat file
     mdat = sio.loadmat(save_file)
     # load the samples
-    # TODO: calculate the number of samples rather than loading it
     if mdat.has_key('samples'):
         samples = mdat['samples']
+        num_samples = samples.shape[0]
     else:
         samples = None
+        num_samples = None
     # load the data
     if mdat.has_key('data'):
         data = mdat['data']
     else:
         data = None
-    loaded_sampler = sampler(model, mdat['num_samples'])    
+    loaded_sampler = sampler(model, num_samples)    
     return (loaded_sampler, samples, data)
 
 class sampler(object):

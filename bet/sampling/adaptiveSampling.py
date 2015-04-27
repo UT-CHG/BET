@@ -132,56 +132,6 @@ class sampler(bsam.sampler):
         sort_ind = np.argsort(results_rD)
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
-    # TODO This appears to be an unused function
-    def run_reseed(self, kern_list, rho_D, maximum, param_min, param_max,
-            t_set, savefile, initial_sample_type="lhs", criterion='center',
-            reseed=3):
-        """
-        Generates samples using reseeded chains and a list of different
-        kernels.
-
-        THIS IS NOT OPERATIONAL DO NOT USE.
-
-        :param list() kern_list: List of
-            :class:~`bet.sampling.adaptiveSampling.kernel` objects.
-        :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and
-            returns a :class:`numpy.ndarray`
-        :param double maximum: maximum value of rho_D
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
-        :param t_set: method for creating new parameter steps using
-            given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
-        :param string savefile: filename to save samples and data
-        :param string initial_sample_type: type of initial sample random (or r),
-            latin hypercube(lhs), or space-filling curve(TBD)
-         :param string criterion: latin hypercube criterion see 
-            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :rtype: tuple
-        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
-            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
-
-        """
-        results = list()
-        # reseeding sampling
-        results = list()
-        r_step_size = list()
-        results_rD = list()
-        mean_ss = list()
-        for kern in kern_list:
-            (samples, data, step_sizes) = self.reseed_chains(
-                    param_min, param_max, t_set, kern, savefile,
-                    initial_sample_type, criterion, reseed)
-            results.append((samples, data))
-            r_step_size.append(step_sizes)
-            results_rD.append(int(sum(rho_D(data)/maximum)))
-            mean_ss.append(np.mean(step_sizes))
-        sort_ind = np.argsort(results_rD)
-        return (results, r_step_size, results_rD, sort_ind, mean_ss)
-
     def run_tk(self, init_ratio, min_ratio, max_ratio, rho_D, maximum,
             param_min, param_max, kernel, savefile,
             initial_sample_type="lhs", criterion='center'):
@@ -307,9 +257,9 @@ class sampler(bsam.sampler):
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
         # Calculate domain size
-        # TODO The following could probably be done in one line
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
+
         param_width = param_right - param_left
         # Calculate step_size
         max_ratio = t_set.max_ratio
@@ -395,40 +345,6 @@ class sampler(bsam.sampler):
 
         return (samples, data, all_step_ratios)
         
-    #TODO MOve this function to a dev branch since it is not implemented.
-    def reseed_chains(self, param_min, param_max, t_set, kern,
-            savefile, initial_sample_type="lhs", criterion='center', reseed=1):
-        """
-        Basic adaptive sampling algorithm.
-
-        NOT YET IMPLEMENTED.
-
-        :param string initial_sample_type: type of initial sample random (or r),
-            latin hypercube(lhs), or space-filling curve(TBD)
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
-        :param t_set: method for creating new parameter steps using
-            given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
-        :param function kern: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
-        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
-        :param string savefile: filename to save samples and data
-        :param string criterion: latin hypercube criterion see 
-            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-
-
-        :param int reseed: number of times to reseed the chains
-        :rtype: tuple
-        :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-            and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-
-        """
-        pass
-
 def kernels(Q_ref, rho_D, maximum):
     """
     Generates a list of kernstic objects.
