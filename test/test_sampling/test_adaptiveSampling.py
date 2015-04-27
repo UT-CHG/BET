@@ -212,12 +212,12 @@ class Test_adaptive_sampler(unittest.TestCase):
         if size > 1:
             for f in self.savefiles:
                 proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "proc{}{}".format(rank, os.path.basename(f)))
+                        "proc{}{}.mat".format(rank, os.path.basename(f)))
                 print proc_savefile
                 if os.path.exists(proc_savefile):
                     os.remove(proc_savefile)
                 proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "p{}proc{}{}".format(rank, rank, os.path.basename(f)))
+                        "p{}proc{}{}.mat".format(rank, rank, os.path.basename(f)))
                 if os.path.exists(proc_savefile):
                     os.remove(proc_savefile)
                 print proc_savefile
