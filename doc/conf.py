@@ -32,7 +32,9 @@ intersphinx_cache_limit = 10 #days to keep cached inventories
 intersphinx_mapping = {'python': ('https://docs.python.org/2.7', None),
         'polyadcirc' : ('http://ut-chg.github.io/PolyADCIRC', None),
          'matplotlib':('http://matplotlib.sourceforge.net', None),
-                  'numpy':('http://docs.scipy.org/doc/numpy',None)
+                  'numpy':('http://docs.scipy.org/doc/numpy',None),
+                  'np':('http://docs.scipy.org/doc/numpy',None),
+                  'scipy':('http://docs.scipy.org/doc/scipy',None)
         }
 
 todo_include_todos = True
