@@ -70,7 +70,6 @@ def get_global_values(array, shape=None):
     # Figure out the subtype of the elements of the array
     dtype = array.dtype
     mpi_dtype = False
-    print dtype
     for ptype in possible_types.iterkeys():
         if np.issubdtype(dtype, ptype):
             mpi_dtype = True
@@ -87,10 +86,9 @@ def get_global_values(array, shape=None):
     else:
         # do an uppercase Allgather
         whole_a = np.empty(shape, dtype=dtype)
-        print dtype
         comm.Allgather([array, possible_types[dtype]], [whole_a,
             possible_types[dtype]])
-        return array
+        return whole_a
 
 def fix_dimensions_vector(vector):
     """
@@ -136,10 +134,7 @@ def fix_dimensions_domain(domain):
     """
     if not isinstance(domain, np.ndarray):
         if len(domain) == 2:
-            print domain
             domain = np.expand_dims(domain, axis=0)
-            print domain
-            print domain.shape
         else:
             raise TypeError("The length must be at least 2.")
     elif len(domain.shape) == 1 and domain.shape[0] == 2:

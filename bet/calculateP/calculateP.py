@@ -1,6 +1,6 @@
-r"""
-This module provides methods for calulating the probability
-measure :math:`P_{\Lambda}`.
+r""" 
+This module provides methods for calulating the probability measure
+:math:`P_{\Lambda}`.
 
 * :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
     the probability for a set of emulation points.
@@ -17,8 +17,8 @@ import bet.util as util
 
 def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     """
-    Parition the parameter space using emulated samples into many voronoi cells.
-    These samples are iid so that we can apply the standard MC                                       
+    Parition the parameter space using emulated samples into many voronoi
+    cells. These samples are iid so that we can apply the standard MC                                       
     assumuption/approximation
 
     :param lam_domain: The domain for each parameter for the model.
@@ -170,8 +170,8 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         parition of D to for the simple function approximation
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
     :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
-    :param int num_l_emulate: The number of iid samples used to parition the
-        parameter space
+    :param lambda_emulate: Samples used to partition the parameter space
+
     :rtype: tuple of :class:`~numpy.ndarray` of sizes (num_samples,),
         (num_samples,), (ndim, num_l_emulate), (num_samples,), (num_l_emulate,)
     :returns: (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr) where P is the

@@ -50,30 +50,29 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
     """
     data = util.fix_dimensions_data(data)
-    bin_size = (np.max(data, 0) - np.min(data,0))*bin_ratio
+    bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio
 
     r'''
     Create M samples defining M Voronoi cells (i.e., "bins") in D used to 
     define the simple function approximation :math:`\rho_{\mathcal{D},M}`.
     
     This does not have to be random, but here we assume this to be the case.
-    We can choose these samples deterministically but that fails to scale 
-    with dimension efficiently.
+    We can choose these samples deterministically but that fails to scale with
+    dimension efficiently.
     
     Note that these M samples are chosen for the sole purpose of determining
     the bins used to create the approximation to :math:`rho_{\mathcal{D}}`.
     
-    We call these M samples "d_distr_samples" because they are samples
-    on the data space and the distr implies these samples are chosen
-    to create the approximation to the probability measure (distribution) 
-    on D.
+    We call these M samples "d_distr_samples" because they are samples on the
+    data space and the distr implies these samples are chosen to create the
+    approximation to the probability measure (distribution) on D.
     
-    Note that we create these samples in a set containing the hyperrectangle
-    in order to get output cells with zero probability. If all of the
-    d_dstr_samples were taken from within the support of :math:`\rho_{\mathcal{D}}`
-    then each of the M bins would have positive probability. This would
-    in turn imply that the support of :math:`\rho_{\Lambda}` is all of
-    :math:`\Lambda`.
+    Note that we create these samples in a set containing the hyperrectangle in
+    order to get output cells with zero probability. If all of the
+    d_dstr_samples were taken from within the support of
+    :math:`\rho_{\mathcal{D}}` then each of the M bins would have positive
+    probability. This would in turn imply that the support of
+    :math:`\rho_{\Lambda}` is all of :math:`\Lambda`.
     '''
     if rank == 0:
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
@@ -128,7 +127,6 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
         relatively small number here like 50. 
-    :param:w
     int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param Q_ref: :math:`Q(\lambda_{reference})`
@@ -226,7 +224,6 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
-    import scipy.stats as stats
     r'''Create M smaples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
@@ -310,29 +307,28 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
-    centered at Q_ref with bin_size of the width
-    of D.
+    centered at Q_ref with bin_size of the width of D.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
     to represent it exactly with ``M = 3^mdim`` or rather
     ``len(d_distr_samples) == 3^mdim``.
 
-    :param bin_size: The size used to determine the width of the
-        uniform distribution 
-    :type bin_size: double or list()
-    :param int num_d_emulate: Number of samples used to emulate using an MC
+    :param bin_size: The size used to determine the width of the uniform
+        distribution 
+    :type bin_size: double or list() 
+    :param int num_d_emulate: Number of samples used to emulate using an MC 
         assumption 
-    :param data: Array containing QoI data where the QoI is mdim diminsional
-    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
-    :param Q_ref: :math:`Q(\lambda_{reference})`
-    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
-    :param list() center_pts_per_edge: number of center points per edge and
-        additional two points will be added to create the bounding layer
+    :param data: Array containing QoI data where the QoI is mdim diminsional 
+    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim) 
+    :param Q_ref: :math:`Q(\lambda_{reference})` 
+    :type Q_ref: :class:`~numpy.ndarray` of size (mdim,) 
+    :param list() center_pts_per_edge: number of center points per edge
+        and additional two points will be added to create the bounding layer
 
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
-        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :rtype: tuple :returns: (rho_D_M, d_distr_samples, d_Tree) where
+    ``rho_D_M`` is (M,) and ``d_distr_samples`` are (M, mdim)
+    :class:`~numpy.ndarray` and `d_Tree` is the :class:`~scipy.spatial.KDTree`
+    for d_distr_samples
 
     """
     data = util.fix_dimensions_data(data)
@@ -351,7 +347,7 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
     if np.any(np.less(bin_size, 0)):
             print 'Warning: center_pts_per_edge must be greater than 0'
 
-    sur_domain = np.array([np.min(data, 0),np.max(data, 0)]).transpose()
+    sur_domain = np.array([np.min(data, 0), np.max(data, 0)]).transpose()
 
     points, _, rect_domain = vHist.center_and_layer1_points_binsize(center_pts_per_edge, 
             Q_ref, bin_size, sur_domain)
@@ -393,7 +389,6 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     if not isinstance(bin_ratio, collections.Iterable):
         bin_ratio = bin_ratio*np.ones((data.shape[1], ))
 
-    sur_domain = np.array([np.min(data, 0),np.max(data, 0)]).transpose()
     bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio 
     return uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
             center_pts_per_edge)
