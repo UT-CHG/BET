@@ -13,6 +13,7 @@ Contents:
    :glob:
 
    overview
+   parallel
    examples/*
    examples/linearMap/*
    examples/fromFileMap/*

@@ -8,9 +8,9 @@ Installation
 ------------
 
 The code currently resides at `GitHub
-<https://github.com/smattis/BET>`_.
+<https://github.com/UT-CHG/BET>`_.
 If you have a 
-`zip file <https://github.com/smattis/BET/archive/master.zip>`_ you can install
+`zip file <https://github.com/UT-CHG/BET/archive/master.zip>`_ you can install
 BET using::
 
     python setup.py install
@@ -28,20 +28,16 @@ The package layout is as follows::
 
   bet/
     calculateP/
-      calculateP.py  
-      simpleFunP.py  
-      voronoiHistogram.py
+      calculateP 
+      simpleFunP
+      voronoiHistogram
     sampling/
-      basicSampling.py  
-      adaptiveSampling.py
+      basicSampling 
+      adaptiveSampling
     postProcess/
-      plotP.py  
-      plotDomains.py 
+      plotP
+      plotDomains
       postTools
-    loadBalance/        # !!! IN ACTIVE DEVELOPMENT !!!
-      lb_PADCIRC.py  
-      load_balance.py  
-      lb_DIAMOND.py
 
 Code Overview
 --------------
