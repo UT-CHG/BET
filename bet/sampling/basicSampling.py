@@ -28,6 +28,7 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
         samples are sorted
     :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
         information used to generate the sets of samples to be displayed
+    :param list() column_headings: Column headings to print to screen
 
     """
     if column_headings == None:
@@ -47,6 +48,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`np.ndarray`
+    :param float maximum: maximum (or average) value of ``rho_D``
     :param list sample_nos: sample numbers to plot
 
     :rtype: int
@@ -74,6 +76,7 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`np.ndarray`
+    :param float maximum: maximum (or average) value of ``rho_D``
     :param list sample_nos_list: list of sample numbers to plot (list of lists)
 
     :rtype: list of int
@@ -134,6 +137,10 @@ class sampler(object):
     def __init__(self, lb_model, num_samples=None):
         """
         Initialization
+        
+        :param lb_model: Interface to physics-based model takes an input of
+            shape (N, ndim) and returns an output of shape (N, mdim)
+        :param int num_samples: N, number of samples (optional)
         """
         self.num_samples = num_samples
         self.lb_model = lb_model
@@ -178,6 +185,7 @@ class sampler(object):
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
         :param string savefile: filename to save samples and data
+        :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :param boolean parallel: Flag for parallel implementation. Uses
@@ -227,14 +235,12 @@ class sampler(object):
         
         # Update the number of samples
         self.num_samples = samples.shape[0]
-        size = comm.Get_size()
-        rank = comm.Get_rank()
 
         # Solve the model at the samples
         if not(parallel) or size == 1:
             data = self.lb_model(samples)
         elif parallel and self.num_samples%size == 0:
-            if len(samples.shape)  == 1:
+            if len(samples.shape) == 1:
                 my_samples = np.empty((samples.shape[0]/size, ))
             else:
                 my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))

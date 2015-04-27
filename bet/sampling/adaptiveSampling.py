@@ -24,8 +24,8 @@ def loadmat(save_file, lb_model=None):
     :class:`~bet.sampling.adaptiveSampling.sampler` object.
 
     :param string save_file: file name
-    :param model: runs the model at a given set of parameter samples and
-        returns data 
+    :param lb_model: runs the model at a given set of parameter samples, (N,
+        ndim), and returns data (N, mdim)
     :rtype: tuple
     :returns: (sampler, samples, data)
 
@@ -65,6 +65,11 @@ class sampler(bsam.sampler):
     def __init__(self, num_samples, chain_length, lb_model):
         """
         Initialization
+
+        :param int num_samples: Total number of samples
+        :param int chain_length: Number of samples per chain
+        :param lb_model: runs the model at a given set of parameter samples, (N,
+            ndim), and returns data (N, mdim)
         """
         super(sampler, self).__init__(lb_model, num_samples)
         self.chain_length = chain_length
@@ -356,8 +361,7 @@ def kernels(Q_ref, rho_D, maximum):
         a class:`np.ndarray`
     :param double maximum: maximum value of rho_D
     :rtype: list()
-    :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel,
-        multi_dist_kernel]
+    :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel]
 
     """
     kern_list = list()
@@ -387,6 +391,11 @@ class transition_set(object):
     def __init__(self, init_ratio, min_ratio, max_ratio):
         """
         Initialization
+
+        :param double init_ratio: initial step ratio
+        :param double min_ratio: minimum step_ratio
+        :param double max_ratio: maximum step_ratio
+
         """
         self.init_ratio = init_ratio
         self.min_ratio = min_ratio
@@ -402,7 +411,13 @@ class transition_set(object):
         :param step_ratio: define maximum step_size = ``step_ratio*param_width``
         :type step_ratio: :class:`np.array` of shape (num_samples,)
         :param param_width: width of the parameter domain
-        :type param_width: np.array (ndim,)
+        :type param_width: :class:`np.ndarray` of shape (ndim,)
+        :param param_left: minimum boundary of the parameter domain
+        :type param_left: :class:`np.ndarray` of shape (ndim, N) where N is the
+            length of ``step_ratio``
+        :param param_right: maximum boundary of the parameter domain
+        :type param_right: :class:`np.ndarray` of shape (ndim, N) where N is the
+            length of ``step_ratio``
         :param samples_old: Parameter samples from the previous step.
         :type samples_old: :class:`~numpy.ndarray` of shape (num_samples,
             ndim)
@@ -438,7 +453,7 @@ class kernel(object):
     this is simply a skeleton parent class it does not change the step size at
     all.
     
-    tolerance
+    TOL
         a tolerance used to determine if two different values are close
     increase
         the multiple to increase the step size by
@@ -449,6 +464,11 @@ class kernel(object):
     def __init__(self, tolerance=1E-08, increase=1.0, decrease=1.0):
         """
         Initialization
+
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.TOL = tolerance
         self.increase = increase
@@ -496,6 +516,13 @@ class rhoD_kernel(kernel):
             decrease=0.5):
         """
         Initialization
+
+        :param double maximum: maximum value of rho_D
+        :param function rho_D: probability density on D
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.MAX = maximum
         self.rho_D = rho_D
@@ -549,7 +576,7 @@ class maxima_kernel(kernel):
 
     maxima
         locations of the maxima of rho_D on D
-        np.array of shape (num_maxima, mdim)
+        :class:`np.nsarray` of shape (num_maxima, mdim)
     rho_max
         rho_D(maxima), list of maximum values of rho_D
     tolerance 
@@ -565,6 +592,16 @@ class maxima_kernel(kernel):
             decrease=0.5):
         """
         Initialization
+
+        :param maxima: locations of the maxima of rho_D on D 
+        :type maxima: :class:`np.ndarray` of chape (num_maxima, mdim)
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns
+            a class:`np.ndarray`
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.MAXIMA = maxima
         self.num_maxima = maxima.shape[0]
@@ -644,6 +681,16 @@ class maxima_mean_kernel(maxima_kernel):
             decrease=0.5):
         """
         Initialization
+
+        :param maxima: locations of the maxima of rho_D on D 
+        :type maxima: :class:`np.ndarray` of chape (num_maxima, mdim)
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns
+            a class:`np.ndarray`
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.radius = None
         self.mean = None

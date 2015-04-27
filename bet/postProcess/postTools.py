@@ -40,7 +40,7 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     if data != None:
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
-        data = data[indices,:]
+        data = data[indices, :]
 
     return (P_samples, samples, lam_vol, data)
 
