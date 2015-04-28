@@ -13,46 +13,6 @@ from bet.Comm import size
 
 local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
-def test_in_high_prob():
-    """
-    TODO :maybe move to test.test_postProcessing.test_postTools
-
-    Tests :meth:`bet.sampling.basicSampling.in_high_prob`
-    """
-    def rho_D(my_data):
-        return my_data/4.0
-    data = np.array([0, 1, 0, 1, 1, 1])
-    maximum = np.max(rho_D(data))
-    print "maximum", maximum
-    assert 4 == bsam.in_high_prob(data, rho_D, maximum)
-    assert 3 == bsam.in_high_prob(data, rho_D, maximum, [3, 4, 5])
-    assert 2 == bsam.in_high_prob(data, rho_D, maximum, [0, 1, 2, 3])
-    assert 1 == bsam.in_high_prob(data, rho_D, maximum, [0, 2, 4])
-    assert 0 == bsam.in_high_prob(data, rho_D, maximum, [0, 2])
-
-def test_in_high_prob_multi():
-    """
-    TODO :maybe move to test.test_postProcessing.test_postTools
-
-    Tests :meth:`bet.sampling.basicSampling.in_high_prob_multi`
-    
-    """
-    def rho_D(my_data):
-        return my_data/4.0
-    data1 = np.array([0, 1, 0, 1, 1, 0])
-    data2 = np.ones(data1.shape)-data1
-    maximum = np.max(rho_D(data1))
-
-    print "maximum", maximum
-    results_list = [[None, data1], [None, data2], [None, data1], [None, data2]]
-    sample_nos_list = [[3, 4, 5], [3, 4, 5], [0, 2, 4], [0, 2, 4]]
-
-    nptest.assert_array_equal(np.array([2, 1, 1, 2]),
-            bsam.in_high_prob_multi(results_list, rho_D, maximum,
-                sample_nos_list))
-    nptest.assert_array_equal(np.array([3, 3, 3, 3]),
-            bsam.in_high_prob_multi(results_list, rho_D, maximum))
-
 
 @unittest.skipIf(size > 1, 'Only run in serial')
 def test_loadmat():
