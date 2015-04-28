@@ -20,9 +20,6 @@ import bet.sampling.adaptiveSampling as asam
 import math, os
 from bet.Comm import *
 
-size = comm.Get_size()
-rank = comm.Get_rank()
-
 class sampler(asam.sampler):
     """
     This class provides methods for adaptive sampling of parameter space to
