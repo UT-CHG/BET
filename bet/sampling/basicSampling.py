@@ -167,7 +167,7 @@ class sampler(object):
                 my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
             comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
             my_data = self.lb_model(my_samples)
-            if len(my_data.shape) == 1:
+            if len(data.shape) == 1:
                 data = np.empty((self.num_samples,),
                         dtype=np.float64)
             else:
@@ -180,8 +180,8 @@ class sampler(object):
                 my_index = range(0+rank*my_len, (rank+1)*my_len)
             else:
                 my_index = range(0+rank*my_len, self.num_samples)
-            if len(my_samples.shape) == 1:
-                my_samples = samples[my_index, :]
+            if len(samples.shape) == 1:
+                my_samples = samples[my_index]
             else:
                 my_samples = samples[my_index, :]
             my_data = self.lb_model(my_samples)
