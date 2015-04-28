@@ -12,4 +12,4 @@ probability measure :math:`P_{\Lambda}`.
     module is only for use by :mod:`~bet.calculateP.simpleFunP`.  
 """
 __all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram', 'dev_simpleFunP',
-'dev_voronoiHistogram']
+'dev_voronoiHistogram', 'indicatorFunctions']
