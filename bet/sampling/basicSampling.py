@@ -124,6 +124,7 @@ class sampler(object):
         param_left = np.repeat([param_min], num_samples, 0)
         param_right = np.repeat([param_max], num_samples, 0)
         samples = (param_right-param_left)
+        print samples.shape
          
         if sample_type == "lhs":
             samples = samples * lhs(param_min.shape[-1],
@@ -160,28 +161,14 @@ class sampler(object):
         # Solve the model at the samples
         if not(parallel) or size == 1:
             data = self.lb_model(samples)
-        elif parallel and self.num_samples%size == 0:
-            if len(samples.shape) == 1:
-                my_samples = np.empty((samples.shape[0]/size, ))
-            else:
-                my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
-            comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
-            my_data = self.lb_model(my_samples)
-            if len(my_data.shape) == 1:
-                data = np.empty((self.num_samples,),
-                        dtype=np.float64)
-            else:
-                data = np.empty((self.num_samples, my_data.shape[1]),
-                        dtype=np.float64)
-            comm.Allgather([my_data, MPI.DOUBLE], [data, MPI.DOUBLE])
         elif parallel:
             my_len = self.num_samples/size
             if rank != size-1:
                 my_index = range(0+rank*my_len, (rank+1)*my_len)
             else:
                 my_index = range(0+rank*my_len, self.num_samples)
-            if len(my_samples.shape) == 1:
-                my_samples = samples[my_index, :]
+            if len(samples.shape) == 1:
+                my_samples = samples[my_index]
             else:
                 my_samples = samples[my_index, :]
             my_data = self.lb_model(my_samples)
@@ -193,6 +180,8 @@ class sampler(object):
             samples = np.expand_dims(samples, axis=1)
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
+
+        print samples.shape
 
         mdat = dict()
         self.update_mdict(mdat)

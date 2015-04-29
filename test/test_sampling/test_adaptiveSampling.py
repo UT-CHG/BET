@@ -88,8 +88,8 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
         right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
         left = np.all(np.greater_equal(outputs, left), axis=1)
         right = np.all(np.less_equal(outputs, right), axis=1)
-        inside = np.logial_and(left, right)
-        max_values = np.repeate(maximum, outputs.shape[0], 0)
+        inside = np.logical_and(left, right)
+        max_values = np.repeat(maximum, outputs.shape[0], 0)
         return inside.astype('float64')*max_values
         
     # create rhoD_kernel
@@ -132,7 +132,7 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
     assert sampler.num_samples == mdat['num_samples']
     assert sampler.num_chains == mdat['num_chains']
     nptest.assert_array_equal(sampler.sample_batch_no,
-            mdat['sampler_batch_no'])
+            np.squeeze(mdat['sample_batch_no']))
 
 class Test_adaptive_sampler(unittest.TestCase):
     """
@@ -159,7 +159,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             """
             3 to 1 map
             """
-            return np.sum(x, 1)
+            return np.expand_dims(np.sum(x, 1), axis=1)
         # create 3-2 map
         def map_3t2(x):
             """
@@ -414,9 +414,10 @@ class Test_adaptive_sampler(unittest.TestCase):
         # create a transition set
         t_set = asam.transition_set(.5, .5**5, 1.0) 
 
-        for _, QoI_range, sampler, param_min, param_max, savefile, _ in self.test_list:
+        for _, QoI_range, sampler, param_min, param_max, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
-                yield verify_samples, QoI_range, sampler, param_min, param_max, t_set, savefile, initial_sample_type
+                verify_samples(QoI_range, sampler, param_min, param_max, t_set,
+                        savefile, initial_sample_type)
 
 class test_kernels(unittest.TestCase):
     """

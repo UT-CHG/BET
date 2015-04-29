@@ -3,13 +3,12 @@
 This module contains unittests for :mod:`~bet.sampling.basicSampling:`
 """
 
-import unittest, os
+import unittest, os, bet, pyDOE
 import numpy.testing as nptest
 import numpy as np
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
-import bet
-from bet.Comm import size
+from bet.Comm import *
 
 local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
@@ -57,7 +56,7 @@ def verify_user_samples(model, sampler, samples, savefile, parallel):
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1)
     if len(samples.shape) == 1:
-        samples = np.expan_dims(samples, axis=1)
+        samples = np.expand_dims(samples, axis=1)
     
     # compare the samples
     nptest.assert_array_equal(samples, my_samples)
@@ -67,24 +66,25 @@ def verify_user_samples(model, sampler, samples, savefile, parallel):
     assert samples.shape[0] == sampler.num_samples
     # did the file get correctly saved?
 
-    mdat = sio.loadmat(savefile)
-    nptest.assert_array_equal(samples, mdat['samples'])
-    nptest.assert_array_equal(data, mdat['data'])
-    assert samples.shape[0] == sampler.num_samples
+    if rank == 0:
+        mdat = sio.loadmat(savefile)
+        nptest.assert_array_equal(samples, mdat['samples'])
+        nptest.assert_array_equal(data, mdat['data'])
+    comm.Barrier()
 
 def verify_random_samples(model, sampler, sample_type, param_min, param_max,
         num_samples, savefile, parallel):
     # recreate the samples
     if num_samples == None:
-        num_samples = self.num_samples
+        num_samples = sampler.num_samples
     param_left = np.repeat([param_min], num_samples, 0)
     param_right = np.repeat([param_max], num_samples, 0)
     samples = (param_right-param_left)
     if sample_type == "lhs":
-        samples = samples * lhs(param_min.shape[-1], num_samples, criterion)
+        samples = samples * pyDOE.lhs(param_min.shape[-1], num_samples)
     elif sample_type == "random" or "r":
         np.random.seed(1)
-        samples = samples * np.random(param_left.shape)
+        samples = samples * np.random.random(param_left.shape)
     samples = samples + param_left
     # evalulate the model at the samples directly
     data = model(samples)
@@ -111,12 +111,14 @@ def verify_random_samples(model, sampler, sample_type, param_min, param_max,
     nptest.assert_array_equal(data, my_data)
     # did num_samples get updated?
     assert samples.shape[0] == sampler.num_samples
+    assert num_samples == sampler.num_samples
     # did the file get correctly saved?
-
-    mdat = sio.loadmat(savefile)
-    nptest.assert_array_equal(samples, mdat['samples'])
-    nptest.assert_array_equal(data, mdat['data'])
-    assert samples.shape[0] == sampler.num_samples
+    
+    if rank == 0:
+        mdat = sio.loadmat(savefile)
+        nptest.assert_array_equal(samples, mdat['samples'])
+        nptest.assert_array_equal(data, mdat['data'])
+    comm.Barrier()
 
 
 class Test_basic_sampler(unittest.TestCase):
@@ -140,7 +142,7 @@ class Test_basic_sampler(unittest.TestCase):
             return np.vstack(([x[:, 0]+x[:, 1], x[:, 2]])).transpose()
         # create 10-4 map
         self.param_min10 = np.zeros((10, ))
-        self.param_min10 = np.ones((10, ))
+        self.param_max10 = np.ones((10, ))
         def map_10t4(x):
             x1 = x[:, 0] + x[:, 1]
             x2 = x[:, 2] + x[:, 3]
@@ -155,9 +157,25 @@ class Test_basic_sampler(unittest.TestCase):
             self.samplers.append(bsam.sampler(model, num_samples))
 
     def tearDown(self):
-        for f in self.savefiles:
-            if os.path.exists(os.path.join(local_path, f, ".mat")):
-                os.remove(os.path.join(local_path, f, ".mat"))
+        """
+        Clean up extra files
+        """
+        if rank == 0:
+            for f in self.savefiles:
+                if os.path.exists(f+".mat"):
+                    os.remove(f+".mat")
+        if size > 1:
+            for f in self.savefiles:
+                proc_savefile = os.path.join(local_path, os.path.dirname(f),
+                        "proc{}{}.mat".format(rank, os.path.basename(f)))
+                print proc_savefile
+                if os.path.exists(proc_savefile):
+                    os.remove(proc_savefile)
+                proc_savefile = os.path.join(local_path, os.path.dirname(f),
+                        "p{}proc{}{}.mat".format(rank, rank, os.path.basename(f)))
+                if os.path.exists(proc_savefile):
+                    os.remove(proc_savefile)
+                print proc_savefile
 
     def test_init(self):
         """
@@ -177,7 +195,7 @@ class Test_basic_sampler(unittest.TestCase):
 
     def test_user_samples(self):
         """
-        Test :meth:`bet.sampling.basicSampling.sampler.random_samples` for
+        Test :meth:`bet.sampling.basicSampling.sampler.user_samples` for
         three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
         """
         # create a list of different sets of samples
@@ -189,11 +207,12 @@ class Test_basic_sampler(unittest.TestCase):
         
         for model, sampler, samples, savefile in test_list: 
             for parallel in [False, True]:
-                yield verify_user_samples, model, sampler, samples, savefile, parallel
-
+                verify_user_samples(model, sampler, samples, savefile,
+                        parallel)
+   
     def test_random_samples(self):
         """
-        Test :met:`bet.sampling.basicSampling.sampler.random_samples` for three
+        Test :meth:`bet.sampling.basicSampling.sampler.random_samples` for three
         different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
         """
         param_min_list = [self.param_min1, self.param_min1, self.param_min3,
@@ -201,14 +220,14 @@ class Test_basic_sampler(unittest.TestCase):
         param_max_list = [self.param_max1, self.param_max1, self.param_max3,
             self.param_max3, self.param_max10]
 
+
         test_list = zip(self.models, self.samplers, param_min_list,
-                param_max_list,
-                self.savefiles)
+                param_max_list, self.savefiles)
 
         for model, sampler, param_min, param_max, savefile in test_list:
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     for parallel in [False, True]:
-                        yield verify_random_samples, model, sampler,
-                        param_min, param_max, savefile, num_samples,
-                        parallel
+                        verify_random_samples(model, sampler, sample_type,
+                                param_min, param_max, num_samples, savefile,
+                                parallel)
