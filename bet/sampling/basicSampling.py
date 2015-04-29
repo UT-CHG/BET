@@ -124,7 +124,6 @@ class sampler(object):
         param_left = np.repeat([param_min], num_samples, 0)
         param_right = np.repeat([param_max], num_samples, 0)
         samples = (param_right-param_left)
-        print samples.shape
          
         if sample_type == "lhs":
             samples = samples * lhs(param_min.shape[-1],
@@ -181,7 +180,6 @@ class sampler(object):
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
 
-        print samples.shape
 
         mdat = dict()
         self.update_mdict(mdat)
