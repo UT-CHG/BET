@@ -38,7 +38,7 @@ class test_plotDomains(unittest.TestCase):
         self.P_samples = (1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         self.filename = "testfigure"
 
-        QoI_range = np.array([3.0, 3.0, 3.0])
+        QoI_range = np.array([3.0, 3.0, 3.0, 3.0])
         Q_ref = QoI_range*0.5
         bin_size = 0.15*QoI_range
         maximum = 1/np.product(bin_size)
@@ -54,8 +54,8 @@ class test_plotDomains(unittest.TestCase):
             right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
             left = np.all(np.greater_equal(outputs, left), axis=1)
             right = np.all(np.less_equal(outputs, right), axis=1)
-            inside = np.logial_and(left, right)
-            max_values = np.repeate(maximum, outputs.shape[0], 0)
+            inside = np.logical_and(left, right)
+            max_values = np.repeat(maximum, outputs.shape[0], 0)
             return inside.astype('float64')*max_values
         self.rho_D = ifun
         self.lnums = [1, 2, 3]
@@ -94,7 +94,7 @@ class test_plotDomains(unittest.TestCase):
         for sn in sample_nos:
             for pr in p_ref:
                 for s in save:
-                    yield self.check_scatter_2D, sn, pr, s
+                    self.check_scatter_2D(sn, pr, s)
 
     def check_scatter_2D(self, sample_nos, p_ref, save):
         """
@@ -120,7 +120,7 @@ class test_plotDomains(unittest.TestCase):
         for sn in sample_nos:
             for pr in p_ref:
                 for s in save:
-                    yield self.check_scatter_3D, sn, pr, s
+                    self.check_scatter_3D(sn, pr, s)
 
     def check_scatter_3D(self, sample_nos, p_ref, save):
         """
@@ -158,7 +158,8 @@ class test_plotDomains(unittest.TestCase):
                         p_ref = [None, sample[4, :]]
                         for pr in p_ref:
                             for s in save:
-                                yield self.check_show_param, samples, pr, sn, s, ln, sd
+                                self.check_show_param(sample, sn, pr, s, ln,
+                                        sd)
 
     def check_show_param(self, samples, sample_nos, p_ref, save, lnums,
             showdim):
@@ -195,7 +196,7 @@ class test_plotDomains(unittest.TestCase):
                         Q_ref = [None, data[4, :]]
                         for qr in Q_ref:
                             for s in save:
-                                yield self.check_show_data, data, sn, qr, s, qn, sd
+                                self.check_show_data(data, sn, qr, s, qn, sd)
 
     def check_show_data(self, data, sample_nos, q_ref, save, qnums, showdim):
         """
@@ -203,7 +204,11 @@ class test_plotDomains(unittest.TestCase):
         without generating an error.
         """
         try:
-            plotDomains.show_data(data, self.rho_D, q_ref,
+            if data.shape[1] == 4:
+                plotDomains.show_data(data, self.rho_D, q_ref,
+                    sample_nos, save, False, qnums, showdim) 
+            else:
+                plotDomains.show_data(data, None, q_ref,
                     sample_nos, save, False, qnums, showdim) 
             go = True
         except (RuntimeError, TypeError, NameError):
@@ -226,7 +231,7 @@ class test_plotDomains(unittest.TestCase):
                 for t in triangles:
                     for s in save:
                         for fn in filenames:
-                            yield self.check_show_data_domain_2D, rm, rc, t, s, fn
+                            self.check_show_data_domain_2D(rm, rc, t, s, fn)
 
     def check_show_data_domain_2D(self, ref_markers, ref_colors, triangles,
             save, filenames):
@@ -235,7 +240,7 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_2D` ran
         without generating an error.
         """
-        Q_ref = self.data[4, [0, 1]]
+        Q_ref = self.data[[1, 4], [0, 1]]
         data = self.data[:, [0, 1]]
         try:
             plotDomains.show_data_domain_2D(self.samples, data, Q_ref,
@@ -250,7 +255,8 @@ class test_plotDomains(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotDomains.show_data_domain_multi`
         """
-        os.mkdir('figs/')
+        if not os.path.exists('figs/'):
+            os.mkdir('figs/')
         Q_nums = [None, [1, 2], [1, 2, 3]]
         ref_markers = [None, self.markers]
         ref_colors = [None, self.colors]
@@ -258,10 +264,10 @@ class test_plotDomains(unittest.TestCase):
             for rc in ref_colors:
                 for qn in Q_nums:
                     showdim = [None, 1]
-                    if len(qn) > 2:
+                    if qn and len(qn) > 2:
                         showdim.append('all', 'ALL')
                     for sd in showdim:
-                        yield self.check_show_data_domain_multi, rm, rc, qn, sd
+                        self.check_show_data_domain_multi(rm, rc, qn, sd)
 
     def check_show_data_domain_multi(self, ref_markers, ref_colors, Q_nums,
             showdim):

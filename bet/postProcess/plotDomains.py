@@ -9,6 +9,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from itertools import combinations
+from mpl_toolkits.mplot3d import Axes3D
 
 markers = []
 for m in Line2D.markers:
@@ -132,6 +133,8 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
    
     if rho_D != None:
         rD = rho_D(data)
+    else:
+        rD = np.ones(data.shape[0])
     if lnums == None:
         lnums = 1+np.array(range(samples.shape[1]))
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
@@ -149,7 +152,7 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
             xlabel = r'$\lambda_{'+str(x)+'}$'
             ylabel = r'$\lambda_{'+str(y)+'}$'
             savename = 'param_samples_l'+str(x)+'l'+str(y)+'_cs.eps'
-            scatter_2D(samples[:, [x, y]], sample_nos, rD, p_ref, save,
+            scatter_2D(samples[:, [x-1, y-1]], sample_nos, rD, p_ref, save,
                     interactive, xlabel, ylabel, savename)
     elif samples.shape[1] > 3 and showdim == 3:
         for x, y, z in combinations(lnums, 3):
@@ -157,7 +160,7 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
             ylabel = r'$\lambda_{'+str(y)+'}$'
             zlabel = r'$\lambda_{'+str(z)+'}$'
             savename = 'param_samples_l'+str(x)+'l'+str(y)+'l'+str(z)+'_cs.eps'
-            scatter_3D(samples[:, [x, y, z]], sample_nos, rD, p_ref, save,
+            scatter_3D(samples[:, [x-1, y-1, z-1]], sample_nos, rD, p_ref, save,
                     interactive, xlabel, ylabel, zlabel, savename)
 
 def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
@@ -297,7 +300,7 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
-    :type Q_ref: :class:`np.ndarray`
+    :type Q_ref: :class:`np.ndarray` of shape (M, 2)
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
     :param list ref_colors: list of colors for :math:`Q_{ref}`
     :param string xlabel: x-axis label
@@ -328,6 +331,10 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
             pad_inches=0)
     # Add truth markers
     for i in xrange(Q_ref.shape[0]):
+        print i
+        print Q_ref.shape
+        print len(ref_colors)
+        print len(ref_markers)
         plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                 marker=ref_markers[i])
     if save:
