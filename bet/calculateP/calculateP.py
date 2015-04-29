@@ -129,7 +129,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, d_Tree=None):
     local_index = range(0+rank, samples.shape[0], size)
     samples_local = samples[local_index, :]
     data_local = data[local_index, :]
-    local_array = np.array(local_index)
+    local_array = np.array(local_index, dtype='int64')
         
     # Determine which inputs go to which M bins using the QoI
     (_, io_ptr) = d_Tree.query(data_local)
@@ -214,7 +214,7 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     samples_local = samples[local_index, :]
     data_local = data[local_index, :]
     lam_vol_local = lam_vol[local_index]
-    local_array = np.array(local_index)
+    local_array = np.array(local_index, dtype='int64')
         
     # Determine which inputs go to which M bins using the QoI
     (_, io_ptr_local) = d_Tree.query(data_local)
