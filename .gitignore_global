@@ -1,0 +1,126 @@
+# .gitignore_global file
+# created by Lindley Graham 09-19-2012
+
+#########################################
+### General file types to ignore ###
+*~
+*#
+*.mat
+Link to *
+*.swp
+*.swo
+*.bak
+*.npz
+*.binary
+*.doc
+
+### Packages and compressed files ###
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+### Image files to ignore ###
+*.pdf
+*.png
+*.tif
+*.jpeg
+*.jpg
+*.dvi
+*.eps
+*.JPG
+*.gif
+*.tiff
+*.odp
+*.fig
+
+### Media Files to ignore ###
+*.avi
+*.wav
+*.mp4
+*.mp3
+
+### OS generated files ###
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+Icon?
+ehthumbs.db
+Thumbs.db
+
+#########################################
+### C and C++ gitignore ###
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.so
+*.so.*
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.lib
+*.dll
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+
+# Executables
+*.exe
+*.out
+*.app
+
+### Other Complied Source ###
+*.com
+*.class
+*.mod
+*.pyc
+
+### Other Logs and databases ###
+*.sql
+*.sqlite
+
+#########################################
+
+### LaTeX, TeX, BibTeX ###
+*.backup
+*.bak
+*.log
+*.aux
+*.acn
+*.acr
+*.alg
+*.bbl
+*.blg
+*.fdb_latexmk
+*.glg
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.ist
+*.lof
+*.lot
+*.maf
+*.mtc
+*.mtc0
+*.nav
+*.nlo
+*.out
+*.pdfsync
+*.ps
+*.snm
+*.synctex.gz
+*.toc
+*.vrb
+*.xdy
