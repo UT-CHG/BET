@@ -9,7 +9,7 @@ import numpy as np
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
 import bet
-from bet.Comm import size
+from bet.Comm import size, rank
 
 local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
@@ -155,9 +155,24 @@ class Test_basic_sampler(unittest.TestCase):
             self.samplers.append(bsam.sampler(model, num_samples))
 
     def tearDown(self):
+        """
+        Clean up extra files
+        """
         for f in self.savefiles:
             if os.path.exists(os.path.join(local_path, f, ".mat")):
                 os.remove(os.path.join(local_path, f, ".mat"))
+        if size > 1:
+            for f in self.savefiles:
+                proc_savefile = os.path.join(local_path, os.path.dirname(f),
+                        "proc{}{}.mat".format(rank, os.path.basename(f)))
+                print proc_savefile
+                if os.path.exists(proc_savefile):
+                    os.remove(proc_savefile)
+                proc_savefile = os.path.join(local_path, os.path.dirname(f),
+                        "p{}proc{}{}.mat".format(rank, rank, os.path.basename(f)))
+                if os.path.exists(proc_savefile):
+                    os.remove(proc_savefile)
+                print proc_savefile
 
     def test_init(self):
         """
