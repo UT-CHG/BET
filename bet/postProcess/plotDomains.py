@@ -10,6 +10,7 @@ import matplotlib.pyplot as plt
 from matplotlib.lines import Line2D
 from itertools import combinations
 from mpl_toolkits.mplot3d import Axes3D
+import bet.util as util
 
 markers = []
 for m in Line2D.markers:
@@ -176,7 +177,7 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`np.ndarray`
     :param Q_ref: reference data value
-    :type Q_ref: :class:`np.ndarray`
+    :type Q_ref: :class:`np.ndarray` of shape (mdim,)
     :param boolean save: flag whether or not to save the figure
     :param boolean interactive: flag whether or not to show the figure
     :param list Q_nums: integers representing data domain coordinates
@@ -186,32 +187,45 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     """   
     if rho_D != None:
         rD = rho_D(data)
+    else:
+        rD = np.ones(data.shape[0])
     if  Q_nums == None:
         Q_nums = range(data.shape[1])
     xlabel = r'$q_{'+str(Q_nums[0]+1)+'}$'
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
     if data.shape[1] == 2:
-        scatter_2D(data, sample_nos, rD, Q_ref, save, interactive, xlabel,
+        q_ref = None
+        if type(Q_ref) == np.ndarray:
+            q_ref = Q_ref[Q_nums[:2]]
+        scatter_2D(data, sample_nos, rD, q_ref, save, interactive, xlabel,
                 ylabel, savename)
     elif data.shape[1] == 3:
         zlabel = r'$q_{'+str(Q_nums[2]+1)+'}$'
-        scatter_3D(data, sample_nos, rD, Q_ref, save, interactive, xlabel,
+        if type(Q_ref) == np.ndarray:
+            q_ref = Q_ref[Q_nums[:3]]
+        scatter_3D(data, sample_nos, rD, q_ref, save, interactive, xlabel,
                 ylabel, zlabel, savename)
     elif data.shape[1] > 2 and showdim == 2:
         for x, y in combinations(Q_nums, 2):
-            xlabel = r'$q_{'+str(x)+'}$'
-            ylabel = r'$q_{'+str(y)+'}$'
-            savename = 'data_sampqes_q'+str(x)+'q'+str(y)+'_cs.eps'
-            scatter_2D(data[:, [x, y]], sample_nos, rD, Q_ref, save,
+            xlabel = r'$q_{'+str(x+1)+'}$'
+            ylabel = r'$q_{'+str(y+1)+'}$'
+            savename = 'data_sampqes_q'+str(x+1)+'q'+str(y+1)+'_cs.eps'
+            q_ref = None
+            if type(Q_ref) == np.ndarray:
+                q_ref = Q_ref[[x, y]]
+            scatter_2D(data[:, [x, y]], sample_nos, rD, q_ref, save,
                     interactive, xlabel, ylabel, savename)
     elif data.shape[1] > 3 and showdim == 3:
         for x, y, z in combinations(Q_nums, 3):
-            xlabel = r'$q_{'+str(x)+'}$'
-            ylabel = r'$q_{'+str(y)+'}$'
-            zlabel = r'$q_{'+str(z)+'}$'
-            savename = 'data_sampqes_q'+str(x)+'q'+str(y)+'q'+str(z)+'_cs.eps'
-            scatter_3D(data[:, [x, y, z]], sample_nos, rD, Q_ref, save,
+            xlabel = r'$q_{'+str(x+1)+'}$'
+            ylabel = r'$q_{'+str(y+1)+'}$'
+            zlabel = r'$q_{'+str(z+1)+'}$'
+            q_ref = None
+            if type(Q_ref) == np.ndarray:
+                q_ref = Q_ref[[x, y, z]]
+            savename = 'data_sampqes_q'+str(x+1)+'q'+str(y+1)+'q'+str(z+1)+'_cs.eps'
+            scatter_3D(data[:, [x, y, z]], sample_nos, rD, q_ref, save,
                     interactive, xlabel, ylabel, zlabel, savename)
 
 def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
@@ -228,7 +242,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
     :param Q_ref: reference data value
-    :type Q_ref: :class:`np.ndarray`
+    :type Q_ref: :class:`np.ndarray` of shape (M, mdim)`
     :param list Q_nums: dimensions of the QoI to plot
     :param string img_folder: folder to save the plots to
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
@@ -246,6 +260,8 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
         Q_nums = range(data.shape[1])
     if showdim == None:
         showdim = 1
+
+    Q_ref = util.fix_dimensions_data(Q_ref, data.shape[1])
 
     triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
     triangles = triangulation.triangles
@@ -289,7 +305,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
 
 def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2',
-        triangles=None, save=True, interactive=True, filenames=None):
+        triangles=None, save=True, interactive=False, filenames=None):
     r"""
     Plot the data domain D using a triangulation based on the generating
     samples with a marker for various :math:`Q_{ref}`. Assumes that the first
@@ -321,6 +337,9 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
         triangles = triangulation.triangles
     if filenames == None:
         filenames = ['domain_q1_q2_cs.eps', 'q1_q2_domain_Q_cs.eps']
+
+    Q_ref = util.fix_dimensions_data(Q_ref, 2)
+
     # Create figure
     plt.tricontourf(data[:, 0], data[:, 1], np.zeros((data.shape[0],)),
             triangles=triangles, colors='grey') 
@@ -331,10 +350,6 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
             pad_inches=0)
     # Add truth markers
     for i in xrange(Q_ref.shape[0]):
-        print i
-        print Q_ref.shape
-        print len(ref_colors)
-        print len(ref_markers)
         plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                 marker=ref_markers[i])
     if save:

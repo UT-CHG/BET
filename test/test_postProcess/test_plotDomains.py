@@ -182,7 +182,7 @@ class test_plotDomains(unittest.TestCase):
         sample_nos = [None, 25]
         save = [True, False]
         data_sets = [self.data, self.data[:, [0, 1]]]
-        qnums = [None, self.lnums]
+        qnums = [None, [0, 1, 2]]#self.lnums]
 
         for data in data_sets:
             showdim = [None]
@@ -212,8 +212,15 @@ class test_plotDomains(unittest.TestCase):
                     sample_nos, save, False, qnums, showdim) 
             go = True
         except (RuntimeError, TypeError, NameError):
+            print "ERROR"
+            print data.shape
+            print q_ref
+            print sample_nos
+            print save
+            print qnums
+            print showdim
             go = False
-        nptest.assert_equal(go, True) 
+        nptest.assert_equal(go, True)
 
     def test_show_data_domain_2D(self):
         """
@@ -240,7 +247,9 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_2D` ran
         without generating an error.
         """
-        Q_ref = self.data[[1, 4], [0, 1]]
+        Q_ref = self.data[:, [0, 1]]
+        Q_ref = Q_ref[[1,4],:]
+        print Q_ref.shape
         data = self.data[:, [0, 1]]
         try:
             plotDomains.show_data_domain_2D(self.samples, data, Q_ref,
@@ -265,7 +274,7 @@ class test_plotDomains(unittest.TestCase):
                 for qn in Q_nums:
                     showdim = [None, 1]
                     if qn and len(qn) > 2:
-                        showdim.append('all', 'ALL')
+                        showdim.extend(['all', 'ALL'])
                     for sd in showdim:
                         self.check_show_data_domain_multi(rm, rc, qn, sd)
 
@@ -276,7 +285,7 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_multi` ran
         without generating an error.
         """
-        Q_ref = self.data[4, :]
+        Q_ref = self.data[[4, 2], :]
         try:
             plotDomains.show_data_domain_multi(self.samples, self.data,
                     Q_ref, Q_nums, ref_markers=ref_markers,
