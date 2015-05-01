@@ -5,7 +5,7 @@
 This module contains unittests for :mod:`~bet.sampling.adaptiveSampling`
 """
 
-import unittest, os
+import unittest, os, glob
 import numpy.testing as nptest
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
@@ -121,7 +121,7 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = {}
     if size > 1:
-        mdat = sio.loadmat(os.path.join(local_path, os.path.dirname(savefile),
+        mdat = sio.loadmat(os.path.join(os.path.dirname(savefile),
             "proc{}{}".format(rank, os.path.basename(savefile))))
     else:
         mdat = sio.loadmat(savefile)
@@ -209,18 +209,11 @@ class Test_adaptive_sampler(unittest.TestCase):
         for f in self.savefiles:
             if os.path.exists(f+".mat"):
                 os.remove(f+".mat")
-        if size > 1:
-            for f in self.savefiles:
-                proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "proc{}{}.mat".format(rank, os.path.basename(f)))
-                print proc_savefile
-                if os.path.exists(proc_savefile):
-                    os.remove(proc_savefile)
-                proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "p{}proc{}{}.mat".format(rank, rank, os.path.basename(f)))
-                if os.path.exists(proc_savefile):
-                    os.remove(proc_savefile)
-                print proc_savefile
+        proc_savefiles = glob.glob("p{}*.mat".format(rank))
+        proc_savefiles.extend(glob.glob("proc{}*.mat".format(rank)))
+        for pf in proc_savefiles:
+            if os.path.exists(pf):
+                os.remove(pf)
 
     def test_update(self):
         """
