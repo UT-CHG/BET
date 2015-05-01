@@ -210,7 +210,7 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         for x, y in combinations(Q_nums, 2):
             xlabel = r'$q_{'+str(x+1)+'}$'
             ylabel = r'$q_{'+str(y+1)+'}$'
-            savename = 'data_sampqes_q'+str(x+1)+'q'+str(y+1)+'_cs.eps'
+            savename = 'data_samples_q'+str(x+1)+'q'+str(y+1)+'_cs.eps'
             q_ref = None
             if type(Q_ref) == np.ndarray:
                 q_ref = Q_ref[[x, y]]
@@ -224,7 +224,7 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
             q_ref = None
             if type(Q_ref) == np.ndarray:
                 q_ref = Q_ref[[x, y, z]]
-            savename = 'data_sampqes_q'+str(x+1)+'q'+str(y+1)+'q'+str(z+1)+'_cs.eps'
+            savename = 'data_samples_q'+str(x+1)+'q'+str(y+1)+'q'+str(z+1)+'_cs.eps'
             scatter_3D(data[:, [x, y, z]], sample_nos, rD, q_ref, save,
                     interactive, xlabel, ylabel, zlabel, savename)
 

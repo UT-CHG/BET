@@ -13,11 +13,12 @@ import matplotlib.tri as tri
 from matplotlib.lines import Line2D
 import numpy as np
 import numpy.testing as nptest
-from bet.Comm import *
+from bet.Comm import size
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
         "../test/test_sampling")
 
+@unittest.skipIf(size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  
@@ -76,13 +77,28 @@ class test_plotDomains(unittest.TestCase):
         filenames = glob.glob(self.filename+".*")
         filenames.extend(glob.glob('param_samples_*cs.eps'))
         filenames.extend(glob.glob('data_samples_*cs.eps'))
+
+        filenames.extend(glob.glob(self.filename+".*"))
+        filenames.extend(glob.glob( 'param_samples_*cs.eps'))
+        filenames.extend(glob.glob(os.path.join(local_path,
+            'data_samples_*cs.eps')))
+
+
+        filenames.append('domain_q1_q2_cs.eps')
         filenames.append('domain_q1_q1_cs.eps')
         filenames.append('q1_q2_domain_Q_cs.eps')
+        filenames.append('q1_q1_domain_Q_cs.eps')
         figfiles = glob.glob('figs/*')
+        figfiles.extend(glob.glob(os.path.join(local_path, 'figs/*')))
         filenames.extend(figfiles)
+
         for f in filenames:
             if os.path.exists(os.path.join(local_path, f)):
                 os.remove(os.path.join(local_path, f))
+            if os.path.exists(f):
+                os.remove(f)
+        if os.path.exists("figs"):
+            os.rmdir("figs")
 
     def test_scatter_2D(self):
         """
@@ -98,6 +114,7 @@ class test_plotDomains(unittest.TestCase):
 
     def check_scatter_2D(self, sample_nos, p_ref, save):
         """
+
         Check to see that the :meth:`bet.postTools.plotDomains.scatter_2D` ran
         without generating an error.
         """
