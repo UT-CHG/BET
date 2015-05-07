@@ -163,8 +163,10 @@ class Test_calc_marg_2D(unittest.TestCase):
         try:
             plotP.plot_1D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
             go = True
-            os.remove("file_1D_0.eps")
-            os.remove("file_1D_1.eps")
+            if os.path.exists("file_1D_0.eps"):
+                os.remove("file_1D_0.eps")
+            if os.path.exists("file_1D_1.eps"):
+                os.remove("file_1D_1.eps")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
@@ -182,7 +184,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         try:
             plotP.plot_2D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
             go = True
-            os.remove("file_2D_0_1.eps")
+            if os.path.exists("file_2D_0_1.eps"):
+                os.remove("file_2D_0_1.eps")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
