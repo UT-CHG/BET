@@ -22,7 +22,7 @@ def postprocess(station_nums, ref_num):
     filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
     if len(station_nums) == 3:
         filename += '_q'+str(station_nums[2]+1)
-    filename += '_truth_'+str(ref_num+1)
+    filename += '_ref_'+str(ref_num+1)
 
     data = Q[:, station_nums]
     q_ref = Q_ref[ref_num, station_nums]
