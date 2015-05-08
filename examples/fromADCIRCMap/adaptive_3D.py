@@ -7,6 +7,7 @@ import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
+import bet.postProcess.postTools as ptools
 
 adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
 grid_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/inputs/poly_walls'
@@ -112,7 +113,7 @@ transition_set = asam.transition_set(0.5, .5**3, 0.5)
 (samples, data, step_sizes) = sampler.generalized_chains(param_min, param_max,
         transition_set, kernel_rD, sample_save_file,
         initial_sample_type)
-bsam.in_high_prob(data, rho_D, maximum)
+ptools.in_high_prob(data, rho_D, maximum)
 
 
 
