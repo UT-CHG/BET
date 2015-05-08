@@ -256,7 +256,7 @@ class sampler(bsam.sampler):
 
         """
         if size > 1:
-            savefile = os.path.join(os.path.dirname(savefile),
+            psavefile = os.path.join(os.path.dirname(savefile),
                     "proc{}{}".format(rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
@@ -275,7 +275,7 @@ class sampler(bsam.sampler):
         # hypercube/space-filling curve to fully explore parameter space - not
         # necessarily random). Call these Samples_old.
         (samples_old, data_old) = super(sampler, self).random_samples(
-                initial_sample_type, param_min, param_max, savefile,
+                initial_sample_type, param_min, param_max, psavefile,
                 self.num_chains, criterion)
         self.num_samples = self.chain_length * self.num_chains
         comm.Barrier()
@@ -324,7 +324,7 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            super(sampler, self).save(mdat, "p"+str(rank)+savefile)
+            super(sampler, self).save(mdat, psavefile)
 
             MYsamples_old = samples_new
 
