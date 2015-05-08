@@ -37,7 +37,7 @@ def postprocess(station_nums, ref_num):
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
     (P1, lam_vol1, io_ptr1, emulate_ptr1) = calcP.prob(samples, data,
-            rho_D_M, d_distr_samples, lam_domain, d_Tree)
+            rho_D_M, d_distr_samples, d_Tree)
     print "Calculating prob"
     mdict['P1'] = P1
     mdict['lam_vol1'] = lam_vol1
