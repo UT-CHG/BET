@@ -43,7 +43,7 @@ def postprocess(station_nums, ref_num):
 
     # Calculate P on lambda emulate
     (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data,
-            rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+            rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
     print "Calculating prob_emulated"
     mdict['P0'] = P0
     mdict['lem0'] = lem0
@@ -53,7 +53,7 @@ def postprocess(station_nums, ref_num):
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
     (P1, lam_vol1, io_ptr1, emulate_ptr1) = calcP.prob(samples, data,
-            rho_D_M, d_distr_samples, lam_domain, d_Tree)
+            rho_D_M, d_distr_samples, d_Tree)
     print "Calculating prob"
     mdict['P1'] = P1
     mdict['lam_vol1'] = lam_vol1
@@ -64,7 +64,7 @@ def postprocess(station_nums, ref_num):
     # Calculate P on the actual samples estimating voronoi cell volume with MC
     # integration
     (P3, lam_vol3, lambda_emulate3, io_ptr3, emulate_ptr3) = calcP.prob_mc(samples,
-            data, rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+            data, rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
     print "Calculating prob_mc"
     mdict['P3'] = P3
     mdict['lam_vol3'] = lam_vol3
