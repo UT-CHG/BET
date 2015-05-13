@@ -67,19 +67,19 @@ station_nums = [0, 4, 1] # 1, 5, 2
 postprocess(station_nums, ref_num)
 
 # q1, q5 ref 15
-station_nums = [0, 4] # 1, 5
-postprocess(station_nums, ref_num)
+#station_nums = [0, 4] # 1, 5
+#postprocess(station_nums, ref_num)
 
 # q1, q5, q12 ref 16
-station_nums = [0, 4, 11] # 1, 5, 12
-postprocess(station_nums, ref_num)
+#station_nums = [0, 4, 11] # 1, 5, 12
+#postprocess(station_nums, ref_num)
 
 
-station_nums = [0, 8, 6] # 1, 5, 12
-postprocess(station_nums, ref_num)
+#station_nums = [0, 8, 6] # 1, 5, 12
+#postprocess(station_nums, ref_num)
 
 
-station_nums = [0, 8, 11] # 1, 5, 12
-postprocess(station_nums, ref_num)
+#station_nums = [0, 8, 11] # 1, 5, 12
+#postprocess(station_nums, ref_num)
 
 
