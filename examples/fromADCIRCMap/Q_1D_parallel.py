@@ -87,6 +87,8 @@ ref_nums, stations = np.meshgrid(ref_nums, stations)
 ref_nums = ref_nums.ravel()
 stations = stations.ravel()
 
-for tnum, stat in zip(ref_nums, stations):
-    postprocess([0], tnum)
+postprocess([0],11) 
+
+#for tnum, stat in zip(ref_nums, stations):
+#    postprocess([0], tnum)
 
