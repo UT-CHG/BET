@@ -1,4 +1,7 @@
 #! /usr/bin/env python
+
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
     This example generates uniform samples on a 3D grid
     and evaluates a linear map to a 2d space. Probabilities

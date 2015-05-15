@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # -*- coding: utf-8 -*-
 """
 This module provides methods for creating the edges and generating point for

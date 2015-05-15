@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Lindley Graham 4/15/2014
 """
 This module contains functions for sampling. We assume we are given access to a

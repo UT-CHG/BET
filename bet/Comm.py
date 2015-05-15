@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This module provides a workaround for people without mpi4py installed
 to run BET.

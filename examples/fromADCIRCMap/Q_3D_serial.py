@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
 import numpy as np
