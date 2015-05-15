@@ -40,9 +40,9 @@ def postprocess(station_nums, ref_num):
 
     # Calculate P on the actual samples estimating voronoi cell volume with MC
     # integration
+    print "Calculating prob_mc"
     (P3, lam_vol3, lambda_emulate3, io_ptr3, emulate_ptr3) = calcP.prob_mc(samples,
             data, rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
-    print "Calculating prob_mc"
 
     if rank == 0:
         mdict = dict()
@@ -54,9 +54,8 @@ def postprocess(station_nums, ref_num):
         mdict['lam_vol3'] = lam_vol3
         mdict['io_ptr3'] = io_ptr3
         mdict['emulate_ptr3'] = emulate_ptr3
-            
-
-        # Export P and compare to MATLAB solution visually
+        print "Exporting P"    
+        # Export P 
         sio.savemat(filename, mdict, do_compression=True)
 
 # Post-process and save P and emulated points
@@ -66,20 +65,21 @@ ref_num = 14
 station_nums = [0, 4, 1] # 1, 5, 2
 postprocess(station_nums, ref_num)
 
+"""
 # q1, q5 ref 15
-#station_nums = [0, 4] # 1, 5
-#postprocess(station_nums, ref_num)
+station_nums = [0, 4] # 1, 5
+postprocess(station_nums, ref_num)
 
 # q1, q5, q12 ref 16
-#station_nums = [0, 4, 11] # 1, 5, 12
-#postprocess(station_nums, ref_num)
+station_nums = [0, 4, 11] # 1, 5, 12
+postprocess(station_nums, ref_num)
 
 
-#station_nums = [0, 8, 6] # 1, 5, 12
-#postprocess(station_nums, ref_num)
+station_nums = [0, 8, 6] # 1, 5, 12
+postprocess(station_nums, ref_num)
 
 
-#station_nums = [0, 8, 11] # 1, 5, 12
-#postprocess(station_nums, ref_num)
-
+station_nums = [0, 8, 11] # 1, 5, 12
+postprocess(station_nums, ref_num)
+"""
 
