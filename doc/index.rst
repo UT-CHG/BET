@@ -18,9 +18,8 @@ Contents:
    examples/linearMap/*
    examples/fromFileMap/*
    examples/fromADCIRCMap/*
+   modules
    todo_list
-
-.. todo:: Flesh out documentation.
 
 
 

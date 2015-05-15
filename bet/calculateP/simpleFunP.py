@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This module provides methods for creating simple funciton approximations to be
 used by :mod:`~bet.calculateP.calculateP`.

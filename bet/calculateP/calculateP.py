@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 r""" 
 This module provides methods for calulating the probability measure
 :math:`P_{\Lambda}`.
