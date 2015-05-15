@@ -106,11 +106,8 @@ class test_plotDomains(unittest.TestCase):
         """
         sample_nos = [None, 25]
         p_ref = [None, self.samples[4, [0, 1]]]
-        save = [True, False]
-        for sn in sample_nos:
-            for pr in p_ref:
-                for s in save:
-                    self.check_scatter_2D(sn, pr, s)
+        for sn, pr in zip(sample_nos, p_ref):
+            self.check_scatter_2D(sn, pr, True)
 
     def check_scatter_2D(self, sample_nos, p_ref, save):
         """
@@ -133,11 +130,8 @@ class test_plotDomains(unittest.TestCase):
         """
         sample_nos = [None, 25]
         p_ref = [None, self.samples[4, :]]
-        save = [True, False]
-        for sn in sample_nos:
-            for pr in p_ref:
-                for s in save:
-                    self.check_scatter_3D(sn, pr, s)
+        for sn, pr in zip(sample_nos, p_ref):
+                self.check_scatter_3D(sn, pr, True)
 
     def check_scatter_3D(self, sample_nos, p_ref, save):
         """
@@ -158,7 +152,6 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.show_param`
         """
         sample_nos = [None, 25]
-        save = [True, False]
         samples = [self.samples, self.samples[:, [0, 1]],
                 self.samples[:, [0, 1, 2]]]
         lnums = [None, self.lnums]
@@ -170,13 +163,9 @@ class test_plotDomains(unittest.TestCase):
             if sample.shape[0] > 3:
                 showdim.append(3)
             for sd in showdim:
-                for ln in lnums:
-                    for sn in sample_nos:
-                        p_ref = [None, sample[4, :]]
-                        for pr in p_ref:
-                            for s in save:
-                                self.check_show_param(sample, sn, pr, s, ln,
-                                        sd)
+                p_ref = [None, sample[4, :]]
+                for ln, sn, pr in zip(lnums, sample_nos, p_ref):
+                            self.check_show_param(sample, sn, pr, True, ln, sd)
 
     def check_show_param(self, samples, sample_nos, p_ref, save, lnums,
             showdim):
@@ -197,23 +186,18 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.show_data`
         """
         sample_nos = [None, 25]
-        save = [True, False]
         data_sets = [self.data, self.data[:, [0, 1]]]
         qnums = [None, [0, 1, 2]]#self.lnums]
 
-        for data in data_sets:
+        for data, qn, sn in zip(data_sets, qnums, sample_nos):
             showdim = [None]
             if data.shape[0] > 2:
                 showdim.append(2)
             if data.shape[0] > 3:
                 showdim.append(3)
-            for sd in showdim:
-                for qn in qnums:
-                    for sn in sample_nos:
-                        Q_ref = [None, data[4, :]]
-                        for qr in Q_ref:
-                            for s in save:
-                                self.check_show_data(data, sn, qr, s, qn, sd)
+            Q_ref = [None, data[4, :]]
+            for sd, qr in zip(showdim, Q_ref):
+                self.check_show_data(data, sn, qr, True, qn, sd)
 
     def check_show_data(self, data, sample_nos, q_ref, save, qnums, showdim):
         """
@@ -245,17 +229,10 @@ class test_plotDomains(unittest.TestCase):
         """
         ref_markers = [None, self.markers]
         ref_colors = [None, self.colors]
-        triangulation = tri.Triangulation(self.samples[:, 0], self.samples[:, 1])
-        triangles = [None, triangulation.triangles]
         filenames = [None, ['domain_q1_q1_cs.eps', 'q1_q2_domain_Q_cs.eps']]
-        save = [None, False]
 
-        for rm in ref_markers:
-            for rc in ref_colors:
-                for t in triangles:
-                    for s in save:
-                        for fn in filenames:
-                            self.check_show_data_domain_2D(rm, rc, t, s, fn)
+        for rm, rc, fn in zip(ref_markers, ref_colors, filenames):
+            self.check_show_data_domain_2D(rm, rc, None, True, fn)
 
     def check_show_data_domain_2D(self, ref_markers, ref_colors, triangles,
             save, filenames):
@@ -286,14 +263,13 @@ class test_plotDomains(unittest.TestCase):
         Q_nums = [None, [1, 2], [1, 2, 3]]
         ref_markers = [None, self.markers]
         ref_colors = [None, self.colors]
-        for rm in ref_markers:
-            for rc in ref_colors:
-                for qn in Q_nums:
-                    showdim = [None, 1]
-                    if qn and len(qn) > 2:
-                        showdim.extend(['all', 'ALL'])
-                    for sd in showdim:
-                        self.check_show_data_domain_multi(rm, rc, qn, sd)
+        for rm, rc in zip(ref_markers, ref_colors):
+            for qn in Q_nums:
+                showdim = [None, 1]
+                if qn and len(qn) > 2:
+                    showdim.extend(['all', 'ALL'])
+                for sd in showdim:
+                    self.check_show_data_domain_multi(rm, rc, qn, sd)
 
     def check_show_data_domain_multi(self, ref_markers, ref_colors, Q_nums,
             showdim):

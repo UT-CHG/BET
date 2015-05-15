@@ -69,7 +69,7 @@ def postprocess(station_nums, ref_num):
     mdict['lam_vol3'] = lam_vol3
     mdict['io_ptr3'] = io_ptr3
     mdict['emulate_ptr3'] = emulate_ptr3
-    # Export P and compare to MATLAB solution visually
+    # Export P 
     sio.savemat(filename, mdict, do_compression=True)
 
 # Post-process and save P and emulated points

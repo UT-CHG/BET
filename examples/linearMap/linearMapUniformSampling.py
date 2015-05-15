@@ -69,6 +69,8 @@ samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_emulate =
 
 # calc data
 data= np.dot(samples,Q_map)
+np.savetxt('3to2_samples.txt.gz', samples)
+np.savetxt('3to2_data.txt.gz', data)
 
 '''
 Suggested changes for user:
@@ -122,7 +124,7 @@ Suggested changes for user:
     Monte Carlo (it converges like 1/sqrt(n_samples)).
 '''
 #lambda_emulate = samples
-lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_emulate = 1E5)
+lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_emulate = 1E4)
 
 
 # calculate probablities

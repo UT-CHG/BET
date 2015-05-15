@@ -1,7 +1,5 @@
 """
-TODO: rewrite to match what the module acutally does
-
-This module provides methods for plotting probabilities. 
+This module provides methods for postprocessing probabilities and data. 
 """
 from bet.Comm import rank
 import numpy as np
@@ -70,8 +68,6 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     """
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
-    # TODO: should we trust the user or should we do a quick check of part of
-    # the array to see if it's already sorted?
     if sort:
         (P_samples, samples, lam_vol, data) = sort_by_rho(P_samples, samples,
                 lam_vol, data)
