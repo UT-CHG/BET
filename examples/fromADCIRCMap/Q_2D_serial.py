@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
 import numpy as np
@@ -19,7 +21,7 @@ def postprocess(station_nums, ref_num):
     filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
     if len(station_nums) == 3:
         filename += '_q'+str(station_nums[2]+1)
-    filename += '_truth_'+str(ref_num+1)
+    filename += '_ref_'+str(ref_num+1)
 
     data = Q[:, station_nums]
     q_ref = Q_ref[ref_num, station_nums]
@@ -43,7 +45,7 @@ def postprocess(station_nums, ref_num):
 
     # Calculate P on lambda emulate
     (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data,
-            rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+            rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
     print "Calculating prob_emulated"
     mdict['P0'] = P0
     mdict['lem0'] = lem0
@@ -52,25 +54,24 @@ def postprocess(station_nums, ref_num):
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
-    (P1, lam_vol1, io_ptr1, emulate_ptr1) = calcP.prob(samples, data,
-            rho_D_M, d_distr_samples, lam_domain, d_Tree)
+    (P1, lam_vol1, io_ptr1) = calcP.prob(samples, data,
+            rho_D_M, d_distr_samples, d_Tree)
     print "Calculating prob"
     mdict['P1'] = P1
     mdict['lam_vol1'] = lam_vol1
     mdict['lem1'] = samples
     mdict['io_ptr1'] = io_ptr1
-    mdict['emulate_ptr1'] = emulate_ptr1
 
     # Calculate P on the actual samples estimating voronoi cell volume with MC
     # integration
     (P3, lam_vol3, lambda_emulate3, io_ptr3, emulate_ptr3) = calcP.prob_mc(samples,
-            data, rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+            data, rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
     print "Calculating prob_mc"
     mdict['P3'] = P3
     mdict['lam_vol3'] = lam_vol3
     mdict['io_ptr3'] = io_ptr3
     mdict['emulate_ptr3'] = emulate_ptr3
-    # Export P and compare to MATLAB solution visually
+    # Export P 
     sio.savemat(filename, mdict, do_compression=True)
 
 # Post-process and save P and emulated points
