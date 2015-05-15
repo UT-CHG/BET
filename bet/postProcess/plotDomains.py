@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This module provides methods used to plot two-dimensional domains and/or
 two-dimensional slices/projections of domains.

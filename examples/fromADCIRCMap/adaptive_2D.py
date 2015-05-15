@@ -1,4 +1,7 @@
 #! /usr/bin/env python
+
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # import necessary modules
 import polyadcirc.run_framework.domain as dom
 import polyadcirc.run_framework.random_wall_Q as rmw

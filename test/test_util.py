@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Lindley Graham 04/07/2015
 """
 This module contains unittests for :mod:`~bet.util`
