@@ -43,7 +43,7 @@ Code Overview
 --------------
 
 :mod:`calculateP` Package
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.calculateP
 
@@ -57,10 +57,6 @@ Code Overview
 
 .. automodule:: bet.postProcess
 
-:mod:`loadBalance` Package
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-.. automodule:: bet.loadBalance
 
 .. seealso:: :ref:`modindex` for detailed documentation of modules, classes, etc.
 
