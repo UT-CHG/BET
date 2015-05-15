@@ -36,14 +36,13 @@ def postprocess(station_nums, ref_num):
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
-    (P1, lam_vol1, io_ptr1, emulate_ptr1) = calcP.prob(samples, data,
-            rho_D_M, d_distr_samples, d_Tree)
+    (P1, lam_vol1, io_ptr1) = calcP.prob(samples, data, rho_D_M,
+            d_distr_samples, d_Tree)
     print "Calculating prob"
     mdict['P1'] = P1
     mdict['lam_vol1'] = lam_vol1
     mdict['lem1'] = samples
     mdict['io_ptr1'] = io_ptr1
-    mdict['emulate_ptr1'] = emulate_ptr1
 
     # Export P and compare to MATLAB solution visually
     sio.savemat(filename, mdict, do_compression=True)
@@ -55,6 +54,7 @@ ref_num = 14
 station_nums = [0, 4, 1] # 1, 5, 2
 postprocess(station_nums, ref_num)
 
+"""
 # q1, q5 ref 15
 station_nums = [0, 4] # 1, 5
 postprocess(station_nums, ref_num)
@@ -71,5 +71,5 @@ postprocess(station_nums, ref_num)
 
 station_nums = [0, 8, 11] # 1, 5, 12
 postprocess(station_nums, ref_num)
-
+"""
 
