@@ -21,8 +21,6 @@ Contents:
    modules
    todo_list
 
-.. todo:: Flesh out documentation.
-
 
 
 
