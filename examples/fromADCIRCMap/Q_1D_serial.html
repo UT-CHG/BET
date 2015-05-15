@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Example: Estimate the parameter space probabiliy density with a 1D data space &mdash; BET 0.0 documentation</title>
+    <title>Example: Estimate the parameter space probabiliy density with a 1D data space &mdash; BET 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="../../index.html" />
+    <link rel="top" title="BET 0.2.0 documentation" href="../../index.html" />
     <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html" />
     <link rel="prev" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space" href="../fromFileMap/fromfile3D.html" />
    
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="../fromFileMap/fromfile3D.html" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -139,7 +139,7 @@ defined as follows:</p>
 <p>Calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math">\(\mathcal{V}_j\)</span> are the
 voronoi cells defined by <span class="math">\(\lambda_{emulate}\)</span>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">P0</span><span class="p">,</span> <span class="n">lem0</span><span class="p">,</span> <span class="n">io_ptr0</span><span class="p">,</span> <span class="n">emulate_ptr0</span><span class="p">)</span> <span class="o">=</span> <span class="n">calcP</span><span class="o">.</span><span class="n">prob_emulated</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
-        <span class="n">rho_D_M</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span>
+        <span class="n">rho_D_M</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;P0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">P0</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lem0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lem0</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;io_ptr0&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">io_ptr0</span>
@@ -149,13 +149,12 @@ voronoi cells defined by <span class="math">\(\lambda_{emulate}\)</span>:</p>
 <p>Calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math">\(\mathcal{V}_j\)</span> are the
 voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> assume that <span class="math">\(\lambda_{samples}\)</span>
 are uniformly distributed and therefore have approximately the same volume:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">lam_vol1</span><span class="p">,</span> <span class="n">lem1</span><span class="p">,</span> <span class="n">io_ptr1</span><span class="p">,</span> <span class="n">emulate_ptr1</span><span class="p">)</span> <span class="o">=</span> <span class="n">calcP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
-        <span class="n">rho_D_M</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">P1</span><span class="p">,</span> <span class="n">lam_vol1</span><span class="p">,</span> <span class="n">lem1</span><span class="p">,</span> <span class="n">io_ptr1</span><span class="p">)</span> <span class="o">=</span> <span class="n">calcP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
+        <span class="n">rho_D_M</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;P1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">P1</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lam_vol1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam_vol1</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lem1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lem1</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;io_ptr1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">io_ptr1</span>
-<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;emulate_ptr1&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">emulate_ptr1</span>
 </pre></div>
 </div>
 <p>Calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math">\(\mathcal{V}_j\)</span> are the
@@ -163,7 +162,7 @@ voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> and we 
 <span class="math">\(\mathcal{V}_j\)</span> using Monte Carlo integration. We use
 <span class="math">\(\lambda_{emulate}\)</span> to estimate the volume of <span class="math">\(\mathcal{V}_j\)</span></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">P3</span><span class="p">,</span> <span class="n">lam_vol3</span><span class="p">,</span> <span class="n">lambda_emulate3</span><span class="p">,</span> <span class="n">io_ptr3</span><span class="p">,</span> <span class="n">emulate_ptr3</span><span class="p">)</span> <span class="o">=</span> <span class="n">calcP</span><span class="o">.</span><span class="n">prob_mc</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span>
-        <span class="n">data</span><span class="p">,</span> <span class="n">rho_D_M</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span>
+        <span class="n">data</span><span class="p">,</span> <span class="n">rho_D_M</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;P3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">P3</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lam_vol3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam_vol3</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;io_ptr3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">io_ptr3</span>
