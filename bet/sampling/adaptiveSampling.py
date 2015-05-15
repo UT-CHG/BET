@@ -277,7 +277,7 @@ class sampler(bsam.sampler):
         # hypercube/space-filling curve to fully explore parameter space - not
         # necessarily random). Call these Samples_old.
         (samples_old, data_old) = super(sampler, self).random_samples(
-                initial_sample_type, param_min, param_max, psavefile,
+                initial_sample_type, param_min, param_max, savefile,
                 self.num_chains, criterion)
         self.num_samples = self.chain_length * self.num_chains
         comm.Barrier()
@@ -326,8 +326,10 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            super(sampler, self).save(mdat, psavefile)
-
+            if size > 1:
+                super(sampler, self).save(mdat, psavefile)
+            else:
+                super(sampler, self).save(mdat, savefile)
             MYsamples_old = samples_new
 
         # collect everything
