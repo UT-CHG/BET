@@ -1,9 +1,18 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # -*- coding: utf-8 -*-
+"""
+This module provides methods for creating the edges and generating point for
+regular (hyperrectangle) multidimensional voronoi cells and for determining the
+volumes of these cells.
+"""
+
 import numpy as np
 from scipy import spatial
 import bet.util as util
 
-def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_domain):
+def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
+        sur_domain): 
     """
     Generates a regular grid of center points that define the voronoi
     tesselation of exactly the interior of a hyperrectangle centered at
@@ -27,15 +36,15 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_do
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: (points, interior_and_layer1, rect_domain) where where points is an
-        :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
-        is a list() of dim :class:`numpy.ndarray`s of shape
+    :returns: (points, interior_and_layer1, rect_domain) where where points is
+        an :class:`numpy.ndarray` of shape (num_points, dim),
+        interior_and_layer1 is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
         shape (mdim, 2)
 
     """
     # determine the hyperrectangle (rect_domain) defined by center and r_size
-    rect_width = r_size*np.ones(sur_domain[:,0].shape)
+    rect_width = r_size*np.ones(sur_domain[:, 0].shape)
     rect_domain = np.column_stack([center - .5*rect_width,
         center + .5*rect_width])
     if np.all(np.greater(r_size, rect_width)):
@@ -82,9 +91,9 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: (points, interior_and_layer1, rect_domain) where where points is an
-        :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
-        is a list() of dim :class:`numpy.ndarray`s of shape
+    :returns: (points, interior_and_layer1, rect_domain) where where points is
+        an :class:`numpy.ndarray` of shape (num_points, dim),
+        interior_and_layer1 is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
         shape (mdim, 2).
 
@@ -191,8 +200,9 @@ def histogramdd_volumes(edges, points):
 
     :rtype: tuple of (H, volume, edges)
     :returns: H is the result of :meth:`np.histogramdd(points, edges,
-        normed=True)`, volumes is a :class:`numpy.ndarray` of shape (len(points),)
-        continaing the  finite volumes associated with ``points``
+        normed=True)`, volumes is a :class:`numpy.ndarray` of shape
+        (len(points),) continaing the  finite volumes associated with
+        ``points``
 
     """
     # adjust edges
@@ -244,8 +254,8 @@ def simple_fun_uniform(points, volumes, rect_domain):
         axis=1), np.all(np.less_equal(points, rect_domain[:, 1]), axis=1)) 
 
     rho_D_M = np.zeros(volumes.shape)
-    rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside]) # normalize on Lambda not D
-
+    # normalize on Lambda not D
+    rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside]) 
     d_Tree = spatial.KDTree(points)
     return (rho_D_M, points, d_Tree)
 

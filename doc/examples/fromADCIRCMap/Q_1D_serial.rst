@@ -91,7 +91,7 @@ Calculate :math:`\hat{\rho}_{\Lambda, j}` where :math:`\mathcal{V}_j` are the
 voronoi cells defined by :math:`\lambda_{emulate}`::
 
         (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data,
-                rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+                rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
         mdict['P0'] = P0
         mdict['lem0'] = lem0
         mdict['io_ptr0'] = io_ptr0
@@ -101,13 +101,12 @@ Calculate :math:`\hat{\rho}_{\Lambda, j}` where :math:`\mathcal{V}_j` are the
 voronoi cells defined by :math:`\lambda_{samples}` assume that :math:`\lambda_{samples}`
 are uniformly distributed and therefore have approximately the same volume::
 
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calcP.prob(samples, data,
-                rho_D_M, d_distr_samples, lam_domain, d_Tree)
+        (P1, lam_vol1, lem1, io_ptr1) = calcP.prob(samples, data,
+                rho_D_M, d_distr_samples, d_Tree)
         mdict['P1'] = P1
         mdict['lam_vol1'] = lam_vol1
         mdict['lem1'] = lem1
         mdict['io_ptr1'] = io_ptr1
-        mdict['emulate_ptr1'] = emulate_ptr1
 
 Calculate :math:`\hat{\rho}_{\Lambda, j}` where :math:`\mathcal{V}_j` are the
 voronoi cells defined by :math:`\lambda_{samples}` and we approximate the volume of
@@ -115,7 +114,7 @@ voronoi cells defined by :math:`\lambda_{samples}` and we approximate the volume
 :math:`\lambda_{emulate}` to estimate the volume of :math:`\mathcal{V}_j` ::
 
         (P3, lam_vol3, lambda_emulate3, io_ptr3, emulate_ptr3) = calcP.prob_mc(samples,
-                data, rho_D_M, d_distr_samples, lam_domain, lambda_emulate, d_Tree)
+                data, rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
         mdict['P3'] = P3
         mdict['lam_vol3'] = lam_vol3
         mdict['io_ptr3'] = io_ptr3

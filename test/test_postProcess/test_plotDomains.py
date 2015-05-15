@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Lindley Graham 04/07/2015
 """
 This module contains tests for :module:`bet.postProcess.plotDomains`.
@@ -13,11 +15,12 @@ import matplotlib.tri as tri
 from matplotlib.lines import Line2D
 import numpy as np
 import numpy.testing as nptest
-from bet.Comm import *
+from bet.Comm import size
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
         "../test/test_sampling")
 
+@unittest.skipIf(size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  
@@ -38,7 +41,7 @@ class test_plotDomains(unittest.TestCase):
         self.P_samples = (1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         self.filename = "testfigure"
 
-        QoI_range = np.array([3.0, 3.0, 3.0])
+        QoI_range = np.array([3.0, 3.0, 3.0, 3.0])
         Q_ref = QoI_range*0.5
         bin_size = 0.15*QoI_range
         maximum = 1/np.product(bin_size)
@@ -54,8 +57,8 @@ class test_plotDomains(unittest.TestCase):
             right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
             left = np.all(np.greater_equal(outputs, left), axis=1)
             right = np.all(np.less_equal(outputs, right), axis=1)
-            inside = np.logial_and(left, right)
-            max_values = np.repeate(maximum, outputs.shape[0], 0)
+            inside = np.logical_and(left, right)
+            max_values = np.repeat(maximum, outputs.shape[0], 0)
             return inside.astype('float64')*max_values
         self.rho_D = ifun
         self.lnums = [1, 2, 3]
@@ -76,13 +79,28 @@ class test_plotDomains(unittest.TestCase):
         filenames = glob.glob(self.filename+".*")
         filenames.extend(glob.glob('param_samples_*cs.eps'))
         filenames.extend(glob.glob('data_samples_*cs.eps'))
+
+        filenames.extend(glob.glob(self.filename+".*"))
+        filenames.extend(glob.glob( 'param_samples_*cs.eps'))
+        filenames.extend(glob.glob(os.path.join(local_path,
+            'data_samples_*cs.eps')))
+
+
+        filenames.append('domain_q1_q2_cs.eps')
         filenames.append('domain_q1_q1_cs.eps')
         filenames.append('q1_q2_domain_Q_cs.eps')
+        filenames.append('q1_q1_domain_Q_cs.eps')
         figfiles = glob.glob('figs/*')
+        figfiles.extend(glob.glob(os.path.join(local_path, 'figs/*')))
         filenames.extend(figfiles)
+
         for f in filenames:
             if os.path.exists(os.path.join(local_path, f)):
                 os.remove(os.path.join(local_path, f))
+            if os.path.exists(f):
+                os.remove(f)
+        if os.path.exists("figs"):
+            os.rmdir("figs")
 
     def test_scatter_2D(self):
         """
@@ -90,14 +108,12 @@ class test_plotDomains(unittest.TestCase):
         """
         sample_nos = [None, 25]
         p_ref = [None, self.samples[4, [0, 1]]]
-        save = [True, False]
-        for sn in sample_nos:
-            for pr in p_ref:
-                for s in save:
-                    yield self.check_scatter_2D, sn, pr, s
+        for sn, pr in zip(sample_nos, p_ref):
+            self.check_scatter_2D(sn, pr, True)
 
     def check_scatter_2D(self, sample_nos, p_ref, save):
         """
+
         Check to see that the :meth:`bet.postTools.plotDomains.scatter_2D` ran
         without generating an error.
         """
@@ -116,11 +132,8 @@ class test_plotDomains(unittest.TestCase):
         """
         sample_nos = [None, 25]
         p_ref = [None, self.samples[4, :]]
-        save = [True, False]
-        for sn in sample_nos:
-            for pr in p_ref:
-                for s in save:
-                    yield self.check_scatter_3D, sn, pr, s
+        for sn, pr in zip(sample_nos, p_ref):
+                self.check_scatter_3D(sn, pr, True)
 
     def check_scatter_3D(self, sample_nos, p_ref, save):
         """
@@ -141,7 +154,6 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.show_param`
         """
         sample_nos = [None, 25]
-        save = [True, False]
         samples = [self.samples, self.samples[:, [0, 1]],
                 self.samples[:, [0, 1, 2]]]
         lnums = [None, self.lnums]
@@ -153,12 +165,9 @@ class test_plotDomains(unittest.TestCase):
             if sample.shape[0] > 3:
                 showdim.append(3)
             for sd in showdim:
-                for ln in lnums:
-                    for sn in sample_nos:
-                        p_ref = [None, sample[4, :]]
-                        for pr in p_ref:
-                            for s in save:
-                                yield self.check_show_param, samples, pr, sn, s, ln, sd
+                p_ref = [None, sample[4, :]]
+                for ln, sn, pr in zip(lnums, sample_nos, p_ref):
+                            self.check_show_param(sample, sn, pr, True, ln, sd)
 
     def check_show_param(self, samples, sample_nos, p_ref, save, lnums,
             showdim):
@@ -179,23 +188,18 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.show_data`
         """
         sample_nos = [None, 25]
-        save = [True, False]
         data_sets = [self.data, self.data[:, [0, 1]]]
-        qnums = [None, self.lnums]
+        qnums = [None, [0, 1, 2]]#self.lnums]
 
-        for data in data_sets:
+        for data, qn, sn in zip(data_sets, qnums, sample_nos):
             showdim = [None]
             if data.shape[0] > 2:
                 showdim.append(2)
             if data.shape[0] > 3:
                 showdim.append(3)
-            for sd in showdim:
-                for qn in qnums:
-                    for sn in sample_nos:
-                        Q_ref = [None, data[4, :]]
-                        for qr in Q_ref:
-                            for s in save:
-                                yield self.check_show_data, data, sn, qr, s, qn, sd
+            Q_ref = [None, data[4, :]]
+            for sd, qr in zip(showdim, Q_ref):
+                self.check_show_data(data, sn, qr, True, qn, sd)
 
     def check_show_data(self, data, sample_nos, q_ref, save, qnums, showdim):
         """
@@ -203,12 +207,23 @@ class test_plotDomains(unittest.TestCase):
         without generating an error.
         """
         try:
-            plotDomains.show_data(data, self.rho_D, q_ref,
+            if data.shape[1] == 4:
+                plotDomains.show_data(data, self.rho_D, q_ref,
+                    sample_nos, save, False, qnums, showdim) 
+            else:
+                plotDomains.show_data(data, None, q_ref,
                     sample_nos, save, False, qnums, showdim) 
             go = True
         except (RuntimeError, TypeError, NameError):
+            print "ERROR"
+            print data.shape
+            print q_ref
+            print sample_nos
+            print save
+            print qnums
+            print showdim
             go = False
-        nptest.assert_equal(go, True) 
+        nptest.assert_equal(go, True)
 
     def test_show_data_domain_2D(self):
         """
@@ -216,17 +231,10 @@ class test_plotDomains(unittest.TestCase):
         """
         ref_markers = [None, self.markers]
         ref_colors = [None, self.colors]
-        triangulation = tri.Triangulation(self.samples[:, 0], self.samples[:, 1])
-        triangles = [None, triangulation.triangles]
         filenames = [None, ['domain_q1_q1_cs.eps', 'q1_q2_domain_Q_cs.eps']]
-        save = [None, False]
 
-        for rm in ref_markers:
-            for rc in ref_colors:
-                for t in triangles:
-                    for s in save:
-                        for fn in filenames:
-                            yield self.check_show_data_domain_2D, rm, rc, t, s, fn
+        for rm, rc, fn in zip(ref_markers, ref_colors, filenames):
+            self.check_show_data_domain_2D(rm, rc, None, True, fn)
 
     def check_show_data_domain_2D(self, ref_markers, ref_colors, triangles,
             save, filenames):
@@ -235,7 +243,9 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_2D` ran
         without generating an error.
         """
-        Q_ref = self.data[4, [0, 1]]
+        Q_ref = self.data[:, [0, 1]]
+        Q_ref = Q_ref[[1,4],:]
+        print Q_ref.shape
         data = self.data[:, [0, 1]]
         try:
             plotDomains.show_data_domain_2D(self.samples, data, Q_ref,
@@ -250,18 +260,18 @@ class test_plotDomains(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotDomains.show_data_domain_multi`
         """
-        os.mkdir('figs/')
+        if not os.path.exists('figs/'):
+            os.mkdir('figs/')
         Q_nums = [None, [1, 2], [1, 2, 3]]
         ref_markers = [None, self.markers]
         ref_colors = [None, self.colors]
-        for rm in ref_markers:
-            for rc in ref_colors:
-                for qn in Q_nums:
-                    showdim = [None, 1]
-                    if len(qn) > 2:
-                        showdim.append('all', 'ALL')
-                    for sd in showdim:
-                        yield self.check_show_data_domain_multi, rm, rc, qn, sd
+        for rm, rc in zip(ref_markers, ref_colors):
+            for qn in Q_nums:
+                showdim = [None, 1]
+                if qn and len(qn) > 2:
+                    showdim.extend(['all', 'ALL'])
+                for sd in showdim:
+                    self.check_show_data_domain_multi(rm, rc, qn, sd)
 
     def check_show_data_domain_multi(self, ref_markers, ref_colors, Q_nums,
             showdim):
@@ -270,7 +280,7 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_multi` ran
         without generating an error.
         """
-        Q_ref = self.data[4, :]
+        Q_ref = self.data[[4, 2], :]
         try:
             plotDomains.show_data_domain_multi(self.samples, self.data,
                     Q_ref, Q_nums, ref_markers=ref_markers,

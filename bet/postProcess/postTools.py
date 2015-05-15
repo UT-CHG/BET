@@ -1,7 +1,7 @@
-"""
-TODO: rewrite to match what the module acutally does
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
 
-This module provides methods for plotting probabilities. 
+"""
+This module provides methods for postprocessing probabilities and data. 
 """
 from bet.Comm import rank
 import numpy as np
@@ -40,7 +40,7 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     if data != None:
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
-        data = data[indices,:]
+        data = data[indices, :]
 
     return (P_samples, samples, lam_vol, data)
 
@@ -70,8 +70,6 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     """
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
-    # TODO: should we trust the user or should we do a quick check of part of
-    # the array to see if it's already sorted?
     if sort:
         (P_samples, samples, lam_vol, data) = sort_by_rho(P_samples, samples,
                 lam_vol, data)
@@ -199,3 +197,79 @@ def collect_parallel_probs_mat(file_prefix, num_files, save=False,
         sio.savemat(file_prefix + "all", file_dict, do_compression=compress)
 
     return (P, lam)
+
+def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
+    """
+
+    Compare the quality of samples where ``sample_quality`` is the measure of
+    quality by which the sets of samples have been indexed and ``sort_ind`` is
+    an array of the sorted indicies.
+
+    :param list() sort_ind: indicies that index ``sample_quality`` in sorted
+        order
+    :param list() sample_quality: a measure of quality by which the sets of 
+        samples are sorted
+    :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
+        information used to generate the sets of samples to be displayed
+    :param list() column_headings: Column headings to print to screen
+
+    """
+    if column_headings == None:
+        column_headings = "Run parameters"
+    print "Sample Set No., Quality, "+ str(column_headings)
+    for i in reversed(sort_ind):
+        print i, sample_quality[i], np.round(run_param[i], 3)
+
+def in_high_prob(data, rho_D, maximum, sample_nos=None):
+    """
+
+    Estimates the number of samples in high probability regions of D.
+
+    :param data: Data associated with ``samples``
+    :type data: :class:`np.ndarray`
+    :param rho_D: probability density on D
+    :type rho_D: callable function that takes a :class:`np.array` and returns a
+        :class:`np.ndarray`
+    :param float maximum: maximum (or average) value of ``rho_D``
+    :param list sample_nos: sample numbers to plot
+
+    :rtype: int
+    :returns: Estimate of number of samples in the high probability area.
+
+    """
+    if sample_nos == None:
+        sample_nos = range(data.shape[0])
+    if len(data.shape) == 1:
+        rD = rho_D(data[sample_nos])
+    else:
+        rD = rho_D(data[sample_nos, :])
+    adjusted_total_prob = int(sum(rD)/maximum)
+    print "Samples in box "+str(adjusted_total_prob)
+    return adjusted_total_prob
+
+def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
+    """
+
+    Estimates the number of samples in high probability regions of D for a list
+    of results.
+
+    :param list results_list: list of (results, data) tuples
+    :param rho_D: probability density on D
+    :type rho_D: callable function that takes a :class:`np.array` and returns a
+        :class:`np.ndarray`
+    :param float maximum: maximum (or average) value of ``rho_D``
+    :param list sample_nos_list: list of sample numbers to plot (list of lists)
+
+    :rtype: list of int
+    :returns: Estimate of number of samples in the high probability area.
+
+    """
+    adjusted_total_prob = list()
+    if sample_nos_list:
+        for result, sample_nos in zip(results_list, sample_nos_list):
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
+                sample_nos))
+    else:
+        for result in results_list:
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
+    return adjusted_total_prob

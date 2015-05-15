@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Steven Mattis 04/07/2015
 """
 This module contains tests for :module:`bet.postProcess.plotP`.
@@ -30,7 +32,7 @@ class Test_calc_marg_1D(unittest.TestCase):
         self.lam_domain=np.array([[0.0,1.0]])
         num_samples=1000
         self.samples = np.linspace(self.lam_domain[0][0], self.lam_domain[0][1], num_samples+1)
-        self.P_samples = (1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
+        self.P_samples = 1.0/float(size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         
     def test_1_bin(self):
         """
@@ -65,7 +67,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         """
         self.lam_domain=np.array([[0.0,1.0],[0.0,1.0]])
         self.samples=util.meshgrid_ndim((np.linspace(self.lam_domain[0][0], self.lam_domain[0][1], 10),np.linspace(self.lam_domain[1][0], self.lam_domain[1][1], 10)))
-        self.P_samples = (1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
+        self.P_samples = 1.0/float(size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         
     def test_1_bin_1D(self):
         """ 
@@ -163,8 +165,10 @@ class Test_calc_marg_2D(unittest.TestCase):
         try:
             plotP.plot_1D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
             go = True
-            os.remove("file_1D_0.eps")
-            os.remove("file_1D_1.eps")
+            if os.path.exists("file_1D_0.eps"):
+                os.remove("file_1D_0.eps")
+            if os.path.exists("file_1D_1.eps"):
+                os.remove("file_1D_1.eps")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
@@ -182,7 +186,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         try:
             plotP.plot_2D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
             go = True
-            os.remove("file_2D_0_1.eps")
+            if os.path.exists("file_2D_0_1.eps"):
+                os.remove("file_2D_0_1.eps")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)

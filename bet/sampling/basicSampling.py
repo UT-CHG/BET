@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Lindley Graham 4/15/2014
 """
 This module contains functions for sampling. We assume we are given access to a
@@ -13,82 +15,6 @@ import scipy.io as sio
 from pyDOE import lhs
 import bet.util as util
 from bet.Comm import *
-
-def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
-    """
-    TODO: Maybe move to bet.postProcessing.postTools
-
-    Compare the quality of samples where ``sample_quality`` is the measure of
-    quality by which the sets of samples have been indexed and ``sort_ind`` is
-    an array of the sorted indicies.
-
-    :param list() sort_int: indicies that index ``sample_quality`` in sorted
-        order
-    :param list() sample_quality: a measure of quality by which the sets of 
-        samples are sorted
-    :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
-        information used to generate the sets of samples to be displayed
-
-    """
-    if column_headings == None:
-        column_headings = "Run parameters"
-    print "Sample Set No., Quality, "+ column_headings
-    for i in reversed(sort_ind):
-        print i, sample_quality[i], np.round(run_param[i], 3)
-
-def in_high_prob(data, rho_D, maximum, sample_nos=None):
-    """
-    TODO: Maybe move to bet.postProcessing.postTools
-
-    Estimates the number of samples in high probability regions of D.
-
-    :param data: Data associated with ``samples``
-    :type data: :class:`np.ndarray`
-    :param rho_D: probability density on D
-    :type rho_D: callable function that takes a :class:`np.array` and returns a
-        :class:`np.ndarray`
-    :param list sample_nos: sample numbers to plot
-
-    :rtype: int
-    :returns: Estimate of number of samples in the high probability area.
-
-    """
-    if sample_nos == None:
-        sample_nos = range(data.shape[0])
-    if len(data.shape) == 1:
-        rD = rho_D(data[sample_nos])
-    else:
-        rD = rho_D(data[sample_nos, :])
-    adjusted_total_prob = int(sum(rD)/maximum)
-    print "Samples in box "+str(adjusted_total_prob)
-    return adjusted_total_prob
-
-def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
-    """
-    TODO: Maybe move to bet.postProcessing.postTools
-
-    Estimates the number of samples in high probability regions of D for a list
-    of results.
-
-    :param list results_list: list of (results, data) tuples
-    :param rho_D: probability density on D
-    :type rho_D: callable function that takes a :class:`np.array` and returns a
-        :class:`np.ndarray`
-    :param list sample_nos_list: list of sample numbers to plot (list of lists)
-
-    :rtype: list of int
-    :returns: Estimate of number of samples in the high probability area.
-
-    """
-    adjusted_total_prob = list()
-    if sample_nos_list:
-        for result, sample_nos in zip(results_list, sample_nos_list):
-            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
-                sample_nos))
-    else:
-        for result in results_list:
-            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
-    return adjusted_total_prob
 
 def loadmat(save_file, model=None):
     """
@@ -134,6 +60,10 @@ class sampler(object):
     def __init__(self, lb_model, num_samples=None):
         """
         Initialization
+        
+        :param lb_model: Interface to physics-based model takes an input of
+            shape (N, ndim) and returns an output of shape (N, mdim)
+        :param int num_samples: N, number of samples (optional)
         """
         self.num_samples = num_samples
         self.lb_model = lb_model
@@ -178,6 +108,7 @@ class sampler(object):
         :param param_max: maximum value for each parameter dimension
         :type param_max: np.array (ndim,)
         :param string savefile: filename to save samples and data
+        :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :param boolean parallel: Flag for parallel implementation. Uses
@@ -227,34 +158,18 @@ class sampler(object):
         
         # Update the number of samples
         self.num_samples = samples.shape[0]
-        size = comm.Get_size()
-        rank = comm.Get_rank()
 
         # Solve the model at the samples
         if not(parallel) or size == 1:
             data = self.lb_model(samples)
-        elif parallel and self.num_samples%size == 0:
-            if len(samples.shape)  == 1:
-                my_samples = np.empty((samples.shape[0]/size, ))
-            else:
-                my_samples = np.empty((samples.shape[0]/size, samples.shape[1]))
-            comm.Scatter([samples, MPI.DOUBLE], [my_samples, MPI.DOUBLE])
-            my_data = self.lb_model(my_samples)
-            if len(my_data.shape) == 1:
-                data = np.empty((self.num_samples,),
-                        dtype=np.float64)
-            else:
-                data = np.empty((self.num_samples, my_data.shape[1]),
-                        dtype=np.float64)
-            comm.Allgather([my_data, MPI.DOUBLE], [data, MPI.DOUBLE])
         elif parallel:
             my_len = self.num_samples/size
             if rank != size-1:
                 my_index = range(0+rank*my_len, (rank+1)*my_len)
             else:
                 my_index = range(0+rank*my_len, self.num_samples)
-            if len(my_samples.shape) == 1:
-                my_samples = samples[my_index, :]
+            if len(samples.shape) == 1:
+                my_samples = samples[my_index]
             else:
                 my_samples = samples[my_index, :]
             my_data = self.lb_model(my_samples)
@@ -266,6 +181,7 @@ class sampler(object):
             samples = np.expand_dims(samples, axis=1)
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
+
 
         mdat = dict()
         self.update_mdict(mdat)
