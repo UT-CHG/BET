@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bet.postProcess package &mdash; BET 0.0 documentation</title>
+    <title>bet.postProcess package &mdash; BET 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,10 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="index.html" />
+    <link rel="top" title="BET 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="bet package" href="bet.html" />
+    <link rel="next" title="bet.sampling package" href="bet.sampling.html" />
+    <link rel="prev" title="bet.calculateP package" href="bet.calculateP.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -40,7 +43,15 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="bet.sampling.html" title="bet.sampling package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bet.calculateP.html" title="bet.calculateP package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">BET 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" >bet</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="bet.html" accesskey="U">bet package</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -56,11 +67,11 @@
 </div>
 <div class="section" id="module-bet.postProcess.plotDomains">
 <span id="bet-postprocess-plotdomains-module"></span><h2>bet.postProcess.plotDomains module<a class="headerlink" href="#module-bet.postProcess.plotDomains" title="Permalink to this headline">¶</a></h2>
-<p>Methods used to plot two-dimensional domains and/or two-dimensional
-slices/projections of domains.</p>
+<p>This module provides methods used to plot two-dimensional domains and/or
+two-dimensional slices/projections of domains.</p>
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_ref</em>, <em>save</em>, <em>show</em>, <em>xlabel</em>, <em>ylabel</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_ref</em>, <em>save</em>, <em>interactive</em>, <em>xlabel</em>, <em>ylabel</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Two-dimensional scatter plot of <code class="docutils literal"><span class="pre">samples</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code> (usually
 an array of rho_D values).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -73,7 +84,7 @@ an array of rho_D values).</p>
 <li><strong>color</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; array to color the samples by</li>
 <li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
-<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
 <li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
@@ -86,7 +97,7 @@ an array of rho_D values).</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_3D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_ref</em>, <em>save</em>, <em>show</em>, <em>xlabel</em>, <em>ylabel</em>, <em>zlabel</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_ref</em>, <em>save</em>, <em>interactive</em>, <em>xlabel</em>, <em>ylabel</em>, <em>zlabel</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Three-dimensional scatter plot of <code class="docutils literal"><span class="pre">samples</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code> (usually
 an array of rho_D values).</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -99,7 +110,7 @@ an array of rho_D values).</p>
 <li><strong>color</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; array to color the samples by</li>
 <li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
-<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
 <li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
 <li><strong>zlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; z-axis label</li>
@@ -113,7 +124,7 @@ an array of rho_D values).</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data</code><span class="sig-paren">(</span><em>data</em>, <em>rho_D=None</em>, <em>Q_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>show=False</em>, <em>Q_nums=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data</code><span class="sig-paren">(</span><em>data</em>, <em>rho_D=None</em>, <em>Q_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>Q_nums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot samples in data space and colors them either by rho_D or by
 sample batch number.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -125,9 +136,12 @@ sample batch number.</p>
 <li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
 <li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns a
 <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; probability density on D</li>
-<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference data value</li>
+<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (mdim,)) &#8211; reference data value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
-<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>Q_nums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; integers representing data domain coordinates</li>
+<li><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 2 or 3, flag showing pairwise or tripletwise data
+sample clouds</li>
 </ul>
 </td>
 </tr>
@@ -137,25 +151,25 @@ sample batch number.</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>samples, data, Q_ref, ref_markers=['^', 's', 'o'], ref_colors=['r', 'g', 'b'], xlabel='$q_1$', ylabel='$q_2', triangles=None, save=True, show=True, filenames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the data domain D using a triangulation based on the generating
-samples with a marker for various <code class="docutils literal"><span class="pre">Q_ref</span></code>. Assumes that the first
-dimension of data is $q_1$.</p>
+samples with a marker for various <span class="math">\(Q_{ref}\)</span>. Assumes that the first
+dimension of data is <span class="math">\(q_1\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (ndim, num_samples)) &#8211; Samples to plot</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; Samples to plot</li>
 <li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Data associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
-<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference data value</li>
-<li><strong>ref_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <code class="docutils literal"><span class="pre">Q_ref</span></code></li>
-<li><strong>ref_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <code class="docutils literal"><span class="pre">Q_ref</span></code></li>
+<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (M, 2)) &#8211; reference data value</li>
+<li><strong>ref_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <span class="math">\(Q_{ref}\)</span></li>
+<li><strong>ref_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <span class="math">\(Q_{ref}\)</span></li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
 <li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
 <li><strong>triangles</strong> (<code class="xref py py-class docutils literal"><span class="pre">tri.Triuangulation.triangles</span></code>) &#8211; triangulation defined by <code class="docutils literal"><span class="pre">samples</span></code></li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
-<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
 <li><strong>filenames</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; file names for the unmarked and marked domain plots</li>
 </ul>
 </td>
@@ -166,22 +180,25 @@ dimension of data is $q_1$.</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_multi">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_multi</code><span class="sig-paren">(</span><em>samples, data, Q_ref, Q_nums=None, img_folder='figs/', ref_markers=['^', 's', 'o'], ref_colors=['r', 'g', 'b']</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_multi</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref</em>, <em>Q_nums=None</em>, <em>img_folder='figs/'</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the data domain D using a triangulation based on the generating
-samples where $Q={q_1, q_i}$ for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for various
-<code class="docutils literal"><span class="pre">Q_ref</span></code>.</p>
+samples where <span class="math">\(Q={q_1, q_i}\)</span> for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for
+various <span class="math">\(Q_{ref}\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (ndim, num_samples)) &#8211; Samples to plot</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim). Only
+uses the first two dimensions.) &#8211; Samples to plot</li>
 <li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Data associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
-<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference data value</li>
+<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (M, mdim)`) &#8211; reference data value</li>
 <li><strong>Q_nums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; dimensions of the QoI to plot</li>
 <li><strong>img_folder</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; folder to save the plots to</li>
-<li><strong>ref_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <code class="docutils literal"><span class="pre">Q_ref</span></code></li>
-<li><strong>ref_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <code class="docutils literal"><span class="pre">Q_ref</span></code></li>
+<li><strong>ref_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <span class="math">\(Q_{ref}\)</span></li>
+<li><strong>ref_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <span class="math">\(Q_{ref}\)</span></li>
+<li><strong>showdim</strong> (<em>int or string</em>) &#8211; default 1. If int then flag to show all combinations with a
+given dimension or if <code class="docutils literal"><span class="pre">all</span></code> show all combinations.</li>
 </ul>
 </td>
 </tr>
@@ -191,7 +208,7 @@ samples where $Q={q_1, q_i}$ for <code class="docutils literal"><span class="pre
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_param">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_param</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>rho_D=None</em>, <em>p_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>show=False</em>, <em>lnums=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_param" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_param</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>rho_D=None</em>, <em>p_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>lnums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_param" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot samples in parameter space and colors them either by rho_D or by
 sample batch number.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -206,7 +223,11 @@ sample batch number.</p>
 <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; probability density on D</li>
 <li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
-<li><strong>show</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
+<li><strong>lnums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; integers representing parameter domain coordinate
+numbers</li>
+<li><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 2 or 3, flag showing pairwise or tripletwise parameter
+sample clouds</li>
 </ul>
 </td>
 </tr>
@@ -274,7 +295,7 @@ input probability measure defined by P_samples on a rectangular grid.</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotP.plot_1D_marginal_probs">
-<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_1D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>lam_domain</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>interactive=True</em>, <em>lambda_label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_1D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>lam_domain</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>interactive=False</em>, <em>lambda_label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This makes plots of every single marginal probability of
 input probability measure defined by P_samples on a 1D  grid.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -282,8 +303,9 @@ input probability measure defined by P_samples on a 1D  grid.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>marginals</strong> (<em>dictionary with int as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 1D marginal probabilities</li>
-<li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
+<li><strong>marginals</strong> (<em>dictionary with int as keys and :class:&#8217;~numpy.ndarray&#8217; of
+shape (nbins+1,) as values :param bins: Endpoints of bins used in
+calculating marginals</em>) &#8211; 1D marginal probabilities</li>
 <li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Prefix for output files.</li>
 <li><strong>lam_ref</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim,) or None</em>) &#8211; True parameters.</li>
@@ -298,7 +320,7 @@ input probability measure defined by P_samples on a 1D  grid.</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotP.plot_2D_marginal_probs">
-<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_2D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>lam_domain</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>plot_surface=False</em>, <em>interactive=True</em>, <em>lambda_label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_2D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>lam_domain</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>plot_surface=False</em>, <em>interactive=False</em>, <em>lambda_label=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This makes plots of every pair of marginals (or joint in 2d case) of
 input probability measure defined by P_samples on a rectangular grid.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -306,35 +328,14 @@ input probability measure defined by P_samples on a rectangular grid.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>marginals</strong> (<em>dictionary with tuples of 2 integers as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 2D marginal probabilities</li>
+<li><strong>marginals</strong> (<em>dictionary with tuples of 2 integers as keys and
+:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 2D marginal probabilities</li>
 <li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,2)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
 <li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
 <li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; Prefix for output files.</li>
 <li><strong>lam_ref</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim,) or None</em>) &#8211; True parameters.</li>
 <li><strong>interactive</strong> (<em>boolean</em>) &#8211; Whether or not to display interactive plots.</li>
 <li><strong>lambda_label</strong> (<em>list of length nbins of strings or None</em>) &#8211; Label for each parameter for plots.</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="bet.postProcess.plotP.plot_voronoi_probs">
-<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_voronoi_probs</code><span class="sig-paren">(</span><em>P_samples</em>, <em>samples</em>, <em>lam_domain</em>, <em>nbins=20</em>, <em>plot_surface=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_voronoi_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>This makes plots of the joint probabilies of input probability measure
-defined by P_samples for 2d cases. post_process - is an input that only
-applies to the 2d case  w.r.t. the Voronoi cells.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>P_samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples,)</em>) &#8211; Probabilities.</li>
-<li><strong>samples</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (num_samples, ndim)</em>) &#8211; The samples in parameter space for which the model was run.</li>
-<li><strong>lam_domain</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (ndim, 2)</em>) &#8211; The domain for each parameter for the model.</li>
-<li><strong>nbins</strong> (<em>:int</em>) &#8211; Number of bins in each direction.</li>
 </ul>
 </td>
 </tr>
@@ -351,8 +352,9 @@ applies to the 2d case  w.r.t. the Voronoi cells.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>marginals</strong> (<em>dictionary with int as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 1D marginal probabilities</li>
-<li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
+<li><strong>marginals</strong> (<em>dictionary with int as keys and :class:&#8217;~numpy.ndarray&#8217; of
+shape (nbins+1,) as values :param bins: Endpoints of bins used in
+calculating marginals</em>) &#8211; 1D marginal probabilities</li>
 <li><strong>sigma</strong> (<em>:float or :class:&#8217;~numpy.ndarray&#8217; of shape (ndim,)</em>) &#8211; Smoothing parameter in each direction.</li>
 </ul>
 </td>
@@ -376,7 +378,8 @@ applies to the 2d case  w.r.t. the Voronoi cells.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>marginals</strong> (<em>dictionary with tuples of 2 integers as keys and :class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 2D marginal probabilities</li>
+<li><strong>marginals</strong> (<em>dictionary with tuples of 2 integers as keys and
+:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,) as values</em>) &#8211; 2D marginal probabilities</li>
 <li><strong>bins</strong> (<em>:class:&#8217;~numpy.ndarray&#8217; of shape (nbins+1,)</em>) &#8211; Endpoints of bins used in calculating marginals</li>
 <li><strong>sigma</strong> (<em>:float or :class:&#8217;~numpy.ndarray&#8217; of shape (ndim,)</em>) &#8211; Smoothing parameter in each direction.</li>
 </ul>
@@ -395,11 +398,12 @@ applies to the 2d case  w.r.t. the Voronoi cells.</p>
 </div>
 <div class="section" id="module-bet.postProcess.postTools">
 <span id="bet-postprocess-posttools-module"></span><h2>bet.postProcess.postTools module<a class="headerlink" href="#module-bet.postProcess.postTools" title="Permalink to this headline">¶</a></h2>
-<p>This module provides methods for plotting probabilities.</p>
+<p>This module provides methods for postprocessing probabilities and data.</p>
 <dl class="function">
 <dt id="bet.postProcess.postTools.collect_parallel_probs_csv">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">collect_parallel_probs_csv</code><span class="sig-paren">(</span><em>P_file</em>, <em>lam_file</em>, <em>num_files</em>, <em>save=False</em>, <em>compress=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.collect_parallel_probs_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collects probabilities and samples saved in .csv format from parallel runs into single arrays.</p>
+<dd><p>Collects probabilities and samples saved in .csv format from parallel runs
+into single arrays.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -424,7 +428,8 @@ applies to the 2d case  w.r.t. the Voronoi cells.</p>
 <dl class="function">
 <dt id="bet.postProcess.postTools.collect_parallel_probs_mat">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">collect_parallel_probs_mat</code><span class="sig-paren">(</span><em>file_prefix</em>, <em>num_files</em>, <em>save=False</em>, <em>compress=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.collect_parallel_probs_mat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collects probabilities and samples saved in .mat format from parallel runs into single arrays.</p>
+<dd><p>Collects probabilities and samples saved in .mat format from parallel runs
+into single arrays.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -446,12 +451,94 @@ applies to the 2d case  w.r.t. the Voronoi cells.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.postProcess.postTools.compare_yield">
+<code class="descclassname">bet.postProcess.postTools.</code><code class="descname">compare_yield</code><span class="sig-paren">(</span><em>sort_ind</em>, <em>sample_quality</em>, <em>run_param</em>, <em>column_headings=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.compare_yield" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compare the quality of samples where <code class="docutils literal"><span class="pre">sample_quality</span></code> is the measure of
+quality by which the sets of samples have been indexed and <code class="docutils literal"><span class="pre">sort_ind</span></code> is
+an array of the sorted indicies.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>sort_ind</strong> (<em>list()</em>) &#8211; indicies that index <code class="docutils literal"><span class="pre">sample_quality</span></code> in sorted
+order</li>
+<li><strong>sample_quality</strong> (<em>list()</em>) &#8211; a measure of quality by which the sets of 
+samples are sorted</li>
+<li><strong>run_param</strong> (<em>list()</em>) &#8211; zipped list of :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>~numpy.ndarray`s containing
+information used to generate the sets of samples to be displayed</li>
+<li><strong>column_headings</strong> (<em>list()</em>) &#8211; Column headings to print to screen</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.postTools.in_high_prob">
+<code class="descclassname">bet.postProcess.postTools.</code><code class="descname">in_high_prob</code><span class="sig-paren">(</span><em>data</em>, <em>rho_D</em>, <em>maximum</em>, <em>sample_nos=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.in_high_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the number of samples in high probability regions of D.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Data associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
+<li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns a
+<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; probability density on D</li>
+<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum (or average) value of <code class="docutils literal"><span class="pre">rho_D</span></code></li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Estimate of number of samples in the high probability area.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.postTools.in_high_prob_multi">
+<code class="descclassname">bet.postProcess.postTools.</code><code class="descname">in_high_prob_multi</code><span class="sig-paren">(</span><em>results_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>sample_nos_list=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.in_high_prob_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the number of samples in high probability regions of D for a list
+of results.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>results_list</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of (results, data) tuples</li>
+<li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns a
+<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; probability density on D</li>
+<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum (or average) value of <code class="docutils literal"><span class="pre">rho_D</span></code></li>
+<li><strong>sample_nos_list</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of sample numbers to plot (list of lists)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list of int</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Estimate of number of samples in the high probability area.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.postProcess.postTools.sample_highest_prob">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">sample_highest_prob</code><span class="sig-paren">(</span><em>top_percentile</em>, <em>P_samples</em>, <em>samples</em>, <em>lam_vol=None</em>, <em>data=None</em>, <em>sort=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sample_highest_prob" title="Permalink to this definition">¶</a></dt>
-<dd><p>This calculates the highest probability samples whose probability sum to a given value. 
-The number of high probability samples that sum to the value and the probabilities, 
-samples, volumes, and data are returned. This assumes that <code class="docutils literal"><span class="pre">P_samples</span></code>, <code class="docutils literal"><span class="pre">samples</span></code>, 
-<code class="docutils literal"><span class="pre">lam_vol</span></code>, and <code class="docutils literal"><span class="pre">data</span></code> have all be sorted using <code class="xref py py-meth docutils literal"><span class="pre">sort_by_rho()</span></code>.</p>
+<dd><p>This calculates the highest probability samples whose probability sum to a
+given value.  The number of high probability samples that sum to the value
+and the probabilities, samples, volumes, and data are returned. This
+assumes that <code class="docutils literal"><span class="pre">P_samples</span></code>,
+<code class="docutils literal"><span class="pre">samples</span></code>, <code class="docutils literal"><span class="pre">lam_vol</span></code>, and <code class="docutils literal"><span class="pre">data</span></code> have all be sorted using
+<code class="xref py py-meth docutils literal"><span class="pre">sort_by_rho()</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -478,7 +565,8 @@ samples, volumes, and data are returned. This assumes that <code class="docutils
 <dl class="function">
 <dt id="bet.postProcess.postTools.save_parallel_probs_csv">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">save_parallel_probs_csv</code><span class="sig-paren">(</span><em>P_samples</em>, <em>samples</em>, <em>P_file</em>, <em>lam_file</em>, <em>compress=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.save_parallel_probs_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves probabilites and samples from parallel runs in individual .csv files for each process.</p>
+<dd><p>Saves probabilites and samples from parallel runs in individual .csv files
+for each process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -502,7 +590,8 @@ samples, volumes, and data are returned. This assumes that <code class="docutils
 <dl class="function">
 <dt id="bet.postProcess.postTools.save_parallel_probs_mat">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">save_parallel_probs_mat</code><span class="sig-paren">(</span><em>P_samples</em>, <em>samples</em>, <em>file_prefix</em>, <em>compress=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.save_parallel_probs_mat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves probabilites and samples from parallel runs in individual .mat files for each process.</p>
+<dd><p>Saves probabilites and samples from parallel runs in individual .mat files
+for each process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -524,9 +613,9 @@ samples, volumes, and data are returned. This assumes that <code class="docutils
 <dl class="function">
 <dt id="bet.postProcess.postTools.sort_by_rho">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">sort_by_rho</code><span class="sig-paren">(</span><em>P_samples</em>, <em>samples</em>, <em>lam_vol=None</em>, <em>data=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sort_by_rho" title="Permalink to this definition">¶</a></dt>
-<dd><p>This sorts the samples by probability density. It returns the sorted values.
-If the samples are iid, no volume data is needed. It is optional to sort the QoI 
-data, but be sure to do so if using it later.</p>
+<dd><p>This sorts the samples by probability density. It returns the sorted
+values.  If the samples are iid, no volume data is needed. It is optional
+to sort the QoI data, but be sure to do so if using it later.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -553,10 +642,21 @@ data, but be sure to do so if using it later.</p>
 <div class="section" id="module-bet.postProcess">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h2>
 <p>This subpackage contains</p>
-<ul class="simple">
-<li><a class="reference internal" href="#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal"><span class="pre">plotP</span></code></a> plots P and/or volumes of voronoi cells</li>
-<li><a class="reference internal" href="#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal"><span class="pre">plotDomains</span></code></a> plots the data domain D in 2D</li>
-<li><a class="reference internal" href="#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</li>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal"><span class="pre">plotP</span></code></a> plots <span class="math">\(P\)</span> and/or volumes (<span class="math">\(\mu\)</span>)</dt>
+<dd><p class="first last">of voronoi cells</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal"><span class="pre">plotDomains</span></code></a> plots the data domain</dt>
+<dd><p class="first last"><span class="math">\(\mathcal{D}\)</span> in 2D</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference internal" href="#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</p>
+</li>
 </ul>
 </div>
 </div>
@@ -579,6 +679,12 @@ data, but be sure to do so if using it later.</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bet.calculateP.html"
+                        title="previous chapter">bet.calculateP package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bet.sampling.html"
+                        title="next chapter">bet.sampling package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">

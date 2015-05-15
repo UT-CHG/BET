@@ -1,4 +1,7 @@
 #! /usr/bin/env python
+
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
     This example generates uniform samples on a 3D grid
     and evaluates a linear map to a 2d space. Probabilities
@@ -69,6 +72,8 @@ samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_emulate =
 
 # calc data
 data= np.dot(samples,Q_map)
+np.savetxt('3to2_samples.txt.gz', samples)
+np.savetxt('3to2_data.txt.gz', data)
 
 '''
 Suggested changes for user:
@@ -122,13 +127,16 @@ Suggested changes for user:
     Monte Carlo (it converges like 1/sqrt(n_samples)).
 '''
 #lambda_emulate = samples
-lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_emulate = 1E5)
+lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_emulate = 1E4)
 
 
 # calculate probablities
 (P,  lambda_emulate, io_ptr, emulate_ptr) = calculateP.prob_emulated(samples=samples,
-                                                                     data=data, rho_D_M = d_distr_prob, d_distr_samples = d_distr_samples,
-                                                                     lam_domain=lam_domain, lambda_emulate=lambda_emulate, d_Tree=d_Tree)
+                                                                     data=data,
+                                                                     rho_D_M=d_distr_prob,
+                                                                     d_distr_samples=d_distr_samples,
+                                                                     lambda_emulate=lambda_emulate,
+                                                                     d_Tree=d_Tree)
 # calculate 2d marginal probs
 '''
 Suggested changes for user:

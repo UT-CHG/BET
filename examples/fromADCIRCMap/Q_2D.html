@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Example: Estimate the parameter space probabiliy density with a 2D data space &mdash; BET 0.0 documentation</title>
+    <title>Example: Estimate the parameter space probabiliy density with a 2D data space &mdash; BET 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="../../index.html" />
+    <link rel="top" title="BET 0.2.0 documentation" href="../../index.html" />
     <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 3D data space" href="Q_3D.html" />
     <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 1D data space" href="Q_1D_serial.html" />
    
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="Q_1D_serial.html" title="Example: Estimate the parameter space probabiliy density with a 1D data space"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -67,7 +67,7 @@ This example demostrates three different methods to estimate
 \[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
 <p>These methods are distinguished primarily by the way <span class="math">\(\mathcal{V}_j\)</span> are
 defined and the approximation of the volume of <span class="math">\(\mathcal{V}_j\)</span>. See
-<a class="reference download internal" href="../../_downloads/Q_2D.py"><code class="xref download docutils literal"><span class="pre">Q_2D.py</span></code></a> for the example source code. Since
+<a class="reference download internal" href="../../_downloads/Q_2D_serial.py"><code class="xref download docutils literal"><span class="pre">Q_2D_serial.py</span></code></a> for the example source code. Since
 this example is essentially the same as <a class="reference internal" href="Q_1D_serial.html#q1d"><span>Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a> we will only highlight the
 differences between the two.</p>
 <p>Define the filename to save <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
@@ -93,7 +93,7 @@ differences between the two.</p>
         <span class="n">center_pts_per_edge</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],)))</span>
 </pre></div>
 </div>
-<p>Finally, we calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> for three reference solutions and the QoI :math:( (q_1,q_2), (q_1, q_5), and (q_1, q_6))</p>
+<p>Finally, we calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> for three reference solutions and the QoI <span class="math">\(( (q_1,q_2), (q_1, q_5)\)</span>, and <span class="math">\((q_1, q_6))\)</span></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">ref_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span> <span class="c"># 7, 12, 16</span>
 <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 2, 5, 6</span>
 

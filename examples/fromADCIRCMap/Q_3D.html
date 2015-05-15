@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Example: Estimate the parameter space probabiliy density with a 3D data space &mdash; BET 0.0 documentation</title>
+    <title>Example: Estimate the parameter space probabiliy density with a 3D data space &mdash; BET 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,7 @@
     <script type="text/javascript" src="../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="../../index.html" />
+    <link rel="top" title="BET 0.2.0 documentation" href="../../index.html" />
     <link rel="next" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" href="adaptive_2D.html" />
     <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html" />
    
@@ -48,7 +48,7 @@
         <li class="right" >
           <a href="Q_2D.html" title="Example: Estimate the parameter space probabiliy density with a 2D data space"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -84,6 +84,10 @@ for the example source code. Since example is essentially the same as
 </div>
 <div class="section" id="parallel-example">
 <h2>Parallel Example<a class="headerlink" href="#parallel-example" title="Permalink to this headline">¶</a></h2>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The parallel version of this example has been moved to the development branch.</p>
+</div>
 <p>This example demostrates how to estimate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> using
 <a class="reference internal" href="../../bet.calculateP.html#bet.calculateP.calculateP.prob_mc" title="bet.calculateP.calculateP.prob_mc"><code class="xref py py-meth docutils literal"><span class="pre">prob_mc()</span></code></a> where</p>
 <div class="math">
@@ -115,11 +119,10 @@ of <span class="math">\(\mathcal{V}_j\)</span>. To do this we need to import two
 <a class="reference internal" href="../../bet.calculateP.html#bet.calculateP.calculateP.prob_mc" title="bet.calculateP.calculateP.prob_mc"><code class="xref py py-meth docutils literal"><span class="pre">prob_mc()</span></code></a>. Since this script is parallel we
 need to use <code class="xref py py-meth docutils literal"><span class="pre">get_global_values()</span></code> to concatenate the arrays
 spread out across the processors into a single array:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lambda_emulate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">lambda_emulate</span><span class="p">)</span>
-<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;num_l_emulate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lambda_emulate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">mdict</span><span class="p">[</span><span class="s">&#39;num_l_emulate&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lambda_emulate&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 <span class="n">mdict</span><span class="p">[</span><span class="s">&#39;P3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">P3</span><span class="p">)</span>
-<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lam_vol3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">lam_vol3</span><span class="p">)</span>
-<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;io_ptr3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">util</span><span class="o">.</span><span class="n">get_global_values</span><span class="p">(</span><span class="n">io_ptr3</span><span class="p">)</span>
+<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;lam_vol3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">lam_vol3</span>
+<span class="n">mdict</span><span class="p">[</span><span class="s">&#39;io_ptr3&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">io_ptr3</span>
 </pre></div>
 </div>
 <p>Furthermore, we only want to write out the solution using a single processor:</p>

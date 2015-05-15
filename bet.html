@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>bet package &mdash; BET 0.0 documentation</title>
+    <title>bet package &mdash; BET 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,7 +24,10 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="index.html" />
+    <link rel="top" title="BET 0.2.0 documentation" href="index.html" />
+    <link rel="up" title="bet" href="modules.html" />
+    <link rel="next" title="bet.calculateP package" href="bet.calculateP.html" />
+    <link rel="prev" title="bet" href="modules.html" />
    
   
   <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
@@ -40,7 +43,14 @@
         <li class="right" >
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="right" >
+          <a href="bet.calculateP.html" title="bet.calculateP package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="modules.html" title="bet"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">BET 0.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="modules.html" accesskey="U">bet</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,13 +71,6 @@
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP">bet.calculateP.simpleFunP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.voronoiHistogram">bet.calculateP.voronoiHistogram module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP">Module contents</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="bet.loadBalance.html">bet.loadBalance package</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bet.loadBalance.html#submodules">Submodules</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.lb_PADCIRC">bet.loadBalance.lb_PADCIRC module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.load_balance">bet.loadBalance.load_balance module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.loadBalance.html#module-contents">Module contents</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="bet.postProcess.html">bet.postProcess package</a><ul>
@@ -93,70 +96,293 @@
 </div>
 <div class="section" id="module-bet.Comm">
 <span id="bet-comm-module"></span><h2>bet.Comm module<a class="headerlink" href="#module-bet.Comm" title="Permalink to this headline">¶</a></h2>
-<p>This module provides a workaround for people without mpi4py installed 
+<p>This module provides a workaround for people without mpi4py installed
 to run BET.</p>
 <dl class="class">
 <dt id="bet.Comm.MPI_for_no_mpi4py">
 <em class="property">class </em><code class="descclassname">bet.Comm.</code><code class="descname">MPI_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Provides a fake MPI implementation so that the user need not install
+mpi4py.</p>
+</dd></dl>
 
 <dl class="class">
 <dt id="bet.Comm.comm_for_no_mpi4py">
 <em class="property">class </em><code class="descclassname">bet.Comm.</code><code class="descname">comm_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="method">
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>Provides a fake MPI.COMM_WORLD implementation so that the user need not
+install mpi4py.</p>
+<dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Allgather">
 <code class="descname">Allgather</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allgather" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Allgather</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">val</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Allreduce">
 <code class="descname">Allreduce</code><span class="sig-paren">(</span><em>val1</em>, <em>val2</em>, <em>op=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allreduce" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Allreduce</li>
+<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Allreduce</li>
+<li><strong>op</strong> &#8211; None</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Bcast">
 <code class="descname">Bcast</code><span class="sig-paren">(</span><em>val</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Bcast" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Get_rank">
 <code class="descname">Get_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_rank" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+</tbody>
+</table>
+<p>:returns 0</p>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Get_size">
 <code class="descname">Get_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_size" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">1</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.Scatter">
 <code class="descname">Scatter</code><span class="sig-paren">(</span><em>val1</em>, <em>val2</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Scatter" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Scatter</li>
+<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Scatter</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.allgather">
 <code class="descname">allgather</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to allgather</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">val</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.allreduce">
 <code class="descname">allreduce</code><span class="sig-paren">(</span><em>val1</em>, <em>op=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allreduce" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to allreduce</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">val1</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.bcast">
 <code class="descname">bcast</code><span class="sig-paren">(</span><em>val</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.bcast" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to broadcast</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
 
 </dd></dl>
 
 </div>
 <div class="section" id="module-bet.util">
 <span id="bet-util-module"></span><h2>bet.util module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h2>
+<p>The module contains general tools for BET.</p>
+<dl class="function">
+<dt id="bet.util.fix_dimensions_data">
+<code class="descclassname">bet.util.</code><code class="descname">fix_dimensions_data</code><span class="sig-paren">(</span><em>data</em>, <em>dim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
+shape (N, dim).</p>
+<p>If <code class="docutils literal"><span class="pre">dim</span></code> is non-specified:
+If <code class="docutils literal"><span class="pre">data</span></code> is a non-iterable number assumes that <code class="docutils literal"><span class="pre">dim==1</span></code>.
+If <code class="docutils literal"><span class="pre">data</span></code> is a numpy array with len(shape) == 1 assumes that <code class="docutils literal"><span class="pre">dim==1</span></code>.
+If <code class="docutils literal"><span class="pre">data</span></code> is a numpy array with len(shape) == 2 assumes that
+<code class="docutils literal"><span class="pre">dim==shape[1]</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> &#8211; numerical object</li>
+<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The dimension of the &#8220;data&#8221; space.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">array of shape (N, dim)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.util.fix_dimensions_domain">
+<code class="descclassname">bet.util.</code><code class="descname">fix_dimensions_domain</code><span class="sig-paren">(</span><em>domain</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
+shape (dim, 2).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/collections.html#collections.Iterable" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">collections.Iterable</span></code></a>) &#8211; numerical object of at least length 2</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Retuns:</th><td class="field-body">array of shape (dim, 2)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.util.fix_dimensions_vector">
+<code class="descclassname">bet.util.</code><code class="descname">fix_dimensions_vector</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
+shape (N,).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> &#8211; numerical object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of shape (N,)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.util.fix_dimensions_vector_2darray">
+<code class="descclassname">bet.util.</code><code class="descname">fix_dimensions_vector_2darray</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_vector_2darray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
+shape (N,1).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> &#8211; numerical object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of shape (N,1)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="bet.util.get_global_values">
-<code class="descclassname">bet.util.</code><code class="descname">get_global_values</code><span class="sig-paren">(</span><em>array</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.get_global_values" title="Permalink to this definition">¶</a></dt>
-<dd><p>Concatenates local arrays into global array.</p>
+<code class="descclassname">bet.util.</code><code class="descname">get_global_values</code><span class="sig-paren">(</span><em>array</em>, <em>shape=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.get_global_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates local arrays into global array using <code class="xref py py-meth docutils literal"><span class="pre">np.vstack()</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -215,6 +441,12 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 </li>
 </ul>
 
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">bet</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="bet.calculateP.html"
+                        title="next chapter">bet.calculateP package</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">

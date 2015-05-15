@@ -6,7 +6,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Overview &mdash; BET 0.0 documentation</title>
+    <title>Overview &mdash; BET 0.2.0 documentation</title>
     
     <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -14,7 +14,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.0',
+        VERSION:     '0.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -24,8 +24,8 @@
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.0 documentation" href="index.html" />
-    <link rel="next" title="Linear Map Example" href="examples/overview.html" />
+    <link rel="top" title="BET 0.2.0 documentation" href="index.html" />
+    <link rel="next" title="Parallel" href="parallel.html" />
     <link rel="prev" title="Welcome to BET’s documentation!" href="index.html" />
    
   
@@ -43,12 +43,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="examples/overview.html" title="Linear Map Example"
+          <a href="parallel.html" title="Parallel"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Welcome to BET’s documentation!"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">BET 0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">BET 0.2.0 documentation</a> &raquo;</li> 
       </ul>
     </div>  
 
@@ -61,9 +61,9 @@
 <span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="installation">
 <h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
-<p>The code currently resides at <a class="reference external" href="https://github.com/smattis/BET">GitHub</a>.
+<p>The code currently resides at <a class="reference external" href="https://github.com/UT-CHG/BET">GitHub</a>.
 If you have a
-<a class="reference external" href="https://github.com/smattis/BET/archive/master.zip">zip file</a> you can install
+<a class="reference external" href="https://github.com/UT-CHG/BET/archive/master.zip">zip file</a> you can install
 BET using:</p>
 <div class="highlight-python"><div class="highlight"><pre>python setup.py install
 </pre></div>
@@ -77,39 +77,43 @@ change in the future. This pacakge requires <a class="reference external" href="
 <p>The package layout is as follows:</p>
 <div class="highlight-python"><div class="highlight"><pre>bet/
   calculateP/
-    calculateP.py
-    simpleFunP.py
-    voronoiHistogram.py
+    calculateP
+    simpleFunP
+    voronoiHistogram
   sampling/
-    basicSampling.py
-    adaptiveSampling.py
+    basicSampling
+    adaptiveSampling
   postProcess/
-    plotP.py
-    plotDomains.py
+    plotP
+    plotDomains
     postTools
-  loadBalance/        # !!! IN ACTIVE DEVELOPMENT !!!
-    lb_PADCIRC.py
-    load_balance.py
-    lb_DIAMOND.py
 </pre></div>
 </div>
 </div>
 <div class="section" id="code-overview">
 <h2>Code Overview<a class="headerlink" href="#code-overview" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="calculatep-package">
-<h3><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code> Package<a class="headerlink" href="#calculatep-package" title="Permalink to this headline">¶</a></h3>
-<span class="target" id="module-bet.calculateP"></span><p>This subpackage provides classes and methods for calulating the probability
-measure <span class="math">\(P_{\Lambda}\)</span>.</p>
+<div class="section" id="module-bet.calculateP">
+<span id="calculatep-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code> Package<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage provides classes and methods for calulating the
+probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
 <ul>
 <li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides methods for approximating probability</dt>
-<dd><p class="first last">densities</p>
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides methods for approximating</dt>
+<dd><p class="first last">probability densities</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple function</dt>
-<dd><p class="first last">approximations of probability densisties</p>
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt>
+<dd><p class="first last">function approximations of probability densisties</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.voronoiHistogram" title="bet.calculateP.voronoiHistogram"><code class="xref py py-mod docutils literal"><span class="pre">voronoiHistogram</span></code></a> provides methods for creating the</dt>
+<dd><p class="first last">generating points for cells that define a regular grid for use by
+<code class="xref py py-meth docutils literal"><span class="pre">numpy.histogramdd()</span></code> and for determining their volumes, etc. This
+module is only for use by <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a>.</p>
 </dd>
 </dl>
 </li>
@@ -121,7 +125,7 @@ measure <span class="math">\(P_{\Lambda}\)</span>.</p>
 <ul>
 <li><dl class="first docutils">
 <dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> a general class and associated set of methods that</dt>
-<dd><p class="first last">interogates a model through a <a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a>
+<dd><p class="first last">interogates a model through a <code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code>
 interface.  <a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> requests data(QoI)
 at a specified set of parameter samples.</p>
 </dd>
@@ -138,33 +142,20 @@ at a specified set of parameter samples.</p>
 <div class="section" id="module-bet.postProcess">
 <span id="postprocess-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">postProcess</span></code> Package<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h3>
 <p>This subpackage contains</p>
-<ul class="simple">
-<li><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal"><span class="pre">plotP</span></code></a> plots P and/or volumes of voronoi cells</li>
-<li><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal"><span class="pre">plotDomains</span></code></a> plots the data domain D in 2D</li>
-<li><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</li>
-</ul>
-</div>
-<div class="section" id="module-bet.loadBalance">
-<span id="loadbalance-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">loadBalance</span></code> Package<a class="headerlink" href="#module-bet.loadBalance" title="Permalink to this headline">¶</a></h3>
-<p>This subpackage contains</p>
 <ul>
 <li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a> an interface to control the scheduling and load</dt>
-<dd><p class="first last">balancing of model runs on an HPC infrastructure</p>
+<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal"><span class="pre">plotP</span></code></a> plots <span class="math">\(P\)</span> and/or volumes (<span class="math">\(\mu\)</span>)</dt>
+<dd><p class="first last">of voronoi cells</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">lb_DIAMOND</span></code> implements the <a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a> infrastructure</dt>
-<dd><p class="first last">for the DIAMOND model</p>
+<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal"><span class="pre">plotDomains</span></code></a> plots the data domain</dt>
+<dd><p class="first last"><span class="math">\(\mathcal{D}\)</span> in 2D</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.lb_PADCIRC" title="bet.loadBalance.lb_PADCIRC"><code class="xref py py-mod docutils literal"><span class="pre">lb_PADCIRC</span></code></a> implements the <a class="reference internal" href="bet.loadBalance.html#module-bet.loadBalance.load_balance" title="bet.loadBalance.load_balance"><code class="xref py py-class docutils literal"><span class="pre">load_balance</span></code></a> infrastructure</dt>
-<dd><p class="first last">for the PADCIRC model</p>
-</dd>
-</dl>
+<li><p class="first"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</p>
 </li>
 </ul>
 <div class="admonition seealso">
@@ -219,10 +210,9 @@ scipy
 <li><a class="reference internal" href="#installation">Installation</a></li>
 <li><a class="reference internal" href="#package-layout">Package Layout</a></li>
 <li><a class="reference internal" href="#code-overview">Code Overview</a><ul>
-<li><a class="reference internal" href="#calculatep-package"><code class="docutils literal"><span class="pre">calculateP</span></code> Package</a></li>
+<li><a class="reference internal" href="#module-bet.calculateP"><code class="docutils literal"><span class="pre">calculateP</span></code> Package</a></li>
 <li><a class="reference internal" href="#module-bet.sampling"><code class="docutils literal"><span class="pre">sampling</span></code> Package</a></li>
 <li><a class="reference internal" href="#module-bet.postProcess"><code class="docutils literal"><span class="pre">postProcess</span></code> Package</a></li>
-<li><a class="reference internal" href="#module-bet.loadBalance"><code class="docutils literal"><span class="pre">loadBalance</span></code> Package</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#internal-dependencies">Internal dependencies</a></li>
@@ -235,8 +225,8 @@ scipy
   <p class="topless"><a href="index.html"
                         title="previous chapter">Welcome to BET&#8217;s documentation!</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="examples/overview.html"
-                        title="next chapter">Linear Map Example</a></p>
+  <p class="topless"><a href="parallel.html"
+                        title="next chapter">Parallel</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">

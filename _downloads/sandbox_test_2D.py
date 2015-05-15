@@ -1,9 +1,13 @@
 #! /usr/bin/env python
+
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # import necessary modules
 import numpy as np
 import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
+import bet.postProcess.postTools as ptools
 import scipy.io as sio
 from scipy.interpolate import griddata
 
@@ -71,8 +75,7 @@ def rho_D(outputs):
 kernel_mm = asam.maxima_mean_kernel(np.array([Q_ref]), rho_D)
 kernel_rD = asam.rhoD_kernel(maximum, rho_D)
 kernel_m = asam.maxima_kernel(np.array([Q_ref]), rho_D)
-kernel_md = asam.multi_dist_kernel()
-kern_list = [kernel_mm, kernel_rD, kernel_m, kernel_md]
+kern_list = [kernel_mm, kernel_rD, kernel_m]
 
 # Create sampler
 chain_length = 125
@@ -104,11 +107,11 @@ incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
 
 # Compare the quality of several sets of samples
 print "Compare yield of sample sets with various kernels"
-bsam.compare_yield(gen_results[3], gen_results[2], gen_results[4])
+ptools.compare_yield(gen_results[3], gen_results[2], gen_results[4])
 print "Compare yield of sample sets with various transition sets bounds"
-bsam.compare_yield(tk_results[3], tk_results[2], tk_results[4])
+ptools.compare_yield(tk_results[3], tk_results[2], tk_results[4])
 print "Compare yield of sample sets with variouos increase/decrease ratios"
-bsam.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
+ptools.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
 
 # Read in points_ref and plot results
 p_ref = mdat['points_true']

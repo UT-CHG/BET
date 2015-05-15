@@ -35,6 +35,8 @@ Also the ``postprocess(station_nums, ref_num)`` function in this case only uses
 Parallel Example
 ~~~~~~~~~~~~~~~~
 
+.. note:: The parallel version of this example has been moved to the development branch. 
+
 This example demostrates how to estimate :math:`\hat{\rho}_{\Lambda, j}` using
 :meth:`~bet.calculateP.calculateP.prob_mc` where 
 
@@ -71,11 +73,10 @@ Within the ``postprocess(station_nums, ref_num)`` function in this case we only 
 need to use :meth:`~bet.postProcess.plotP.get_global_values` to concatenate the arrays
 spread out across the processors into a single array::
 
-    mdict['lambda_emulate'] = util.get_global_values(lambda_emulate)   
     mdict['num_l_emulate'] = mdict['lambda_emulate'].shape[1]
     mdict['P3'] = util.get_global_values(P3)
-    mdict['lam_vol3'] = util.get_global_values(lam_vol3)
-    mdict['io_ptr3'] = util.get_global_values(io_ptr3)
+    mdict['lam_vol3'] = lam_vol3
+    mdict['io_ptr3'] = io_ptr3
     
 Furthermore, we only want to write out the solution using a single processor::
 
