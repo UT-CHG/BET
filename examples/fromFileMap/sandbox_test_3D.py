@@ -1,4 +1,7 @@
 #! /usr/bin/env python
+
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # -*- coding: utf-8 -*-
 # import necessary modules
 import numpy as np

@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This module provides methods for postprocessing probabilities and data. 
 """

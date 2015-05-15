@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Steven Mattis and Lindley Graham 04/06/2015
 """
 This module contains tests for :module:`bet.calculateP.calculateP`.

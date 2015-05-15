@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # -*- coding: utf-8 -*-
 # Lindley Graham 3/10/2014
 """
