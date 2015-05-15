@@ -129,8 +129,11 @@ lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, num_l_em
 
 # calculate probablities
 (P,  lambda_emulate, io_ptr, emulate_ptr) = calculateP.prob_emulated(samples=samples,
-                                                                     data=data, rho_D_M = d_distr_prob, d_distr_samples = d_distr_samples,
-                                                                      lambda_emulate=lambda_emulate, d_Tree=d_Tree)
+                                                                     data=data,
+                                                                     rho_D_M=d_distr_prob,
+                                                                     d_distr_samples=d_distr_samples,
+                                                                     lambda_emulate=lambda_emulate,
+                                                                     d_Tree=d_Tree)
 # calculate 2d marginal probs
 '''
 Suggested changes for user:

@@ -16,7 +16,7 @@ print "Finished loading data"
 
 def postprocess(station_nums, ref_num):
     
-    filename = 'P_q'+str(station_nums[0]+1)+'_q'
+    filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
     if len(station_nums) == 3:
         filename += '_q'+str(station_nums[2]+1)
     filename += '_ref_'+str(ref_num+1)
@@ -69,7 +69,7 @@ def postprocess(station_nums, ref_num):
     mdict['lam_vol3'] = lam_vol3
     mdict['io_ptr3'] = io_ptr3
     mdict['emulate_ptr3'] = emulate_ptr3
-    # Export P
+    # Export P 
     sio.savemat(filename, mdict, do_compression=True)
 
 # Post-process and save P and emulated points
@@ -81,5 +81,5 @@ ref_nums = ref_nums.ravel()
 stations = stations.ravel()
 
 for tnum, stat in zip(ref_nums, stations):
-    postprocess([0], tnum)
+    postprocess([0, stat], tnum)
 

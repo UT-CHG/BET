@@ -120,19 +120,16 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
     
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = {}
-    if size > 1:
-        mdat = sio.loadmat(os.path.join(os.path.dirname(savefile),
-            "proc{}{}".format(rank, os.path.basename(savefile))))
-    else:
+    if rank == 0:
         mdat = sio.loadmat(savefile)
-    nptest.assert_array_equal(samples, mdat['samples'])
-    nptest.assert_array_equal(data, mdat['data'])
-    nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
-    assert sampler.chain_length == mdat['chain_length']
-    assert sampler.num_samples == mdat['num_samples']
-    assert sampler.num_chains == mdat['num_chains']
-    nptest.assert_array_equal(sampler.sample_batch_no,
-            np.squeeze(mdat['sample_batch_no']))
+        nptest.assert_array_equal(samples, mdat['samples'])
+        nptest.assert_array_equal(data, mdat['data'])
+        nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
+        assert sampler.chain_length == mdat['chain_length']
+        assert sampler.num_samples == mdat['num_samples']
+        assert sampler.num_chains == mdat['num_chains']
+        nptest.assert_array_equal(sampler.sample_batch_no,
+                np.squeeze(mdat['sample_batch_no']))
 
 class Test_adaptive_sampler(unittest.TestCase):
     """
@@ -207,7 +204,7 @@ class Test_adaptive_sampler(unittest.TestCase):
 
     def tearDown(self):
         for f in self.savefiles:
-            if os.path.exists(f+".mat"):
+            if rank == 0 and os.path.exists(f+".mat"):
                 os.remove(f+".mat")
         proc_savefiles = glob.glob("p{}*.mat".format(rank))
         proc_savefiles.extend(glob.glob("proc{}*.mat".format(rank)))
