@@ -144,4 +144,4 @@ def boundary_hyperrectangle_size_ratio(center, width, boundary_ratio):
     :returns: :math:`\mathbf{1}_{\partial A \plusminus \epsilon}`
 
     """
-    return boundary_hyperrectangle(center, width, width*boundary_ratio)
+    return boundary_hyperrectangle_size(center, width, width*boundary_ratio)
