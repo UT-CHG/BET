@@ -131,7 +131,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
-            if lam_ref != None:
+            if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
@@ -188,7 +188,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
                     vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i,
                         j)].min()/boxSize, aspect='auto')
-            if lam_ref != None:
+            if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'

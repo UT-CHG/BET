@@ -29,15 +29,15 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
     nnz = np.sum(P_samples > 0)
-    if lam_vol == None:
+    if type(lam_vol) == type(None):
         indices = np.argsort(P_samples)[::-1][0:nnz]
     else:
         indices = np.argsort(P_samples/lam_vol)[::-1][0:nnz]
     P_samples = P_samples[indices]
     samples = samples[indices, :]
-    if lam_vol != None:
+    if type(lam_vol) != type(None):
         lam_vol = lam_vol[indices]
-    if data != None:
+    if type(data) != (None):
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
         data = data[indices, :]
@@ -78,9 +78,9 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     num_samples = np.sum(P_sum <= top_percentile)
     P_samples = P_samples[0:num_samples]
     samples = samples[0:num_samples, :]
-    if lam_vol != None:
+    if type(lam_vol) != type(None):
         lam_vol = lam_vol[0:num_samples]
-    if data != None:
+    if type(data) != type(None):
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
         data = data[0:num_samples, :]
@@ -237,7 +237,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     :returns: Estimate of number of samples in the high probability area.
 
     """
-    if sample_nos == None:
+    if type(sample_nos) == type(None):
         sample_nos = range(data.shape[0])
     if len(data.shape) == 1:
         rD = rho_D(data[sample_nos])

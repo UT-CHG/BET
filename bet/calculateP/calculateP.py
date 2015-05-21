@@ -66,11 +66,11 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples,
         samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
-    if lambda_emulate == None:
+    if type(lambda_emulate) == type(None):
         lambda_emulate = samples
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
-    if d_Tree == None:
+    if type(d_Tree) == type(None):
         d_Tree = spatial.KDTree(d_distr_samples)
         
     # Determine which inputs go to which M bins using the QoI
@@ -124,7 +124,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, d_Tree=None):
         data = np.expand_dims(data, axis=1) 
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
-    if d_Tree == None:
+    if type(d_Tree) == type(None):
         d_Tree = spatial.KDTree(d_distr_samples)
 
     # Set up local arrays for parallelism
@@ -186,11 +186,11 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
-    if lambda_emulate == None:
+    if type(lambda_emulate) == type(None):
         lambda_emulate = samples
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
-    if d_Tree == None:
+    if type(d_Tree) == type(None):
         d_Tree = spatial.KDTree(d_distr_samples)
         
     # Determine which inputs go to which M bins using the QoI
