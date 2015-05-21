@@ -112,7 +112,7 @@ class sampler(asam.sampler):
         data = MYdata_old
         all_step_ratios = step_ratio
         (kern_old, proposal) = kern.delta_step(MYdata_old, None)
-        kern = kern_old
+        kern_samples = kern_old
         mdat = dict()
         self.update_mdict(mdat)
         
@@ -154,7 +154,7 @@ class sampler(asam.sampler):
                     # search only within the points on this chain
                     index = range(i, samples.shape[0], self.num_chains_pproc)
                     points = samples[index, :]
-                    interior_ind = kern[index, :] > 0
+                    interior_ind = kern_samples[index, :] > 0
                     # determine the interior and exterior points on this chain
                     interior_points = points[interior_ind, :]
                     exterior_points = points[np.logical_not(interior_ind), :]
@@ -189,7 +189,7 @@ class sampler(asam.sampler):
                 print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
-            kern = np.concatenate((kern, kern_new))
+            kern_samples = np.concatenate((kern_samples, kern_new))
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
