@@ -15,7 +15,6 @@ We employ an approach based on using multiple sample chains.
 
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
-import scipy.spatial.KDTree as KDTree
 import os
 from bet.Comm import *
 
@@ -107,14 +106,28 @@ class sampler(asam.sampler):
         data = MYdata_old
         all_step_ratios = step_ratio
         (kern_old, proposal) = kern.delta_step(MYdata_old, None)
+        kern = kern_old
         mdat = dict()
         self.update_mdict(mdat)
+        
+        # logical index of 
+        boundary_chains = np.zeros(self.num_chains_pproc, dtype='bool')
+        normal_vectors = None
 
         for batch in xrange(1, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.
             samples_new = t_set.step(step_ratio, param_width,
                     param_left, param_right, MYsamples_old)
+
+            # if batch > 1 and the old samples were in roi then project the
+            # corresponding new samples on to the hyperplane perpendicular to
+            # the previously calculated normal vector
+            if batch > 1 and boundary_chains.any():
+                # q_proj = q - dot(q-p)*normal_vector
+                samples_new[boundary_chains] = samples_new[boundary_chains] - \
+                        np.dot(samples_new[boundary_chains] - \
+                        MYsamples_old[boundary_chains])*normal_vectors
             
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
@@ -123,12 +136,41 @@ class sampler(asam.sampler):
             # multiple ways to do this.
             # Determine step size
             (kern_new, proposal) = kern.delta_step(data_new, kern_old)
-
-            # Check to see if we have left the RoI (after finding it)
-            left_roi = np.logical_and(kern_old > 0 and kern_new < kern_old)
-            proposal[left_roi] = 1.0
-
             step_ratio = proposal*step_ratio
+            
+            # Update the logical index of chains searching along the boundary
+            boundary_chains = np.logical_or(kern_new > 0, boundary_chains)
+            interior = np.zeros(np.sum(boundary_chains), samples_new.shape[1])
+            exterior = np.zeros(np.sum(boundary_chains), samples_new.shape[1])
+            # Loop through all the chains 
+            for i, chain in enumerate(boundary_chains):
+                if chain:
+                    # search only within the points on this chain
+                    index = range(i, samples.shape[0], self.num_chains_pproc)
+                    points = samples[index, :]
+                    interior_ind = kern[index, :] > 0
+                    # determine the interior and exterior points on this chain
+                    interior_points = points[interior_ind, :]
+                    exterior_points = points[np.logical_not(interior_ind), :]
+                    # find the most recent interior point
+                    interior[i, :] = interior_points[-1, :]
+                    # find the closest exterior point
+                    dist = (exterior_points - interior[i, :])**2
+                    dist = np.sum(dist, axis=1)
+                    exterior[i, :] = exterior_points[np.argmin(dist), :]
+                else:
+                    continue
+
+            # calculate the normal vector
+            normal_vectors = interior - exterior
+            # calculate the point between the interior and exterior points
+            midpoint = 0.5*(interior+exterior)
+            # calculate the ratio of the propoal box (either the current step
+            # ratio or the size of the hyperbox formed when the two points are
+            # opposite diagonal corners of the hyperbox)
+            step_ratio[boundary_chains] = normal_vectors/param_width[0:normal_vectors.shape[0], :]
+
+
             # Is the ratio greater than max?
             step_ratio[step_ratio > max_ratio] = max_ratio
             # Is the ratio less than min?
@@ -141,6 +183,7 @@ class sampler(asam.sampler):
                 print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
+            kern = np.concatenate((kern, kern_new))
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
@@ -150,9 +193,13 @@ class sampler(asam.sampler):
             else:
                 super(sampler, self).save(mdat, savefile)
 
-            # Don't update samples that have left the RoI (after finding it)
-            MYsamples_old[np.logical_not[left_roi]] = samples_new[np.logical_not[left_roi]]
-            kern_old[np.logical_not[left_roi]] = kern_new[np.logical_not[left_roi]]
+            # If the chain is going along the boundary set the old sample to be
+            # the midpoint between the interior sample and the nearest exterior
+            # sample
+            nonboundary = np.logical_not(boundary_chains)
+            MYsamples_old[nonboundary] = samples_new[nonboundary]
+            MYsamples_old[boundary_chains] = midpoint
+
 
         # collect everything
         MYsamples = np.copy(samples)
@@ -180,7 +227,7 @@ class sampler(asam.sampler):
 
         return (samples, data, all_step_ratios)
 
-
+"""
 # keep track of boundary points
 rho_D = kernel.rho_D
 # Identify points inside roi
@@ -201,5 +248,5 @@ for i, neighbors in nearest_neighbors:
 # or choose two new samples randomly within the hyperplane perpendicular to the
 # line formed by the exterior and interior points
 # remove
-
+"""
     
