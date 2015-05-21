@@ -156,7 +156,7 @@ class sampler(asam.sampler):
                     # search only within the points on this chain
                     index = range(i, samples.shape[0], self.num_chains_pproc)
                     points = samples[index, :]
-                    interior_ind = kern_samples[index, :] > 0
+                    interior_ind = kern_samples[index] > 0
                     # determine the interior and exterior points on this chain
                     interior_points = points[interior_ind, :]
                     exterior_points = points[np.logical_not(interior_ind), :]

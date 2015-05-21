@@ -155,7 +155,7 @@ class sampler(asam.sampler):
 
             # Don't update samples that have left the RoI (after finding it)
             MYsamples_old[np.logical_not(left_roi)] = samples_new[np.logical_not(left_roi)]
-            kern_old[np.logical_notR(eft_roi)] = kern_new[np.logical_not(left_roi)]
+            kern_old[np.logical_not(left_roi)] = kern_new[np.logical_not(left_roi)]
 
         # collect everything
         MYsamples = np.copy(samples)
