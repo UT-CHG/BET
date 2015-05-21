@@ -3,14 +3,15 @@
 # -*- coding: utf-8 -*-
 # Lindley Graham 3/10/2014
 """
-This module contains functions for adaptive random sampling. We assume we are
-given access to a model, a parameter space, and a data space. The model is a
-map from the paramter space to the data space. We desire to build up a set of
-samples to solve an inverse problem thus giving us information about the
-inverse mapping. Each sample consists of a parameter coordinate, data
-coordinate pairing. We assume the measure of both spaces is Lebesgue.
-
-We employ an approach based on using multiple sample chains.
+This module contains functions for adaptive random sampling using generalized
+chains with limited memory. If a new sample is generated that is outside of the
+RoI then the next sample is generated from the last sample that was inside the
+RoI.  We assume we are given access to a model, a parameter space, and a data
+space. The model is a map from the paramter space to the data space. We desire
+to build up a set of samples to solve an inverse problem thus giving us
+information about the inverse mapping. Each sample consists of a parameter
+coordinate, data coordinate pairing. We assume the measure of both spaces is
+Lebesgue.
 """
 
 import numpy as np
@@ -44,7 +45,10 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, kern,
             savefile, initial_sample_type="lhs", criterion='center'):
         """
-        Basic adaptive sampling algorithm using generalized chains.
+        Adaptive sampling algorithm using generalized chains with limited
+        memory. If a new sample is generated that is outside of the RoI then
+        the next sample is generated from the last sample that was inside the
+        RoI.
        
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)

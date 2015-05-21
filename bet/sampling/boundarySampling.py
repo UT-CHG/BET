@@ -10,7 +10,10 @@ samples to solve an inverse problem thus giving us information about the
 inverse mapping. Each sample consists of a parameter coordinate, data
 coordinate pairing. We assume the measure of both spaces is Lebesgue.
 
-We employ an approach based on using multiple sample chains.
+We employ an approach based on using multiple sample chains. Once a chain
+enters the region of interest the chain attempts to approximate the boundary of
+the region of interest using a biscetion like method.
+
 """
 
 import numpy as np
@@ -44,7 +47,10 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, kern,
             savefile, initial_sample_type="lhs", criterion='center'):
         """
-        Basic adaptive sampling algorithm using generalized chains.
+        This method adaptively generates samples similar to the method
+        :meth:`bet.sampling.adaptiveSampling.generalized_chains`. However, once
+        a chain enters the region of interest the chain attempts to approximate
+        the boundary of the region of interest using a biscetion like method.
        
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
