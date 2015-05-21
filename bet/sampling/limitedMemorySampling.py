@@ -128,7 +128,7 @@ class sampler(asam.sampler):
             (kern_new, proposal) = kern.delta_step(data_new, kern_old)
 
             # Check to see if we have left the RoI (after finding it)
-            left_roi = np.logical_and(kern_old > 0 and kern_new < kern_old)
+            left_roi = np.logical_and(kern_old > 0, kern_new < kern_old)
             proposal[left_roi] = 1.0
 
             step_ratio = proposal*step_ratio
