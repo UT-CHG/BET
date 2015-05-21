@@ -74,7 +74,7 @@ class multi_dist_kernel(kernel):
         kern_new = data_new
         self.current_clength = self.current_clength + 1
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             proposal = None
             # calculate the mean
             self.mean = np.mean(data_new, 0)
