@@ -146,8 +146,10 @@ class sampler(asam.sampler):
             
             # Update the logical index of chains searching along the boundary
             boundary_chains = np.logical_or(kern_new > 0, boundary_chains)
-            interior = np.zeros(np.sum(boundary_chains), samples_new.shape[1])
-            exterior = np.zeros(np.sum(boundary_chains), samples_new.shape[1])
+            interior = np.zeros((np.sum(boundary_chains),
+                samples_new.shape[1])) 
+            exterior = np.zeros((np.sum(boundary_chains),
+                samples_new.shape[1]))
             # Loop through all the chains 
             for i, chain in enumerate(boundary_chains):
                 if chain:
