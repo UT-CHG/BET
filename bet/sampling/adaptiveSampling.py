@@ -547,7 +547,7 @@ class rhoD_kernel(kernel):
         # Evaluate kernel for new data.
         kern_new = self.rho_D(data_new)
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             return (kern_new, None)
         else:
             kern_diff = (kern_new-kern_old)/self.MAX
@@ -637,7 +637,7 @@ class maxima_kernel(kernel):
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             return (kern_new, None)
         else:
             kern_diff = (kern_new-kern_old)
@@ -736,7 +736,7 @@ class maxima_mean_kernel(maxima_kernel):
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             # calculate the mean
             self.mean = np.mean(data_new, 0)
             # calculate the distance from the mean
