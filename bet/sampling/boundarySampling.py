@@ -143,6 +143,23 @@ class sampler(asam.sampler):
             # Determine step size
             (kern_new, proposal) = kern.delta_step(data_new, kern_old)
             step_ratio = proposal*step_ratio
+
+            # Save and export concatentated arrays
+            if self.chain_length < 4:
+                pass
+            elif (batch+1)%(self.chain_length/4) == 0:
+                print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
+            samples = np.concatenate((samples, samples_new))
+            data = np.concatenate((data, data_new))
+            kern_samples = np.concatenate((kern_samples, kern_new))
+            all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
+            mdat['step_ratios'] = all_step_ratios
+            mdat['samples'] = samples
+            mdat['data'] = data
+            if size > 1:
+                super(sampler, self).save(mdat, psavefile)
+            else:
+                super(sampler, self).save(mdat, savefile)
             
             # Update the logical index of chains searching along the boundary
             boundary_chains = np.logical_or(kern_new > 0, boundary_chains)
@@ -178,28 +195,10 @@ class sampler(asam.sampler):
             # opposite diagonal corners of the hyperbox)
             step_ratio[boundary_chains] = normal_vectors/param_width[0:normal_vectors.shape[0], :]
 
-
             # Is the ratio greater than max?
             step_ratio[step_ratio > max_ratio] = max_ratio
             # Is the ratio less than min?
             step_ratio[step_ratio < min_ratio] = min_ratio
-
-            # Save and export concatentated arrays
-            if self.chain_length < 4:
-                pass
-            elif (batch+1)%(self.chain_length/4) == 0:
-                print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
-            samples = np.concatenate((samples, samples_new))
-            data = np.concatenate((data, data_new))
-            kern_samples = np.concatenate((kern_samples, kern_new))
-            all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
-            mdat['step_ratios'] = all_step_ratios
-            mdat['samples'] = samples
-            mdat['data'] = data
-            if size > 1:
-                super(sampler, self).save(mdat, psavefile)
-            else:
-                super(sampler, self).save(mdat, savefile)
 
             # If the chain is going along the boundary set the old sample to be
             # the midpoint between the interior sample and the nearest exterior
