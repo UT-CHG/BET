@@ -132,8 +132,8 @@ class sampler(asam.sampler):
             if batch > 1 and boundary_chains.any():
                 # q_proj = q - dot(q-p)*normal_vector
                 samples_new[boundary_chains] = samples_new[boundary_chains] - \
-                        np.dot(samples_new[boundary_chains] - \
-                        MYsamples_old[boundary_chains])*normal_vectors
+                        np.einsum('...i,i...', samples_new[boundary_chains] - \
+                        MYsamples_old[boundary_chains], normal_vectors)*normal_vectors
             
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
@@ -174,6 +174,7 @@ class sampler(asam.sampler):
                     index = range(i, samples.shape[0], self.num_chains_pproc)
                     points = samples[index, :]
                     interior_ind = kern_samples[index] > 0
+                    print interior_ind
                     # determine the interior and exterior points on this chain
                     interior_points = points[interior_ind, :]
                     exterior_points = points[np.logical_not(interior_ind), :]
