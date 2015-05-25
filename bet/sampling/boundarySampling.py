@@ -131,9 +131,14 @@ class sampler(asam.sampler):
             # the previously calculated normal vector
             if batch > 1 and boundary_chains.any():
                 # q_proj = q - dot(q-p)*normal_vector
-                samples_new[boundary_chains] = samples_new[boundary_chains] - \
-                        np.einsum('...i,i...', samples_new[boundary_chains] - \
-                        MYsamples_old[boundary_chains], normal_vectors)*normal_vectors
+                #dot(q-p)
+                dotqp = np.einsum('...i,...i', 
+                        samples_new[boundary_chains, 
+                        :] - MYsamples_old[boundary_chains, :], 
+                        normal_vectors)
+                dotqp = np.repeat([dotqp], samples_new.shape[1], 0).transpose()
+                samples_new[boundary_chains, :] = samples_new[boundary_chains,:]\
+                                                  - dotqp*normal_vectors
             
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
@@ -167,25 +172,43 @@ class sampler(asam.sampler):
                 samples_new.shape[1])) 
             exterior = np.zeros((np.sum(boundary_chains),
                 samples_new.shape[1]))
+            only_interior = list()
             # Loop through all the chains 
             for i, chain in enumerate(boundary_chains):
                 if chain:
                     # search only within the points on this chain
                     index = range(i, samples.shape[0], self.num_chains_pproc)
-                    points = samples[index, :]
                     interior_ind = kern_samples[index] > 0
-                    print interior_ind
+                    points = samples[index, :]
                     # determine the interior and exterior points on this chain
                     interior_points = points[interior_ind, :]
                     exterior_points = points[np.logical_not(interior_ind), :]
                     # find the most recent interior point
-                    interior[i, :] = interior_points[-1, :]
+                    j = np.sum(boundary_chains[:i+1])-1
+                    interior[j, :] = interior_points[-1, :]
                     # find the closest exterior point
-                    dist = (exterior_points - interior[i, :])**2
-                    dist = np.sum(dist, axis=1)
-                    exterior[i, :] = exterior_points[np.argmin(dist), :]
+                    if exterior_points.shape[0] > 1:
+                        dist = (exterior_points - interior[j, :])**2
+                        dist = np.sum(dist, axis=1)
+                        exterior[j, :] = exterior_points[np.argmin(dist), :]
+                    elif exterior_points.shape[0] > 0:
+                        exterior[j, :] = exterior_points
+                    else:
+                        only_interior.append((i,j))
                 else:
                     continue
+
+            # Remove chains with only interior points from the list of boundary
+            # chains (we might want these to be limited memory chains)
+            if len(only_interior) > 0:
+                i_ind = range(boundary_chains.shape[0])
+                j_ind = range(interior.shape[0])
+                only_interior = np.array(only_interior)
+                boundary_chains[only_interior[:,0]] = False
+                for j in only_interior[:,1]:
+                    j_ind.remove(j)
+                interior = interior[j_ind, :]
+                exterior = exterior[j_ind, :]
 
             # calculate the normal vector
             normal_vectors = interior - exterior
