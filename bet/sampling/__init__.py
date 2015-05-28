@@ -11,4 +11,4 @@ This subpackage contains
     :class:`~bet.sampling.basicSampling` adaptively generates samples.
 """
 __all__ = ['basicSampling', 'adaptiveSampling', 'dev_adaptiveSampling',
-    'dev_multi_dist_kernel']
+    'dev_multi_dist_kernel', 'slopedIndicatorFunction']

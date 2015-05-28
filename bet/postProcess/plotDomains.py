@@ -44,14 +44,14 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
     :param string filename: filename to save the figure as
 
     """
-    if sample_nos == None:
+    if type(sample_nos) == type(None):
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
     plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color, s=10,
             alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(Q)$')
-    if p_ref != None:
+    if type(p_ref) != type(None):
         plt.scatter(p_ref[0], p_ref[1], c='g')
     if save:
         plt.autoscale(tight=True)
@@ -85,7 +85,7 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
     :param string filename: filename to save the figure as
 
     """
-    if sample_nos == None:
+    if type(sample_nos) == type(None):
         sample_nos = range(samples.shape[0])
     color = color[sample_nos]
 
@@ -94,7 +94,7 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], s=10, alpha=.75, linewidth=.1, c=color,
             cmap=plt.cm.Oranges)
-    if p_ref != None:
+    if type(p_ref) != type(None):
         ax.scatter(p_ref[0], p_ref[1], p_ref[2], c='g')
         
     ax.autoscale(tight=True)
@@ -138,7 +138,7 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
         rD = rho_D(data)
     else:
         rD = np.ones(data.shape[0])
-    if lnums == None:
+    if type(lnums) == type(None):
         lnums = 1+np.array(range(samples.shape[1]))
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
@@ -191,7 +191,7 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         rD = rho_D(data)
     else:
         rD = np.ones(data.shape[0])
-    if  Q_nums == None:
+    if  type(Q_nums) == type(None):
         Q_nums = range(data.shape[1])
     xlabel = r'$q_{'+str(Q_nums[0]+1)+'}$'
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
@@ -258,7 +258,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
         ref_markers = markers
     if ref_colors == None:
         ref_colors = colors
-    if  Q_nums == None:
+    if  type(Q_nums) == type(None):
         Q_nums = range(data.shape[1])
     if showdim == None:
         showdim = 1
@@ -334,7 +334,7 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
         ref_markers = markers
     if ref_colors == None:
         ref_colors = colors
-    if triangles == None:
+    if type(triangles) == type(None):
         triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
         triangles = triangulation.triangles
     if filenames == None:

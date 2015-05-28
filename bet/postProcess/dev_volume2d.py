@@ -153,7 +153,7 @@ def determine_RoI_volumes(samples, data, rect_domain, param_domain=None,
         print data_rvol
     samples_rvol, _ = triangulation_area(rect_samples_tri)
     # Calculate relative volume
-    if param_domain != None:
+    if type(param_domain) != type(None):
         param_vol = np.prod(param_domain[:, 1]-param_domain[:, 0])
         r_samples_rvol = samples_rvol/param_vol
     else:
