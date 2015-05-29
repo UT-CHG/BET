@@ -7,7 +7,7 @@ python:
     - "3.4"
 # command to install dependencies
 before_install:
-    - sudo apt-get install libblas-dev liblapack-dev python-numpy python-scipy python-matplotlib python-nose python-pip
+    - sudo apt-get install gfortran libblas-dev liblapack-dev python-numpy python-scipy python-matplotlib python-nose python-pip
     - pip install pyDOE
 
 # install package:
