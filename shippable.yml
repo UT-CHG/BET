@@ -1,6 +1,6 @@
 language: python
 env:
-    - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pi" pip_packs="pip install pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
+    - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pip install pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
 python:
     #- "2.6"
     - "2.7"
