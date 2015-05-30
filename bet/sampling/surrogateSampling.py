@@ -333,7 +333,7 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
         quit()
 
     # evalutate minima of RBF using inital points as guesses
-    for i in MYsamples_old.shape[0]:
+    for i in range(MYsamples_old.shape[0]):
         res = optimize.minimize(surrogate, MYsamples_old[i, :],
                 method='Powell')
         if res.success:
