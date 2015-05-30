@@ -11,13 +11,13 @@ python:
     #- "3.4"
 # command to install dependencies
 before_install:
-    - sudo apt-get update
-    - sudo apt-get build-dep python-matplotlib
+    #- sudo apt-get update
+    #- sudo apt-get build-dep python-matplotlib
     - sudo apt-get install $build_packs #gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
     - pip install $pip_packs #pyDOE mpi4py
 
 cache:
-    - true
+    - false
 
 # install package:
     - python setup.py install
