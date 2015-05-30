@@ -1,6 +1,6 @@
 language: python
 env:
-    - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
+    - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-nose python-pip" pip_packs="matplotlib pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     - build_packs="gfortran libblas-dev liblapack-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE mpi4py" run_tests="mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
 python:
