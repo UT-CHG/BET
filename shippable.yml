@@ -17,7 +17,10 @@ before_script:
     - mkdir -p shippable/testresults
 # command to run tests
 script:
-    - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml
+    - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_serial.xml
+    - mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_parallel.xml
+    - pip uninstall mpi4py
+    - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_nompi4py.xml
 # notification settings
 notifications:
     email:
