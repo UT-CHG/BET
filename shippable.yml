@@ -1,6 +1,6 @@
 language: python
 env:
-    - build_packs="libfreetype6-dev libpng-dev gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-pip python-dev" pip_packs="numpy scipy matplotlib nose pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
+    - optional_pip="mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     #- build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-nose python-pip" pip_packs="matplotlib pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     #- build_packs="gfortran libblas-dev liblapack-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     #- build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE mpi4py" run_tests="mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
@@ -12,12 +12,9 @@ python:
     #- "3.4"
 # command to install dependencies
 before_install:
-    #- sudo apt-get update
-    #- sudo apt-get build-dep python-matplotlib
-    - sudo apt-get install -y $build_packs #gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
-    - pip install --quiet distribute --upgrade
-    - pip --quiet install numpy scipy matplotlib nose pyDOE mpi4py
-
+    - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
+    - pip --quiet install pyDOE
+    - pip --quiet install $optional_pip
 
 # install package:
     - python setup.py install
