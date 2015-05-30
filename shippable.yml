@@ -9,6 +9,7 @@ before_install:
 
 # install package:
     - python setup.py install
+
 # script to run before running tests
 before_script:
     - mkdir -p shippable/testresults
