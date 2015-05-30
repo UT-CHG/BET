@@ -1,18 +1,11 @@
 language: python
-env:
-    - optional_pip="mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
 
 python:
-    #- "2.6"
     - "2.7"
-    #- "3.2"
-    #- "3.3"
-    #- "3.4"
 # command to install dependencies
 before_install:
     - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
-    - pip --quiet install pyDOE
-    - pip --quiet install $optional_pip
+    - pip --quiet install pyDOE mpi4py
 
 # install package:
     - python setup.py install
@@ -21,7 +14,7 @@ before_script:
     - mkdir -p shippable/testresults
 # command to run tests
 script:
-    - $run_tests #nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml
+    - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml
 # notification settings
 notifications:
     email:
