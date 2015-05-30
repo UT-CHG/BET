@@ -18,6 +18,10 @@ the region of interest using a biscetion like method.
 
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
+import bet.util as util
+from scipy.interpolate import Rbf
+import scipy.optimize as optimize
+import scipy.spatial as spatial
 import os
 from bet.Comm import *
 
@@ -44,11 +48,13 @@ class sampler(asam.sampler):
         """
         super(sampler, self).__init__(num_samples, chain_length, lb_model)
 
-    def generalized_chains(self, param_min, param_max, t_set, kern,
-            savefile, initial_sample_type="lhs", criterion='center'):
-        """
+    def generalized_chains(self, param_min, param_max, t_set, rho_D,
+            smoothIndicatorFun, savefile, initial_sample_type="lhs",
+            criterion='center'):
+        r"""
         This method adaptively generates samples similar to the method
-        :meth:`bet.sampling.adaptiveSampling.generalized_chains`. However, once
+        :meth:`bet.sampling.adaptiveSampling.generalized_chains`. New samples
+        are chosen based on a RBF surrogate function. However, once
         a chain enters the region of interest the chain attempts to approximate
         the boundary of the region of interest using a biscetion like method.
        
@@ -61,9 +67,15 @@ class sampler(asam.sampler):
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
-        :param function kern: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
-        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
+        :param rho_D: :math:`\rho_\mathcal{D}` or :math:`\mathbf{1}_{A}` 
+        :type rho_D: callable
+        :param smoothIndicatorFun: A smoothed version of :math:`\mathbf{1}_A`
+            where the maximum function values are on the boundary of
+            :math:`\mathcal{D}` and the minimum function values are either in
+            the RoI :math:`A` or in a neighborhood of :math:`\partial A`. The
+            value of the function in :math:`A` must be strictly less than the
+            value of the function outside of :math:`A+\Delta A`.
+        :type smoothedIndicatorFun: callable
         :param string savefile: filename to save samples and data
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
@@ -82,9 +94,9 @@ class sampler(asam.sampler):
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
         # Calculate domain size
+        param_dist = np.sqrt(np.sum((param_max-param_min)**2))
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
-
         param_width = param_right - param_left
         # Calculate step_size
         max_ratio = t_set.max_ratio
@@ -111,7 +123,8 @@ class sampler(asam.sampler):
         samples = MYsamples_old
         data = MYdata_old
         all_step_ratios = step_ratio
-        (kern_old, proposal) = kern.delta_step(MYdata_old, None)
+        #(kern_old, proposal) = kern.delta_step(MYdata_old, None)
+        kern_old = rho_D(MYdata_old)
         kern_samples = kern_old
         mdat = dict()
         self.update_mdict(mdat)
@@ -120,6 +133,12 @@ class sampler(asam.sampler):
         boundary_chains = np.zeros(self.num_chains_pproc, dtype='bool')
         normal_vectors = None
 
+
+        MYsamples_rbf = MYsamples_old
+        rbf_data = smoothIndicatorFun(MYdata_old)
+        step_ratio, MYsamples_old = rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old,
+                param_dist)
+        
         for batch in xrange(1, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.
@@ -137,7 +156,7 @@ class sampler(asam.sampler):
                         :] - MYsamples_old[boundary_chains, :], 
                         normal_vectors)
                 dotqp = np.repeat([dotqp], samples_new.shape[1], 0).transpose()
-                samples_new[boundary_chains, :] = samples_new[boundary_chains,
+                samples_new[boundary_chains, :] = samples_new[boundary_chains, 
                         :] - dotqp*normal_vectors
             
             # Solve the model for the samples_new.
@@ -146,8 +165,20 @@ class sampler(asam.sampler):
             # Make some decision about changing step_size(k).  There are
             # multiple ways to do this.
             # Determine step size
-            (kern_new, proposal) = kern.delta_step(data_new, kern_old)
-            step_ratio = proposal*step_ratio
+            #(kern_new, proposal) = kern.delta_step(data_new, kern_old)
+            kern_new = rho_D(data_new)
+            # Update the logical index of chains searching along the boundary
+            boundary_chains = np.logical_or(kern_new > 0, boundary_chains)
+            # Update the samples used to create the RBF surrogate
+            MYsamples_rbf = np.concatenate((MYsamples_rbf,
+                samples_new[np.logical_not(boundary_chains), :]))
+            rbf_data = np.concatenate((rbf_data,
+                smoothIndicatorFun(data_new[np.logical_not(boundary_chains), :])))
+            step_ratio_rbf, minima = rbf_samples(MYsamples_rbf, rbf_data,
+                    MYsamples_old[np.logical_not(boundary_chains), :],
+                    param_dist)
+            MYsamples_old[np.logical_not(boundary_chains), :] = minima
+            step_ratio[np.logical_not(boundary_chains)] = step_ratio_rbf
 
             # Save and export concatentated arrays
             if self.chain_length < 4:
@@ -166,8 +197,6 @@ class sampler(asam.sampler):
             else:
                 super(sampler, self).save(mdat, savefile)
             
-            # Update the logical index of chains searching along the boundary
-            boundary_chains = np.logical_or(kern_new > 0, boundary_chains)
             interior = np.zeros((np.sum(boundary_chains),
                 samples_new.shape[1])) 
             exterior = np.zeros((np.sum(boundary_chains),
@@ -258,26 +287,67 @@ class sampler(asam.sampler):
 
         return (samples, data, all_step_ratios)
 
-"""
-# keep track of boundary points
-rho_D = kernel.rho_D
-# Identify points inside roi
-inside = rho_D(data) > 0
-outside = np.logical_not(inside)
-dim = data.shape[1]
-# determine 2d nearest neighbors of points inside roi
-tree = KDTree(data)
-nearest_neighbors = tree.query(inside, 2*dim+1)
-
-for i, neighbors in nearest_neighbors:
-    pass
-
-# for each interior point
-# if a neighbor is interior do nothing
-# if a neighbor is exterior and further than the minimum step size
-# add 0.5*(neighbor+interior_point) to the list of new samples
-# or choose two new samples randomly within the hyperplane perpendicular to the
-# line formed by the exterior and interior points
-# remove
-"""
+def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
+    r"""
+    Choose points around which to sample next based on a RBF approximation
+    to :math:`\rho_\mathcal{D}(Q(\lambda))`.
     
+    :param MYsamples_rbf:
+    :type MYsamples_rbf:
+    :param MYsamples_old:
+    :type MYsamples_old:
+    :param double param_dist:
+
+    :rtype: tuple
+    :returns: (step_ratio, MYsamples_old)
+
+    """
+    dim = MYsamples_rbf.shape[1]
+    samples_rbf = util.get_global_values(MYsamples_rbf)
+
+    if dim == 1:
+        surrogate = Rbf(samples_rbf[:, 0], rbf_data)
+    elif dim == 2:
+        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+                rbf_data)
+    elif dim == 3:
+        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
+                samples_rbf[:, 2], rbf_data) 
+    elif dim == 4:
+        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
+                samples_rbf[:, 2], samples_rbf[:, 3], rbf_data) 
+    elif dim == 5:
+        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+                samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
+                rbf_data)
+    elif dim == 6:
+        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+                samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
+                samples_rbf[:, 5], rbf_data)
+    elif dim == 7:
+        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+                samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
+                samples_rbf[:, 5], samples_rbf[:, 6], rbf_data)
+    else:
+        print "surrogate creation only supported for up to 7 dimensions"
+        quit()
+
+    # evalutate minima of RBF using inital points as guesses
+    for i in MYsamples_old.shape[0]:
+        res = optimize.minimize(surrogate, MYsamples_old[i, :],
+                method='Powell')
+        if res.success:
+            MYsamples_old[i, :] = res.x
+
+    # determine the average distance between minima
+    # calculate average minimum pairwise distance between minima
+    dist = spatial.distance_matrix(MYsamples_old, MYsamples_old)
+    mindists = np.array((MYsamples_old.shape[0]))
+    for i in range(dist.shape[0]):
+        mindists[i] = np.min(dist[i][dist[i] > 0])
+    mindists_sum = comm.allreduce(mindists, op=MPI.SUM)
+    mindists_avg = mindists_sum/(size*MYsamples_old.shape[0])
+    # set step ratio based on this distance
+    step_ratio = mindists_avg/param_dist*np.ones(MYsamples_old.shape[0])
+    return step_ratio, MYsamples_old
+
