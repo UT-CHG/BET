@@ -15,7 +15,7 @@ before_install:
     #- sudo apt-get update
     #- sudo apt-get build-dep python-matplotlib
     - sudo apt-get install -y $build_packs #gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
-    - sudo pip install --quiet --use-mirrors $pip_packs #pyDOE mpi4py
+    - sudo pip install  $pip_packs #pyDOE mpi4py
 
 cache:
     - false
