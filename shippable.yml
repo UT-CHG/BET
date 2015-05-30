@@ -19,7 +19,7 @@ before_script:
 script:
     - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_serial.xml
     - mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_parallel.xml
-    - pip uninstall mpi4py
+    - pip uninstall -y mpi4py
     - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_nompi4py.xml
 # notification settings
 notifications:
