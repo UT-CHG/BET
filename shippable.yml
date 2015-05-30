@@ -1,6 +1,6 @@
 language: python
 env:
-    - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-numpy python-scipy python-matplotlib python-nose" pip_packs="pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
+    - build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-pip python-dev" pip_packs="numpy scipy matplotlib nose pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     #- build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-nose python-pip" pip_packs="matplotlib pyDOE mpi4py" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     #- build_packs="gfortran libblas-dev liblapack-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE" run_tests="nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
     #- build_packs="gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip" pip_packs="pyDOE mpi4py" run_tests="mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests.xml"
@@ -14,8 +14,8 @@ python:
 before_install:
     #- sudo apt-get update
     #- sudo apt-get build-dep python-matplotlib
-    - sudo apt-get install $build_packs #gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
-    - sudo pip install $pip_packs #pyDOE mpi4py
+    - sudo apt-get install -y $build_packs #gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
+    - sudo pip install --quiet --use-mirrors $pip_packs #pyDOE mpi4py
 
 cache:
     - false
