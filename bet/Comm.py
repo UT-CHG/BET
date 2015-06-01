@@ -34,7 +34,7 @@ class comm_for_no_mpi4py(object):
         """
         return 0
 
-    def allgather(self, val, val2):
+    def allgather(self, val, val2=None):
         """
         :param object val: object to allgather
         :rtype: object
@@ -59,7 +59,7 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
-    def Allgather(self, val, val2):
+    def Allgather(self, val, val2=None):
         """
         :param object val: object to Allgather
         :rtype: object
@@ -67,7 +67,7 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
-    def Allreduce(self, val1, val2, op=None):
+    def Allreduce(self, val1, val2=None, op=None):
         """
         :param object val1: object to Allreduce
         :param object val2: object to Allreduce
