@@ -308,26 +308,41 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
     if dim == 1:
         surrogate = Rbf(samples_rbf[:, 0], rbf_data)
     elif dim == 2:
-        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+        rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 rbf_data)
+        def surrogate(input):
+            return float(rbfi(input[0], input[1]))
     elif dim == 3:
-        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
+        rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
                 samples_rbf[:, 2], rbf_data) 
+        def surrogate(input):
+            return float(rbfi(input[0], input[1], input[2]))
     elif dim == 4:
-        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
-                samples_rbf[:, 2], samples_rbf[:, 3], rbf_data) 
+        rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
+                samples_rbf[:, 2], samples_rbf[:, 3], rbf_data)
+        def surrogate(input):
+            return float(rbfi(input[0], input[1], input[2], input[3]))
     elif dim == 5:
-        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+        rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
                 rbf_data)
+        def surrogate(input):
+            return float(rbfi(input[0], input[1], input[2], input[3],
+                    input[4]))
     elif dim == 6:
-        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+        rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
                 samples_rbf[:, 5], rbf_data)
+        def surrogate(input):
+            return float(rbfi(input[0], input[1], input[2], input[3],
+                    input[4], input[5]))
     elif dim == 7:
-        surrogate = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
+        rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
                 samples_rbf[:, 5], samples_rbf[:, 6], rbf_data)
+        def surrogate(input):
+            return float(rbfi(input[0], input[1], input[2], input[3],
+                    input[4], input[5], input[6]))
     else:
         print "surrogate creation only supported for up to 7 dimensions"
         quit()
@@ -342,7 +357,7 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
     # determine the average distance between minima
     # calculate average minimum pairwise distance between minima
     dist = spatial.distance_matrix(MYsamples_old, MYsamples_old)
-    mindists = np.array((MYsamples_old.shape[0]))
+    mindists = np.empty((MYsamples_old.shape[0],))
     for i in range(dist.shape[0]):
         mindists[i] = np.min(dist[i][dist[i] > 0])
     mindists_sum = comm.allreduce(mindists, op=MPI.SUM)
