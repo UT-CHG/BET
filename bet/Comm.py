@@ -18,6 +18,7 @@ class comm_for_no_mpi4py(object):
         Initialization
         """
         self.size = 1
+        self.rank = 0
         pass
 
     def Get_size(self):
