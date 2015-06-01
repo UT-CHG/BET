@@ -283,9 +283,9 @@ class sampler(bsam.sampler):
         comm.Barrier()
         
         # now split it all up
-        MYsamples_old = np.copy(samples_old)
+        MYsamples_old = np.copy(samples_old)[::size, :]
         comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-        MYdata_old = np.copy(data_old)
+        MYdata_old = np.copy(data_old)[::size, :]
         comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old,
             MPI.DOUBLE])
 
