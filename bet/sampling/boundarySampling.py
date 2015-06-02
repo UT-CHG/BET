@@ -16,6 +16,7 @@ the region of interest using a biscetion like method.
 
 """
 
+import bet.util as util
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import os

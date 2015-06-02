@@ -16,6 +16,7 @@ Lebesgue.
 
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
+import bet.util as util
 import os
 from bet.Comm import *
 
