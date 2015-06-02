@@ -15,6 +15,7 @@ We employ an approach based on using multiple sample chains.
 import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
+import bet.util as util
 import math, os
 from bet.Comm import *
 
@@ -330,13 +331,14 @@ class sampler(bsam.sampler):
             MYdata = np.copy(data)
             MYall_step_ratios = np.copy(all_step_ratios)
             # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-            samples = np.empty((self.num_samples, np.shape(MYsamples)[1]), dtype=np.float64)
+            samples = util.get_global_values(MYsamples,
+                    shape=(self.num_samples, np.shape(MYsamples)[1]))           
             # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-            data = np.empty((self.num_samples, np.shape(MYdata)[1]), dtype=np.float64)
+            data = util.get_global_values(MYdata, shape=(self.num_samples,
+                np.shape(MYdata)[1]))
+            # ``all_step_ratios`` is np.ndarray of shape (num_chains,
+            # chain_length)
             all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
-            # now allgather
-            comm.Allgather([MYsamples, MPI.DOUBLE], [samples, MPI.DOUBLE])
-            comm.Allgather([MYdata, MPI.DOUBLE], [data, MPI.DOUBLE])
             comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios, MPI.DOUBLE])
         else:
             all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))

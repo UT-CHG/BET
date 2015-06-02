@@ -90,7 +90,7 @@ def get_global_values(array, shape=None):
         else:
             # do an uppercase Allgather
             whole_a = np.empty(shape, dtype=dtype)
-            comm.Allgather([array, possible_types[dtype]], [whole_a,
+            comm.Allgather([array.ravel(), possible_types[dtype]], [whole_a,
                 possible_types[dtype]])
             return whole_a
 
