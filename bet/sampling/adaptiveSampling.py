@@ -324,19 +324,22 @@ class sampler(bsam.sampler):
                 super(sampler, self).save(mdat, savefile)
             MYsamples_old = samples_new
 
-        # collect everything
-        MYsamples = np.copy(samples)
-        MYdata = np.copy(data)
-        MYall_step_ratios = np.copy(all_step_ratios)
-        # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-        samples = np.empty((self.num_samples, np.shape(MYsamples)[1]), dtype=np.float64)
-        # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-        data = np.empty((self.num_samples, np.shape(MYdata)[1]), dtype=np.float64)
-        all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
-        # now allgather
-        comm.Allgather([MYsamples, MPI.DOUBLE], [samples, MPI.DOUBLE])
-        comm.Allgather([MYdata, MPI.DOUBLE], [data, MPI.DOUBLE])
-        comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios, MPI.DOUBLE])
+        if comm.size > 1:
+            # collect everything
+            MYsamples = np.copy(samples)
+            MYdata = np.copy(data)
+            MYall_step_ratios = np.copy(all_step_ratios)
+            # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
+            samples = np.empty((self.num_samples, np.shape(MYsamples)[1]), dtype=np.float64)
+            # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
+            data = np.empty((self.num_samples, np.shape(MYdata)[1]), dtype=np.float64)
+            all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
+            # now allgather
+            comm.Allgather([MYsamples, MPI.DOUBLE], [samples, MPI.DOUBLE])
+            comm.Allgather([MYdata, MPI.DOUBLE], [data, MPI.DOUBLE])
+            comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios, MPI.DOUBLE])
+        else:
+            all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
