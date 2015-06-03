@@ -309,7 +309,7 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 rbf_data)
         def surrogate(input):
-            return float(rbfi(input[0], input[1]))
+            return float(rbfi(input[:,0], input[:,1]))
     elif dim == 3:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
                 samples_rbf[:, 2], rbf_data) 
