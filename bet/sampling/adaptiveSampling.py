@@ -325,23 +325,21 @@ class sampler(bsam.sampler):
                 super(sampler, self).save(mdat, savefile)
             MYsamples_old = samples_new
 
-        if comm.size > 1:
-            # collect everything
-            MYsamples = np.copy(samples)
-            MYdata = np.copy(data)
-            MYall_step_ratios = np.copy(all_step_ratios)
-            # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-            samples = util.get_global_values(MYsamples,
-                    shape=(self.num_samples, np.shape(MYsamples)[1]))           
-            # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-            data = util.get_global_values(MYdata, shape=(self.num_samples,
-                np.shape(MYdata)[1]))
-            # ``all_step_ratios`` is np.ndarray of shape (num_chains,
-            # chain_length)
-            all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
-            comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios, MPI.DOUBLE])
-        else:
-            all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
+        # collect everything
+        MYsamples = np.copy(samples)
+        MYdata = np.copy(data)
+        MYall_step_ratios = np.copy(all_step_ratios)
+        # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
+        samples = util.get_global_values(MYsamples,
+                shape=(self.num_samples, np.shape(MYsamples)[1]))           
+        # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
+        data = util.get_global_values(MYdata, shape=(self.num_samples,
+            np.shape(MYdata)[1]))
+        # ``all_step_ratios`` is np.ndarray of shape (num_chains,
+        # chain_length)
+        all_step_ratios = util.get_global_values(MYall_step_ratios,
+                shape=(self.num_samples,))
+        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
