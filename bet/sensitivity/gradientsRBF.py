@@ -495,93 +495,77 @@ def test_deriv_2d_sin(x):
 ##################################################
 # choose opt qois below
 
-def chooseOptQoIsCOND(Grad_tensor, indexstart, indexstop):
-    min_condnum = 1E10
-    for i in range(indexstart,indexstop):
-        for j in range(i+1,indexstop+1):
-            sys.stdout.flush()
-            sys.stdout.write("\ri = %i" % i)
-            condnum_sum = 0
-            for xe in range(Grad_tensor.shape[0]):
-                condnum_sum += np.linalg.cond(Grad_tensor[xe,[i,j],:])
-            current_condnum = condnum_sum/Grad_tensor.shape[0]
-
-            if current_condnum < min_condnum:
-                min_condnum = current_condnum
-                qoi1index = i+1
-                qoi2index = j+1
-    
-    return min_condnum, qoi1index, qoi2index
-
-def chooseOptQoIsSVD(Grad_tensor, indexstart, indexstop):
-    Lambda_dim = Grad_tensor.shape[2]
-    num_xeval = Grad_tensor.shape[0]
-    min_condnum = 1E10
-    for i in range(indexstart,indexstop):
-        for j in range(i+1,indexstop+1):
-            sys.stdout.flush()
-            sys.stdout.write("\ri = %i" % i)
-
-            singvals = np.linalg.svd(Grad_tensor[:,[i,j],:], compute_uv=False)
-            current_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
-
-            if current_condnum < min_condnum:
-                min_condnum = current_condnum
-                qoi1index = i+1
-                qoi2index = j+1
-    
-    return min_condnum, qoi1index, qoi2index
-
-
-
-
 def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
+    r"""
+
+    TO DO: This just cares about skewness, not sensitivity  (That is, we pass in normalized 
+           gradient vectors).  So we want to implement sensitivity analysis as well later.
+
+    Given gradient vectors at some points(xeval) in the parameter space, a set of QoIs to choose from,
+    and the number of desired QoIs to return, this method return the set of optimal QoIs
+    to use in the inverse problem by choosing the set with optimal skewness properties.
+
+    :param Grad_tensor: Gradient vectors at each point of interest in the parameter space
+        :math:'\Lambda' for each QoI map.
+    :type Grad_tensor: :class:`np.ndarray` of shape (num_xeval,num_qois,Ldim) where num_xeval is
+        the number of points in :math:'\Lambda' we have approximated the gradient vectors, num_qois is
+        the total number of possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
+    :param int indexstart: Index of the list of QoIs to start at.
+    :param int indexstop: Index of the list of QoIs to stop at.
+    :param int num_qois_returned: Number of desired QoIs to use in the inverse problem.
+
+    :rtype: tuple
+    :returns: (min_condum, qoiIndices)
+
+    """
+
+    from mpi4py import MPI
+
+    comm = MPI.COMM_WORLD
+    rank = comm.rank
+    size = comm.size
+
     Lambda_dim = Grad_tensor.shape[2]
     num_qois = indexstop-indexstart + 1
     num_xeval = Grad_tensor.shape[0]
+    
+    # Find all posible combinations of QoIs
+    if rank==0:
+        qoi_combs = np.array(list(combinations(range(indexstart, indexstop+1), num_qois_returned)))
+        print 'Possible sets of QoIs : ', qoi_combs.shape[0]
+        qoi_combs = np.array_split(qoi_combs, size)
+    else:
+        qoi_combs = None
+
+    # Scatter them throughout the processors
+    qoi_combs = comm.scatter(qoi_combs, root=0)
+    print '\n', len(qoi_combs)
+
+    # For each combination, check the skewness and keep the set
+    # that has the best skewness, i.e., smallest condition number
     min_condnum = 1E10
-    qoi_combinations = combinations(range(indexstart, indexstop+1), num_qois_returned)
-
-    count = 0
-    for qoi_set in qoi_combinations:
-        count += 1
-        sys.stdout.flush()
-        sys.stdout.write("\rcount = %i" % count)
-
-        # because I cant figure out how to vectorize np.linalg.cond
-        singvals = np.linalg.svd(Grad_tensor[:,list(qoi_set),:], compute_uv=False)
+    for qoi_set in range(len(qoi_combs)):
+        singvals = np.linalg.svd(Grad_tensor[:,qoi_combs[qoi_set],:], compute_uv=False)
         current_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
 
         if current_condnum < min_condnum:
             min_condnum = current_condnum
-            qoiIndices = list(qoi_set)
+            qoiIndices = qoi_combs[qoi_set]
+
+    # Wait for all processes to get to this point
+    comm.Barrier()
+
+    # Gather the best sets and conditions number from each processor
+    min_condnum_indices = comm.gather([min_condnum, qoiIndices], root=0)
+
+    # Find the minimum of the minimums
+    if rank==0:
+        # Possibly 'magical' min ...?  But seems to work...
+        min_list = min(min_condnum_indices)
+        min_condnum = min_list[0]
+        qoiIndices = min_list[1]
     
-    return min_condnum, qoiIndices
-
-def chooseOptQoIsPAR(Grad_tensor, indexstart, indexstop, num_qois_returned):
-    Lambda_dim = Grad_tensor.shape[2]
-    num_qois = indexstop-indexstart + 1
-    num_xeval = Grad_tensor.shape[0]
-    min_condnum = 1E10
-    #use range below instead of linspace
-    qoi_combinations = combinations(range(indexstart, indexstop+1), num_qois_returned)
-
-    count = 0
-    for qoi_set in qoi_combinations:
-        count += 1
-        sys.stdout.flush()
-        sys.stdout.write("\rcount = %i" % count)
-
-        # because I cant figure out how to vectorize np.linalg.cond
-        singvals = np.linalg.svd(Grad_tensor[:,list(qoi_set),:], compute_uv=False)
-        current_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
-
-        if current_condnum < min_condnum:
-            min_condnum = current_condnum
-            qoiIndices = list(qoi_set)
-    
-    return min_condnum, qoiIndices
-
+    return (min_condnum, qoiIndices)
 
 
 
