@@ -498,7 +498,7 @@ def test_deriv_2d_sin(x):
 def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
     r"""
 
-    TO DO: This just cares about skewness, not sensitivity  (That is, we pass in normalized 
+    TODO: This just cares about skewness, not sensitivity  (That is, we pass in normalized 
            gradient vectors).  So we want to implement sensitivity analysis as well later.
 
     Given gradient vectors at some points(xeval) in the parameter space, a set of QoIs to choose from,
@@ -564,6 +564,10 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
         min_list = min(min_condnum_indices)
         min_condnum = min_list[0]
         qoiIndices = min_list[1]
+
+    min_condnum = comm.bcast(min_condnum, root=0)
+    qoiIndices = comm.bcast(qoiIndices, root=0)
+    
     
     return (min_condnum, qoiIndices)
 
