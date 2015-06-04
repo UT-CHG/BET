@@ -15,8 +15,8 @@ This example demostrates three different methods to estimate
 
 These methods are distinguished primarily by the way :math:`\mathcal{V}_j` are
 defined and the approximation of the volume of :math:`\mathcal{V}_j`. See
-:download:`Q_2D.py
-<../../../examples/fromADCIRCMap/Q_2D.py>` for the example source code. Since
+:download:`Q_2D_serial.py
+<../../../examples/fromADCIRCMap/Q_2D_serial.py>` for the example source code. Since
 this example is essentially the same as :ref:`q1D` we will only highlight the
 differences between the two.
 
@@ -44,7 +44,7 @@ Define the refernce solution. We define a region of interest, :math:`R_{ref} \su
                 center_pts_per_edge=np.ones((data.shape[1],)))
 
 
-Finally, we calculate :math:`\hat{\rho}_{\Lambda, j}` for three reference solutions and the QoI :math:( (q_1,q_2), (q_1, q_5), and (q_1, q_6)) ::
+Finally, we calculate :math:`\hat{\rho}_{\Lambda, j}` for three reference solutions and the QoI :math:`( (q_1,q_2), (q_1, q_5)`, and :math:`(q_1, q_6))` ::
 
     ref_nums = [6, 11, 15] # 7, 12, 16
     stations = [1, 4, 5] # 2, 5, 6

@@ -1,37 +1,14 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This module provides methods for plotting probabilities. 
 """
+
 from bet.Comm import *
 import matplotlib.pyplot as plt
 import numpy as np
-import copy
-import math
+import copy, math
 
-
-def plot_voronoi_probs(P_samples, samples, lam_domain, nbins=20,
-        plot_surface=False):
-    """
-    This makes plots of the joint probabilies of input probability measure
-    defined by P_samples for 2d cases. post_process - is an input that only
-    applies to the 2d case  w.r.t. the Voronoi cells.
-
-    :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
-    :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
-    :param nbins: Number of bins in each direction.
-    :type nbins: :int
-
-    """
-    lam_dim = lam_domain.shape[0]
-    
-    if lam_dim == 2: # Plot Voronoi tesselations, otherwise plot 2d 
-        #projections/marginals of the joint inverse measure
-        num_samples = samples.shape[0]
-        #Add fake samples outside of lam_domain to close Voronoi 
-        #tesselations at infinity
 
 def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
         
@@ -51,33 +28,27 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     :returns: (bins, marginals)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
     num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
         nbins = nbins*np.ones(num_dim, dtype=np.int)
-  
+ 
     # Create bins
     bins = []
     for i in range(num_dim):
         bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1], nbins[i]+1))
-    bin_ptr = np.zeros((num_samples, num_dim), dtype=np.int)
-    # Bin samples
-    for j in range(num_dim):
-        bin_ptr[:, j] = np.searchsorted(bins[j], samples[:, j])
-    bin_ptr -= 1
-         
-    # Calculate marginal probabilities 
+        
+    # Calculate marginals
     marginals = {}
     for i in range(num_dim):
-        marg = np.zeros((nbins[i]+1,))
-        # This may be sped up with logical indices
-        for k in range(num_samples):
-            marg[bin_ptr[k][i]] += P_samples[k]
+        [marg, _] = np.histogram(samples[:,i], bins=bins[i], weights=P_samples)
         marg_temp = np.copy(marg)
-        comm.Allreduce([marg, MPI.DOUBLE],[marg_temp, MPI.DOUBLE], op=MPI.SUM)
-        marginals[i] = marg_temp[:-1]
+        comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
+        marginals[i] = marg_temp
 
     return (bins, marginals)
 
@@ -99,39 +70,35 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     :returns: (bins, marginals)
 
     """
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
     num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
         nbins = nbins*np.ones(num_dim, dtype=np.int)
-    
+
     # Create bins
     bins = []
     for i in range(num_dim):
         bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1], nbins[i]+1))
-    bin_ptr = np.zeros((num_samples, num_dim), dtype=np.int)
-    # Bin samples
-    for j in range(num_dim):
-        bin_ptr[:, j] = np.searchsorted(bins[j], samples[:, j])
-    bin_ptr -= 1
-         
-    # Calculate marginal probabilities 
+    
+    # Calculate marginals
     marginals = {}
     for i in range(num_dim):
         for j in range(i+1, num_dim):
-            marg = np.zeros((nbins[i]+1, nbins[j]+1))
-            # This may be sped up with logical indices
-            for k in range(num_samples):
-                marg[bin_ptr[k][i]][bin_ptr[k][j]] += P_samples[k]
+            (marg, _) = np.histogramdd(samples[:,[i,j]], bins = [bins[i], bins[j]], weights = P_samples)
+            marg=np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
-            comm.Allreduce([marg, MPI.DOUBLE],[marg_temp, MPI.DOUBLE], op=MPI.SUM)
-            marginals[(i, j)] = marg_temp[:-1,:-1]
+            comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],
+                    op=MPI.SUM) 
+            marginals[(i, j)] = marg_temp
 
     return (bins, marginals)
 
 def plot_1D_marginal_probs(marginals, bins, lam_domain,
-        filename="file", lam_ref=None, interactive=True,
+        filename="file", lam_ref=None, interactive=False,
         lambda_label=None):
         
     """
@@ -139,8 +106,9 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
     input probability measure defined by P_samples on a 1D  grid.
 
     :param marginals: 1D marginal probabilities
-    :type marginals: dictionary with int as keys and :class:'~numpy.ndarray' of shape (nbins+1,) as values
-    :param bins: Endpoints of bins used in calculating marginals
+    :type marginals: dictionary with int as keys and :class:'~numpy.ndarray' of
+        shape (nbins+1,) as values :param bins: Endpoints of bins used in
+        calculating marginals
     :type bins: :class:'~numpy.ndarray' of shape (nbins+1,)
     :param lam_domain: The domain for each parameter for the model.
     :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
@@ -154,31 +122,32 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
     :type lambda_label: list of length nbins of strings or None
 
     """
-    from scipy.interpolate import interp1d
-    from scipy.integrate import quad
-    from matplotlib import cm
     if rank == 0:
         index = copy.deepcopy(marginals.keys())
         index.sort()
         for i in index:
-            x_range = np.linspace(lam_domain[i,0], lam_domain[i,1], len(bins[i])-1)
+            x_range = np.linspace(lam_domain[i, 0], lam_domain[i, 1],
+                    len(bins[i])-1) 
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
-            ax.plot(x_range,marginals[i]/(bins[i][1]-bins[i][0]))
-            if lam_ref != None:
+            ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
+            if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
-                label1 = '$\lambda_{' + `i+1` + '}$'
+                label1 = r'$\lambda_{' + str(i+1) + '}$'
             else:
                 label1 = lambda_label[i]
             ax.set_xlabel(label1) 
             ax.set_ylabel(r'$\rho$')
-            fig.savefig(filename + "_1D_" + `i` + ".eps")
+            fig.savefig(filename + "_1D_" + str(i) + ".eps", transparent=True)
             if interactive:
                 plt.show()
+            else:
+                plt.close()
+            plt.clf()
 
 def plot_2D_marginal_probs(marginals, bins, lam_domain,
-        filename="file", lam_ref=None, plot_surface=False, interactive=True,
+        filename="file", lam_ref=None, plot_surface=False, interactive=False,
         lambda_label=None):
         
     """
@@ -186,7 +155,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     input probability measure defined by P_samples on a rectangular grid.
 
     :param marginals: 2D marginal probabilities
-    :type marginals: dictionary with tuples of 2 integers as keys and :class:'~numpy.ndarray' of shape (nbins+1,) as values
+    :type marginals: dictionary with tuples of 2 integers as keys and
+        :class:'~numpy.ndarray' of shape (nbins+1,) as values 
     :param bins: Endpoints of bins used in calculating marginals
     :type bins: :class:'~numpy.ndarray' of shape (nbins+1,2)
     :param lam_domain: The domain for each parameter for the model.
@@ -212,26 +182,32 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             fig = plt.figure(k)
             ax = fig.add_subplot(111)
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
-            quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize, interpolation='bicubic', cmap=cm.jet, extent = [lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
-                                                                                                                      lam_domain[j][1]],origin='lower', vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i, j)].min()/boxSize, aspect='auto')
-
-            if lam_ref != None:
+            quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize,
+                    interpolation='bicubic', cmap=cm.jet, 
+                    extent=[lam_domain[i][0], lam_domain[i][1],
+                    lam_domain[j][0], lam_domain[j][1]], origin='lower',
+                    vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i,
+                        j)].min()/boxSize, aspect='auto')
+            if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
             if lambda_label == None:
-                label1 = '$\lambda_{' + `i+1` + '}$'
-                label2 = '$\lambda_{' + `j+1` + '}$'
+                label1 = r'$\lambda_{' + str(i+1) + '}$'
+                label2 = r'$\lambda_{' + str(j+1) + '}$'
             else:
                 label1 = lambda_label[i]
                 label2 = lambda_label[j]
             ax.set_xlabel(label1) 
             ax.set_ylabel(label2)
-            label_cbar = r'$\rho_{' + '\lambda_{' + `i+1` + '}' + ',' + '\lambda_{' + `j+1` + '}' + '}$ (Lesbesgue)'
+            label_cbar = r'$\rho_{\lambda_{' + str(i+1) + '}, ' 
+            label_cbar += r'\lambda_{' + str(j+1) + '}' + '}$ (Lesbesgue)'
             fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
-            fig.savefig(filename + "_2D_" + `i` + "_" + `j` + ".eps")
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".eps", transparent=True)
             if interactive:
                 plt.show()
+            else:
+                plt.close()
  
         if plot_surface:
             for k, (i, j) in enumerate(pairs):
@@ -245,22 +221,26 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                         antialiased=False)
                 ax.zaxis.set_major_locator(LinearLocator(10))
                 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-                ax.set_xlabel('$\lambda_{' + `i+1` + '}$') 
-                ax.set_ylabel('$\lambda_{' + `j+1` + '}$')
-                ax.set_zlabel('$P$')
+                ax.set_xlabel(r'$\lambda_{' + str(i+1) + '}$') 
+                ax.set_ylabel(r'$\lambda_{' + str(j+1) + '}$')
+                ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
-                fig.savefig(filename + "_surf_"+ `i` + "_" +`j` + ".eps")
+                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".eps", transparent=True)
                 if interactive:
                     plt.show()
+                else:
+                    plt.close()
+                plt.clf()
 
-def smooth_marginals_1D(marginals, bins,  sigma=10.0):
+def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
     This function smooths 1D marginal probabilities.
 
     :param marginals: 1D marginal probabilities
-    :type marginals: dictionary with int as keys and :class:'~numpy.ndarray' of shape (nbins+1,) as values
-    :param bins: Endpoints of bins used in calculating marginals
+    :type marginals: dictionary with int as keys and :class:'~numpy.ndarray' of
+        shape (nbins+1,) as values :param bins: Endpoints of bins used in
+        calculating marginals
     :type bins: :class:'~numpy.ndarray' of shape (nbins+1,)
     :param sigma: Smoothing parameter in each direction.
     :type sigma: :float or :class:'~numpy.ndarray' of shape (ndim,)
@@ -270,7 +250,7 @@ def smooth_marginals_1D(marginals, bins,  sigma=10.0):
     from scipy.fftpack import fftshift, ifft, fft 
 
     if isinstance(sigma, float):
-        sigma = sigma*np.ones(len(bins),dtype=np.int)
+        sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
     index = copy.deepcopy(marginals.keys())
     index.sort()
@@ -286,20 +266,21 @@ def smooth_marginals_1D(marginals, bins,  sigma=10.0):
         aug_kernel[augx:augx+nx] = kernel
         aug_marginals[augx:augx+nx] = marginals[i]
 
-        aug_kernel=fftshift(aug_kernel)       
+        aug_kernel = fftshift(aug_kernel)       
 
         aug_marginals_smooth = np.real(ifft(fft(aug_kernel)*fft(aug_marginals)))
         marginals_smooth[i] = aug_marginals_smooth[augx:augx+nx]
-        marginals_smooth[i] =   marginals_smooth[i]/np.sum(marginals_smooth[i])
+        marginals_smooth[i] = marginals_smooth[i]/np.sum(marginals_smooth[i])
 
     return marginals_smooth
 
-def smooth_marginals_2D(marginals, bins,  sigma=10.0):
+def smooth_marginals_2D(marginals, bins, sigma=10.0):
     """
     This function smooths 2D marginal probabilities.
 
     :param marginals: 2D marginal probabilities
-    :type marginals: dictionary with tuples of 2 integers as keys and :class:'~numpy.ndarray' of shape (nbins+1,) as values
+    :type marginals: dictionary with tuples of 2 integers as keys and
+        :class:'~numpy.ndarray' of shape (nbins+1,) as values 
     :param bins: Endpoints of bins used in calculating marginals
     :type bins: :class:'~numpy.ndarray' of shape (nbins+1,)
     :param sigma: Smoothing parameter in each direction.
@@ -310,11 +291,11 @@ def smooth_marginals_2D(marginals, bins,  sigma=10.0):
     from scipy.fftpack import fftshift, ifft2, fft2 
 
     if isinstance(sigma, float):
-        sigma = sigma*np.ones(len(bins),dtype=np.int)
+        sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
     pairs = copy.deepcopy(marginals.keys())
     pairs.sort()
-    for k, (i, j) in enumerate(pairs):   
+    for (i, j) in pairs:   
         nx = len(bins[i])-1
         ny = len(bins[j])-1
         dx = bins[i][1] - bins[i][0]
@@ -328,17 +309,20 @@ def smooth_marginals_2D(marginals, bins,  sigma=10.0):
         X, Y = np.meshgrid(x_kernel, y_kernel, indexing='ij')
 
         kernel = np.exp(-(X/sigma[i])**2-(Y/sigma[j])**2)
-        aug_kernel = np.zeros((nx+2*augx,ny+2*augy))
-        aug_marginals = np.zeros((nx+2*augx,ny+2*augy))
+        aug_kernel = np.zeros((nx+2*augx, ny+2*augy))
+        aug_marginals = np.zeros((nx+2*augx, ny+2*augy))
 
-        aug_kernel[augx:augx+nx,augy:augy+ny] = kernel
-        aug_marginals[augx:augx+nx,augy:augy+ny] = marginals[(i,j)]
+        aug_kernel[augx:augx+nx, augy:augy+ny] = kernel
+        aug_marginals[augx:augx+nx, augy:augy+ny] = marginals[(i, j)]
 
-        aug_kernel=fftshift(aug_kernel,0) 
-        aug_kernel=fftshift(aug_kernel,1)
+        aug_kernel = fftshift(aug_kernel, 0) 
+        aug_kernel = fftshift(aug_kernel, 1)
 
-        aug_marginals_smooth = np.real(ifft2(fft2(aug_kernel)*fft2(aug_marginals)))
-        marginals_smooth[(i,j)] = aug_marginals_smooth[augx:augx+nx,augy:augy+ny]
-        marginals_smooth[(i,j)] =   marginals_smooth[(i,j)]/np.sum(marginals_smooth[(i,j)])
+        aug_marginals_smooth = ifft2(fft2(aug_kernel)*fft2(aug_marginals))
+        aug_marginals_smooth = np.real(aug_marginals_smooth)
+        marginals_smooth[(i, j)] = aug_marginals_smooth[augx:augx+nx, 
+                augy:augy+ny]
+        marginals_smooth[(i, j)] = marginals_smooth[(i, 
+            j)]/np.sum(marginals_smooth[(i, j)])
 
     return marginals_smooth
