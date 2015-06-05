@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Steven Mattis 04/07/2015
 """
 This module contains tests for :module:`bet.postProcess.postTools`.
@@ -14,9 +16,86 @@ import numpy.testing as nptest
 import bet.util as util
 from bet.Comm import *
 
+def test_in_high_prob():
+    """
+
+    Tests :meth:`bet.postProcess.postTools.in_high_prob`
+    """
+    def rho_D(my_data):
+        return my_data/4.0
+    data = np.array([0, 1, 0, 1, 1, 1])
+    maximum = np.max(rho_D(data))
+    print "maximum", maximum
+    assert 4 == postTools.in_high_prob(data, rho_D, maximum)
+    assert 3 == postTools.in_high_prob(data, rho_D, maximum, [3, 4, 5])
+    assert 2 == postTools.in_high_prob(data, rho_D, maximum, [0, 1, 2, 3])
+    assert 1 == postTools.in_high_prob(data, rho_D, maximum, [0, 2, 4])
+    assert 0 == postTools.in_high_prob(data, rho_D, maximum, [0, 2])
+
+def test_in_high_prob_multi():
+    """
+
+    Tests :meth:`bet.postProcess.postTools.in_high_prob_multi`
+    
+    """
+    def rho_D(my_data):
+        return my_data/4.0
+    data1 = np.array([0, 1, 0, 1, 1, 0])
+    data2 = np.ones(data1.shape)-data1
+    maximum = np.max(rho_D(data1))
+
+    print "maximum", maximum
+    results_list = [[None, data1], [None, data2], [None, data1], [None, data2]]
+    sample_nos_list = [[3, 4, 5], [3, 4, 5], [0, 2, 4], [0, 2, 4]]
+
+    nptest.assert_array_equal(np.array([2, 1, 1, 2]),
+            postTools.in_high_prob_multi(results_list, rho_D, maximum,
+                sample_nos_list))
+    nptest.assert_array_equal(np.array([3, 3, 3, 3]),
+            postTools.in_high_prob_multi(results_list, rho_D, maximum))
+
+def test_compare_yield_CH():
+    """
+
+    Tests :meth:`bet.postProcess.postTools.compare_yield` with column headings
+
+    """
+    sample_quality = np.random.random((10,))
+    sort_ind = np.argsort(sample_quality)
+    run_param = []
+    for i in range(10):
+        run_param.append(np.random.random((4,)))
+    column_headings = ['swallow', 'coconut', 'ni', 'shrubbery']
+    try:
+        postTools.compare_yield(sort_ind, sample_quality, run_param,
+                column_headings)
+        go = True
+    except (RuntimeError, TypeError, NameError):
+        go = False
+    nptest.assert_equal(go, True)
+
+def test_compare_yield():
+    """
+
+    Tests :meth:`bet.postProcess.postTools.compare_yield` without column headings
+
+    """
+    sample_quality = np.random.random((10,))
+    sort_ind = np.argsort(sample_quality)
+    run_param = []
+    for i in range(10):
+        run_param.append(np.random.random((4,)))
+    try:
+        postTools.compare_yield(sort_ind, sample_quality, run_param)
+        go = True
+    except (RuntimeError, TypeError, NameError):
+        go = False
+    nptest.assert_equal(go, True)
+
+
 class Test_PostTools(unittest.TestCase):
     """
-    Test :meth:`bet.postProcess.postTools`.
+    Test :mod:`bet.postProcess.postTools`.
     """
     def setUp(self):
         """

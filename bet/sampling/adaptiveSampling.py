@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # -*- coding: utf-8 -*-
 # Lindley Graham 3/10/2014
 """
@@ -17,8 +19,6 @@ import bet.sampling.basicSampling as bsam
 import math, os
 from bet.Comm import *
 
-size = comm.Get_size()
-rank = comm.Get_rank()
 
 def loadmat(save_file, lb_model=None):
     """
@@ -26,8 +26,8 @@ def loadmat(save_file, lb_model=None):
     :class:`~bet.sampling.adaptiveSampling.sampler` object.
 
     :param string save_file: file name
-    :param model: runs the model at a given set of parameter samples and
-        returns data 
+    :param lb_model: runs the model at a given set of parameter samples, (N,
+        ndim), and returns data (N, mdim)
     :rtype: tuple
     :returns: (sampler, samples, data)
 
@@ -37,15 +37,17 @@ def loadmat(save_file, lb_model=None):
     # load the samples
     if mdat.has_key('samples'):
         samples = mdat['samples']
+        num_samples = samples.shape[0]
     else:
         samples = None
+        num_samples = np.squeeze(mdat['num_samples'])
     # load the data
     if mdat.has_key('data'):
         data = mdat['data']
     else:
         data = None
     # recreate the sampler
-    new_sampler = sampler(mdat['num_samples'],
+    new_sampler = sampler(num_samples,
             np.squeeze(mdat['chain_length']), lb_model)
     
     return (new_sampler, samples, data)
@@ -65,6 +67,11 @@ class sampler(bsam.sampler):
     def __init__(self, num_samples, chain_length, lb_model):
         """
         Initialization
+
+        :param int num_samples: Total number of samples
+        :param int chain_length: Number of samples per chain
+        :param lb_model: runs the model at a given set of parameter samples, (N,
+            ndim), and returns data (N, mdim)
         """
         super(sampler, self).__init__(lb_model, num_samples)
         self.chain_length = chain_length
@@ -125,56 +132,6 @@ class sampler(bsam.sampler):
             (samples, data, step_sizes) = self.generalized_chains(
                     param_min, param_max, t_set, kern, savefile,
                     initial_sample_type, criterion)
-            results.append((samples, data))
-            r_step_size.append(step_sizes)
-            results_rD.append(int(sum(rho_D(data)/maximum)))
-            mean_ss.append(np.mean(step_sizes))
-        sort_ind = np.argsort(results_rD)
-        return (results, r_step_size, results_rD, sort_ind, mean_ss)
-
-    # TODO This appears to be an unused function
-    def run_reseed(self, kern_list, rho_D, maximum, param_min, param_max,
-            t_set, savefile, initial_sample_type="lhs", criterion='center',
-            reseed=3):
-        """
-        Generates samples using reseeded chains and a list of different
-        kernels.
-
-        THIS IS NOT OPERATIONAL DO NOT USE.
-
-        :param list() kern_list: List of
-            :class:~`bet.sampling.adaptiveSampling.kernel` objects.
-        :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and
-            returns a :class:`numpy.ndarray`
-        :param double maximum: maximum value of rho_D
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
-        :param t_set: method for creating new parameter steps using
-            given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
-        :param string savefile: filename to save samples and data
-        :param string initial_sample_type: type of initial sample random (or r),
-            latin hypercube(lhs), or space-filling curve(TBD)
-         :param string criterion: latin hypercube criterion see 
-            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :rtype: tuple
-        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
-            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
-
-        """
-        results = list()
-        # reseeding sampling
-        results = list()
-        r_step_size = list()
-        results_rD = list()
-        mean_ss = list()
-        for kern in kern_list:
-            (samples, data, step_sizes) = self.reseed_chains(
-                    param_min, param_max, t_set, kern, savefile,
-                    initial_sample_type, criterion, reseed)
             results.append((samples, data))
             r_step_size.append(step_sizes)
             results_rD.append(int(sum(rho_D(data)/maximum)))
@@ -301,15 +258,15 @@ class sampler(bsam.sampler):
 
         """
         if size > 1:
-            savefile = os.path.join(os.path.dirname(savefile),
+            psavefile = os.path.join(os.path.dirname(savefile),
                     "proc{}{}".format(rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
         # Calculate domain size
-        # TODO The following could probably be done in one line
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
+
         param_width = param_right - param_left
         # Calculate step_size
         max_ratio = t_set.max_ratio
@@ -369,8 +326,10 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            super(sampler, self).save(mdat, "p"+str(rank)+savefile)
-
+            if size > 1:
+                super(sampler, self).save(mdat, psavefile)
+            else:
+                super(sampler, self).save(mdat, savefile)
             MYsamples_old = samples_new
 
         # collect everything
@@ -395,40 +354,6 @@ class sampler(bsam.sampler):
 
         return (samples, data, all_step_ratios)
         
-    #TODO MOve this function to a dev branch since it is not implemented.
-    def reseed_chains(self, param_min, param_max, t_set, kern,
-            savefile, initial_sample_type="lhs", criterion='center', reseed=1):
-        """
-        Basic adaptive sampling algorithm.
-
-        NOT YET IMPLEMENTED.
-
-        :param string initial_sample_type: type of initial sample random (or r),
-            latin hypercube(lhs), or space-filling curve(TBD)
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
-        :param t_set: method for creating new parameter steps using
-            given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
-        :param function kern: functional that acts on the data used to
-            determine the proposed change to the ``step_size``
-        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
-        :param string savefile: filename to save samples and data
-        :param string criterion: latin hypercube criterion see 
-            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-
-
-        :param int reseed: number of times to reseed the chains
-        :rtype: tuple
-        :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-            and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-
-        """
-        pass
-
 def kernels(Q_ref, rho_D, maximum):
     """
     Generates a list of kernstic objects.
@@ -440,15 +365,13 @@ def kernels(Q_ref, rho_D, maximum):
         a class:`np.ndarray`
     :param double maximum: maximum value of rho_D
     :rtype: list()
-    :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel,
-        multi_dist_kernel]
+    :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel]
 
     """
     kern_list = list()
     kern_list.append(maxima_mean_kernel(np.array([Q_ref]), rho_D))
     kern_list.append(rhoD_kernel(maximum, rho_D))
     kern_list.append(maxima_kernel(np.array([Q_ref]), rho_D))
-    kern_list.append(multi_dist_kernel())
     return kern_list
 
 class transition_set(object):
@@ -472,6 +395,11 @@ class transition_set(object):
     def __init__(self, init_ratio, min_ratio, max_ratio):
         """
         Initialization
+
+        :param double init_ratio: initial step ratio
+        :param double min_ratio: minimum step_ratio
+        :param double max_ratio: maximum step_ratio
+
         """
         self.init_ratio = init_ratio
         self.min_ratio = min_ratio
@@ -487,7 +415,13 @@ class transition_set(object):
         :param step_ratio: define maximum step_size = ``step_ratio*param_width``
         :type step_ratio: :class:`np.array` of shape (num_samples,)
         :param param_width: width of the parameter domain
-        :type param_width: np.array (ndim,)
+        :type param_width: :class:`np.ndarray` of shape (ndim,)
+        :param param_left: minimum boundary of the parameter domain
+        :type param_left: :class:`np.ndarray` of shape (ndim, N) where N is the
+            length of ``step_ratio``
+        :param param_right: maximum boundary of the parameter domain
+        :type param_right: :class:`np.ndarray` of shape (ndim, N) where N is the
+            length of ``step_ratio``
         :param samples_old: Parameter samples from the previous step.
         :type samples_old: :class:`~numpy.ndarray` of shape (num_samples,
             ndim)
@@ -523,7 +457,7 @@ class kernel(object):
     this is simply a skeleton parent class it does not change the step size at
     all.
     
-    tolerance
+    TOL
         a tolerance used to determine if two different values are close
     increase
         the multiple to increase the step size by
@@ -534,6 +468,11 @@ class kernel(object):
     def __init__(self, tolerance=1E-08, increase=1.0, decrease=1.0):
         """
         Initialization
+
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.TOL = tolerance
         self.increase = increase
@@ -581,6 +520,13 @@ class rhoD_kernel(kernel):
             decrease=0.5):
         """
         Initialization
+
+        :param double maximum: maximum value of rho_D
+        :param function rho_D: probability density on D
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.MAX = maximum
         self.rho_D = rho_D
@@ -601,7 +547,7 @@ class rhoD_kernel(kernel):
         # Evaluate kernel for new data.
         kern_new = self.rho_D(data_new)
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             return (kern_new, None)
         else:
             kern_diff = (kern_new-kern_old)/self.MAX
@@ -634,7 +580,7 @@ class maxima_kernel(kernel):
 
     maxima
         locations of the maxima of rho_D on D
-        np.array of shape (num_maxima, mdim)
+        :class:`np.ndarray` of shape (num_maxima, mdim)
     rho_max
         rho_D(maxima), list of maximum values of rho_D
     tolerance 
@@ -650,6 +596,16 @@ class maxima_kernel(kernel):
             decrease=0.5):
         """
         Initialization
+
+        :param maxima: locations of the maxima of rho_D on D 
+        :type maxima: :class:`np.ndarray` of chape (num_maxima, mdim)
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns
+            a class:`np.ndarray`
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.MAXIMA = maxima
         self.num_maxima = maxima.shape[0]
@@ -681,7 +637,7 @@ class maxima_kernel(kernel):
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             return (kern_new, None)
         else:
             kern_diff = (kern_new-kern_old)
@@ -729,6 +685,16 @@ class maxima_mean_kernel(maxima_kernel):
             decrease=0.5):
         """
         Initialization
+
+        :param maxima: locations of the maxima of rho_D on D 
+        :type maxima: :class:`np.ndarray` of chape (num_maxima, mdim)
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and returns
+            a class:`np.ndarray`
+        :param double tolerance: Tolerance for comparing two values
+        :param double increase: The multiple to increase the step size by
+        :param double decrease: The multiple to decrease the step size by
+
         """
         self.radius = None
         self.mean = None
@@ -770,7 +736,7 @@ class maxima_mean_kernel(maxima_kernel):
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
 
-        if kern_old == None:
+        if type(kern_old) == type(None):
             # calculate the mean
             self.mean = np.mean(data_new, 0)
             # calculate the distance from the mean
@@ -808,108 +774,6 @@ class maxima_mean_kernel(maxima_kernel):
             # if closer than kern_old then decrease
             proposal[kern_lesser] = self.decrease
         return (kern_new, proposal)
-
-
-class multi_dist_kernel(kernel):
-    """
-    The goal is to make a sampling that is robust to different types of
-    distributions on QoI, i.e., we do not know a priori where the regions of
-    high probability are in D. This class provides a method for determining the
-    proposed step size as follows. We keep track of the change of the QoI
-    values from one sample to the next compared to the total range of QoI
-    values explored so far. If a big relative change is detected, then you know
-    that you have come across a region with larger derivatives and you should
-    place more samples around there to resolve the induced regions of
-    generalized contours, i.e., reduce the step size. If the change in QoI
-    values is relatively small, you are in a region where there is little
-    sensitivity, so take larger step sizes.
-
-    radius
-        current estimate of the radius of D (1/2 the diameter of D)
-    mean
-        current estimate of the mean QoI
-    current_clength
-        current batch number
-    TOL 
-        a tolerance used to determine if two different values are close
-    increase
-        the multiple to increase the step size by
-    decrease
-        the multiple to decrease the step size by
-
-    """
-
-    def __init__(self, tolerance=1E-08, increase=2.0, 
-            decrease=0.5):
-        """
-        Initialization
-        """
-        self.radius = None
-        self.mean = None
-        self.current_clength = 0
-        super(multi_dist_kernel, self).__init__(tolerance, increase,
-                decrease)
-
-    def reset(self):
-        """
-        Resets the the batch number and the estimates of the mean and maximum
-        distance from the mean.
-        """
-        self.radius = None
-        self.mean = None
-        self.current_clength = 0
-
-    def delta_step(self, data_new, kern_old=None):
-        """
-        This method determines the proposed change in step size. 
-        
-        :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (num_chains, mdim)
-        :param kern_old: QoI evaluated at previous step
-        :rtype: tuple
-        :returns: (kern_new, proposal)
-
-        """
-        # Evaluate kernel for new data.
-        kern_new = data_new
-        self.current_clength = self.current_clength + 1
-
-        if kern_old == None:
-            proposal = None
-            # calculate the mean
-            self.mean = np.mean(data_new, 0)
-            # calculate the distance from the mean
-            vec_from_mean = kern_new - np.repeat([self.mean],
-                    kern_new.shape[0], 0)
-            # estimate the radius of D
-            self.radius = np.max(np.linalg.norm(vec_from_mean, 2, 1)) 
-        else:
-            # update the estimate of the mean
-            self.mean = (self.current_clength-1)*self.mean + np.mean(data_new, 0)
-            self.mean = self.mean / self.current_clength
-            # calculate the distance from the mean
-            vec_from_mean = kern_new - np.repeat([self.mean],
-                    kern_new.shape[0], 0)
-            # esitmate the radius of D
-            self.radius = max(np.max(np.linalg.norm(vec_from_mean, 2, 1)),
-                    self.radius)
-            # calculate the relative change in QoI
-            kern_diff = (kern_new-kern_old)
-            # normalize by the radius of D
-            kern_diff = np.linalg.norm(vec_from_mean, 2, 1)#/self.radius
-            # Compare to kernel for old data.
-            # Is the kernel NOT close?
-            kern_close = np.logical_not(np.isclose(kern_diff, 0,
-                atol=self.TOL))
-            # Is the kernel greater/lesser?
-            kern_greater = np.logical_and(kern_diff > 0, kern_close)
-            kern_lesser = np.logical_and(kern_diff < 0, kern_close)
-            # Determine step size
-            proposal = np.ones(kern_diff.shape)
-            proposal[kern_greater] = self.decrease
-            proposal[kern_lesser] = self.increase
-        return (kern_new, proposal)
-
 
 
 

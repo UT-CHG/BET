@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 # Lindley Graham 04/07/2015
 """
 This module contains unittests for :mod:`~bet.util`
@@ -46,14 +48,13 @@ def test_meshgrid_ndim():
 
 def test_get_global_values():
     """
-    TODO: make sure the newer version of util matches this test
-
     Tests :meth:`bet.util.get_global_values`.
     """
-    for i in xrange(5):
-        yield compare_get_global_values, i
+    for provide_shape in [True, False]:
+        for i in xrange(5):
+            yield compare_get_global_values, i, provide_shape
 
-def compare_get_global_values(i):
+def compare_get_global_values(i, provide_shape):
     """
     Compares the results of get global values for a vector of shape ``(size*2,
     i)``.
@@ -75,6 +76,71 @@ def compare_get_global_values(i):
         my_array = original_array[my_index]
     else:
         my_array = original_array[my_index, :]
-    recomposed_array = util.get_global_values(my_array)
+    if provide_shape:
+        recomposed_array = util.get_global_values(my_array, original_array.shape)
+    else:
+        recomposed_array = util.get_global_values(my_array)
     nptest.assert_array_equal(original_array, recomposed_array)
+
+
+def test_fix_dimensions_vector():
+    """
+    Tests :meth:`bet.util.fix_dimensions_vector`
+    """
+    values = [1, [1], range(5), np.array(range(5))]
+    shapes = [(1,), (1,), (5,), (5,)]
+    for value, shape in zip(values, shapes):
+        vector = util.fix_dimensions_vector(value)
+        assert vector.shape == shape
+
+def test_fix_dimensions_vector_2darray():
+    """
+    Tests :meth:`bet.util.fix_dimensions_vector_2darray`
+    """
+    values = [1, [1], np.empty((1,1)), range(5), np.array(range(5)),
+            np.empty((5,1))]
+    shapes = [(1,1), (1,1), (1,1), (5,1), (5,1), (5,1)]
+    for value, shape in zip(values, shapes):
+        vector = util.fix_dimensions_vector_2darray(value)
+        assert vector.shape == shape
+
+def test_fix_dimensions_domain():
+    """
+    Tests :meth:`bet.util.fix_dimensions_domain`
+    """
+    values = [range(2), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
+            np.empty((5,2)), np.empty((2,5))]
+    shapes = [(1,2), (1,2), (1,2), (1,2), (5,2), (5,2)]
+    for value, shape in zip(values, shapes):
+        vector = util.fix_dimensions_domain(value)
+        assert vector.shape == shape
+
+def test_fix_dimensions_data_nodim():
+    """
+    Tests :meth`bet.util.fix_dimensions_domain` when `dim` is not specified
+    """
+    values = [1, [1], range(2), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
+            np.empty((5,2)), np.empty((2,5))]
+    shapes = [(1,1), (1,1), (2,1), (2,1), (2,1), (1,2), (5,2), (2,5)]
+    print len(values), len(shapes)
+    for value, shape in zip(values, shapes):
+        vector = util.fix_dimensions_data(value)
+        print vector, value
+        print vector.shape, shape
+        assert vector.shape == shape
+
+def test_fix_dimensions_data_dim():
+    """
+    Tests :meth`bet.util.fix_dimensions_domain` when `dim` is specified
+    """
+    values = [1, [1], range(2), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
+            np.empty((5,2)), np.empty((2,5)), np.empty((5,2)), np.empty((2,5))]
+    shapes = [(1,1), (1,1), (1,2), (1,2), (1,2), (1,2), (5,2), (5,2), (2,5),
+            (2,5)]
+    dims = [1, 1, 2, 2, 2, 2, 2, 2, 5, 5] 
+    for value, shape, dim in zip(values, shapes, dims):
+        vector = util.fix_dimensions_data(value, dim)
+        print vector, value
+        print vector.shape, shape, dim
+        assert vector.shape == shape
 
