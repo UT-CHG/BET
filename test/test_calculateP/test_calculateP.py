@@ -1,27 +1,32 @@
-# Lindley Graham 05/22/2014
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
 
+# Steven Mattis and Lindley Graham 04/06/2015
 """
-This module contains tests for :module:`bet.caculcateP.calculateP`.
+This module contains tests for :module:`bet.calculateP.calculateP`.
 
-    * compare using same lambda_emulated (iid and regular grid)
-    * compare using different lambda_emulated
 
 Most of these tests should make sure certain values are within a tolerance
 rather than exact due to the stocastic nature of the algorithms being tested.
 """
-
+import os
 import unittest
+import bet
 import bet.calculateP.calculateP as calcP
-import numpy sa np
+import bet.calculateP.simpleFunP as simpleFunP
+import numpy as np
 import scipy.spatial as spatial
 import numpy.testing as nptest
+import bet.util as util
+from bet.Comm import *
+
+data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
 
 class TestEmulateIIDLebesgue(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.emulate_iid_lebesgue`.
     """
     
-    def runTest(self):
+    def setUp(self):
         """
         Test dimension, number of samples, and that all the samples are within
         lambda_domain.
@@ -30,529 +35,398 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         lam_left = np.array([0.0, .25, .4])
         lam_right = np.array([1.0, 4.0, .5])
 
-        lam_domain = np.zeros((3,3))
-        lam_domain[:,0] = lam_left
-        lam_domain[:,1] = lam_right
+        self.lam_domain = np.zeros((3,3))
+        self.lam_domain[:,0] = lam_left
+        self.lam_domain[:,1] = lam_right
 
-        num_l_emulate = 1e6
+        self.num_l_emulate = 1000000
 
-        lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
-
-        # check the dimension
-        np.assert_array_equal(lambda_emulate.shape, (3, num_l_emulate))
-
-        # check that the samples are all within the correct bounds
-        np.assertGreaterEqual(0.0, np.min(lambda_emulate[0, :]))
-        np.assertGreaterEqual(.25, np.min(lambda_emulate[1, :]))
-        np.assertGreaterEqual(.4, np.min(lambda_emulate[2, :]))
-        np.assertLessEqual(1.0, np.max(lambda_emulate[0, :]))
-        np.assertLessEqual(4.0, np.max(lambda_emulate[1, :]))
-        np.assertLessEqual(.5, np.max(lambda_emulate[2, :]))
-
-# make sure probabilties and lam_vol follow the MC assumption (i.e. for uniform
-# over the entire space they should all be the same, the hyperrectangle case
-# will be different)
-
-# compare the P calculated by the different methods on the same samples 
-
-# add a skip thing to the tests involving qhull so that it only runs if that
-# package is installed
-
-# test where P is uniform over the entire domain
-# test where P is uniform over a hyperrectangle subdomain
-# test with and without optional arguments, together and separatly
-# compare using same lambda_emulated (iid and regular grid)
-# compare using different lambda_emulated
-# some will need to be within a tolerance and some will need to be exact
-# also tolerances will need to be depend on if the lambda_emulated are the same
-# and if there voronoi cells are the same, etc.
-# test on a linear model and maybe a non-linear, read from file model
-
-class TestProb(object):
-    """
-    Tests ``prob*`` methods in :mod:`bet.calculateP.calculateP` with a linear
-    model.
-    """
-    @classmethod
-    def setUpClass(cls):
-        """
-        Create inputs for ``prob*`` methods. This should run only once per
-        grouping of tests from this class. But, for isolated tests it doesn't
-        make any sense to do it this way. Since many of these tests are
-        comparision tests it should be fine to structure things in this manner
-        rather using inheritance everywhere.
-        """
-        # Create model associated inputs (samples, data, lam_domain)
-        data_domain = np.array([[0.0, 1.0], [-1.0, 1.0], [-1.0, 0.0]])
-        self.lam_domain = np.array([[.1, .2], [3, 4], [50, 60]])
-        # iid samples
-        self.u_samples = None #calcP.emulate_iid_lebesgue(lam_domain,
-                #20**lam_domain.shape[0])
-        # regular grid samples
-        lam1 = np.linspace(lam_domain[0, 0], lam_domain[0, 1], 20)
-        lam2 = np.linspace(lam_domain[1, 0], lam_domain[1, 1], 20)
-        lam3 = np.linspace(lam_domain[2, 0], lam_domain[2, 1], 20)
-        lam1, lam2, lam3 = np.meshgrid(lam1, lam2, lam3)
-        self.r_samples = np.column_stack((lam1.ravel(), lam2.ravel(), lam3.ravel()))
-    
-        # Create lambda_emulate
-        # iid
-        self.u_lambda_emulate = None #calcP.emulate_iid_lebesgue(lam_domain,
-            1e6)
-        # regular grid
-        lam1 = np.linspace(lam_domain[0, 0], lam_domain[0, 1], 100)
-        lam2 = np.linspace(lam_domain[1, 0], lam_domain[1, 1], 100)
-        lam3 = np.linspace(lam_domain[2, 0], lam_domain[2, 1], 100)
-        lam1, lam2, lam3 = np.meshgrid(lam1, lam2, lam3)
-        self.r_lambda_emulate = np.column_stack((lam1.ravel(), lam2.ravel(),
-            lam3.ravel()))
-
-    def compare_to_vol(result_vol, lambda_domain):
-        """
-        Compare lambda_vol from the algorithm to an analytic solution.
-
-        :param result_vol: lambda_vol from any of the methods in
-            :mod:`~bet.calculatevol.calculatevol`
-        :type result_vol: :class:`numpy.ndarray`
-
-        """
-        lambda_vol = np.product(lambda_domain[:,1]-lambda_domain[:,0])
-        lambda_vol = lambda_vol / float(len(result_vol))
-        nptest.assert_array_equal(result_vol,
-                np.ones(result_vol.shape)*lambda_vol)
-        
-    def compare_to_vol_ae(result_vol, lambda_domain):
-        """
-        Compare ``lambda_vol`` from the algorithm to an analytic solution.
-
-        :param result_vol: lambda_vol from any of the methods in
-            :mod:`~bet.calculatevol.calculatevol`
-        :type result_vol: :class:`numpy.ndarray`
-
-        """
-        lambda_vol = np.product(lambda_domain[:,1]-lambda_domain[:,0])
-        lambda_vol = lambda_vol / float(len(result_vol))
-        nptest.assert_array_almost_equal_nulp(result_vol,
-                np.ones(result_vol.shape)*lambda_vol)
-
-    def compare_prob_dtree(result_wtree, result_wotree):
-        """
-
-        Make sure the output from
-        :meth:`bet.calcuateP.calculateP.prob_emulated` matches with and without
-        option arguments.
-
-        """
-        # calculate with d_tree
-        (P, lem, io_ptr, emulate_ptr) = result_wtree
-        # calculate without d_tree
-        (Pt, lemt, io_ptrt, emulate_ptrt) = result_wotree
-        # Compare results
-        nptest.assert_array_equal(P,Pt)
-        nptest.assert_array_equal(lem, lemt)
-        nptest.assert_array_equal(lem, self.r_lambda_emulate)
-        nptest.assert_array_equal(io_ptrt, ioptr)
-        nptest.assert_array_equal(emulate_ptr, emulate_ptrt)
-
-    def compare_prob_emulate(result_wsamples, result_wosamples):
-        """
-
-        Make sure the output from
-        :meth:`bet.calcuateP.calculateP.prob_emulated` matches with and without
-        ``lambda_emulate`` when ``lambda_emulate == samples``.
-
-        """
-        # calculate with samples
-        (P, lem, io_ptr, emulate_ptr) = result_wsamples
-        # calculate without samples
-        (Pt, lemt, io_ptrt, emulate_ptrt) = result_wosamples
-        # Compare results
-        nptest.assert_array_equal(P,Pt)
-        nptest.assert_array_equal(lem, lemt)
-        nptest.assert_array_equal(lem, self.r_lambda_emulate)
-        nptest.assert_array_equal(io_ptrt,ioptr)
-        nptest.assert_array_equal(emulate_ptr, emulate_ptrt)
-
-    def compare_prob(result_emulated, result_prob, result_mc):
-        """
-
-        Make sure that the output from 
-        :meth:`~bet.calculateP.calculateP.prob_emulated`,
-        :meth:`~bet.calculateP.calculateP.prob`,
-        :meth:`~bet.calculateP.calculateP.prob_mc` matches when ``lambda_emulate == samples``.
-
-        .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-
-        """
-        # Calculate prob 
-        (P, lem, io_ptr, emulate_ptr) = result_emulated
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = result_prob
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = result_mc
-
-        # Compare results
-        nptest.assert_array_equal(P,P1)
-        nptest.assert_array_equal(P,P3)
-        nptest.assert_array_equal(P1,P3)
-
-        nptest.assert_array_equal(lam_vol1,lam_vol3)
-
-        nptest.assert_array_equal(lem,lem1)
-        nptest.assert_array_equal(lem,lem3)
-        nptest.assert_array_equal(lem1,lem3)
-
-        nptest.assert_array_equal(io_ptr,io_ptr1)
-        nptest.assert_array_equal(io_ptr,io_ptr3)
-        nptest.assert_array_equal(io_ptr1,io_ptr3)
-       
-        nptest.assert_array_equal(emulate_ptr,emulate_ptr1)
-        nptest.assert_array_equal(emulate_ptr,emulate_ptr3)
-        nptest.assert_array_equal(emulate_ptr1,emulate_ptr3)
-
-    def compare_volume_rg(result_prob, result_mc):
-        """
-
-        Make sure that the voronoi cell volumes from 
-        :meth:`~bet.calculateP.calculateP.prob`,
-        :meth:`~bet.calculateP.calculateP.prob_mc` matches when the samples are
-        all on a regular grid and ``lambda_emulate == samples``.
-
-        .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-
-        """
-        # Calculate prob 
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = result_prob
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = result_mc
-
-        nptest.assert_array_equal(lam_vol1,lam_vol3)
-        self.compare_to_mean(lam_vol1)
-        self.compare_to_vol_linear(lam_vol1)
-
-    def compare_volume_ae(result_prob, result_mc):
-        """
-
-        Make sure that the voronoi cell volumes from 
-        :meth:`~bet.calculateP.calculateP.prob`,
-        :meth:`~bet.calculateP.calculateP.prob_mc` matches when the samples are
-        i.i.d and ``lambda_emulate == samples``.
-
-        .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-
-        """
-        # Calculate prob 
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = result_prob
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = result_mc
-
-        nptest.assert_array_equal(lam_vol1, lam_vol3)
-        self.compare_to_mean_ae(lam_vol1)
-        self.compare_to_vol_linear_ae(lam_vol1)
-
-    def compare_lambda_emulate(result_prob, result_rg, result_iid):
-        """
-        Compare results when lambda_emulate != samples
-            
-            * lambda_emulate is i.i.d. or on a regular grid
-       
-       .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-       
-        """
-        # Calculate prob (has no lambda_emulate)
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = result_prob
-        # Calculate prob_mc (has lambda_emulate), regular grid
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = result_rg
-        # Calculate prob_mc (has lambda_emulate), iid samples
-        (P4, lam_vol4, lem4, io_ptr4, emulate_ptr4) = result_iid
-
-        # Compare results
-        nptest.assert_array_almost_equal_nulp(P1,P3)
-        nptest.assert_array_almost_equal_nulp(lam_vol1, lam_vol3)
-        
-        nptest.assert_array_almost_equal_nulp(P4,P3)
-        nptest.assert_array_almost_equal_nulp(lam_vol4, lam_vol3)
-        
-        nptest.assert_array_almost_equal_nulp(P1,P4)
-        nptest.assert_array_almost_equal_nulp(lam_vol1, lam_vol4)
-
-    def generate_results(self):
-        """
-        Generate the mix of results from
-        :meth:~`bet.calculateP.calculateP.prob_emulated`,
-        :meth:~`bet.calculateP.calculateP.prob`, and
-        :meth:~`bet.calculateP.calculateP.prob_mc` to be used in test
-        subclasses
-        """
-
-        # RESULTS WHERE SAMPLES = LAMBDA_EMULATE
-        # samples are on a regular grid
-        # result_wtree, result_wsamples, result_emulated_rg
-        self.result_emulated_rg = calcP.prob_emulated(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.r_samples, self.d_Tree)
-        self.result_wtree = result_emulated_rg
-        self.result_wsamples = result_emulated_rg
-        self.result_wotree = calcP.prob_emulated(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.r_samples)
-        self.result_wosamples = calcP.prob_emulated(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain)
-
-        self.result_prob_rg = calcP.prob(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.d_Tree)
-        self.result_mc_rg = calcP.prob_mc(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.r_samples, self.d_Tree)
-
-        # samples are iid
-        self.result_emulated_iid = calcP.prob_emulated(self.u_samples, self.u_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.u_samples, self.d_Tree)
-        self.result_prob_iid = calcP.prob(self.u_samples, self.u_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.d_Tree)
-        self.result_mc_iid = calcP.prob_mc(self.u_samples, self.u_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.u_samples, self.d_Tree)
-
-        # RESULTS WHERE SAMPLES != LAMBDA_EMULATE
-        # result_emu_samples_emulatedsamples
-        self.result_emu_rg_rg = calcP.prob_mc(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.r_lambda_emulate, self.d_Tree)
-        self.result_emu_rg_iid = calcP.prob_mc(self.r_samples, self.r_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.u_lambda_emulate, self.d_Tree)
-        self.result_emu_iid_rg = calcP.prob_mc(self.u_samples, self.u_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.r_lambda_emulate, self.d_Tree)
-        self.result_emu_iid_iid = calcP.prob_mc(self.u_samples, self.u_data,
-                self.rho_D_M, self.d_distr_samples, self.lam_domain,
-                self.u_lambda_emulate, self.d_Tree)
-
-
-class LinearModel(CompareProb):
-    """
-    Tests ``prob*`` methods in :mod:`bet.calculateP.calculateP` with a linear
-    model.
-    """
-    @classmethod
-    def setUpClass(cls):
-        """
-        Create inputs for ``prob*`` methods. This should run only once per
-        grouping of tests from this class. But, for isolated tests it doesn't
-        make any sense to do it this way. Since many of these tests are
-        comparision tests it should be fine to structure things in this manner
-        rather using inheritance everywhere.
-        """
-        # This might not be the right invocation.
-        super(TestLinearModel, self).setUpClass(TestLinearModel)
-        # linear model
-        self.rl_data = np.dot(r_samples, data_domain)
-        self.ul_data = np.dot(u_samples, data_domain)
-
-class NonLinearModel(CompareProb):
-    """
-    Tests ``prob*`` methods in :mod:`bet.calculateP.calculateP` with a linear
-    model.
-    """
-    @classmethod
-    def setUpClass(cls):
-        """
-        Create inputs for ``prob*`` methods. This should run only once per
-        grouping of tests from this class. But, for isolated tests it doesn't
-        make any sense to do it this way. Since many of these tests are
-        comparision tests it should be fine to structure things in this manner
-        rather using inheritance everywhere.
-        """
-        # This might not be the right invocation.
-        super(NonLinearModel, self).setUpClass(NonLinearModel)
-        # non-linear model
-        def nonlinear_model(l_data):
-            n_data = l_data
-            n_data[:,0] = l_data[:,0] + l_data[:,2]
-            n_data[:,1] = np.square(l_data[:,1])
-            n_data[:,2] = l_data[:,0] - n_data[:,1]
-            return n_data
-        self.rn_data = nonlinear_model(rl_data)
-        self.un_data = nonlinear_model(ul_data)
-
-class TestProbUnifLinear(LinearModel, unittest.TestCase):
-    """
-    Tests ``prob*`` methods in :mod:`bet.calculateP.calculateP`.
-    """
-    @classmethod
-    def setUpClass(cls):
-        """
-        Create inputs for ``prob*`` methods. This should run only once per
-        grouping of tests from this class. But, for isolated tests it doesn't
-        make any sense to do it this way. Since many of these tests are
-        comparision tests it should be fine to structure things in this manner
-        rather using inheritance everywhere.
-        """
-        # This might not be the right invocation.
-        super(TestProbUnifLinear, self).setUpClass(TestProbUnifLinear)
-    
-        # Create rho_D_M associated inputs (rho_D_M, d_distr_samples, d_tree)
-        # UNIFORM
-        self.d_distr_dsamples = np.mean(self.data_domain, 1)
-        self.rho_D_M = 1
-        self.d_Tree = spatial.KDTree(self.d_distr_samples)
-
-        # Generate results
-        super(TestProbUnifLinear, self).generate_results(self)
-
-    def compare_to_unif_linear(result_P):
-        """
-        Compare P from the algorithm to an analytic solution where $P_\mathcal{D}$ is uniform
-        over $\mathbf{D}$ (linear model only).
-
-        :param result_P: P from any of the methods in
-            :mod:`~bet.calculateP.calculateP`
-        :type result_P: :class:`numpy.ndarray`
-
-        """
-        nptest.assert_array_equal(result_P,
-                np.ones(result_P.shape)/float(len(result_P)))
-        
-    def compare_to_unif_linear_ae(result_P):
-        """
-        Compare P from the algorithm to an analytic solution where $P_\mathcal{D}$ is uniform
-        over $\mathbf{D}$ (linear model only).
-
-        :param result_P: P from any of the methods in
-            :mod:`~bet.calculateP.calculateP`
-        :type result_P: :class:`numpy.ndarray`
-
-        """
-        nptest.assert_array_almost_equal_nulp(result_P,
-                np.ones(result_P.shape)/float(len(result_P)))
-
-    def test_prob_dtree(self):
-        """
-
-        Make sure the output from
-        :meth:`bet.calcuateP.calculateP.prob_emulated` matches with and without
-        option arguments.
-
-        """  
-        compare_prob_dtree(self.result_wtree, self.result_wotree)
-
-    def test_prob_emulate(self):
-        """
-
-        Make sure the output from
-        :meth:`bet.calcuateP.calculateP.prob_emulated` matches with and without
-        ``lambda_emulate`` when ``lambda_emulate == samples``.
-
-        """
-        compare_prob_emulate(self.result_wsamples, self.result_wosamples)
-
-    def test_prob_rg(self):
-        """
-
-        Make sure that the output from 
-        :meth:`~bet.calculateP.calculateP.prob_emulated`,
-        :meth:`~bet.calculateP.calculateP.prob`,
-        :meth:`~bet.calculateP.calculateP.prob_mc` matches when the samples are
-        all on a regular grid when ``lambda_emulate == samples``.
-
-        .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-
-        """
-        compare_prob(self.result_emulated_rg, self.result_prob_rg,self.result_mc_rg)
-        compare_volume_rg(self.results_prob_rg, self.result_mc_rg)
-
-    def test_prob_iid(self):
-        """
-
-        Make sure that the output from 
-        :meth:`~bet.calculateP.calculateP.prob_emulated`,
-        :meth:`~bet.calculateP.calculateP.prob`,
-        :meth:`~bet.calculateP.calculateP.prob_mc` matches when the samples are
-        i.i.d. with respect to the Lebesgue measure when ``lambda_emulate == samples``.
-
-        .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-
-        """
-        compare_prob(self.result_emulated_iid, self.result_prob_iid,
-                self.result_mc_iid)
-        compare_volume_ae(self.results_prob_iid, self.result_mc_iid)
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain, self.num_l_emulate)
  
-    def test_l_emulate_rg(self):
+    def test_dimension(self):
         """
-        Compare results when lambda_emulate != samples
-            
-            * samples are on a regular grid
-            * lambda_emulate is i.i.d. or on a regular grid
-       
-       .. note::
-            This method also needs to include
-            :meth:`~bet.calculateP.calculateP.prob_qhull` if and only if the
-            user has the Python `pyhull <http://pythonhosted.org/pyhull>`_
-            package installed.
-       
+        Check the dimension.
         """
-        compare_lambda_emulate(self.result_prob_rg, self.result_emu_rg_rg,
-                self.result_emu_rg_iid)
-        compare_volume_ae(
-        compare_volume_ae(
-        compare_volume_ae(
+        nptest.assert_array_equal(self.lambda_emulate.shape, (int(self.num_l_emulate/size)+1,3))
 
-        # Calculate prob (has no lambda_emulate)
-        (P1, lam_vol1, lem1, io_ptr1, emulate_ptr1) = calc.prob(self.u_samples,
-                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.ud_tree)
+    def test_bounds(self):
+        """
+        Check that the samples are all within the correct bounds
+        """
+        self.assertGreaterEqual(np.min(self.lambda_emulate[:, 0]),0.0)
+        self.assertGreaterEqual(np.min(self.lambda_emulate[:,1]), 0.25)
+        self.assertGreaterEqual(np.min(self.lambda_emulate[:, 2]), 0.4)
+        self.assertLessEqual(np.max(self.lambda_emulate[:, 0]),1.0)
+        self.assertLessEqual(np.max(self.lambda_emulate[:,1]), 4.0)
+        self.assertLessEqual(np.max(self.lambda_emulate[:,2]), 0.5)
 
-        # Calculate prob_mc (has lambda_emulate)
-        (P3, lam_vol3, lem3, io_ptr3, emulate_ptr3) = calc.prob_mc(self.u_samples,
-                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.u_lambda_emulate, self.ud_tree)
+class prob:
+    def test_prob_sum_to_1(self):
+        """
+        Test to see if the prob. sums to 1.
+        """
+        nptest.assert_almost_equal(np.sum(self.P),1.0)
+    #@unittest.skipIf(size > 1, 'Only run in serial')
+    def test_P_matches_true(self):
+        """
+        Test against reference probs. (Only in serial)
+        """
+        nptest.assert_almost_equal(self.P_ref,self.P)
+    def test_vol_sum_to_1(self):
+        """
+        Test that volume ratios sum to 1.
+        """
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+    def test_prob_pos(self):
+        """
+        Test that all probs are non-negative.
+        """
+        self.assertEqual(np.sum(np.less(self.P,0)),0)
 
-        # Compare to mean
-        self.compare_to_mean_ae(P3)
-        self.compare_to_mean_ae(lam_vol3)
+class prob_emulated:
+    def test_P_sum_to_1(self):
+        """
+        Test that prob. sums to 1.
+        """
+        nptest.assert_almost_equal(np.sum(self.P_emulate),1.0)
+    def test_P_matches_true(self):
+        """
+        Test that probabilites match reference values.
+        """
+        if size == 1:
+            nptest.assert_almost_equal(self.P_emulate_ref,self.P_emulate)
+    def test_prob_pos(self):
+        """
+        Test that all probabilites are non-negative.
+        """
+        self.assertEqual(np.sum(np.less(self.P_emulate,0)),0)
 
-        (P4, lam_vol4, lem4, io_ptr4, emulate_ptr4) = calc.prob_mc(self.u_samples,
-                self.ul_data, self.u_rho, self.u_dsamples, self.lam_domain,
-                self.u_lambda_emulate, self.ud_tree)
-
-        # Compare to mean
-        self.compare_to_mean_ae(P4)
-        self.compare_to_mean_ae(lam_vol4)
-
-        # Compare results
-        nptest.assert_array_almost_equal_nulp(P1,P3)
-        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol3)
+class prob_mc:
+    def test_P_sum_to_1(self):
+        """
+        Test that probs sum to 1.
+        """
+        nptest.assert_almost_equal(np.sum(self.P),1.0)
+    def test_P_matches_true(self):
+        """
+        Test the probs. match reference values.
+        """
+        if size==1:
+            nptest.assert_almost_equal(self.P_ref,self.P)
+    def test_vol_sum_to_1(self):
+        """
+        Test that volume ratios sum to 1.
+        """
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+    def test_prob_pos(self):
+        """
+        Test that all probs are non-negative.
+        """
+        self.assertEqual(np.sum(np.less(self.P,0)),0)
         
-        nptest.assert_array_almost_equal_nulp(P4,P3)
-        nptest.assert_array_almost_equal_nulp(lam_vol4,lam_vol3)
-        
-        nptest.assert_array_almost_equal_nulp(P1,P4)
-        nptest.assert_array_almost_equal_nulp(lam_vol1,lam_vol4
-                )
+    
 
-    def test_compare_to_analytic_solution(self):
+class TestProbMethod_3to2(unittest.TestCase):
+    """
+    Sets up 3 to 2 map problem.
+    """
+    def setUp(self):
+        self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
+        self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")
+        Q_ref =  np.array([0.422, 0.9385])
+        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+        self.lam_domain= np.array([[0.0, 1.0],
+                                   [0.0, 1.0],
+                                   [0.0, 1.0]])
+        import numpy.random as rnd
+        rnd.seed(1)
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
+                                                  num_l_emulate = 1000)
+
+
+    
+class Test_prob_3to2(TestProbMethod_3to2,prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on 3 to 2 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_3to2, self).setUp()
+        (self.P, self.lam_vol , _  ) = calcP.prob(samples=self.samples,
+                                                  data=self.data,
+                                                  rho_D_M = self.d_distr_prob,
+                                                  d_distr_samples = self.d_distr_samples,
+                                                  d_Tree = self.d_Tree)
+        self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
+
+
+
+class Test_prob_emulated_3to2(TestProbMethod_3to2, prob_emulated):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 2 map.
+    """
+    def setUp(self):
+        """
+        Set up 3 to 2 map.
+        """
+        super(Test_prob_emulated_3to2, self).setUp()
+        (self.P_emulate, self.lambda_emulate, _ , _) = calcP.prob_emulated(samples=self.samples,
+                                                              data=self.data,
+                                                              rho_D_M = self.d_distr_prob,
+                                                              d_distr_samples = self.d_distr_samples,
+                                                              lambda_emulate = self.lambda_emulate,
+                                                              d_Tree = self.d_Tree)
+        self.P_emulate_ref=np.loadtxt(data_path + "/3to2_prob_emulated.txt.gz")
+        self.P_emulate = util.get_global_values(self.P_emulate)
+
+
+
+class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 2 map.
+    """
+    def setUp(self):
+        """
+        Set up 3 to 2 problem.
+        """
+        super(Test_prob_mc_3to2, self).setUp()
+        (self.P, self.lam_vol , _ , _, _) = calcP.prob_mc(samples=self.samples,
+                                                           data=self.data,
+                                                           rho_D_M = self.d_distr_prob,
+                                                           d_distr_samples = self.d_distr_samples,
+                                                           lambda_emulate = self.lambda_emulate,
+                                                           d_Tree = self.d_Tree)
+        self.P_ref = np.loadtxt(data_path + "/3to2_prob_mc.txt.gz")
+
+ 
+
+class TestProbMethod_3to1(unittest.TestCase):
+    """
+    Set up 3 to 1 map problem.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
+        self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")[:,0]
+        Q_ref =  np.array([0.422])
+        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+        self.lam_domain= np.array([[0.0, 1.0],
+                                   [0.0, 1.0],
+                                   [0.0, 1.0]])
+        import numpy.random as rnd
+        rnd.seed(1)
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
+                                                  num_l_emulate = 1000)
+class Test_prob_3to1(TestProbMethod_3to1, prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on a 3 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_3to1, self).setUp()
+        (self.P, self.lam_vol, _ ) = calcP.prob(samples=self.samples,
+                                                     data=self.data,
+                                                     rho_D_M = self.d_distr_prob,
+                                                     d_distr_samples = self.d_distr_samples,
+                                                     d_Tree = self.d_Tree)
+        self.P_ref = np.loadtxt(data_path + "/3to1_prob.txt.gz")
+
+
+class Test_prob_emulated_3to1(TestProbMethod_3to1, prob_emulated):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_emulated_3to1, self).setUp()
+        (self.P_emulate, self.lambda_emulate, _ , _) = calcP.prob_emulated(samples=self.samples,
+                                                              data=self.data,
+                                                              rho_D_M = self.d_distr_prob,
+                                                              d_distr_samples = self.d_distr_samples,
+                                                              lambda_emulate = self.lambda_emulate,
+                                                              d_Tree = self.d_Tree)
+        self.P_emulate_ref=np.loadtxt(data_path + "/3to1_prob_emulated.txt.gz")
+        self.P_emulate = util.get_global_values(self.P_emulate)
+
+
+
+class Test_prob_mc_3to1(TestProbMethod_3to1, prob_mc):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_mc_3to1, self).setUp()
+        (self.P, self.lam_vol , _ , _, _) = calcP.prob_mc(samples=self.samples,
+                                                           data=self.data,
+                                                           rho_D_M = self.d_distr_prob,
+                                                           d_distr_samples = self.d_distr_samples,
+                                                           lambda_emulate = self.lambda_emulate,
+                                                           d_Tree = self.d_Tree)
+        self.P_ref = np.loadtxt(data_path + "/3to1_prob_mc.txt.gz")
+
+  
+class TestProbMethod_10to4(unittest.TestCase):
+    """
+    Sets up 10 to 4 map problem.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        import numpy.random as rnd
+        rnd.seed(1)
+        self.lam_domain=np.zeros((10,2))
+        self.lam_domain[:,0]=0.0
+        self.lam_domain[:,1]=1.0
+        self.num_l_emulate = 1000
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain, self.num_l_emulate)
+        self.samples =  calcP.emulate_iid_lebesgue(self.lam_domain, 100)
+        self.data = np.dot(self.samples,rnd.rand(10,4))
+        Q_ref =  np.mean(self.data, axis=0)
+        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+
+    @unittest.skip("No reference data")
+    def test_P_matches_true(self):
         pass
+
+class Test_prob_10to4(TestProbMethod_10to4, prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on a 10 to 4 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_10to4, self).setUp()
+        (self.P, self.lam_vol , _ ) = calcP.prob(samples=self.samples,
+                                                     data=self.data,
+                                                     rho_D_M = self.d_distr_prob,
+                                                     d_distr_samples = self.d_distr_samples,
+                                                     d_Tree = self.d_Tree)
+
+    
+
+class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 10 to 4 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_emulated_10to4, self).setUp()
+
+        (self.P_emulate, self.lambda_emulate, _ , _) = calcP.prob_emulated(samples=self.samples,
+                                                              data=self.data,
+                                                              rho_D_M = self.d_distr_prob,
+                                                              d_distr_samples = self.d_distr_samples,
+                                                              lambda_emulate = self.lambda_emulate,
+                                                              d_Tree = self.d_Tree)
+        self.P_emulate = util.get_global_values(self.P_emulate)
+
+
+
+
+class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 10 to 4 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_mc_10to4, self).setUp()
+        (self.P, self.lam_vol , _ , _, _) = calcP.prob_mc(samples=self.samples,
+                                                           data=self.data,
+                                                           rho_D_M = self.d_distr_prob,
+                                                           d_distr_samples = self.d_distr_samples,
+                                                           lambda_emulate = self.lambda_emulate,
+                                                           d_Tree = self.d_Tree)
+
+
+class TestProbMethod_1to1(unittest.TestCase):
+    """
+    Sets up 1 to 1 map problem. Uses vectors instead of 2D arrays.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        import numpy.random as rnd
+        rnd.seed(1)
+        self.lam_domain=np.zeros((1,2))
+        self.lam_domain[0,0]=0.0
+        self.lam_domain[0,1]=1.0
+        self.num_l_emulate = 1000
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain, self.num_l_emulate)
+        self.samples =  rnd.rand(100,)
+        self.data = 2.0*self.samples
+        Q_ref =  np.mean(self.data, axis=0)
+        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.uniform_hyperrectangle(data=self.data,Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+    @unittest.skip("No reference data")
+    def test_P_matches_true(self):
+        pass
+
+class Test_prob_1to1(TestProbMethod_1to1, prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on a 1 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_1to1, self).setUp()
+        (self.P, self.lam_vol, _ ) = calcP.prob(samples=self.samples,
+                                                     data=self.data,
+                                                     rho_D_M = self.d_distr_prob,
+                                                     d_distr_samples = self.d_distr_samples,
+                                                     d_Tree = self.d_Tree)
+
+
+class Test_prob_emulated_1to1(TestProbMethod_1to1, prob_emulated):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 1 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_emulated_1to1, self).setUp()
+
+        (self.P_emulate, self.lambda_emulate, _ , _) = calcP.prob_emulated(samples=self.samples,
+                                                              data=self.data,
+                                                              rho_D_M = self.d_distr_prob,
+                                                              d_distr_samples = self.d_distr_samples,
+                                                              lambda_emulate = self.lambda_emulate,
+                                                              d_Tree = self.d_Tree)
+        self.P_emulate = util.get_global_values(self.P_emulate)
+
+
+class Test_prob_mc_1to1(TestProbMethod_1to1, prob_mc):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 1 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_mc_1to1, self).setUp()
+        (self.P, self.lam_vol , _ , _, _) = calcP.prob_mc(samples=self.samples,
+                                                           data=self.data,
+                                                           rho_D_M = self.d_distr_prob,
+                                                           d_distr_samples = self.d_distr_samples,
+                                                           lambda_emulate = self.lambda_emulate,
+                                                           d_Tree = self.d_Tree)
+
+

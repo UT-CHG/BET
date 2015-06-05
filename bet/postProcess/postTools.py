@@ -1,18 +1,18 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
-This module provides methods for plotting probabilities. 
+This module provides methods for postprocessing probabilities and data. 
 """
-from bet.Comm import *
+from bet.Comm import rank
 import numpy as np
-import copy
-import math
 import scipy.io as sio
 
 
 def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     """
-    This sorts the samples by probability density. It returns the sorted values.
-    If the samples are iid, no volume data is needed. It is optional to sort the QoI 
-    data, but be sure to do so if using it later.
+    This sorts the samples by probability density. It returns the sorted
+    values.  If the samples are iid, no volume data is needed. It is optional
+    to sort the QoI data, but be sure to do so if using it later.
 
     :param P_samples: Probabilities.
     :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
@@ -26,26 +26,33 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     :returns: (P_samples, samples, lam_vol, data)
 
     """
-    nnz = np.sum(P_samples>0)
-    if lam_vol == None:
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
+    nnz = np.sum(P_samples > 0)
+    if type(lam_vol) == type(None):
         indices = np.argsort(P_samples)[::-1][0:nnz]
     else:
         indices = np.argsort(P_samples/lam_vol)[::-1][0:nnz]
     P_samples = P_samples[indices]
-    samples = samples[indices,:]
-    if lam_vol != None:
+    samples = samples[indices, :]
+    if type(lam_vol) != type(None):
         lam_vol = lam_vol[indices]
-    if data != None:
-        data = data[indices]
+    if type(data) != (None):
+        if len(data.shape) == 1:
+            data = np.expand_dims(data, axis=1)
+        data = data[indices, :]
 
     return (P_samples, samples, lam_vol, data)
 
-def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=None, sort=True):
+def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
+        data=None, sort=True): 
     """
-    This calculates the highest probability samples whose probability sum to a given value. 
-    The number of high probability samples that sum to the value and the probabilities, 
-    samples, volumes, and data are returned. This assumes that ``P_samples``, ``samples``, 
-    ``lam_vol``, and ``data`` have all be sorted using :meth:`~bet.postProcess.sort_by_rho`.
+    This calculates the highest probability samples whose probability sum to a
+    given value.  The number of high probability samples that sum to the value
+    and the probabilities, samples, volumes, and data are returned. This
+    assumes that ``P_samples``,
+    ``samples``, ``lam_vol``, and ``data`` have all be sorted using
+    :meth:`~bet.postProcess.sort_by_rho`.
 
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
@@ -61,29 +68,30 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None, data=N
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
-
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1)
     if sort:
-        (P_samples, samples, lam_vol, data) = sort_by_rho(P_samples, samples, lam_vol, data)
+        (P_samples, samples, lam_vol, data) = sort_by_rho(P_samples, samples,
+                lam_vol, data)
 
     P_sum = np.cumsum(P_samples)
     num_samples = np.sum(P_sum <= top_percentile)
     P_samples = P_samples[0:num_samples]
-    samples = samples[0:num_samples,:]
-    if lam_vol != None:
+    samples = samples[0:num_samples, :]
+    if type(lam_vol) != type(None):
         lam_vol = lam_vol[0:num_samples]
-    if data != None:
-        data = data[0:num_samples,:]
+    if type(data) != type(None):
+        if len(data.shape) == 1:
+            data = np.expand_dims(data, axis=1)
+        data = data[0:num_samples, :]
         
     return  (num_samples, P_samples, samples, lam_vol, data)
     
-
-def save_parallel_probs_csv(P_samples,
-                            samples,
-                            P_file,
-                            lam_file,
-                            compress=False):
+def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
+        compress=False):
     """
-    Saves probabilites and samples from parallel runs in individual .csv files for each process.
+    Saves probabilites and samples from parallel runs in individual .csv files
+    for each process.
 
     :param P_samples: Probabilities.
     :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
@@ -102,16 +110,14 @@ def save_parallel_probs_csv(P_samples,
     else:
         suffix = '.csv'
 
-    np.savetxt(P_file + `rank` + suffix ,P_samples, delimiter = ',')
-    np.savetxt(lam_file + `rank` + suffix ,samples, delimiter = ',')
+    np.savetxt(P_file + str(rank) + suffix, P_samples, delimiter=',')
+    np.savetxt(lam_file + str(rank) + suffix, samples, delimiter=',')
 
-def collect_parallel_probs_csv(P_file,
-                               lam_file,
-                               num_files,
-                               save = False,
-                               compress=False):
+def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
+        compress=False):
     """
-    Collects probabilities and samples saved in .csv format from parallel runs into single arrays.
+    Collects probabilities and samples saved in .csv format from parallel runs
+    into single arrays.
 
     :param P_file: file prefix for probabilities
     :type P_file: str
@@ -133,9 +139,9 @@ def collect_parallel_probs_csv(P_file,
 
     P = np.loadtxt(P_file + '0' + suffix)
     lam = np.loadtxt(lam_file + '0' + suffix)
-    for i in range(1,num_files):
-        P = np.vstack((P, np.loadtxt(P_file + `i` + suffix)))
-        lam = np.vstack((lam,np.loadtxt(lam_file + `i` + suffix)))
+    for i in range(1, num_files):
+        P = np.vstack((P, np.loadtxt(P_file + str(i) + suffix)))
+        lam = np.vstack((lam, np.loadtxt(lam_file + str(i) + suffix)))
 
     if save:
         np.savetxt(P_file + 'all' + suffix, P)
@@ -143,12 +149,10 @@ def collect_parallel_probs_csv(P_file,
 
     return (P, lam)
 
-def save_parallel_probs_mat(P_samples,
-                            samples,
-                            file_prefix,
-                            compress=False):
+def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     """
-    Saves probabilites and samples from parallel runs in individual .mat files for each process.
+    Saves probabilites and samples from parallel runs in individual .mat files
+    for each process.
 
     :param P_samples: Probabilities.
     :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
@@ -158,16 +162,15 @@ def save_parallel_probs_mat(P_samples,
     :type file_prefix: str
     :returns: None
     """
-    file_dict={"P_samples": P_samples,
+    file_dict = {"P_samples": P_samples,
                "samples": samples}
-    sio.savemat(file_prefix + `rank` , file_dict, do_compression=compress)
+    sio.savemat(file_prefix + str(rank), file_dict, do_compression=compress)
 
-def collect_parallel_probs_mat(file_prefix,
-                               num_files,
-                               save = False,
-                               compress = False):
+def collect_parallel_probs_mat(file_prefix, num_files, save=False,
+       compress=False):
     """
-    Collects probabilities and samples saved in .mat format from parallel runs into single arrays.
+    Collects probabilities and samples saved in .mat format from parallel runs
+    into single arrays.
 
     :param file_prefix: file prefix 
     :type file_prefix: str
@@ -183,10 +186,10 @@ def collect_parallel_probs_mat(file_prefix,
     file_dict = sio.io.loadmat(file_prefix + "0")
     P = file_dict["P_samples"]
     lam = file_dict["samples"]
-    for i in range(1,num_files):
-        file_dict = sio.io.loadmat(file_prefix + `i`)
+    for i in range(1, num_files):
+        file_dict = sio.io.loadmat(file_prefix + str(i))
         P = np.vstack((P, file_dict["P_samples"]))
-        lam = np.vstack((lam,file_dict["samples"]))
+        lam = np.vstack((lam, file_dict["samples"]))
 
     if save:
         file_dict = {"P_samples": P,
@@ -194,3 +197,79 @@ def collect_parallel_probs_mat(file_prefix,
         sio.savemat(file_prefix + "all", file_dict, do_compression=compress)
 
     return (P, lam)
+
+def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
+    """
+
+    Compare the quality of samples where ``sample_quality`` is the measure of
+    quality by which the sets of samples have been indexed and ``sort_ind`` is
+    an array of the sorted indicies.
+
+    :param list() sort_ind: indicies that index ``sample_quality`` in sorted
+        order
+    :param list() sample_quality: a measure of quality by which the sets of 
+        samples are sorted
+    :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
+        information used to generate the sets of samples to be displayed
+    :param list() column_headings: Column headings to print to screen
+
+    """
+    if column_headings == None:
+        column_headings = "Run parameters"
+    print "Sample Set No., Quality, "+ str(column_headings)
+    for i in reversed(sort_ind):
+        print i, sample_quality[i], np.round(run_param[i], 3)
+
+def in_high_prob(data, rho_D, maximum, sample_nos=None):
+    """
+
+    Estimates the number of samples in high probability regions of D.
+
+    :param data: Data associated with ``samples``
+    :type data: :class:`np.ndarray`
+    :param rho_D: probability density on D
+    :type rho_D: callable function that takes a :class:`np.array` and returns a
+        :class:`np.ndarray`
+    :param float maximum: maximum (or average) value of ``rho_D``
+    :param list sample_nos: sample numbers to plot
+
+    :rtype: int
+    :returns: Estimate of number of samples in the high probability area.
+
+    """
+    if type(sample_nos) == type(None):
+        sample_nos = range(data.shape[0])
+    if len(data.shape) == 1:
+        rD = rho_D(data[sample_nos])
+    else:
+        rD = rho_D(data[sample_nos, :])
+    adjusted_total_prob = int(sum(rD)/maximum)
+    print "Samples in box "+str(adjusted_total_prob)
+    return adjusted_total_prob
+
+def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
+    """
+
+    Estimates the number of samples in high probability regions of D for a list
+    of results.
+
+    :param list results_list: list of (results, data) tuples
+    :param rho_D: probability density on D
+    :type rho_D: callable function that takes a :class:`np.array` and returns a
+        :class:`np.ndarray`
+    :param float maximum: maximum (or average) value of ``rho_D``
+    :param list sample_nos_list: list of sample numbers to plot (list of lists)
+
+    :rtype: list of int
+    :returns: Estimate of number of samples in the high probability area.
+
+    """
+    adjusted_total_prob = list()
+    if sample_nos_list:
+        for result, sample_nos in zip(results_list, sample_nos_list):
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
+                sample_nos))
+    else:
+        for result in results_list:
+            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
+    return adjusted_total_prob
