@@ -4,7 +4,7 @@
 
 # import necessary modules
 import numpy as np
-import polyadcirc.pyADCIRC.basic as basic
+import basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
 import bet.postProcess.postTools as ptools
