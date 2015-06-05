@@ -266,18 +266,16 @@ class sampler(asam.sampler):
         MYdata = np.copy(data)
         MYall_step_ratios = np.copy(all_step_ratios)
         # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-        samples = np.empty((self.num_samples, np.shape(MYsamples)[1]),
-                dtype=np.float64)
+        samples = util.get_global_values(MYsamples,
+                shape=(self.num_samples, np.shape(MYsamples)[1]))           
         # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-        data = np.empty((self.num_samples, np.shape(MYdata)[1]),
-                dtype=np.float64) 
-        all_step_ratios = np.empty((self.num_chains,
-                    self.chain_length), dtype=np.float64)
-        # now allgather
-        comm.Allgather([MYsamples, MPI.DOUBLE], [samples, MPI.DOUBLE])
-        comm.Allgather([MYdata, MPI.DOUBLE], [data, MPI.DOUBLE])
-        comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios,
-            MPI.DOUBLE])
+        data = util.get_global_values(MYdata, shape=(self.num_samples,
+            np.shape(MYdata)[1]))
+        # ``all_step_ratios`` is np.ndarray of shape (num_chains,
+        # chain_length)
+        all_step_ratios = util.get_global_values(MYall_step_ratios,
+                shape=(self.num_samples,))
+        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
@@ -311,7 +309,7 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 rbf_data)
         def surrogate(input):
-            return float(rbfi(input[0], input[1]))
+            return float(rbfi(input[:,0], input[:,1]))
     elif dim == 3:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
                 samples_rbf[:, 2], rbf_data) 
