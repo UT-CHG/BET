@@ -47,15 +47,14 @@ If random_sample = True, consider defining
         
 Then also try n_samples = 1E4. What happens when n_samples = 1E2?
 '''
-random_sample = True
-# number of uniform samples in each direction
+random_sample = False
+
 if random_sample == False:
-  n0 = 50
-  n1 = 50
-  n_samples = n0*n1
+  n0 = 50 # number of samples in lam0 direction
+  n1 = 50 # number of samples in lam1 direction
+  n_samples = n0*n1 
 else:
-  n_samples = 1E3
-  
+  n_samples = 1E3  
 
 # QoI function
 def QoI(x,y,lam1,lam2):
@@ -63,18 +62,30 @@ def QoI(x,y,lam1,lam2):
   return z #np.vstack(z.flat[:]).transpose()
 
   
-# reference parameters -- try some of the values listed below
-#ref_lam = [5, 4]
+# reference parameters
 ref_lam = [5.5, 4.5]
-
 
 '''
 Suggested changes for user:
 
 Try setting QoI_num = 2.  
+
+Play around with the x1, y1, and/or, x2, y2 values to try and
+"optimize" the QoI to give the highest probability region 
+on the reference parameter above. 
+
+Hint: Try using QoI_num == 1 and systematically varying the
+x1 and y1 values to find QoI with contour structures (as inferred
+through the 2D marginal plots) that are nearly orthogonal.
+
+Some interesting pairs of QoI to compare are:
+(x1,y1)=(0.5,0.5) and (x2,y2)=(0.25,0.25)
+(x1,y1)=(0.5,0.5) and (x2,y2)=(0.15,0.15)
+(x1,y1)=(0.5,0.5) and (x2,y2)=(0.25,0.15)
 '''
 # Choose the QoI and define Q_ref
 QoI_num = 1
+
 if QoI_num == 1:
   x1 = 0.5
   y1 = 0.5
@@ -84,8 +95,8 @@ if QoI_num == 1:
 else:
   x1 = 0.5
   y1 = 0.5
-  x2 = 0.5
-  y2 = 0.5
+  x2 = 0.25
+  y2 = 0.25
   x = np.array([x1,x2])
   y = np.array([y1,y2])
   Q_ref = np.array([QoI(x[0],y[0],ref_lam[0],ref_lam[1]),
@@ -105,16 +116,6 @@ else:
   
 
 #set up samples
-'''
-Suggested changes for user:
-    
-If using the n_samples change as suggested above for defining a
-number of uniform random samples to be taken within the parameter
-domain, then comment out the samples=... line below and replace with
-    
-  samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
-					num_l_emulate = n_samples)
-'''
 if random_sample == False:
   vec0 = list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
   vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
@@ -148,16 +149,20 @@ unif_unif, but the difference is in the discretization which is on a
 regular grid defined by center_pts_per_edge. If center_pts_per_edge = 1, 
 then the contour event corresponding to the entire support of rho_D is
 approximated as a single event. This is done by carefully placing a 
-regular 3x3 grid (since D=2 in this case) of points in D with the center
+regular 3x3 grid (for the D=2 case) of points in D with the center
 point of the grid in the center of the support of the measure and the 
 other points placed outside of the rectangle defining the support to 
 define a total of 9 contour events with 8 of them with zero probability.
 '''
-# uniform simple function approx
-#(d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.unif_unif(data=data,
-#                                                               Q_ref=Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E5)
-(d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(data=data,
+deterministic_discretize_D = True
+
+if deterministic_discretize_D == True:
+  (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(data=data,
                                               Q_ref=Q_ref, bin_ratio=0.2, center_pts_per_edge = 1)
+else:
+  (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.unif_unif(data=data,
+                                              Q_ref=Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E5)
+
 
 # create emulated points
 '''
@@ -206,21 +211,21 @@ and other similar methods), but we have not incorporated these into the code
 as lower-dimensional marginal plots have limited value in understanding the
 structure of a high dimensional non-parametric probability measure.
 '''
-(bins, marginals2D) = plotP.calculate_2D_marginal_probs(P_samples = P, samples = lambda_emulate, lam_domain = lam_domain, nbins = [10, 10])
+(bins, marginals2D) = plotP.calculate_2D_marginal_probs(P_samples = P, samples = lambda_emulate, lam_domain = lam_domain, nbins = [20, 20])
 # smooth 2d marginals probs (optional)
-marginals2D = plotP.smooth_marginals_2D(marginals2D,bins, sigma=0.1)
+marginals2D = plotP.smooth_marginals_2D(marginals2D,bins, sigma=0.5)
 
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain, filename = "nonlinearMap",
-                             plot_surface=False, interactive = True)
+                             plot_surface=False)
 
                              
 # calculate 1d marginal probs
-(bins, marginals1D) = plotP.calculate_1D_marginal_probs(P_samples = P, samples = lambda_emulate, lam_domain = lam_domain, nbins = [10, 10])
+(bins, marginals1D) = plotP.calculate_1D_marginal_probs(P_samples = P, samples = lambda_emulate, lam_domain = lam_domain, nbins = [20, 20])
 # smooth 1d marginal probs (optional)
-marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.01)
+marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.5)
 # plot 1d marginal probs
-plotP.plot_1D_marginal_probs(marginals1D, bins, lam_domain, filename = "linearMap", interactive = True)
+plotP.plot_1D_marginal_probs(marginals1D, bins, lam_domain, filename = "nonlinearMap")
 
 
 
