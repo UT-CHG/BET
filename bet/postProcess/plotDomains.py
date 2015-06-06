@@ -13,6 +13,7 @@ from matplotlib.lines import Line2D
 from itertools import combinations
 from mpl_toolkits.mplot3d import Axes3D
 import bet.util as util
+import os
 
 markers = []
 for m in Line2D.markers:
@@ -36,7 +37,7 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
     :param color: array to color the samples by
     :type color: :class:`np.ndarray`
     :param p_ref: reference parameter value
-    :type p_ref: :class:`np.ndarray`
+    :type p_ref: :class:`np.ndarray` of shape (ndim,)
     :param boolean save: flag whether or not to save the figure
     :param boolean interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
@@ -76,7 +77,7 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
     :param color: array to color the samples by
     :type color: :class:`np.ndarray`
     :param p_ref: reference parameter value
-    :type p_ref: :class:`np.ndarray`
+    :type p_ref: :class:`np.ndarray` of shape (ndim,)
     :param boolean save: flag whether or not to save the figure
     :param boolean interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
@@ -124,7 +125,7 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`np.ndarray`
     :param p_ref: reference parameter value
-    :type p_ref: :class:`np.ndarray`
+    :type p_ref: :class:`np.ndarray` of shape (ndim,)
     :param boolean save: flag whether or not to save the figure
     :param boolean interactive: flag whether or not to show the figure
     :param list lnums: integers representing parameter domain coordinate
@@ -263,6 +264,9 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     if showdim == None:
         showdim = 1
 
+    if not os.path.isdir(img_folder):
+        os.mkdir(img_folder)
+
     Q_ref = util.fix_dimensions_data(Q_ref, data.shape[1])
 
     triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
@@ -271,14 +275,8 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     
     if type(showdim) == int:
         for i in Q_nums:
-            plt.tricontourf(data[:, showdim], data[:, i],
-                    np.zeros((data.shape[0],)), triangles=triangles,
-                    colors='grey') 
-            plt.autoscale(tight=True)
             xlabel = r'$q_{'+str(showdim+1)+r'}$'
             ylabel = r'$q_{'+str(i+1)+r'}$'
-            plt.xlabel(xlabel)
-            plt.ylabel(ylabel)
 
             filenames = [img_folder+'domain_q'+str(showdim+1)+'_'+str(i+1)+'.eps',
                     img_folder+'q'+str(showdim+1)+'_q'+str(i+1)+'_domain_Q_cs.eps']
@@ -289,13 +287,8 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
                 interactive=False, filenames=filenames)
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(Q_nums, 2):
-            plt.tricontourf(data[:, x], data[:, y], np.zeros((data.shape[0],)),
-                    triangles=triangles, colors='grey') 
-            plt.autoscale(tight=True)
             xlabel = r'$q_{'+str(x+1)+r'}$'
             ylabel = r'$q_{'+str(y+1)+r'}$'
-            plt.xlabel(xlabel)
-            plt.ylabel(ylabel)
 
             filenames = [img_folder+'domain_q'+str(x+1)+'_'+str(y+1)+'.eps',
                     img_folder+'q'+str(x+1)+'_q'+str(y+1)+'_domain_Q_cs.eps']
