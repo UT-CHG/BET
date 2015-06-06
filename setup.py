@@ -19,4 +19,4 @@ setup(name='bet',
       url='https://github.com/UT-CHG/BET',
       packages=['bet', 'bet.sampling', 'bet.calculateP', 'bet.postProcess'],
       install_requires=['matplotlib', 'pyDOE', 'scipy',
-          'numpy'])
+          'numpy', 'nose'])
