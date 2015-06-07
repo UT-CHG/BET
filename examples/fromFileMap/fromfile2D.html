@@ -63,7 +63,7 @@
 goal-oriented adaptive sampling algorithm.</p>
 <div class="section" id="generating-a-single-set-of-adaptive-samples">
 <h2>Generating a single set of adaptive samples<a class="headerlink" href="#generating-a-single-set-of-adaptive-samples" title="Permalink to this headline">¶</a></h2>
-<p>We will walk through the following <a class="reference download internal" href="../../_downloads/fromFile2D.py"><code class="xref download docutils literal"><span class="pre">example</span></code></a> that uses a linear interpolant of
+<p>We will walk through the following <code class="xref download docutils literal"><span class="pre">example</span></code> that uses a linear interpolant of
 the QoI map <span class="math">\(Q(\lambda) = (q_1(\lambda), q_6(\lambda))\)</span> for a
 2-dimensional data space. The parameter space in this example is also
 2-dimensional.</p>
@@ -85,7 +85,7 @@ the QoI map <span class="math">\(Q(\lambda) = (q_1(\lambda), q_6(\lambda))\)</sp
 </pre></div>
 </div>
 <p>In this example we form a linear interpolant to the QoI map <span class="math">\(Q(\lambda) =
-(q_1(\lambda), q_6(\lambda))\)</span> using data read from a <code class="docutils literal"><span class="pre">.mat</span></code> <a class="reference download internal" href="../../_downloads/Q_2D.mat"><code class="xref download docutils literal"><span class="pre">file</span></code></a>:</p>
+(q_1(\lambda), q_6(\lambda))\)</span> using data read from a <code class="docutils literal"><span class="pre">.mat</span></code> <code class="xref download docutils literal"><span class="pre">file</span></code>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 1, 6</span>
 <span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_2D&#39;</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q&#39;</span><span class="p">]</span>
@@ -168,9 +168,9 @@ samples out side of the bounded parameter domain, <code class="docutils literal"
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-<a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code></a>. The set up in
-<a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code></a> is very similar to the
-set up in <a class="reference download internal" href="../../_downloads/fromFile2D.py"><code class="xref download docutils literal"><span class="pre">fromFile2D</span></code></a> and is
+<code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code>. The set up in
+<code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code> is very similar to the
+set up in <code class="xref download docutils literal"><span class="pre">fromFile2D</span></code> and is
 omitted for brevity.</p>
 <p>We can explore several types of kernels:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">kernel_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>

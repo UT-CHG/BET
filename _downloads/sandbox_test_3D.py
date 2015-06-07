@@ -5,7 +5,6 @@
 # -*- coding: utf-8 -*-
 # import necessary modules
 import numpy as np
-import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
 import bet.postProcess.postTools as ptools
@@ -25,20 +24,8 @@ wall_height = -2.5
 param_min = param_domain[:, 0]
 param_max = param_domain[:, 1]
 
-# Create stations
-stat_x = np.concatenate((1900*np.ones((7,)), [1200], 1300*np.ones((3,)),
-    [1500])) 
-stat_y = np.array([1200, 600, 300, 0, -300, -600, -1200, 0, 1200,
-        0, -1200, -1400])
-all_stations = []
-for x, y in zip(stat_x, stat_y):
-    all_stations.append(basic.location(x, y))
-
 # Select only the stations I care about this will lead to better sampling
 station_nums = [0, 4, 1] # 1, 5, 2
-stations = []
-for s in station_nums:
-    stations.append(all_stations[s])
 
 # Create Transition Kernel
 transition_set = asam.transition_set(.5, .5**5, 0.5)

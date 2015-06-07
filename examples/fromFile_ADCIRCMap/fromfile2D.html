@@ -1,92 +1,158 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Example: Generalized Chains with a 3,3-dimensional data,parameter space &mdash; BET 0.2.0 documentation</title>
-    
-    <link rel="stylesheet" href="../../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../../',
-        VERSION:     '0.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../../_static/jquery.js"></script>
-    <script type="text/javascript" src="../../_static/underscore.js"></script>
-    <script type="text/javascript" src="../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.2.0 documentation" href="../../index.html" />
-    <link rel="next" title="bet" href="../../modules.html" />
-    <link rel="prev" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" href="adaptive_2D.html" />
-   
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <title>Example: Generalized Chains with a 2,2-dimensional data,parameter space &mdash; BET 0.2.0 documentation</title>
+  
 
-  </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="../../modules.html" title="bet"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="adaptive_2D.html" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">BET 0.2.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  
+  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 0.2.0 documentation" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html#adcirc-based-examples">ADCIRC Based Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#visualization-examples">Visualization Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+    <li>Example: Generalized Chains with a 2,2-dimensional data,parameter space</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/examples/fromFile_ADCIRCMap/fromfile2D.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
             
-  <div class="section" id="example-generalized-chains-with-a-3-3-dimensional-data-parameter-space">
-<span id="adaptive3d"></span><h1>Example: Generalized Chains with a 3,3-dimensional data,parameter space<a class="headerlink" href="#example-generalized-chains-with-a-3-3-dimensional-data-parameter-space" title="Permalink to this headline">¶</a></h1>
-<p>This example demonstrates the adaptive generation of samples using the
-algorithm described in <span class="xref std std-ref">adaptive-sampling</span>.</p>
+  <div class="section" id="example-generalized-chains-with-a-2-2-dimensional-data-parameter-space">
+<span id="fromfile2d"></span><h1>Example: Generalized Chains with a 2,2-dimensional data,parameter space<a class="headerlink" href="#example-generalized-chains-with-a-2-2-dimensional-data-parameter-space" title="Permalink to this headline">¶</a></h1>
+<p>This example demonstrates the adaptive generation of samples using  a
+goal-oriented adaptive sampling algorithm.</p>
 <div class="section" id="generating-a-single-set-of-adaptive-samples">
 <h2>Generating a single set of adaptive samples<a class="headerlink" href="#generating-a-single-set-of-adaptive-samples" title="Permalink to this headline">¶</a></h2>
-<p>We will walk through the following <code class="xref download docutils literal"><span class="pre">example</span></code> that uses a linear interpolant
-of the QoI map <span class="math">\(Q(\lambda) = (q_1(\lambda), q_5(\lambda), q_2(\lambda))\)</span>
-for a 3-dimensional data space. The parameter space in this example is also
-3-dimensional.</p>
+<p>We will walk through the following <a class="reference download internal" href="../../_downloads/fromFile2D.py"><code class="xref download docutils literal"><span class="pre">example</span></code></a> that uses a linear interpolant of
+the QoI map <span class="math">\(Q(\lambda) = (q_1(\lambda), q_6(\lambda))\)</span> for a
+2-dimensional data space. The parameter space in this example is also
+2-dimensional.</p>
 <p>The modules required by this example are:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">polysim.pyADCIRC.basic</span> <span class="kn">as</span> <span class="nn">basic</span>
 <span class="kn">import</span> <span class="nn">bet.sampling.adaptiveSampling</span> <span class="kn">as</span> <span class="nn">asam</span>
-<span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="kn">as</span> <span class="nn">bsam</span>
 <span class="kn">import</span> <span class="nn">scipy.io</span> <span class="kn">as</span> <span class="nn">sio</span>
 <span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">griddata</span>
 </pre></div>
 </div>
 <p>The compact (bounded, finite-dimensional) paramter space is:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># [[min \lambda_1, max \lambda_1],..., [min \lambda_3, max \lambda_3]]</span>
-<span class="n">param_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1500</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mo">07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]])</span>
-<span class="n">param_min</span> <span class="o">=</span> <span class="n">param_domain</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
-<span class="n">param_max</span> <span class="o">=</span> <span class="n">param_domain</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="c"># [[min \lambda_1, max \lambda_1], [min \lambda_2, max \lambda_2]]</span>
+<span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">.</span><span class="mo">07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]])</span>
+<span class="n">param_min</span> <span class="o">=</span> <span class="n">lam_domain</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+<span class="n">param_max</span> <span class="o">=</span> <span class="n">lam_domain</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>In this example we form a linear interpolant to the QoI map <span class="math">\(Q(\lambda) =
-(q_1(\lambda), q_5(\lambda), q_2(\lambda))\)</span> using data read from a <code class="docutils literal"><span class="pre">.mat</span></code> <code class="xref download docutils literal"><span class="pre">file</span></code>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c"># 1, 5, 2</span>
-<span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_3D&#39;</span><span class="p">)</span>
+(q_1(\lambda), q_6(\lambda))\)</span> using data read from a <code class="docutils literal"><span class="pre">.mat</span></code> <a class="reference download internal" href="../../_downloads/Q_2D.mat"><code class="xref download docutils literal"><span class="pre">file</span></code></a>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 1, 6</span>
+<span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_2D&#39;</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q&#39;</span><span class="p">]</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">station_nums</span><span class="p">]</span>
 <span class="c"># Create experiment model</span>
@@ -101,12 +167,12 @@ for a 3-dimensional data space. The parameter space in this example is also
 </div>
 <p>Next, we implicty designate the region of interest <span class="math">\(\Lambda_k =
 Q^{-1}(D_k)\)</span> in <span class="math">\(\Lambda\)</span> for some <span class="math">\(D_k \subset \mathcal{D}\)</span>
-through the use of a transition kernel. In this instance we choose our kernel
+through the use of some kernel. In this instance we choose our kernel
 <span class="math">\(p_k(Q) = \rho_\mathcal{D}(Q)\)</span>, see
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><code class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></code></a>.</p>
 <p>We choose some <span class="math">\(\lambda_{ref}\)</span> and let <span class="math">\(Q_{ref} = Q(\lambda_{ref})\)</span>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">Q_ref</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q_true&#39;</span><span class="p">]</span>
-<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="mi">14</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span> <span class="c"># 15th/20</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span> <span class="c"># 16th/20</span>
 </pre></div>
 </div>
 <p>We define a rectangle, <span class="math">\(R_{ref} \subset \mathcal{D}\)</span> centered at
@@ -125,7 +191,7 @@ through the use of a transition kernel. In this instance we choose our kernel
     <span class="n">max_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">inside</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">max_values</span>
 
-<span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">aps</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
+<span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Given a (M, mdim) data vector
@@ -138,7 +204,7 @@ sampling chains that are each 125 samples long:</p>
 <span class="n">chain_length</span> <span class="o">=</span> <span class="mi">125</span>
 <span class="n">num_chains</span> <span class="o">=</span> <span class="mi">80</span>
 <span class="n">num_samples</span> <span class="o">=</span> <span class="n">chain_length</span><span class="o">*</span><span class="n">num_chains</span>
-<span class="n">sampler</span> <span class="o">=</span> <span class="n">aps</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">chain_length</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
+<span class="n">sampler</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">chain_length</span><span class="p">,</span> <span class="n">model</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We create the <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-mod docutils literal"><span class="pre">transition_set</span></code></a> with an
@@ -146,7 +212,7 @@ initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 <code class="docutils literal"><span class="pre">.5**5</span></code> and 1.0 respectively. Note that this algorithm will not generate
 samples out side of the bounded parameter domain, <code class="docutils literal"><span class="pre">lambda_domain</span></code></p>
 <div class="highlight-python"><div class="highlight"><pre><span class="c"># Create Transition Kernel</span>
-<span class="n">transition_set</span> <span class="o">=</span> <span class="n">aps</span><span class="o">.</span><span class="n">transition_set</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+<span class="n">transition_set</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">transition_set</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We choose an initial sample type to seed the sampling chains:</p>
@@ -167,9 +233,9 @@ samples out side of the bounded parameter domain, <code class="docutils literal"
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-<code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code>. The set up in
-<code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code> is very similar to the
-set up in <code class="xref download docutils literal"><span class="pre">fromFile2D</span></code> and is
+<a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code></a>. The set up in
+<a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code></a> is very similar to the
+set up in <a class="reference download internal" href="../../_downloads/fromFile2D.py"><code class="xref download docutils literal"><span class="pre">fromFile2D</span></code></a> and is
 omitted for brevity.</p>
 <p>We can explore several types of kernels:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">kernel_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
@@ -195,7 +261,7 @@ various inital, minimum, and maximum step size ratios:</p>
 </div>
 <p>We can explore a single kernel with varying values of ratios for increasing
 and decreasing the step size (i.e. the size of the hyperrectangle to draw a new
-step from using a transition kernel):</p>
+step from using a transition set):</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">increase</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
 <span class="n">decrease</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5e2</span><span class="p">,</span> <span class="mf">0.5e3</span><span class="p">]</span>
 <span class="n">tolerance</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">]</span>
@@ -227,63 +293,61 @@ by <code class="docutils literal"><span class="pre">sort_ind</span></code>.</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a><ul>
-<li><a class="reference internal" href="#generating-a-single-set-of-adaptive-samples">Generating a single set of adaptive samples</a></li>
-<li><a class="reference internal" href="#generating-and-comparing-several-sets-of-adaptive-samples">Generating and comparing several sets of adaptive samples</a></li>
-</ul>
-</li>
-</ul>
+          <footer>
+  
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="adaptive_2D.html"
-                        title="previous chapter">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="../../modules.html"
-                        title="next chapter">bet</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../../_sources/examples/fromADCIRCMap/adaptive_3D.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
+      Last updated on Jun 07, 2015.
     </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2014, Lindley Graham, Steven Mattis, Troy Butler.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
-      
-      |
-      <a href="../../_sources/examples/fromADCIRCMap/adaptive_3D.txt"
-          rel="nofollow">Page source</a></li>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
 </html>
