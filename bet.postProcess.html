@@ -1,64 +1,136 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>bet.postProcess package &mdash; BET 0.2.0 documentation</title>
-    
-    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '0.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="_static/jquery.js"></script>
-    <script type="text/javascript" src="_static/underscore.js"></script>
-    <script type="text/javascript" src="_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.2.0 documentation" href="index.html" />
-    <link rel="up" title="bet package" href="bet.html" />
-    <link rel="next" title="bet.sampling package" href="bet.sampling.html" />
-    <link rel="prev" title="bet.calculateP package" href="bet.calculateP.html" />
-   
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <title>bet.postProcess package &mdash; BET 0.2.0 documentation</title>
+  
 
-  </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="bet.sampling.html" title="bet.sampling package"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="bet.calculateP.html" title="bet.calculateP package"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">BET 0.2.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="modules.html" >bet</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="bet.html" accesskey="U">bet package</a> &raquo;</li> 
-      </ul>
-    </div>  
+  
+  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 0.2.0 documentation" href="index.html"/>
+        <link rel="up" title="bet package" href="bet.html"/>
+        <link rel="next" title="bet.sampling package" href="bet.sampling.html"/>
+        <link rel="prev" title="bet.calculateP package" href="bet.calculateP.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#visualization-examples">Visualization Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
+<li class="toctree-l2 current"><a class="reference internal" href="bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+          <li><a href="modules.html">bet</a> &raquo;</li>
+      
+          <li><a href="bet.html">bet package</a> &raquo;</li>
+      
+    <li>bet.postProcess package</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/bet.postProcess.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
             
   <div class="section" id="bet-postprocess-package">
 <h1>bet.postProcess package<a class="headerlink" href="#bet-postprocess-package" title="Permalink to this headline">¶</a></h1>
@@ -82,7 +154,7 @@ an array of rho_D values).</p>
 <li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Samples to plot</li>
 <li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
 <li><strong>color</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; array to color the samples by</li>
-<li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
+<li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
@@ -108,7 +180,7 @@ an array of rho_D values).</p>
 <li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Samples to plot</li>
 <li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
 <li><strong>color</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; array to color the samples by</li>
-<li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
+<li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
@@ -125,8 +197,7 @@ an array of rho_D values).</p>
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data">
 <code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data</code><span class="sig-paren">(</span><em>data</em>, <em>rho_D=None</em>, <em>Q_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>Q_nums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot samples in data space and colors them either by rho_D or by
-sample batch number.</p>
+<dd><p>Plot samples in data space and colors them either by rho_D.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -151,7 +222,7 @@ sample clouds</li>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2$'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plot the data domain D using a triangulation based on the generating
 samples with a marker for various <span class="math">\(Q_{ref}\)</span>. Assumes that the first
 dimension of data is <span class="math">\(q_1\)</span>.</p>
@@ -209,8 +280,7 @@ given dimension or if <code class="docutils literal"><span class="pre">all</span
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_param">
 <code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_param</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>rho_D=None</em>, <em>p_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>lnums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_param" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot samples in parameter space and colors them either by rho_D or by
-sample batch number.</p>
+<dd><p>Plot samples in parameter space and colors them either by rho_D.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -221,7 +291,7 @@ sample batch number.</p>
 <li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
 <li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns a
 <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; probability density on D</li>
-<li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
+<li><strong>p_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<em>boolean</em>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<em>boolean</em>) &#8211; flag whether or not to show the figure</li>
 <li><strong>lnums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; integers representing parameter domain coordinate
@@ -663,66 +733,70 @@ to sort the QoI data, but be sure to do so if using it later.</p>
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">bet.postProcess package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-bet.postProcess.plotDomains">bet.postProcess.plotDomains module</a></li>
-<li><a class="reference internal" href="#module-bet.postProcess.plotP">bet.postProcess.plotP module</a></li>
-<li><a class="reference internal" href="#module-bet.postProcess.postTools">bet.postProcess.postTools module</a></li>
-<li><a class="reference internal" href="#module-bet.postProcess">Module contents</a></li>
-</ul>
-</li>
-</ul>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="bet.sampling.html" class="btn btn-neutral float-right" title="bet.sampling package">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="bet.calculateP.html" class="btn btn-neutral" title="bet.calculateP package"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="bet.calculateP.html"
-                        title="previous chapter">bet.calculateP package</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="bet.sampling.html"
-                        title="next chapter">bet.sampling package</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="_sources/bet.postProcess.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
+      Last updated on Jun 07, 2015.
     </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2014, Lindley Graham, Steven Mattis, Troy Butler.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
-      
-      |
-      <a href="_sources/bet.postProcess.txt"
-          rel="nofollow">Page source</a></li>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
 </html>

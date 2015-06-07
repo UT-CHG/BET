@@ -1,112 +1,180 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Linear Map Example &mdash; BET 0.2.0 documentation</title>
-    
-    <link rel="stylesheet" href="../_static/alabaster.css" type="text/css" />
-    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '0.2.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
-      };
-    </script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <link rel="top" title="BET 0.2.0 documentation" href="../index.html" />
-    <link rel="next" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" href="fromFileMap/fromfile2D.html" />
-    <link rel="prev" title="Parallel" href="../parallel.html" />
-   
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9">
+  <title>Linear Map Example &mdash; BET 0.2.0 documentation</title>
+  
 
-  </head>
-  <body role="document">
-    <div class="related" role="navigation" aria-label="related navigation">
-      <h3>Navigation</h3>
-      <ul>
-        <li class="right" style="margin-right: 10px">
-          <a href="../genindex.html" title="General Index"
-             accesskey="I">index</a></li>
-        <li class="right" >
-          <a href="../py-modindex.html" title="Python Module Index"
-             >modules</a> |</li>
-        <li class="right" >
-          <a href="fromFileMap/fromfile2D.html" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space"
-             accesskey="N">next</a> |</li>
-        <li class="right" >
-          <a href="../parallel.html" title="Parallel"
-             accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">BET 0.2.0 documentation</a> &raquo;</li> 
-      </ul>
-    </div>  
+  
+  
 
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 0.2.0 documentation" href="../index.html"/>
+        <link rel="next" title="bet" href="../modules.html"/>
+        <link rel="prev" title="Parallel" href="../parallel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#adcirc-based-examples">ADCIRC Based Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#visualization-examples">Visualization Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Linear Map Example</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/examples/overview.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
             
   <div class="section" id="linear-map-example">
 <h1>Linear Map Example<a class="headerlink" href="#linear-map-example" title="Permalink to this headline">¶</a></h1>
 <p>See <a class="reference download internal" href="../_downloads/linearMapUniformSampling.py"><code class="xref download docutils literal"><span class="pre">linear</span> <span class="pre">map</span> <span class="pre">example</span></code></a> for an example using a linear
 map.</p>
 </div>
+<div class="section" id="non-linear-map-example">
+<h1>Non-Linear Map Example<a class="headerlink" href="#non-linear-map-example" title="Permalink to this headline">¶</a></h1>
+<p>See <a class="reference download internal" href="../_downloads/nonlinearMapUniformSampling.py"><code class="xref download docutils literal"><span class="pre">non</span> <span class="pre">linear</span> <span class="pre">map</span> <span class="pre">example</span></code></a> for an example using a non-linear
+map.</p>
+</div>
 <div class="section" id="adcirc-based-examples">
 <h1>ADCIRC Based Examples<a class="headerlink" href="#adcirc-based-examples" title="Permalink to this headline">¶</a></h1>
-<p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/fromFileMap</span></code> and
-<code class="docutils literal"><span class="pre">examples/fromADCIRC</span></code>.</p>
+<p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/fromADCIRC_FileMap</span></code>.</p>
 <div class="section" id="idealized-inlet-physical-domain">
 <h2>Idealized Inlet Physical Domain<a class="headerlink" href="#idealized-inlet-physical-domain" title="Permalink to this headline">¶</a></h2>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Description of the model, physical inlet domain, data space, and parameter
-space for the examples using the idealized inlet.</p>
-</div>
+<p>For a description of the model, physical inlet domain, data space, and parameter
+space for the examples using the idealized inlet see <a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution
+of a stochastic inverse problem for the Manning’s n parameter field in
+hydrodynamic models</a>.</p>
 </div>
 <div class="section" id="adaptive-sampling-examples">
 <h2>Adaptive Sampling Examples<a class="headerlink" href="#adaptive-sampling-examples" title="Permalink to this headline">¶</a></h2>
 <p>Adaptively samples a linear interpolant using data read from file:</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="fromFileMap/fromfile2D.html#fromfile2d"><span>Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
-<li><a class="reference internal" href="fromFileMap/fromfile3D.html#fromfile3d"><span>Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
-</ul>
-</div></blockquote>
-<p>Adaptively samples PADCIRC using <a class="reference external" href="http://ut-chg.github.io/PolyADCIRC/overview.html#module-polyadcirc.run_framework" title="(in PolySim v0.1.0)"><code class="xref py py-mod docutils literal"><span class="pre">polyadcirc.run_framework</span></code></a> modules.
-Example submission files are included as <code class="docutils literal"><span class="pre">filename.sbatch</span></code>:</p>
-<blockquote>
-<div><ul class="simple">
-<li><a class="reference internal" href="fromADCIRCMap/adaptive_2D.html#adaptive2d"><span>Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
-<li><a class="reference internal" href="fromADCIRCMap/adaptive_3D.html#adaptive3d"><span>Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
+<li><a class="reference internal" href="fromFile_ADCIRCMap/fromfile2D.html#fromfile2d"><span>Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
+<li><a class="reference internal" href="fromFile_ADCIRCMap/fromfile3D.html#fromfile3d"><span>Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="visualization-examples">
 <h2>Visualization Examples<a class="headerlink" href="#visualization-examples" title="Permalink to this headline">¶</a></h2>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">Write visualization examples for <a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-mod docutils literal"><span class="pre">plotP</span></code></a> and
-<a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-mod docutils literal"><span class="pre">plotDomains</span></code></a>.</p>
-</div>
+<p>The module <a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-mod docutils literal"><span class="pre">plotDomains</span></code></a> provides several methods used to
+plot 2D domains and/or 2D slices and projections of higher dimensional domains.</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="fromFile_ADCIRCMap/domains2D.html#domains2d"><span>Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
+<li><a class="reference internal" href="fromFile_ADCIRCMap/domains3D.html#domains3d"><span>Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
+</ul>
+</div></blockquote>
 </div>
 <div class="section" id="examples-estimating">
 <h2>Examples Estimating <span class="math">\(P_\Lambda\)</span><a class="headerlink" href="#examples-estimating" title="Permalink to this headline">¶</a></h2>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="fromADCIRCMap/Q_1D_serial.html#q1d"><span>Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a></li>
-<li><a class="reference internal" href="fromADCIRCMap/Q_2D.html#q2d"><span>Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a></li>
-<li><a class="reference internal" href="fromADCIRCMap/Q_3D.html#q3d"><span>Example: Estimate the parameter space probabiliy density with  a 3D data space</span></a></li>
+<li><a class="reference internal" href="fromFile_ADCIRCMap/Q_1D_serial.html#q1d"><span>Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a></li>
+<li><a class="reference internal" href="fromFile_ADCIRCMap/Q_2D.html#q2d"><span>Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a></li>
+<li><a class="reference internal" href="fromFile_ADCIRCMap/Q_3D.html#q3d"><span>Example: Estimate the parameter space probabiliy density with  a 3D data space</span></a></li>
 </ul>
 </div></blockquote>
 </div>
@@ -114,66 +182,70 @@ Example submission files are included as <code class="docutils literal"><span cl
 
 
           </div>
-        </div>
-      </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Linear Map Example</a></li>
-<li><a class="reference internal" href="#adcirc-based-examples">ADCIRC Based Examples</a><ul>
-<li><a class="reference internal" href="#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
-<li><a class="reference internal" href="#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
-<li><a class="reference internal" href="#visualization-examples">Visualization Examples</a></li>
-<li><a class="reference internal" href="#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
-</ul>
-</li>
-</ul>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="../modules.html" class="btn btn-neutral float-right" title="bet">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../parallel.html" class="btn btn-neutral" title="Parallel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../parallel.html"
-                        title="previous chapter">Parallel</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="fromFileMap/fromfile2D.html"
-                        title="next chapter">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/examples/overview.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
+      Last updated on Jun 07, 2015.
     </p>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
-    <div class="footer">
-      &copy;2014, Lindley Graham, Steven Mattis, Troy Butler.
-      
-      |
-      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.3.1</a>
-      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.3</a>
-      
-      |
-      <a href="../_sources/examples/overview.txt"
-          rel="nofollow">Page source</a></li>
-    </div>
 
-    
+    </section>
 
-    
-  </body>
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
 </html>
