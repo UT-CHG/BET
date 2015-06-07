@@ -1,4 +1,7 @@
 #! /usr/bin/env python
+
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 r"""
 This example generates samples on a 2D grid and evaluates
 a nonlinear map to a 1d or 2d space. The maps are defined

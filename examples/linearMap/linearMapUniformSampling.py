@@ -3,10 +3,10 @@
 # Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
 
 """
-    This example generates uniform samples on a 3D grid
-    and evaluates a linear map to a 2d space. Probabilities
-    in the paramter space are calculated using emulated points.
-    1D and 2D marginals are calculated, smoothed, and plotted.
+This example generates uniform samples on a 3D grid
+and evaluates a linear map to a 2d space. Probabilities
+in the paramter space are calculated using emulated points.
+1D and 2D marginals are calculated, smoothed, and plotted.
 """
 
 import numpy as np

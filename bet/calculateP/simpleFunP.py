@@ -33,7 +33,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :math:`\rho_{\mathcal{D},M}`.
 
     :param int M: Defines number M samples in D used to define
-        :math:`\\rho_{\\mathcal{D},M}` The choice of M is something of an "art" -
+        :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
         relatively small number here like 50.
     :param bin_ratio: The ratio used to determine the width of the
