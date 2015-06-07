@@ -171,7 +171,7 @@ all.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_new</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
+<li><strong>data_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
 <li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
@@ -197,14 +197,14 @@ all.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Q_ref</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; reference parameter value</li>
-<li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns
-a class:<cite>np.ndarray</cite>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
+<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; reference parameter value</li>
+<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and returns
+a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
+<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum value of rho_D</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list()</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)">list</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[maxima_mean_kernel, rhoD_kernel, maxima_kernel]</p>
@@ -254,7 +254,7 @@ they are closer, then we can reduce the step_size(k) by 1/2.</p>
 <dl class="docutils">
 <dt>maxima</dt>
 <dd>locations of the maxima of rho_D on D
-<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_maxima, mdim)</dd>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_maxima, mdim)</dd>
 <dt>rho_max</dt>
 <dd>rho_D(maxima), list of maximum values of rho_D</dd>
 <dt>tolerance </dt>
@@ -273,7 +273,7 @@ they are closer, then we can reduce the step_size(k) by 1/2.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_new</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
+<li><strong>data_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
 <li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
@@ -323,7 +323,7 @@ np.array of shape (num_maxima, mdim)</dd>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_new</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
+<li><strong>data_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
 <li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
@@ -380,7 +380,7 @@ closer, then we can reduce the step_size(k) by 1/2.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_new</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
+<li><strong>data_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
 <li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
 </ul>
 </td>
@@ -423,11 +423,11 @@ parameter samples and returns data</dd>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; type of initial sample random (or r),
 latin hypercube(lhs), or space-filling curve(TBD)</li>
-<li><strong>param_min</strong> (<em>np.array (ndim,)</em>) &#8211; minimum value for each parameter dimension</li>
-<li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
-<li><strong>t_set</strong> (<em>:class:~`bet.sampling.adaptiveSampling.transition_set`</em>) &#8211; method for creating new parameter steps using
+<li><strong>param_min</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; minimum value for each parameter dimension</li>
+<li><strong>param_max</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; maximum value for each parameter dimension</li>
+<li><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
-<li><strong>kern</strong> (<em>function</em>) &#8211; functional that acts on the data used to
+<li><strong>kern</strong> &#8211; functional that acts on the data used to
 determine the proposed change to the <code class="docutils literal"><span class="pre">step_size</span></code></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; latin hypercube criterion see 
@@ -459,14 +459,14 @@ kernels.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kern_list</strong> (<em>list()</em>) &#8211; List of
+<li><strong>kern_list</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List of
 :class:~`bet.sampling.adaptiveSampling.kernel` objects.</li>
-<li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and
+<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
 returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
-<li><strong>param_min</strong> (<em>np.array (ndim,)</em>) &#8211; minimum value for each parameter dimension</li>
-<li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
-<li><strong>t_set</strong> (<em>:class:~`bet.sampling.adaptiveSampling.transition_set`</em>) &#8211; method for creating new parameter steps using
+<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum value of rho_D</li>
+<li><strong>param_min</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; minimum value for each parameter dimension</li>
+<li><strong>param_max</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; maximum value for each parameter dimension</li>
+<li><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -509,16 +509,16 @@ the <cite>increase</cite>, <cite>decrease</cite>, and <cite>tolerance</cite> par
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>increase</strong> (<em>list()</em>) &#8211; the multiple to increase the step size by</li>
-<li><strong>decrease</strong> (<em>list()</em>) &#8211; the multiple to decrease the step size by</li>
-<li><strong>tolerance</strong> (<em>list()</em>) &#8211; a tolerance used to determine if two
+<li><strong>increase</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the multiple to increase the step size by</li>
+<li><strong>decrease</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; the multiple to decrease the step size by</li>
+<li><strong>tolerance</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; a tolerance used to determine if two
 different values are close</li>
-<li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and
+<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
 returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
-<li><strong>param_min</strong> (<em>np.array (ndim,)</em>) &#8211; minimum value for each parameter dimension</li>
-<li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
-<li><strong>t_set</strong> (<em>:class:~`bet.sampling.adaptiveSampling.transition_set`</em>) &#8211; method for creating new parameter steps using
+<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum value of rho_D</li>
+<li><strong>param_min</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; minimum value for each parameter dimension</li>
+<li><strong>param_max</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; maximum value for each parameter dimension</li>
+<li><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) &#8211; method for creating new parameter steps using
 given a step size based on the paramter domain size</li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -561,18 +561,18 @@ the <cite>init_ratio</cite>, <cite>min_ratio</cite>, and <cite>max_ratio</cite> 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>init_ratio</strong> (<em>list()</em>) &#8211; Initial step size ratio compared to the
+<li><strong>init_ratio</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Initial step size ratio compared to the
 parameter domain.</li>
-<li><strong>min_ratio</strong> (<em>list()</em>) &#8211; Minimum step size compared to the initial step
+<li><strong>min_ratio</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Minimum step size compared to the initial step
 size.</li>
-<li><strong>max_ratio</strong> (<em>list()</em>) &#8211; Maximum step size compared to the maximum step
+<li><strong>max_ratio</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Maximum step size compared to the maximum step
 size.</li>
-<li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and
+<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
 returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>double</em>) &#8211; maximum value of rho_D</li>
-<li><strong>param_min</strong> (<em>np.array (ndim,)</em>) &#8211; minimum value for each parameter dimension</li>
-<li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
-<li><strong>kernel</strong> (<em>:class:~`bet.sampling.adaptiveSampling.kernel` object.</em>) &#8211; functional that acts on the data used to
+<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum value of rho_D</li>
+<li><strong>param_min</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; minimum value for each parameter dimension</li>
+<li><strong>param_max</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; maximum value for each parameter dimension</li>
+<li><strong>kernel</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a> object.) &#8211; functional that acts on the data used to
 determine the proposed change to the <code class="docutils literal"><span class="pre">step_size</span></code></li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>initial_sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <dl class="docutils">
@@ -612,7 +612,7 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdict</strong> (<em>dict()</em>) &#8211; dictonary of sampler parameters</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; dictonary of sampler parameters</td>
 </tr>
 </tbody>
 </table>
@@ -649,18 +649,18 @@ random direction.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step_ratio</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> of shape (num_samples,)) &#8211; define maximum step_size = <code class="docutils literal"><span class="pre">step_ratio*param_width</span></code></li>
-<li><strong>param_width</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; width of the parameter domain</li>
-<li><strong>param_left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim, N) where N is the
+<li><strong>step_ratio</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; define maximum step_size = <code class="docutils literal"><span class="pre">step_ratio*param_width</span></code></li>
+<li><strong>param_width</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; width of the parameter domain</li>
+<li><strong>param_left</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, N) where N is the
 length of <code class="docutils literal"><span class="pre">step_ratio</span></code>) &#8211; minimum boundary of the parameter domain</li>
-<li><strong>param_right</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim, N) where N is the
+<li><strong>param_right</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, N) where N is the
 length of <code class="docutils literal"><span class="pre">step_ratio</span></code>) &#8211; maximum boundary of the parameter domain</li>
 <li><strong>samples_old</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,
 ndim)) &#8211; Parameter samples from the previous step.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> of shape (num_samples, ndim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples, ndim)</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">samples_new</p>
@@ -747,14 +747,14 @@ assumes a Lebesgue measure on the parameter space.</p>
 <li><strong>sample_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; type sampling random (or r),
 latin hypercube(lhs), regular grid (rg), or space-filling
 curve(TBD)</li>
-<li><strong>param_min</strong> (<em>np.array (ndim,)</em>) &#8211; minimum value for each parameter dimension</li>
-<li><strong>param_max</strong> (<em>np.array (ndim,)</em>) &#8211; maximum value for each parameter dimension</li>
+<li><strong>param_min</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; minimum value for each parameter dimension</li>
+<li><strong>param_max</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim,)) &#8211; maximum value for each parameter dimension</li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
 <li><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; N, number of samples (optional)</li>
 <li><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <p>latin hypercube criterion see 
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
 </li>
-<li><strong>parallel</strong> (<em>boolean</em>) &#8211; Flag for parallel implementation. Uses
+<li><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag for parallel implementation. Uses
 lowercase <code class="docutils literal"><span class="pre">mpi4py</span></code> methods if <code class="docutils literal"><span class="pre">samples.shape[0]</span></code> is not
 divisible by <code class="docutils literal"><span class="pre">size</span></code>. Default value is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
@@ -782,7 +782,7 @@ and <code class="docutils literal"><span class="pre">data_samples</span></code> 
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mdict</strong> (<em>dict()</em>) &#8211; dictonary of sampling data and sampler parameters</li>
+<li><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; dictonary of sampling data and sampler parameters</li>
 <li><strong>save_file</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file name</li>
 </ul>
 </td>
@@ -799,7 +799,7 @@ and <code class="docutils literal"><span class="pre">data_samples</span></code> 
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdict</strong> (<em>dict()</em>) &#8211; dictonary of sampler parameters</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) &#8211; dictonary of sampler parameters</td>
 </tr>
 </tbody>
 </table>
@@ -819,7 +819,7 @@ provide sampler that utilizes user specified samples.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_smaples, ndim)) &#8211; samples to evaluate the model at</li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
-<li><strong>parallel</strong> (<em>boolean</em>) &#8211; Flag for parallel implementation. Uses
+<li><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag for parallel implementation. Uses
 lowercase <code class="docutils literal"><span class="pre">mpi4py</span></code> methods if <code class="docutils literal"><span class="pre">samples.shape[0]</span></code> is not
 divisible by <code class="docutils literal"><span class="pre">size</span></code>. Default value is <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
