@@ -51,7 +51,7 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
     plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color, s=10,
             alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)
     cbar = plt.colorbar()
-    cbar.set_label(r'$\rho_\mathcal{D}(Q)$')
+    cbar.set_label(r'$\rho_\mathcal{D}(q)$')
     if type(p_ref) != type(None):
         plt.scatter(p_ref[0], p_ref[1], c='g')
     if save:
@@ -113,8 +113,7 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
 def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
         save=True, interactive=False, lnums=None, showdim=None):
     """
-    Plot samples in parameter space and colors them either by rho_D or by
-    sample batch number.
+    Plot samples in parameter space and colors them either by rho_D.
 
     :param samples: Samples to plot
     :type samples: :class:`np.ndarray`
@@ -170,8 +169,7 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
 def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, interactive=False, Q_nums=None, showdim=None):
     """
-    Plot samples in data space and colors them either by rho_D or by
-    sample batch number.
+    Plot samples in data space and colors them either by rho_D.
 
     :param data: Data associated with ``samples``
     :type data: :class:`np.ndarray`
@@ -262,7 +260,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     if  type(Q_nums) == type(None):
         Q_nums = range(data.shape[1])
     if showdim == None:
-        showdim = 1
+        showdim = 0
 
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
@@ -278,7 +276,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
             xlabel = r'$q_{'+str(showdim+1)+r'}$'
             ylabel = r'$q_{'+str(i+1)+r'}$'
 
-            filenames = [img_folder+'domain_q'+str(showdim+1)+'_'+str(i+1)+'.eps',
+            filenames = [img_folder+'domain_q'+str(showdim+1)+'_q'+str(i+1)+'.eps',
                     img_folder+'q'+str(showdim+1)+'_q'+str(i+1)+'_domain_Q_cs.eps']
                 
             show_data_domain_2D(samples, data[:, [showdim, i]], Q_ref[:,
@@ -290,7 +288,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
             xlabel = r'$q_{'+str(x+1)+r'}$'
             ylabel = r'$q_{'+str(y+1)+r'}$'
 
-            filenames = [img_folder+'domain_q'+str(x+1)+'_'+str(y+1)+'.eps',
+            filenames = [img_folder+'domain_q'+str(x+1)+'_q'+str(y+1)+'.eps',
                     img_folder+'q'+str(x+1)+'_q'+str(y+1)+'_domain_Q_cs.eps']
                 
             show_data_domain_2D(samples, data[:, [x, y]], Q_ref[:,
@@ -299,7 +297,7 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
                 interactive=False, filenames=filenames)
 
 def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
-        ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2',
+        ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2$',
         triangles=None, save=True, interactive=False, filenames=None):
     r"""
     Plot the data domain D using a triangulation based on the generating

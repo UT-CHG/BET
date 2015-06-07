@@ -19,12 +19,9 @@ the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 The modules required by this example are::
 
     import numpy as np
-    import polysim.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
     import scipy.io as sio
-    import matplotlib.pyplot as plt
     from scipy.interpolate import griddata
-    import math
 
 The compact (bounded, finite-dimensional) paramter space is::
 

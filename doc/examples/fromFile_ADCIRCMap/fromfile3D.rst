@@ -19,7 +19,6 @@ for a 3-dimensional data space. The parameter space in this example is also
 The modules required by this example are::
 
     import numpy as np
-    import polysim.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
     import bet.sampling.basicSampling as bsam
     import scipy.io as sio
