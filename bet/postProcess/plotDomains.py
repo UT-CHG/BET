@@ -32,14 +32,14 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
     an array of rho_D values).
     
     :param samples: Samples to plot
-    :type samples: :class:`np.ndarray`
+    :type samples: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
     :param color: array to color the samples by
-    :type color: :class:`np.ndarray`
+    :type color: :class:`numpy.ndarray`
     :param p_ref: reference parameter value
-    :type p_ref: :class:`np.ndarray` of shape (ndim,)
-    :param boolean save: flag whether or not to save the figure
-    :param boolean interactive: flag whether or not to show the figure
+    :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string filename: filename to save the figure as
@@ -72,14 +72,14 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
     an array of rho_D values).
     
     :param samples: Samples to plot
-    :type samples: :class:`np.ndarray`
+    :type samples: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
     :param color: array to color the samples by
-    :type color: :class:`np.ndarray`
+    :type color: :class:`numpy.ndarray`
     :param p_ref: reference parameter value
-    :type p_ref: :class:`np.ndarray` of shape (ndim,)
-    :param boolean save: flag whether or not to save the figure
-    :param boolean interactive: flag whether or not to show the figure
+    :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string zlabel: z-axis label
@@ -116,17 +116,17 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     Plot samples in parameter space and colors them either by rho_D.
 
     :param samples: Samples to plot
-    :type samples: :class:`np.ndarray`
+    :type samples: :class:`numpy.ndarray`
     :param data: Data associated with ``samples``
-    :type data: :class:`np.ndarray`
+    :type data: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
     :param p_ref: reference parameter value
-    :type p_ref: :class:`np.ndarray` of shape (ndim,)
-    :param boolean save: flag whether or not to save the figure
-    :param boolean interactive: flag whether or not to show the figure
+    :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
     :param list lnums: integers representing parameter domain coordinate
         numbers
     :param int showdim: 2 or 3, flag showing pairwise or tripletwise parameter
@@ -172,15 +172,15 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     Plot samples in data space and colors them either by rho_D.
 
     :param data: Data associated with ``samples``
-    :type data: :class:`np.ndarray`
+    :type data: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
-        :class:`np.ndarray`
+        :class:`numpy.ndarray`
     :param Q_ref: reference data value
-    :type Q_ref: :class:`np.ndarray` of shape (mdim,)
-    :param boolean save: flag whether or not to save the figure
-    :param boolean interactive: flag whether or not to show the figure
+    :type Q_ref: :class:`numpy.ndarray` of shape (mdim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
     :param list Q_nums: integers representing data domain coordinates
     :param int showdim: 2 or 3, flag showing pairwise or tripletwise data
         sample clouds
@@ -241,9 +241,9 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
         uses the first two dimensions.
     :param data: Data associated with ``samples``
-    :type data: :class:`np.ndarray`
+    :type data: :class:`numpy.ndarray`
     :param Q_ref: reference data value
-    :type Q_ref: :class:`np.ndarray` of shape (M, mdim)`
+    :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
     :param string img_folder: folder to save the plots to
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
@@ -307,17 +307,17 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     :param samples: Samples to plot
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param data: Data associated with ``samples``
-    :type data: :class:`np.ndarray`
+    :type data: :class:`numpy.ndarray`
     :param Q_ref: reference data value
-    :type Q_ref: :class:`np.ndarray` of shape (M, 2)
+    :type Q_ref: :class:`numpy.ndarray` of shape (M, 2)
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
     :param list ref_colors: list of colors for :math:`Q_{ref}`
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param triangles: triangulation defined by ``samples``
     :type triangles: :class:`tri.Triuangulation.triangles`
-    :param boolean save: flag whether or not to save the figure
-    :param boolean interactive: flag whether or not to show the figure
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
     :param list filenames: file names for the unmarked and marked domain plots
 
     """
