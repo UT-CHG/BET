@@ -10,7 +10,7 @@ map.
 Non-Linear Map Example
 =======================================
 
-See :download:`linear map example
+See :download:`non linear map example
 <../../examples/nonlinearMap/nonlinearMapUniformSampling.py>` for an example using a non-linear
 map.
 
