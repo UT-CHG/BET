@@ -1,44 +1,43 @@
-.. _fromFile2D:
+.. _fromFile3D:
 
 =======================================================================
-Example: Generalized Chains with a 2,2-dimensional data,parameter space
+Example: Generalized Chains with a 3,3-dimensional data,parameter space
 =======================================================================
 
-This example demonstrates the adaptive generation of samples using  a
+This example demonstrates the adaptive generation of samples using a
 goal-oriented adaptive sampling algorithm.
 
 Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following :download:`example
-<../../../examples/fromFileMap/fromFile2D.py>` that uses a linear interpolant of
-the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
-2-dimensional data space. The parameter space in this example is also
-2-dimensional. 
+<../../../examples/fromFile_ADCIRCMap/sandbox_test_3D.py>` that uses a linear interpolant
+of the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_5(\lambda), q_2(\lambda))`
+for a 3-dimensional data space. The parameter space in this example is also
+3-dimensional. 
 
 The modules required by this example are::
 
     import numpy as np
     import polysim.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
+    import bet.sampling.basicSampling as bsam
     import scipy.io as sio
-    import matplotlib.pyplot as plt
     from scipy.interpolate import griddata
-    import math
 
 The compact (bounded, finite-dimensional) paramter space is::
 
-    # [[min \lambda_1, max \lambda_1], [min \lambda_2, max \lambda_2]]
-    lam_domain = np.array([[.07, .15], [.1, .2]])
-    param_min = lam_domain[:, 0]
-    param_max = lam_domain[:, 1]
+    # [[min \lambda_1, max \lambda_1],..., [min \lambda_3, max \lambda_3]]
+    param_domain = np.array([[-900, 1500], [.07, .15], [.1, .2]])
+    param_min = param_domain[:, 0]
+    param_max = param_domain[:, 1]
 
 In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
-(q_1(\lambda), q_6(\lambda))` using data read from a ``.mat`` :download:`file
-<../../../examples/fromFileMap/Q_2D.mat>`::
+(q_1(\lambda), q_5(\lambda), q_2(\lambda))` using data read from a ``.mat`` :download:`file
+<../../../examples/fromFile_ADCIRCMap/Q_3D.mat>`::
 
-    station_nums = [0, 5] # 1, 6
-    mdat = sio.loadmat('Q_2D')
+    station_nums = [0, 4, 1] # 1, 5, 2
+    mdat = sio.loadmat('Q_3D')
     Q = mdat['Q']
     Q = Q[:, station_nums]
     # Create experiment model
@@ -59,7 +58,7 @@ through the use of some kernel. In this instance we choose our kernel
 We choose some :math:`\lambda_{ref}` and let :math:`Q_{ref} = Q(\lambda_{ref})`::
 
     Q_ref = mdat['Q_true']
-    Q_ref = Q_ref[15, station_nums] # 16th/20
+    Q_ref = Q_ref[14, station_nums] # 15th/20
 
 We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
 :math:`Q(\lambda_{ref})` with sides 15% the length of :math:`q_1` and
@@ -78,7 +77,7 @@ We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
         max_values = np.repeat(maximum, outputs.shape[0], 0)
         return inside.astype('float64')*max_values
 
-    kernel_rD = asam.rhoD_kernel(maximum, rho_D)
+    kernel_rD = aps.rhoD_kernel(maximum, rho_D)
 
 Given a (M, mdim) data vector
 :class:`~bet.sampling.adaptiveSampling.rhoD_kernel` expects that ``rho_D``
@@ -92,7 +91,7 @@ sampling chains that are each 125 samples long::
     chain_length = 125
     num_chains = 80
     num_samples = chain_length*num_chains
-    sampler = asam.sampler(num_samples, chain_length, model)
+    sampler = aps.sampler(num_samples, chain_length, model)
 
 We create the :mod:`~bet.sampling.adaptiveSampling.transition_set` with an
 initial step size ratio of 0.5 and a minimum, maximum step size ratio of
@@ -100,7 +99,7 @@ initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 samples out side of the bounded parameter domain, ``lambda_domain`` ::
 
     # Create Transition Kernel
-    transition_set = asam.transition_set(.5, .5**5, 1.0)
+    transition_set = aps.transition_set(.5, .5**5, 1.0)
 
 We choose an initial sample type to seed the sampling chains::
 
@@ -119,9 +118,9 @@ In some instances the user may want to generate and compare several sets of
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>`. The set up in
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>` is very similar to the
-set up in :download:`fromFile2D <../../../examples/fromFileMap/fromFile2D.py>` and is
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`. The set up in
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>` is very similar to the
+set up in :download:`fromFile2D <../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` and is
 omitted for brevity.
 
 We can explore several types of kernels::

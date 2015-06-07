@@ -1,115 +1,54 @@
-.. _adaptive2D:
+.. _fromFile2D:
 
 =======================================================================
 Example: Generalized Chains with a 2,2-dimensional data,parameter space
 =======================================================================
 
-This example demonstrates the adaptive generation of samples using a
-goal-oriented adaptive sampleing algorithm.
+This example demonstrates the adaptive generation of samples using  a
+goal-oriented adaptive sampling algorithm.
 
 Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following :download:`example
-<../../../examples/fromFileMap/fromFile2D.py>` that uses a linear interpolant of
+<../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` that uses a linear interpolant of
 the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 2-dimensional data space. The parameter space in this example is also
 2-dimensional. 
 
 The modules required by this example are::
 
-    import polyadcirc.run_framework.domain as dom
-    import polyadcirc.run_framework.random_wall_Q as rmw
     import numpy as np
-    import polyadcirc.pyADCIRC.basic as basic
+    import polysim.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
-    import bet.sampling.basicSampling as bsam
     import scipy.io as sio
-
-The next big section of code uses
-:class:`~polyadcirc.run_framework.randoma_wall_Q` to create the "model" that
-:class:`~bet.sampling.adaptiveSampling.sampler`
-interrogates for data::
-
-    adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
-    grid_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/inputs/poly_walls'
-    save_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/runs/adaptive_random_2D'
-    basis_dir = adcirc_dir +'/ADCIRC_landuse/Inlet_b2/gap/beach_walls_2lands'
-    # assume that in.prep* files are one directory up from basis_dir
-    script = "adaptive_random_2D.sh"
-    # set up saving
-    model_save_file = 'py_save_file'
-    sample_save_file = 'full_run'
-
-    # Select file s to record/save
-    timeseries_files = []#["fort.63"]
-    nontimeseries_files = ["maxele.63"]#, "timemax63"]
-
-    # NoNx12/TpN where NoN is number of nodes and TpN is tasks per node, 12 is
-    the
-    # number of cores per node See -pe line in submission_script <TpN>way<NoN x
-    # 12>
-    nprocs = 4 # number of processors per PADCIRC run
-    ppnode = 16
-    NoN = 20
-    TpN = 16 # must be 16 unless using N option
-    num_of_parallel_runs = (TpN*NoN)/nprocs
-
-    domain = dom.domain(grid_dir)
-    domain.update()
-    main_run = rmw.runSet(grid_dir, save_dir, basis_dir, num_of_parallel_runs,
-            base_dir=adcirc_dir, script_name=script)
-    main_run.initialize_random_field_directories(num_procs=nprocs)
+    import matplotlib.pyplot as plt
+    from scipy.interpolate import griddata
+    import math
 
 The compact (bounded, finite-dimensional) paramter space is::
 
-    # Set minima and maxima
+    # [[min \lambda_1, max \lambda_1], [min \lambda_2, max \lambda_2]]
     lam_domain = np.array([[.07, .15], [.1, .2]])
-    lam3 = 0.012
-    ymin = -1050
-    xmin = 1420
-    xmax = 1580
-    ymax = 1500
-    wall_height = -2.5
-
     param_min = lam_domain[:, 0]
     param_max = lam_domain[:, 1]
 
-Specify the observation stations to use to record data to be used as QoI::
+In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
+(q_1(\lambda), q_6(\lambda))` using data read from a ``.mat`` :download:`file
+<../../../examples/fromFile_ADCIRCMap/Q_2D.mat>`::
 
-    # Create stations
-    stat_x = np.concatenate((1900*np.ones((7,)), [1200], 1300*np.ones((3,)),
-	[1500])) 
-    stat_y = np.array([1200, 600, 300, 0, -300, -600, -1200, 0, 1200,
-	    0, -1200, -1400])
-    all_stations = []
-    for x, y in zip(stat_x, stat_y):
-	all_stations.append(basic.location(x, y))
-
-    # Select only the stations I care about this will lead to better sampling
     station_nums = [0, 5] # 1, 6
-    stations = []
-    for s in station_nums:
-	stations.append(all_stations[s])
-
-    # Read in Q_ref and Q to create the appropriate rho_D 
     mdat = sio.loadmat('Q_2D')
     Q = mdat['Q']
     Q = Q[:, station_nums]
-
-In this example we use :class:`~polyadcirc.run_framework.random_wall_Q` for the
-QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` ::
-
     # Create experiment model
-    def model(sample):
-	# box_limits [xmin, xmax, ymin, ymax, wall_height]
-	wall_points = np.outer([xmin, xmax, ymin, ymax, wall_height],
-		np.ones(sample.shape[1]))
-	# [lam1, lam2, lam3]
-	mann_pts = np.vstack((sample, lam3*np.ones(sample.shape[1])))
-	return main_run.run_nobatch_q(domain, wall_points, mann_pts,
-		model_save_file, num_procs=nprocs, procs_pnode=ppnode,
-		stations=stations, TpN=TpN)
+    points = mdat['points']
+    def model(inputs):
+        interp_values = np.empty((inputs.shape[0], Q.shape[1])) 
+        for i in xrange(Q.shape[1]):
+            interp_values[:, i] = griddata(points.transpose(), Q[:, i],
+                inputs)
+        return interp_values 
 
 Next, we implicty designate the region of interest :math:`\Lambda_k =
 Q^{-1}(D_k)` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
@@ -180,9 +119,9 @@ In some instances the user may want to generate and compare several sets of
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>`. The set up in
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>` is very similar to the
-set up in :download:`fromFile2D <../../../examples/fromFileMap/fromFile2D.py>` and is
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`. The set up in
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>` is very similar to the
+set up in :download:`fromFile2D <../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` and is
 omitted for brevity.
 
 We can explore several types of kernels::
