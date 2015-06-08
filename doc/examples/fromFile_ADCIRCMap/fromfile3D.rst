@@ -1,115 +1,52 @@
-.. _adaptive2D:
+.. _fromFile3D:
 
 =======================================================================
-Example: Generalized Chains with a 2,2-dimensional data,parameter space
+Example: Generalized Chains with a 3,3-dimensional data,parameter space
 =======================================================================
 
 This example demonstrates the adaptive generation of samples using a
-goal-oriented adaptive sampleing algorithm.
+goal-oriented adaptive sampling algorithm.
 
 Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following :download:`example
-<../../../examples/fromFileMap/fromFile2D.py>` that uses a linear interpolant of
-the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
-2-dimensional data space. The parameter space in this example is also
-2-dimensional. 
+<../../../examples/fromFile_ADCIRCMap/sandbox_test_3D.py>` that uses a linear interpolant
+of the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_5(\lambda), q_2(\lambda))`
+for a 3-dimensional data space. The parameter space in this example is also
+3-dimensional. 
 
 The modules required by this example are::
 
-    import polyadcirc.run_framework.domain as dom
-    import polyadcirc.run_framework.random_wall_Q as rmw
     import numpy as np
-    import polyadcirc.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
     import bet.sampling.basicSampling as bsam
     import scipy.io as sio
-
-The next big section of code uses
-:class:`~polyadcirc.run_framework.randoma_wall_Q` to create the "model" that
-:class:`~bet.sampling.adaptiveSampling.sampler`
-interrogates for data::
-
-    adcirc_dir = '/work/01837/lcgraham/v50_subdomain/work'
-    grid_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/inputs/poly_walls'
-    save_dir = adcirc_dir + '/ADCIRC_landuse/Inlet_b2/runs/adaptive_random_2D'
-    basis_dir = adcirc_dir +'/ADCIRC_landuse/Inlet_b2/gap/beach_walls_2lands'
-    # assume that in.prep* files are one directory up from basis_dir
-    script = "adaptive_random_2D.sh"
-    # set up saving
-    model_save_file = 'py_save_file'
-    sample_save_file = 'full_run'
-
-    # Select file s to record/save
-    timeseries_files = []#["fort.63"]
-    nontimeseries_files = ["maxele.63"]#, "timemax63"]
-
-    # NoNx12/TpN where NoN is number of nodes and TpN is tasks per node, 12 is
-    the
-    # number of cores per node See -pe line in submission_script <TpN>way<NoN x
-    # 12>
-    nprocs = 4 # number of processors per PADCIRC run
-    ppnode = 16
-    NoN = 20
-    TpN = 16 # must be 16 unless using N option
-    num_of_parallel_runs = (TpN*NoN)/nprocs
-
-    domain = dom.domain(grid_dir)
-    domain.update()
-    main_run = rmw.runSet(grid_dir, save_dir, basis_dir, num_of_parallel_runs,
-            base_dir=adcirc_dir, script_name=script)
-    main_run.initialize_random_field_directories(num_procs=nprocs)
+    from scipy.interpolate import griddata
 
 The compact (bounded, finite-dimensional) paramter space is::
 
-    # Set minima and maxima
-    lam_domain = np.array([[.07, .15], [.1, .2]])
-    lam3 = 0.012
-    ymin = -1050
-    xmin = 1420
-    xmax = 1580
-    ymax = 1500
-    wall_height = -2.5
+    # [[min \lambda_1, max \lambda_1],..., [min \lambda_3, max \lambda_3]]
+    param_domain = np.array([[-900, 1500], [.07, .15], [.1, .2]])
+    param_min = param_domain[:, 0]
+    param_max = param_domain[:, 1]
 
-    param_min = lam_domain[:, 0]
-    param_max = lam_domain[:, 1]
+In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
+(q_1(\lambda), q_5(\lambda), q_2(\lambda))` using data read from a ``.mat`` :download:`file
+<../../../examples/fromFile_ADCIRCMap/Q_3D.mat>`::
 
-Specify the observation stations to use to record data to be used as QoI::
-
-    # Create stations
-    stat_x = np.concatenate((1900*np.ones((7,)), [1200], 1300*np.ones((3,)),
-	[1500])) 
-    stat_y = np.array([1200, 600, 300, 0, -300, -600, -1200, 0, 1200,
-	    0, -1200, -1400])
-    all_stations = []
-    for x, y in zip(stat_x, stat_y):
-	all_stations.append(basic.location(x, y))
-
-    # Select only the stations I care about this will lead to better sampling
-    station_nums = [0, 5] # 1, 6
-    stations = []
-    for s in station_nums:
-	stations.append(all_stations[s])
-
-    # Read in Q_ref and Q to create the appropriate rho_D 
-    mdat = sio.loadmat('Q_2D')
+    station_nums = [0, 4, 1] # 1, 5, 2
+    mdat = sio.loadmat('Q_3D')
     Q = mdat['Q']
     Q = Q[:, station_nums]
-
-In this example we use :class:`~polyadcirc.run_framework.random_wall_Q` for the
-QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` ::
-
     # Create experiment model
-    def model(sample):
-	# box_limits [xmin, xmax, ymin, ymax, wall_height]
-	wall_points = np.outer([xmin, xmax, ymin, ymax, wall_height],
-		np.ones(sample.shape[1]))
-	# [lam1, lam2, lam3]
-	mann_pts = np.vstack((sample, lam3*np.ones(sample.shape[1])))
-	return main_run.run_nobatch_q(domain, wall_points, mann_pts,
-		model_save_file, num_procs=nprocs, procs_pnode=ppnode,
-		stations=stations, TpN=TpN)
+    points = mdat['points']
+    def model(inputs):
+        interp_values = np.empty((inputs.shape[0], Q.shape[1])) 
+        for i in xrange(Q.shape[1]):
+            interp_values[:, i] = griddata(points.transpose(), Q[:, i],
+                inputs)
+        return interp_values 
 
 Next, we implicty designate the region of interest :math:`\Lambda_k =
 Q^{-1}(D_k)` in :math:`\Lambda` for some :math:`D_k \subset \mathcal{D}`
@@ -120,7 +57,7 @@ through the use of some kernel. In this instance we choose our kernel
 We choose some :math:`\lambda_{ref}` and let :math:`Q_{ref} = Q(\lambda_{ref})`::
 
     Q_ref = mdat['Q_true']
-    Q_ref = Q_ref[15, station_nums] # 16th/20
+    Q_ref = Q_ref[14, station_nums] # 15th/20
 
 We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
 :math:`Q(\lambda_{ref})` with sides 15% the length of :math:`q_1` and
@@ -139,7 +76,7 @@ We define a rectangle, :math:`R_{ref} \subset \mathcal{D}` centered at
         max_values = np.repeat(maximum, outputs.shape[0], 0)
         return inside.astype('float64')*max_values
 
-    kernel_rD = asam.rhoD_kernel(maximum, rho_D)
+    kernel_rD = aps.rhoD_kernel(maximum, rho_D)
 
 Given a (M, mdim) data vector
 :class:`~bet.sampling.adaptiveSampling.rhoD_kernel` expects that ``rho_D``
@@ -153,7 +90,7 @@ sampling chains that are each 125 samples long::
     chain_length = 125
     num_chains = 80
     num_samples = chain_length*num_chains
-    sampler = asam.sampler(num_samples, chain_length, model)
+    sampler = aps.sampler(num_samples, chain_length, model)
 
 We create the :mod:`~bet.sampling.adaptiveSampling.transition_set` with an
 initial step size ratio of 0.5 and a minimum, maximum step size ratio of
@@ -161,7 +98,7 @@ initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 samples out side of the bounded parameter domain, ``lambda_domain`` ::
 
     # Create Transition Kernel
-    transition_set = asam.transition_set(.5, .5**5, 1.0)
+    transition_set = aps.transition_set(.5, .5**5, 1.0)
 
 We choose an initial sample type to seed the sampling chains::
 
@@ -180,9 +117,9 @@ In some instances the user may want to generate and compare several sets of
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>`. The set up in
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>` is very similar to the
-set up in :download:`fromFile2D <../../../examples/fromFileMap/fromFile2D.py>` and is
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`. The set up in
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>` is very similar to the
+set up in :download:`fromFile2D <../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` and is
 omitted for brevity.
 
 We can explore several types of kernels::
