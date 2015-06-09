@@ -14,7 +14,7 @@ import numpy as np
 import scipy.spatial as spatial
 import numpy.testing as nptest
 import bet.util as util
-from bet.Comm import *
+from bet.Comm import comm 
 
 def test_in_high_prob():
     """

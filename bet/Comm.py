@@ -17,6 +17,8 @@ class comm_for_no_mpi4py(object):
         """
         Initialization
         """
+        self.size = 1
+        self.rank = 0
         pass
 
     def Get_size(self):
@@ -33,7 +35,7 @@ class comm_for_no_mpi4py(object):
         """
         return 0
 
-    def allgather(self, val):
+    def allgather(self, val, val2=None):
         """
         :param object val: object to allgather
         :rtype: object
@@ -58,7 +60,7 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
-    def Allgather(self, val):
+    def Allgather(self, val, val2=None):
         """
         :param object val: object to Allgather
         :rtype: object
@@ -66,7 +68,7 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
-    def Allreduce(self, val1, val2, op=None):
+    def Allreduce(self, val1, val2=None, op=None):
         """
         :param object val1: object to Allreduce
         :param object val2: object to Allreduce
@@ -94,6 +96,12 @@ class comm_for_no_mpi4py(object):
         :returns: val1
         """
         return val1
+    
+    def Barrier(self):
+        """
+        Does nothing in serial.
+        """
+        pass
 
 
 class MPI_for_no_mpi4py(object):

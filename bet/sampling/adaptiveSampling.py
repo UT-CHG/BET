@@ -9,28 +9,26 @@ map from the paramter space to the data space. We desire to build up a set of
 samples to solve an inverse problem thus giving us information about the
 inverse mapping. Each sample consists of a parameter coordinate, data
 coordinate pairing. We assume the measure of both spaces is Lebesgue.
-
 We employ an approach based on using multiple sample chains.
 """
 
 import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
+import bet.util as util
 import math, os
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 
 
 def loadmat(save_file, lb_model=None):
     """
     Loads data from ``save_file`` into a
     :class:`~bet.sampling.adaptiveSampling.sampler` object.
-
     :param string save_file: file name
     :param lb_model: runs the model at a given set of parameter samples, (N,
         ndim), and returns data (N, mdim)
     :rtype: tuple
     :returns: (sampler, samples, data)
-
     """
     # load the data from a *.mat file
     mdat = sio.loadmat(save_file)
@@ -67,7 +65,6 @@ class sampler(bsam.sampler):
     def __init__(self, num_samples, chain_length, lb_model):
         """
         Initialization
-
         :param int num_samples: Total number of samples
         :param int chain_length: Number of samples per chain
         :param lb_model: runs the model at a given set of parameter samples, (N,
@@ -75,8 +72,8 @@ class sampler(bsam.sampler):
         """
         super(sampler, self).__init__(lb_model, num_samples)
         self.chain_length = chain_length
-        self.num_chains_pproc = int(math.ceil(num_samples/float(chain_length*size)))
-        self.num_chains = size * self.num_chains_pproc
+        self.num_chains_pproc = int(math.ceil(num_samples/float(chain_length*comm.size)))
+        self.num_chains = comm.size * self.num_chains_pproc
         self.num_samples = chain_length * self.num_chains
         self.lb_model = lb_model
         self.sample_batch_no = np.repeat(range(self.num_chains), chain_length,
@@ -121,7 +118,6 @@ class sampler(bsam.sampler):
         :rtype: tuple
         :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
-
         """
         # generalized chains
         results = list()
@@ -172,7 +168,6 @@ class sampler(bsam.sampler):
         :rtype: tuple
         :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
-
         """
         results = list()
         r_step_size = list()
@@ -221,7 +216,6 @@ class sampler(bsam.sampler):
         :rtype: tuple
         :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
-
         """
         kern_list = list()
         for i, j, z in zip(increase, decrease, tolerance):
@@ -255,11 +249,10 @@ class sampler(bsam.sampler):
             ``data_samples`` is np.ndarray of shape (num_samples, mdim), and 
             ``all_step_ratios`` is np.ndarray of shape (num_chains,
             chain_length)
-
         """
-        if size > 1:
+        if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(rank, os.path.basename(savefile)))
+                    "proc{}{}".format(comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -283,11 +276,15 @@ class sampler(bsam.sampler):
         comm.Barrier()
         
         # now split it all up
-        MYsamples_old = np.empty((np.shape(samples_old)[0]/size, np.shape(samples_old)[1]))
-        comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-        MYdata_old = np.empty((np.shape(data_old)[0]/size, np.shape(data_old)[1]))
-        comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old,
-            MPI.DOUBLE])
+        if comm.size > 1:
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size, np.shape(samples_old)[1]))
+            comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size, np.shape(data_old)[1]))
+            comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old,
+                                                  MPI.DOUBLE])
+        else:
+            MYsamples_old = np.copy(samples_old)
+            MYdata_old = np.copy(data_old)
 
         samples = MYsamples_old
         data = MYdata_old
@@ -326,7 +323,7 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            if size > 1:
+            if comm.size > 1:
                 super(sampler, self).save(mdat, psavefile)
             else:
                 super(sampler, self).save(mdat, savefile)
@@ -337,14 +334,16 @@ class sampler(bsam.sampler):
         MYdata = np.copy(data)
         MYall_step_ratios = np.copy(all_step_ratios)
         # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
-        samples = np.empty((self.num_samples, np.shape(MYsamples)[1]), dtype=np.float64)
+        samples = util.get_global_values(MYsamples,
+                shape=(self.num_samples, np.shape(MYsamples)[1]))           
         # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
-        data = np.empty((self.num_samples, np.shape(MYdata)[1]), dtype=np.float64)
-        all_step_ratios = np.empty((self.num_chains, self.chain_length), dtype=np.float64)
-        # now allgather
-        comm.Allgather([MYsamples, MPI.DOUBLE], [samples, MPI.DOUBLE])
-        comm.Allgather([MYdata, MPI.DOUBLE], [data, MPI.DOUBLE])
-        comm.Allgather([MYall_step_ratios, MPI.DOUBLE], [all_step_ratios, MPI.DOUBLE])
+        data = util.get_global_values(MYdata, shape=(self.num_samples,
+            np.shape(MYdata)[1]))
+        # ``all_step_ratios`` is np.ndarray of shape (num_chains,
+        # chain_length)
+        all_step_ratios = util.get_global_values(MYall_step_ratios,
+                shape=(self.num_samples,))
+        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
@@ -357,7 +356,6 @@ class sampler(bsam.sampler):
 def kernels(Q_ref, rho_D, maximum):
     """
     Generates a list of kernstic objects.
-
     :param Q_ref: reference parameter value
     :type Q_ref: :class:`numpy.ndarray`
     :param rho_D: probability density on D
@@ -366,7 +364,6 @@ def kernels(Q_ref, rho_D, maximum):
     :param float maximum: maximum value of rho_D
     :rtype: list
     :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel]
-
     """
     kern_list = list()
     kern_list.append(maxima_mean_kernel(np.array([Q_ref]), rho_D))
@@ -381,9 +378,7 @@ class transition_set(object):
     very basic algorithm. Future classes will inherit from this one with
     different implementations of the
     :meth:~`polysim.run_framework.apdative_sampling.step` method.
-
     This basic transition set is designed without a preferential direction.
-
     init_ratio
         Initial step size ratio compared to the parameter domain.
     min_ratio
@@ -411,7 +406,6 @@ class transition_set(object):
         Generate ``num_samples`` new steps using ``step_ratio`` and
         ``param_width`` to calculate the ``step size``. Each step will have a
         random direction.
-
         :param step_ratio: define maximum step_size = ``step_ratio*param_width``
         :type step_ratio: :class:`numpy.ndarray` of shape (num_samples,)
         :param param_width: width of the parameter domain
@@ -427,7 +421,6 @@ class transition_set(object):
             ndim)
         :rtype: :class:`numpy.ndarray` of shape (num_samples, ndim)
         :returns: samples_new
-
         """
         # calculate maximum step size
         step_size = np.repeat([step_ratio], param_width.shape[1],
@@ -481,13 +474,11 @@ class kernel(object):
     def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
-
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
         :rtype: typle
         :returns: (kern_new, proposal)
-
         """
         return (None, np.ones((data_new.shape[0],)))
 
@@ -500,9 +491,7 @@ class rhoD_kernel(kernel):
     the samples_new(k) are closer or farther away from a region of high
     probability in D than the QoI at samples_old(k).  For example, if they are
     closer, then we can reduce the step_size(k) by 1/2.
-
     Note: This only works well with smooth rho_D.
-
     maximum
         maximum value of rho_D on D
     rho_D
@@ -513,7 +502,6 @@ class rhoD_kernel(kernel):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
-
     """
 
     def __init__(self, maximum, rho_D, tolerance=1E-08, increase=2.0, 
@@ -542,7 +530,6 @@ class rhoD_kernel(kernel):
         :param kern_old: kernel evaluated at previous step
         :rtype: tuple
         :returns: (kern_new, proposal)
-
         """
         # Evaluate kernel for new data.
         kern_new = self.rho_D(data_new)
@@ -577,7 +564,6 @@ class maxima_kernel(kernel):
     QoI at each of the samples_new(k) are closer or farther away from a region
     of high probability in D than the QoI at samples_old(k). For example, if
     they are closer, then we can reduce the step_size(k) by 1/2.
-
     maxima
         locations of the maxima of rho_D on D
         :class:`numpy.ndarray` of shape (num_maxima, mdim)
@@ -589,14 +575,12 @@ class maxima_kernel(kernel):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
-
     """
 
     def __init__(self, maxima, rho_D, tolerance=1E-08, increase=2.0, 
             decrease=0.5):
         """
         Initialization
-
         :param maxima: locations of the maxima of rho_D on D 
         :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
@@ -622,7 +606,6 @@ class maxima_kernel(kernel):
         :param kern_old: kernel evaluated at previous step
         :rtype: tuple
         :returns: (kern_new, proposal)
-
         """
         # Evaluate kernel for new data.
         kern_new = np.zeros((data_new.shape[0]))
@@ -666,7 +649,6 @@ class maxima_mean_kernel(maxima_kernel):
     QoI at each of the samples_new(k) are closer or farther away from a region
     of high probability in D than the QoI at samples_old(k). For example, if
     they are closer, then we can reduce the step_size(k) by 1/2.
-
     maxima
         locations of the maxima of rho_D on D
         np.array of shape (num_maxima, mdim)
@@ -678,14 +660,12 @@ class maxima_mean_kernel(maxima_kernel):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
-
     """
 
     def __init__(self, maxima, rho_D, tolerance=1E-08, increase=2.0, 
             decrease=0.5):
         """
         Initialization
-
         :param maxima: locations of the maxima of rho_D on D 
         :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
@@ -720,7 +700,6 @@ class maxima_mean_kernel(maxima_kernel):
         :param kern_old: kernel evaluated at previous step
         :rtype: tuple
         :returns: (kern_new, proposal)
-
         """
         # Evaluate kernel for new data.
         kern_new = np.zeros((data_new.shape[0]))
@@ -774,6 +753,3 @@ class maxima_mean_kernel(maxima_kernel):
             # if closer than kern_old then decrease
             proposal[kern_lesser] = self.decrease
         return (kern_new, proposal)
-
-
-

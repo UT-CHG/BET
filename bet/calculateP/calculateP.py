@@ -12,7 +12,7 @@ This module provides methods for calulating the probability measure
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
     the voronoi cells using MC integration
 """
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 import numpy as np
 import scipy.spatial as spatial
 import bet.util as util
@@ -32,7 +32,7 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     :returns: a set of samples for emulation
 
     """
-    num_l_emulate = int(num_l_emulate/size)+1
+    num_l_emulate = int(num_l_emulate/comm.size)+1
     lam_width = lam_domain[:, 1] - lam_domain[:, 0]
     lambda_emulate = lam_width*np.random.random((num_l_emulate,
         lam_domain.shape[0]))+lam_domain[:, 0] 
@@ -128,7 +128,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, d_Tree=None):
         d_Tree = spatial.KDTree(d_distr_samples)
 
     # Set up local arrays for parallelism
-    local_index = range(0+rank, samples.shape[0], size)
+    local_index = range(0+comm.rank, samples.shape[0], comm.size)
     samples_local = samples[local_index, :]
     data_local = data[local_index, :]
     local_array = np.array(local_index)
@@ -209,10 +209,10 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     clam_vol = np.copy(lam_vol) 
     comm.Allreduce([lam_vol, MPI.DOUBLE], [clam_vol, MPI.DOUBLE], op=MPI.SUM)
     lam_vol = clam_vol
-    lam_vol = lam_vol/(len(lambda_emulate)*size)
+    lam_vol = lam_vol/(len(lambda_emulate)*comm.size)
 
     # Set up local arrays for parallelism
-    local_index = range(0+rank, samples.shape[0], size)
+    local_index = range(0+comm.rank, samples.shape[0], comm.size)
     samples_local = samples[local_index, :]
     data_local = data[local_index, :]
     lam_vol_local = lam_vol[local_index]

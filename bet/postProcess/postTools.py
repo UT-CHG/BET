@@ -3,7 +3,7 @@
 """
 This module provides methods for postprocessing probabilities and data. 
 """
-from bet.Comm import rank
+from bet.Comm import comm
 import numpy as np
 import scipy.io as sio
 
@@ -110,8 +110,8 @@ def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
     else:
         suffix = '.csv'
 
-    np.savetxt(P_file + str(rank) + suffix, P_samples, delimiter=',')
-    np.savetxt(lam_file + str(rank) + suffix, samples, delimiter=',')
+    np.savetxt(P_file + str(comm.rank) + suffix, P_samples, delimiter=',')
+    np.savetxt(lam_file + str(comm.rank) + suffix, samples, delimiter=',')
 
 def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
         compress=False):
@@ -164,7 +164,7 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     """
     file_dict = {"P_samples": P_samples,
                "samples": samples}
-    sio.savemat(file_prefix + str(rank), file_dict, do_compression=compress)
+    sio.savemat(file_prefix + str(comm.rank), file_dict, do_compression=compress)
 
 def collect_parallel_probs_mat(file_prefix, num_files, save=False,
        compress=False):

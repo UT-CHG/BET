@@ -68,29 +68,31 @@ def get_global_values(array, shape=None):
     :rtype: :class:`~numpy.ndarray`
     :returns: array
     """
-
-    # Figure out the subtype of the elements of the array
-    dtype = array.dtype
-    mpi_dtype = False
-    for ptype in possible_types.iterkeys():
-        if np.issubdtype(dtype, ptype):
-            mpi_dtype = True
-            dtype = ptype
-
-    if type(shape) == type(None) or not mpi_dtype:
-        # do a lowercase allgather
-        a_shape = len(array.shape)
-        array = comm.allgather(array, array)
-        if a_shape == 1:
-            return np.hstack(array)
-        else:
-            return np.vstack(array)
+    if comm.size == 1:
+        return array
     else:
-        # do an uppercase Allgather
-        whole_a = np.empty(shape, dtype=dtype)
-        comm.Allgather([array, possible_types[dtype]], [whole_a,
-            possible_types[dtype]])
-        return whole_a
+        # Figure out the subtype of the elements of the array
+        dtype = array.dtype
+        mpi_dtype = False
+        for ptype in possible_types.iterkeys():
+            if np.issubdtype(dtype, ptype):
+                mpi_dtype = True
+                dtype = ptype
+
+        if type(shape) == type(None) or not mpi_dtype:
+            # do a lowercase allgather
+            a_shape = len(array.shape)
+            array = comm.allgather(array, array)
+            if a_shape == 1:
+                return np.hstack(array)
+            else:
+                return np.vstack(array)
+        else:
+            # do an uppercase Allgather
+            whole_a = np.empty(shape, dtype=dtype)
+            comm.Allgather([array.ravel(), possible_types[dtype]], [whole_a,
+                possible_types[dtype]])
+            return whole_a
 
 def fix_dimensions_vector(vector):
     """
