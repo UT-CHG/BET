@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 # -*- coding: utf-8 -*-
 #
@@ -55,7 +55,7 @@ master_doc = 'index'
 
 # General information about the project.
 project = u'BET'
-copyright = u'2014, Lindley Graham, Steven Mattis, Troy Butler'
+copyright = u'2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler)'
 
 # The version info for the project you're documenting, acts as replacement for
 # |version| and |release|, also used in various other places throughout the
@@ -198,7 +198,7 @@ latex_elements = {
 # (source start file, target name, title, author, documentclass [howto/manual]).
 latex_documents = [
   ('index', 'BET.tex', u'BET Documentation',
-   u'Lindley Graham, Steven Mattis, Troy Butler', 'manual'),
+   u'The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler)', 'manual'),
 ]
 
 # The name of an image file (relative to this directory) to place at the top of
@@ -228,7 +228,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     ('index', 'bet', u'BET Documentation',
-     [u'Lindley Graham, Steven Mattis, Troy Butler'], 1)
+     [u'The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler)'], 1)
 ]
 
 # If true, show URL addresses after external links.
@@ -242,7 +242,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
   ('index', 'BET', u'BET Documentation',
-   u'Lindley Graham, Steven Mattis, Troy Butler', 'BET', 'One line description of project.',
+   u'The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler)', 'BET', 'One line description of project.',
    'Miscellaneous'),
 ]
 
@@ -253,4 +253,4 @@ texinfo_documents = [
 #texinfo_domain_indices = True
 
 # How to display URL addresses: 'footnote', 'no', or 'inline'.
-#texinfo_show_urls = 'footnote'
+#texinfo_show_urls= 'footnote'
