@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 r""" 
 This module provides methods for calulating the probability measure
@@ -12,7 +12,7 @@ This module provides methods for calulating the probability measure
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
     the voronoi cells using MC integration
 """
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 import numpy as np
 import scipy.spatial as spatial
 import bet.util as util
@@ -128,7 +128,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, d_Tree=None):
         d_Tree = spatial.KDTree(d_distr_samples)
 
     # Set up local arrays for parallelism
-    local_index = range(0+rank, samples.shape[0], size)
+    local_index = range(0+comm.rank, samples.shape[0], comm.size)
     samples_local = samples[local_index, :]
     data_local = data[local_index, :]
     local_array = np.array(local_index)
@@ -209,10 +209,10 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     clam_vol = np.copy(lam_vol) 
     comm.Allreduce([lam_vol, MPI.DOUBLE], [clam_vol, MPI.DOUBLE], op=MPI.SUM)
     lam_vol = clam_vol
-    lam_vol = lam_vol/(len(lambda_emulate)*size)
+    lam_vol = lam_vol/(len(lambda_emulate)*comm.size)
 
     # Set up local arrays for parallelism
-    local_index = range(0+rank, samples.shape[0], size)
+    local_index = range(0+comm.rank, samples.shape[0], comm.size)
     samples_local = samples[local_index, :]
     data_local = data[local_index, :]
     lam_vol_local = lam_vol[local_index]

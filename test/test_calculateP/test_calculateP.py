@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 # Steven Mattis and Lindley Graham 04/06/2015
 """
@@ -17,7 +17,7 @@ import numpy as np
 import scipy.spatial as spatial
 import numpy.testing as nptest
 import bet.util as util
-from bet.Comm import *
+from bet.Comm import comm 
 
 data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
 
@@ -47,7 +47,7 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         """
         Check the dimension.
         """
-        nptest.assert_array_equal(self.lambda_emulate.shape, (int(self.num_l_emulate/size)+1,3))
+        nptest.assert_array_equal(self.lambda_emulate.shape, (int(self.num_l_emulate/comm.size)+1,3))
 
     def test_bounds(self):
         """
@@ -66,7 +66,7 @@ class prob:
         Test to see if the prob. sums to 1.
         """
         nptest.assert_almost_equal(np.sum(self.P),1.0)
-    #@unittest.skipIf(size > 1, 'Only run in serial')
+    #@unittest.skipIf(comm.size > 1, 'Only run in serial')
     def test_P_matches_true(self):
         """
         Test against reference probs. (Only in serial)
@@ -93,7 +93,7 @@ class prob_emulated:
         """
         Test that probabilites match reference values.
         """
-        if size == 1:
+        if comm.size == 1:
             nptest.assert_almost_equal(self.P_emulate_ref,self.P_emulate)
     def test_prob_pos(self):
         """
@@ -111,7 +111,7 @@ class prob_mc:
         """
         Test the probs. match reference values.
         """
-        if size==1:
+        if comm.size==1:
             nptest.assert_almost_equal(self.P_ref,self.P)
     def test_vol_sum_to_1(self):
         """

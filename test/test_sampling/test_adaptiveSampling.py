@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 # -*- coding: utf-8 -*-
 # Lindley Graham 04/07/2015
@@ -12,13 +12,13 @@ import numpy.testing as nptest
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import scipy.io as sio
-from bet.Comm import *
+from bet.Comm import comm 
 import bet
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
     "../test/test_sampling")
 
-@unittest.skipIf(size > 1, 'Only run in serial')
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 def test_loadmat_init():
     """
     Tests :meth:`bet.sampling.adaptiveSampling.loadmat` and
@@ -34,8 +34,8 @@ def test_loadmat_init():
     model = "this is not a model"
     
     num_samples = np.array([50, 60])
-    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples/float(chain_length*size)).astype('int')
-    num_chains1, num_chains2 = size * np.array([num_chains_pproc1,
+    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples/float(chain_length*comm.size)).astype('int')
+    num_chains1, num_chains2 = comm.size * np.array([num_chains_pproc1,
         num_chains_pproc2])
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
         num_chains2])
@@ -122,7 +122,7 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
     
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = {}
-    if rank == 0:
+    if comm.rank == 0:
         mdat = sio.loadmat(savefile)
         nptest.assert_array_equal(samples, mdat['samples'])
         nptest.assert_array_equal(data, mdat['data'])
@@ -186,8 +186,8 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         num_samples = 1000
         chain_length = 100
-        num_chains_pproc = int(np.ceil(num_samples/float(chain_length*size)))
-        num_chains = size * num_chains_pproc
+        num_chains_pproc = int(np.ceil(num_samples/float(chain_length*comm.size)))
+        num_chains = comm.size * num_chains_pproc
         num_samples = chain_length * np.array(num_chains)
 
         self.samplers = []
@@ -206,10 +206,10 @@ class Test_adaptive_sampler(unittest.TestCase):
 
     def tearDown(self):
         for f in self.savefiles:
-            if rank == 0 and os.path.exists(f+".mat"):
+            if comm.rank == 0 and os.path.exists(f+".mat"):
                 os.remove(f+".mat")
-        proc_savefiles = glob.glob("p{}*.mat".format(rank))
-        proc_savefiles.extend(glob.glob("proc{}*.mat".format(rank)))
+        proc_savefiles = glob.glob("p{}*.mat".format(comm.rank))
+        proc_savefiles.extend(glob.glob("proc{}*.mat".format(comm.rank)))
         for pf in proc_savefiles:
             if os.path.exists(pf):
                 os.remove(pf)

@@ -1,10 +1,10 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 """
 This module provides methods for plotting probabilities. 
 """
 
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 import matplotlib.pyplot as plt
 import numpy as np
 import copy, math
@@ -122,7 +122,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
     :type lambda_label: list of length nbins of strings or None
 
     """
-    if rank == 0:
+    if comm.rank == 0:
         index = copy.deepcopy(marginals.keys())
         index.sort()
         for i in index:
@@ -176,7 +176,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     if plot_surface:
         from mpl_toolkits.mplot3d import Axes3D
         from matplotlib.ticker import LinearLocator, FormatStrFormatter
-    if rank == 0:
+    if comm.rank == 0:
         pairs = copy.deepcopy(marginals.keys())
         pairs.sort()
         for k, (i, j) in enumerate(pairs):

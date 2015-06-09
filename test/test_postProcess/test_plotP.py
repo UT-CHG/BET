@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 # Steven Mattis 04/07/2015
 """
@@ -16,7 +16,7 @@ import numpy as np
 import scipy.spatial as spatial
 import numpy.testing as nptest
 import bet.util as util
-from bet.Comm import *
+from bet.Comm import comm
 import os
 
 
@@ -32,7 +32,7 @@ class Test_calc_marg_1D(unittest.TestCase):
         self.lam_domain=np.array([[0.0,1.0]])
         num_samples=1000
         self.samples = np.linspace(self.lam_domain[0][0], self.lam_domain[0][1], num_samples+1)
-        self.P_samples = 1.0/float(size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
+        self.P_samples = 1.0/float(comm.size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         
     def test_1_bin(self):
         """
@@ -67,7 +67,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         """
         self.lam_domain=np.array([[0.0,1.0],[0.0,1.0]])
         self.samples=util.meshgrid_ndim((np.linspace(self.lam_domain[0][0], self.lam_domain[0][1], 10),np.linspace(self.lam_domain[1][0], self.lam_domain[1][1], 10)))
-        self.P_samples = 1.0/float(size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
+        self.P_samples = 1.0/float(comm.size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         
     def test_1_bin_1D(self):
         """ 
