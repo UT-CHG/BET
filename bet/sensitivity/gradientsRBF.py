@@ -335,7 +335,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
     gradient_vec = (data[num_xeval:] - np.tile(data[0:num_xeval], [Lambda_dim,1]))/r
-    gradient_tensor = gradient_vec.reshape(Lambda_dim,num_qois,num_xeval).transpose(2,1,0)
+    gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(num_qois, Lambda_dim, num_xeval).transpose(2,0,1)
 
     return gradient_tensor
 
