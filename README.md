@@ -5,7 +5,7 @@ BET is in active development. Hence, some features are still being added and you
 
 Butler, Estep, Tavener Method
 
-This code has been documented with Sphinx. To build documentation run 
+This code has been documented with Sphinx. The documentation is available online ta http://ut-chg.github.io/BET. To build documentation run 
 ``make html`` in the ``doc/`` folder.
 To build/update the documentation use the following commands::
 
