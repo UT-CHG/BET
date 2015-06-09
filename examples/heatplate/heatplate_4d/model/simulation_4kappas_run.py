@@ -1,3 +1,4 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
 
 """Run the heatplate simulation over a set of samples of the parameter space"""
 ''' python simulation_2kappas_run test '''

@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This examples takes in samples, specifically chosen to be used for a
 forward finite difference stencil, and corresponding QoIs (data) from the 4d heatplate model.

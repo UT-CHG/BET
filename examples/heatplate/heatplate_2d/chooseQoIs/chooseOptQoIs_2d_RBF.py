@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+
 """
 This examples takes in samples, specifically chosen in clusters around 16 random
 points in lam_domain, and corresponding QoIs (data) from the 4d heatplate model.
