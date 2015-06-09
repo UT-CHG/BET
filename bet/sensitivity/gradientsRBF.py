@@ -11,44 +11,58 @@ import scipy
 from itertools import combinations
 from bet.Comm import *
 
-def pick_close_points(num_close, xeval, r):
+def sample_linf_ball(lam_domain, centers, num_close, r):
     """
 
-    Pick num_close points in a box of length 2*r around a
-    point in :math:`\Lambda`, do this for each point
-    in xeval.
+    Pick num_close points in a the l-infinity box of length 
+    2*r around a point in :math:`\Lambda`, do this for each point
+    in centers.  If this box extends outside of :math:`\Lambda`, we
+    sample the intersection.
 
     :param int num_close: Number of points in each cluster
-    :param xeval: Points in :math:`\Lambda` to cluster points around
-    :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :param centers: Points in :math:`\Lambda` to cluster points around
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Each side of the box will have length 2*r
-    :rtype: :class:`np.ndarray` of shape (num_close*num_xeval, Ldim)
-    :returns: Clusters of samples near each point in xeval
+    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
+    :returns: Clusters of samples near each point in centers
 
     """
 
-    Lambda_dim = xeval.shape[1]
-    num_xeval = xeval.shape[0]
-    left = xeval - r
-    right = xeval + r
+    Lambda_dim = centers.shape[1]
+    num_centers = centers.shape[0]
 
-    samples_temp = np.dot((right-left), np.random.random([Lambda_dim,Lambda_dim*num_close])) + np.tile(a,[1,num_close])
-    samples = samples_temp.reshape(num_xeval*num_close, Lambda_dim)
+    # Define the size of each box
+    left = np.maximum(centers-r,np.ones([num_centers,Lambda_dim])*lam_domain[:,0])
+    right = np.minimum(centers+r,np.ones([num_centers,Lambda_dim])*lam_domain[:,1])
+
+    translate = r*np.ones(right.shape)
+    indz = np.where(left==0)
+    translate[indz] = right[indz]-r
+
+    translate = np.tile(translate,[num_close,1])
+
+    # Translate each box accordingly so no samples are outside :math:`\Lambda`
+    samples = np.tile(right-left,[num_close,1])*np.random.random([num_centers*num_close, Lambda_dim]) + np.tile(centers,[num_close,1]) - translate
 
     return samples
 
-def sample_diamond(centers, num_samples , r=None):
+def sample_l1_ball(centers, num_close , r=None):
     """
-    TODO: come up with better variable names, vectorize
-           split this into two methods, sample_simplex, simlex_to_diamond
+    TODO: Come up with better variable names. Vectorize the for loops.
+          Split this into two methods, sample_simplex, simlex_to_diamond(?).
+          Take in 'hard' and 'soft' lam_domain boundaries and either
+          allow for sampes out side lam_domain (soft) or restrict them to
+          be inside (hard).
 
-    Uniformly sample a diamond (defined by 2^dim simplices).  Then scale
+    Uniformly sample the l1-ball (defined by 2^dim simplices).  Then scale
     each dimension according to rvec and translate the center to centers.
-    Do this for each point in centers.
+    Do this for each point in centers.  *** This method currently allows
+    samples to be placed outside of lam_domain.  Please place your
+    centers accordingly.***
 
     :param centers: Points in :math:`\Lambda` to cluster samples around
     :type centers: :class:`np.ndarray` of shape (num_centers, Ldim)
-    :param int num_samples: Number of samples in each diamond
+    :param int num_close: Number of samples in each diamond
     :param float r: The radius of the diamond, along each axis
     :rtype: :class:`np.ndarray` of shape (num_samples*num_centers, Ldim)
     :returns: Uniform random samples from a diamond around each center point
@@ -63,20 +77,20 @@ def sample_diamond(centers, num_samples , r=None):
 
     x = np.zeros([1, centers.shape[1]])
 
-    u = np.random.random([num_samples,1])
+    u = np.random.random([num_close,1])
     b = u**(1./Lambda_dim)
 
     for j in range(centers.shape[0]):
-        temp = np.random.random([num_samples,Lambda_dim-1])*np.tile(b, (1,Lambda_dim-1))
+        temp = np.random.random([num_close,Lambda_dim-1])*np.tile(b, (1,Lambda_dim-1))
         temp = np.sort(temp,1)
-        xtemp = np.zeros([num_samples, Lambda_dim])
-        temp1 = np.zeros([num_samples, Lambda_dim+1])
+        xtemp = np.zeros([num_close, Lambda_dim])
+        temp1 = np.zeros([num_close, Lambda_dim+1])
         temp1[:,1:Lambda_dim] = temp
         temp1[:,Lambda_dim] = np.array(b).transpose()
         for i in range(1,Lambda_dim+1):
             xtemp[:,i-1] = temp1[:,i]-temp1[:,i-1]
 
-        u_sign = 2*np.round(np.random.random([num_samples ,Lambda_dim])) - 1
+        u_sign = 2*np.round(np.random.random([num_close ,Lambda_dim])) - 1
         xtemp = xtemp*u_sign;
 
         for i in range(Lambda_dim):
@@ -86,49 +100,50 @@ def sample_diamond(centers, num_samples , r=None):
 
     return x[1:]
 
-def pick_cfd_points(xeval, r):
+def pick_cfd_points(centers, r):
     """
 
-    Pick 2*Lambda_dim points, for each xeval, for centered 
-    finite diff grad approx.
+    Pick 2*Lambda_dim points, for each center, for centered 
+    finite difference gradient approximation.
 
-    :param xeval: Points in :math:`\Lambda` to cluster points around
-    :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :param centers: Points in :math:`\Lambda` to cluster points around
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Each side of the box will have length 2*r
-    :rtype: :class:`np.ndarray` of shape (num_close*num_xeval, Ldim)
+    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
     :returns: Samples for centered finite difference stencil for 
-        each point in xeval.
+        each point in centers.
 
     """
-    Lambda_dim = xeval.shape[1]
-    num_xeval = xeval.shape[0]
-    samples = np.tile(xeval, [Lambda_dim*2,1])
+    Lambda_dim = centers.shape[1]
+    num_centers = centers.shape[0]
+    samples = np.tile(centers, [Lambda_dim*2,1])
 
-    translate = r*np.kron(np.eye(Lambda_dim), np.ones([num_xeval,1]))
+    translate = r*np.kron(np.eye(Lambda_dim), np.ones([num_centers,1]))
     translate = np.append(translate, -translate, axis=0)
     samples += translate
 
     return samples
 
-def pick_ffd_points(xeval, r):
+def pick_ffd_points(centers, r):
     """
 
-    Pick Lambda_dim points, for each xeval, for right side 
-    finite diff grad approx.
+    Pick Lambda_dim points, for each centers, for a forward finite
+    difference gradient approximation.  The ordering of these samples
+    is important.
 
-    :param xeval: Points in :math:`\Lambda` to cluster points around
-    :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :param centers: Points in :math:`\Lambda` to cluster points around
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Each side of the box will have length 2*r
-    :rtype: :class:`np.ndarray` of shape (num_close*num_xeval, Ldim)
+    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
     :returns: Samples for centered finite difference stencil for 
-        each point in xeval.
+        each point in centers.
 
     """
-    Lambda_dim = xeval.shape[1]
-    num_xeval = xeval.shape[0]
-    samples = np.tile(xeval, [Lambda_dim,1])
+    Lambda_dim = centers.shape[1]
+    num_centers = centers.shape[0]
+    samples = np.tile(centers, [Lambda_dim,1])
 
-    translate = r*np.kron(np.eye(Lambda_dim), np.ones([num_xeval,1]))
+    translate = r*np.kron(np.eye(Lambda_dim), np.ones([num_centers,1]))
     samples += translate
 
     return samples
@@ -261,9 +276,9 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     """
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
-    in the parameter space for each QoI map.
-    THIS METHOD IS DEPENDENT ON USING pick_cfd_points TO CHOOSE
-    SAMPLES FOR THE CFD STENCIL AROUND EACH XEVAL
+    in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT 
+    ON USING pick_cfd_points TO CHOOSE SAMPLES FOR THE CFD STENCIL AROUND
+    EACH XEVAL.  THE ORDERING MATTERS.
 
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape (num_samples, Ldim) where Ldim is the 
@@ -296,7 +311,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
     in the parameter space for each QoI map.
     THIS METHOD IS DEPENDENT ON USING pick_ffd_points TO CHOOSE
-    SAMPLES FOR THE CFD STENCIL AROUND EACH XEVAL
+    SAMPLES FOR THE CFD STENCIL AROUND EACH XEVAL.  THE ORDERING MATTERS.
 
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape (num_samples, Ldim) where Ldim is the 
@@ -319,7 +334,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
     gradient_vec = (data[num_xeval:] - np.tile(data[0:num_xeval], [Lambda_dim,1]))/r
-    gradient_tensor = gradient_vec.reshape(Lambda_dim,1,num_xeval).transpose(2,1,0)
+    gradient_tensor = gradient_vec.reshape(Lambda_dim,num_qois,num_xeval).transpose(2,1,0)
 
     return gradient_tensor
 
