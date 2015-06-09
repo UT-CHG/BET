@@ -27,8 +27,8 @@ instead of ::
 You might need to make sure your globalize your arrays or make sure to choose
 the ``parallel`` flag on some functions to ensure correct execution.
 
-Affected Packages
------------------
+Parallel Enabled Modules
+------------------------
 
 The modules that have parallel capabilities are as follows::
 
