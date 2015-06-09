@@ -1,3 +1,4 @@
+# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
 
 """
 This module contains functions for approximating gradient vectors
