@@ -12,7 +12,7 @@ This module provides methods for calulating the probability measure
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
     the voronoi cells using MC integration
 """
-from bet.Comm import comm 
+from bet.Comm import comm, MPI 
 import numpy as np
 import scipy.spatial as spatial
 import bet.util as util

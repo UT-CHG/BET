@@ -17,7 +17,7 @@ import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
 import math, os
-from bet.Comm import comm 
+from bet.Comm import comm, MPI 
 
 
 def loadmat(save_file, lb_model=None):

@@ -4,7 +4,7 @@
 This module provides methods for plotting probabilities. 
 """
 
-from bet.Comm import comm 
+from bet.Comm import comm, MPI 
 import matplotlib.pyplot as plt
 import numpy as np
 import copy, math
