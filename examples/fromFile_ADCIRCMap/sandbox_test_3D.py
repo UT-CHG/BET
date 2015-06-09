@@ -1,54 +1,41 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
+# -*- coding: utf-8 -*-
 # import necessary modules
 import numpy as np
-import polyadcirc.pyADCIRC.basic as basic
 import bet.sampling.adaptiveSampling as asam
 import bet.sampling.basicSampling as bsam
 import bet.postProcess.postTools as ptools
 import scipy.io as sio
 from scipy.interpolate import griddata
 
-sample_save_file = 'sandbox2d'
+sample_save_file = 'sandbox3d'
 
 # Set minima and maxima
-lam_domain = np.array([[.07, .15], [.1, .2]])
+param_domain = np.array([[-900, 1500], [.07, .15], [.1, .2]])
 lam3 = 0.012
-ymin = -1050
 xmin = 1420
 xmax = 1580
 ymax = 1500
 wall_height = -2.5
 
-param_min = lam_domain[:, 0]
-param_max = lam_domain[:, 1]
-
-# Create stations
-stat_x = np.concatenate((1900*np.ones((7,)), [1200], 1300*np.ones((3,)),
-    [1500])) 
-stat_y = np.array([1200, 600, 300, 0, -300, -600, -1200, 0, 1200,
-        0, -1200, -1400])
-all_stations = []
-for x, y in zip(stat_x, stat_y):
-    all_stations.append(basic.location(x, y))
+param_min = param_domain[:, 0]
+param_max = param_domain[:, 1]
 
 # Select only the stations I care about this will lead to better sampling
-station_nums = [0, 5] # 1, 6
-stations = []
-for s in station_nums:
-    stations.append(all_stations[s])
+station_nums = [0, 4, 1] # 1, 5, 2
 
 # Create Transition Kernel
-transition_set = asam.transition_set(.5, .5**5, 1.0)
+transition_set = asam.transition_set(.5, .5**5, 0.5)
 
 # Read in Q_ref and Q to create the appropriate rho_D 
-mdat = sio.loadmat('Q_2D')
+mdat = sio.loadmat('Q_3D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']
-Q_ref = Q_ref[15, station_nums] # 16th/20
+Q_ref = Q_ref[14, station_nums] # 15th/20
 bin_ratio = 0.15
 bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
 
@@ -75,20 +62,20 @@ def rho_D(outputs):
 kernel_mm = asam.maxima_mean_kernel(np.array([Q_ref]), rho_D)
 kernel_rD = asam.rhoD_kernel(maximum, rho_D)
 kernel_m = asam.maxima_kernel(np.array([Q_ref]), rho_D)
-kern_list = [kernel_mm, kernel_rD, kernel_m]
+heur_list = [kernel_mm, kernel_rD, kernel_m]
 
 # Create sampler
 chain_length = 125
 num_chains = 80
-num_samples = chain_length*num_chains
+num_samples = num_chains*chain_length
 sampler = asam.sampler(num_samples, chain_length, model)
 inital_sample_type = "lhs"
 
 # Get samples
 # Run with varying kernels
-gen_results = sampler.run_gen(kern_list, rho_D, maximum, param_min,
+gen_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
         param_max, transition_set, sample_save_file)
-#run_reseed_results = sampler.run_gen(kern_list, rho_D, maximum, param_min,
+#run_reseed_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
 #        param_max, t_kernel, sample_save_file, reseed=3)
 
 # Run with varying transition sets bounds
@@ -106,6 +93,8 @@ incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
         maximum, param_min, param_max, transition_set, sample_save_file)
 
 # Compare the quality of several sets of samples
+result_list = [gen_results, tk_results, incdec_results]
+
 print "Compare yield of sample sets with various kernels"
 ptools.compare_yield(gen_results[3], gen_results[2], gen_results[4])
 print "Compare yield of sample sets with various transition sets bounds"
@@ -115,6 +104,6 @@ ptools.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
 
 # Read in points_ref and plot results
 p_ref = mdat['points_true']
-p_ref = p_ref[5:7, 15]
+p_ref = p_ref[:, 14]
 
-        
+

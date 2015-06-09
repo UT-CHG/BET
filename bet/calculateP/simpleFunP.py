@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 """
 This module provides methods for creating simple funciton approximations to be
@@ -54,6 +54,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     data = util.fix_dimensions_data(data)
     bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio
 
+
     r'''
     Create M samples defining M Voronoi cells (i.e., "bins") in D used to 
     define the simple function approximation :math:`\rho_{\mathcal{D},M}`.
@@ -101,6 +102,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     count_neighbors = np.zeros((M,), dtype=np.int)
     for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
+
 
     # Use the binning to define :math:`\rho_{\mathcal{D},M}`
     ccount_neighbors = np.copy(count_neighbors)

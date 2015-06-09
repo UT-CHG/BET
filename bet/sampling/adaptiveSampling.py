@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 # -*- coding: utf-8 -*-
 # Lindley Graham 3/10/2014
@@ -82,7 +82,9 @@ class sampler(bsam.sampler):
     def update_mdict(self, mdict):
         """
         Set up references for ``mdict``
-        :param dict() mdict: dictonary of sampler parameters
+
+        :param dict mdict: dictonary of sampler parameters
+
         """
         super(sampler, self).update_mdict(mdict)
         mdict['chain_length'] = self.chain_length
@@ -94,19 +96,20 @@ class sampler(bsam.sampler):
         """
         Generates samples using generalized chains and a list of different
         kernels.
-        :param list() kern_list: List of
+
+        :param list kern_list: List of
             :class:~`bet.sampling.adaptiveSampling.kernel` objects.
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and
             returns a :class:`numpy.ndarray`
-        :param double maximum: maximum value of rho_D
+        :param float maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
+        :type param_min: :class:`numpy.ndarray` (ndim,)
         :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
+        :type param_max: :class:`numpy.ndarray` (ndim,)
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
+        :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -140,23 +143,23 @@ class sampler(bsam.sampler):
         :class:`~bet.sampling.transition_set` created using
         the `init_ratio`, `min_ratio`, and `max_ratio` parameters.
     
-        :param list() init_ratio: Initial step size ratio compared to the
+        :param list init_ratio: Initial step size ratio compared to the
             parameter domain.
-        :param list() min_ratio: Minimum step size compared to the initial step
+        :param list min_ratio: Minimum step size compared to the initial step
             size.
-        :param list() max_ratio: Maximum step size compared to the maximum step
+        :param list max_ratio: Maximum step size compared to the maximum step
             size.
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and
             returns a :class:`numpy.ndarray`
-        :param double maximum: maximum value of rho_D
+        :param float maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
+        :type param_min: :class:`numpy.ndarray` (ndim,)
         :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
+        :type param_max: :class:`numpy.ndarray` (ndim,)
         :param kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
-        :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
+        :type kernel: :class:`bet.sampling.adaptiveSampling.kernel` object.
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -189,21 +192,22 @@ class sampler(bsam.sampler):
         Generates samples using generalized chains and
         :class:`~bet.sampling.adaptiveSampling.rhoD_kernel` created using
         the `increase`, `decrease`, and `tolerance` parameters.
-        :param list() increase: the multiple to increase the step size by
-        :param list() decrease: the multiple to decrease the step size by
-        :param list() tolerance: a tolerance used to determine if two
+
+        :param list increase: the multiple to increase the step size by
+        :param list decrease: the multiple to decrease the step size by
+        :param list tolerance: a tolerance used to determine if two
             different values are close
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and
             returns a :class:`numpy.ndarray`
-        :param double maximum: maximum value of rho_D
+        :param float maximum: maximum value of rho_D
         :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
+        :type param_min: :class:`numpy.ndarray` (ndim,)
         :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
+        :type param_max: :class:`numpy.ndarray` (ndim,)
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
+        :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -227,13 +231,13 @@ class sampler(bsam.sampler):
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
         :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
+        :type param_min: :class:`numpy.ndarray` (ndim,)
         :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
+        :type param_max: :class:`numpy.ndarray` (ndim,)
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
-        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
-        :param function kern: functional that acts on the data used to
+        :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
+        :param kern: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
         :param string savefile: filename to save samples and data
@@ -353,12 +357,12 @@ def kernels(Q_ref, rho_D, maximum):
     """
     Generates a list of kernstic objects.
     :param Q_ref: reference parameter value
-    :type Q_ref: :class:`np.ndarray`
+    :type Q_ref: :class:`numpy.ndarray`
     :param rho_D: probability density on D
-    :type rho_D: callable function that takes a :class:`np.array` and returns
-        a class:`np.ndarray`
-    :param double maximum: maximum value of rho_D
-    :rtype: list()
+    :type rho_D: callable function that takes a :class:`numpy.ndarray` and returns
+        a :class:`numpy.ndarray`
+    :param float maximum: maximum value of rho_D
+    :rtype: list
     :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel]
     """
     kern_list = list()
@@ -386,9 +390,11 @@ class transition_set(object):
     def __init__(self, init_ratio, min_ratio, max_ratio):
         """
         Initialization
-        :param double init_ratio: initial step ratio
-        :param double min_ratio: minimum step_ratio
-        :param double max_ratio: maximum step_ratio
+
+        :param float init_ratio: initial step ratio
+        :param float min_ratio: minimum step_ratio
+        :param float max_ratio: maximum step_ratio
+
         """
         self.init_ratio = init_ratio
         self.min_ratio = min_ratio
@@ -401,19 +407,19 @@ class transition_set(object):
         ``param_width`` to calculate the ``step size``. Each step will have a
         random direction.
         :param step_ratio: define maximum step_size = ``step_ratio*param_width``
-        :type step_ratio: :class:`np.array` of shape (num_samples,)
+        :type step_ratio: :class:`numpy.ndarray` of shape (num_samples,)
         :param param_width: width of the parameter domain
-        :type param_width: :class:`np.ndarray` of shape (ndim,)
+        :type param_width: :class:`numpy.ndarray` of shape (ndim,)
         :param param_left: minimum boundary of the parameter domain
-        :type param_left: :class:`np.ndarray` of shape (ndim, N) where N is the
+        :type param_left: :class:`numpy.ndarray` of shape (ndim, N) where N is the
             length of ``step_ratio``
         :param param_right: maximum boundary of the parameter domain
-        :type param_right: :class:`np.ndarray` of shape (ndim, N) where N is the
+        :type param_right: :class:`numpy.ndarray` of shape (ndim, N) where N is the
             length of ``step_ratio``
         :param samples_old: Parameter samples from the previous step.
         :type samples_old: :class:`~numpy.ndarray` of shape (num_samples,
             ndim)
-        :rtype: :class:`np.array` of shape (num_samples, ndim)
+        :rtype: :class:`numpy.ndarray` of shape (num_samples, ndim)
         :returns: samples_new
         """
         # calculate maximum step size
@@ -455,9 +461,11 @@ class kernel(object):
     def __init__(self, tolerance=1E-08, increase=1.0, decrease=1.0):
         """
         Initialization
-        :param double tolerance: Tolerance for comparing two values
-        :param double increase: The multiple to increase the step size by
-        :param double decrease: The multiple to decrease the step size by
+
+        :param float tolerance: Tolerance for comparing two values
+        :param float increase: The multiple to increase the step size by
+        :param float decrease: The multiple to decrease the step size by
+
         """
         self.TOL = tolerance
         self.increase = increase
@@ -467,7 +475,7 @@ class kernel(object):
         """
         This method determines the proposed change in step size. 
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (num_chains, mdim)
+        :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
         :rtype: typle
         :returns: (kern_new, proposal)
@@ -500,11 +508,13 @@ class rhoD_kernel(kernel):
             decrease=0.5):
         """
         Initialization
-        :param double maximum: maximum value of rho_D
+
+        :param float maximum: maximum value of rho_D
         :param function rho_D: probability density on D
-        :param double tolerance: Tolerance for comparing two values
-        :param double increase: The multiple to increase the step size by
-        :param double decrease: The multiple to decrease the step size by
+        :param float tolerance: Tolerance for comparing two values
+        :param float increase: The multiple to increase the step size by
+        :param float decrease: The multiple to decrease the step size by
+
         """
         self.MAX = maximum
         self.rho_D = rho_D
@@ -516,7 +526,7 @@ class rhoD_kernel(kernel):
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (num_chains, mdim)
+        :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
         :rtype: tuple
         :returns: (kern_new, proposal)
@@ -556,7 +566,7 @@ class maxima_kernel(kernel):
     they are closer, then we can reduce the step_size(k) by 1/2.
     maxima
         locations of the maxima of rho_D on D
-        :class:`np.ndarray` of shape (num_maxima, mdim)
+        :class:`numpy.ndarray` of shape (num_maxima, mdim)
     rho_max
         rho_D(maxima), list of maximum values of rho_D
     tolerance 
@@ -572,13 +582,14 @@ class maxima_kernel(kernel):
         """
         Initialization
         :param maxima: locations of the maxima of rho_D on D 
-        :type maxima: :class:`np.ndarray` of chape (num_maxima, mdim)
+        :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns
-            a class:`np.ndarray`
-        :param double tolerance: Tolerance for comparing two values
-        :param double increase: The multiple to increase the step size by
-        :param double decrease: The multiple to decrease the step size by
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and returns
+            a class:`numpy.ndarray`
+        :param float tolerance: Tolerance for comparing two values
+        :param float increase: The multiple to increase the step size by
+        :param float decrease: The multiple to decrease the step size by
+
         """
         self.MAXIMA = maxima
         self.num_maxima = maxima.shape[0]
@@ -591,7 +602,7 @@ class maxima_kernel(kernel):
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (num_chains, mdim)
+        :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
         :rtype: tuple
         :returns: (kern_new, proposal)
@@ -656,13 +667,14 @@ class maxima_mean_kernel(maxima_kernel):
         """
         Initialization
         :param maxima: locations of the maxima of rho_D on D 
-        :type maxima: :class:`np.ndarray` of chape (num_maxima, mdim)
+        :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`np.array` and returns
-            a class:`np.ndarray`
-        :param double tolerance: Tolerance for comparing two values
-        :param double increase: The multiple to increase the step size by
-        :param double decrease: The multiple to decrease the step size by
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and returns
+            a class:`numpy.ndarray`
+        :param float tolerance: Tolerance for comparing two values
+        :param float increase: The multiple to increase the step size by
+        :param float decrease: The multiple to decrease the step size by
+
         """
         self.radius = None
         self.mean = None
@@ -684,7 +696,7 @@ class maxima_mean_kernel(maxima_kernel):
         This method determines the proposed change in step size. 
         
         :param data_new: QoI for a given batch of samples 
-        :type data_new: :class:`np.array` of shape (num_chains, mdim)
+        :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
         :rtype: tuple
         :returns: (kern_new, proposal)
