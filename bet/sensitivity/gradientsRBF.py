@@ -275,6 +275,8 @@ def calculate_gradients_rbf(samples, data, xeval, num_neighbors=None, RBF=None, 
 
 def calculate_gradients_cfd(samples, data, xeval, r):
     """
+    TODO: Check to see if this works for multiple QoIs... see
+          ffd for fix if it doesn't.  It probably doesn't.
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT 
@@ -312,7 +314,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
     in the parameter space for each QoI map.
     THIS METHOD IS DEPENDENT ON USING pick_ffd_points TO CHOOSE
-    SAMPLES FOR THE CFD STENCIL AROUND EACH XEVAL.  THE ORDERING MATTERS.
+    SAMPLES FOR THE FFD STENCIL AROUND EACH XEVAL.  THE ORDERING MATTERS.
 
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape (num_samples, Ldim) where Ldim is the 
@@ -335,6 +337,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
     gradient_vec = (data[num_xeval:] - np.tile(data[0:num_xeval], [Lambda_dim,1]))/r
+
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(num_qois, Lambda_dim, num_xeval).transpose(2,0,1)
 
     return gradient_tensor
