@@ -14,7 +14,7 @@ import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
 import bet.util as util
-from bet.Comm import *
+from bet.Comm import comm
 
 def loadmat(save_file, model=None):
     """
@@ -160,14 +160,14 @@ class sampler(object):
         self.num_samples = samples.shape[0]
 
         # Solve the model at the samples
-        if not(parallel) or size == 1:
+        if not(parallel) or comm.size == 1:
             data = self.lb_model(samples)
         elif parallel:
-            my_len = self.num_samples/size
-            if rank != size-1:
-                my_index = range(0+rank*my_len, (rank+1)*my_len)
+            my_len = self.num_samples/comm.size
+            if comm.rank != comm.size-1:
+                my_index = range(0+comm.rank*my_len, (comm.rank+1)*my_len)
             else:
-                my_index = range(0+rank*my_len, self.num_samples)
+                my_index = range(0+comm.rank*my_len, self.num_samples)
             if len(samples.shape) == 1:
                 my_samples = samples[my_index]
             else:
@@ -188,7 +188,7 @@ class sampler(object):
         mdat['samples'] = samples
         mdat['data'] = data
 
-        if rank == 0:
+        if comm.rank == 0:
             self.save(mdat, savefile)
         
         return (samples, data)

@@ -6,7 +6,7 @@ This module contains unittests for :mod:`~bet.util`
 """
 
 import bet.util as util
-from bet.Comm import *
+from bet.Comm import comm
 import numpy.testing as nptest
 import numpy as np
 
@@ -56,22 +56,22 @@ def test_get_global_values():
 
 def compare_get_global_values(i, provide_shape):
     """
-    Compares the results of get global values for a vector of shape ``(size*2,
+    Compares the results of get global values for a vector of shape ``(comm.size*2,
     i)``.
     
-    :param int i: Dimension of the vector of length ``size*2``
+    :param int i: Dimension of the vector of length ``comm.size*2``
 
     """
-    if rank == 0:
+    if comm.rank == 0:
         if i == 0:
-            original_array = np.array(np.random.random((size*2, )))
+            original_array = np.array(np.random.random((comm.size*2, )))
         else:
-            original_array = np.array(np.random.random((size*2, i)))
+            original_array = np.array(np.random.random((comm.size*2, i)))
     else:
         original_array = None
     original_array = comm.bcast(original_array)
-    my_len = original_array.shape[0]/size
-    my_index = range(0+rank*my_len, (rank+1)*my_len)
+    my_len = original_array.shape[0]/comm.size
+    my_index = range(0+comm.rank*my_len, (comm.rank+1)*my_len)
     if i == 0:
         my_array = original_array[my_index]
     else:

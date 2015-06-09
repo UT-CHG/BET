@@ -15,12 +15,12 @@ import matplotlib.tri as tri
 from matplotlib.lines import Line2D
 import numpy as np
 import numpy.testing as nptest
-from bet.Comm import size
+from bet.Comm import comm
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
         "../test/test_sampling")
 
-@unittest.skipIf(size > 1, 'Only run in serial')
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  
