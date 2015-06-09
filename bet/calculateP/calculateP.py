@@ -32,10 +32,7 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     :returns: a set of samples for emulation
 
     """
-    print size
-    print num_l_emulate
-    num_l_emulate = int(num_l_emulate/size)+1
-    print num_l_emulate
+    num_l_emulate = (num_l_emulate/comm.size) + (comm.rank < num_l_emulate%comm.size)
     lam_width = lam_domain[:, 1] - lam_domain[:, 0]
     lambda_emulate = lam_width*np.random.random((num_l_emulate,
         lam_domain.shape[0]))+lam_domain[:, 0] 

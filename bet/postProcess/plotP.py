@@ -131,6 +131,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
+            ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
             if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
@@ -186,8 +187,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                     interpolation='bicubic', cmap=cm.jet, 
                     extent=[lam_domain[i][0], lam_domain[i][1],
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
-                    vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i,
-                        j)].min()/boxSize, aspect='auto')
+                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
             if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
             if lambda_label == None:
