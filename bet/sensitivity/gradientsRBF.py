@@ -147,7 +147,7 @@ def pick_ffd_points(centers, r):
     translate = r*np.kron(np.eye(Lambda_dim), np.ones([num_centers,1]))
     samples += translate
 
-    return samples
+    return np.concatenate(centers, samples)
 
 def radial_basis_function(r, kernel=None, ep=None):
     """
