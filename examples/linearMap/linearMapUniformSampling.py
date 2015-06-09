@@ -59,7 +59,7 @@ ref_lam = [0.5, 0.5, 0.5]
 if random_sample == False:
   vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
   vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
-  vec2 = list(np.linspace(lam_domain[2][0], lam_domain[2][1], n1))
+  vec2 = list(np.linspace(lam_domain[2][0], lam_domain[2][1], n2))
   vecv0, vecv1, vecv2 = np.meshgrid(vec0, vec1, vec2, indexing='ij')
   samples=np.vstack((vecv0.flat[:], vecv1.flat[:], vecv2.flat[:])).transpose()
 else:
