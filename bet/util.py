@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 """
 The module contains general tools for BET.
@@ -22,7 +22,7 @@ def meshgrid_ndim(X):
 
     :param X: A tuple containing the 1d coordinate arrays
     :type X: tuple
-    :rtype :class:`~numpy.ndarray` of shape (num_grid_points,n)
+    :rtype: :class:`~numpy.ndarray` of shape (num_grid_points,n)
     :returns: X_new
     """
     n = len(X)
@@ -64,8 +64,8 @@ def get_global_values(array, shape=None):
     Concatenates local arrays into global array using :meth:`np.vstack`.
 
     :param array: Array.
-    :type P_samples: :class:'~numpy.ndarray'
-    :rtype: :class:'~numpy.ndarray'
+    :type P_samples: :class:`~numpy.ndarray`
+    :rtype: :class:`~numpy.ndarray`
     :returns: array
     """
     if comm.size == 1:

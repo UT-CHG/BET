@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 """
 This module provides methods for postprocessing probabilities and data. 
@@ -15,13 +15,13 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     to sort the QoI data, but be sure to do so if using it later.
 
     :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
     :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param lam_vol: Volume of cell associated with sample.
-    :type lam_vol: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type lam_vol: :class:`~numpy.ndarray` of shape (num_samples,)
     :param data: QoI data from running the model with the given samples.
-    :type data: :class:'~numpy.ndarray' of shape (num_samples, mdim)
+    :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
     :rtype: tuple
     :returns: (P_samples, samples, lam_vol, data)
 
@@ -57,13 +57,13 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
     :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param lam_vol: Volume of cell associated with sample.
-    :type lam_vol: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type lam_vol: :class:`~numpy.ndarray` of shape (num_samples,)
     :param data: QoI data from running the model with the given samples.
-    :type data: :class:'~numpy.ndarray' of shape (num_samples, mdim)
+    :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
     :rtype: tuple
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
@@ -94,15 +94,15 @@ def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
     for each process.
 
     :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
     :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param P_file: file prefix for probabilities
     :type P_file: str
     :param lam_file: file prefix for samples
     :type lam_file: str
     :param compress: Compress file
-    :type compress: Boolean
+    :type compress: bool
     :returns: None
     """
     if compress:
@@ -126,9 +126,9 @@ def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
     :param num_files: number of files
     :type num_files: int
     :param save: Save collected arrays as a .csv file.
-    :type save: Boolean
+    :type save: bool
     :param compress: Compress file
-    :type compress: Boolean
+    :type compress: bool
     :rtype: tuple 
     :returns (P, lam)
     """
@@ -155,9 +155,9 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     for each process.
 
     :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
     :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param file_prefix: file prefix for probabilities
     :type file_prefix: str
     :returns: None
@@ -177,9 +177,9 @@ def collect_parallel_probs_mat(file_prefix, num_files, save=False,
     :param num_files: number of files
     :type num_files: int
     :param save: Save collected arrays as a .mat file.
-    :type save: Boolean
+    :type save: bool
     :param compress: Compress file
-    :type compress: Boolean
+    :type compress: bool
     :rtype: tuple 
     :returns (P, lam)
     """
@@ -205,13 +205,13 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     quality by which the sets of samples have been indexed and ``sort_ind`` is
     an array of the sorted indicies.
 
-    :param list() sort_ind: indicies that index ``sample_quality`` in sorted
+    :param list sort_ind: indicies that index ``sample_quality`` in sorted
         order
-    :param list() sample_quality: a measure of quality by which the sets of 
+    :param list sample_quality: a measure of quality by which the sets of 
         samples are sorted
-    :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
+    :param list run_param: zipped list of :class:`~numpy.ndarray`s containing
         information used to generate the sets of samples to be displayed
-    :param list() column_headings: Column headings to print to screen
+    :param list column_headings: Column headings to print to screen
 
     """
     if column_headings == None:
