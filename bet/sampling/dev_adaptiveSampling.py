@@ -1,3 +1,4 @@
+# Copyright (C) 2014-2015 The BET Development Team
 # Lindley Graham 4/21/15
 """ 
 

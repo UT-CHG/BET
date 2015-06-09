@@ -1,3 +1,4 @@
+# Copyright (C) 2014-2015 The BET Development Team
 # Lindley Graham 04/23/15
 """
 This module contains the class :class:`bet.sampling.dev_multi_dist_kernel`
