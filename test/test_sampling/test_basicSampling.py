@@ -10,12 +10,12 @@ import numpy.testing as nptest
 import numpy as np
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
-from bet.Comm import *
+from bet.Comm import comm 
 
 local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
 
-@unittest.skipIf(size > 1, 'Only run in serial')
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 def test_loadmat():
     """
     Tests :meth:`bet.sampling.basicSampling.loadmat`
@@ -68,7 +68,7 @@ def verify_user_samples(model, sampler, samples, savefile, parallel):
     assert samples.shape[0] == sampler.num_samples
     # did the file get correctly saved?
 
-    if rank == 0:
+    if comm.rank == 0:
         mdat = sio.loadmat(savefile)
         nptest.assert_array_equal(samples, mdat['samples'])
         nptest.assert_array_equal(data, mdat['data'])
@@ -116,7 +116,7 @@ def verify_random_samples(model, sampler, sample_type, param_min, param_max,
     assert num_samples == sampler.num_samples
     # did the file get correctly saved?
     
-    if rank == 0:
+    if comm.rank == 0:
         mdat = sio.loadmat(savefile)
         nptest.assert_array_equal(samples, mdat['samples'])
         nptest.assert_array_equal(data, mdat['data'])
@@ -162,20 +162,19 @@ class Test_basic_sampler(unittest.TestCase):
         """
         Clean up extra files
         """
-
-        if rank == 0:
+        if comm.rank == 0:
             for f in self.savefiles:
                 if os.path.exists(f+".mat"):
                     os.remove(f+".mat")
-        if size > 1:
+        if comm.size > 1:
             for f in self.savefiles:
                 proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "proc{}{}.mat".format(rank, os.path.basename(f)))
+                        "proc{}{}.mat".format(comm.rank, os.path.basename(f)))
                 print proc_savefile
                 if os.path.exists(proc_savefile):
                     os.remove(proc_savefile)
                 proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "p{}proc{}{}.mat".format(rank, rank, os.path.basename(f)))
+                        "p{}proc{}{}.mat".format(comm.rank, comm.rank, os.path.basename(f)))
                 if os.path.exists(proc_savefile):
                     os.remove(proc_savefile)
                 print proc_savefile

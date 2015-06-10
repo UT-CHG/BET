@@ -4,7 +4,7 @@
 This module provides methods for creating simple funciton approximations to be
 used by :mod:`~bet.calculateP.calculateP`.
 """
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 import numpy as np
 import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
@@ -77,7 +77,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     probability. This would in turn imply that the support of
     :math:`\rho_{\Lambda}` is all of :math:`\Lambda`.
     '''
-    if rank == 0:
+    if comm.rank == 0:
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
             data.shape[1]))-0.5)+Q_ref 
     else:
@@ -92,7 +92,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :math:`\rho_{\mathcal{D}}`.
     '''
     # Generate the samples from :math:`\rho_{\mathcal{D}}`
-    num_d_emulate = int(num_d_emulate/size)+1
+    num_d_emulate = int(num_d_emulate/comm.size)+1
     d_distr_emulate = bin_size*(np.random.random((num_d_emulate,
         data.shape[1]))-0.5) + Q_ref
 
@@ -109,7 +109,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM)
     count_neighbors = ccount_neighbors
-    rho_D_M = count_neighbors.astype(np.float64) / float(num_d_emulate*size)
+    rho_D_M = count_neighbors.astype(np.float64) / float(num_d_emulate*comm.size)
 
     '''
     NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -159,7 +159,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     print "Q_ref.shape", Q_ref.shape
     print "std.shape", std.shape
 
-    if rank == 0:
+    if comm.rank == 0:
         for i in range(len(Q_ref)):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M) 
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
@@ -168,7 +168,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     r'''Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling
     from rho_D First generate samples of rho_D - I sometimes call this
     emulation'''
-    num_d_emulate = int(num_d_emulate/size)+1
+    num_d_emulate = int(num_d_emulate/comm.size)+1
     d_distr_emulate = np.zeros((num_d_emulate, len(Q_ref)))
     for i in range(len(Q_ref)):
         d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i],
@@ -234,7 +234,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
 
     bin_size = 4.0*std
     d_distr_samples = np.zeros((M, len(Q_ref)))
-    if rank == 0:
+    if comm.rank == 0:
         d_distr_samples = bin_size*(np.random.random((M, 
             len(Q_ref)))-0.5)+Q_ref
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
@@ -243,7 +243,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     r'''Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling
     from rho_D First generate samples of rho_D - I sometimes call this
     emulation''' 
-    num_d_emulate = int(num_d_emulate/size)+1
+    num_d_emulate = int(num_d_emulate/comm.size)+1
     d_distr_emulate = np.zeros((num_d_emulate, len(Q_ref)))
     for i in range(len(Q_ref)):
         d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i], 
@@ -267,7 +267,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM) 
     count_neighbors = ccount_neighbors
-    rho_D_M = count_neighbors.astype(np.float64)/float(size*num_d_emulate)
+    rho_D_M = count_neighbors.astype(np.float64)/float(comm.size*num_d_emulate)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
     # above, while informed by the sampling of the map Q, do not require

@@ -17,7 +17,7 @@ import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
 import math, os
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 
 
 def loadmat(save_file, lb_model=None):
@@ -72,8 +72,8 @@ class sampler(bsam.sampler):
         """
         super(sampler, self).__init__(lb_model, num_samples)
         self.chain_length = chain_length
-        self.num_chains_pproc = int(math.ceil(num_samples/float(chain_length*size)))
-        self.num_chains = size * self.num_chains_pproc
+        self.num_chains_pproc = int(math.ceil(num_samples/float(chain_length*comm.size)))
+        self.num_chains = comm.size * self.num_chains_pproc
         self.num_samples = chain_length * self.num_chains
         self.lb_model = lb_model
         self.sample_batch_no = np.repeat(range(self.num_chains), chain_length,
@@ -250,9 +250,9 @@ class sampler(bsam.sampler):
             ``all_step_ratios`` is np.ndarray of shape (num_chains,
             chain_length)
         """
-        if size > 1:
+        if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(rank, os.path.basename(savefile)))
+                    "proc{}{}".format(comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -277,9 +277,9 @@ class sampler(bsam.sampler):
         
         # now split it all up
         if comm.size > 1:
-            MYsamples_old = np.empty((np.shape(samples_old)[0]/size, np.shape(samples_old)[1]))
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size, np.shape(samples_old)[1]))
             comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-            MYdata_old = np.empty((np.shape(data_old)[0]/size, np.shape(data_old)[1]))
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size, np.shape(data_old)[1]))
             comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old,
                                                   MPI.DOUBLE])
         else:
@@ -323,7 +323,7 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            if size > 1:
+            if comm.size > 1:
                 super(sampler, self).save(mdat, psavefile)
             else:
                 super(sampler, self).save(mdat, savefile)
