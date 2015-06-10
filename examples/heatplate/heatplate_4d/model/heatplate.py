@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015  BET Development Team
 
 """Temperature variations of a thin (2-D) plate with a heat source 'underneath' and perfectly insulated (Neumann boundaries set to 0).  We turn the heat source off after time t_heatoff"""
 

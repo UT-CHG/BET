@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015  BET Development Team
 
 """
 This module contains functions choosing optimal QoIs to use in
@@ -7,7 +7,7 @@ the stochastic inverse problem.
 
 import numpy as np
 from itertools import combinations
-from bet.Comm import *
+from bet.Comm import comm
 
 
 def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
@@ -39,6 +39,8 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
 
     """
 
+    size = comm.Get_size()
+    rank = comm.Get_rank()
     num_xeval = Grad_tensor.shape[0]
 
     # Find all posible combinations of QoIs

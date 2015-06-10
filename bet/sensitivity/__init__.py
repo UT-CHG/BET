@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015  BET Development Team
 
 r""" 
 This subpackage provides methods for approximating gradients of

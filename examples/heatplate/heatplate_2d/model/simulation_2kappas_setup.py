@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015  BET Development Team
 
 """ Setup up some model parameters"""
 
