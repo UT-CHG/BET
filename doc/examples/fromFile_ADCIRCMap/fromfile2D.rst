@@ -11,7 +11,7 @@ Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following :download:`example
-<../../../examples/fromFileMap/fromFile2D.py>` that uses a linear interpolant of
+<../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` that uses a linear interpolant of
 the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 2-dimensional data space. The parameter space in this example is also
 2-dimensional. 
@@ -19,12 +19,9 @@ the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 The modules required by this example are::
 
     import numpy as np
-    import polysim.pyADCIRC.basic as basic
     import bet.sampling.adaptiveSampling as asam
     import scipy.io as sio
-    import matplotlib.pyplot as plt
     from scipy.interpolate import griddata
-    import math
 
 The compact (bounded, finite-dimensional) paramter space is::
 
@@ -35,7 +32,7 @@ The compact (bounded, finite-dimensional) paramter space is::
 
 In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
 (q_1(\lambda), q_6(\lambda))` using data read from a ``.mat`` :download:`file
-<../../../examples/fromFileMap/Q_2D.mat>`::
+<../../../examples/fromFile_ADCIRCMap/Q_2D.mat>`::
 
     station_nums = [0, 5] # 1, 6
     mdat = sio.loadmat('Q_2D')
@@ -119,9 +116,9 @@ In some instances the user may want to generate and compare several sets of
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>`. The set up in
-:download:`sandbox_test_2D.py <../../../examples/fromFileMap/sandbox_test_2D.py>` is very similar to the
-set up in :download:`fromFile2D <../../../examples/fromFileMap/fromFile2D.py>` and is
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`. The set up in
+:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>` is very similar to the
+set up in :download:`fromFile2D <../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` and is
 omitted for brevity.
 
 We can explore several types of kernels::

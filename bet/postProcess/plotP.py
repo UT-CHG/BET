@@ -1,10 +1,10 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 """
 This module provides methods for plotting probabilities. 
 """
 
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 import matplotlib.pyplot as plt
 import numpy as np
 import copy, math
@@ -17,13 +17,13 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     input probability measure defined by P_samples on a 1D grid.
 
     :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
     :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
     :param nbins: Number of bins in each direction.
-    :type nbins: :int or :class:'~numpy.ndarray' of shape (ndim,)
+    :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
     :returns: (bins, marginals)
 
@@ -59,13 +59,13 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     input probability measure defined by P_samples on a rectangular grid.
 
     :param P_samples: Probabilities.
-    :type P_samples: :class:'~numpy.ndarray' of shape (num_samples,)
+    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
     :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:'~numpy.ndarray' of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
     :param nbins: Number of bins in each direction.
-    :type nbins: :int or :class:'~numpy.ndarray' of shape (ndim,)
+    :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
     :returns: (bins, marginals)
 
@@ -106,23 +106,23 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
     input probability measure defined by P_samples on a 1D  grid.
 
     :param marginals: 1D marginal probabilities
-    :type marginals: dictionary with int as keys and :class:'~numpy.ndarray' of
+    :type marginals: dictionary with int as keys and :class:`~numpy.ndarray` of
         shape (nbins+1,) as values :param bins: Endpoints of bins used in
         calculating marginals
-    :type bins: :class:'~numpy.ndarray' of shape (nbins+1,)
+    :type bins: :class:`~numpy.ndarray` of shape (nbins+1,)
     :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
     :param filename: Prefix for output files.
     :type filename: str
     :param lam_ref: True parameters.
-    :type lam_ref: :class:'~numpy.ndarray' of shape (ndim,) or None
+    :type lam_ref: :class:`~numpy.ndarray` of shape (ndim,) or None
     :param interactive: Whether or not to display interactive plots.
-    :type interactive: boolean
+    :type interactive: bool
     :param lambda_label: Label for each parameter for plots.
     :type lambda_label: list of length nbins of strings or None
 
     """
-    if rank == 0:
+    if comm.rank == 0:
         index = copy.deepcopy(marginals.keys())
         index.sort()
         for i in index:
@@ -131,6 +131,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
+            ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
             if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
@@ -156,17 +157,17 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
 
     :param marginals: 2D marginal probabilities
     :type marginals: dictionary with tuples of 2 integers as keys and
-        :class:'~numpy.ndarray' of shape (nbins+1,) as values 
+        :class:`~numpy.ndarray` of shape (nbins+1,) as values 
     :param bins: Endpoints of bins used in calculating marginals
-    :type bins: :class:'~numpy.ndarray' of shape (nbins+1,2)
+    :type bins: :class:`~numpy.ndarray` of shape (nbins+1,2)
     :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:'~numpy.ndarray' of shape (ndim, 2)
+    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
     :param filename: Prefix for output files.
     :type filename: str
     :param lam_ref: True parameters.
-    :type lam_ref: :class:'~numpy.ndarray' of shape (ndim,) or None
+    :type lam_ref: :class:`~numpy.ndarray` of shape (ndim,) or None
     :param interactive: Whether or not to display interactive plots.
-    :type interactive: boolean
+    :type interactive: bool
     :param lambda_label: Label for each parameter for plots.
     :type lambda_label: list of length nbins of strings or None
 
@@ -175,7 +176,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     if plot_surface:
         from mpl_toolkits.mplot3d import Axes3D
         from matplotlib.ticker import LinearLocator, FormatStrFormatter
-    if rank == 0:
+    if comm.rank == 0:
         pairs = copy.deepcopy(marginals.keys())
         pairs.sort()
         for k, (i, j) in enumerate(pairs):
@@ -186,8 +187,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                     interpolation='bicubic', cmap=cm.jet, 
                     extent=[lam_domain[i][0], lam_domain[i][1],
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
-                    vmax=marginals[(i, j)].max()/boxSize, vmin=marginals[(i,
-                        j)].min()/boxSize, aspect='auto')
+                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
             if type(lam_ref) != type(None):
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
             if lambda_label == None:
@@ -238,12 +238,12 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
     This function smooths 1D marginal probabilities.
 
     :param marginals: 1D marginal probabilities
-    :type marginals: dictionary with int as keys and :class:'~numpy.ndarray' of
-        shape (nbins+1,) as values :param bins: Endpoints of bins used in
-        calculating marginals
-    :type bins: :class:'~numpy.ndarray' of shape (nbins+1,)
+    :type marginals: dictionary with int as keys and :class:`~numpy.ndarray` of
+        shape (nbins+1,) as values 
+    :param bins: Endpoints of bins used in calculating marginals
+    :type bins: :class:`~numpy.ndarray` of shape (nbins+1,)
     :param sigma: Smoothing parameter in each direction.
-    :type sigma: :float or :class:'~numpy.ndarray' of shape (ndim,)
+    :type sigma: float or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: dict
     :returns: marginals_smooth
     """
@@ -280,11 +280,11 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
 
     :param marginals: 2D marginal probabilities
     :type marginals: dictionary with tuples of 2 integers as keys and
-        :class:'~numpy.ndarray' of shape (nbins+1,) as values 
+        :class:`~numpy.ndarray` of shape (nbins+1,) as values 
     :param bins: Endpoints of bins used in calculating marginals
-    :type bins: :class:'~numpy.ndarray' of shape (nbins+1,)
+    :type bins: :class:`~numpy.ndarray` of shape (nbins+1,)
     :param sigma: Smoothing parameter in each direction.
-    :type sigma: :float or :class:'~numpy.ndarray' of shape (ndim,)
+    :type sigma: float or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: dict
     :returns: marginals_smooth
     """

@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 Lindley Graham and Steven Mattis
+# Copyright (C) 2014-2015 The BET Development Team
 
 # Lindley Graham 4/15/2014
 """
@@ -14,7 +14,7 @@ import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
 import bet.util as util
-from bet.Comm import *
+from bet.Comm import comm
 
 def loadmat(save_file, model=None):
     """
@@ -73,7 +73,7 @@ class sampler(object):
         Save matrices to a ``*.mat`` file for use by ``MATLAB BET`` code and
         :meth:`~bet.sampling.loadmat`
 
-        :param dict() mdict: dictonary of sampling data and sampler parameters
+        :param dict mdict: dictonary of sampling data and sampler parameters
         :param string save_file: file name
 
         """
@@ -83,7 +83,7 @@ class sampler(object):
         """
         Set up references for ``mdict``
 
-        :param dict() mdict: dictonary of sampler parameters
+        :param dict mdict: dictonary of sampler parameters
 
         """
         mdict['num_samples'] = self.num_samples
@@ -104,14 +104,14 @@ class sampler(object):
             latin hypercube(lhs), regular grid (rg), or space-filling
             curve(TBD) 
         :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
+        :type param_min: :class:`numpy.ndarray` (ndim,)
         :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
+        :type param_max: :class:`numpy.ndarray` (ndim,)
         :param string savefile: filename to save samples and data
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param boolean parallel: Flag for parallel implementation. Uses
+        :param bool parallel: Flag for parallel implementation. Uses
             lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
             divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
@@ -146,7 +146,7 @@ class sampler(object):
         :param samples: samples to evaluate the model at
         :type samples: :class:`~numpy.ndarray` of shape (num_smaples, ndim)
         :param string savefile: filename to save samples and data
-        :param boolean parallel: Flag for parallel implementation. Uses
+        :param bool parallel: Flag for parallel implementation. Uses
             lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
             divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
@@ -160,14 +160,14 @@ class sampler(object):
         self.num_samples = samples.shape[0]
 
         # Solve the model at the samples
-        if not(parallel) or size == 1:
+        if not(parallel) or comm.size == 1:
             data = self.lb_model(samples)
         elif parallel:
-            my_len = self.num_samples/size
-            if rank != size-1:
-                my_index = range(0+rank*my_len, (rank+1)*my_len)
+            my_len = self.num_samples/comm.size
+            if comm.rank != comm.size-1:
+                my_index = range(0+comm.rank*my_len, (comm.rank+1)*my_len)
             else:
-                my_index = range(0+rank*my_len, self.num_samples)
+                my_index = range(0+comm.rank*my_len, self.num_samples)
             if len(samples.shape) == 1:
                 my_samples = samples[my_index]
             else:
@@ -188,7 +188,7 @@ class sampler(object):
         mdat['samples'] = samples
         mdat['data'] = data
 
-        if rank == 0:
+        if comm.rank == 0:
             self.save(mdat, savefile)
         
         return (samples, data)

@@ -21,6 +21,17 @@ change in the future. This pacakge requires `matplotlib <http://http://matplotli
 <http://http://www.numpy.org>`_, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
 <http://http://docs.python.org/2>`_.
 
+If you have `nose <http://nose.readthedocs.org/en/latest/index.html>`_
+installed you can run tests by typing::
+
+    nosetests
+
+in ``BET`` to run the serial tests or ::
+
+    mpirun -np NPROC nosetests
+
+to run the parallel tests.
+
 Package Layout
 --------------
 
