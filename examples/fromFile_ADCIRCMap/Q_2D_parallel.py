@@ -5,7 +5,7 @@ import bet.calculateP.simpleFunP as sfun
 import numpy as np
 import scipy.io as sio
 import bet.util as util
-from bet.Comm import rank
+from bet.Comm import comm
 
 # Import "Truth"
 mdat = sio.loadmat('Q_2D')
@@ -38,7 +38,7 @@ def postprocess(station_nums, ref_num):
     num_l_emulate = 1e6
     lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
     
-    if rank == 0:
+    if comm.rank == 0:
         print "Finished emulating lambda samples"
         mdict = dict()
         mdict['rho_D_M'] = rho_D_M
@@ -48,7 +48,7 @@ def postprocess(station_nums, ref_num):
     # Calculate P on lambda emulate
     (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data,
             rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
-    if rank == 0:
+    if comm.rank == 0:
         print "Calculating prob_emulated"
         mdict['P0'] = P0
         mdict['lem0'] = lem0
@@ -59,7 +59,7 @@ def postprocess(station_nums, ref_num):
     # equal size
     (P1, lam_vol1, io_ptr1) = calcP.prob(samples, data,
             rho_D_M, d_distr_samples, d_Tree)
-    if rank == 0:
+    if comm.rank == 0:
         print "Calculating prob"
         mdict['P1'] = P1
         mdict['lam_vol1'] = lam_vol1
@@ -70,7 +70,7 @@ def postprocess(station_nums, ref_num):
     # integration
     (P3, lam_vol3, lambda_emulate3, io_ptr3, emulate_ptr3) = calcP.prob_mc(samples,
             data, rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
-    if rank == 0:
+    if comm.rank == 0:
         print "Calculating prob_mc"
         mdict['P3'] = P3
         mdict['lam_vol3'] = lam_vol3
