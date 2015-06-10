@@ -101,7 +101,7 @@ def sample_l1_ball(centers, num_close, r=None):
         xtemp = xtemp + centers[j, :]
         x = np.append(x, xtemp, axis=0)
 
-    return x[1:]
+    return np.concatenate([centers, x[1:]])
 
 
 def pick_cfd_points(centers, r):
