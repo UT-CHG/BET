@@ -39,16 +39,14 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
 
     """
 
-    size = comm.Get_size()
-    rank = comm.Get_rank()
     num_xeval = Grad_tensor.shape[0]
 
     # Find all posible combinations of QoIs
-    if rank == 0:
+    if comm.rank == 0:
         qoi_combs = np.array(list(combinations(range(indexstart, indexstop + 1),
                     num_qois_returned)))
         print 'Possible sets of QoIs : ', qoi_combs.shape[0]
-        qoi_combs = np.array_split(qoi_combs, size)
+        qoi_combs = np.array_split(qoi_combs, comm.size)
     else:
         qoi_combs = None
 
@@ -75,7 +73,7 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
     min_condnum_indices = comm.gather([min_condnum, qoiIndices], root=0)
 
     # Find the minimum of the minimums
-    if rank == 0:
+    if comm.rank == 0:
         min_list = min(min_condnum_indices)
         min_condnum = min_list[0]
         qoiIndices = min_list[1]
