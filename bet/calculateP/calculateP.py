@@ -209,7 +209,9 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     clam_vol = np.copy(lam_vol) 
     comm.Allreduce([lam_vol, MPI.DOUBLE], [clam_vol, MPI.DOUBLE], op=MPI.SUM)
     lam_vol = clam_vol
-    lam_vol = lam_vol/(len(lambda_emulate)*comm.size)
+    num_emulated = lambda_emulate.shape[0]
+    num_emulated = comm.allreduce(num_emulated, op=MPI.SUM)
+    lam_vol = lam_vol/(num_emulated)
 
     # Set up local arrays for parallelism
     local_index = range(0+comm.rank, samples.shape[0], comm.size)
