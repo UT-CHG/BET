@@ -39,7 +39,7 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         self.lam_domain[:,0] = lam_left
         self.lam_domain[:,1] = lam_right
 
-        self.num_l_emulate = 1000000
+        self.num_l_emulate = 1000001
 
         self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain, self.num_l_emulate)
  
@@ -47,7 +47,7 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         """
         Check the dimension.
         """
-        nptest.assert_array_equal(self.lambda_emulate.shape, (int(self.num_l_emulate/comm.size)+1,3))
+        nptest.assert_array_equal(self.lambda_emulate.shape, ((self.num_l_emulate/comm.size) + (comm.rank < self.num_l_emulate%comm.size),3))
 
     def test_bounds(self):
         """
@@ -141,7 +141,7 @@ class TestProbMethod_3to2(unittest.TestCase):
         import numpy.random as rnd
         rnd.seed(1)
         self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
-                                                  num_l_emulate = 1000)
+                                                         num_l_emulate = 1001)
 
 
     
@@ -220,7 +220,7 @@ class TestProbMethod_3to1(unittest.TestCase):
         import numpy.random as rnd
         rnd.seed(1)
         self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=self.lam_domain, 
-                                                  num_l_emulate = 1000)
+                                                         num_l_emulate = 1001)
 class Test_prob_3to1(TestProbMethod_3to1, prob):
     """
     Test :meth:`bet.calculateP.calculateP.prob` on a 3 to 1 map.
@@ -289,7 +289,7 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.lam_domain=np.zeros((10,2))
         self.lam_domain[:,0]=0.0
         self.lam_domain[:,1]=1.0
-        self.num_l_emulate = 1000
+        self.num_l_emulate = 1001
         self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain, self.num_l_emulate)
         self.samples =  calcP.emulate_iid_lebesgue(self.lam_domain, 100)
         self.data = np.dot(self.samples,rnd.rand(10,4))
@@ -368,7 +368,7 @@ class TestProbMethod_1to1(unittest.TestCase):
         self.lam_domain=np.zeros((1,2))
         self.lam_domain[0,0]=0.0
         self.lam_domain[0,1]=1.0
-        self.num_l_emulate = 1000
+        self.num_l_emulate = 1001
         self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain, self.num_l_emulate)
         self.samples =  rnd.rand(100,)
         self.data = 2.0*self.samples
