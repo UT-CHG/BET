@@ -14,7 +14,7 @@ import numpy.testing as nptest
 
 class TestChooseQoIsMethods(unittest.TestCase):
     """
-    Test all sampling methods in bet.sensitivity.gradients
+    Test :module:`bet.sensitivity.chooseQoIs`.
     """
     def setUp(self):
         self.Lambda_dim = 2

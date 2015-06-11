@@ -14,7 +14,7 @@ import numpy.testing as nptest
 
 class TestSamplingMethods(unittest.TestCase):
     """
-    Test all sampling methods in bet.sensitivity.gradients
+    Test all sampling methods in :module:`bet.sensitivity.gradients`
     """
     def setUp(self):
         self.Lambda_dim = 2
@@ -54,7 +54,7 @@ class TestSamplingMethods(unittest.TestCase):
 
 class TestFDMethods(unittest.TestCase):
     """
-    Test all finite difference methods in bet.sensitivity.gradients
+    Test all finite difference methods in :module:`bet.sensitivity.gradients`
     """
     def setUp(self):
         self.Lambda_dim = 2
@@ -88,7 +88,7 @@ class TestFDMethods(unittest.TestCase):
 
 class TestRBFMethods(unittest.TestCase):
     """
-    Test all RBF methods in bet.sensitivity.gradients
+    Test all RBF methods in :module:`bet.sensitivity.gradients`
     """
     def setUp(self):
         self.shape_radii = [20,10]
@@ -125,7 +125,7 @@ class TestRBFMethods(unittest.TestCase):
 
 class TestGradMethods(unittest.TestCase):
     """
-    Test all gradient approximation methods in bet.sensitivity.gradients
+    Test all gradient approximation methods in :module:`bet.sensitivity.gradients`
     """
     def setUp(self):
         self.Lambda_dim = 2
@@ -152,7 +152,7 @@ class TestGradMethods(unittest.TestCase):
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
-        nptest.assert_array_almost_equal(np.sqrt(np.sum(self.G**2, 2)), np.ones((self.G.shape[0], self.G.shape[1])))
+        nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
         
 
 
@@ -168,7 +168,7 @@ class TestGradMethods(unittest.TestCase):
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
-        nptest.assert_array_almost_equal(np.sqrt(np.sum(self.G**2, 2)), np.ones((self.G.shape[0], self.G.shape[1])))
+        nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
     def test_calculate_gradients_ffd(self):
         """
@@ -182,7 +182,7 @@ class TestGradMethods(unittest.TestCase):
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
-        nptest.assert_array_almost_equal(np.sqrt(np.sum(self.G**2, 2)), np.ones((self.G.shape[0], self.G.shape[1])))
+        nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
 
 

@@ -7,8 +7,8 @@ It then calcualte the gradients using this FFD scheme and uses the gradient info
 choose the optimal set of 4 QoIs to use in the inverse problem.
 """
 
-from bet.sensitivity.gradients import *
-from bet.sensitivity.chooseQoIs import *
+import bet.sensitivity.gradients as grad
+import bet.sensitivity.chooseQoIs as cQoIs
 import numpy as np
 from bet.Comm import *
 import scipy.io as sio
@@ -44,7 +44,7 @@ num_points = 20
 
 # With the samples and data we calcualte the normalized gradient vectors a
 # each of the 16 random points in lam_domain.
-G = calculate_gradients_ffd(samples=samples, data=data, xeval=xeval, r=r)
+G = grad.calculate_gradients_ffd(samples=samples, data=data, xeval=xeval, r=r)
 
 # We have 1,000 QoIs to choose from (50 time steps * 20 points).  Here we
 # choose which QoI we want to start and end with.
@@ -57,7 +57,7 @@ indexstop = num_points*(timestepstop-1) + pointstop - 1
 
 # With a set of QoIs to consider, we check all possible combinations
 # of the QoIs and choose the best set.
-[min_condnum, qoiIndices] = chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
+[min_condnum, qoiIndices] = cQoIs.chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
 
 if rank==0:
     print 'The minimum condition number found is : ', min_condnum
