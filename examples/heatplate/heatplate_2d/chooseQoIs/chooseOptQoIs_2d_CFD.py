@@ -42,21 +42,16 @@ num_points = 20
 
 #####################################
 
-# With the samples and data we calcualte the gradient vectors at each
-# of the 16 random points in lam_domain.
+# With the samples and data we calcualte the normalized gradient vectors a
+# each of the 16 random points in lam_domain.
 G = calculate_gradients_cfd(samples=samples, data=data, xeval=xeval, r=r)
-
-# We are simply interested in the skewness of the contours of sets of QoI
-# maps, so we normalize the gradient vectors.
-normG = np.sqrt(np.sum(G**2, 2))
-Gnorm = G/np.tile(normG, (Lambda_dim,1,1)).transpose(1,2,0)
 
 # We have 1,000 QoIs to choose from (50 time steps * 20 points).  Here we
 # choose which QoI we want to start and end with.
 pointstart = 1
 timestepstart = 1
 pointstop = 20
-timestepstop = 10
+timestepstop = 50
 indexstart = num_points*(timestepstart-1) + pointstart - 1
 indexstop = num_points*(timestepstop-1) + pointstop - 1
 
