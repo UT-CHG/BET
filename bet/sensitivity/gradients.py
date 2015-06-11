@@ -249,14 +249,14 @@ def calculate_gradients_rbf(
         at each point in xeval
 
     """
+    Lambda_dim = samples.shape[1]
     if num_neighbors is None:
-        num_neighbors = 30
+        num_neighbors = Lambda_dim + 1
     if ep is None:
         ep = 1.0
     if RBF is None:
         RBF = 'Gaussian'
 
-    Lambda_dim = samples.shape[1]
     num_model_samples = samples.shape[0]
     Data_dim = data.shape[1]
     num_xeval = xeval.shape[0]
@@ -319,7 +319,7 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     gradient_vec = (
         data[:Lambda_dim * num_xeval] - data[Lambda_dim * num_xeval:]) / (2 * r)
     gradient_tensor = gradient_vec.reshape(
-        Lambda_dim, 1, num_xeval).transpose(2, 1, 0)
+        Lambda_dim, num_qois, num_xeval).transpose(2, 1, 0)
 
     return gradient_tensor
 
