@@ -151,12 +151,7 @@ def pick_ffd_points(centers, r):
     translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
     samples += translate
 
-<<<<<<< HEAD:bet/sensitivity/gradients.py
     return np.concatenate([centers, samples])
-
-=======
-    return np.concatenate(centers, samples)
->>>>>>> upstream/dev-sensitivity:bet/sensitivity/gradientsRBF.py
 
 def radial_basis_function(r, kernel=None, ep=None):
     """
