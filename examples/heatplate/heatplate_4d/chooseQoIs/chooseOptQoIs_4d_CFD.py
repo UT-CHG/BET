@@ -18,7 +18,7 @@ rank = comm.rank
 size = comm.size
 
 # Import the data from the FEniCS run
-matfile = sio.loadmat('heatplate_4d_16clustersFFD_1000qoi.mat')
+matfile = sio.loadmat('heatplate_4d_16clustersCFD_1000qoi.mat')
 samples = matfile['samples']
 data = matfile['data']
 
@@ -44,7 +44,7 @@ num_points = 20
 
 # With the samples and data we calcualte the gradient vectors at each
 # of the 16 random points in lam_domain.
-G = calculate_gradients_ffd(samples=samples, data=data, xeval=xeval, r=r)
+G = calculate_gradients_cfd(samples=samples, data=data, xeval=xeval, r=r)
 
 # We are simply interested in the skewness of the contours of sets of QoI
 # maps, so we normalize the gradient vectors.

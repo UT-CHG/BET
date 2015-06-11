@@ -18,7 +18,7 @@ rank = comm.rank
 size = comm.size
 
 # Import the data from the FEniCS run
-matfile = sio.loadmat('heatplate_4d_16clustersFFD_1000qoi.mat')
+matfile = sio.loadmat('heatplate_2d_16clustersCFD_1000qoi.mat')
 samples = matfile['samples']
 data = matfile['data']
 
@@ -44,7 +44,7 @@ num_points = 20
 
 # With the samples and data we calcualte the gradient vectors at each
 # of the 16 random points in lam_domain.
-G = calculate_gradients_ffd(samples=samples, data=data, xeval=xeval, r=r)
+G = calculate_gradients_cfd(samples=samples, data=data, xeval=xeval, r=r)
 
 # We are simply interested in the skewness of the contours of sets of QoI
 # maps, so we normalize the gradient vectors.
@@ -56,7 +56,7 @@ Gnorm = G/np.tile(normG, (Lambda_dim,1,1)).transpose(1,2,0)
 pointstart = 1
 timestepstart = 1
 pointstop = 20
-timestepstop = 1
+timestepstop = 10
 indexstart = num_points*(timestepstart-1) + pointstart - 1
 indexstop = num_points*(timestepstop-1) + pointstop - 1
 
@@ -74,18 +74,12 @@ point1 = 17
 timestep1 = 1
 point2 = 18
 timestep2 = 1
-point3 = 19
-timestep3 = 1
-point4 = 20
-timestep4 = 1
 
 index1 = num_points*(timestep1-1) + point1 - 1
 index2 = num_points*(timestep2-1) + point2 - 1
-index3 = num_points*(timestep3-1) + point3 - 1
-index4 = num_points*(timestep4-1) + point4 - 1
 
 
-singvals = np.linalg.svd(Gnorm[:, [index1, index2, index3, index4], :], compute_uv=False)
+singvals = np.linalg.svd(Gnorm[:, [index1, index2], :], compute_uv=False)
 spec_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
 
 

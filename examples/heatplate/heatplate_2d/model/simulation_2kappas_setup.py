@@ -49,7 +49,8 @@ r = (kappa_max-kappa_min)/100.
 num_xeval = 16
 xeval = (kappa_max-r-kappa_min-r)*np.random.random((num_xeval,Lambda_dim)) + kappa_min+r
 #samples = sample_l1_ball(xeval, Lambda_dim+1, r)
-samples = pick_ffd_points(xeval, r)
+#samples = pick_ffd_points(xeval, r)
+samples = pick_cfd_points(xeval, r)
 #samples = xeval
 num_samples = samples.shape[0]
 
