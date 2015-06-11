@@ -57,7 +57,7 @@ indexstop = num_points*(timestepstop-1) + pointstop - 1
 
 # With a set of QoIs to consider, we check all possible combinations
 # of the QoIs and choose the best set.
-[min_condnum, qoiIndices] = chooseOptQoIs(Gnorm, indexstart, indexstop, num_qois_returned=Lambda_dim)
+[min_condnum, qoiIndices] = chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
 
 if rank==0:
     print 'The minimum condition number found is : ', min_condnum
@@ -74,7 +74,7 @@ index1 = num_points*(timestep1-1) + point1 - 1
 index2 = num_points*(timestep2-1) + point2 - 1
 
 
-singvals = np.linalg.svd(Gnorm[:, [index1, index2], :], compute_uv=False)
+singvals = np.linalg.svd(G[:, [index1, index2], :], compute_uv=False)
 spec_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
 
 

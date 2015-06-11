@@ -325,7 +325,7 @@ def calculate_gradients_cfd(samples, data, xeval, r):
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
     # Normalize each gradient vector
-    norm_gradient_tensor = np.sqrt(np.sum(G**2, 2))
+    norm_gradient_tensor = np.sqrt(np.sum(gradient_tensor**2, 2))
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor, (Lambda_dim,1,1)).transpose(1,2,0)
 
     return gradient_tensor
@@ -366,7 +366,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
     # Normalize each gradient vector
-    norm_gradient_tensor = np.sqrt(np.sum(G**2, 2))
+    norm_gradient_tensor = np.sqrt(np.sum(gradient_tensor**2, 2))
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor, (Lambda_dim,1,1)).transpose(1,2,0)
 
     return gradient_tensor
