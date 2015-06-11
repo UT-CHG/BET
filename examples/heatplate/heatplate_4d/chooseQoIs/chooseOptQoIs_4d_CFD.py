@@ -10,12 +10,8 @@ choose the optimal set of 4 QoIs to use in the inverse problem.
 from bet.sensitivity.gradients import *
 from bet.sensitivity.chooseQoIs import *
 import numpy as np
-from bet.Comm import *
+import bet.Comm as comm
 import scipy.io as sio
-
-comm = MPI.COMM_WORLD
-rank = comm.rank
-size = comm.size
 
 # Import the data from the FEniCS run
 matfile = sio.loadmat('heatplate_4d_16clustersCFD_1000qoi.mat')
@@ -57,9 +53,9 @@ indexstop = num_points*(timestepstop-1) + pointstop - 1
 
 # With a set of QoIs to consider, we check all possible combinations
 # of the QoIs and choose the best set.
-[min_condnum, qoiIndices] = chooseOptQoIs(Gnorm, indexstart, indexstop, num_qois_returned=Lambda_dim)
+[min_condnum, qoiIndices] = chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
 
-if rank==0:
+if comm.rank==0:
     print 'The minimum condition number found is : ', min_condnum
     print 'This corresponds to the set of QoIs : ', qoiIndices
 
@@ -80,7 +76,7 @@ index3 = num_points*(timestep3-1) + point3 - 1
 index4 = num_points*(timestep4-1) + point4 - 1
 
 
-singvals = np.linalg.svd(Gnorm[:, [index1, index2, index3, index4], :], compute_uv=False)
+singvals = np.linalg.svd(G[:, [index1, index2, index3, index4], :], compute_uv=False)
 spec_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
 
 

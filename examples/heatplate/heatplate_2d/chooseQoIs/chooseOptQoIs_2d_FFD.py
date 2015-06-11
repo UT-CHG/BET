@@ -10,12 +10,8 @@ choose the optimal set of 4 QoIs to use in the inverse problem.
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoIs
 import numpy as np
-from bet.Comm import *
+import bet.Comm as comm
 import scipy.io as sio
-
-comm = MPI.COMM_WORLD
-rank = comm.rank
-size = comm.size
 
 # Import the data from the FEniCS run
 matfile = sio.loadmat('heatplate_2d_16clustersFFD_1000qoi.mat')
@@ -59,7 +55,7 @@ indexstop = num_points*(timestepstop-1) + pointstop - 1
 # of the QoIs and choose the best set.
 [min_condnum, qoiIndices] = cQoIs.chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
 
-if rank==0:
+if comm.rank==0:
     print 'The minimum condition number found is : ', min_condnum
     print 'This corresponds to the set of QoIs : ', qoiIndices
 
