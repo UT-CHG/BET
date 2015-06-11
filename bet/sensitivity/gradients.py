@@ -245,8 +245,8 @@ def calculate_gradients_rbf(
     :param float ep: Choice of shape parameter for radial basis function.
         Default value is 1.0
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
-    :returns: Tensor representation of the gradient vectors of each QoI map
-        at each point in xeval
+    :returns: Tensor representation of the normalized gradient vectors of each
+        QoI map at each point in xeval
 
     """
     Lambda_dim = samples.shape[1]
@@ -291,8 +291,6 @@ def calculate_gradients_rbf(
 
 def calculate_gradients_cfd(samples, data, xeval, r):
     """
-    TODO: Check to see if this works for multiple QoIs... see
-          ffd for fix if it doesn't.  It probably doesn't.
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
@@ -311,8 +309,8 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Distance from center to place samples
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
-    :returns: Tensor representation of the gradient vectors of each QoI map
-        at each point in xeval
+    :returns: Tensor representation of the normalized gradient vectors of each
+        QoI map at each point in xeval
 
     """
     num_xeval = xeval.shape[0]
@@ -352,8 +350,8 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Distance from center to place samples
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
-    :returns: Tensor representation of the gradient vectors of each QoI map
-        at each point in xeval
+    :returns: Tensor representation of the normalized gradient vectors of each
+        QoI map at each point in xeval
 
     """
     num_xeval = xeval.shape[0]
