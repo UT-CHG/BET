@@ -1,5 +1,11 @@
+# Copyright (C) 2014-2015 The BET Development Team
 
+"""
+This module contains tests for :module:`bet.sensitivity.gradients`.
 
+Most of these tests should make sure certain values are within a tolerance
+rather than exact due to machine precision.
+"""
 import unittest
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoIs
@@ -12,18 +18,14 @@ class TestSamplingMethods(unittest.TestCase):
     """
     def setUp(self):
         self.Lambda_dim = 2
-        lam_left = np.zeros(self.Lambda_dim)
-        lam_right = np.ones(self.Lambda_dim)
-
         self.lam_domain = np.zeros((self.Lambda_dim, 2))
-        self.lam_domain[:,0] = lam_left
-        self.lam_domain[:,1] = lam_right
+        self.lam_domain[:,0] = np.zeros(self.Lambda_dim)
+        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
 
         self.num_centers = 10
+        np.random.seed(0)
         self.centers = np.random.random((self.num_centers,self.Lambda_dim))
         
-        np.random.seed(0)
-        num_qois = 20
         self.num_close = 100
         self.radius = 0.1
 
@@ -56,18 +58,14 @@ class TestFDMethods(unittest.TestCase):
     """
     def setUp(self):
         self.Lambda_dim = 2
-        lam_left = np.zeros(self.Lambda_dim)
-        lam_right = np.ones(self.Lambda_dim)
-
         self.lam_domain = np.zeros((self.Lambda_dim, 2))
-        self.lam_domain[:,0] = lam_left
-        self.lam_domain[:,1] = lam_right
+        self.lam_domain[:,0] = np.zeros(self.Lambda_dim)
+        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
 
         self.num_centers = 10
-        self.centers = np.random.random((self.num_centers,self.Lambda_dim))
-        
         np.random.seed(0)
-        num_qois = 20
+        self.centers = np.random.random((self.num_centers,self.Lambda_dim))
+
         self.radius = 0.1
 
     def test_pick_ffd_points(self):
@@ -133,10 +131,10 @@ class TestGradMethods(unittest.TestCase):
         self.Lambda_dim = 2
 
         np.random.seed(0)
-        self.num_xeval = 10
-        self.num_samples = 1000
+        self.num_centers = 10
         self.radius = 0.01
-        self.xeval = np.random.random((self.num_xeval,self.Lambda_dim))
+        self.num_close = self.Lambda_dim + 1
+        self.centers = np.random.random((self.num_centers,self.Lambda_dim))
 
         self.num_qois = 20
         coeffs = np.random.random((self.Lambda_dim, self.num_qois-self.Lambda_dim))
@@ -146,12 +144,12 @@ class TestGradMethods(unittest.TestCase):
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
         """
-        self.samples = np.random.random((self.num_samples,self.Lambda_dim))
+        self.samples = grad.sample_l1_ball(self.centers, self.num_close, self.radius)
         self.data = self.samples.dot(self.coeffs)
-        self.G = grad.calculate_gradients_rbf(self.samples, self.data, self.xeval)
+        self.G = grad.calculate_gradients_rbf(self.samples, self.data, self.centers)
 
         # Test the method returns the correct size tensor
-        self.assertEqual(self.G.shape, (self.num_xeval, self.num_qois, self.Lambda_dim))
+        self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
         nptest.assert_array_almost_equal(np.sqrt(np.sum(self.G**2, 2)), np.ones((self.G.shape[0], self.G.shape[1])))
@@ -162,12 +160,12 @@ class TestGradMethods(unittest.TestCase):
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
         """
-        self.samples = grad.pick_cfd_points(self.xeval, self.radius)
+        self.samples = grad.pick_cfd_points(self.centers, self.radius)
         self.data = self.samples.dot(self.coeffs)
-        self.G = grad.calculate_gradients_cfd(self.samples, self.data, self.xeval, self.radius)
+        self.G = grad.calculate_gradients_cfd(self.samples, self.data, self.centers, self.radius)
 
         # Test the method returns the correct size tensor
-        self.assertEqual(self.G.shape, (self.num_xeval, self.num_qois, self.Lambda_dim))
+        self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
         nptest.assert_array_almost_equal(np.sqrt(np.sum(self.G**2, 2)), np.ones((self.G.shape[0], self.G.shape[1])))
@@ -176,12 +174,12 @@ class TestGradMethods(unittest.TestCase):
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
         """
-        self.samples = grad.pick_ffd_points(self.xeval, self.radius)
+        self.samples = grad.pick_ffd_points(self.centers, self.radius)
         self.data = self.samples.dot(self.coeffs)
-        self.G = grad.calculate_gradients_ffd(self.samples, self.data, self.xeval, self.radius)
+        self.G = grad.calculate_gradients_ffd(self.samples, self.data, self.centers, self.radius)
 
         # Test the method returns the correct size tensor
-        self.assertEqual(self.G.shape, (self.num_xeval, self.num_qois, self.Lambda_dim))
+        self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
         nptest.assert_array_almost_equal(np.sqrt(np.sum(self.G**2, 2)), np.ones((self.G.shape[0], self.G.shape[1])))

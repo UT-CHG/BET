@@ -1,5 +1,11 @@
+# Copyright (C) 2014-2015 The BET Development Team
 
+"""
+This module contains tests for :module:`bet.sensitivity.chooseQoIs`.
 
+Most of these tests should make sure certain values are within a tolerance
+rather than exact due to machine precision.
+"""
 import unittest
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoIs
@@ -42,8 +48,3 @@ class TestChooseQoIsMethods(unittest.TestCase):
 
         # Test the method returns the known best set of QoIs  (chosen to be last Lambda_dim indices)
         nptest.assert_array_equal(self.qoiIndices, range(self.num_qois-self.Lambda_dim, self.num_qois))
-        
-
-
-
-
