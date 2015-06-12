@@ -71,33 +71,51 @@ def sample_l1_ball(centers, num_close, r=None):
     # rvec is the vector of radii of the l1_ball in each coordinate
     # direction
     if r is None:
-        rvec = np.ones([Lambda_dim, 1])
+        rvec = np.ones(Lambda_dim)
     else:
-        rvec = r * np.ones([Lambda_dim, 1])
+        rvec = r * np.ones(Lambda_dim)
 
     samples = np.zeros([1, centers.shape[1]])
 
-    rnd = np.random.random([num_close, 1]) #u
-    weight_rnd = rnd**(1. / Lambda_dim) #b
+    # We choose weighted random distance from the center for each new sample
+    random_dist = np.random.random([num_close, 1])
+    weight_vec = random_dist**(1. / Lambda_dim)
 
+    # For each center, randomly sample the l1_ball
     for cen in range(centers.shape[0]):
-        temp = np.random.random(
-            [num_close, Lambda_dim - 1]) * np.tile(weight_rnd, (1, Lambda_dim - 1))
-        temp = np.sort(temp, 1)
-        xtemp = np.zeros([num_close, Lambda_dim])
-        temp1 = np.zeros([num_close, Lambda_dim + 1])
-        temp1[:, 1:Lambda_dim] = temp
-        temp1[:, Lambda_dim] = np.array(weight_rnd).transpose()
-        for i in range(1, Lambda_dim + 1):
-            xtemp[:, i - 1] = temp1[:, i] - temp1[:, i - 1]
+        # Begin by uniformly sampling the unit simplex in the first quadrant
+        # Choose Lambda_dim-1 reals uniformly between 0 and weight_vec for each
+        # new sample
+        random_mat = np.random.random(
+            [num_close, Lambda_dim - 1]) * np.tile(weight_vec, (1, Lambda_dim - 1))
 
-        rnd_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
-        xtemp = xtemp * rnd_sign
+        # Sort the random_mat
+        random_mat = np.sort(random_mat, 1)
 
-        for i in range(Lambda_dim):
-            xtemp[:, i] = rvec[i] * xtemp[:, i]
-        xtemp = xtemp + centers[cen, :]
-        samples = np.append(samples, xtemp, axis=0)
+        # Contrust weight_mat so that the first column is zeros, the next
+        # Lambda_dim-1 columns are the sorted reals between 0 and weight_vec,
+        # and the last column is weight_vec.
+        weight_mat = np.zeros([num_close, Lambda_dim + 1])
+        weight_mat[:, 1:Lambda_dim] = random_mat
+        weight_mat[:, Lambda_dim] = np.array(weight_vec).transpose()
+
+        # The differences between the Lambda_dim+1 columns will give us
+        # random points in the unit simplex of dimension Lambda_dim.
+        samples_cen = np.zeros([num_close, Lambda_dim])
+        for Ldim in range(Lambda_dim):
+            samples_cen[:, Ldim] = weight_mat[:, Ldim + 1] - weight_mat[:, Ldim]
+
+        # Assign a random sign to each element of each new sample
+        # Now we have samples in the l1_ball, not just the unit simplex in
+        # the first quadrant
+        rand_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
+        samples_cen = samples_cen * rand_sign
+
+        # Scale each dimension according to rvec and translate to center
+        samples_cen = samples_cen * rvec + centers[cen, :]
+
+        # Append newsamples to samples
+        samples = np.append(samples, samples_cen, axis=0)
 
     return np.concatenate([centers, samples[1:]])
 
