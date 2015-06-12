@@ -87,8 +87,9 @@ def test_fix_dimensions_vector():
     """
     Tests :meth:`bet.util.fix_dimensions_vector`
     """
-    values = [1, [1], range(5), np.array(range(5))]
-    shapes = [(1,), (1,), (5,), (5,)]
+    values = [1, [1], range(5), np.array(range(5)), np.ones((5,1)),
+            np.ones((5,5))]
+    shapes = [(1,), (1,), (5,), (5,), (5,), (25,)]
     for value, shape in zip(values, shapes):
         vector = util.fix_dimensions_vector(value)
         assert vector.shape == shape
