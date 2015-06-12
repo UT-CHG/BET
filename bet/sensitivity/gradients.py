@@ -26,22 +26,15 @@ def sample_linf_ball(lam_domain, centers, num_close, r):
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
 
-    # Define the size of each box
+    # Define bounds for each box
     left = np.maximum(
         centers - r, np.ones([num_centers, Lambda_dim]) * lam_domain[:, 0])
     right = np.minimum(
         centers + r, np.ones([num_centers, Lambda_dim]) * lam_domain[:, 1])
 
-    translate = r * np.ones(right.shape)
-    indz = np.where(left == 0)
-    translate[indz] = right[indz] - r
-
-    translate = np.tile(translate, [num_close, 1])
-
-    # Translate each box accordingly so no samples are outside :math:`\Lambda`
-    samples = np.tile(right - left, [num_close, 1]) * np.random.random(
-        [num_centers * num_close, Lambda_dim]) + np.tile(centers,
-        [num_close, 1]) - translate
+    # Samples each box uniformly
+    samples = np.tile(right - left, [num_close, 1])*np.random.random(
+        [num_centers * num_close, Lambda_dim]) + np.tile(left, [num_close, 1])
 
     return np.concatenate([centers, samples])
 
@@ -137,6 +130,8 @@ def pick_cfd_points(centers, r):
     num_centers = centers.shape[0]
     samples = np.tile(centers, [Lambda_dim * 2, 1])
 
+    # Contstruct a [num_centers*2*Lambda_dim, Lambda_dim] matrix that
+    # translates the centers to the CFD points
     translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
     translate = np.append(translate, -translate, axis=0)
     samples += translate
@@ -162,6 +157,8 @@ def pick_ffd_points(centers, r):
     num_centers = centers.shape[0]
     samples = np.tile(centers, [Lambda_dim, 1])
 
+    # Construct a [num_centers*(Lambda_dim+1), Lambda_dim] matrix that
+    # translates the senters to the FFD points.
     translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
     samples += translate
 
@@ -277,13 +274,21 @@ def calculate_gradients_rbf(
     gradient_tensor = np.zeros([num_xeval, Data_dim, Lambda_dim])
     tree = spatial.KDTree(samples)
 
+    # For each xeval, interpolate the data using the rbf chosen and
+    # then evaluate the partail derivative of that rbf at the desired point. 
     for xe in range(num_xeval):
+        # Find the k nearest neightbors and their distances to xeval[xe,:]
         [r, nearest] = tree.query(xeval[xe, :], k=num_neighbors)
         r = np.tile(r, (Lambda_dim, 1))
 
+        # Compute the linf distances to each of the nearest neighbors
         diffVec = (xeval[xe, :] - samples[nearest, :]).transpose()
+
+        # Compute the l2 distances between pairs of nearest neighbors
         distMat = spatial.distance_matrix(
             samples[nearest, :], samples[nearest, :])
+
+        # 
         rbf_mat_values = np.linalg.solve(radial_basis_function(distMat, RBF),
             radial_basis_function_dxi(r, diffVec, RBF, ep).transpose()).transpose()
 
@@ -330,9 +335,11 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     num_qois = data.shape[1]
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
+    # Compute the gradient vectors using the standard CFD stencil
     gradient_vec = (
         data[:Lambda_dim * num_xeval] - data[Lambda_dim * num_xeval:]) / (2 * r)
 
+    # Reshape and organize
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
@@ -372,9 +379,11 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     num_qois = data.shape[1]
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
+    # Compute the gradient vectors using the standard FFD stencil
     gradient_vec = (
         data[num_xeval:] - np.tile(data[0:num_xeval], [Lambda_dim, 1])) / r
 
+    # Reshape and organize
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
