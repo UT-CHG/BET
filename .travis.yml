@@ -26,6 +26,7 @@ notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
+            - lichgraham@gmail.com
         on_success: change
         on_failure: always
 # whitelist
