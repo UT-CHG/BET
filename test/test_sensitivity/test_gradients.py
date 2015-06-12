@@ -12,23 +12,11 @@ import bet.sensitivity.chooseQoIs as cQoIs
 import numpy as np
 import numpy.testing as nptest
 
-class TestSamplingMethods(unittest.TestCase):
+
+class SamplingMethods:
     """
     Test all sampling methods in :module:`bet.sensitivity.gradients`
     """
-    def setUp(self):
-        self.Lambda_dim = 2
-        self.lam_domain = np.zeros((self.Lambda_dim, 2))
-        self.lam_domain[:,0] = np.zeros(self.Lambda_dim)
-        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
-
-        self.num_centers = 10
-        np.random.seed(0)
-        self.centers = np.random.random((self.num_centers,self.Lambda_dim))
-        
-        self.num_close = 100
-        self.radius = 0.1
-
     def test_sample_linf_ball(self):
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
@@ -52,22 +40,10 @@ class TestSamplingMethods(unittest.TestCase):
         # Test the method returns the correct number of samples
         self.assertEqual(self.samples.shape[0], (self.num_close+1)*self.num_centers)
 
-class TestFDMethods(unittest.TestCase):
+class FDMethods:
     """
     Test all finite difference methods in :module:`bet.sensitivity.gradients`
     """
-    def setUp(self):
-        self.Lambda_dim = 2
-        self.lam_domain = np.zeros((self.Lambda_dim, 2))
-        self.lam_domain[:,0] = np.zeros(self.Lambda_dim)
-        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
-
-        self.num_centers = 10
-        np.random.seed(0)
-        self.centers = np.random.random((self.num_centers,self.Lambda_dim))
-
-        self.radius = 0.1
-
     def test_pick_ffd_points(self):
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
@@ -86,17 +62,10 @@ class TestFDMethods(unittest.TestCase):
         # Test the method returns the correct number of samples
         self.assertEqual(self.samples.shape[0], (2*self.Lambda_dim)*self.num_centers)
 
-class TestRBFMethods(unittest.TestCase):
+class RBFMethods:
     """
     Test all RBF methods in :module:`bet.sensitivity.gradients`
     """
-    def setUp(self):
-        self.shape_radii = [20,10]
-        np.random.seed(0)
-        self.radii_mat = np.random.random(self.shape_radii)
-        self.radii_vec = np.random.random(self.shape_radii[0])
-        self.dxi = np.random.random(self.shape_radii[0])
-
     def test_radial_basis_function(self):
         """
         Test :meth:`bet.sensitivity.gradients.radial_basis_function`.
@@ -123,23 +92,10 @@ class TestRBFMethods(unittest.TestCase):
         with self.assertRaises(ValueError):
             grad.radial_basis_function_dxi(self.radii_vec, self.dxi, 'DNE')
 
-class TestGradMethods(unittest.TestCase):
+class GradMethods:
     """
     Test all gradient approximation methods in :module:`bet.sensitivity.gradients`
     """
-    def setUp(self):
-        self.Lambda_dim = 2
-
-        np.random.seed(0)
-        self.num_centers = 10
-        self.radius = 0.01
-        self.num_close = self.Lambda_dim + 1
-        self.centers = np.random.random((self.num_centers,self.Lambda_dim))
-
-        self.num_qois = 20
-        coeffs = np.random.random((self.Lambda_dim, self.num_qois-self.Lambda_dim))
-        self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
-
     def test_calculate_gradients_rbf(self):
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
@@ -184,6 +140,92 @@ class TestGradMethods(unittest.TestCase):
         # Test that each vector is normalized
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
+class test_2to20_1centers_unitsquare(SamplingMethods, FDMethods, RBFMethods, GradMethods, unittest.TestCase):
+    
+    def setUp(self):
+        # Define the parameter space (Lambda)
+        self.Lambda_dim = 2
+        self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        self.lam_domain[:,0] = np.zeros(self.Lambda_dim)
+        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
+
+        # Choose random centers to cluster points around
+        self.num_centers = 1
+        np.random.seed(0)
+        self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
+            np.random.random((self.num_centers,self.Lambda_dim)) + self.lam_domain[:,0]
+        self.num_close = self.Lambda_dim + 1
+        self.radius = 0.1
+
+        # Choose array shapes for RBF methods
+        self.shape_radii = [20,10]
+        np.random.seed(0)
+        self.radii_mat = np.random.random(self.shape_radii)
+        self.radii_vec = np.random.random(self.shape_radii[0])
+        self.dxi = np.random.random(self.shape_radii[0])
+
+        # Define example linear functions (QoIs) for gradient approximation methods
+        self.num_qois = 20
+        coeffs = np.random.random((self.Lambda_dim, self.num_qois-self.Lambda_dim))
+        self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
+
+class test_4to20_100centers_randomhyperbox(SamplingMethods, FDMethods, RBFMethods, GradMethods, unittest.TestCase):
+    
+    def setUp(self):
+        # Define the parameter space (Lambda)
+        self.Lambda_dim = 4
+        self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        self.lam_domain[:,0] = np.random.random(self.Lambda_dim)
+        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
+
+        # Choose random centers to cluster points around
+        self.num_centers = 100
+        np.random.seed(0)
+        self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
+            np.random.random((self.num_centers,self.Lambda_dim)) + self.lam_domain[:,0]
+        self.num_close = self.Lambda_dim + 1
+        self.radius = 0.1
+
+        # Choose array shapes for RBF methods
+        self.shape_radii = [20,10]
+        np.random.seed(0)
+        self.radii_mat = np.random.random(self.shape_radii)
+        self.radii_vec = np.random.random(self.shape_radii[0])
+        self.dxi = np.random.random(self.shape_radii[0])
+
+        # Define example linear functions (QoIs) for gradient approximation methods
+        self.num_qois = 20
+        coeffs = np.random.random((self.Lambda_dim, self.num_qois-self.Lambda_dim))
+        self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
+
+class test_9to20_100centers_randomhyperbox(SamplingMethods, FDMethods, RBFMethods, GradMethods, unittest.TestCase):
+    
+    def setUp(self):
+        # Define the parameter space (Lambda)
+        self.Lambda_dim = 9
+        self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        self.lam_domain[:,0] = np.random.random(self.Lambda_dim)
+        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
+
+        # Choose random centers to cluster points around
+        self.num_centers = 100
+        np.random.seed(0)
+        self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
+            np.random.random((self.num_centers,self.Lambda_dim)) + self.lam_domain[:,0]
+        self.num_close = self.Lambda_dim + 1
+        self.radius = 0.1
+
+        # Choose array shapes for RBF methods
+        self.shape_radii = [20,10]
+        np.random.seed(0)
+        self.radii_mat = np.random.random(self.shape_radii)
+        self.radii_vec = np.random.random(self.shape_radii[0])
+        self.dxi = np.random.random(self.shape_radii[0])
+
+        # Define example linear functions (QoIs) for gradient approximation methods
+        self.num_qois = 20
+        coeffs = np.random.random((self.Lambda_dim, self.num_qois-self.Lambda_dim))
+        self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
 
 
 
