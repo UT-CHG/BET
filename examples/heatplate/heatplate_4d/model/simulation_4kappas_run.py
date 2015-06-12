@@ -35,8 +35,8 @@ if rank==0:
     #data = F[:,0:40]
 
     #output parameter and functional data to matlab file
-    #filename = sys.argv[1]
-    #sio.savemat(filename, {'data':data, 'samples':x})
+    filename = sys.argv[1]
+    sio.savemat(filename, {'data':data, 'samples':samples})
 
 if rank==0:
     print ' '

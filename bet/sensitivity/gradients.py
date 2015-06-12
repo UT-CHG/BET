@@ -6,8 +6,6 @@ of QoI maps.
 """
 import numpy as np
 import scipy.spatial as spatial
-from bet.Comm import *
-
 
 def sample_linf_ball(lam_domain, centers, num_close, r):
     """
@@ -25,7 +23,6 @@ def sample_linf_ball(lam_domain, centers, num_close, r):
     :returns: Clusters of samples near each point in centers
 
     """
-
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
 
@@ -43,10 +40,10 @@ def sample_linf_ball(lam_domain, centers, num_close, r):
 
     # Translate each box accordingly so no samples are outside :math:`\Lambda`
     samples = np.tile(right - left, [num_close, 1]) * np.random.random(
-        [num_centers * num_close, Lambda_dim]) + np.tile(centers, [num_close, 1]) - translate
+        [num_centers * num_close, Lambda_dim]) + np.tile(centers,
+        [num_close, 1]) - translate
 
     return np.concatenate([centers, samples])
-
 
 def sample_l1_ball(centers, num_close, r=None):
     """
@@ -69,40 +66,40 @@ def sample_l1_ball(centers, num_close, r=None):
     :rtype: :class:`np.ndarray` of shape (num_samples*num_centers, Ldim)
     :returns: Uniform random samples from a diamond around each center point
 
-
     """
     Lambda_dim = centers.shape[1]
+    # rvec is the vector of radii of the l1_ball in each coordinate
+    # direction
     if r is None:
         rvec = np.ones([Lambda_dim, 1])
     else:
         rvec = r * np.ones([Lambda_dim, 1])
 
-    x = np.zeros([1, centers.shape[1]])
+    samples = np.zeros([1, centers.shape[1]])
 
-    u = np.random.random([num_close, 1])
-    b = u**(1. / Lambda_dim)
+    rnd = np.random.random([num_close, 1]) #u
+    weight_rnd = rnd**(1. / Lambda_dim) #b
 
-    for j in range(centers.shape[0]):
+    for cen in range(centers.shape[0]):
         temp = np.random.random(
-            [num_close, Lambda_dim - 1]) * np.tile(b, (1, Lambda_dim - 1))
+            [num_close, Lambda_dim - 1]) * np.tile(weight_rnd, (1, Lambda_dim - 1))
         temp = np.sort(temp, 1)
         xtemp = np.zeros([num_close, Lambda_dim])
         temp1 = np.zeros([num_close, Lambda_dim + 1])
         temp1[:, 1:Lambda_dim] = temp
-        temp1[:, Lambda_dim] = np.array(b).transpose()
+        temp1[:, Lambda_dim] = np.array(weight_rnd).transpose()
         for i in range(1, Lambda_dim + 1):
             xtemp[:, i - 1] = temp1[:, i] - temp1[:, i - 1]
 
-        u_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
-        xtemp = xtemp * u_sign
+        rnd_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
+        xtemp = xtemp * rnd_sign
 
         for i in range(Lambda_dim):
             xtemp[:, i] = rvec[i] * xtemp[:, i]
-        xtemp = xtemp + centers[j, :]
-        x = np.append(x, xtemp, axis=0)
+        xtemp = xtemp + centers[cen, :]
+        samples = np.append(samples, xtemp, axis=0)
 
-    return np.concatenate([centers, x[1:]])
-
+    return np.concatenate([centers, samples[1:]])
 
 def pick_cfd_points(centers, r):
     """
@@ -127,7 +124,6 @@ def pick_cfd_points(centers, r):
     samples += translate
 
     return samples
-
 
 def pick_ffd_points(centers, r):
     """
@@ -184,7 +180,6 @@ def radial_basis_function(r, kernel=None, ep=None):
 
     return rbf
 
-
 def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     """
 
@@ -218,7 +213,6 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 
     return rbfdxi
 
-
 def calculate_gradients_rbf(
         samples, data, xeval, num_neighbors=None, RBF=None, ep=None):
     """
@@ -245,18 +239,18 @@ def calculate_gradients_rbf(
     :param float ep: Choice of shape parameter for radial basis function.
         Default value is 1.0
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
-    :returns: Tensor representation of the gradient vectors of each QoI map
-        at each point in xeval
+    :returns: Tensor representation of the normalized gradient vectors of each
+        QoI map at each point in xeval
 
     """
+    Lambda_dim = samples.shape[1]
     if num_neighbors is None:
-        num_neighbors = 30
+        num_neighbors = Lambda_dim + 1
     if ep is None:
         ep = 1.0
     if RBF is None:
         RBF = 'Gaussian'
 
-    Lambda_dim = samples.shape[1]
     num_model_samples = samples.shape[0]
     Data_dim = data.shape[1]
     num_xeval = xeval.shape[0]
@@ -273,7 +267,7 @@ def calculate_gradients_rbf(
         distMat = spatial.distance_matrix(
             samples[nearest, :], samples[nearest, :])
         rbf_mat_values = np.linalg.solve(radial_basis_function(distMat, RBF),
-                                         radial_basis_function_dxi(r, diffVec, RBF, ep).transpose()).transpose()
+            radial_basis_function_dxi(r, diffVec, RBF, ep).transpose()).transpose()
 
         for ind in range(num_neighbors):
             rbf_tensor[xe, nearest[ind], :] = rbf_mat_values[
@@ -282,13 +276,15 @@ def calculate_gradients_rbf(
     gradient_tensor = rbf_tensor.transpose(
         2, 0, 1).dot(data).transpose(1, 2, 0)
 
-    return gradient_tensor
+    # Normalize each gradient vector
+    norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+        (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
+    return gradient_tensor
 
 def calculate_gradients_cfd(samples, data, xeval, r):
     """
-    TODO: Check to see if this works for multiple QoIs... see
-          ffd for fix if it doesn't.  It probably doesn't.
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
@@ -307,8 +303,8 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Distance from center to place samples
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
-    :returns: Tensor representation of the gradient vectors of each QoI map
-        at each point in xeval
+    :returns: Tensor representation of the normalized gradient vectors of each
+        QoI map at each point in xeval
 
     """
     num_xeval = xeval.shape[0]
@@ -318,11 +314,16 @@ def calculate_gradients_cfd(samples, data, xeval, r):
 
     gradient_vec = (
         data[:Lambda_dim * num_xeval] - data[Lambda_dim * num_xeval:]) / (2 * r)
-    gradient_tensor = gradient_vec.reshape(
-        Lambda_dim, 1, num_xeval).transpose(2, 1, 0)
+
+    gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
+        num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
+
+    # Normalize each gradient vector
+    norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+        (Lambda_dim, 1, 1)).transpose(1, 2, 0)
 
     return gradient_tensor
-
 
 def calculate_gradients_ffd(samples, data, xeval, r):
     """
@@ -344,8 +345,8 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param float r: Distance from center to place samples
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
-    :returns: Tensor representation of the gradient vectors of each QoI map
-        at each point in xeval
+    :returns: Tensor representation of the normalized gradient vectors of each
+        QoI map at each point in xeval
 
     """
     num_xeval = xeval.shape[0]
@@ -358,5 +359,10 @@ def calculate_gradients_ffd(samples, data, xeval, r):
 
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
+
+    # Normalize each gradient vector
+    norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+        (Lambda_dim, 1, 1)).transpose(1, 2, 0)
 
     return gradient_tensor

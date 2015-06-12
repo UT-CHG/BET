@@ -7,15 +7,11 @@ It then calcualte the gradients using a RBF scheme and uses the gradient informa
 choose the optimal set of 4 QoIs to use in the inverse problem.
 """
 
-from bet.sensitivity.gradients import *
-from bet.sensitivity.chooseQoIs import *
+import bet.sensitivity.gradients as grad
+import bet.sensitivity.chooseQoIs as cQoIs
 import numpy as np
-from bet.Comm import *
+import bet.Comm as comm
 import scipy.io as sio
-
-comm = MPI.COMM_WORLD
-rank = comm.rank
-size = comm.size
 
 # Import the data from the FEniCS run
 matfile = sio.loadmat('heatplate_2d_16clustersFFD_1000qoi.mat')
@@ -42,15 +38,10 @@ num_points = 20
 
 #####################################
 
-# With the samples and data we calcualte the gradient vectors at each
-# of the 16 random points in lam_domain.
+# With the samples and data we calcualte the normalized gradient vectors a
+# each of the 16 random points in lam_domain.
 K = Lambda_dim + 2
-G = calculate_gradients_rbf(samples, data, xeval, num_neighbors=K)
-
-# We are simply interested in the skewness of the contours of sets of QoI
-# maps, so we normalize the gradient vectors.
-normG = np.sqrt(np.sum(G**2, 2))
-Gnorm = G/np.tile(normG, (Lambda_dim,1,1)).transpose(1,2,0)
+G = grad.calculate_gradients_rbf(samples, data, xeval, num_neighbors=K)
 
 # We have 1,000 QoIs to choose from (50 time steps * 20 points).  Here we
 # choose which QoI we want to start and end with.
@@ -63,9 +54,9 @@ indexstop = num_points*(timestepstop-1) + pointstop - 1
 
 # With a set of QoIs to consider, we check all possible combinations
 # of the QoIs and choose the best set.
-[min_condnum, qoiIndices] = chooseOptQoIs(Gnorm, indexstart, indexstop, num_qois_returned=Lambda_dim)
+[min_condnum, qoiIndices] = cQoIs.chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
 
-if rank==0:
+if comm.rank==0:
     print 'The minimum condition number found is : ', min_condnum
     print 'This corresponds to the set of QoIs : ', qoiIndices
 
@@ -79,6 +70,6 @@ timestep2 = 1
 index1 = num_points*(timestep1-1) + point1 - 1
 index2 = num_points*(timestep2-1) + point2 - 1
 
-singvals = np.linalg.svd(Gnorm[:, [index1, index2], :], compute_uv=False)
+singvals = np.linalg.svd(G[:, [index1, index2], :], compute_uv=False)
 spec_condnum = np.sum(singvals[:,0]/singvals[:,-1], axis=0)/num_xeval
 
