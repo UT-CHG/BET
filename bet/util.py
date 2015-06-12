@@ -108,7 +108,7 @@ def fix_dimensions_vector(vector):
         vector = np.array([vector])
     elif not isinstance(vector, np.ndarray):
         vector = np.array(vector)
-    return vector
+    return vector.flat[:]
 
 def fix_dimensions_vector_2darray(vector):
     """
