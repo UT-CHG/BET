@@ -162,12 +162,7 @@ class Test_basic_sampler(unittest.TestCase):
         """
         Clean up extra files
         """
-<<<<<<< HEAD
-
-        if rank == 0:
-=======
         if comm.rank == 0:
->>>>>>> master
             for f in self.savefiles:
                 if os.path.exists(f+".mat"):
                     os.remove(f+".mat")
