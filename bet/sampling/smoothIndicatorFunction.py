@@ -171,3 +171,88 @@ def smoothed_indicator_boundary_cws(center, width, mid_width, sur_domain):
     outer_boundary = util.meshgrid_ndim(outer_boundary)
     return smoothed_indicator_boundary_cw_outer(center, width, mid_width, 
             outer_boundary)
+
+# W shaped functions
+def smoothed_indicator_W_inner_outer(inner_boundary, center,
+        outer_boundary):
+    """
+    Create an indicator function where the value is 0.3 at the center
+    defined by a set of points, 0.0 on the boundary of the RoI, and 1.0
+    at some outer boundary also defined by a set of points.
+
+    :param inner_boundary: points defining the inner boundary
+    :type inner_boundary: :class:`np.ndarray` of shape (m, mdim)
+    :param center: points defining the center
+    :type center: :class:`np.ndarray` of shape (m, mdim)
+    :param outer_boundary: points defining the outer boundary
+    :type outer_boundary: :class:`np.ndarray` of shape (m, mdim)
+    :rtype: function
+    :returns: function where the value at ``inner_boundary`` is 0.3 , 0.0
+        between the midinner and midouter boudnaries, and the value at
+        ``outer_boundary`` is 1.0 with values interpolated between the
+        boundaries
+    """
+    points = np.concatenate((inner_boundary, center,
+         outer_boundary))
+    values = np.concatenate((0.0*np.ones(inner_boundary.shape[0]),
+        0.3*np.ones(center.shape[0]),
+        np.ones(outer_boundary.shape[0])))
+    def indicator_function(inputs):
+        "Function wrapper for griddata"
+        return griddata(points, values, inputs)
+    return indicator_function
+
+def smoothed_indicator_W_cw_outer(center, width,
+        outer_boundary): 
+    """
+    Create an indicator function where the value is 0.3 at the center
+    defined by a set of points, 0.0 on the boundary of the RoI, and 1.0
+    at some outer boundary also defined by a set of points.
+
+    :param center: location of the center of the hyperrectangle
+    :type center: :class:`numpy.ndarray` of shape (mdim,)
+    :param width: location of the width of the hyperrectangle
+    :type width: :class:`numpy.ndarray` of shape (mdim,)
+    :param outer_boundary: points defining the outer boundary
+    :type outer_boundary: :class:`np.ndarray` of shape (m, mdim)
+    :rtype: function
+    :returns: function where the value at ``inner_boundary`` is 0.3 , 0.0
+        between the midinner and midouter boudnaries, and the value at
+        ``outer_boundary`` is 1.0 with values interpolated between the
+        boundaries
+
+    """
+
+    half_width = 0.5*width
+    left = center-half_width
+    right = center-half_width
+    inner_boundary = [[l, r] for l, r in zip(left, right)]
+    inner_boundary = util.meshgrid_ndim(inner_boundary)
+    return smoothed_indicator_W_inner_outer(inner_boundary,
+            util.fix_dimensions_vector_2darray(center), outer_boundary)
+
+def smoothed_indicator_W_cws(center, width, sur_domain):
+    """
+    Create an indicator function where the value is 0.3 at the center
+    defined by a set of points, 0.0 on the boundary of the RoI, and 1.0
+    at some outer boundary also defined by a set of points.
+
+    :param center: location of the center of the hyperrectangle
+    :type center: :class:`numpy.ndarray` of shape (mdim,)
+    :param width: location of the width of the hyperrectangle
+    :type width: :class:`numpy.ndarray` of shape (mdim,)
+    :param sur_domain: minima and maxima of each dimension defining the
+        surrounding domain. The surrounding domain is the bounded
+        domain in the data space (i.e. the data domain).
+    :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
+    :rtype: function
+    :returns: function where the value at ``inner_boundary`` is 0.3 , 0.0
+        between the midinner and midouter boudnaries, and the value at
+        ``outer_boundary`` is 1.0 with values interpolated between the
+        boundaries
+    """
+    outer_boundary = [[l, r] for l, r in zip(sur_domain[:, 0], 
+        sur_domain[:, 1])]
+    outer_boundary = util.meshgrid_ndim(outer_boundary)
+    return smoothed_indicator_W_cw_outer(center, width,  
+            outer_boundary)
