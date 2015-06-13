@@ -79,7 +79,7 @@ class sampler(asam.sampler):
         """
         if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(comm.rank, os.path.basename(savefile)))
+                    "proc{}{}".format(comm.comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -104,10 +104,10 @@ class sampler(asam.sampler):
         
         # now split it all up
         if comm.size > 1:
-            MYsamples_old = np.empty((np.shape(samples_old)[0]/size,
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
                 np.shape(samples_old)[1])) 
             comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-            MYdata_old = np.empty((np.shape(data_old)[0]/size,
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
                 np.shape(data_old)[1])) 
             comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
             step_ratio = self.determine_step_ratio(MYsamples_old)

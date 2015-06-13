@@ -24,7 +24,7 @@ from scipy.interpolate import Rbf
 import scipy.optimize as optimize
 import scipy.spatial as spatial
 import os
-from bet.Comm import *
+from bet.Comm import comm, MPI
 
 class sampler(asam.sampler):
     """
@@ -88,9 +88,9 @@ class sampler(asam.sampler):
             (num_chains, chain_length)
 
         """
-        if size > 1:
+        if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(rank, os.path.basename(savefile)))
+                    "proc{}{}".format(comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -115,10 +115,10 @@ class sampler(asam.sampler):
         
         # now split it all up
         if comm.size > 1:
-            MYsamples_old = np.empty((np.shape(samples_old)[0]/size,
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
                 np.shape(samples_old)[1])) 
             comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-            MYdata_old = np.empty((np.shape(data_old)[0]/size,
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
                 np.shape(data_old)[1])) 
             comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
             step_ratio = self.determine_step_ratio(MYsamples_old)
@@ -198,7 +198,7 @@ class sampler(asam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            if size > 1:
+            if comm.size > 1:
                 super(sampler, self).save(mdat, psavefile)
             else:
                 super(sampler, self).save(mdat, savefile)
@@ -314,39 +314,39 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
     elif dim == 2:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 rbf_data)
-        def surrogate(input):
-            return float(rbfi(input[0], input[1]))
+        def surrogate(rbfin):
+            return float(rbfi(rbfin[0], rbfin[1]))
     elif dim == 3:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
                 samples_rbf[:, 2], rbf_data) 
-        def surrogate(input):
-            return float(rbfi(input[0], input[1], input[2]))
+        def surrogate(rbfin):
+            return float(rbfi(rbfin[0], rbfin[1], rbfin[2]))
     elif dim == 4:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1],
                 samples_rbf[:, 2], samples_rbf[:, 3], rbf_data)
-        def surrogate(input):
-            return float(rbfi(input[0], input[1], input[2], input[3]))
+        def surrogate(rbfin):
+            return float(rbfi(rbfin[0], rbfin[1], rbfin[2], rbfin[3]))
     elif dim == 5:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
                 rbf_data)
-        def surrogate(input):
-            return float(rbfi(input[0], input[1], input[2], input[3],
-                    input[4]))
+        def surrogate(rbfin):
+            return float(rbfi(rbfin[0], rbfin[1], rbfin[2], rbfin[3],
+                    rbfin[4]))
     elif dim == 6:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
                 samples_rbf[:, 5], rbf_data)
-        def surrogate(input):
-            return float(rbfi(input[0], input[1], input[2], input[3],
-                    input[4], input[5]))
+        def surrogate(rbfin):
+            return float(rbfi(rbfin[0], rbfin[1], rbfin[2], rbfin[3],
+                    rbfin[4], rbfin[5]))
     elif dim == 7:
         rbfi = Rbf(samples_rbf[:, 0], samples_rbf[:, 1], 
                 samples_rbf[:, 2], samples_rbf[:, 3], samples_rbf[:, 4],
                 samples_rbf[:, 5], samples_rbf[:, 6], rbf_data)
-        def surrogate(input):
-            return float(rbfi(input[0], input[1], input[2], input[3],
-                    input[4], input[5], input[6]))
+        def surrogate(rbfin):
+            return float(rbfi(rbfin[0], rbfin[1], rbfin[2], rbfin[3],
+                    rbfin[4], rbfin[5], rbfin[6]))
     else:
         print "surrogate creation only supported for up to 7 dimensions"
         quit()

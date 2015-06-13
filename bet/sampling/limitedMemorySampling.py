@@ -102,10 +102,10 @@ class sampler(asam.sampler):
         
         # now split it all up
         if comm.size > 1:
-            MYsamples_old = np.empty((np.shape(samples_old)[0]/size,
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
                 np.shape(samples_old)[1])) 
             comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-            MYdata_old = np.empty((np.shape(data_old)[0]/size,
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
                 np.shape(data_old)[1])) 
             comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
             step_ratio = self.determine_step_ratio(MYsamples_old)
