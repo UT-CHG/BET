@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2014-2015 The BET Development Team
 
 # -*- coding: utf-8 -*-
@@ -113,12 +114,17 @@ class sampler(asam.sampler):
         comm.Barrier()
         
         # now split it all up
-        MYsamples_old = np.empty((np.shape(samples_old)[0]/size,
-            np.shape(samples_old)[1])) 
-        comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-        MYdata_old = np.empty((np.shape(data_old)[0]/size,
-            np.shape(data_old)[1])) 
-        comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+        if comm.size > 1:
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/size,
+                np.shape(samples_old)[1])) 
+            comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
+            MYdata_old = np.empty((np.shape(data_old)[0]/size,
+                np.shape(data_old)[1])) 
+            comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+            step_ratio = self.determine_step_ratio(MYsamples_old)
+        else:
+            MYsamples_old = np.copy(samples_old)
+            MYdata_old = np.copy(data_old)
 
         samples = MYsamples_old
         data = MYdata_old
@@ -358,8 +364,9 @@ def rbf_samples(MYsamples_rbf, rbf_data, MYsamples_old, param_dist):
     mindists = np.empty((MYsamples_old.shape[0],))
     for i in range(dist.shape[0]):
         mindists[i] = np.min(dist[i][dist[i] > 0])
+    mindists_sum = np.sum(mindists)
     mindists_sum = comm.allreduce(mindists, op=MPI.SUM)
-    mindists_avg = mindists_sum/(size*MYsamples_old.shape[0])
+    mindists_avg = mindists_sum/(comm.size*MYsamples_old.shape[0])
     # set step ratio based on this distance
     step_ratio = mindists_avg/param_dist*np.ones(MYsamples_old.shape[0])
     return step_ratio, MYsamples_old
