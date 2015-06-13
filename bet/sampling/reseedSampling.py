@@ -192,7 +192,7 @@ class sampler(asam.sampler):
             # Reseed the samples
             if batch%reseed == 0:
                 # This could be done more efficiently
-                global_samples = util.get_global_samples(np.copy(samples))
+                global_samples = util.get_global_values(np.copy(samples))
                 sample_rank = smoothIndicatorFun(global_samples)
                 sort_ind = np.argsort(sample_rank)[:self.num_chains]
                 samples_old = global_samples[sort_ind, :]
