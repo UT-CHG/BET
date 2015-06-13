@@ -3,9 +3,10 @@
 
 """
 
-Create an indicator function where the value is 1.0 inside the domain defined by
-a set of points and zero at some outer boundary also defined by a set of
-points.
+Create an indicator function where the value is 0.0 inside the domain defined by
+a set of points and 1.0 at some outer boundary also defined by a set of
+points. This means that locating the RoI is a MINIMIZATION or root finding
+problem.
 
 """
 
@@ -89,9 +90,8 @@ def smoothed_indicator_boundary_inner_outer(inner_boundary, middle_boundary,
         outer_boundary):
     """
     Create an indicator function where the value is 0.3 inside the boundary
-    defined by a set of points, 0.0 between the midinner and midouter
-    boudnaries, and 1.0  at some outer boundary also defined by
-    a set of points.
+    defined by a set of points, 0.0 at the padded middle boundaries, and 1.0
+    at some outer boundary also defined by a set of points.
 
     :param inner_boundary: points defining the inner boundary
     :type inner_boundary: :class:`np.ndarray` of shape (m, mdim)
@@ -117,9 +117,8 @@ def smoothed_indicator_boundary_cw_outer(center, width, mid_width,
         outer_boundary): 
     """
     Create an indicator function where the value is 0.3 inside the boundary
-    defined by a set of points, 0.0 between the midinner and midouter
-    boudnaries, and 1.0  at some outer boundary also defined by
-    a set of points.
+    defined by a set of points, 0.0 at the padded middle boundaries, and 1.0
+    at some outer boundary also defined by a set of points.
 
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
@@ -150,9 +149,8 @@ def smoothed_indicator_boundary_cw_outer(center, width, mid_width,
 def smoothed_indicator_boundary_cws(center, width, mid_width, sur_domain):
     """
     Create an indicator function where the value is 0.3 inside the boundary
-    defined by a set of points, 0.0 between the midinner and midouter
-    boudnaries, and 1.0  at some outer boundary also defined by
-    a set of points.
+    defined by a set of points, 0.0 at the padded middle boundaries, and 1.0
+    at some outer boundary also defined by a set of points.
 
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)

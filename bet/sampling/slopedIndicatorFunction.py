@@ -4,8 +4,8 @@
 """
 
 Create an indicator function where the value is 1.0 inside the domain defined by
-a set of points and zero at some outer boundary also defined by a set of
-points.
+a set of points and 0.0 at some outer boundary also defined by a set of
+points. This means locating the RoI is a MAXIMIZATION problem.
 
 """
 
@@ -33,7 +33,7 @@ def sloped_indicator_inner_outer(inner_boundary, outer_boundary):
         np.zeros(outer_boundary.shape[0])))
     def indicator_function(inputs):
         "Function wrapper for griddata"
-        return griddata(points, values, inputs)
+        return griddata(points, values, inputs, fill_value=0.0)
     return indicator_function
 
 def sloped_indicator_cw_outer(center, width, outer_boundary):
