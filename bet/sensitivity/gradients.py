@@ -301,6 +301,11 @@ def calculate_gradients_rbf(
 
     # Normalize each gradient vector
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+
+    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+    indz = np.array(np.where(norm_gradient_tensor==0))
+    norm_gradient_tensor[indz[0], indz[1]] = 1.0
+
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
         (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 

@@ -109,7 +109,12 @@ class GradientsMethods:
         # Test the method returns the correct size tensor
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
-        # Test that each vector is normalized
+        # Test that each vector is normalized or a zero vector
+        normG = np.linalg.norm(self.G, axis=2)
+
+        # If its a zero vectors, make it the unit vector in Lambda_dim
+        indz = np.array(np.where(normG==0))
+        self.G[indz[0], indz[1], :] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
         
 
@@ -126,6 +131,11 @@ class GradientsMethods:
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
+        normG = np.linalg.norm(self.G, axis=2)
+
+        # If its a zero vectors, make it the unit vector in Lambda_dim
+        indz = np.array(np.where(normG==0))
+        self.G[indz[0], indz[1], :] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
     def test_calculate_gradients_ffd(self):
@@ -140,6 +150,11 @@ class GradientsMethods:
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois, self.Lambda_dim))
 
         # Test that each vector is normalized
+        normG = np.linalg.norm(self.G, axis=2)
+
+        # If its a zero vectors, make it the unit vector in Lambda_dim
+        indz = np.array(np.where(normG==0))
+        self.G[indz[0], indz[1], :] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
 # Test cases
@@ -281,6 +296,35 @@ class test_15to37_143centers_negrandomhyperbox(GradientsMethods, unittest.TestCa
         # Define example linear functions (QoIs) for gradient approximation methods
         self.num_qois = 37
         coeffs = np.random.random((self.Lambda_dim, self.num_qois-self.Lambda_dim))
+        self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
+
+class test_9to30_100centers_randomhyperbox_zeroQoIs(GradientsMethods, unittest.TestCase):
+    
+    def setUp(self):
+        # Define the parameter space (Lambda)
+        self.Lambda_dim = 9
+        self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        self.lam_domain[:,0] = np.random.random(self.Lambda_dim)
+        self.lam_domain[:,1] = np.random.random(self.Lambda_dim) + 2
+
+        # Choose random centers to cluster points around
+        self.num_centers = 100
+        np.random.seed(0)
+        self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
+            np.random.random((self.num_centers,self.Lambda_dim)) + self.lam_domain[:,0]
+        self.num_close = self.Lambda_dim + 1
+        self.radius = 0.1
+
+        # Choose array shapes for RBF methods
+        np.random.seed(0)
+        self.radii_rbf = np.random.random([self.num_close, self.num_close])
+        self.radii_rbfdxi = np.random.random([self.Lambda_dim, self.num_close])
+        self.dxi = np.random.random([self.Lambda_dim, self.num_close])
+
+        # Define example linear functions (QoIs) for gradient approximation methods
+        self.num_qois = 30
+        coeffs = np.zeros((self.Lambda_dim, 2*self.Lambda_dim))
+        coeffs = np.append(coeffs, np.random.random((self.Lambda_dim, self.num_qois-3*self.Lambda_dim)), axis=1)
         self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
 
 
