@@ -134,7 +134,7 @@ def pick_ffd_points(centers, r):
     # Construct a [num_centers*(Lambda_dim+1), Lambda_dim] matrix that
     # translates the senters to the FFD points.
     translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
-    samples += translate
+    samples = samples + translate
 
     return np.concatenate([centers, samples])
 
@@ -160,7 +160,7 @@ def pick_cfd_points(centers, r):
     # translates the centers to the CFD points
     translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
     translate = np.append(translate, -translate, axis=0)
-    samples += translate
+    samples = samples + translate
 
     return samples
 
