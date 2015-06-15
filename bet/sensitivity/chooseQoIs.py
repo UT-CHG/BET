@@ -69,7 +69,7 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
         # Find zero singular values
         indz = np.where(singvals[:,-1]==0)
         nonz_condnum = np.sum(
-            singvals[:, 0] / singvals[:, -1], axis=0) / (num_xeval-len(indz))
+            singvals[indz, 0] / singvals[indz, -1], axis=0) / (num_xeval-len(indz))
 
         # If we have found zero singular values, set cond=1E7
         current_condnum = nonz_condnum + 1E7
