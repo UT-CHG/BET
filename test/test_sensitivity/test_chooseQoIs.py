@@ -103,4 +103,22 @@ class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.data = self.samples.dot(self.coeffs)
             self.G = grad.calculate_gradients_rbf(self.samples, self.data, self.centers)
 
+class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
+        def setUp(self):
+            self.Lambda_dim = 2
+            self.num_qois_returned = 2
+            self.radius = 0.01
+            np.random.seed(0)
+            self.num_centers = 10
+            self.centers = np.random.random((self.num_centers, self.Lambda_dim))
+            self.samples = grad.sample_l1_ball(self.centers, self.Lambda_dim + 1, self.radius)
+            
+            self.num_qois = 28
+            coeffs = np.zeros((self.Lambda_dim, 2*self.Lambda_dim))
+            coeffs = np.append(coeffs, np.random.random((self.Lambda_dim, self.num_qois-3*self.Lambda_dim)), axis=1)
+            self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
+
+            self.data = self.samples.dot(self.coeffs)
+            self.G = grad.calculate_gradients_rbf(self.samples, self.data, self.centers)
+
 

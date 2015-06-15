@@ -61,18 +61,20 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
 
     # For each combination, check the skewness and keep the set
     # that has the best skewness, i.e., smallest condition number
-    min_condnum = float('inf')
+    min_condnum = 1E10
     for qoi_set in range(len(qoi_combs)):
         singvals = np.linalg.svd(
             Grad_tensor[:, qoi_combs[qoi_set], :], compute_uv=False)
 
         # Find zero singular values
         indz = np.where(singvals[:,-1]==0)
-        nonz_condnum = np.sum(
-            singvals[indz, 0] / singvals[indz, -1], axis=0) / (num_xeval-len(indz))
+        indnz = np.where(singvals[:,-1]!=0)
+        current_condnum = np.sum(
+            singvals[indnz[0], 0] / singvals[indnz[0], -1], axis=0) / (num_xeval-len(indnz))
 
         # If we have found zero singular values, set cond=1E7
-        current_condnum = nonz_condnum + 1E7
+        if len(indz[0]) > 0:
+            current_condnum = current_condnum + 1E7
 
         if current_condnum < min_condnum:
             min_condnum = current_condnum
