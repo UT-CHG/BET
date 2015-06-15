@@ -69,12 +69,16 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
         # Find zero singular values
         indz = np.where(singvals[:,-1]==0)
         indnz = np.where(singvals[:,-1]!=0)
-        current_condnum = np.sum(
-            singvals[indnz[0], 0] / singvals[indnz[0], -1], axis=0) / (indnz[0].shape[0])
+
+        if len(indnz[0] > 0):
+            current_condnum = np.sum(
+                singvals[indnz[0], 0] / singvals[indnz[0], -1], axis=0) / (indnz[0].shape[0])
+        else:
+            current_condnum = 0
 
         # If we have found zero singular values, set cond=1E7
         if len(indz[0]) > 0:
-            current_condnum = current_condnum + 1E7
+            current_condnum = current_condnum + 1E11
 
         if current_condnum < min_condnum:
             min_condnum = current_condnum
