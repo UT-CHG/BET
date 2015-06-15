@@ -18,6 +18,12 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
             sensitivity analysis as well later.
             Check out 'magical min'.
 
+            If a singular value is zero, we let the condition number be 
+            1E7 at that point.  Possibly this should be a function of the
+            dimension(?) so that we don't exclude a set simply because
+            the vectors are parallel at one point in Lambdam, they could
+            be much better in other regions.
+
     Given gradient vectors at some points(xeval) in the parameter space, a set
     of QoIs to choose from, and the number of desired QoIs to return, this
     method return the set of optimal QoIs to use in the inverse problem by
@@ -55,12 +61,18 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
 
     # For each combination, check the skewness and keep the set
     # that has the best skewness, i.e., smallest condition number
-    min_condnum = 1E10
+    min_condnum = float('inf')
     for qoi_set in range(len(qoi_combs)):
         singvals = np.linalg.svd(
             Grad_tensor[:, qoi_combs[qoi_set], :], compute_uv=False)
-        current_condnum = np.sum(
-            singvals[:, 0] / singvals[:, -1], axis=0) / num_xeval
+
+        # Find zero singular values
+        indz = np.where(singvals[:,-1]==0)
+        nonz_condnum = np.sum(
+            singvals[:, 0] / singvals[:, -1], axis=0) / (num_xeval-len(indz))
+
+        # If we have found zero singular values, set cond=1E7
+        current_condnum = nonz_condnum + 1E7
 
         if current_condnum < min_condnum:
             min_condnum = current_condnum
