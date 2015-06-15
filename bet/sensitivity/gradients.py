@@ -112,32 +112,6 @@ def sample_l1_ball(centers, num_close, r=None):
 
     return np.concatenate([centers, samples[1:]])
 
-def pick_cfd_points(centers, r):
-    """
-
-    Pick 2*Lambda_dim points, for each center, for centered
-    finite difference gradient approximation.
-
-    :param centers: Points in :math:`\Lambda` to cluster points around
-    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
-    :param float r: Each side of the box will have length 2*r
-    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
-    :returns: Samples for centered finite difference stencil for
-        each point in centers.
-
-    """
-    Lambda_dim = centers.shape[1]
-    num_centers = centers.shape[0]
-    samples = np.tile(centers, [Lambda_dim * 2, 1])
-
-    # Contstruct a [num_centers*2*Lambda_dim, Lambda_dim] matrix that
-    # translates the centers to the CFD points
-    translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
-    translate = np.append(translate, -translate, axis=0)
-    samples += translate
-
-    return samples
-
 def pick_ffd_points(centers, r):
     """
 
@@ -163,6 +137,32 @@ def pick_ffd_points(centers, r):
     samples += translate
 
     return np.concatenate([centers, samples])
+
+def pick_cfd_points(centers, r):
+    """
+
+    Pick 2*Lambda_dim points, for each center, for centered
+    finite difference gradient approximation.
+
+    :param centers: Points in :math:`\Lambda` to cluster points around
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :param float r: Each side of the box will have length 2*r
+    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
+    :returns: Samples for centered finite difference stencil for
+        each point in centers.
+
+    """
+    Lambda_dim = centers.shape[1]
+    num_centers = centers.shape[0]
+    samples = np.tile(centers, [Lambda_dim * 2, 1])
+
+    # Contstruct a [num_centers*2*Lambda_dim, Lambda_dim] matrix that
+    # translates the centers to the CFD points
+    translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
+    translate = np.append(translate, -translate, axis=0)
+    samples += translate
+
+    return samples
 
 def radial_basis_function(r, kernel=None, ep=None):
     """
