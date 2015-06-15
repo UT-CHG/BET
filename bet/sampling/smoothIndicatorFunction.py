@@ -228,8 +228,9 @@ def smoothed_indicator_W_cw_outer(center, width,
     right = center-half_width
     inner_boundary = [[l, r] for l, r in zip(left, right)]
     inner_boundary = util.meshgrid_ndim(inner_boundary)
+    center = util.fix_dimensions_data(center, dim=inner_boundary.shape[1])
     return smoothed_indicator_W_inner_outer(inner_boundary,
-            util.fix_dimensions_vector_2darray(center), outer_boundary)
+            center, outer_boundary)
 
 def smoothed_indicator_W_cws(center, width, sur_domain):
     """
