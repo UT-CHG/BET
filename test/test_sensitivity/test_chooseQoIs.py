@@ -34,6 +34,8 @@ class ChooseQoIsMethods:
         nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.qoiIndices)
 
         # Test that none of the chosen QoIs are the same
+        self.assertEqual(len(np.unique(self.qoiIndices)), len(self.qoiIndices))
+        
 
 class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
