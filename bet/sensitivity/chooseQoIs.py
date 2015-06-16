@@ -19,9 +19,9 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
             Check out 'magical min'.
 
             If a singular value is zero, we let the condition number be 
-            1E7 at that point.  Possibly this should be a function of the
+            1E9 at that point.  Possibly this should be a function of the
             dimension(?) so that we don't exclude a set simply because
-            the vectors are parallel at one point in Lambdam, they could
+            the vectors are parallel at one point in :math:\Lambda, they could
             be much better in other regions.
 
     Given gradient vectors at some points(xeval) in the parameter space, a set
@@ -61,24 +61,17 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
 
     # For each combination, check the skewness and keep the set
     # that has the best skewness, i.e., smallest condition number
-    min_condnum = 1E10
+    min_condnum = 1E11
     for qoi_set in range(len(qoi_combs)):
         singvals = np.linalg.svd(
             Grad_tensor[:, qoi_combs[qoi_set], :], compute_uv=False)
 
-        # Find zero singular values
-        indz = np.where(singvals[:,-1]==0)
-        indnz = np.where(singvals[:,-1]!=0)
+        # Find the xeval that have atleast one zero sinular value
+        indz = singvals[:,-1]==0
+        indnz = singvals[:,-1]!=0
 
-        if len(indnz[0] > 0):
-            current_condnum = np.sum(
-                singvals[indnz[0], 0] / singvals[indnz[0], -1], axis=0) / (indnz[0].shape[0])
-        else:
-            current_condnum = 0
-
-        # If we have found zero singular values, set cond=1E7
-        if len(indz[0]) > 0:
-            current_condnum = current_condnum + 1E11
+        current_condnum = (np.sum(singvals[indnz, 0] / singvals[indnz, -1], axis=0) +
+            1E9 * np.sum(indz)) / singvals.shape[0]
 
         if current_condnum < min_condnum:
             min_condnum = current_condnum
@@ -87,7 +80,7 @@ def chooseOptQoIs(Grad_tensor, indexstart, indexstop, num_qois_returned):
     # Wait for all processes to get to this point
     comm.Barrier()
 
-    # Gather the best sets and conditions number from each processor
+    # Gather the best sets and condition numbers from each processor
     min_condnum_indices = comm.gather([min_condnum, qoiIndices], root=0)
 
     # Find the minimum of the minimums
