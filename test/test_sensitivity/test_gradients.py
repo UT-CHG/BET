@@ -113,8 +113,7 @@ class GradientsMethods:
         normG = np.linalg.norm(self.G, axis=2)
 
         # If its a zero vectors, make it the unit vector in Lambda_dim
-        indz = np.array(np.where(normG==0))
-        self.G[indz[0], indz[1], :] = 1.0/np.sqrt(self.Lambda_dim)
+        self.G[normG==0] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
         
 
@@ -134,8 +133,7 @@ class GradientsMethods:
         normG = np.linalg.norm(self.G, axis=2)
 
         # If its a zero vectors, make it the unit vector in Lambda_dim
-        indz = np.array(np.where(normG==0))
-        self.G[indz[0], indz[1], :] = 1.0/np.sqrt(self.Lambda_dim)
+        self.G[normG==0] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
     def test_calculate_gradients_ffd(self):
@@ -153,8 +151,7 @@ class GradientsMethods:
         normG = np.linalg.norm(self.G, axis=2)
 
         # If its a zero vectors, make it the unit vector in Lambda_dim
-        indz = np.array(np.where(normG==0))
-        self.G[indz[0], indz[1], :] = 1.0/np.sqrt(self.Lambda_dim)
+        self.G[normG==0] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2), np.ones((self.G.shape[0], self.G.shape[1])))
 
 # Test cases
