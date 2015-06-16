@@ -26,22 +26,15 @@ def sample_linf_ball(lam_domain, centers, num_close, r):
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
 
-    # Define the size of each box
+    # Define bounds for each box
     left = np.maximum(
         centers - r, np.ones([num_centers, Lambda_dim]) * lam_domain[:, 0])
     right = np.minimum(
         centers + r, np.ones([num_centers, Lambda_dim]) * lam_domain[:, 1])
 
-    translate = r * np.ones(right.shape)
-    indz = np.where(left == 0)
-    translate[indz] = right[indz] - r
-
-    translate = np.tile(translate, [num_close, 1])
-
-    # Translate each box accordingly so no samples are outside :math:`\Lambda`
-    samples = np.tile(right - left, [num_close, 1]) * np.random.random(
-        [num_centers * num_close, Lambda_dim]) + np.tile(centers,
-        [num_close, 1]) - translate
+    # Samples each box uniformly
+    samples = np.tile(right - left, [num_close, 1])*np.random.random(
+        [num_centers * num_close, Lambda_dim]) + np.tile(left, [num_close, 1])
 
     return np.concatenate([centers, samples])
 
@@ -71,57 +64,52 @@ def sample_l1_ball(centers, num_close, r=None):
     # rvec is the vector of radii of the l1_ball in each coordinate
     # direction
     if r is None:
-        rvec = np.ones([Lambda_dim, 1])
+        rvec = np.ones(Lambda_dim)
     else:
-        rvec = r * np.ones([Lambda_dim, 1])
+        rvec = r * np.ones(Lambda_dim)
 
-    samples = np.zeros([1, centers.shape[1]])
+    samples = np.zeros([(num_close + 1) * centers.shape[0], centers.shape[1]])
+    samples[0:centers.shape[0], :] = centers
 
-    rnd = np.random.random([num_close, 1]) #u
-    weight_rnd = rnd**(1. / Lambda_dim) #b
+    # We choose weighted random distance from the center for each new sample
+    random_dist = np.random.random([num_close, 1])
+    weight_vec = random_dist**(1. / Lambda_dim)
 
+    # For each center, randomly sample the l1_ball
     for cen in range(centers.shape[0]):
-        temp = np.random.random(
-            [num_close, Lambda_dim - 1]) * np.tile(weight_rnd, (1, Lambda_dim - 1))
-        temp = np.sort(temp, 1)
-        xtemp = np.zeros([num_close, Lambda_dim])
-        temp1 = np.zeros([num_close, Lambda_dim + 1])
-        temp1[:, 1:Lambda_dim] = temp
-        temp1[:, Lambda_dim] = np.array(weight_rnd).transpose()
-        for i in range(1, Lambda_dim + 1):
-            xtemp[:, i - 1] = temp1[:, i] - temp1[:, i - 1]
+        # Begin by uniformly sampling the unit simplex in the first quadrant
+        # Choose Lambda_dim-1 reals uniformly between 0 and weight_vec for each
+        # new sample
+        random_mat = np.random.random(
+            [num_close, Lambda_dim - 1]) * np.tile(weight_vec, (1, Lambda_dim - 1))
 
-        rnd_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
-        xtemp = xtemp * rnd_sign
+        # Sort the random_mat
+        random_mat = np.sort(random_mat, 1)
 
-        for i in range(Lambda_dim):
-            xtemp[:, i] = rvec[i] * xtemp[:, i]
-        xtemp = xtemp + centers[cen, :]
-        samples = np.append(samples, xtemp, axis=0)
+        # Contrust weight_mat so that the first column is zeros, the next
+        # Lambda_dim-1 columns are the sorted reals between 0 and weight_vec,
+        # and the last column is weight_vec.
+        weight_mat = np.zeros([num_close, Lambda_dim + 1])
+        weight_mat[:, 1:Lambda_dim] = random_mat
+        weight_mat[:, Lambda_dim] = np.array(weight_vec).transpose()
 
-    return np.concatenate([centers, samples[1:]])
+        # The differences between the Lambda_dim+1 columns will give us
+        # random points in the unit simplex of dimension Lambda_dim.
+        samples_cen = np.zeros([num_close, Lambda_dim])
+        for Ldim in range(Lambda_dim):
+            samples_cen[:, Ldim] = weight_mat[:, Ldim + 1] - weight_mat[:, Ldim]
 
-def pick_cfd_points(centers, r):
-    """
+        # Assign a random sign to each element of each new sample
+        # Now we have samples in the l1_ball, not just the unit simplex in
+        # the first quadrant
+        rand_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
+        samples_cen = samples_cen * rand_sign
 
-    Pick 2*Lambda_dim points, for each center, for centered
-    finite difference gradient approximation.
+        # Scale each dimension according to rvec and translate to center
+        samples_cen = samples_cen * rvec + centers[cen, :]
 
-    :param centers: Points in :math:`\Lambda` to cluster points around
-    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
-    :param float r: Each side of the box will have length 2*r
-    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
-    :returns: Samples for centered finite difference stencil for
-        each point in centers.
-
-    """
-    Lambda_dim = centers.shape[1]
-    num_centers = centers.shape[0]
-    samples = np.tile(centers, [Lambda_dim * 2, 1])
-
-    translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
-    translate = np.append(translate, -translate, axis=0)
-    samples += translate
+        # Append newsamples to samples
+        samples[centers.shape[0] + cen * num_close:centers.shape[0] + (cen + 1) * num_close, :] = samples_cen
 
     return samples
 
@@ -144,10 +132,38 @@ def pick_ffd_points(centers, r):
     num_centers = centers.shape[0]
     samples = np.tile(centers, [Lambda_dim, 1])
 
+    # Construct a [num_centers*(Lambda_dim+1), Lambda_dim] matrix that
+    # translates the senters to the FFD points.
     translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
-    samples += translate
+    samples = samples + translate
 
     return np.concatenate([centers, samples])
+
+def pick_cfd_points(centers, r):
+    """
+
+    Pick 2*Lambda_dim points, for each center, for centered
+    finite difference gradient approximation.
+
+    :param centers: Points in :math:`\Lambda` to cluster points around
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :param float r: Each side of the box will have length 2*r
+    :rtype: :class:`np.ndarray` of shape (num_close*num_centers, Ldim)
+    :returns: Samples for centered finite difference stencil for
+        each point in centers.
+
+    """
+    Lambda_dim = centers.shape[1]
+    num_centers = centers.shape[0]
+    samples = np.tile(centers, [Lambda_dim * 2, 1])
+
+    # Contstruct a [num_centers*2*Lambda_dim, Lambda_dim] matrix that
+    # translates the centers to the CFD points
+    translate = r * np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1]))
+    translate = np.append(translate, -translate, axis=0)
+    samples = samples + translate
+
+    return samples
 
 def radial_basis_function(r, kernel=None, ep=None):
     """
@@ -259,25 +275,37 @@ def calculate_gradients_rbf(
     gradient_tensor = np.zeros([num_xeval, Data_dim, Lambda_dim])
     tree = spatial.KDTree(samples)
 
+    # For each xeval, interpolate the data using the rbf chosen and
+    # then evaluate the partail derivative of that rbf at the desired point. 
     for xe in range(num_xeval):
+        # Find the k nearest neightbors and their distances to xeval[xe,:]
         [r, nearest] = tree.query(xeval[xe, :], k=num_neighbors)
         r = np.tile(r, (Lambda_dim, 1))
 
+        # Compute the linf distances to each of the nearest neighbors
         diffVec = (xeval[xe, :] - samples[nearest, :]).transpose()
+
+        # Compute the l2 distances between pairs of nearest neighbors
         distMat = spatial.distance_matrix(
             samples[nearest, :], samples[nearest, :])
+
+        # Solve for the rbf weights using interpolation conditions and
+        # evaluate the partial derivatives
         rbf_mat_values = np.linalg.solve(radial_basis_function(distMat, RBF),
             radial_basis_function_dxi(r, diffVec, RBF, ep).transpose()).transpose()
 
-        for ind in range(num_neighbors):
-            rbf_tensor[xe, nearest[ind], :] = rbf_mat_values[
-                :, ind].transpose()
+        # Construct the finite difference matrix
+        rbf_tensor[xe, nearest, :] = rbf_mat_values.transpose()
 
     gradient_tensor = rbf_tensor.transpose(
         2, 0, 1).dot(data).transpose(1, 2, 0)
 
     # Normalize each gradient vector
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+
+    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
         (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
@@ -312,14 +340,20 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     num_qois = data.shape[1]
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
+    # Compute the gradient vectors using the standard CFD stencil
     gradient_vec = (
         data[:Lambda_dim * num_xeval] - data[Lambda_dim * num_xeval:]) / (2 * r)
 
+    # Reshape and organize
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
     # Normalize each gradient vector
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+
+    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
         (Lambda_dim, 1, 1)).transpose(1, 2, 0)
 
@@ -354,15 +388,21 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     num_qois = data.shape[1]
     gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
 
+    # Compute the gradient vectors using the standard FFD stencil
     gradient_vec = (
         data[num_xeval:] - np.tile(data[0:num_xeval], [Lambda_dim, 1])) / r
 
+    # Reshape and organize
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
     # Normalize each gradient vector
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+
+    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-        (Lambda_dim, 1, 1)).transpose(1, 2, 0)
+        (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
     return gradient_tensor
