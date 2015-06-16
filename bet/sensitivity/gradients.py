@@ -230,7 +230,7 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     return rbfdxi
 
 def calculate_gradients_rbf(
-        samples, data, xeval, num_neighbors=None, RBF=None, ep=None):
+        samples, data, xeval, num_neighbors=None, RBF=None, ep=None, normalized=True):
     """
 
     TO DO: vectorize first for loop?
@@ -303,11 +303,12 @@ def calculate_gradients_rbf(
     # Normalize each gradient vector
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
-    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+    if normalized==True:
+        # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+        norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
-    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-        (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
+        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+            (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
     return gradient_tensor
 
