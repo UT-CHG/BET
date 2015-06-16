@@ -68,7 +68,8 @@ def sample_l1_ball(centers, num_close, r=None):
     else:
         rvec = r * np.ones(Lambda_dim)
 
-    samples = np.zeros([1, centers.shape[1]])
+    samples = np.zeros([(num_close + 1) * centers.shape[0], centers.shape[1]])
+    samples[0:centers.shape[0], :] = centers
 
     # We choose weighted random distance from the center for each new sample
     random_dist = np.random.random([num_close, 1])
@@ -108,9 +109,9 @@ def sample_l1_ball(centers, num_close, r=None):
         samples_cen = samples_cen * rvec + centers[cen, :]
 
         # Append newsamples to samples
-        samples = np.append(samples, samples_cen, axis=0)
+        samples[centers.shape[0] + cen * num_close:centers.shape[0] + (cen + 1) * num_close, :] = samples_cen
 
-    return np.concatenate([centers, samples[1:]])
+    return samples
 
 def pick_ffd_points(centers, r):
     """
@@ -288,13 +289,13 @@ def calculate_gradients_rbf(
         distMat = spatial.distance_matrix(
             samples[nearest, :], samples[nearest, :])
 
-        # 
+        # Solve for the rbf weights using interpolation conditions and
+        # evaluate the partial derivatives
         rbf_mat_values = np.linalg.solve(radial_basis_function(distMat, RBF),
             radial_basis_function_dxi(r, diffVec, RBF, ep).transpose()).transpose()
 
-        for ind in range(num_neighbors):
-            rbf_tensor[xe, nearest[ind], :] = rbf_mat_values[
-                :, ind].transpose()
+        # Construct the finite difference matrix
+        rbf_tensor[xe, nearest, :] = rbf_mat_values.transpose()
 
     gradient_tensor = rbf_tensor.transpose(
         2, 0, 1).dot(data).transpose(1, 2, 0)
@@ -303,8 +304,7 @@ def calculate_gradients_rbf(
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
     # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    indz = np.array(np.where(norm_gradient_tensor==0))
-    norm_gradient_tensor[indz[0], indz[1]] = 1.0
+    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
         (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
@@ -352,11 +352,10 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
     # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    indz = np.array(np.where(norm_gradient_tensor==0))
-    norm_gradient_tensor[indz[0], indz[1]] = 1.0
+    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-        (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
+        (Lambda_dim, 1, 1)).transpose(1, 2, 0)
 
     return gradient_tensor
 
@@ -401,8 +400,7 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
     # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    indz = np.array(np.where(norm_gradient_tensor==0))
-    norm_gradient_tensor[indz[0], indz[1]] = 1.0
+    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
     gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
         (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
