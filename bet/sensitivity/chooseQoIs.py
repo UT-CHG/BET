@@ -32,7 +32,8 @@ def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None):
     :returns: (min_condum, optqoiIndices)
 
     """
-    (min_condnum, optqoiIndices, optsingvals) = chooseOptQoIs_verbose(grad_tensor, qoiIndices, num_qois_return)
+    (min_condnum, optqoiIndices, optsingvals) = chooseOptQoIs_verbose(grad_tensor,
+        qoiIndices, num_qois_return)
 
     return (min_condnum,optqoiIndices)
 
@@ -47,8 +48,8 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None):
             If a singular value is zero, we let the condition number be 
             1E9 at that point.  Possibly this should be a function of the
             dimension(?) so that we don't exclude a set simply because
-            the vectors are parallel at one point in :math:\Lambda, they could
-            be much better in other regions.
+            the vectors are linearly dependent at one point in :math:\Lambda,
+            they could be much better in other regions.
 
     Given gradient vectors at some points(xeval) in the parameter space, a set
     of QoIs to choose from, and the number of desired QoIs to return, this

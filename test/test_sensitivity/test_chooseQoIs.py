@@ -13,6 +13,7 @@ import numpy as np
 import numpy.testing as nptest
 
 class ChooseQoIsMethods:
+    #TODO: Test parallel implementation
     """
     Test :module:`bet.sensitivity.chooseQoIs`.
     """
