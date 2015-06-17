@@ -6,6 +6,7 @@ of QoI maps.
 """
 import numpy as np
 import scipy.spatial as spatial
+import bet.util as util
 
 def sample_linf_ball(lam_domain, centers, num_close, r):
     """
@@ -267,6 +268,7 @@ def calculate_gradients_rbf(
         QoI map at each point in xeval
 
     """
+    data = util.clean_data(data)
     Lambda_dim = samples.shape[1]
     if num_neighbors is None:
         num_neighbors = Lambda_dim + 1
@@ -345,6 +347,7 @@ def calculate_gradients_cfd(samples, data, xeval, r, normalize=True):
         QoI map at each point in xeval
 
     """
+    data = util.clean_data(data)
     num_xeval = xeval.shape[0]
     Lambda_dim = samples.shape[1]
     num_qois = data.shape[1]
@@ -395,6 +398,7 @@ def calculate_gradients_ffd(samples, data, xeval, r, normalize=True):
         QoI map at each point in xeval
 
     """
+    data = util.clean_data(data)
     num_xeval = xeval.shape[0]
     Lambda_dim = samples.shape[1]
     num_qois = data.shape[1]
