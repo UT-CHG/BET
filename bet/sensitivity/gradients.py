@@ -230,7 +230,7 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     return rbfdxi
 
 def calculate_gradients_rbf(
-        samples, data, xeval, num_neighbors=None, RBF=None, ep=None):
+        samples, data, xeval, num_neighbors=None, RBF=None, ep=None, normalize=True):
     """
 
     TO DO: vectorize first for loop?
@@ -300,18 +300,20 @@ def calculate_gradients_rbf(
     gradient_tensor = rbf_tensor.transpose(
         2, 0, 1).dot(data).transpose(1, 2, 0)
 
-    # Normalize each gradient vector
-    norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+    if normalize:
+        # Compute the norm of each vector
+        norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
-    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+        # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+        norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
-    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-        (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
+        # Normalize each gradient vector
+        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+            (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
     return gradient_tensor
 
-def calculate_gradients_cfd(samples, data, xeval, r):
+def calculate_gradients_cfd(samples, data, xeval, r, normalize=True):
     """
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
@@ -348,18 +350,20 @@ def calculate_gradients_cfd(samples, data, xeval, r):
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
-    # Normalize each gradient vector
-    norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+    if normalize:
+        # Compute the norm of each vector
+        norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
-    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+        # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+        norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
-    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-        (Lambda_dim, 1, 1)).transpose(1, 2, 0)
+        # Normalize each gradient vector
+        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+            (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
     return gradient_tensor
 
-def calculate_gradients_ffd(samples, data, xeval, r):
+def calculate_gradients_ffd(samples, data, xeval, r, normalize=True):
     """
 
     Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
@@ -396,13 +400,15 @@ def calculate_gradients_ffd(samples, data, xeval, r):
     gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
         num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
 
-    # Normalize each gradient vector
-    norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+    if normalize:
+        # Compute the norm of each vector
+        norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
 
-    # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
-    norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
+        # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
+        norm_gradient_tensor[norm_gradient_tensor==0] = 1.0
 
-    gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-        (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
+        # Normalize each gradient vector
+        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
+            (Lambda_dim, 1, 1)).transpose(1 ,2, 0)
 
     return gradient_tensor
