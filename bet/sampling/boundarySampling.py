@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Copyright (C) 2014-2015 The BET Development Team
 
 # -*- coding: utf-8 -*-
@@ -20,7 +21,7 @@ import bet.util as util
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import os
-from bet.Comm import *
+from bet.Comm import comm, MPI 
 
 class sampler(asam.sampler):
     """
@@ -76,9 +77,9 @@ class sampler(asam.sampler):
             (num_chains, chain_length)
 
         """
-        if size > 1:
+        if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(rank, os.path.basename(savefile)))
+                    "proc{}{}".format(comm.comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -102,12 +103,17 @@ class sampler(asam.sampler):
         comm.Barrier()
         
         # now split it all up
-        MYsamples_old = np.empty((np.shape(samples_old)[0]/size,
-            np.shape(samples_old)[1])) 
-        comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-        MYdata_old = np.empty((np.shape(data_old)[0]/size,
-            np.shape(data_old)[1])) 
-        comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+        if comm.size > 1:
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
+                np.shape(samples_old)[1])) 
+            comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
+                np.shape(data_old)[1])) 
+            comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+            step_ratio = self.determine_step_ratio(MYsamples_old)
+        else:
+            MYsamples_old = np.copy(samples_old)
+            MYdata_old = np.copy(data_old)
 
         samples = MYsamples_old
         data = MYdata_old
@@ -162,7 +168,7 @@ class sampler(asam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
-            if size > 1:
+            if comm.size > 1:
                 super(sampler, self).save(mdat, psavefile)
             else:
                 super(sampler, self).save(mdat, savefile)
@@ -202,13 +208,12 @@ class sampler(asam.sampler):
             # Remove chains with only interior points from the list of boundary
             # chains (we might want these to be limited memory chains)
             if len(only_interior) > 0:
-                i_ind = range(boundary_chains.shape[0])
                 j_ind = range(interior.shape[0])
                 only_interior = np.array(only_interior)
                 boundary_chains[only_interior[:, 0]] = False
                 for j in only_interior[:, 1]:
                     j_ind.remove(j)
-                interior = interior[i_ind, :]
+                interior = interior[j_ind, :]
                 exterior = exterior[j_ind, :]
 
             # calculate the normal vector
@@ -247,7 +252,8 @@ class sampler(asam.sampler):
         # chain_length)
         all_step_ratios = util.get_global_values(MYall_step_ratios,
                 shape=(self.num_samples,))
-        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
+        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, 
+            self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios

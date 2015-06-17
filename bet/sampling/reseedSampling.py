@@ -20,9 +20,7 @@ import bet.sampling.adaptiveSampling as asam
 import scipy.spatial as spatial
 import bet.util as util
 import os
-import bet.sensitivity.gradients as grad
 from bet.Comm import comm, MPI
-from pyDOE import lhs
 
 class sampler(asam.sampler):
     """
@@ -46,15 +44,58 @@ class sampler(asam.sampler):
         :param lb_model: runs the model at a given set of parameter samples, (N,
             ndim), and returns data (N, mdim)
         """
-        #TODO: update this so that chain_length and num_samples and num_chains
-        # are updates so that the number of samples matches with using the l1
-        # ball and lambda_dim+1 samples
         super(sampler, self).__init__(num_samples, chain_length, lb_model)
 
+    def run_reseed(self, kern_list, rho_D, maximum, param_min, param_max,
+            t_set, savefile, initial_sample_type="lhs", criterion='center',
+            reseed=3):
+        """
+        Generates samples using reseeded chains and a list of different
+        kernels.
+
+        :param list() kern_list: List of
+            :class:~`bet.sampling.adaptiveSampling.kernel` objects.
+        :param rho_D: probability density on D
+        :type rho_D: callable function that takes a :class:`np.array` and
+            returns a :class:`numpy.ndarray`
+        :param double maximum: maximum value of rho_D
+        :param param_min: minimum value for each parameter dimension
+        :type param_min: np.array (ndim,)
+        :param param_max: maximum value for each parameter dimension
+        :type param_max: np.array (ndim,)
+        :param t_set: method for creating new parameter steps using
+            given a step size based on the paramter domain size
+        :type t_set: :class:~`bet.sampling.adaptiveSampling.transition_set`
+        :param string savefile: filename to save samples and data
+        :param string initial_sample_type: type of initial sample random (or r),
+            latin hypercube(lhs), or space-filling curve(TBD)
+         :param string criterion: latin hypercube criterion see 
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :rtype: tuple
+        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+            sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+
+        """
+        results = list()
+        # reseeding sampling
+        results = list()
+        r_step_size = list()
+        results_rD = list()
+        mean_ss = list()
+        for kern in kern_list:
+            (samples, data, step_sizes) = self.generalized_chains(
+                    param_min, param_max, t_set, kern, savefile,
+                    initial_sample_type, criterion, reseed)
+            results.append((samples, data))
+            r_step_size.append(step_sizes)
+            results_rD.append(int(sum(rho_D(data)/maximum)))
+            mean_ss.append(np.mean(step_sizes))
+        sort_ind = np.argsort(results_rD)
+        return (results, r_step_size, results_rD, sort_ind, mean_ss)
+
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
-            smoothIndicatorFun, savefile, initial_sample_type="random",
-            criterion='center', radius=0.1, initial_samples=None,
-            initial_data=None): 
+            smoothIndicatorFun, savefile, initial_sample_type="lhs",
+            criterion='center', reseed=1):
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -107,85 +148,69 @@ class sampler(asam.sampler):
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
-        lambda_dim = len(param_max)
-    
-        if type(initial_samples) == 'NoneType' or type(initial_data) == 'NoneType':
-            # Initiative first batch of N samples (maybe taken from latin
-            # hypercube/space-filling curve to fully explore parameter space - not
-            # necessarily random). Call these Samples_old.
-            if initial_sample_type == "r" or initial_sample_type == "random":
-                MYcenters_old = param_width*np.random.random(param_left.shape)
-            elif initial_sample_type == "lhs":
-                MYcenters_old = param_width*lhs(param_min.shape[-1],
-                        self.num_chains_pproc, criterion)
-            MYcenters_old = MYcenters_old + param_left
-            MYsamples_old = grad.sample_l1_ball(MYcenters_old, lambda_dim+1,
-                    radius)
-            (MYsamples_old, MYdata_old) = super(sampler,
-                    self).user_samples(MYsamples_old, savefile)
-        else:
-            # split up the old samples and data this assumes that the centers
-            # are listed first and the l1 samples next
-            #TODO: assumes that the number of centers is divisible by the
-            # of chains per processor, might want to update to handle different
-            # numbers of chains per processor
-            #TODO: check with Scott that this is correct implementation
-            centers = initial_samples[:self.num_chains, :]
-            data_centers = initial_data[:self.num_chains, :]
-            offset = self.num_chains_pproc*comm.rank
-            MYcenters_old = centers[offset:offset+self.num_chains_pproc]
-            MYdata_centers = data_centers[offset:offset+self.num_chains_pproc]
-            offset = self.num_chains+self.num_chains_pproc*(lambda_dim+1)*comm.rank
-            MYnon_centers = initial_samples[offset:offset+(lambda_dim+1)*comm.rank, :]
-            MYnon_data_centers = initial_data[offset:offset+(lambda_dim+1)*comm.rank, :]
-            MYsamples_old = np.concatenate((MYcenters_old, MYnon_centers))
-            MYdata_old = np.concatenate((MYdata_centers, MYnon_data_centers))
-
-
-        self.num_samples = self.chain_length * self.num_chains * (lambda_dim+1)
+        # Calculate step_size
+        max_ratio = t_set.max_ratio
+        min_ratio = t_set.min_ratio
+       
+        # Initiative first batch of N samples (maybe taken from latin
+        # hypercube/space-filling curve to fully explore parameter space - not
+        # necessarily random). Call these Samples_old.
+        (samples_old, data_old) = super(sampler, self).random_samples(
+                initial_sample_type, param_min, param_max, savefile,
+                self.num_chains, criterion)
+        self.num_samples = self.chain_length * self.num_chains
         comm.Barrier()
+        
+        # now split it all up
+        if comm.size > 1:
+            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
+                np.shape(samples_old)[1])) 
+            comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
+            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
+                np.shape(data_old)[1])) 
+            comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+        else:
+            MYsamples_old = np.copy(samples_old)
+            MYdata_old = np.copy(data_old)
+        step_ratio = determine_step_ratio(param_dist, MYsamples_old)
+
 
         samples = MYsamples_old
         data = MYdata_old
-        all_step_ratios = radius*np.ones((self.num_chains_pproc,)) #step_ratio
-        kern_old = rho_D(MYdata_old[self.num_chains_pproc, :])
-        rank_old = smoothIndicatorFun(MYdata_old)
+        all_step_ratios = step_ratio
+        #(kern_old, proposal) = kern.delta_step(MYdata_old, None)
+        kern_old = rho_D(MYdata_old)
         kern_samples = kern_old
         mdat = dict()
         self.update_mdict(mdat)
-        MYcenters_new = np.empty(MYcenters_old.shape)
 
         
         for batch in xrange(1, self.chain_length):
-            # Determine the rank of the old samples
-            rank_old = smoothIndicatorFun(MYdata_old)
-            # For the centers that are not in the RoI do a newton step
-            centers_in_RoI = kern_old
-            samples_wC_in_RoI = None
-            G = grad.calculate_gradients_rbf(MYsamples_old[samples_wC_in_RoI,:],
-                    rank_old[samples_wC_in_RoI],
-                    MYsamples_old[centers_in_RoI, :], normalized=False)
-            normG = np.linalg.norm(G, axis=2)
-            # TODO: determine if samples always need to be normalized with so
-            # that radius is the same in all directions if so update
-            # TODO: check this with Scott
-            step_size = (0-rank_old[:self.num_chains_pproc])
-            step_size = step_size/normG**2
-            MYcenters_new[centers_in_RoI, :] = MYcenters_old[centers_in_RoI] + \
-                    step_size*G[:, 0, :]
-
-            # For the centers that are in the RoI sample uniformly
-            not_in_RoI = np.logical_not(centers_in_RoI)
-            step_ratio = determine_step_ratio(param_dist[not_in_RoI], 
-                    MYcenters_old[not_in_RoI]) 
-            MYcenters_new[not_in_RoI] = t_set.step(step_ratio[not_in_RoI],
-                    param_width[not_in_RoI], param_left[not_in_RoI],
-                    param_right[not_in_RoI], MYcenters_old[not_in_RoI])
-
-            # Finish creating the new samples
-            samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
-                    radius) 
-
+        
+            # Reseed the samples
+            if batch%reseed == 0:
+                # This could be done more efficiently
+                global_samples = util.get_global_values(np.copy(samples))
+                sample_rank = smoothIndicatorFun(global_samples)
+                sort_ind = np.argsort(sample_rank)[:self.num_chains]
+                samples_old = global_samples[sort_ind, :]
+                if comm.size > 1:
+                    MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
+                        np.shape(samples_old)[1])) 
+                    comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
+                    MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
+                        np.shape(data_old)[1])) 
+                    comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+                else:
+                    MYsamples_old = np.copy(samples_old)
+                    MYdata_old = np.copy(data_old)
+                step_ratio = determine_step_ratio(param_dist, MYsamples_old)
+        
+            # For each of N samples_old, create N new parameter samples using
+            # transition set and step_ratio. Call these samples samples_new.
+            samples_new = t_set.step(step_ratio, param_width,
+                    param_left, param_right, MYsamples_old)
+            
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
             
@@ -193,22 +218,20 @@ class sampler(asam.sampler):
             # multiple ways to do this.
             # Determine step size
             #(kern_new, proposal) = kern.delta_step(data_new, kern_old)
-            kern_new = rho_D(data_new[:self.num_chains_pproc, :])
+            kern_new = rho_D(data_new)
             # Update the logical index of chains searching along the boundary
             left_roi = np.logical_and(kern_old > 0, kern_new < kern_old)
             
+            step_ratio = determine_step_ratio(param_dist, samples_new)
 
             # Save and export concatentated arrays
             if self.chain_length < 4:
                 pass
             elif (batch+1)%(self.chain_length/4) == 0:
-                msg = "Current chain length: "+str(batch+1)
-                msg += "/"+str(self.chain_length)
-                print msg
+                print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
             kern_samples = np.concatenate((kern_samples, kern_new))
-            # TODO: fix how this is done so that we're saving step size too
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
@@ -218,8 +241,14 @@ class sampler(asam.sampler):
             else:
                 super(sampler, self).save(mdat, savefile)
             
-            # Don't update centers that have left the RoI (after finding it)
-            MYcenters_old[np.logical_not(left_roi)] = MYcenters_new[np.logical_not(left_roi)]
+            # Is the ratio greater than max?
+            step_ratio[step_ratio > max_ratio] = max_ratio
+            # Is the ratio less than min?
+            step_ratio[step_ratio < min_ratio] = min_ratio
+
+            # Don't update samples that have left the RoI (after finding it)
+            # Don't update samples that have left the RoI (after finding it)
+            MYsamples_old[np.logical_not(left_roi)] = samples_new[np.logical_not(left_roi)]
             kern_old[np.logical_not(left_roi)] = kern_new[np.logical_not(left_roi)]
 
 
