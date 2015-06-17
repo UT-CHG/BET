@@ -119,7 +119,10 @@ def fix_dimensions_vector_2darray(vector):
     :returns: array of shape (N,1)
 
     """
-    vector = fix_dimensions_vector(vector)
+    if not isinstance(vector, collections.Iterable):
+        vector = np.array([vector])
+    elif not isinstance(vector, np.ndarray):
+        vector = np.array(vector)
     if len(vector.shape) == 1:
         vector = np.expand_dims(vector, axis=1)
     return vector
