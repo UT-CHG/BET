@@ -100,7 +100,7 @@ def sample_l1_ball(centers, num_close, r=None):
             samples_cen[:, Ldim] = weight_mat[:, Ldim + 1] - weight_mat[:, Ldim]
 
         # Assign a random sign to each element of each new sample
-        # Now we have samples in the l1_ball, not just the unit simplex in
+        # This give us samples in the l1_ball, not just the unit simplex in
         # the first quadrant
         rand_sign = 2 * np.round(np.random.random([num_close, Lambda_dim])) - 1
         samples_cen = samples_cen * rand_sign
@@ -128,6 +128,10 @@ def pick_ffd_points(centers, r):
         each point in centers.
 
     """
+    if not isinstance(r, float):
+        if not isinstance(r, int):
+            raise ValueError("The finite difference stencil demands r be a float or int")
+
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
     samples = np.tile(centers, [Lambda_dim, 1])
@@ -153,6 +157,10 @@ def pick_cfd_points(centers, r):
         each point in centers.
 
     """
+    if not isinstance(r, float):
+        if not isinstance(r, int):
+            raise ValueError("The finite difference stencil demands r be a float or int")
+
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
     samples = np.tile(centers, [Lambda_dim * 2, 1])
