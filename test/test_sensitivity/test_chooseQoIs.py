@@ -20,21 +20,20 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs`.
         """
-        self.indexstart = 0
-        self.indexstop = self.num_qois - 1
-        [self.min_condnum, self.qoiIndices] = cQoIs.chooseOptQoIs(self.G, self.indexstart, self.indexstop, self.num_qois_returned)
+        self.qoiIndices = range(0, self.num_qois)
+        [self.min_condnum, self.optqoiIndices] = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_returned)
 
         # Test the method returns the correct number of qois
-        self.assertEqual(len(self.qoiIndices), self.num_qois_returned)
+        self.assertEqual(len(self.optqoiIndices), self.num_qois_returned)
 
         # Check that the 'global condidtion number' is greater than or equal to 1
         self.assertGreater(self.min_condnum, 1.0)
 
         # Test the method returns the known best set of QoIs  (chosen to be last Lambda_dim indices)
-        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.qoiIndices)
+        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.optqoiIndices)
 
         # Test that none of the chosen QoIs are the same
-        self.assertEqual(len(np.unique(self.qoiIndices)), len(self.qoiIndices))
+        self.assertEqual(len(np.unique(self.optqoiIndices)), len(self.optqoiIndices))
         
 
 class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
