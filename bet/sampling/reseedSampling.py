@@ -53,8 +53,6 @@ class sampler(asam.sampler):
         Generates samples using reseeded chains and a list of different
         kernels.
 
-        THIS IS NOT OPERATIONAL DO NOT USE.
-
         :param list() kern_list: List of
             :class:~`bet.sampling.adaptiveSampling.kernel` objects.
         :param rho_D: probability density on D
