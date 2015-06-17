@@ -1,18 +1,9 @@
-# Copyright (C) 2014-2015 The BET Development Team
-
 # -*- coding: utf-8 -*-
-"""
-This module provides methods for creating the edges and generating point for
-regular (hyperrectangle) multidimensional voronoi cells and for determining the
-volumes of these cells.
-"""
-
 import numpy as np
 from scipy import spatial
 import bet.util as util
 
-def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
-        sur_domain): 
+def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size, sur_domain):
     """
     Generates a regular grid of center points that define the voronoi
     tesselation of exactly the interior of a hyperrectangle centered at
@@ -28,23 +19,22 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
     :param r_size: size of the length of the sides of the
-        hyperrectangle rect_domain to definie voronoi cells for
+        hyperrectangle to the surrounding domain
     :type r_size: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain. The surrounding domain is the bounded domain
-        in the data space (i.e. the data domain).
+        surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: (points, interior_and_layer1, rect_domain) where where points is
-        an :class:`numpy.ndarray` of shape (num_points, dim),
-        interior_and_layer1 is a list() of dim :class:`numpy.ndarray`s of shape
+    :returns: (points, interior_and_layer1, rect_domain) where where points is an
+        :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
+        is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
         shape (mdim, 2)
 
     """
-    # determine the hyperrectangle (rect_domain) defined by center and r_size
-    rect_width = r_size*np.ones(sur_domain[:, 0].shape)
+    # determine the hyperrectangle defined by center and r_size
+    rect_width = r_size*np.ones(sur_domain[:,0].shape)
     rect_domain = np.column_stack([center - .5*rect_width,
         center + .5*rect_width])
     if np.all(np.greater(r_size, rect_width)):
@@ -83,17 +73,16 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     :param center: location of the center of the hyperrectangle
     :type center: :class:`numpy.ndarray` of shape (mdim,)
     :param r_ratio: ratio of the length of the sides of the
-        hyperrectangle rect_domain to definie voronoi cells for
+        hyperrectangle to the surrounding domain
     :type r_ratio: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain. The surrounding domain is the bounded domain
-        in the data space (i.e. the data domain).    
+        surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: (points, interior_and_layer1, rect_domain) where where points is
-        an :class:`numpy.ndarray` of shape (num_points, dim),
-        interior_and_layer1 is a list() of dim :class:`numpy.ndarray`s of shape
+    :returns: (points, interior_and_layer1) where where points is an
+        :class:`numpy.ndarray` of shape (num_points, dim), interior_and_layer1
+        is a list() of dim :class:`numpy.ndarray`s of shape
         (center_pts_per_edge+2,), rect_domain is a :class:`numpy.ndarray` of
         shape (mdim, 2).
 
@@ -109,35 +98,41 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     return center_and_layer1_points_binsize(center_pts_per_edge, center,
             r_size, sur_domain)
 
-def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
+def edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain):
     """
     Generates a sequence of arrays describing the edges of the finite voronoi
     cells in each direction. The voronoi tesselation is defined by regular grid
     of center points that define the voronoi tesselation of exactly the
-    interior of a hyperrectangle  defined by ``rect_domain``  and the layers of
-    voronoi cells that bound these interior cells. The resulting voronoi
-    tesselation exactly represents the hyperrectangle. The bounding voronoi
-    cells are made finite by bounding them with an  additional layer to
-    represent ``sur_domain``.
+    interior of a hyperrectangle centered at ``center`` with sides of length
+    ``r_size`` and the layers of voronoi cells that bound these
+    interior cells. The resulting voronoi tesselation exactly represents the
+    hyperrectangle. The bounding voronoi cells are made finite by bounding them
+    with an  additional layer to represent ``sur_domain``.
     
     This method can also be used to tile ``sur_domain`` with points to define
     voronoi regions if the user sets ``r_ratio = 1``. use binratio below
 
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
-    :param rect_domain: The rectangular domain to define the voronoi
-        tesselation for. This domain should be contained in the ``sur_domain``.
-    :type rect_domain: :class:`numpy.ndarray` of shape (mdim, 2)
+    :param center: location of the center of the hyperrectangle
+    :type center: :class:`numpy.ndarray` of shape (mdim,)
+    :param r_size: size of the length of the sides of the
+        hyperrectangle to the surrounding domain
+    :type r_size: double or list()
     :param sur_domain: minima and maxima of each dimension defining the
-        surrounding domain. The surrounding domain is the bounded domain
-        in the data space (i.e. the data domain).    
+        surrounding domain
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: interior_and_layer1 is a list of dim :class:`numpy.ndarray`s of
-        shape (center_pts_per_edge+2,)
-
+    :returns: interior_and_layer1 is a list of dim
+        :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,)
     """
+    # TODO This is redoing stuff that was done when generating the points
+    # determine the hyperrectangle defined by center and r_size
+    rect_width = r_size*np.ones(sur_domain[:,0].shape)
+    rect_domain = np.column_stack([center - .5*rect_width,
+        center + .5*rect_width])
+
     if np.any(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this size is larger than the"
         msg += "original domain."
@@ -163,6 +158,45 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
 
     return rect_and_sur_edges
 
+def edges_regular(center_pts_per_edge, center, r_ratio, sur_domain):
+    """
+    Generates a sequence of arrays describing the edges of the finite voronoi
+    cells in each direction. The voronoi tesselation is defined by regular grid
+    of center points that define the voronoi tesselation of exactly the
+    interior of a hyperrectangle centered at ``center`` with sides of length
+    ``r_ratio*sur_width`` and the layers of voronoi cells that bound these
+    interior cells. The resulting voronoi tesselation exactly represents the
+    hyperrectangle. The bounding voronoi cells are made finite by bounding them
+    with an  additional layer to represent ``sur_domain``.
+    
+    This method can also be used to tile ``sur_domain`` with points to define
+    voronoi regions if the user sets ``r_ratio = 1``.
+
+    :param list() center_pts_per_edge: number of center points per edge and
+        additional two points will be added to create the bounding layer
+    :param center: location of the center of the hyperrectangle
+    :type center: :class:`numpy.ndarray` of shape (mdim,)
+    :param r_ratio: ratio of the length of the sides of the
+        hyperrectangle to the surrounding domain
+    :type r_ratio: double or list()
+    :param sur_domain: minima and maxima of each dimension defining the
+        surrounding domain
+    :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
+    :rtype: tuple
+    :returns: interior_and_layer1 is a list of dim
+        :class:`numpy.ndarray`s of shape (center_pts_per_edge+2,)
+
+    """
+    if np.any(np.greater(r_ratio, 1)):
+        msg = "The hyperrectangle defined by this ratio is larger than the"
+        msg += "original domain. RATIO: {}".format(r_ratio)
+        print msg
+    
+    # determine r_size from the width of the surrounding domain
+    r_size = r_ratio*(sur_domain[:, 1]-sur_domain[:, 0])
+
+    return edges_regular_binsize(center_pts_per_edge, center, r_size, sur_domain)
+
 def edges_from_points(points):
     """
     Given a sequence of arrays describing the voronoi points in each dimension
@@ -184,11 +218,38 @@ def edges_from_points(points):
         edges.append((points_dim[1:]+points_dim[:-1])/2)
     return edges
 
+def points_from_edges(edges):
+    """
+    Given a sequence of arrays describing the edges of bins formed by voronoi
+    cells along each dimensions returns the voronoi points that would generate
+    these cells.
+
+    ..todo:: This method only creates points in the center of the bins. Needs
+        Needs to be adjusted so that it creates points in the voronoi cell
+        locations. 
+
+    :param edges: A sequence of arrays describing the edges of bins along each
+        dimension.
+    :type edges: A list() containing mdim :class:`numpy.ndarray`s of shape
+        (nbins_per_dim+1,)
+
+    :returns: points, the coordindates of voronoi points that would generate
+        these bins
+    :rtype: :class:`numpy.ndarray` of shape (num_points, dim) where num_points
+        = product(nbins_per_dim)
+
+    """
+    #TODO: Implement me.
+    # create a point inside each of the bins defined by the edges
+    centers = list()
+    for e in edges:
+        centers.append((e[1:]+e[:-1])/2)
+
 def histogramdd_volumes(edges, points):
     """
     Given a sequence of arrays describing the edges of voronoi cells (bins)
     along each dimension and an 'ij' ordered sequence of points (1 per voronoi
-    cell) returns a list of the volumes associated with these voronoi cells.
+    cell) returns a list of the volumes associated with these voronoic cells.
 
     :param edges: A sequence of arrays describing the edges of bins along
         each dimension.
@@ -200,15 +261,14 @@ def histogramdd_volumes(edges, points):
 
     :rtype: tuple of (H, volume, edges)
     :returns: H is the result of :meth:`np.histogramdd(points, edges,
-        normed=True)`, volumes is a :class:`numpy.ndarray` of shape
-        (len(points),) continaing the  finite volumes associated with
-        ``points``
+        normed=True)`, volumes is a :class:`numpy.ndarray` of shape (len(points),)
+        continaing the  finite volumes associated with ``points``
 
     """
     # adjust edges
     points_max = np.max(points, 0)
     points_min = np.min(points, 0)
-    # Use a loop because the number of edges per dimension is not the same.
+    # TODO replace with logical arrays to get rid of for loop.
     for dim, e in enumerate(edges):
         if len(edges) == 1:
             if e[0] >= points_min:
@@ -248,14 +308,17 @@ def simple_fun_uniform(points, volumes, rect_domain):
         `d_Tree` is the :class:`~scipy.spatial.KDTree` for points
 
     """
-    util.fix_dimensions_data(points)
-
-    inside = np.logical_and(np.all(np.greater_equal(points, rect_domain[:, 0]),
-        axis=1), np.all(np.less_equal(points, rect_domain[:, 1]), axis=1)) 
-
+    if len(points.shape) == 1:
+        points = np.expand_dims(points, axis=1)
+    # TODOthe lines below could be done in one or two lines.
+    rect_left = np.repeat([rect_domain[:, 0]], points.shape[0], 0)
+    rect_right = np.repeat([rect_domain[:,1]], points.shape[0], 0)
+    rect_left = np.all(np.greater_equal(points, rect_left), axis=1)
+    rect_right = np.all(np.less_equal(points, rect_right), axis=1)
+    inside = np.logical_and(rect_left, rect_right)
     rho_D_M = np.zeros(volumes.shape)
-    # normalize on Lambda not D
-    rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside]) 
+    rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside]) # normalize on Lambda not D
+
     d_Tree = spatial.KDTree(points)
     return (rho_D_M, points, d_Tree)
 
