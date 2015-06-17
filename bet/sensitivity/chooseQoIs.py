@@ -9,8 +9,34 @@ import numpy as np
 from itertools import combinations
 from bet.Comm import comm
 
-
 def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None):
+    """
+
+    Given gradient vectors at some points(xeval) in the parameter space, a set
+    of QoIs to choose from, and the number of desired QoIs to return, this
+    method return the set of optimal QoIs to use in the inverse problem by
+    choosing the set with optimal skewness properties.
+
+    :param grad_tensor: Gradient vectors at each point of interest in the
+        parameter space :math:'\Lambda' for each QoI map.
+    :type grad_tensor: :class:`np.ndarray` of shape (num_xeval,num_qois,Ldim)
+        where num_xeval is the number of points in :math:'\Lambda' we have
+        approximated the gradient vectors, num_qois is the total number of
+        possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
+    :param qoiIndices: Set of QoIs to consider
+    :type qoiIndices: :class:'`np.ndarray` of size (1, num QoIs to consider)
+    :param int num_qois_return: Number of desired QoIs to use in the
+        inverse problem.
+
+    :rtype: tuple
+    :returns: (min_condum, optqoiIndices)
+
+    """
+    (min_condnum, optqoiIndices, optsingvals) = chooseOptQoIs_verbose(grad_tensor, qoiIndices, num_qois_return)
+
+    return (min_condnum,optqoiIndices)
+
+def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None):
     """
 
     TODO:   This just cares about skewness, not sensitivity  (That is, we pass
@@ -41,7 +67,7 @@ def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None):
         inverse problem.
 
     :rtype: tuple
-    :returns: (min_condum, optqoiIndices)
+    :returns: (min_condum, optqoiIndices, optsingvals)
 
     """
     num_xeval = grad_tensor.shape[0]
@@ -80,6 +106,7 @@ def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None):
         if current_condnum < min_condnum:
             min_condnum = current_condnum
             optqoiIndices = qoi_combs[qoi_set]
+            optsingvals = singvals
 
     # Wait for all processes to get to this point
     comm.Barrier()
@@ -96,4 +123,4 @@ def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None):
     min_condnum = comm.bcast(min_condnum, root=0)
     optqoiIndices = comm.bcast(optqoiIndices, root=0)
 
-    return (min_condnum, optqoiIndices)
+    return (min_condnum, optqoiIndices, optsingvals)

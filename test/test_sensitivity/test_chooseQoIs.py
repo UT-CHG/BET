@@ -21,10 +21,10 @@ class ChooseQoIsMethods:
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs`.
         """
         self.qoiIndices = range(0, self.num_qois)
-        [self.min_condnum, self.optqoiIndices] = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_returned)
+        [self.min_condnum, self.optqoiIndices] = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_return)
 
         # Test the method returns the correct number of qois
-        self.assertEqual(len(self.optqoiIndices), self.num_qois_returned)
+        self.assertEqual(len(self.optqoiIndices), self.num_qois_return)
 
         # Check that the 'global condidtion number' is greater than or equal to 1
         self.assertGreater(self.min_condnum, 1.0)
@@ -34,12 +34,39 @@ class ChooseQoIsMethods:
 
         # Test that none of the chosen QoIs are the same
         self.assertEqual(len(np.unique(self.optqoiIndices)), len(self.optqoiIndices))
-        
+
+        # Test the method for a set of QoIs rather than all possible.  Choose
+        # this set so that the optimal choice is not removed.
+        self.qoiIndices = np.concatenate([range(1, 3, 2), range(4, self.num_qois)])
+        [self.min_condnum, self.optqoiIndices] = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_return)
+
+        # Test the method returns the correct number of qois
+        self.assertEqual(len(self.optqoiIndices), self.num_qois_return)
+
+        # Check that the 'global condidtion number' is greater than or equal to 1
+        self.assertGreater(self.min_condnum, 1.0)
+
+        # Test the method returns the known best set of QoIs  (chosen to be last Lambda_dim indices)
+        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.optqoiIndices)
+
+        # Test that none of the chosen QoIs are the same
+        self.assertEqual(len(np.unique(self.optqoiIndices)), len(self.optqoiIndices))
+
+    def test_chooseOptQoIs_verbose(self):
+        """
+        Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose`.
+        """
+        self.qoiIndices = range(0, self.num_qois)
+        [self.min_condnum, self.optqoiIndices, self.optsingvals] = cQoIs.chooseOptQoIs_verbose(self.G, self.qoiIndices, self.num_qois_return)
+
+        # Test that optsingvals is the right shape
+        self.assertEqual(self.optsingvals.shape, ((self.num_centers, self.num_qois_return)))
+
 
 class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 2
-            self.num_qois_returned = 2
+            self.num_qois_return = 2
             self.radius = 0.01
             np.random.seed(0)
             self.num_centers = 10
@@ -56,7 +83,7 @@ class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
 class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 4
-            self.num_qois_returned = 4
+            self.num_qois_return = 4
             self.radius = 0.01
             np.random.seed(0)
             self.num_centers = 10
@@ -73,7 +100,7 @@ class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
 class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 9
-            self.num_qois_returned = 9
+            self.num_qois_return = 9
             self.radius = 0.01
             np.random.seed(0)
             self.num_centers = 10
@@ -90,7 +117,7 @@ class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
 class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 9
-            self.num_qois_returned = 4
+            self.num_qois_return = 4
             self.radius = 0.01
             np.random.seed(0)
             self.num_centers = 10
@@ -107,7 +134,7 @@ class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
 class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 2
-            self.num_qois_returned = 2
+            self.num_qois_return = 2
             self.radius = 0.01
             np.random.seed(0)
             self.num_centers = 10
