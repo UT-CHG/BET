@@ -53,8 +53,8 @@ class sampler(asam.sampler):
 
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
-            criterion='center', radius=0.1, initial_samples=None,
-            initial_data=None): 
+            criterion='center', radius=0.01, initial_samples=None,
+            initial_data=None, gradient_type=None): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -108,7 +108,8 @@ class sampler(asam.sampler):
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
         lambda_dim = len(param_max)
-    
+
+        # if given samples and data split them up otherwise create them
         if type(initial_samples) == 'NoneType' or type(initial_data) == 'NoneType':
             # Initiative first batch of N samples (maybe taken from latin
             # hypercube/space-filling curve to fully explore parameter space - not
@@ -129,15 +130,19 @@ class sampler(asam.sampler):
             #TODO: assumes that the number of centers is divisible by the
             # of chains per processor, might want to update to handle different
             # numbers of chains per processor
-            #TODO: check with Scott that this is correct implementation
             centers = initial_samples[:self.num_chains, :]
             data_centers = initial_data[:self.num_chains, :]
             offset = self.num_chains_pproc*comm.rank
             MYcenters_old = centers[offset:offset+self.num_chains_pproc]
             MYdata_centers = data_centers[offset:offset+self.num_chains_pproc]
+            # TODO: change non_centers to clusters
+            # TODO: udpate to handle if the initial samples were choosen with
+            # ffd or cfd
             offset = self.num_chains+self.num_chains_pproc*(lambda_dim+1)*comm.rank
-            MYnon_centers = initial_samples[offset:offset+(lambda_dim+1)*comm.rank, :]
-            MYnon_data_centers = initial_data[offset:offset+(lambda_dim+1)*comm.rank, :]
+            MYnon_centers = initial_samples[offset:offset+self.num_chains_pproc*\
+                    (lambda_dim+1)*comm.rank, :]
+            MYnon_data_centers = initial_data[offset:offset+self.num_chains_pproc*\
+                    (lambda_dim+1)*comm.rank, :]
             MYsamples_old = np.concatenate((MYcenters_old, MYnon_centers))
             MYdata_old = np.concatenate((MYdata_centers, MYnon_data_centers))
 
@@ -147,8 +152,8 @@ class sampler(asam.sampler):
 
         samples = MYsamples_old
         data = MYdata_old
-        all_step_ratios = radius*np.ones((self.num_chains_pproc,)) #step_ratio
-        kern_old = rho_D(MYdata_old[self.num_chains_pproc, :])
+        all_step_ratios = []
+        kern_old = rho_D(MYdata_old[:self.num_chains_pproc, :])
         rank_old = smoothIndicatorFun(MYdata_old)
         kern_samples = kern_old
         mdat = dict()
@@ -161,26 +166,27 @@ class sampler(asam.sampler):
             rank_old = smoothIndicatorFun(MYdata_old)
             # For the centers that are not in the RoI do a newton step
             centers_in_RoI = kern_old
-            samples_wC_in_RoI = None
-            G = grad.calculate_gradients_rbf(MYsamples_old[samples_wC_in_RoI,:],
-                    rank_old[samples_wC_in_RoI],
-                    MYsamples_old[centers_in_RoI, :], normalized=False)
+            not_in_RoI = np.logical_not(centers_in_RoI)
+            samples_woC_in_RoI = None #include centers and clusters! (order
+            # order doesn't matter, but size does because KDTree can be
+            # expensive so ONLY USE WHAT YOU NEED
+            # TODO: add in ability to reuse points
+            # TODO: calculate gradient based on gradient type for the first one
+            G = grad.calculate_gradients_rbf(MYsamples_old[samples_woC_in_RoI,:],
+                    rank_old[samples_woC_in_RoI],
+                    MYsamples_old[not_in_RoI, :], normalize=False)
             normG = np.linalg.norm(G, axis=2)
-            # TODO: determine if samples always need to be normalized with so
-            # that radius is the same in all directions if so update
-            # TODO: check this with Scott
-            step_size = (0-rank_old[:self.num_chains_pproc])
+            step_size = (0-rank_old[samples_woC_in_RoI])
             step_size = step_size/normG**2
-            MYcenters_new[centers_in_RoI, :] = MYcenters_old[centers_in_RoI] + \
+            MYcenters_new[not_in_RoI, :] = MYcenters_old[not_in_RoI] + \
                     step_size*G[:, 0, :]
 
             # For the centers that are in the RoI sample uniformly
-            not_in_RoI = np.logical_not(centers_in_RoI)
-            step_ratio = determine_step_ratio(param_dist[not_in_RoI], 
-                    MYcenters_old[not_in_RoI]) 
-            MYcenters_new[not_in_RoI] = t_set.step(step_ratio[not_in_RoI],
-                    param_width[not_in_RoI], param_left[not_in_RoI],
-                    param_right[not_in_RoI], MYcenters_old[not_in_RoI])
+            step_ratio = determine_step_ratio(param_dist[centers_in_RoI], 
+                    MYcenters_old[centers_in_RoI]) 
+            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio[centers_in_RoI],
+                    param_width[centers_in_RoI], param_left[centers_in_RoI],
+                    param_right[centers_in_RoI], MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
             samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
