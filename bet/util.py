@@ -5,6 +5,7 @@ The module contains general tools for BET.
 """
 
 import numpy as np
+import sys
 from bet.Comm import *
 import collections
 
@@ -98,11 +99,9 @@ def fix_dimensions_vector(vector):
     """
     Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
     shape (N,).
-
     :param vector: numerical object
     :rtype: :class:`numpy.ndarray`
     :returns: array of shape (N,)
-
     """
     if not isinstance(vector, collections.Iterable):
         vector = np.array([vector])
@@ -185,6 +184,21 @@ def fix_dimensions_data(data, dim=None):
         return data.transpose()
     else:
         return data
+
+def clean_data(data):
+    """
+    Clean data so that NaN->0, inf-> maxfloat, -inf-> -maxfloat
+
+    :param data: numerical object
+    :type data: :class:`numpy.ndarray`
+    :rtype: :class:`numpy.ndarray`
+    :returns: array of shape (data.shape)
+    
+    """
+    data[np.isnan(data)] = 0.0
+    data[np.isinf(data)] = np.sign(data[np.isinf(data)])*sys.float_info[0]
+
+    return data
 
 
 
