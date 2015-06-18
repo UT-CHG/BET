@@ -22,7 +22,7 @@ data = matfile['data']
 # We use 16 random points in lam_domain and approximate the gradient
 # at each of them.
 num_xeval = 16
-xeval = samples[:16,:]
+xeval = samples[:num_xeval,:]
 Lambda_dim = samples.shape[1]
 
 # The parameter domain is a 4d box with the same bounds in
