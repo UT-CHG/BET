@@ -11,6 +11,8 @@ import bet.sensitivity.gradients as grad
 import numpy as np
 import numpy.testing as nptest
 
+#TODO: Make tests for rvec
+
 class GradientsMethods:
     """
     Test all methods in :module:`bet.sensitivity.gradients`
@@ -58,8 +60,8 @@ class GradientsMethods:
         self.assertEqual(self.samples.shape[0], (self.Lambda_dim+1)*self.num_centers)
 
         # Test an error is raised if radius is an array
-        with self.assertRaises(ValueError):
-            grad.pick_ffd_points(self.centers, np.array((1,2)))
+        #with self.assertRaises(ValueError):
+        #    grad.pick_ffd_points(self.centers, np.array((1,2)))
 
     def test_pick_cfd_points(self):
         """
@@ -75,8 +77,8 @@ class GradientsMethods:
         self.assertEqual(self.samples.shape, ((2*self.Lambda_dim)*self.num_centers, self.Lambda_dim))
 
         # Test an error is raised if radius is an array
-        with self.assertRaises(ValueError):
-            grad.pick_ffd_points(self.centers, np.array((1,2)))
+        #with self.assertRaises(ValueError):
+        #    grad.pick_cfd_points(self.centers, np.array((1,2)))
 
     # Test RBF methods
     def test_radial_basis_function(self):
