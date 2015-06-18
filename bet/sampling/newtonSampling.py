@@ -3,7 +3,8 @@
 # Lindley Graham 6/13/15
 """ 
 
-This module contains functions for adaptive random sampling with reseeding.
+This module contains functions for adaptive random sampling using Newton's
+method.
 We assume we are given access to a model, a parameter space, and a data space.
 The model is a map from the paramter space to the data space. We desire to
 build up a set of samples to solve an inverse problem thus giving us
@@ -11,8 +12,15 @@ information about the inverse mapping. Each sample consists of a parameter
 coordinate, data coordinate pairing. We assume the measure of both spaces is
 Lebesgue.
 
-We employ an approach based on using multiple sample chains that restarts the
-chains periodically throughout the sampling process.
+We employ an approach based on using multiple sample chains and Newton's
+method. We approximate the gradient using clusters of samples to form a RBF
+approximation. If a starting set of samples are provided we can use either a
+FFD, CFD, or RBF approximaiton of the gradient for the first Newton step.
+Otherwise, we use a RBF approximation. 
+
+Once a chain has entered the implicitly defined RoI (region of interest) we
+randomly generate new clusters of samples while not allowing the centers of the
+clusters to leave the RoI.
 """
 
 import numpy as np
@@ -37,7 +45,7 @@ class sampler(asam.sampler):
         :class:`~bet.loadBalance.load_balance` runs the model at a given set of
         parameter samples and returns data """
 
-    def __init__(self, num_samples, chain_length, lb_model):
+    def __init__(self, num_samples, chain_length, lb_model, dim=None):
         """
         Initialization
 
@@ -50,6 +58,8 @@ class sampler(asam.sampler):
         # are updates so that the number of samples matches with using the l1
         # ball and lambda_dim+1 samples
         super(sampler, self).__init__(num_samples, chain_length, lb_model)
+        if dim:
+            self.num_samples
 
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
@@ -133,18 +143,22 @@ class sampler(asam.sampler):
             centers = initial_samples[:self.num_chains, :]
             data_centers = initial_data[:self.num_chains, :]
             offset = self.num_chains_pproc*comm.rank
+            # determine the type of clusters (FFD, CFD, RBF)
+            num_FFD_total = self.num_chains*(lambda_dim+2)
+            num_CFD_total = self.num_chains*2*lambda_dim
+            # TODO: check these numbers with Scott
+            num_RBD_total = self.num_chains*(lambda_dim+1)
             MYcenters_old = centers[offset:offset+self.num_chains_pproc]
             MYdata_centers = data_centers[offset:offset+self.num_chains_pproc]
-            # TODO: change non_centers to clusters
             # TODO: udpate to handle if the initial samples were choosen with
             # ffd or cfd
             offset = self.num_chains+self.num_chains_pproc*(lambda_dim+1)*comm.rank
-            MYnon_centers = initial_samples[offset:offset+self.num_chains_pproc*\
+            MYclusters = initial_samples[offset:offset+self.num_chains_pproc*\
                     (lambda_dim+1)*comm.rank, :]
-            MYnon_data_centers = initial_data[offset:offset+self.num_chains_pproc*\
+            MYdata_clusters = initial_data[offset:offset+self.num_chains_pproc*\
                     (lambda_dim+1)*comm.rank, :]
-            MYsamples_old = np.concatenate((MYcenters_old, MYnon_centers))
-            MYdata_old = np.concatenate((MYdata_centers, MYnon_data_centers))
+            MYsamples_old = np.concatenate((MYcenters_old, MYclusters))
+            MYdata_old = np.concatenate((MYdata_centers, MYdata_clusters))
 
 
         self.num_samples = self.chain_length * self.num_chains * (lambda_dim+1)
