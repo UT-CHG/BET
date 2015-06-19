@@ -127,10 +127,9 @@ def pick_ffd_points(centers, rvec):
     """
 
     Pick Lambda_dim points, for each centers, for a forward finite
-    difference gradient approximation.  THE ORDERING OF THESE SAMPLES
-    IS IMPORTANT.  THE RETURN ARRAY HAS THE CENTERS FIRST, FOLLOWED BY
-    SAMPLES TRANSLATED IN THE FIRST DIMENSION, THEN SAMPLES TRANSLATED IN
-    THE SECOND DIMENSION, AND SO ON.
+    difference gradient approximation.  THE ORDERING OF THE SAMPLES IS
+    IMPORTANT.  SAMPLES ARE ORDERED CENTERS, FOLLOWED BY THE CLUSTER AROUND THE
+    FIST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
 
     :param centers: Points in :math:`\Lambda` the place stencil around
     :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
@@ -143,7 +142,7 @@ def pick_ffd_points(centers, rvec):
     """
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
-    samples = np.tile(centers, [Lambda_dim, 1])
+    samples = np.repeat(centers, Lambda_dim, axis=0)
 
     # Allow to choose a difference radius in each dimension (rectangular domain)
     if isinstance(rvec, np.ndarray):
@@ -153,7 +152,8 @@ def pick_ffd_points(centers, rvec):
 
     # Construct a [num_centers*(Lambda_dim+1), Lambda_dim] matrix that
     # translates the centers to the FFD points.
-    translate = np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1])) * rvec
+    #translate = np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1])) * rvec
+    translate = np.tile(np.eye(Lambda_dim) * rvec, (num_centers, 1))
     samples = samples + translate
 
     return np.concatenate([centers, samples])
@@ -162,24 +162,26 @@ def pick_cfd_points(centers, rvec):
     """
 
     Pick 2*Lambda_dim points, for each center, for centered finite difference
-    gradient approximation.  THE ORDERING OF THESE SAMPLES IS IMPORTANT.  THE
-    RETURN ARRAY START WITH SAMPLES TRANSLATED TO THE RIGHT IN THE FIRST
-    DIMENSION, THEN TRANSLATED TO THE RIGHT IN THE SECOND DIMENSION AND SO ON.
-    AFTER ALL THE SAMPLES TRANSLATED TO THE RIGHT, IT HAS SAMPLES TRANSLATED
-    TO LEFT IN THE FIRST DIMENSION, THEN SECOND AND SO ON.
+    gradient approximation.  THE ORDERING OF THE SAMPLES IS
+    IMPORTANT.  SAMPLES ARE ORDERED CENTERS, FOLLOWED BY THE CLUSTER AROUND THE
+    FIST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
+    The center are not needed for the CFD gradient approximation, they are
+    returned for consistency with the other methods and because of the need to
+    have not just the gradient but also the QoI value at the centers in
+    adaptive sampling algorithms.
 
     :param centers: Points in :math:`\Lambda` to cluster points around
     :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
-    :rtype: :class:`np.ndarray` of shape (2*Lambda_dim*num_centers, Lambda_dim)
+    :rtype: :class:`np.ndarray` of shape ((2*Lambda_dim+1)*num_centers, Lambda_dim)
     :returns: Samples for centered finite difference stencil for
         each point in centers.
 
     """
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
-    samples = np.tile(centers, [2 * Lambda_dim, 1])
+    samples = np.repeat(centers, 2 * Lambda_dim, axis=0)
 
     # Allow to choose a difference radius in each dimension (rectangular domain)
     if isinstance(rvec, np.ndarray):
@@ -189,11 +191,11 @@ def pick_cfd_points(centers, rvec):
 
     # Contstruct a [num_centers*2*Lambda_dim, Lambda_dim] matrix that
     # translates the centers to the CFD points
-    translate = np.kron(np.eye(Lambda_dim), np.ones([num_centers, 1])) * rvec
-    translate = np.append(translate, -translate, axis=0)
+    ident = np.eye(Lambda_dim) * rvec
+    translate = np.tile(np.append(ident, -ident, axis=0), (num_centers, 1))
     samples = samples + translate
 
-    return samples
+    return np.concatenate([centers, samples])
 
 def radial_basis_function(r, kernel=None, ep=None):
     """
@@ -259,13 +261,13 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 
     return rbfdxi
 
-def calculate_gradients_rbf(
-        samples, data, xeval, num_neighbors=None, RBF=None, ep=None, normalize=True):
+def calculate_gradients_rbf(samples, data, centers, num_neighbors=None, RBF=None,
+        ep=None, normalize=True):
     """
 
     TO DO: vectorize first for loop?
 
-    Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
+    Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.
 
     :param samples: Samples for which the model has been solved.
@@ -275,9 +277,9 @@ def calculate_gradients_rbf(
     :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
         the number of QoI (i.e. the dimension of the data space
         :math:`\mathcal{D}`
-    :param xeval: Points in :math:`\Lambda` at which to approximate gradient
+    :param centers: Points in :math:`\Lambda` at which to approximate gradient
         information.
-    :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param int num_neighbors: Number of nearest neighbors to use in gradient
         approximation. Default value is Lambda_dim + 2.
     :param string RBF: Choice of radial basis function.
@@ -286,7 +288,7 @@ def calculate_gradients_rbf(
         Default value is 1.0
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
     :returns: Tensor representation of the gradient vectors of each
-        QoI map at each point in xeval
+        QoI map at each point in centers
 
     """
     data = util.fix_dimensions_vector_2darray(util.clean_data(data))
@@ -300,21 +302,21 @@ def calculate_gradients_rbf(
 
     num_model_samples = samples.shape[0]
     Data_dim = data.shape[1]
-    num_xeval = xeval.shape[0]
+    num_centers = centers.shape[0]
 
-    rbf_tensor = np.zeros([num_xeval, num_model_samples, Lambda_dim])
-    gradient_tensor = np.zeros([num_xeval, Data_dim, Lambda_dim])
+    rbf_tensor = np.zeros([num_centers, num_model_samples, Lambda_dim])
+    gradient_tensor = np.zeros([num_centers, Data_dim, Lambda_dim])
     tree = spatial.KDTree(samples)
 
-    # For each xeval, interpolate the data using the rbf chosen and
+    # For each centers, interpolate the data using the rbf chosen and
     # then evaluate the partial derivative of that rbf at the desired point. 
-    for xe in range(num_xeval):
-        # Find the k nearest neighbors and their distances to xeval[xe,:]
-        [r, nearest] = tree.query(xeval[xe, :], k=num_neighbors)
+    for c in range(num_centers):
+        # Find the k nearest neighbors and their distances to centers[c,:]
+        [r, nearest] = tree.query(centers[c, :], k=num_neighbors)
         r = np.tile(r, (Lambda_dim, 1))
 
         # Compute the linf distances to each of the nearest neighbors
-        diffVec = (xeval[xe, :] - samples[nearest, :]).transpose()
+        diffVec = (centers[c, :] - samples[nearest, :]).transpose()
 
         # Compute the l2 distances between pairs of nearest neighbors
         distMat = spatial.distance_matrix(
@@ -328,7 +330,7 @@ def calculate_gradients_rbf(
             .transpose()).transpose()
 
         # Construct the finite difference matrices
-        rbf_tensor[xe, nearest, :] = rbf_mat_values.transpose()
+        rbf_tensor[c, nearest, :] = rbf_mat_values.transpose()
 
     gradient_tensor = rbf_tensor.transpose(2, 0, 1).dot(data).transpose(1, 2, 0)
 
@@ -345,13 +347,13 @@ def calculate_gradients_rbf(
 
     return gradient_tensor
 
-def calculate_gradients_cfd(samples, data, xeval, rvec, normalize=True):
+def calculate_gradients_cfd(samples, data, centers, rvec, normalize=True):
     """
 
-    Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
+    Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
     ON USING pick_cfd_points TO CHOOSE SAMPLES FOR THE CFD STENCIL AROUND
-    EACH XEVAL.  THE ORDERING MATTERS.
+    EACH CENTER.  THE ORDERING MATTERS.
 
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape
@@ -360,38 +362,39 @@ def calculate_gradients_cfd(samples, data, xeval, rvec, normalize=True):
     :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
         the number of QoI (i.e. the dimension of the data space
         :math:`\mathcal{D}`
-    :param xeval: Points in :math:`\Lambda` at which to approximate gradient
+    :param centers: Points in :math:`\Lambda` at which to approximate gradient
         information.
-    :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
     :returns: Tensor representation of the gradient vectors of each
-        QoI map at each point in xeval
+        QoI map at each point in centers
 
     """
-    data = util.fix_dimensions_vector_2darray(util.clean_data(data))
-    num_xeval = xeval.shape[0]
+    num_centers = centers.shape[0]
+    data = util.fix_dimensions_vector_2darray(util.clean_data(
+        data[num_centers:]))
     Lambda_dim = samples.shape[1]
     num_qois = data.shape[1]
-    gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
+    gradient_tensor = np.zeros([num_centers, num_qois, Lambda_dim])
 
     # Allow to choose a difference radius in each dimension (rectangular domain)
     if isinstance(rvec, np.ndarray):
-        rvec = util.fix_dimensions_vector(rvec)
+        rvec = util.fix_dimensions_vector_2darray(rvec)
     else:
-        rvec = rvec * np.ones(Lambda_dim)
+        rvec = rvec * util.fix_dimensions_vector_2darray(np.ones(Lambda_dim))
 
-    rvec =  (np.tile(rvec, [num_xeval * num_qois, 1])).transpose().reshape( \
-                Lambda_dim * num_xeval, num_qois)
+    rvec = np.tile(np.repeat(rvec, num_qois, axis=1), [num_centers, 1])
 
-    # Compute the gradient vectors using the standard CFD stencil
-    gradient_vec = (data[:Lambda_dim * num_xeval] - \
-                   data[Lambda_dim * num_xeval:]) * (0.5 / rvec)
+    inds = np.repeat(range(0,2*Lambda_dim*num_centers,2*Lambda_dim),Lambda_dim) + np.tile(range(0,Lambda_dim),num_centers)
+
+    inds = np.array([inds, inds+Lambda_dim]).transpose()
+
+    gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / rvec)
 
     # Reshape and organize
-    gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
-        num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
+    gradient_tensor = np.reshape(gradient_mat.transpose(), [num_qois, Lambda_dim, num_centers], order='F').transpose(2, 0, 1)
 
     if normalize:
         # Compute the norm of each vector
@@ -406,13 +409,13 @@ def calculate_gradients_cfd(samples, data, xeval, rvec, normalize=True):
 
     return gradient_tensor
 
-def calculate_gradients_ffd(samples, data, xeval, rvec, normalize=True):
+def calculate_gradients_ffd(samples, data, centers, rvec, normalize=True):
     """
 
-    Approximate gradient vectors at ``num_xeval, xeval.shape[0]`` points
+    Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.
     THIS METHOD IS DEPENDENT ON USING pick_ffd_points TO CHOOSE
-    SAMPLES FOR THE CFD STENCIL AROUND EACH XEVAL.  THE ORDERING MATTERS.
+    SAMPLES FOR THE CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
 
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim) where
@@ -421,38 +424,36 @@ def calculate_gradients_ffd(samples, data, xeval, rvec, normalize=True):
     :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
         the number of QoI (i.e. the dimension of the data space
         :math:`\mathcal{D}`
-    :param xeval: Points in :math:`\Lambda` at which to approximate gradient
+    :param centers: Points in :math:`\Lambda` at which to approximate gradient
         information.
-    :type xeval: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
     :returns: Tensor representation of the gradient vectors of each
-        QoI map at each point in xeval
+        QoI map at each point in centers
 
     """
     data = util.fix_dimensions_vector_2darray(util.clean_data(data))
-    num_xeval = xeval.shape[0]
+    num_centers = centers.shape[0]
     Lambda_dim = samples.shape[1]
     num_qois = data.shape[1]
-    gradient_tensor = np.zeros([num_xeval, num_qois, Lambda_dim])
+    gradient_tensor = np.zeros([num_centers, num_qois, Lambda_dim])
 
     # Allow to choose a difference radius in each dimension (rectangular domain)
     if isinstance(rvec, np.ndarray):
-        rvec = util.fix_dimensions_vector(rvec)
+        rvec = util.fix_dimensions_vector_2darray(rvec)
     else:
-        rvec = rvec * np.ones(Lambda_dim)
-
-    rvec =  (np.tile(rvec, [num_xeval * num_qois, 1])).transpose().reshape( \
-            Lambda_dim * num_xeval, num_qois)
+        rvec = rvec * util.fix_dimensions_vector_2darray(np.ones(Lambda_dim))
+    
+    rvec = np.tile(np.repeat(rvec, num_qois, axis=1), [num_centers, 1])
 
     # Compute the gradient vectors using the standard FFD stencil
-    gradient_vec = (data[num_xeval:] - np.tile(data[0:num_xeval], \
-                   [Lambda_dim, 1])) * (1./rvec)
+    gradient_mat = (data[num_centers:] - np.repeat(data[0:num_centers], \
+                   Lambda_dim, axis=0)) * (1. / rvec)
 
     # Reshape and organize
-    gradient_tensor = np.ravel(gradient_vec.transpose()).reshape(
-        num_qois, Lambda_dim, num_xeval).transpose(2, 0, 1)
+    gradient_tensor = np.reshape(gradient_mat.transpose(), [num_qois, Lambda_dim, num_centers], order='F').transpose(2, 0, 1)
 
     if normalize:
         # Compute the norm of each vector
