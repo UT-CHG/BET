@@ -27,7 +27,7 @@ import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import scipy.spatial as spatial
 import bet.util as util
-import os
+import os, math
 import bet.sensitivity.gradients as grad
 from bet.Comm import comm, MPI
 from pyDOE import lhs
@@ -45,7 +45,7 @@ class sampler(asam.sampler):
         :class:`~bet.loadBalance.load_balance` runs the model at a given set of
         parameter samples and returns data """
 
-    def __init__(self, num_samples, chain_length, lb_model, dim=None):
+    def __init__(self, num_samples, chain_length, lb_model, lambda_dim=None):
         """
         Initialization
 
@@ -54,17 +54,20 @@ class sampler(asam.sampler):
         :param lb_model: runs the model at a given set of parameter samples, (N,
             ndim), and returns data (N, mdim)
         """
-        #TODO: update this so that chain_length and num_samples and num_chains
-        # are updates so that the number of samples matches with using the l1
-        # ball and lambda_dim+1 samples
         super(sampler, self).__init__(num_samples, chain_length, lb_model)
-        if dim:
-            self.num_samples
+        if lambda_dim:
+            self.num_chains_pproc = int(math.ceil(self.num_samples/float(\
+                self.chain_length*comm.size*(lambda_dim+2))))
+            self.num_chains = comm.size * self.num_chains_pproc
+            self.num_samples = self.chain_length * self.num_chains \
+                    * (lambda_dim+2)
+            self.sample_batch_no = np.repeat(range(self.num_chains),
+                    self.chain_length*(lambda_dim+2), 0)
 
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None, gradient_type=None): 
+            initial_data=None): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -119,49 +122,78 @@ class sampler(asam.sampler):
         param_width = param_right - param_left
         lambda_dim = len(param_max)
 
+        cluster_type = 'rbf'
+        samples_p_cluster = lambda_dim+1
+
         # if given samples and data split them up otherwise create them
-        if type(initial_samples) == 'NoneType' or type(initial_data) == 'NoneType':
+        if type(initial_samples) == 'NoneType' or \
+                type(initial_data) == 'NoneType':
+            self.num_chains_pproc = int(math.ceil(self.num_samples/float(\
+                self.chain_length*comm.size*(lambda_dim+2))))
+            self.num_chains = comm.size * self.num_chains_pproc
+            self.num_samples = self.chain_length * self.num_chains * \
+                    (lambda_dim+2)
+            self.sample_batch_no = np.repeat(range(self.num_chains),
+                    self.chain_length*(lambda_dim+2), 0)
+
             # Initiative first batch of N samples (maybe taken from latin
-            # hypercube/space-filling curve to fully explore parameter space - not
-            # necessarily random). Call these Samples_old.
-            if initial_sample_type == "r" or initial_sample_type == "random":
+            # hypercube/space-filling curve to fully explore parameter space -
+            # not necessarily random). Call these Samples_old.
+            if initial_sample_type == "r" or \
+                    initial_sample_type == "random":
                 MYcenters_old = param_width*np.random.random(param_left.shape)
             elif initial_sample_type == "lhs":
                 MYcenters_old = param_width*lhs(param_min.shape[-1],
                         self.num_chains_pproc, criterion)
             MYcenters_old = MYcenters_old + param_left
-            MYsamples_old = grad.sample_l1_ball(MYcenters_old, lambda_dim+1,
-                    radius)
+            MYsamples_old = grad.sample_l1_ball(MYcenters_old, radius)
             (MYsamples_old, MYdata_old) = super(sampler,
                     self).user_samples(MYsamples_old, savefile)
+
         else:
             # split up the old samples and data this assumes that the centers
             # are listed first and the l1 samples next
-            #TODO: assumes that the number of centers is divisible by the
-            # of chains per processor, might want to update to handle different
-            # numbers of chains per processor
+            # assumes that the number of centers is divisible by the
+            # of chains per processor
+
+            self.num_chains_pproc = int(math.ceil((self.num_samples - \
+                    initial_samples.shape[0])/float((self.chain_length-1)\
+                    *comm.size*(lambda_dim+2))))
+            self.num_chains = comm.size * self.num_chains_pproc
+            self.num_samples = initial_samples.shape[0] + (self.chain_length-1)\
+                    * self.num_chains * (lambda_dim+2)
+            repeats = [initial_samples.shape[0]]
+            repeats.extend([(self.chain_length-1)*(lambda_dim+2)]*\
+                    (self.chain_length-1))
+            self.sample_batch_no = np.repeat(range(self.num_chains),
+                    repeats, 0)
+
             centers = initial_samples[:self.num_chains, :]
             data_centers = initial_data[:self.num_chains, :]
             offset = self.num_chains_pproc*comm.rank
             # determine the type of clusters (FFD, CFD, RBF)
-            num_FFD_total = self.num_chains*(lambda_dim+2)
-            num_CFD_total = self.num_chains*2*lambda_dim
-            # TODO: check these numbers with Scott
-            num_RBD_total = self.num_chains*(lambda_dim+1)
+            num_FFD_total = self.num_chains*(lambda_dim+1)
+            num_CFD_total = self.num_chains*(2*lambda_dim + 1)
+
+            if initial_samples.shape[0] == num_FFD_total:
+                cluster_type = 'ffd'
+                samples_p_cluster = lambda_dim
+            elif initial_samples.shape[0] == num_CFD_total:
+                cluster_type = 'cfd'
+                samples_p_cluster = 2*lambda_dim
+
             MYcenters_old = centers[offset:offset+self.num_chains_pproc]
             MYdata_centers = data_centers[offset:offset+self.num_chains_pproc]
-            # TODO: udpate to handle if the initial samples were choosen with
-            # ffd or cfd
-            offset = self.num_chains+self.num_chains_pproc*(lambda_dim+1)*comm.rank
+            offset = self.num_chains+self.num_chains_pproc*samples_p_cluster\
+                    *comm.rank
             MYclusters = initial_samples[offset:offset+self.num_chains_pproc*\
-                    (lambda_dim+1)*comm.rank, :]
+                    samples_p_cluster*comm.rank, :]
             MYdata_clusters = initial_data[offset:offset+self.num_chains_pproc*\
-                    (lambda_dim+1)*comm.rank, :]
+                    samples_p_cluster*comm.rank, :]
             MYsamples_old = np.concatenate((MYcenters_old, MYclusters))
             MYdata_old = np.concatenate((MYdata_centers, MYdata_clusters))
 
 
-        self.num_samples = self.chain_length * self.num_chains * (lambda_dim+1)
         comm.Barrier()
 
         samples = MYsamples_old
@@ -181,14 +213,37 @@ class sampler(asam.sampler):
             # For the centers that are not in the RoI do a newton step
             centers_in_RoI = kern_old
             not_in_RoI = np.logical_not(centers_in_RoI)
-            samples_woC_in_RoI = None #include centers and clusters! (order
-            # order doesn't matter, but size does because KDTree can be
-            # expensive so ONLY USE WHAT YOU NEED
+            num_centers_not_in_RoI = np.sum(not_in_RoI)
+            # Determine indices to create np.concatenate([centers, clusters])
+            # for centers not in the RoI
+            samples_woC_in_RoI = np.arange((self.num_chains_pproc,))*not_in_RoI
+            cluster_list = [np.copy(samples_woC_in_RoI)]
+            for c_num in samples_woC_in_RoI:
+                offset = self.num_chains_pproc + c_num*samples_p_cluster
+                cluster_list.append(np.arange(offset,
+                    offset+samples_p_cluster))
+            samples_woC_in_RoI = np.concatenate(cluster_list)
             # TODO: add in ability to reuse points
-            # TODO: calculate gradient based on gradient type for the first one
-            G = grad.calculate_gradients_rbf(MYsamples_old[samples_woC_in_RoI,:],
-                    rank_old[samples_woC_in_RoI],
-                    MYsamples_old[not_in_RoI, :], normalize=False)
+            # calculate gradient based on gradient type for the first one
+            # G = grad.calculate_gradients(samples, data, num_centers, rvec,
+            # normalize=False)
+            if cluster_type == 'rbf':
+                G = grad.calculate_gradients_rbf(MYsamples_old\
+                        [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
+                        num_centers_not_in_RoI, normalize=False)
+            elif cluster_type == 'ffd':
+                G = grad.calculate_gradients_ffd(MYsamples_old\
+                        [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
+                        num_centers_not_in_RoI, radius, normalize=False)
+            elif cluster_type == 'cfd':
+                G = grad.calculate_gradients_cfd(MYsamples_old\
+                        [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
+                        num_centers_not_in_RoI, radius, normalize=False)
+
+            # reset the samples_p_cluster to be the rbf for remaining batches
+            if cluster_type != 'rbf' and batch == 1:
+                cluster_type = 'rbf'
+                samples_p_cluster = lambda_dim+1
             normG = np.linalg.norm(G, axis=2)
             step_size = (0-rank_old[samples_woC_in_RoI])
             step_size = step_size/normG**2
@@ -198,21 +253,19 @@ class sampler(asam.sampler):
             # For the centers that are in the RoI sample uniformly
             step_ratio = determine_step_ratio(param_dist[centers_in_RoI], 
                     MYcenters_old[centers_in_RoI]) 
-            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio[centers_in_RoI],
-                    param_width[centers_in_RoI], param_left[centers_in_RoI],
-                    param_right[centers_in_RoI], MYcenters_old[centers_in_RoI])
+            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio\
+                    [centers_in_RoI], param_width[centers_in_RoI],
+                    param_left[centers_in_RoI], param_right[centers_in_RoI],
+                    MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
-            samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
-                    radius) 
+            samples_new = grad.sample_l1_ball(MYcenters_new, radius) 
 
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
             
-            # Make some decision about changing step_size(k).  There are
-            # multiple ways to do this.
-            # Determine step size
-            #(kern_new, proposal) = kern.delta_step(data_new, kern_old)
+            # update the indicator used to determine if the center sample is in
+            # the RoI or not
             kern_new = rho_D(data_new[:self.num_chains_pproc, :])
             # Update the logical index of chains searching along the boundary
             left_roi = np.logical_and(kern_old > 0, kern_new < kern_old)
@@ -228,8 +281,12 @@ class sampler(asam.sampler):
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
             kern_samples = np.concatenate((kern_samples, kern_new))
-            # TODO: fix how this is done so that we're saving step size too
-            all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
+            # join up the step ratios for the samples in/out of the RoI
+            joint_step_ratios = np.empty((self.num_chains_pproc,))
+            joint_step_ratios[not_in_RoI] = step_size/param_width[not_in_RoI]
+            joint_step_ratios[centers_in_RoI] = step_ratio
+            all_step_ratios = np.concatenate((all_step_ratios,
+                joint_step_ratios))
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
@@ -258,7 +315,8 @@ class sampler(asam.sampler):
         # chain_length)
         all_step_ratios = util.get_global_values(MYall_step_ratios,
                 shape=(self.num_samples,))
-        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
+        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains,
+            self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
@@ -274,7 +332,8 @@ def determine_step_ratio(param_dist, MYsamples_old, do_global=True):
     
     :param MYsamples_old:
     :type MYsamples_old:
-    :param bool global: Flag whether or not to do this local to a processor or globally
+    :param bool global: Flag whether or not to do this local to a processor or
+        globally
     
     :rtype: :class:`numpy.ndarray`
     :returns: ``step_ratio``
