@@ -146,7 +146,8 @@ class sampler(asam.sampler):
                 MYcenters_old = param_width*lhs(param_min.shape[-1],
                         self.num_chains_pproc, criterion)
             MYcenters_old = MYcenters_old + param_left
-            MYsamples_old = grad.sample_l1_ball(MYcenters_old, radius)
+            MYsamples_old = grad.sample_l1_ball(MYcenters_old, lambda_dim+1,
+                    radius) 
             (MYsamples_old, MYdata_old) = super(sampler,
                     self).user_samples(MYsamples_old, savefile)
 
@@ -213,7 +214,6 @@ class sampler(asam.sampler):
             # For the centers that are not in the RoI do a newton step
             centers_in_RoI = kern_old
             not_in_RoI = np.logical_not(centers_in_RoI)
-            num_centers_not_in_RoI = np.sum(not_in_RoI)
             # Determine indices to create np.concatenate([centers, clusters])
             # for centers not in the RoI
             samples_woC_in_RoI = np.arange((self.num_chains_pproc,))*not_in_RoI
@@ -230,15 +230,15 @@ class sampler(asam.sampler):
             if cluster_type == 'rbf':
                 G = grad.calculate_gradients_rbf(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
-                        num_centers_not_in_RoI, normalize=False)
+                        normalize=False)
             elif cluster_type == 'ffd':
                 G = grad.calculate_gradients_ffd(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
-                        num_centers_not_in_RoI, radius, normalize=False)
+                        normalize=False)
             elif cluster_type == 'cfd':
                 G = grad.calculate_gradients_cfd(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
-                        num_centers_not_in_RoI, radius, normalize=False)
+                        normalize=False)
 
             # reset the samples_p_cluster to be the rbf for remaining batches
             if cluster_type != 'rbf' and batch == 1:
@@ -259,7 +259,8 @@ class sampler(asam.sampler):
                     MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
-            samples_new = grad.sample_l1_ball(MYcenters_new, radius) 
+            samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
+                    radius) 
 
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
@@ -296,8 +297,10 @@ class sampler(asam.sampler):
                 super(sampler, self).save(mdat, savefile)
             
             # Don't update centers that have left the RoI (after finding it)
-            MYcenters_old[np.logical_not(left_roi)] = MYcenters_new[np.logical_not(left_roi)]
-            kern_old[np.logical_not(left_roi)] = kern_new[np.logical_not(left_roi)]
+            MYcenters_old[np.logical_not(left_roi)] = MYcenters_new[\
+                    np.logical_not(left_roi)]
+            kern_old[np.logical_not(left_roi)] = kern_new[\
+                    np.logical_not(left_roi)]
 
 
 
