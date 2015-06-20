@@ -1,0 +1,379 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example: Linear Uniform Map &mdash; BET 0.2.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 0.2.0 documentation" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html#adcirc-based-examples">ADCIRC Based Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#visualization-examples">Visualization Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+    <li>Example: Linear Uniform Map</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/examples/example_rst_files/linearMapUniformSampling.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="example-linear-uniform-map">
+<span id="linearmap"></span><h1>Example: Linear Uniform Map<a class="headerlink" href="#example-linear-uniform-map" title="Permalink to this headline">¶</a></h1>
+<p>We will wailk through the following <a class="reference download internal" href="../../_downloads/linearMapUniformSampling.py"><code class="xref download docutils literal"><span class="pre">example</span></code></a>. This example
+generates uniform samples on a 3D grid and evaluates a linear map to a 2D
+space. Probabilities in the paramter space are calculated using emulated
+points.  1D and 2D marginals are calculated, smoothed, and plotted.</p>
+<p>Import the necessary modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP</span> <span class="kn">as</span> <span class="nn">calculateP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess</span> <span class="kn">as</span> <span class="nn">postProcess</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="kn">as</span> <span class="nn">simpleFunP</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="kn">as</span> <span class="nn">calculateP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotP</span> <span class="kn">as</span> <span class="nn">plotP</span>
+</pre></div>
+</div>
+<p>Define the parameter domain:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">lam_domain</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">],</span>
+                  <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]])</span>
+</pre></div>
+</div>
+<div class="section" id="suggested-changes-for-user-1">
+<h2>Suggested changes for user (1)<a class="headerlink" href="#suggested-changes-for-user-1" title="Permalink to this headline">¶</a></h2>
+<p>Try setting <code class="docutils literal"><span class="pre">n0</span></code>, <code class="docutils literal"><span class="pre">n1</span></code>, and <code class="docutils literal"><span class="pre">n2</span></code> all to 10 and compare the results. Also, we can do uniform random sampling by setting:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">random_sample</span> <span class="o">=</span> <span class="bp">True</span>
+</pre></div>
+</div>
+<p>If <code class="docutils literal"><span class="pre">random_sample</span> <span class="pre">=</span> <span class="pre">True</span></code>, consider defining:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">n_samples</span> <span class="o">=</span> <span class="mf">1E3</span>
+</pre></div>
+</div>
+<p>Then also try <code class="docutils literal"><span class="pre">n_samples</span> <span class="pre">=</span> <span class="pre">1E4</span></code>. What happens when <code class="docutils literal"><span class="pre">n_samples</span> <span class="pre">=</span> <span class="pre">1E2</span></code>?</p>
+<p>Define sampling types random or regular:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">random_sample</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="k">if</span> <span class="n">random_sample</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+  <span class="n">n0</span> <span class="o">=</span> <span class="mi">30</span> <span class="c"># number of samples in lam0 direction</span>
+  <span class="n">n1</span> <span class="o">=</span> <span class="mi">30</span> <span class="c"># number of samples in lam1 direction</span>
+  <span class="n">n2</span> <span class="o">=</span> <span class="mi">30</span> <span class="c"># number of samples in lam2 direction</span>
+  <span class="n">n_samples</span> <span class="o">=</span> <span class="n">n0</span><span class="o">*</span><span class="n">n1</span><span class="o">*</span><span class="n">n2</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="n">n_samples</span> <span class="o">=</span> <span class="mf">2E3</span>
+</pre></div>
+</div>
+<p>Define the QoI map:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Q_map</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.506</span><span class="p">,</span> <span class="mf">0.463</span><span class="p">],[</span><span class="mf">0.253</span><span class="p">,</span> <span class="mf">0.918</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.085</span><span class="p">,</span> <span class="mf">0.496</span><span class="p">]])</span>
+</pre></div>
+</div>
+<p>Define the reference QoI:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">Q_ref</span> <span class="o">=</span>  <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.422</span><span class="p">,</span> <span class="mf">0.9385</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Define the reference parameters:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">ref_lam</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
+</pre></div>
+</div>
+<p>Set up the samples:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">random_sample</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+  <span class="n">vec0</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">lam_domain</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">n0</span><span class="p">))</span>
+  <span class="n">vec1</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">lam_domain</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">n1</span><span class="p">))</span>
+  <span class="n">vec2</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">],</span> <span class="n">lam_domain</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span> <span class="n">n2</span><span class="p">))</span>
+  <span class="n">vecv0</span><span class="p">,</span> <span class="n">vecv1</span><span class="p">,</span> <span class="n">vecv2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">vec0</span><span class="p">,</span> <span class="n">vec1</span><span class="p">,</span> <span class="n">vec2</span><span class="p">,</span> <span class="n">indexing</span><span class="o">=</span><span class="s">&#39;ij&#39;</span><span class="p">)</span>
+  <span class="n">samples</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">((</span><span class="n">vecv0</span><span class="o">.</span><span class="n">flat</span><span class="p">[:],</span> <span class="n">vecv1</span><span class="o">.</span><span class="n">flat</span><span class="p">[:],</span> <span class="n">vecv2</span><span class="o">.</span><span class="n">flat</span><span class="p">[:]))</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="n">samples</span> <span class="o">=</span> <span class="n">calculateP</span><span class="o">.</span><span class="n">emulate_iid_lebesgue</span><span class="p">(</span><span class="n">lam_domain</span><span class="o">=</span><span class="n">lam_domain</span><span class="p">,</span>
+                                            <span class="n">num_l_emulate</span> <span class="o">=</span> <span class="n">n_samples</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate the data:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span><span class="n">Q_map</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s">&#39;3to2_samples.txt.gz&#39;</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">savetxt</span><span class="p">(</span><span class="s">&#39;3to2_data.txt.gz&#39;</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="suggested-changes-for-user-2">
+<h2>Suggested changes for user (2)<a class="headerlink" href="#suggested-changes-for-user-2" title="Permalink to this headline">¶</a></h2>
+<p>Try different ways of discretizing the probability measure on
+<span class="math">\(\mathcal{D}\)</span> defined as a uniform probability measure on a rectangle
+(since <span class="math">\(\mathcal{D}\)</span> is 2-dimensional).</p>
+<ul class="simple">
+<li>unif_unif creates a uniform measure on a hyperbox with dimensions relative</li>
+</ul>
+<blockquote>
+<div>to the size of the circumscribed hyperbox of the set <span class="math">\(\mathcal{D}\)</span>
+using the bin_ratio. A total of M samples are drawn within a slightly larger
+scaled hyperbox to discretize this measure defining M total generalized
+contour events in Lambda.  The reason a slightly larger scaled hyperbox is
+used to draw the samples to discretize <span class="math">\(\mathcal{D}\)</span> is because
+otherwise every generalized contour event will have non-zero probability
+which obviously defeats the purpose of &#8220;localizing&#8221; the probability within a
+subset of <span class="math">\(\mathcal{D}\)</span>.</div></blockquote>
+<ul class="simple">
+<li>uniform_hyperrectangle uses the same measure defined in the same way as</li>
+</ul>
+<blockquote>
+<div>unif_unif, but the difference is in the discretization which is on a regular
+grid defined by <code class="docutils literal"><span class="pre">center_pts_per_edge</span></code>.  If <code class="docutils literal"><span class="pre">center_pts_per_edge</span> <span class="pre">=</span> <span class="pre">1</span></code>,
+then the contour event corresponding to the entire support of
+<span class="math">\(\rho_\mathcal{D}\)</span> is approximated as a single event. This is done by
+carefully placing a regular 3x3 grid (since <span class="math">\(\mathcal{D}=2\)</span> in this
+case) of points in <span class="math">\(\mathcal{D}\)</span> with the center point of the grid in
+the center of the support of the measure and the other points placed outside
+of the rectangle defining the support to define a total of 9 contour events
+with 8 of them having exactly zero probability.</div></blockquote>
+<p>Create a simple function approximation of the probablity measure on
+<span class="math">\(\mathcal{D}\)</span>:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">deterministic_discretize_D</span> <span class="o">=</span> <span class="bp">True</span>
+
+<span class="k">if</span> <span class="n">deterministic_discretize_D</span> <span class="o">==</span> <span class="bp">True</span><span class="p">:</span>
+  <span class="p">(</span><span class="n">d_distr_prob</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span> <span class="o">=</span> <span class="n">simpleFunP</span><span class="o">.</span><span class="n">uniform_hyperrectangle</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                              <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">bin_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">center_pts_per_edge</span> <span class="o">=</span> <span class="mi">1</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="p">(</span><span class="n">d_distr_prob</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="p">,</span> <span class="n">d_Tree</span><span class="p">)</span> <span class="o">=</span> <span class="n">simpleFunP</span><span class="o">.</span><span class="n">unif_unif</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                              <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">M</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">bin_ratio</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">num_d_emulate</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="suggested-changes-for-user-3">
+<h2>Suggested changes for user (3)<a class="headerlink" href="#suggested-changes-for-user-3" title="Permalink to this headline">¶</a></h2>
+<p>If using a regular grid of sampling (if <code class="docutils literal"><span class="pre">random_sample</span> <span class="pre">=</span> <span class="pre">False</span></code>), we set:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">lambda_emulate</span> <span class="o">=</span> <span class="n">samples</span>
+</pre></div>
+</div>
+<p>Otherwise, play around with num_l_emulate. A value of 1E2 will probably
+give poor results while results become fairly consistent with values
+that are approximately 10x the number of samples.</p>
+<p>Note that you can always use:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">lambda_emulate</span> <span class="o">=</span> <span class="n">samples</span>
+</pre></div>
+</div>
+<p>and this simply will imply that a standard Monte Carlo assumption is
+being used, which in a measure-theoretic context implies that each
+Voronoi cell is assumed to have the same measure. This type of
+approximation is more reasonable for large n_samples due to the slow
+convergence rate of Monte Carlo (it converges like <cite>1/sqrt(n_samples))</cite>.</p>
+<p>Set up volume emulation:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">random_sample</span> <span class="o">==</span> <span class="bp">False</span><span class="p">:</span>
+  <span class="n">lambda_emulate</span> <span class="o">=</span> <span class="n">samples</span>
+<span class="k">else</span><span class="p">:</span>
+  <span class="n">lambda_emulate</span> <span class="o">=</span> <span class="n">calculateP</span><span class="o">.</span><span class="n">emulate_iid_lebesgue</span><span class="p">(</span><span class="n">lam_domain</span><span class="o">=</span><span class="n">lam_domain</span><span class="p">,</span> <span class="n">num_l_emulate</span> <span class="o">=</span> <span class="mf">1E5</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate probablities:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">P</span><span class="p">,</span>  <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">io_ptr</span><span class="p">,</span> <span class="n">emulate_ptr</span><span class="p">)</span> <span class="o">=</span> <span class="n">calculateP</span><span class="o">.</span><span class="n">prob_emulated</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
+                                                                     <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+                                                                     <span class="n">rho_D_M</span><span class="o">=</span><span class="n">d_distr_prob</span><span class="p">,</span>
+                                                                     <span class="n">d_distr_samples</span><span class="o">=</span><span class="n">d_distr_samples</span><span class="p">,</span>
+                                                                     <span class="n">lambda_emulate</span><span class="o">=</span><span class="n">lambda_emulate</span><span class="p">,</span>
+                                                                     <span class="n">d_Tree</span><span class="o">=</span><span class="n">d_Tree</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="calculate-2d-marginal-probs-suggested-changes-for-user-4">
+<h2>Calculate 2D marginal probs  - Suggested changes for user (4)<a class="headerlink" href="#calculate-2d-marginal-probs-suggested-changes-for-user-4" title="Permalink to this headline">¶</a></h2>
+<p>At this point, the only thing that should change in the plotP.* inputs
+should be either the nbins values or sigma (which influences the kernel
+density estimation with smaller values implying a density estimate that
+looks more like a histogram and larger values smoothing out the values
+more).</p>
+<p>There are ways to determine &#8220;optimal&#8221; smoothing parameters (e.g., see CV, GCV,
+and other similar methods), but we have not incorporated these into the code
+as lower-dimensional marginal plots have limited value in understanding the
+structure of a high dimensional non-parametric probability measure.</p>
+<p>Plot the marginal probabilities:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">P_samples</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">samples</span> <span class="o">=</span> <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">lam_domain</span> <span class="o">=</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Smooth 2d marginals probs (optional):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot 2d marginals probs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;linearMap&quot;</span><span class="p">,</span>
+                         <span class="n">plot_surface</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate 1d marginal probs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">P_samples</span> <span class="o">=</span> <span class="n">P</span><span class="p">,</span> <span class="n">samples</span> <span class="o">=</span> <span class="n">lambda_emulate</span><span class="p">,</span> <span class="n">lam_domain</span> <span class="o">=</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+<p>Smooth 1d marginal probs (optional):</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Plot 2d marginal probs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;linearMap&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
+      Last updated on Jun 20, 2015.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'0.2.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

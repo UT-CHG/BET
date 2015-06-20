@@ -144,8 +144,8 @@ given access to a model, a parameter space, and a data space. The model is a
 map from the paramter space to the data space. We desire to build up a set of
 samples to solve an inverse problem thus giving us information about the
 inverse mapping. Each sample consists of a parameter coordinate, data
-coordinate pairing. We assume the measure of both spaces is Lebesgue.</p>
-<p>We employ an approach based on using multiple sample chains.</p>
+coordinate pairing. We assume the measure of both spaces is Lebesgue.
+We employ an approach based on using multiple sample chains.</p>
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.kernel">
 <em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">kernel</code><span class="sig-paren">(</span><em>tolerance=1e-08</em>, <em>increase=1.0</em>, <em>decrease=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel" title="Permalink to this definition">¶</a></dt>
@@ -165,25 +165,12 @@ all.</p>
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.kernel.delta_step">
 <code class="descname">delta_step</code><span class="sig-paren">(</span><em>data_new</em>, <em>kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.delta_step" title="Permalink to this definition">¶</a></dt>
-<dd><p>This method determines the proposed change in step size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">typle</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
-</td>
-</tr>
-</tbody>
-</table>
+<dd><p>This method determines the proposed change in step size. 
+:param data_new: QoI for a given batch of samples 
+:type data_new: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)
+:param kern_old: kernel evaluated at previous step
+:rtype: typle
+:returns: (kern_new, proposal)</p>
 </dd></dl>
 
 </dd></dl>
@@ -191,24 +178,22 @@ all.</p>
 <dl class="function">
 <dt id="bet.sampling.adaptiveSampling.kernels">
 <code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">kernels</code><span class="sig-paren">(</span><em>Q_ref</em>, <em>rho_D</em>, <em>maximum</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernels" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a list of kernstic objects.</p>
+<dd><p>Generates a list of kernstic objects.
+:param Q_ref: reference parameter value
+:type Q_ref: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>
+:param rho_D: probability density on D
+:type rho_D: callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and returns</p>
+<blockquote>
+<div>a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; reference parameter value</li>
-<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and returns
-a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum value of rho_D</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; maximum value of rho_D</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)">list</a></p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)">list</a></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[maxima_mean_kernel, rhoD_kernel, maxima_kernel]</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">[maxima_mean_kernel, rhoD_kernel, maxima_kernel]</td>
 </tr>
 </tbody>
 </table>
@@ -218,23 +203,18 @@ a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/
 <dt id="bet.sampling.adaptiveSampling.loadmat">
 <code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">loadmat</code><span class="sig-paren">(</span><em>save_file</em>, <em>lb_model=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.loadmat" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads data from <code class="docutils literal"><span class="pre">save_file</span></code> into a
-<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> object.</p>
+<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> object.
+:param string save_file: file name
+:param lb_model: runs the model at a given set of parameter samples, (N,</p>
+<blockquote>
+<div>ndim), and returns data (N, mdim)</div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>save_file</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file name</li>
-<li><strong>lb_model</strong> &#8211; runs the model at a given set of parameter samples, (N,
-ndim), and returns data (N, mdim)</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(sampler, samples, data)</p>
-</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(sampler, samples, data)</td>
 </tr>
 </tbody>
 </table>
@@ -250,11 +230,12 @@ terms of getting the measure correct). This class provides a method for
 determining the proposed change in step size as follows. We check if the
 QoI at each of the samples_new(k) are closer or farther away from a region
 of high probability in D than the QoI at samples_old(k). For example, if
-they are closer, then we can reduce the step_size(k) by 1/2.</p>
+they are closer, then we can reduce the step_size(k) by 1/2.
+maxima</p>
+<blockquote>
+<div>locations of the maxima of rho_D on D
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_maxima, mdim)</div></blockquote>
 <dl class="docutils">
-<dt>maxima</dt>
-<dd>locations of the maxima of rho_D on D
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_maxima, mdim)</dd>
 <dt>rho_max</dt>
 <dd>rho_D(maxima), list of maximum values of rho_D</dd>
 <dt>tolerance </dt>
@@ -300,11 +281,12 @@ terms of getting the measure correct). This class provides a method for
 determining the proposed change in step size as follows. We check if the
 QoI at each of the samples_new(k) are closer or farther away from a region
 of high probability in D than the QoI at samples_old(k). For example, if
-they are closer, then we can reduce the step_size(k) by 1/2.</p>
+they are closer, then we can reduce the step_size(k) by 1/2.
+maxima</p>
+<blockquote>
+<div>locations of the maxima of rho_D on D
+np.array of shape (num_maxima, mdim)</div></blockquote>
 <dl class="docutils">
-<dt>maxima</dt>
-<dd>locations of the maxima of rho_D on D
-np.array of shape (num_maxima, mdim)</dd>
 <dt>rho_max</dt>
 <dd>rho_D(maxima), list of maximum values of rho_D</dd>
 <dt>tolerance </dt>
@@ -357,11 +339,12 @@ getting the measure correct). This class provides a method for determining
 the proposed change in step size as follows. We check if the QoI at each of
 the samples_new(k) are closer or farther away from a region of high
 probability in D than the QoI at samples_old(k).  For example, if they are
-closer, then we can reduce the step_size(k) by 1/2.</p>
-<p>Note: This only works well with smooth rho_D.</p>
+closer, then we can reduce the step_size(k) by 1/2.
+Note: This only works well with smooth rho_D.
+maximum</p>
+<blockquote>
+<div>maximum value of rho_D on D</div></blockquote>
 <dl class="docutils">
-<dt>maximum</dt>
-<dd>maximum value of rho_D on D</dd>
 <dt>rho_D</dt>
 <dd>probability density on D</dd>
 <dt>tolerance </dt>
@@ -628,11 +611,12 @@ sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
 samples_new based. This class generates steps for a random walk using a
 very basic algorithm. Future classes will inherit from this one with
 different implementations of the
-:meth:~`polysim.run_framework.apdative_sampling.step` method.</p>
-<p>This basic transition set is designed without a preferential direction.</p>
+:meth:~`polysim.run_framework.apdative_sampling.step` method.
+This basic transition set is designed without a preferential direction.
+init_ratio</p>
+<blockquote>
+<div>Initial step size ratio compared to the parameter domain.</div></blockquote>
 <dl class="docutils">
-<dt>init_ratio</dt>
-<dd>Initial step size ratio compared to the parameter domain.</dd>
 <dt>min_ratio</dt>
 <dd>Minimum step size compared to the initial step size.</dd>
 <dt>max_ratio</dt>
@@ -643,16 +627,20 @@ different implementations of the
 <code class="descname">step</code><span class="sig-paren">(</span><em>step_ratio</em>, <em>param_width</em>, <em>param_left</em>, <em>param_right</em>, <em>samples_old</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.step" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate <code class="docutils literal"><span class="pre">num_samples</span></code> new steps using <code class="docutils literal"><span class="pre">step_ratio</span></code> and
 <code class="docutils literal"><span class="pre">param_width</span></code> to calculate the <code class="docutils literal"><span class="pre">step</span> <span class="pre">size</span></code>. Each step will have a
-random direction.</p>
+random direction.
+:param step_ratio: define maximum step_size = <code class="docutils literal"><span class="pre">step_ratio*param_width</span></code>
+:type step_ratio: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)
+:param param_width: width of the parameter domain
+:type param_width: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)
+:param param_left: minimum boundary of the parameter domain
+:type param_left: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, N) where N is the</p>
+<blockquote>
+<div>length of <code class="docutils literal"><span class="pre">step_ratio</span></code></div></blockquote>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step_ratio</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; define maximum step_size = <code class="docutils literal"><span class="pre">step_ratio*param_width</span></code></li>
-<li><strong>param_width</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; width of the parameter domain</li>
-<li><strong>param_left</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, N) where N is the
-length of <code class="docutils literal"><span class="pre">step_ratio</span></code>) &#8211; minimum boundary of the parameter domain</li>
 <li><strong>param_right</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, N) where N is the
 length of <code class="docutils literal"><span class="pre">step_ratio</span></code>) &#8211; maximum boundary of the parameter domain</li>
 <li><strong>samples_old</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,
@@ -880,8 +868,8 @@ at a specified set of parameter samples.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, Lindley Graham, Steven Mattis, Troy Butler.
-      Last updated on Jun 07, 2015.
+        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
+      Last updated on Jun 20, 2015.
     </p>
   </div>
 
