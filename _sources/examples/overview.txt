@@ -2,9 +2,7 @@
 Linear Map Example
 =======================================
 
-See :download:`linear map example
-<../../examples/linearMap/linearMapUniformSampling.py>` for an example using a linear
-map.
+See :ref:`linearMap` for an example using a linear map.
 
 =======================================
 Non-Linear Map Example
