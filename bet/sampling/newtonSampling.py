@@ -22,7 +22,6 @@ Once a chain has entered the implicitly defined RoI (region of interest) we
 randomly generate new clusters of samples while not allowing the centers of the
 clusters to leave the RoI.
 """
-
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
 import scipy.spatial as spatial
@@ -45,7 +44,7 @@ class sampler(asam.sampler):
         :class:`~bet.loadBalance.load_balance` runs the model at a given set of
         parameter samples and returns data """
 
-    def __init__(self, num_samples, chain_length, lb_model, lambda_dim=None):
+    def __init__(self, num_samples, chain_length, lb_model):
         """
         Initialization
 
@@ -55,14 +54,6 @@ class sampler(asam.sampler):
             ndim), and returns data (N, mdim)
         """
         super(sampler, self).__init__(num_samples, chain_length, lb_model)
-        if lambda_dim:
-            self.num_chains_pproc = int(math.ceil(self.num_samples/float(\
-                self.chain_length*comm.size*(lambda_dim+2))))
-            self.num_chains = comm.size * self.num_chains_pproc
-            self.num_samples = self.chain_length * self.num_chains \
-                    * (lambda_dim+2)
-            self.sample_batch_no = np.repeat(range(self.num_chains),
-                    self.chain_length*(lambda_dim+2), 0)
 
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
@@ -120,19 +111,21 @@ class sampler(asam.sampler):
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
+        radius = radius*(param_max-param_min)
         lambda_dim = len(param_max)
 
         cluster_type = 'rbf'
         samples_p_cluster = lambda_dim+1
-
+        
         # if given samples and data split them up otherwise create them
-        if type(initial_samples) == 'NoneType' or \
-                type(initial_data) == 'NoneType':
+        if type(initial_samples) == type(None) or \
+                type(initial_data) == type(None):
             self.num_chains_pproc = int(math.ceil(self.num_samples/float(\
                 self.chain_length*comm.size*(lambda_dim+2))))
             self.num_chains = comm.size * self.num_chains_pproc
             self.num_samples = self.chain_length * self.num_chains * \
                     (lambda_dim+2)
+            num_samples = self.num_samples
             self.sample_batch_no = np.repeat(range(self.num_chains),
                     self.chain_length*(lambda_dim+2), 0)
 
@@ -150,6 +143,7 @@ class sampler(asam.sampler):
                     radius) 
             (MYsamples_old, MYdata_old) = super(sampler,
                     self).user_samples(MYsamples_old, savefile)
+            self.num_samples = num_samples
 
         else:
             # split up the old samples and data this assumes that the centers
@@ -209,6 +203,7 @@ class sampler(asam.sampler):
 
         
         for batch in xrange(1, self.chain_length):
+            print 'batch no.', batch
             # Determine the rank of the old samples
             rank_old = smoothIndicatorFun(MYdata_old)
             # For the centers that are not in the RoI do a newton step
@@ -216,7 +211,7 @@ class sampler(asam.sampler):
             not_in_RoI = np.logical_not(centers_in_RoI)
             # Determine indices to create np.concatenate([centers, clusters])
             # for centers not in the RoI
-            samples_woC_in_RoI = np.arange((self.num_chains_pproc,))*not_in_RoI
+            samples_woC_in_RoI = np.arange(self.num_chains_pproc)*not_in_RoI
             cluster_list = [np.copy(samples_woC_in_RoI)]
             for c_num in samples_woC_in_RoI:
                 offset = self.num_chains_pproc + c_num*samples_p_cluster
@@ -227,9 +222,13 @@ class sampler(asam.sampler):
             # calculate gradient based on gradient type for the first one
             # G = grad.calculate_gradients(samples, data, num_centers, rvec,
             # normalize=False)
+
             if cluster_type == 'rbf':
                 G = grad.calculate_gradients_rbf(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
+                        #RBF = 'Multiquadric',
+                        RBF = 'InverseMultiquadric',
+                        #RBF = 'C4Matern',
                         normalize=False)
             elif cluster_type == 'ffd':
                 G = grad.calculate_gradients_ffd(MYsamples_old\
@@ -245,6 +244,7 @@ class sampler(asam.sampler):
                 cluster_type = 'rbf'
                 samples_p_cluster = lambda_dim+1
             normG = np.linalg.norm(G, axis=2)
+            import pdb; pdb.set_trace()
             step_size = (0-rank_old[samples_woC_in_RoI])
             step_size = step_size/normG**2
             MYcenters_new[not_in_RoI, :] = MYcenters_old[not_in_RoI] + \
