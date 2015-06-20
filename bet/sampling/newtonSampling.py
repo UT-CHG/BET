@@ -58,7 +58,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None): 
+            initial_data=None, cluster_type='rbf'): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -114,20 +114,25 @@ class sampler(asam.sampler):
         radius = radius*(param_max-param_min)
         lambda_dim = len(param_max)
 
-        cluster_type = 'rbf'
-        samples_p_cluster = lambda_dim+1
+        if cluster_type = 'rbf':
+            samples_p_cluster = lambda_dim+1
+        elif cluster_type = 'ffd':
+            samples_p_cluster = lambda_dim
+        elif cluster_type = 'cfd'
+            samples_p_cluster = 2*lambda_dim
         
         # if given samples and data split them up otherwise create them
         if type(initial_samples) == type(None) or \
                 type(initial_data) == type(None):
+            first_cluster_type = cluster_type
             self.num_chains_pproc = int(math.ceil(self.num_samples/float(\
-                self.chain_length*comm.size*(lambda_dim+2))))
+                self.chain_length*comm.size*(samples_p_cluster+1))))
             self.num_chains = comm.size * self.num_chains_pproc
             self.num_samples = self.chain_length * self.num_chains * \
-                    (lambda_dim+2)
+                    (samples_p_cluster+1)
             num_samples = self.num_samples
             self.sample_batch_no = np.repeat(range(self.num_chains),
-                    self.chain_length*(lambda_dim+2), 0)
+                    self.chain_length*(samples_p_cluster+1), 0)
 
             # Initiative first batch of N samples (maybe taken from latin
             # hypercube/space-filling curve to fully explore parameter space -
@@ -139,8 +144,15 @@ class sampler(asam.sampler):
                 MYcenters_old = param_width*lhs(param_min.shape[-1],
                         self.num_chains_pproc, criterion)
             MYcenters_old = MYcenters_old + param_left
-            MYsamples_old = grad.sample_l1_ball(MYcenters_old, lambda_dim+1,
+
+            if cluster_type = 'rbf':
+                MYsamples_old = grad.sample_l1_ball(MYcenters_old, lambda_dim+1,
                     radius) 
+            elif cluster_type = 'ffd':
+                MYsamples_old = grad.pick_ffd_points(MYcenters_old, radius)
+            elif cluster_type = 'cfd'
+                MYsamples_old = grad.pick_cfd_points(MYcenters_old, radius)
+
             (MYsamples_old, MYdata_old) = super(sampler,
                     self).user_samples(MYsamples_old, savefile)
             self.num_samples = num_samples
@@ -153,12 +165,12 @@ class sampler(asam.sampler):
 
             self.num_chains_pproc = int(math.ceil((self.num_samples - \
                     initial_samples.shape[0])/float((self.chain_length-1)\
-                    *comm.size*(lambda_dim+2))))
+                    *comm.size*(samples_p_cluster+1))))
             self.num_chains = comm.size * self.num_chains_pproc
             self.num_samples = initial_samples.shape[0] + (self.chain_length-1)\
-                    * self.num_chains * (lambda_dim+2)
+                    * self.num_chains * (samples_p_cluster+1)
             repeats = [initial_samples.shape[0]]
-            repeats.extend([(self.chain_length-1)*(lambda_dim+2)]*\
+            repeats.extend([(self.chain_length-1)*(samples_p_cluster)]*\
                     (self.chain_length-1))
             self.sample_batch_no = np.repeat(range(self.num_chains),
                     repeats, 0)
@@ -171,12 +183,14 @@ class sampler(asam.sampler):
             num_CFD_total = self.num_chains*(2*lambda_dim + 1)
 
             if initial_samples.shape[0] == num_FFD_total:
-                cluster_type = 'ffd'
+                first_cluster_type = 'ffd'
                 samples_p_cluster = lambda_dim
             elif initial_samples.shape[0] == num_CFD_total:
-                cluster_type = 'cfd'
+                first_cluster_type = 'cfd'
                 samples_p_cluster = 2*lambda_dim
-
+            elif first_sluster_type = 'rbf':
+                samples_p_cluster = lambda_dim+1
+            
             MYcenters_old = centers[offset:offset+self.num_chains_pproc]
             MYdata_centers = data_centers[offset:offset+self.num_chains_pproc]
             offset = self.num_chains+self.num_chains_pproc*samples_p_cluster\
@@ -223,26 +237,34 @@ class sampler(asam.sampler):
             # G = grad.calculate_gradients(samples, data, num_centers, rvec,
             # normalize=False)
 
-            if cluster_type == 'rbf':
+            if cluster_type == 'rbf' or (batch == 1 and first_cluster_type ==
+                    'rbf'):
                 G = grad.calculate_gradients_rbf(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
                         #RBF = 'Multiquadric',
-                        RBF = 'InverseMultiquadric',
+                        #RBF = 'InverseMultiquadric',
                         #RBF = 'C4Matern',
+                        # all of these are intermitently singular this no good
                         normalize=False)
-            elif cluster_type == 'ffd':
+            elif cluster_type == 'ffd' or (batch == 1 and first_cluster_type ==
+                    'ffd')::
                 G = grad.calculate_gradients_ffd(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
                         normalize=False)
-            elif cluster_type == 'cfd':
+            elif cluster_type == 'cfd' or (batch == 1 and first_cluster_type ==
+                    'cfd')::
                 G = grad.calculate_gradients_cfd(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
                         normalize=False)
 
             # reset the samples_p_cluster to be the rbf for remaining batches
-            if cluster_type != 'rbf' and batch == 1:
-                cluster_type = 'rbf'
-                samples_p_cluster = lambda_dim+1
+            if cluster_type != first_cluster_type and batch == 1:
+                if cluster_type = 'rbf':
+                    samples_p_cluster = lambda_dim+1
+                elif cluster_type = 'ffd':
+                    samples_p_cluster = lambda_dim
+                elif cluster_type = 'cfd'
+                    samples_p_cluster = 2*lambda_dim
             normG = np.linalg.norm(G, axis=2)
             import pdb; pdb.set_trace()
             step_size = (0-rank_old[samples_woC_in_RoI])
@@ -259,8 +281,18 @@ class sampler(asam.sampler):
                     MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
-            samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
+            
+            if cluster_type = 'rbf':
+                samples_p_cluster = lambda_dim+1
+                samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
                     radius) 
+            elif cluster_type = 'ffd':
+                samples_p_cluster = lambda_dim
+                samples_new = grad.pick_ffd_points(MYcenters_new, radius)
+            elif cluster_type = 'cfd'
+                samples_p_cluster = 2*lambda_dim
+                samples_new = grad.pick_cfd_points(MYcenters_new, radius)
+
 
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
