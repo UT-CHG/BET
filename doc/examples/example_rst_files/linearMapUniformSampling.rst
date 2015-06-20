@@ -1,11 +1,12 @@
 .. _linearMap:
+
 ===========================
 Example: Linear Uniform Map
 ===========================
 
 We will wailk through the following :download:`example
 <../../../examples/linearMap/linearMapUniformSampling.py>`. This example
-generates uniform samples on a 3D grid and evaluates a linear map to a 2d
+generates uniform samples on a 3D grid and evaluates a linear map to a 2D
 space. Probabilities in the paramter space are calculated using emulated
 points.  1D and 2D marginals are calculated, smoothed, and plotted.
 
@@ -17,8 +18,6 @@ Import the necessary modules::
     import bet.calculateP.simpleFunP as simpleFunP
     import bet.calculateP.calculateP as calculateP
     import bet.postProcess.plotP as plotP
-
-
 
 Define the parameter domain::
 
@@ -103,7 +102,7 @@ Try different ways of discretizing the probability measure on
   grid defined by ``center_pts_per_edge``.  If ``center_pts_per_edge = 1``,
   then the contour event corresponding to the entire support of
   :math:`\rho_\mathcal{D}` is approximated as a single event. This is done by
-  carefully placing a regular 3x3 grid (since :math:`\mathcal{D}`=2 in this
+  carefully placing a regular 3x3 grid (since :math:`\mathcal{D}=2` in this
   case) of points in :math:`\mathcal{D}` with the center point of the grid in
   the center of the support of the measure and the other points placed outside
   of the rectangle defining the support to define a total of 9 contour events
