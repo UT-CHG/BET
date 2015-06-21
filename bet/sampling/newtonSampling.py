@@ -114,11 +114,11 @@ class sampler(asam.sampler):
         radius = radius*(param_max-param_min)
         lambda_dim = len(param_max)
 
-        if cluster_type = 'rbf':
+        if cluster_type == 'rbf':
             samples_p_cluster = lambda_dim+1
-        elif cluster_type = 'ffd':
+        elif cluster_type == 'ffd':
             samples_p_cluster = lambda_dim
-        elif cluster_type = 'cfd'
+        elif cluster_type == 'cfd':
             samples_p_cluster = 2*lambda_dim
         
         # if given samples and data split them up otherwise create them
@@ -139,18 +139,20 @@ class sampler(asam.sampler):
             # not necessarily random). Call these Samples_old.
             if initial_sample_type == "r" or \
                     initial_sample_type == "random":
-                MYcenters_old = param_width*np.random.random(param_left.shape)
+                        MYcenters_old = param_width[:self.num_chains_pproc]*\
+                            np.random.random((self.num_chains_pproc,
+                            lambda_dim))
             elif initial_sample_type == "lhs":
-                MYcenters_old = param_width*lhs(param_min.shape[-1],
+                MYcenters_old = param_width[:self.num_chains_pproc]*lhs(param_min.shape[-1],
                         self.num_chains_pproc, criterion)
-            MYcenters_old = MYcenters_old + param_left
+            MYcenters_old = MYcenters_old + param_left[:self.num_chains_pproc]
 
-            if cluster_type = 'rbf':
+            if cluster_type == 'rbf':
                 MYsamples_old = grad.sample_l1_ball(MYcenters_old, lambda_dim+1,
                     radius) 
-            elif cluster_type = 'ffd':
+            elif cluster_type == 'ffd':
                 MYsamples_old = grad.pick_ffd_points(MYcenters_old, radius)
-            elif cluster_type = 'cfd'
+            elif cluster_type == 'cfd':
                 MYsamples_old = grad.pick_cfd_points(MYcenters_old, radius)
 
             (MYsamples_old, MYdata_old) = super(sampler,
@@ -181,6 +183,7 @@ class sampler(asam.sampler):
             # determine the type of clusters (FFD, CFD, RBF)
             num_FFD_total = self.num_chains*(lambda_dim+1)
             num_CFD_total = self.num_chains*(2*lambda_dim + 1)
+            num_RBF_total = self.num_chains*(lambda_dim + 2)
 
             if initial_samples.shape[0] == num_FFD_total:
                 first_cluster_type = 'ffd'
@@ -188,8 +191,12 @@ class sampler(asam.sampler):
             elif initial_samples.shape[0] == num_CFD_total:
                 first_cluster_type = 'cfd'
                 samples_p_cluster = 2*lambda_dim
-            elif first_sluster_type = 'rbf':
+            elif initial_samples.shape[0] == num_RBF_total:
+                first_cluster_type = 'rbf'
                 samples_p_cluster = lambda_dim+1
+            else:
+                print "NOT A VALID CLUSTER TYPE"
+                quit()
             
             MYcenters_old = centers[offset:offset+self.num_chains_pproc]
             MYdata_centers = data_centers[offset:offset+self.num_chains_pproc]
@@ -217,16 +224,18 @@ class sampler(asam.sampler):
 
         
         for batch in xrange(1, self.chain_length):
-            print 'batch no.', batch
+            # print 'batch no.', batch
             # Determine the rank of the old samples
             rank_old = smoothIndicatorFun(MYdata_old)
             # For the centers that are not in the RoI do a newton step
-            centers_in_RoI = kern_old
+            centers_in_RoI = kern_old != 0
             not_in_RoI = np.logical_not(centers_in_RoI)
             # Determine indices to create np.concatenate([centers, clusters])
             # for centers not in the RoI
-            samples_woC_in_RoI = np.arange(self.num_chains_pproc)*not_in_RoI
-            cluster_list = [np.copy(samples_woC_in_RoI)]
+            samples_woC_in_RoI = (np.arange(self.num_chains_pproc)+1)*not_in_RoI
+            samples_woC_in_RoI = samples_woC_in_RoI.nonzero()[0]
+            cluster_list = []
+            cluster_list.append(np.copy(samples_woC_in_RoI))
             for c_num in samples_woC_in_RoI:
                 offset = self.num_chains_pproc + c_num*samples_p_cluster
                 cluster_list.append(np.arange(offset,
@@ -247,49 +256,48 @@ class sampler(asam.sampler):
                         # all of these are intermitently singular this no good
                         normalize=False)
             elif cluster_type == 'ffd' or (batch == 1 and first_cluster_type ==
-                    'ffd')::
+                    'ffd'):
                 G = grad.calculate_gradients_ffd(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
                         normalize=False)
             elif cluster_type == 'cfd' or (batch == 1 and first_cluster_type ==
-                    'cfd')::
+                    'cfd'):
                 G = grad.calculate_gradients_cfd(MYsamples_old\
                         [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
                         normalize=False)
 
             # reset the samples_p_cluster to be the rbf for remaining batches
             if cluster_type != first_cluster_type and batch == 1:
-                if cluster_type = 'rbf':
+                if cluster_type == 'rbf':
                     samples_p_cluster = lambda_dim+1
-                elif cluster_type = 'ffd':
+                elif cluster_type == 'ffd':
                     samples_p_cluster = lambda_dim
-                elif cluster_type = 'cfd'
+                elif cluster_type == 'cfd':
                     samples_p_cluster = 2*lambda_dim
             normG = np.linalg.norm(G, axis=2)
-            import pdb; pdb.set_trace()
-            step_size = (0-rank_old[samples_woC_in_RoI])
-            step_size = step_size/normG**2
+            step_size = (0-rank_old[not_in_RoI])
+            step_size = step_size/np.squeeze(normG**2)
+            step_size = np.tile(step_size, (lambda_dim, 1)).transpose()
             MYcenters_new[not_in_RoI, :] = MYcenters_old[not_in_RoI] + \
                     step_size*G[:, 0, :]
 
             # For the centers that are in the RoI sample uniformly
-            step_ratio = determine_step_ratio(param_dist[centers_in_RoI], 
+            step_ratio = determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI]) 
-            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio\
-                    [centers_in_RoI], param_width[centers_in_RoI],
+            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
+                    param_width[centers_in_RoI],
                     param_left[centers_in_RoI], param_right[centers_in_RoI],
                     MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
-            
-            if cluster_type = 'rbf':
+            if cluster_type == 'rbf':
                 samples_p_cluster = lambda_dim+1
                 samples_new = grad.sample_l1_ball(MYcenters_new, lambda_dim+1,
                     radius) 
-            elif cluster_type = 'ffd':
+            elif cluster_type == 'ffd':
                 samples_p_cluster = lambda_dim
                 samples_new = grad.pick_ffd_points(MYcenters_new, radius)
-            elif cluster_type = 'cfd'
+            elif cluster_type == 'cfd':
                 samples_p_cluster = 2*lambda_dim
                 samples_new = grad.pick_cfd_points(MYcenters_new, radius)
 
@@ -350,6 +358,7 @@ class sampler(asam.sampler):
         # chain_length)
         all_step_ratios = util.get_global_values(MYall_step_ratios,
                 shape=(self.num_samples,))
+        import pdb; pdb.set_trace()
         all_step_ratios = np.reshape(all_step_ratios, (self.num_chains,
             self.chain_length))
 
