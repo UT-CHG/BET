@@ -110,7 +110,7 @@ def smoothed_indicator_boundary_inner_outer(inner_boundary, middle_boundary,
         np.ones(outer_boundary.shape[0])))
     def indicator_function(inputs):
         "Function wrapper for griddata"
-        return griddata(points, values, inputs)
+        return griddata(points, values, inputs, fill_value=2.0)
     return indicator_function
 
 def smoothed_indicator_boundary_cw_outer(center, width, mid_width,
@@ -199,7 +199,7 @@ def smoothed_indicator_W_inner_outer(inner_boundary, center,
         np.ones(outer_boundary.shape[0])))
     def indicator_function(inputs):
         "Function wrapper for griddata"
-        return griddata(points, values, inputs)
+        return griddata(points, values, inputs, fill_value=2.0)
     return indicator_function
 
 def smoothed_indicator_W_cw_outer(center, width,
