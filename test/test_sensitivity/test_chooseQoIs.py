@@ -22,43 +22,43 @@ class ChooseQoIsMethods:
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs`.
         """
         self.qoiIndices = range(0, self.num_qois)
-        [self.min_condnum, self.optqoiIndices] = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_return)
+        self.condnum_indices_mat = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_return)
 
         # Test the method returns the correct number of qois
-        self.assertEqual(len(self.optqoiIndices), self.num_qois_return)
+        self.assertEqual(self.condnum_indices_mat.shape[1], self.num_qois_return + 1)
 
         # Check that the 'global condidtion number' is greater than or equal to 1
-        self.assertGreater(self.min_condnum, 1.0)
+        nptest.assert_array_less(1.0, self.condnum_indices_mat[:, 0])
 
         # Test the method returns the known best set of QoIs  (chosen to be last Lambda_dim indices)
-        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.optqoiIndices)
+        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.condnum_indices_mat[0, 1:])
 
         # Test that none of the chosen QoIs are the same
-        self.assertEqual(len(np.unique(self.optqoiIndices)), len(self.optqoiIndices))
+        self.assertEqual(len(np.unique(self.condnum_indices_mat[0, 1:])), len(self.condnum_indices_mat[0, 1:]))
 
         # Test the method for a set of QoIs rather than all possible.  Choose
         # this set so that the optimal choice is not removed.
         self.qoiIndices = np.concatenate([range(1, 3, 2), range(4, self.num_qois)])
-        [self.min_condnum, self.optqoiIndices] = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_return)
+        self.condnum_indices_mat = cQoIs.chooseOptQoIs(self.G, self.qoiIndices, self.num_qois_return)
 
         # Test the method returns the correct number of qois
-        self.assertEqual(len(self.optqoiIndices), self.num_qois_return)
+        self.assertEqual(self.condnum_indices_mat.shape[1], self.num_qois_return + 1)
 
         # Check that the 'global condidtion number' is greater than or equal to 1
-        self.assertGreater(self.min_condnum, 1.0)
+        nptest.assert_array_less(1.0, self.condnum_indices_mat[:, 0])
 
         # Test the method returns the known best set of QoIs  (chosen to be last Lambda_dim indices)
-        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.optqoiIndices)
+        nptest.assert_array_less(self.num_qois-self.Lambda_dim-1, self.condnum_indices_mat[0, 1:])
 
         # Test that none of the chosen QoIs are the same
-        self.assertEqual(len(np.unique(self.optqoiIndices)), len(self.optqoiIndices))
+        self.assertEqual(len(np.unique(self.condnum_indices_mat[0, 1:])), len(self.condnum_indices_mat[0, 1:]))
 
     def test_chooseOptQoIs_verbose(self):
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose`.
         """
         self.qoiIndices = range(0, self.num_qois)
-        [self.min_condnum, self.optqoiIndices, self.optsingvals] = cQoIs.chooseOptQoIs_verbose(self.G, self.qoiIndices, self.num_qois_return)
+        [self.condnum_indices_mat, self.optsingvals] = cQoIs.chooseOptQoIs_verbose(self.G, self.qoiIndices, self.num_qois_return)
 
         # Test that optsingvals is the right shape
         self.assertEqual(self.optsingvals.shape, ((self.num_centers, self.num_qois_return)))

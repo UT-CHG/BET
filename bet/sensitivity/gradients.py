@@ -354,9 +354,6 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
         the number of QoI (i.e. the dimension of the data space
         :math:`\mathcal{D}`
-    :param centers: Points in :math:`\Lambda` at which to approximate gradient
-        information.
-    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
@@ -415,9 +412,6 @@ def calculate_gradients_ffd(samples, data, normalize=True):
     :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
         the number of QoI (i.e. the dimension of the data space
         :math:`\mathcal{D}`
-    :param centers: Points in :math:`\Lambda` at which to approximate gradient
-        information.
-    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
     :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
