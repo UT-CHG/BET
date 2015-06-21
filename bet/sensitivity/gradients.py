@@ -429,7 +429,7 @@ def calculate_gradients_ffd(samples, data, normalize=True):
 
     # Find rvec from the first cluster of samples
     rvec = samples[0,:] - samples[num_centers:num_centers + Lambda_dim, :]
-    rvec = util.fix_dimensions_vector_2darray(rvec[rvec != 0])
+    rvec = util.fix_dimensions_vector_2darray(rvec.diagonal())#[rvec != 0])
 
     # Clean the data
     data = util.fix_dimensions_vector_2darray(util.clean_data(data))
