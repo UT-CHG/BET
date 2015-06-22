@@ -30,6 +30,7 @@ import os, math
 import bet.sensitivity.gradients as grad
 from bet.Comm import comm, MPI
 from pyDOE import lhs
+import bet.calculateP.indicatorFunctions as indF
 
 class sampler(asam.sampler):
     """
@@ -58,7 +59,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None, cluster_type='rbf'): 
+            initial_data=None, cluster_type='rbf', TOL=1e-8): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -103,6 +104,8 @@ class sampler(asam.sampler):
         if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
                     "proc{}{}".format(comm.rank, os.path.basename(savefile)))
+
+        param_domain_test = indF.hyperrectangle(param_min, param_max)
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -209,7 +212,6 @@ class sampler(asam.sampler):
             MYsamples_old = np.concatenate((MYcenters_old, MYclusters))
             MYdata_old = np.concatenate((MYdata_centers, MYdata_clusters))
 
-
         comm.Barrier()
 
         samples = MYsamples_old
@@ -230,74 +232,91 @@ class sampler(asam.sampler):
             # For the centers that are not in the RoI do a newton step
             centers_in_RoI = kern_old != 0
             not_in_RoI = np.logical_not(centers_in_RoI)
-            # Determine indices to create np.concatenate([centers, clusters])
-            # for centers not in the RoI
-            samples_woC_in_RoI = (np.arange(self.num_chains_pproc)+1)*not_in_RoI
-            samples_woC_in_RoI = samples_woC_in_RoI.nonzero()[0]
-            cluster_list = []
-            cluster_list.append(np.copy(samples_woC_in_RoI))
-            for c_num in samples_woC_in_RoI:
-                offset = self.num_chains_pproc + c_num*samples_p_cluster
-                cluster_list.append(np.arange(offset,
-                    offset+samples_p_cluster))
-            samples_woC_in_RoI = np.concatenate(cluster_list)
-            # TODO: add in ability to reuse points
-            # calculate gradient based on gradient type for the first one
-            # G = grad.calculate_gradients(samples, data, num_centers, rvec,
-            # normalize=False)
 
-            if cluster_type == 'rbf' or (batch == 1 and first_cluster_type ==
-                    'rbf'):
-                G = grad.calculate_gradients_rbf(MYsamples_old\
-                        [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
-                        #RBF = 'Multiquadric',
-                        #RBF = 'InverseMultiquadric',
-                        #RBF = 'C4Matern',
-                        # all of these are intermitently singular this no good
-                        normalize=False)
-            elif cluster_type == 'ffd' or (batch == 1 and first_cluster_type ==
-                    'ffd'):
-                G = grad.calculate_gradients_ffd(MYsamples_old\
-                        [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
-                        normalize=False)
-            elif cluster_type == 'cfd' or (batch == 1 and first_cluster_type ==
-                    'cfd'):
-                G = grad.calculate_gradients_cfd(MYsamples_old\
-                        [samples_woC_in_RoI, :], rank_old[samples_woC_in_RoI],
-                        normalize=False)
+            if not_in_RoI.any():
+                # Determine indices to create np.concatenate([centers, clusters])
+                # for centers not in the RoI
+                samples_woC_in_RoI = (np.arange(self.num_chains_pproc)+1)*\
+                        not_in_RoI
+                samples_woC_in_RoI = samples_woC_in_RoI.nonzero()[0]
+                cluster_list = []
+                cluster_list.append(np.copy(samples_woC_in_RoI))
+                for c_num in samples_woC_in_RoI:
+                    offset = self.num_chains_pproc + c_num*samples_p_cluster
+                    cluster_list.append(np.arange(offset,
+                        offset+samples_p_cluster))
+                samples_woC_in_RoI = np.concatenate(cluster_list)
+                # TODO: add in ability to reuse points
+                # calculate gradient based on gradient type for the first one
+                # G = grad.calculate_gradients(samples, data, num_centers,
+                # rvec, normalize=False)
 
-            # reset the samples_p_cluster to be the rbf for remaining batches
-            if cluster_type != first_cluster_type and batch == 1:
-                if cluster_type == 'rbf':
-                    samples_p_cluster = lambda_dim+1
-                elif cluster_type == 'ffd':
-                    samples_p_cluster = lambda_dim
-                elif cluster_type == 'cfd':
-                    samples_p_cluster = 2*lambda_dim
-            normG = np.linalg.norm(G, axis=2)
-            # TODO: check to see if the step will take the chain outside of the
-            # parameter domain or if normG is zero etc.
-            # determine chains with gradient < TOL 
-            restart = np.squeeze(np.logical_and(normG < TOL, np.isnan(normG)))
-            not_in_RoI_NR = np.copy(not_in_RoI)
-            not_in_RoI_RS = np.copy(not_in_RoI)
-            not_in_RoI_NR[not_in_RoI] = np.logical_not(restart)
-            not_in_RoI_RS[not_in_RoI] = restart
-            # take a Newton step
-            step_size = (0-rank_old[not_in_RoI])
-            step_size = step_size/np.squeeze(normG**2)
-            step_size = np.tile(step_size, (lambda_dim, 1)).transpose()
-            MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR] + \
-                    step_size*G[np.logical_not(restart), 0, :]
-            # restart the samples with too small gradient
-            MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
-                    param_width[not_in_RoI_RS]*np.random.random((np.sum(not_in_RoI_RS), 
-                    lambda_dim))
+                if cluster_type == 'rbf' or (batch == 1 and \
+                        first_cluster_type == 'rbf'):
+                    G = grad.calculate_gradients_rbf(MYsamples_old\
+                            [samples_woC_in_RoI, :], 
+                            rank_old[samples_woC_in_RoI],
+                            #RBF = 'Multiquadric',
+                            #RBF = 'InverseMultiquadric',
+                            #RBF = 'C4Matern',
+                            normalize=False)
+                elif cluster_type == 'ffd' or (batch == 1 and \
+                        first_cluster_type ==
+                        'ffd'):
+                    G = grad.calculate_gradients_ffd(MYsamples_old\
+                            [samples_woC_in_RoI, :], 
+                            rank_old[samples_woC_in_RoI],
+                            normalize=False)
+                elif cluster_type == 'cfd' or (batch == 1 and \
+                        first_cluster_type == 'cfd'):
+                    G = grad.calculate_gradients_cfd(MYsamples_old\
+                            [samples_woC_in_RoI, :], 
+                            rank_old[samples_woC_in_RoI],
+                            normalize=False)
+
+                # reset the samples_p_cluster to be the rbf for remaining
+                # batches
+                if cluster_type != first_cluster_type and batch == 1:
+                    if cluster_type == 'rbf':
+                        samples_p_cluster = lambda_dim+1
+                    elif cluster_type == 'ffd':
+                        samples_p_cluster = lambda_dim
+                    elif cluster_type == 'cfd':
+                        samples_p_cluster = 2*lambda_dim
+                normG = np.linalg.norm(G, axis=2)
+                # Check to see if the step will take the chain outside of
+                # the parameter domain or if normG is zero etc.
+                # determine chains with gradient < TOL 
+                restart = np.reshape(np.logical_and(normG <= TOL,
+                    np.isnan(normG)), (normG.shape[0],))
+                not_in_RoI_NR = np.copy(not_in_RoI)
+                not_in_RoI_RS = np.copy(not_in_RoI)
+                not_in_RoI_NR[not_in_RoI] = np.logical_not(restart)
+                not_in_RoI_RS[not_in_RoI] = restart
+                # take a Newton step
+                step_size = (0-rank_old[not_in_RoI])
+                step_size = step_size/np.squeeze(normG**2)
+                step_size = np.tile(step_size, (lambda_dim, 1)).transpose()
+                MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR]\
+                        + step_size*G[np.logical_not(restart), 0, :]
+                # did the step take us outside of lambda?
+
+                step_out = np.logical_not(param_domain_test(MYcenters_new))
+                step_out = np.logical_and(step_out, not_in_RoI)
+                #if step_out.any():
+                #    import pdb; pdb.set_trace()
+                not_in_RoI_RS[step_out] = True
+                # restart the samples with too small gradient
+                MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
+                        param_width[not_in_RoI_RS]*np.random.random((\
+                        np.sum(not_in_RoI_RS), lambda_dim))
 
             # For the centers that are in the RoI sample uniformly
             #print sum(centers_in_RoI)
-            # TODO: choose this step size better
-            step_ratio = 0.5*determine_step_ratio(param_dist, 
+            # TODO: choose this step size better, min, max, average?
+            # would it be better to just calculate the radius of the set and
+            # use that?
+            step_ratio = determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI])
             if batch > 1:
                 step_ratio[left_roi[centers_in_RoI]] = 0.5*\
@@ -319,7 +338,6 @@ class sampler(asam.sampler):
                 samples_p_cluster = 2*lambda_dim
                 samples_new = grad.pick_cfd_points(MYcenters_new, radius)
 
-
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
             
@@ -329,7 +347,6 @@ class sampler(asam.sampler):
             # Update the logical index of chains searching along the boundary
             left_roi = np.logical_and(kern_old > 0, kern_new < kern_old)
             
-
             # Save and export concatentated arrays
             if self.chain_length < 4:
                 pass
@@ -359,8 +376,6 @@ class sampler(asam.sampler):
                     np.logical_not(left_roi)]
             kern_old[np.logical_not(left_roi)] = kern_new[\
                     np.logical_not(left_roi)]
-
-
 
         # collect everything
         MYsamples = np.copy(samples)
