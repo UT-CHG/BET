@@ -282,7 +282,6 @@ class sampler(asam.sampler):
                     step_size*G[:, 0, :]
 
             # For the centers that are in the RoI sample uniformly
-            #import pdb; pdb.set_trace()
             print sum(centers_in_RoI)
             step_ratio = 0.5*determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI])
@@ -391,10 +390,16 @@ def determine_step_ratio(param_dist, MYsamples_old, do_global=True):
     # determine the average distance between minima
     # calculate average minimum pairwise distance between minima
     dist = spatial.distance_matrix(MYsamples_old, MYsamples_old)
-    mindists = np.empty((MYsamples_old.shape[0],))
-    for i in range(dist.shape[0]):
-        mindists[i] = np.min(dist[i][dist[i] > 0])
-    mindists_sum = np.sum(mindists)
+
+    if dist.shape == (0,):
+        mindists = .1*param_dist*np.ones(MYsamples_old.shape[0])
+    else:
+        mindists = np.empty((MYsamples_old.shape[0],))
+        for i in range(dist.shape[0]):
+            di = dist[i][dist[i] > 0]
+            if di.shape != (0,):
+                mindists[i] = np.min(di)
+        mindists_sum = np.sum(mindists)
     if do_global:
         mindists_sum = comm.allreduce(mindists, op=MPI.SUM)    
     mindists_avg = mindists_sum/(comm.size*MYsamples_old.shape[0])
