@@ -11,8 +11,6 @@ import bet.sensitivity.gradients as grad
 import numpy as np
 import numpy.testing as nptest
 
-#TODO: Make tests for rvec
-
 class GradientsMethods:
     """
     Test all methods in :module:`bet.sensitivity.gradients`
@@ -23,11 +21,17 @@ class GradientsMethods:
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
         """
         self.samples = grad.sample_linf_ball(self.centers,
-            self.num_close, self.radius, self.lam_domain)
+            self.num_close, self.rvec, self.lam_domain)
 
         # Test the method returns the correct dimensions
         self.assertEqual(self.samples.shape, ((self.num_close+1) * \
             self.num_centers, self.Lambda_dim))
+
+        # Check the method returns centers followed by the clusters around the
+        # first center.
+        #nptest.assert_array_less(np.linalg.norm(self.samples[self.num_centers:\
+        #    self.num_centers + self.num_close, :] - self.centers[0,:], np.inf),
+        #    self.rvec)
 
         # Check that the samples are in lam_domain
         for Ldim in range(self.Lambda_dim):
@@ -41,13 +45,12 @@ class GradientsMethods:
         Test :meth:`bet.sensitivity.gradients.sample_l1_ball`.
         """
         self.samples = grad.sample_l1_ball(self.centers, self.num_close,
-            self.radius)
+            self.rvec)
 
-        # Test that the samples are within radius of center (l1 dist)
-        self.tile = np.tile(self.centers, [1, self.num_close]).reshape(\
-            self.num_centers*self.num_close, self.Lambda_dim)
+        # Test that the samples are within max(rvec) of center (l1 dist)
+        self.repeat = np.repeat(self.centers, self.num_close, axis=0)
         nptest.assert_array_less(np.linalg.norm(self.samples[self.num_centers:]\
-            - self.tile, 1, axis=1), self.radius)
+            - self.repeat, 1, axis=1), np.max(self.rvec))
 
         # Test the method returns the correct dimensions
         self.assertEqual(self.samples.shape, ((self.num_close+1) * \
@@ -58,41 +61,39 @@ class GradientsMethods:
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
         """
-        self.samples = grad.pick_ffd_points(self.centers, self.radius)
+        self.samples = grad.pick_ffd_points(self.centers, self.rvec)
 
-        # Check the distance to the corresponding center is equal to radius
+        if not isinstance(self.rvec, np.ndarray):
+            self.rvec = np.ones(self.Lambda_dim) * self.rvec
+
+        # Check the distance to the corresponding center is equal to rvec
         self.centersrepeat = np.repeat(self.centers, self.Lambda_dim, axis=0)
         nptest.assert_array_almost_equal(np.linalg.norm(self.centersrepeat - \
-            self.samples[self.num_centers:], axis=1), self.radius * \
-            np.ones(self.Lambda_dim * self.num_centers))
+            self.samples[self.num_centers:], axis=1), np.tile(self.rvec,
+            self.num_centers))
 
-        # Test the method returns the correct number of samples
-        self.assertEqual(self.samples.shape[0], (self.Lambda_dim+1) * \
-            self.num_centers)
-
-        # Test an error is raised if radius is an array
-        #with self.assertRaises(ValueError):
-        #    grad.pick_ffd_points(self.centers, np.array((1,2)))
+        # Test the method returns the correct dimensions
+        self.assertEqual(self.samples.shape, ((self.Lambda_dim+1) * \
+            self.num_centers, self.Lambda_dim))
 
     def test_pick_cfd_points(self):
         """
         Test :meth:`bet.sensitivity.gradients.sample_l1_ball`.
         """
-        self.samples = grad.pick_cfd_points(self.centers, self.radius)
+        self.samples = grad.pick_cfd_points(self.centers, self.rvec)
 
-        # Check the distance to the corresponding center is equal to radius
+        if not isinstance(self.rvec, np.ndarray):
+            self.rvec = np.ones(self.Lambda_dim) * self.rvec
+
+        # Check the distance to the corresponding center is equal to rvec
         self.centersrepeat = np.repeat(self.centers, 2*self.Lambda_dim, axis=0)
         nptest.assert_array_almost_equal(np.linalg.norm(self.centersrepeat - \
-            self.samples[self.num_centers:], axis=1), self.radius * \
-            np.ones(self.centersrepeat.shape[0]))
+            self.samples[self.num_centers:], axis=1), np.tile(self.rvec,
+            self.num_centers * 2))
 
         # Test the method returns the correct dimension
         self.assertEqual(self.samples.shape, ((2*self.Lambda_dim + 1) * \
             self.num_centers, self.Lambda_dim))
-
-        # Test an error is raised if radius is an array
-        #with self.assertRaises(ValueError):
-        #    grad.pick_cfd_points(self.centers, np.array((1,2)))
 
     # Test RBF methods
     def test_radial_basis_function(self):
@@ -128,7 +129,7 @@ class GradientsMethods:
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
         """
         self.samples = grad.sample_l1_ball(self.centers, self.num_close,
-            self.radius)
+            self.rvec)
         self.data = self.samples.dot(self.coeffs)
         self.G = grad.calculate_gradients_rbf(self.samples, self.data,
             self.centers)
@@ -144,16 +145,14 @@ class GradientsMethods:
         self.G[normG==0] = 1.0/np.sqrt(self.Lambda_dim)
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2),
             np.ones((self.G.shape[0], self.G.shape[1])))
-        
 
-
-    def test_calculate_gradients_cfd(self):
+    def test_calculate_gradients_ffd(self):
         """
-        Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
+        Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
         """
-        self.samples = grad.pick_cfd_points(self.centers, self.radius)
+        self.samples = grad.pick_ffd_points(self.centers, self.rvec)
         self.data = self.samples.dot(self.coeffs)
-        self.G = grad.calculate_gradients_cfd(self.samples, self.data)
+        self.G = grad.calculate_gradients_ffd(self.samples, self.data)
 
         # Test the method returns the correct size tensor
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois,
@@ -167,13 +166,13 @@ class GradientsMethods:
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2),
             np.ones((self.G.shape[0], self.G.shape[1])))
 
-    def test_calculate_gradients_ffd(self):
+    def test_calculate_gradients_cfd(self):
         """
-        Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
+        Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
         """
-        self.samples = grad.pick_ffd_points(self.centers, self.radius)
+        self.samples = grad.pick_cfd_points(self.centers, self.rvec)
         self.data = self.samples.dot(self.coeffs)
-        self.G = grad.calculate_gradients_ffd(self.samples, self.data)
+        self.G = grad.calculate_gradients_cfd(self.samples, self.data)
 
         # Test the method returns the correct size tensor
         self.assertEqual(self.G.shape, (self.num_centers, self.num_qois,
@@ -204,7 +203,7 @@ class test_1to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
         self.num_close = self.Lambda_dim + 1
-        self.radius = 0.1
+        self.rvec = 0.1
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
@@ -235,7 +234,7 @@ class test_2to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
         self.num_close = self.Lambda_dim + 1
-        self.radius = 0.1
+        self.rvec = np.random.random(self.Lambda_dim)
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
@@ -266,7 +265,7 @@ class test_4to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
         self.num_close = self.Lambda_dim + 1
-        self.radius = 0.1
+        self.rvec = 0.1
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
@@ -297,7 +296,7 @@ class test_9to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
         self.num_close = self.Lambda_dim + 1
-        self.radius = 0.1
+        self.rvec = 0.1
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
@@ -329,7 +328,7 @@ class test_15to37_143centers_negrandomhyperbox(GradientsMethods,
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
         self.num_close = self.Lambda_dim + 1
-        self.radius = 0.1
+        self.rvec = 0.1
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
@@ -361,7 +360,7 @@ class test_9to30_100centers_randomhyperbox_zeroQoIs(GradientsMethods,
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
         self.num_close = self.Lambda_dim + 1
-        self.radius = 0.1
+        self.rvec = np.random.random(self.Lambda_dim)
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
