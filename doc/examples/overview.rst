@@ -1,10 +1,14 @@
 =======================================
+Examples
+=======================================
+All of the example listed here and more are located in the ``BET/examples/``
+directory.
+
 Linear Map Example
 =======================================
 
 See :ref:`linearMap` for an example using a linear map.
 
-=======================================
 Non-Linear Map Example
 =======================================
 
@@ -12,7 +16,6 @@ See :download:`non linear map example
 <../../examples/nonlinearMap/nonlinearMapUniformSampling.py>` for an example using a non-linear
 map.
 
-==============================================
 ADCIRC Based Examples
 ==============================================
 
