@@ -55,7 +55,7 @@ def sample_linf_ball(centers, num_close, rvec, lam_domain=None):
 def sample_l1_ball(centers, num_close, rvec):
     """
     TODO: Vectorize the for loops. Split this into two methods, sample_simplex,
-          simplex_to_diamond(?).  Take in 'hard' and 'soft' lam_domain boundaries
+          simplex_to_diamond?.  Take in 'hard' and 'soft' lam_domain boundaries
           and either allow for sampes out side lam_domain (soft) or restrict
           them to be inside (hard).
 
@@ -135,7 +135,8 @@ def pick_ffd_points(centers, rvec):
     :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
-    :rtype: :class:`np.ndarray` of shape ((Lambda_dim+1)*num_centers, Lambda_dim)
+    :rtype: :class:`np.ndarray` of shape ((Lambda_dim+1)*num_centers,
+        Lambda_dim)
     :returns: Samples for centered finite difference stencil for
         each point in centers.
 
@@ -168,7 +169,8 @@ def pick_cfd_points(centers, rvec):
     :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
-    :rtype: :class:`np.ndarray` of shape ((2*Lambda_dim+1)*num_centers, Lambda_dim)
+    :rtype: :class:`np.ndarray` of shape ((2*Lambda_dim+1)*num_centers,
+        Lambda_dim)
     :returns: Samples for centered finite difference stencil for
         each point in centers.
 
@@ -367,8 +369,8 @@ def calculate_gradients_ffd(samples, data, normalize=True):
     num_centers = num_model_samples / (Lambda_dim + 1)
 
     # Find rvec from the first cluster of samples
-    rvec = samples[0,:] - samples[num_centers:num_centers + Lambda_dim, :]
-    rvec = util.fix_dimensions_vector_2darray(rvec[rvec != 0])
+    rvec = samples[num_centers:num_centers + Lambda_dim, :] - samples[0,:]
+    rvec = util.fix_dimensions_vector_2darray(rvec.diagonal())
 
     # Clean the data
     data = util.fix_dimensions_vector_2darray(util.clean_data(data))
@@ -382,7 +384,8 @@ def calculate_gradients_ffd(samples, data, normalize=True):
                    Lambda_dim, axis=0)) * (1. / rvec)
 
     # Reshape and organize
-    gradient_tensor = np.reshape(gradient_mat.transpose(), [num_qois, Lambda_dim, num_centers], order='F').transpose(2, 0, 1)
+    gradient_tensor = np.reshape(gradient_mat.transpose(), [num_qois,
+        Lambda_dim, num_centers], order='F').transpose(2, 0, 1)
 
     if normalize:
         # Compute the norm of each vector
@@ -422,8 +425,8 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     num_centers = num_model_samples / (2*Lambda_dim + 1)
 
     # Find rvec from the first cluster of samples
-    rvec = samples[0,:] - samples[num_centers:num_centers + Lambda_dim, :]
-    rvec = util.fix_dimensions_vector_2darray(rvec[rvec != 0])
+    rvec = samples[num_centers:num_centers + Lambda_dim, :] - samples[0,:]
+    rvec = util.fix_dimensions_vector_2darray(rvec.diagonal())
 
     # Clean the data
     data = util.fix_dimensions_vector_2darray(util.clean_data(
@@ -434,13 +437,15 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     rvec = np.tile(np.repeat(rvec, num_qois, axis=1), [num_centers, 1])
 
     # Construct indices for CFD gradient approxiation
-    inds = np.repeat(range(0,2*Lambda_dim*num_centers,2*Lambda_dim),Lambda_dim) + np.tile(range(0,Lambda_dim),num_centers)
+    inds = np.repeat(range(0,2*Lambda_dim*num_centers,2*Lambda_dim), 
+        Lambda_dim) + np.tile(range(0,Lambda_dim),num_centers)
     inds = np.array([inds, inds+Lambda_dim]).transpose()
 
     gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / rvec)
 
     # Reshape and organize
-    gradient_tensor = np.reshape(gradient_mat.transpose(), [num_qois, Lambda_dim, num_centers], order='F').transpose(2, 0, 1)
+    gradient_tensor = np.reshape(gradient_mat.transpose(), [num_qois,
+        Lambda_dim, num_centers], order='F').transpose(2, 0, 1)
 
     if normalize:
         # Compute the norm of each vector
