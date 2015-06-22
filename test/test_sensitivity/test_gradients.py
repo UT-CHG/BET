@@ -11,11 +11,14 @@ import bet.sensitivity.gradients as grad
 import numpy as np
 import numpy.testing as nptest
 
+#TODO Look at the accuacy tests at the end, whats going on?...
+
 class GradientsMethods:
     """
     Test all methods in :module:`bet.sensitivity.gradients`
     """
     # Test sampling methods
+    #TODO make this put sample in correct order!!!
     def test_sample_linf_ball(self):
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
@@ -186,6 +189,40 @@ class GradientsMethods:
         nptest.assert_array_almost_equal(np.linalg.norm(self.G, axis=2),
             np.ones((self.G.shape[0], self.G.shape[1])))
 
+# Test the accuracy of the gradient approximation methods
+class GradientsAccuracy:
+    """
+    Test the accuracy of the gradient approximation method in
+        :module:`bet.sensitivity.gradients`
+    """
+    def test_calculate_gradients_rbf_accuracy(self):
+        """
+        Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
+        """
+        self.G_nonlin = grad.calculate_gradients_rbf(self.samples_rbf,
+            self.data_nonlin_rbf, normalize=False)
+
+        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 1)
+
+    def test_calculate_gradients_ffd_accuracy(self):
+        """
+        Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
+        """
+        self.G_nonlin = grad.calculate_gradients_ffd(self.samples_ffd,
+            self.data_nonlin_ffd, normalize=False)
+
+        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 1)
+
+    def test_calculate_gradients_cfd_accuracy(self):
+        """
+        Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
+        """
+        self.G_nonlin = grad.calculate_gradients_cfd(self.samples_cfd,
+            self.data_nonlin_cfd, normalize=False)
+
+        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 1)
+
+
 # Test cases
 class test_1to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
     
@@ -255,12 +292,12 @@ class test_4to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
         # Define the parameter space (Lambda)
         self.Lambda_dim = 4
         self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        np.random.seed(0)
         self.lam_domain[:,0] = np.random.random(self.Lambda_dim)
         self.lam_domain[:,1] = np.random.random(self.Lambda_dim) + 2
 
         # Choose random centers to cluster points around
         self.num_centers = 100
-        np.random.seed(0)
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
@@ -286,12 +323,12 @@ class test_9to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
         # Define the parameter space (Lambda)
         self.Lambda_dim = 9
         self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        np.random.seed(0)
         self.lam_domain[:,0] = np.random.random(self.Lambda_dim)
         self.lam_domain[:,1] = np.random.random(self.Lambda_dim) + 2
 
         # Choose random centers to cluster points around
         self.num_centers = 100
-        np.random.seed(0)
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
@@ -318,12 +355,12 @@ class test_15to37_143centers_negrandomhyperbox(GradientsMethods,
         # Define the parameter space (Lambda)
         self.Lambda_dim = 15
         self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        np.random.seed(0)
         self.lam_domain[:,0] = -1*np.random.random(self.Lambda_dim) - 2
         self.lam_domain[:,1] = -1*np.random.random(self.Lambda_dim)
 
         # Choose random centers to cluster points around
         self.num_centers = 143
-        np.random.seed(0)
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
@@ -350,12 +387,12 @@ class test_9to30_100centers_randomhyperbox_zeroQoIs(GradientsMethods,
         # Define the parameter space (Lambda)
         self.Lambda_dim = 9
         self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        np.random.seed(0)
         self.lam_domain[:,0] = np.random.random(self.Lambda_dim)
         self.lam_domain[:,1] = np.random.random(self.Lambda_dim) + 2
 
         # Choose random centers to cluster points around
         self.num_centers = 100
-        np.random.seed(0)
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.Lambda_dim)) + \
             self.lam_domain[:,0]
@@ -375,6 +412,60 @@ class test_9to30_100centers_randomhyperbox_zeroQoIs(GradientsMethods,
         coeffs = np.append(coeffs, np.random.random((self.Lambda_dim,
             self.num_qois-3*self.Lambda_dim)), axis=1)
         self.coeffs = np.append(coeffs, np.eye(self.Lambda_dim), axis=1)
+
+# Test cases for the gradient approximation accuracy
+class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
+    
+    def setUp(self):
+        # Define the parameter space (Lambda)
+        self.Lambda_dim = 2
+        self.num_qois = 2
+        self.lam_domain = np.zeros((self.Lambda_dim, 2))
+        self.lam_domain[:,0] = np.zeros(self.Lambda_dim)
+        self.lam_domain[:,1] = np.ones(self.Lambda_dim)
+
+        # Choose random centers to cluster points around
+        self.num_centers = 100
+        np.random.seed(0)
+        self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
+            np.random.random((self.num_centers,self.Lambda_dim)) + \
+            self.lam_domain[:,0]
+        self.num_close = self.Lambda_dim + 1
+        self.rvec = 0.01 * np.ones(self.Lambda_dim)
+
+        self.samples_rbf = grad.sample_l1_ball(self.centers, self.num_close,
+            self.rvec)
+        self.samples_ffd = grad.pick_ffd_points(self.centers, self.rvec)
+        self.samples_cfd = grad.pick_cfd_points(self.centers, self.rvec)
+
+        # Define a vector valued function f : [0,1]x[0,1] -> [x^2, y^2]
+        def f(x):
+            f = np.zeros(x.shape)
+            f[:, 0] = x[:, 0]**2
+            f[:, 1] = x[:, 1]**2
+            return f
+
+        self.data_nonlin_rbf = f(self.samples_rbf)
+        self.data_nonlin_ffd = f(self.samples_ffd)
+        self.data_nonlin_cfd = f(self.samples_cfd)
+
+        self.G_exact = np.zeros([self.num_centers, self.num_qois,
+            self.Lambda_dim])
+        self.G_exact[:, 0, 0] = 2 * self.centers[:, 0]
+        self.G_exact[:, 1, 1] = 2 * self.centers[:, 1]
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
