@@ -282,8 +282,13 @@ class sampler(asam.sampler):
                     step_size*G[:, 0, :]
 
             # For the centers that are in the RoI sample uniformly
-            step_ratio = determine_step_ratio(param_dist, 
-                    MYcenters_old[centers_in_RoI]) 
+            #import pdb; pdb.set_trace()
+            print sum(centers_in_RoI)
+            step_ratio = 0.5*determine_step_ratio(param_dist, 
+                    MYcenters_old[centers_in_RoI])
+            if batch > 1:
+                step_ratio[left_roi[centers_in_RoI]] = 0.5*\
+                        step_ratio[left_roi[centers_in_RoI]]
             MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
                     param_width[centers_in_RoI],
                     param_left[centers_in_RoI], param_right[centers_in_RoI],
