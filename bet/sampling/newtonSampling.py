@@ -58,7 +58,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None, cluster_type='rbf'): 
+            initial_data=None, cluster_type='rbf', TOL=1e-8): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -275,14 +275,25 @@ class sampler(asam.sampler):
                 elif cluster_type == 'cfd':
                     samples_p_cluster = 2*lambda_dim
             normG = np.linalg.norm(G, axis=2)
+            # determine chains with gradient < TOL 
+            restart = np.squeeze(np.logical_and(normG < TOL, np.isnan(normG)))
+            not_in_RoI_NR = np.copy(not_in_RoI)
+            not_in_RoI_RS = np.copy(not_in_RoI)
+            not_in_RoI_NR[not_in_RoI] = np.logical_not(restart)
+            not_in_RoI_RS[not_in_RoI] = restart
+            # take a Newton step
             step_size = (0-rank_old[not_in_RoI])
             step_size = step_size/np.squeeze(normG**2)
             step_size = np.tile(step_size, (lambda_dim, 1)).transpose()
-            MYcenters_new[not_in_RoI, :] = MYcenters_old[not_in_RoI] + \
-                    step_size*G[:, 0, :]
+            MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR] + \
+                    step_size*G[np.logical_not(restart), 0, :]
+            # restart the samples with too small gradient
+            MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
+                    param_width[not_in_RoI_RS]*np.random.random((np.sum(not_in_RoI_RS), 
+                    lambda_dim))
 
             # For the centers that are in the RoI sample uniformly
-            print sum(centers_in_RoI)
+            #print sum(centers_in_RoI)
             step_ratio = 0.5*determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI])
             if batch > 1:
