@@ -110,7 +110,7 @@ class sampler(asam.sampler):
             MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
                 np.shape(data_old)[1])) 
             comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
-            step_ratio = self.determine_step_ratio(MYsamples_old)
+            step_ratio = determine_step_ratio(MYsamples_old)
         else:
             MYsamples_old = np.copy(samples_old)
             MYdata_old = np.copy(data_old)
@@ -262,6 +262,40 @@ class sampler(asam.sampler):
         super(sampler, self).save(mdat, savefile)
 
         return (samples, data, all_step_ratios)
+
+def determine_step_ratio(param_dist, MYsamples_old, do_global=True):
+    """
+    Determine the mean pairwise distance between the current batch of samples.
+    
+    :param MYsamples_old:
+    :type MYsamples_old:
+    :param bool global: Flag whether or not to do this local to a processor or
+        globally
+    
+    :rtype: :class:`numpy.ndarray`
+    :returns: ``step_ratio``
+    
+    """
+    
+    # determine the average distance between minima
+    # calculate average minimum pairwise distance between minima
+    dist = spatial.distance_matrix(MYsamples_old, MYsamples_old)
+
+    if dist.shape == (0,):
+        mindists = .1*param_dist*np.ones(MYsamples_old.shape[0])
+    else:
+        mindists = np.empty((MYsamples_old.shape[0],))
+        for i in range(dist.shape[0]):
+            di = dist[i][dist[i] > 0]
+            if di.shape != (0,):
+                mindists[i] = np.min(di)
+        mindists_sum = np.sum(mindists)
+    if do_global:
+        mindists_sum = comm.allreduce(mindists, op=MPI.SUM)    
+    mindists_avg = mindists_sum/(comm.size*MYsamples_old.shape[0])
+    # set step ratio based on this distance
+    step_ratio = mindists_avg/param_dist*np.ones(MYsamples_old.shape[0])
+    return step_ratio
 
 """
 # keep track of boundary points
