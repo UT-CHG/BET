@@ -58,7 +58,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None, cluster_type='rbf', TOL=1e-8): 
+            initial_data=None, cluster_type='rbf'): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -275,6 +275,8 @@ class sampler(asam.sampler):
                 elif cluster_type == 'cfd':
                     samples_p_cluster = 2*lambda_dim
             normG = np.linalg.norm(G, axis=2)
+            # TODO: check to see if the step will take the chain outside of the
+            # parameter domain or if normG is zero etc.
             # determine chains with gradient < TOL 
             restart = np.squeeze(np.logical_and(normG < TOL, np.isnan(normG)))
             not_in_RoI_NR = np.copy(not_in_RoI)
@@ -294,6 +296,7 @@ class sampler(asam.sampler):
 
             # For the centers that are in the RoI sample uniformly
             #print sum(centers_in_RoI)
+            # TODO: choose this step size better
             step_ratio = 0.5*determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI])
             if batch > 1:
