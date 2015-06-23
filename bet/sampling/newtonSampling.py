@@ -295,8 +295,10 @@ class sampler(asam.sampler):
                 not_in_RoI_RS[not_in_RoI] = restart
                 # take a Newton step
                 step_size = (0-rank_old[not_in_RoI])
-                step_size = step_size/np.squeeze(normG**2)
-                step_size = np.tile(step_size, (lambda_dim, 1)).transpose()
+                step_size = util.fix_dimensions_vector_2darray(step_size)
+                normG = util.fix_dimensions_vector_2darray(normG)
+                step_size = step_size/(normG**2)
+                step_size = np.column_stack([step_size]*lambda_dim)
                 MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR]\
                         + step_size*G[np.logical_not(restart), 0, :]
                 # did the step take us outside of lambda?
@@ -312,7 +314,6 @@ class sampler(asam.sampler):
                         np.sum(not_in_RoI_RS), lambda_dim))
 
             # For the centers that are in the RoI sample uniformly
-            #print sum(centers_in_RoI)
             # TODO: choose this step size better, min, max, average?
             # would it be better to just calculate the radius of the set and
             # use that?
@@ -359,7 +360,8 @@ class sampler(asam.sampler):
             kern_samples = np.concatenate((kern_samples, kern_new))
             # join up the step ratios for the samples in/out of the RoI
             joint_step_ratios = np.empty((self.num_chains_pproc,))
-            joint_step_ratios[not_in_RoI] = step_size/param_width[not_in_RoI]
+            if not_in_RoI.any():
+                joint_step_ratios[not_in_RoI] = step_size/param_width[not_in_RoI]
             joint_step_ratios[centers_in_RoI] = step_ratio
             all_step_ratios = np.concatenate((all_step_ratios,
                 joint_step_ratios))
@@ -415,13 +417,15 @@ def determine_step_ratio(param_dist, MYsamples_old, do_global=True):
     :returns: ``step_ratio``
     
     """
+    # TODO: add better way of doing this maybe do max or estimate the radius of
+    # the set of samples in the RoI?
     
     # determine the average distance between minima
     # calculate average minimum pairwise distance between minima
     dist = spatial.distance_matrix(MYsamples_old, MYsamples_old)
 
     if dist.shape == (0,):
-        mindists = .1*param_dist*np.ones(MYsamples_old.shape[0])
+        mindists = 0.5*param_dist*np.ones(MYsamples_old.shape[0])
     else:
         mindists = np.empty((MYsamples_old.shape[0],))
         for i in range(dist.shape[0]):
