@@ -404,7 +404,19 @@ class sampler(asam.sampler):
 
         return (samples, data, all_step_ratios)
 
-def determine_step_ratio(param_dist, MYsamples_old, do_global=True):
+
+def determine_step_ratio(param_dist, MYsamples_old, do_global=True,
+        type="radius"):
+    """
+    Determine step ratio based on current sample locations
+    """
+
+    if type=="min":
+        return determine_step_ratio_min(param_dist, MYsamples_old, do_global)
+    elif type=="radius":
+        return determine_step_ratio_radius(param_dist,MYsamples_old)
+
+def determine_step_ratio_min(param_dist, MYsamples_old, do_global=True):
     """
     Determine the mean pairwise distance between the current batch of samples.
     
@@ -425,18 +437,46 @@ def determine_step_ratio(param_dist, MYsamples_old, do_global=True):
     dist = spatial.distance_matrix(MYsamples_old, MYsamples_old)
 
     if dist.shape == (0,):
-        mindists = 0.5*param_dist*np.ones(MYsamples_old.shape[0])
+        mindists = 0.0*param_dist*np.ones(MYsamples_old.shape[0])
+        num_nonzero = 0
     else:
         mindists = np.empty((MYsamples_old.shape[0],))
         for i in range(dist.shape[0]):
             di = dist[i][dist[i] > 0]
             if di.shape != (0,):
                 mindists[i] = np.min(di)
+        num_nonzero = np.sum(mindists.nonzero()[0])
         mindists_sum = np.sum(mindists)
-    if do_global:
-        mindists_sum = comm.allreduce(mindists, op=MPI.SUM)    
-    mindists_avg = mindists_sum/(comm.size*MYsamples_old.shape[0])
+    if do_global == True:
+        mindists_sum = comm.allreduce(mindists, op=MPI.SUM)
+        num_nonzero = comm.allreduce(num_nonzero, op=MPI.SUM)
+    mindists_avg = mindists_sum/num_nonzero
     # set step ratio based on this distance
     step_ratio = mindists_avg/param_dist*np.ones(MYsamples_old.shape[0])
+    return step_ratio
+
+def determine_step_ratio_radius(param_dist, MYsamples_old):
+    """
+    Determine the mean pairwise distance between the current batch of samples.
+    This will begin to break when sets are not simply connected.
+    
+    :param MYsamples_old:
+    :type MYsamples_old:
+    
+    :rtype: :class:`numpy.ndarray`
+    :returns: ``step_ratio``
+    
+    """
+    # TODO: add better way of doing this maybe do max or estimate the radius of
+    # the set of samples in the RoI?
+    
+    all_samples = util.get_global_values(MYsamples_old) 
+    dist = spatial.distance_matrix(all_samples, all_samples)
+
+    if dist.shape == (0,):
+        step_ratio = 0.25*np.ones(MYsamples_old.shape[0])
+    else:
+        # set step ratio based on this distance
+        step_ratio = 0.25*np.max(dist)/param_dist*np.ones(MYsamples_old.shape[0])
     return step_ratio
 
