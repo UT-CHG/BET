@@ -46,7 +46,7 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
 
     """
     if type(sample_nos) == type(None):
-        sample_nos = range(samples.shape[0])
+        sample_nos = np.arange(samples.shape[0])
     color = color[sample_nos]
     plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color, s=10,
             alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)
