@@ -59,7 +59,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None, cluster_type='rbf', TOL=1e-8): 
+            initial_data=None, cluster_type='rbf', TOL=1e-8, nominal_ratio=0.2): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -318,7 +318,7 @@ class sampler(asam.sampler):
             # would it be better to just calculate the radius of the set and
             # use that?
             step_ratio = determine_step_ratio(param_dist, 
-                    MYcenters_old[centers_in_RoI])
+                    MYcenters_old[centers_in_RoI], nominal_ratio)
             if batch > 1:
                 step_ratio[left_roi[centers_in_RoI]] = 0.5*\
                         step_ratio[left_roi[centers_in_RoI]]
@@ -405,10 +405,11 @@ class sampler(asam.sampler):
         return (samples, data, all_step_ratios)
 
 
-def determine_step_ratio(param_dist, MYsamples_old):
+def determine_step_ratio(param_dist, MYsamples_old, nominal_ratio=0.20):
     """
-    Determine the mean pairwise distance between the current batch of samples.
-    This will begin to break when sets are not simply connected.
+    Estimate the radius of the RoI using the current samples. This could be
+    improved by using all of the samplings in the RoI. This will begin to
+    break when sets are not simply connected.
     
     :param MYsamples_old:
     :type MYsamples_old:
@@ -417,16 +418,14 @@ def determine_step_ratio(param_dist, MYsamples_old):
     :returns: ``step_ratio``
     
     """
-    # TODO: add better way of doing this maybe do max or estimate the radius of
-    # the set of samples in the RoI?
-    
     all_samples = util.get_global_values(MYsamples_old) 
     dist = spatial.distance_matrix(all_samples, all_samples)
 
-    if dist.shape == (0,):
-        step_ratio = 0.25*np.ones(MYsamples_old.shape[0])
+    if dist.shape == (0,) or dist.shape == (1,) or dist.shape == (0, 0):
+        step_ratio = nominal_ratio*np.ones(MYsamples_old.shape[0])
     else:
         # set step ratio based on this distance
-        step_ratio = 0.25*np.max(dist)/param_dist*np.ones(MYsamples_old.shape[0])
+        step_ratio = nominal_ratio*np.max(dist)/param_dist*\
+                np.ones(MYsamples_old.shape[0])
     return step_ratio
 
