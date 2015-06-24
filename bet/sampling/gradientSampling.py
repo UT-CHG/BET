@@ -406,8 +406,8 @@ class sampler(asam.sampler):
         # chain_length)
         all_step_ratios = util.get_global_values(MYall_step_ratios,
                 shape=(self.num_samples,))
-        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains,
-            self.chain_length-1))
+        all_step_ratios = np.reshape(all_step_ratios,
+                (self.num_chains*(samples_p_cluster+1), self.chain_length))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
