@@ -59,7 +59,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius=0.01, initial_samples=None,
-            initial_data=None, cluster_type='rbf', TOL=1e-8, nominal_ratio=0.2): 
+            initial_data=None, cluster_type='rbf', TOL=0, nominal_ratio=0.1): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -134,8 +134,8 @@ class sampler(asam.sampler):
             self.num_samples = self.chain_length * self.num_chains * \
                     (samples_p_cluster+1)
             num_samples = self.num_samples
-            self.sample_batch_no = np.repeat(range(self.num_chains),
-                    self.chain_length*(samples_p_cluster+1), 0)
+            self.sample_batch_no = np.repeat(range(self.chain_length),
+                    self.num_chains*(samples_p_cluster+1), 0)
 
             # Initiative first batch of N samples (maybe taken from latin
             # hypercube/space-filling curve to fully explore parameter space -
@@ -175,9 +175,9 @@ class sampler(asam.sampler):
             self.num_samples = initial_samples.shape[0] + (self.chain_length-1)\
                     * self.num_chains * (samples_p_cluster+1)
             repeats = [initial_samples.shape[0]]
-            repeats.extend([(self.chain_length-1)*(samples_p_cluster)]*\
+            repeats.extend([(self.num_chains)*(samples_p_cluster+1)]*\
                     (self.chain_length-1))
-            self.sample_batch_no = np.repeat(range(self.num_chains),
+            self.sample_batch_no = np.repeat(range(self.chain_length),
                     repeats, 0)
 
             centers = initial_samples[:self.num_chains, :]
@@ -222,7 +222,7 @@ class sampler(asam.sampler):
         kern_samples = kern_old
         mdat = dict()
         self.update_mdict(mdat)
-        MYcenters_new = np.empty(MYcenters_old.shape)
+        MYcenters_new = np.copy(MYcenters_old)
 
         
         for batch in xrange(1, self.chain_length):
@@ -230,12 +230,15 @@ class sampler(asam.sampler):
             # Determine the rank of the old samples
             rank_old = smoothIndicatorFun(MYdata_old)
             # For the centers that are not in the RoI do a newton step
-            centers_in_RoI = kern_old != 0
+            centers_in_RoI = (kern_old > 0)
             not_in_RoI = np.logical_not(centers_in_RoI)
+
+            print np.sum(centers_in_RoI), self.num_chains_pproc
 
             if not_in_RoI.any():
                 # Determine indices to create np.concatenate([centers, clusters])
                 # for centers not in the RoI
+                #import pdb; pdb.set_trace()
                 samples_woC_in_RoI = (np.arange(self.num_chains_pproc)+1)*\
                         not_in_RoI
                 samples_woC_in_RoI = samples_woC_in_RoI.nonzero()[0]
@@ -250,7 +253,6 @@ class sampler(asam.sampler):
                 # calculate gradient based on gradient type for the first one
                 # G = grad.calculate_gradients(samples, data, num_centers,
                 # rvec, normalize=False)
-
                 if cluster_type == 'rbf' or (batch == 1 and \
                         first_cluster_type == 'rbf'):
                     G = grad.calculate_gradients_rbf(MYsamples_old\
@@ -261,8 +263,7 @@ class sampler(asam.sampler):
                             #RBF = 'C4Matern',
                             normalize=False)
                 elif cluster_type == 'ffd' or (batch == 1 and \
-                        first_cluster_type ==
-                        'ffd'):
+                        first_cluster_type == 'ffd'):
                     G = grad.calculate_gradients_ffd(MYsamples_old\
                             [samples_woC_in_RoI, :], 
                             rank_old[samples_woC_in_RoI],
@@ -287,31 +288,40 @@ class sampler(asam.sampler):
                 # Check to see if the step will take the chain outside of
                 # the parameter domain or if normG is zero etc.
                 # determine chains with gradient < TOL 
-                restart = np.reshape(np.logical_and(normG <= TOL,
-                    np.isnan(normG)), (normG.shape[0],))
-                not_in_RoI_NR = np.copy(not_in_RoI)
+                if np.any(np.logical_and(normG <= TOL, np.isnan(normG))):
+                    import pdb; pdb.set_trace()
+                #restart = np.reshape(np.logical_and(normG <= TOL,
+                #    np.isnan(normG)), (normG.shape[0],))
+                #not_in_RoI_NR = np.copy(not_in_RoI)
                 not_in_RoI_RS = np.copy(not_in_RoI)
-                not_in_RoI_NR[not_in_RoI] = np.logical_not(restart)
-                not_in_RoI_RS[not_in_RoI] = restart
+                #not_in_RoI_NR[not_in_RoI] = np.logical_not(restart)
+                #not_in_RoI_RS[not_in_RoI] = restart
+                #if restart.any():
+                #    import pdb; pdb.set_trace()
                 # take a Newton step
                 step_size = (0-rank_old[not_in_RoI])
                 step_size = util.fix_dimensions_vector_2darray(step_size)
-                normG = util.fix_dimensions_vector_2darray(normG)
-                step_size = step_size/(normG**2)
+                #normG = util.fix_dimensions_vector_2darray(normG)
+                step_size = step_size/normG
                 step_size = np.column_stack([step_size]*lambda_dim)
-                MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR]\
-                        + step_size*G[np.logical_not(restart), 0, :]
+                #MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR]\
+                #        + step_size*G[np.logical_not(restart), 0, :]
+                MYcenters_new[not_in_RoI] = MYcenters_old[not_in_RoI]\
+                        + step_size*np.round(G[:, 0, :]/normG, decimals=11)
                 # did the step take us outside of lambda?
-
-                step_out = np.logical_not(param_domain_test(MYcenters_new))
-                step_out = np.logical_and(step_out, not_in_RoI)
-                #if step_out.any():
-                #    import pdb; pdb.set_trace()
-                not_in_RoI_RS[step_out] = True
-                # restart the samples with too small gradient
-                MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
-                        param_width[not_in_RoI_RS]*np.random.random((\
-                        np.sum(not_in_RoI_RS), lambda_dim))
+                step_out = np.logical_not(param_domain_test(MYcenters_new\
+                        [not_in_RoI]))
+                if step_out.any():
+                    import pdb; pdb.set_trace()
+                    print batch
+                    not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
+                    not_in_RoI_RS[step_out] = True
+                    # restart the samples with too small gradient or if samples
+                    # leave the parameter domain
+                    #MYcenters_new[not_in_RoI_RS] = MYcenters_old[not_in_RoI_RS]
+                    #MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
+                    #        param_width[not_in_RoI_RS]*np.random.random((\
+                    #        np.sum(not_in_RoI_RS), lambda_dim))
 
             # For the centers that are in the RoI sample uniformly
             # TODO: choose this step size better, min, max, average?
@@ -322,10 +332,10 @@ class sampler(asam.sampler):
             if batch > 1:
                 step_ratio[left_roi[centers_in_RoI]] = 0.5*\
                         step_ratio[left_roi[centers_in_RoI]]
-            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
-                    param_width[centers_in_RoI],
-                    param_left[centers_in_RoI], param_right[centers_in_RoI],
-                    MYcenters_old[centers_in_RoI])
+            #MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
+            #        param_width[centers_in_RoI],
+            #        param_left[centers_in_RoI], param_right[centers_in_RoI],
+            #        MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
             if cluster_type == 'rbf':
@@ -374,10 +384,17 @@ class sampler(asam.sampler):
                 super(sampler, self).save(mdat, savefile)
             
             # Don't update centers that have left the RoI (after finding it)
-            MYcenters_old[np.logical_not(left_roi)] = MYcenters_new[\
-                    np.logical_not(left_roi)]
-            kern_old[np.logical_not(left_roi)] = kern_new[\
-                    np.logical_not(left_roi)]
+            #MYcenters_old[np.logical_not(left_roi)] = MYcenters_new[\
+            #        np.logical_not(left_roi)]
+            #kern_old[np.logical_not(left_roi)] = kern_new[\
+            #        np.logical_not(left_roi)]
+            MYcenters_old = MYcenters_new
+            MYdata_old = data_new
+            MYsamples_old = samples_new
+            kern_old = kern_new
+
+        centers_in_RoI = (kern_old > 0)
+        print np.sum(centers_in_RoI), self.num_chains_pproc
 
         # collect everything
         MYsamples = np.copy(samples)
@@ -427,5 +444,6 @@ def determine_step_ratio(param_dist, MYsamples_old, nominal_ratio=0.20):
         # set step ratio based on this distance
         step_ratio = nominal_ratio*np.max(dist)/param_dist*\
                 np.ones(MYsamples_old.shape[0])
+    #return nominal_ratio*np.zeros(MYsamples_old.shape[0])
     return step_ratio
 
