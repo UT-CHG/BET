@@ -285,6 +285,8 @@ class sampler(asam.sampler):
                 normG = np.linalg.norm(G, axis=2)
                 # take a Newton step
                 # calculate step size
+                # TODO: we are currently doing b = a - \gamma \Grad f(a)
+                # we might need to be more careful about our choice of \gamma
                 step_size = (0-rank_old[not_in_RoI])
                 step_size = util.fix_dimensions_vector_2darray(step_size)
                 step_size = step_size/normG
