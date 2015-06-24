@@ -59,7 +59,7 @@ class sampler(asam.sampler):
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
             criterion='center', radius_ratio=0.01, initial_samples=None,
-            initial_data=None, cluster_type='rbf', TOL=0, nominal_ratio=0.1): 
+            initial_data=None, cluster_type='rbf', TOL=1e-8, nominal_ratio=0.1): 
         r"""
         This method adaptively generates samples similar to the method
         :meth:`bet.sampling.adaptiveSampling.generalized_chains`. Adaptive
@@ -287,23 +287,22 @@ class sampler(asam.sampler):
                 normG = np.linalg.norm(G, axis=2)
                 # Check to see if the step will take the chain outside of
                 # the parameter domain or if normG is zero etc.
-                # TODO: If the tolerance is too low take a random step as you
+                # If the tolerance is too low take a random step as you
                 # would using centers_in_RoI
                 # determine chains with gradient < TOL 
                 do_random_step = np.reshape(np.logical_and(normG <= TOL,
                     np.isnan(normG)), (normG.shape[0],))
                 not_in_RoI_NS = np.copy(not_in_RoI)
                 if np.any(do_random_step):
-                    #import pdb; pdb.set_trace()
                     print 'Random step, too small normG, batch: ', batch
                     not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
                     not_in_RoI_RS[do_random_step] = True
                     # do a random of size 2*radius
-                    #step_ratio = 2*radius_ratio*np.ones(not_in_Roi_RS.shape)
-                    #MYcenters_new[not_in_RoI_RS] = t_set.step(step_ratio,
-                    #        param_width[not_in_RoI_RS],
-                    #        param_left[not_in_RoI_RS], param_right[not_in_RoI_RS],
-                    #        MYcenters_old[not_in_RoI_RS])
+                    step_ratio = 2*radius_ratio*np.ones(not_in_Roi_RS.shape)
+                    MYcenters_new[not_in_RoI_RS] = t_set.step(step_ratio,
+                            param_width[not_in_RoI_RS],
+                            param_left[not_in_RoI_RS], param_right[not_in_RoI_RS],
+                            MYcenters_old[not_in_RoI_RS])
                 # take a Newton step
                 # calculate step size
                 step_size = (0-rank_old[not_in_RoI_NS])
@@ -317,15 +316,14 @@ class sampler(asam.sampler):
                 step_out = np.logical_not(param_domain_test(MYcenters_new\
                         [not_in_RoI_NS]))
                 if step_out.any():
-                    #import pdb; pdb.set_trace()
                     print 'Restart chain, left parameter domain, batch: ', batch
                     not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
                     not_in_RoI_RS[step_out] = True
-                    # TODO: restart the samples with too small gradient or if samples
-                    # leave the parameter domain
-                    #MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
-                    #        param_width[not_in_RoI_RS]*np.random.random((\
-                    #        np.sum(not_in_RoI_RS), lambda_dim))
+                    # Restart the samples with if samples leave the
+                    # parameter domain
+                    MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
+                            param_width[not_in_RoI_RS]*np.random.random((\
+                            np.sum(not_in_RoI_RS), lambda_dim))
 
             # For the centers that are in the RoI sample uniformly
             # TODO: choose this step size better, min, max, average?
