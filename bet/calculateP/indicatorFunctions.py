@@ -30,8 +30,10 @@ def hyperrectangle(left, right):
         :rtype: boolean :class:`np.ndarray` of shape (ndim,)
         :returns: :math:`\{ \mathbf{1}_A(x_i) \}_{i=0}^{N}`
         """
-        return np.logical_and(np.all(np.greater_equal(points, left), axis=1),
-                np.all(np.less_equal(points, right), axis=1))
+        return np.logical_and(np.all(np.logical_or(np.greater_equal(points,
+                              left), np.isclose(points, left)), axis=1),
+                              np.all(np.logical_or(np.less_equal(points,
+                              right), np.isclose(points, right)), axis=1))
     return ifun
 
 def hyperrectangle_size(center, width):

@@ -182,7 +182,7 @@ def pick_cfd_points(centers, rvec):
 
     # Contstruct a [num_centers*2*Lambda_dim, Lambda_dim] matrix that
     # translates the centers to the CFD points
-    ident = np.eye(Lambda_dim) * rvec
+    ident = np.eye(Lambda_dim) * rvec * 0.5
     translate = np.tile(np.append(ident, -ident, axis=0), (num_centers, 1))
     samples = samples + translate
 
@@ -425,7 +425,8 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     num_centers = num_model_samples / (2*Lambda_dim + 1)
 
     # Find rvec from the first cluster of samples
-    rvec = samples[num_centers:num_centers + Lambda_dim, :] - samples[0,:]
+    rvec = samples[num_centers:num_centers + Lambda_dim, :] -\
+        samples[num_centers+Lambda_dim:num_centers + 2*Lambda_dim, :]
     rvec = util.fix_dimensions_vector_2darray(rvec.diagonal())
 
     # Clean the data
