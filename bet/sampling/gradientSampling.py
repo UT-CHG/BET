@@ -233,8 +233,6 @@ class sampler(asam.sampler):
             centers_in_RoI = (kern_old > 0)
             not_in_RoI = np.logical_not(centers_in_RoI)
 
-            print np.sum(centers_in_RoI), self.num_chains_pproc
-
             if not_in_RoI.any():
                 # Determine indices to create np.concatenate([centers, clusters])
                 # for centers not in the RoI
@@ -285,17 +283,23 @@ class sampler(asam.sampler):
                     elif cluster_type == 'cfd':
                         samples_p_cluster = 2*lambda_dim
                 normG = np.linalg.norm(G, axis=2)
-                # Check to see if the step will take the chain outside of
-                # the parameter domain or if normG is zero etc.
+                # take a Newton step
+                # calculate step size
+                step_size = (0-rank_old[not_in_RoI])
+                step_size = util.fix_dimensions_vector_2darray(step_size)
+                step_size = step_size/normG
+                step_size = np.column_stack([step_size]*lambda_dim)
+                # move centers
+                MYcenters_new[not_in_RoI] = MYcenters_old[not_in_RoI]\
+                        + step_size*np.round(G[:, 0, :]/normG, decimals=11)              
                 # If the tolerance is too low take a random step as you
                 # would using centers_in_RoI
                 # determine chains with gradient < TOL 
                 do_random_step = np.reshape(np.logical_and(normG <= TOL,
                     np.isnan(normG)), (normG.shape[0],))
-                not_in_RoI_NS = np.copy(not_in_RoI)
                 if np.any(do_random_step):
                     print 'Random step, too small normG, batch: ', batch
-                    not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
+                    not_in_RoI_RS = np.zeros(not_in_RoI.shape, dtype=bool)
                     not_in_RoI_RS[do_random_step] = True
                     # do a random of size 2*radius
                     step_ratio = 2*radius_ratio*np.ones(not_in_Roi_RS.shape)
@@ -303,41 +307,33 @@ class sampler(asam.sampler):
                             param_width[not_in_RoI_RS],
                             param_left[not_in_RoI_RS], param_right[not_in_RoI_RS],
                             MYcenters_old[not_in_RoI_RS])
-                # take a Newton step
-                # calculate step size
-                step_size = (0-rank_old[not_in_RoI_NS])
-                step_size = util.fix_dimensions_vector_2darray(step_size)
-                step_size = step_size/normG
-                step_size = np.column_stack([step_size]*lambda_dim)
-                # move centers
-                MYcenters_new[not_in_RoI_NS] = MYcenters_old[not_in_RoI_NS]\
-                        + step_size*np.round(G[:, 0, :]/normG, decimals=11)
+
                 # did the step take us outside of lambda?
                 step_out = np.logical_not(param_domain_test(MYcenters_new\
-                        [not_in_RoI_NS]))
+                        [not_in_RoI]))
+
                 if step_out.any():
-                    print 'Restart chain, left parameter domain, batch: ', batch
-                    not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
-                    not_in_RoI_RS[step_out] = True
+                    msg = 'Restart {} chain(s), '.format(sum(step_out))
+                    msg += 'left parameter domain, batch:{}'.format(batch)
+                    print msg
+                    not_in_RoI_RS = np.zeros(not_in_RoI.shape, dtype=bool)
+                    not_in_RoI_RS[not_in_RoI] = step_out
                     # Restart the samples with if samples leave the
                     # parameter domain
-                    MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
+                    MYcenters_new[not_in_RoI_RS] = param_left[not_in_RoI_RS] + \
                             param_width[not_in_RoI_RS]*np.random.random((\
                             np.sum(not_in_RoI_RS), lambda_dim))
 
             # For the centers that are in the RoI sample uniformly
-            # TODO: choose this step size better, min, max, average?
-            # would it be better to just calculate the radius of the set and
-            # use that?
             step_ratio = determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI], nominal_ratio)
             if batch > 1 and left_roi[centers_in_RoI].any():
                 step_ratio[left_roi[centers_in_RoI]] = 0.5*\
                         step_ratio[left_roi[centers_in_RoI]]
-            #MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
-            #        param_width[centers_in_RoI],
-            #        param_left[centers_in_RoI], param_right[centers_in_RoI],
-            #        MYcenters_old[centers_in_RoI])
+            MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
+                    param_width[centers_in_RoI],
+                    param_left[centers_in_RoI], param_right[centers_in_RoI],
+                    MYcenters_old[centers_in_RoI])
 
             # Finish creating the new samples
             if cluster_type == 'rbf':
@@ -367,6 +363,8 @@ class sampler(asam.sampler):
                 msg = "Current chain length: "+str(batch+1)
                 msg += "/"+str(self.chain_length)
                 print msg
+                msg = "{}/{} in RoI".format(np.sum(centers_in_RoI),
+                        self.num_chains_pproc)
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
             kern_samples = np.concatenate((kern_samples, kern_new))
@@ -391,7 +389,6 @@ class sampler(asam.sampler):
             kern_old = kern_new
 
         centers_in_RoI = (kern_old > 0)
-        print np.sum(centers_in_RoI), self.num_chains_pproc
 
         # collect everything
         MYsamples = np.copy(samples)
@@ -419,7 +416,7 @@ class sampler(asam.sampler):
         return (samples, data, all_step_ratios)
 
 
-def determine_step_ratio(param_dist, MYsamples_old, nominal_ratio=0.20):
+def determine_step_ratio(param_dist, MYsamples_old, nominal_ratio=0.50):
     """
     Estimate the radius of the RoI using the current samples. This could be
     improved by using all of the samplings in the RoI. This will begin to

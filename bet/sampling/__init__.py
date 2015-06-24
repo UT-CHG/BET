@@ -13,4 +13,4 @@ This subpackage contains
 __all__ = ['basicSampling', 'adaptiveSampling', 'dev_multi_dist_kernel',
     'slopedIndicatorFunction', 'smoothedIndicatorFunction', 'boundarySampling',
     'limitedMemorySampling', 'surrogateSampling', 'reseedSampling',
-    'newtonSampling']
+    'gradientSampling']
