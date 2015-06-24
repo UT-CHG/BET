@@ -58,7 +58,7 @@ class sampler(asam.sampler):
 
     def generalized_chains(self, param_min, param_max, t_set, rho_D,
             smoothIndicatorFun, savefile, initial_sample_type="random",
-            criterion='center', radius=0.01, initial_samples=None,
+            criterion='center', radius_ratio=0.01, initial_samples=None,
             initial_data=None, cluster_type='rbf', TOL=0, nominal_ratio=0.1): 
         r"""
         This method adaptively generates samples similar to the method
@@ -114,7 +114,7 @@ class sampler(asam.sampler):
         param_left = np.repeat([param_min], self.num_chains_pproc, 0)
         param_right = np.repeat([param_max], self.num_chains_pproc, 0)
         param_width = param_right - param_left
-        radius = radius*(param_max-param_min)
+        radius = radius_ratio*(param_max-param_min)
         lambda_dim = len(param_max)
 
         if cluster_type == 'rbf':
@@ -287,38 +287,42 @@ class sampler(asam.sampler):
                 normG = np.linalg.norm(G, axis=2)
                 # Check to see if the step will take the chain outside of
                 # the parameter domain or if normG is zero etc.
+                # TODO: If the tolerance is too low take a random step as you
+                # would using centers_in_RoI
                 # determine chains with gradient < TOL 
-                if np.any(np.logical_and(normG <= TOL, np.isnan(normG))):
-                    import pdb; pdb.set_trace()
-                #restart = np.reshape(np.logical_and(normG <= TOL,
-                #    np.isnan(normG)), (normG.shape[0],))
-                #not_in_RoI_NR = np.copy(not_in_RoI)
-                not_in_RoI_RS = np.copy(not_in_RoI)
-                #not_in_RoI_NR[not_in_RoI] = np.logical_not(restart)
-                #not_in_RoI_RS[not_in_RoI] = restart
-                #if restart.any():
-                #    import pdb; pdb.set_trace()
+                do_random_step = np.reshape(np.logical_and(normG <= TOL,
+                    np.isnan(normG)), (normG.shape[0],))
+                not_in_RoI_NS = np.copy(not_in_RoI)
+                if np.any(do_random_step):
+                    #import pdb; pdb.set_trace()
+                    print 'Random step, too small normG, batch: ', batch
+                    not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
+                    not_in_RoI_RS[do_random_step] = True
+                    # do a random of size 2*radius
+                    #step_ratio = 2*radius_ratio*np.ones(not_in_Roi_RS.shape)
+                    #MYcenters_new[not_in_RoI_RS] = t_set.step(step_ratio,
+                    #        param_width[not_in_RoI_RS],
+                    #        param_left[not_in_RoI_RS], param_right[not_in_RoI_RS],
+                    #        MYcenters_old[not_in_RoI_RS])
                 # take a Newton step
-                step_size = (0-rank_old[not_in_RoI])
+                # calculate step size
+                step_size = (0-rank_old[not_in_RoI_NS])
                 step_size = util.fix_dimensions_vector_2darray(step_size)
-                #normG = util.fix_dimensions_vector_2darray(normG)
                 step_size = step_size/normG
                 step_size = np.column_stack([step_size]*lambda_dim)
-                #MYcenters_new[not_in_RoI_NR, :] = MYcenters_old[not_in_RoI_NR]\
-                #        + step_size*G[np.logical_not(restart), 0, :]
-                MYcenters_new[not_in_RoI] = MYcenters_old[not_in_RoI]\
+                # move centers
+                MYcenters_new[not_in_RoI_NS] = MYcenters_old[not_in_RoI_NS]\
                         + step_size*np.round(G[:, 0, :]/normG, decimals=11)
                 # did the step take us outside of lambda?
                 step_out = np.logical_not(param_domain_test(MYcenters_new\
-                        [not_in_RoI]))
+                        [not_in_RoI_NS]))
                 if step_out.any():
-                    import pdb; pdb.set_trace()
-                    print batch
+                    #import pdb; pdb.set_trace()
+                    print 'Restart chain, left parameter domain, batch: ', batch
                     not_in_RoI_RS = np.zeros(not_in_RoI, dtype=bool)
                     not_in_RoI_RS[step_out] = True
-                    # restart the samples with too small gradient or if samples
+                    # TODO: restart the samples with too small gradient or if samples
                     # leave the parameter domain
-                    #MYcenters_new[not_in_RoI_RS] = MYcenters_old[not_in_RoI_RS]
                     #MYcenters_new[not_in_RoI_RS, :] = param_left[not_in_RoI_RS] + \
                     #        param_width[not_in_RoI_RS]*np.random.random((\
                     #        np.sum(not_in_RoI_RS), lambda_dim))
@@ -329,7 +333,7 @@ class sampler(asam.sampler):
             # use that?
             step_ratio = determine_step_ratio(param_dist, 
                     MYcenters_old[centers_in_RoI], nominal_ratio)
-            if batch > 1:
+            if batch > 1 and left_roi[centers_in_RoI].any():
                 step_ratio[left_roi[centers_in_RoI]] = 0.5*\
                         step_ratio[left_roi[centers_in_RoI]]
             #MYcenters_new[centers_in_RoI] = t_set.step(step_ratio,
@@ -357,7 +361,7 @@ class sampler(asam.sampler):
             kern_new = rho_D(data_new[:self.num_chains_pproc, :])
             # Update the logical index of chains searching along the boundary
             left_roi = np.logical_and(kern_old > 0, kern_new < kern_old)
-            
+
             # Save and export concatentated arrays
             if self.chain_length < 4:
                 pass
@@ -383,11 +387,6 @@ class sampler(asam.sampler):
             else:
                 super(sampler, self).save(mdat, savefile)
             
-            # Don't update centers that have left the RoI (after finding it)
-            #MYcenters_old[np.logical_not(left_roi)] = MYcenters_new[\
-            #        np.logical_not(left_roi)]
-            #kern_old[np.logical_not(left_roi)] = kern_new[\
-            #        np.logical_not(left_roi)]
             MYcenters_old = MYcenters_new
             MYdata_old = data_new
             MYsamples_old = samples_new
