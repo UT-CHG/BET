@@ -9,6 +9,7 @@ import numpy as np
 from itertools import combinations
 from bet.Comm import comm
 import bet.util as util
+import scipy.io as sio
 
 def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None,
         num_optsets_return=None):
@@ -240,6 +241,7 @@ def find_good_triplets(grad_tensor, cond_tol, qoiIndices=None):
     # Find all n choose 2 pairs of QoIs
     if comm.rank == 0:
         qoi_combs = np.array(list(combinations(list(qoiIndices), 3)))
+        print '*** find_good_triplets ***'
         print 'Possible triplets of QoIs : ', qoi_combs.shape
         qoi_combs = np.array_split(qoi_combs, comm.size)
     else:
@@ -289,7 +291,7 @@ def find_good_triplets(grad_tensor, cond_tol, qoiIndices=None):
 
     return good_mat[1:]
 
-def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None):
+def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None, inner_prod_tol=None, cond_tol=None, unique_inds=None):
     """
 
     :param grad_tensor: Gradient vectors at each centers in the parameter 
@@ -310,17 +312,23 @@ def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None):
         has shape (num_centers, num_qois_return, num_optsets_return)
 
     """
+    num_qois_return = 4
     num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]
     if qoiIndices is None:
         qoiIndices = range(0, grad_tensor.shape[1])
-    num_qois_return = 4
     if num_optsets_return is None:
         num_optsets_return = 10
+    if inner_prod_tol is None:
+        inner_prod_tol = 0.8
+    if cond_tol is None:
+        cond_tol = 2.0
 
-    unique_inds = find_unique_vecs(grad_tensor, 0.8, qoiIndices)
+    if unique_inds is None:
+        unique_inds = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
+
     comm.Barrier()
-    good_triplets = find_good_triplets(grad_tensor, cond_tol=2.0, qoiIndices=unique_inds)
+    good_triplets = find_good_triplets(grad_tensor, cond_tol=cond_tol, qoiIndices=unique_inds)
     comm.Barrier()
 
     condnum_indices_mat = np.zeros([num_optsets_return, num_qois_return + 1])
@@ -390,10 +398,17 @@ def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None):
         condnum_indices_mat = comm.bcast(condnum_indices_mat, root=0)
         comm.Barrier()
 
-    return condnum_indices_mat
+    return (unique_inds, condnum_indices_mat)
 
+def increase_cond_num(grad_tensor, qoiIndices=None, num_optsets_return=None, savepairs=None):
 
-
+    inner_prod_tol = 0.8
+    unique_inds = None
+    for i in range(2,10):
+        cond_tol = float(i)
+        (unique_inds, condnum_indices_mat) = find_good_quartets(grad_tensor, qoiIndices=qoiIndices, num_optsets_return=num_optsets_return, inner_prod_tol=inner_prod_tol, cond_tol=cond_tol, unique_inds=unique_inds)
+        if np.min(condnum_indices_mat[:,0]) < 1E11:
+            return condnum_indices_mat
 
 
 
