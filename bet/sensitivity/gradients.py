@@ -55,11 +55,6 @@ def sample_linf_ball(centers, num_close, rvec, lam_domain=None):
 
 def sample_l1_ball(centers, num_close, rvec):
     """
-    TODO: Vectorize the for loops. Split this into two methods, sample_simplex,
-          simplex_to_diamond?.  Take in 'hard' and 'soft' lam_domain boundaries
-          and either allow for sampes out side lam_domain (soft) or restrict
-          them to be inside (hard).
-
     Uniformly sample the l1-ball (defined by 2^dim simplices).  Then scale
     each dimension according to rvec and translate the center to centers.
     Do this for each point in centers.  *** This method currently allows
@@ -250,8 +245,6 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
         RBF=None, ep=None, normalize=True):
     """
-    TODO: vectorize first for loop?
-
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map using a radial basis function
     interpolation method.
@@ -392,7 +385,6 @@ def calculate_gradients_ffd(samples, data, normalize=True):
 
 def calculate_gradients_cfd(samples, data, normalize=True):
     """
-
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
     ON USING pick_cfd_points TO CHOOSE SAMPLES FOR THE CFD STENCIL AROUND
@@ -426,8 +418,8 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     rvec = np.tile(np.repeat(rvec, num_qois, axis=1), [num_centers, 1])
 
     # Construct indices for CFD gradient approxiation
-    inds = np.repeat(range(0,2*Lambda_dim*num_centers,2*Lambda_dim), 
-        Lambda_dim) + np.tile(range(0,Lambda_dim),num_centers)
+    inds = np.repeat(range(0, 2 * Lambda_dim * num_centers, 2 * Lambda_dim), 
+        Lambda_dim) + np.tile(range(0, Lambda_dim), num_centers)
     inds = np.array([inds, inds+Lambda_dim]).transpose()
 
     gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / rvec)
