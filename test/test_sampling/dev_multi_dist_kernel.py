@@ -1,4 +1,4 @@
-# Lindley Graham 4/23/15
+# Copyright (C) 2014-2015 The BET Development Team
 """
 This module contains unittests for :mod:`~bet.sampling.dev_multidist_kernel`
 """

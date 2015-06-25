@@ -199,7 +199,7 @@ class GradientsAccuracy:
         self.G_nonlin = grad.calculate_gradients_rbf(self.samples_rbf,
             self.data_nonlin_rbf, normalize=False)
 
-        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 1)
+        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 2)
 
     def test_calculate_gradients_ffd_accuracy(self):
         """
@@ -208,7 +208,7 @@ class GradientsAccuracy:
         self.G_nonlin = grad.calculate_gradients_ffd(self.samples_ffd,
             self.data_nonlin_ffd, normalize=False)
 
-        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 1)
+        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 2)
 
     def test_calculate_gradients_cfd_accuracy(self):
         """
@@ -217,7 +217,7 @@ class GradientsAccuracy:
         self.G_nonlin = grad.calculate_gradients_cfd(self.samples_cfd,
             self.data_nonlin_cfd, normalize=False)
 
-        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 1)
+        nptest.assert_array_almost_equal(self.G_nonlin - self.G_exact, 0, decimal = 2)
 
 
 # Test cases
