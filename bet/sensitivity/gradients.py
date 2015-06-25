@@ -1,8 +1,11 @@
 # Copyright (C) 2014-2015 The BET Development Team
 
 """
-This module contains functions for approximating gradient vectors
-of QoI maps.
+This module contains functions for approximating gradient vectors of QoI maps.
+
+All methods that cluster points around centers are written to return the samples
+in the following order : CENTERS, FOLLOWED BY THE CLUSTER AROUND THE FIRST
+CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
 """
 import numpy as np
 import scipy.spatial as spatial
@@ -11,18 +14,15 @@ import sys
 
 def sample_linf_ball(centers, num_close, rvec, lam_domain=None):
     """
-    #TODO : Put these samples in the order, centers followed by each cluster
-
-    Pick num_close points in a the l-infinity ball of length
-    2*rvec around a point in :math:`\Lambda`, do this for each point
-    in centers.  If this box extends outside of :math:`\Lambda`, we
-    sample the intersection.
+    Pick num_close points in a the l-infinity ball of length 2*rvec around a
+    point in :math:`\Lambda`, do this for each point in centers.  If this box
+    extends outside of :math:`\Lambda`, we sample the intersection.
 
     :param centers: Points in :math:`\Lambda` to cluster points around
-    :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
+    :type centers: :class:`np.ndarray` of shape (num_centers, Lambda_dim)
     :param int num_close: Number of points in each cluster
     :param rvec: Each side of the box will have length 2*rvec[i]
-    :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
+    :type rvec: :class:`np.ndarray` of shape (Lambda_dim,)
     :param lam_domain: The domain of the parameter space
     :type lam_domain: :class:'np.ndarray' of shape (Lambda_dim, 2)
     
@@ -47,8 +47,9 @@ def sample_linf_ball(centers, num_close, rvec, lam_domain=None):
         centers + rvec, np.ones([num_centers, Lambda_dim]) * lam_domain[:, 1])
 
     # Samples each box uniformly
-    samples = np.tile(right - left, [num_close, 1]) * np.random.random(
-        [num_centers * num_close, Lambda_dim]) + np.tile(left, [num_close, 1])
+    samples = np.repeat(right - left, num_close, axis=0) * np.random.random(
+        [num_centers * num_close, Lambda_dim]) + np.repeat(left, num_close,
+        axis=0)
 
     return np.concatenate([centers, samples])
 
@@ -125,16 +126,14 @@ def sample_l1_ball(centers, num_close, rvec):
 
 def pick_ffd_points(centers, rvec):
     """
-
     Pick Lambda_dim points, for each centers, for a forward finite
-    difference gradient approximation.  THE ORDERING OF THE SAMPLES IS
-    IMPORTANT.  SAMPLES ARE ORDERED CENTERS, FOLLOWED BY THE CLUSTER AROUND THE
-    FIRST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
+    difference gradient approximation.
 
     :param centers: Points in :math:`\Lambda` the place stencil around
-    :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
+    :type centers: :class:`np.ndarray` of shape (num_centers, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
-    :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
+    :type rvec: :class:`np.ndarray` of shape (Lambda_dim,)
+
     :rtype: :class:`np.ndarray` of shape ((Lambda_dim+1)*num_centers,
         Lambda_dim)
     :returns: Samples for centered finite difference stencil for
@@ -155,20 +154,17 @@ def pick_ffd_points(centers, rvec):
 
 def pick_cfd_points(centers, rvec):
     """
-
     Pick 2*Lambda_dim points, for each center, for centered finite difference
-    gradient approximation.  THE ORDERING OF THE SAMPLES IS
-    IMPORTANT.  SAMPLES ARE ORDERED CENTERS, FOLLOWED BY THE CLUSTER AROUND THE
-    FIST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
-    The center are not needed for the CFD gradient approximation, they are
-    returned for consistency with the other methods and because of the need to
-    have not just the gradient but also the QoI value at the centers in
-    adaptive sampling algorithms.
+    gradient approximation.  The center are not needed for the CFD gradient
+    approximation, they are returned for consistency with the other methods and
+    because of the common need to have not just the gradient but also the QoI
+    value at the centers in adaptive sampling algorithms.
 
     :param centers: Points in :math:`\Lambda` to cluster points around
-    :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
+    :type centers: :class:`np.ndarray` of shape (num_centers, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
-    :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
+    :type rvec: :class:`np.ndarray` of shape (Lambda_dim,)
+
     :rtype: :class:`np.ndarray` of shape ((2*Lambda_dim+1)*num_centers,
         Lambda_dim)
     :returns: Samples for centered finite difference stencil for
@@ -190,7 +186,6 @@ def pick_cfd_points(centers, rvec):
 
 def radial_basis_function(r, kernel=None, ep=None):
     """
-
     Evaluate a chosen radial basis function.  Allow for the choice of several
     radial basis functions to use in the calculate_gradients_rbf.
 
@@ -198,6 +193,7 @@ def radial_basis_function(r, kernel=None, ep=None):
     :type r: :class:`np.ndarray`
     :param string kernel: Choice of radial basis funtion
     :param float ep: Shape parameter for the radial basis function
+
     :rtype: :class:`np.ndarray` of shape (r.shape)
     :returns: Radial basis function evaluated for each element of r
 
@@ -220,7 +216,6 @@ def radial_basis_function(r, kernel=None, ep=None):
 
 def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     """
-
     Evaluate a partial derivative of a chosen radial basis function.  Allow for
     the choice of several radial basis functions to use in the 
     calculate_gradients_rbf.
@@ -231,6 +226,7 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     :type xi: :class:`np.ndarray`
     :param string kernel: Choice of radial basis funtion
     :param float ep: Shape parameter for the radial basis function
+
     :rtype: :class:`np.ndarray` of shape (r.shape)
     :returns: Radial basis function evaluated for each element of r
 
@@ -254,29 +250,26 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
         RBF=None, ep=None, normalize=True):
     """
-
     TODO: vectorize first for loop?
 
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
-    in the parameter space for each QoI map.
+    in the parameter space for each QoI map using a radial basis function
+    interpolation method.
 
     :param samples: Samples for which the model has been solved.
-    :type samples: :class:`np.ndarray` of shape (num_samples, Ldim) where Ldim
-        is the dimension of the parameter space :math:`\Lambda`
+    :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim)
     :param data: QoI values corresponding to each sample.
-    :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
-        the number of QoI (i.e. the dimension of the data space
-        :math:`\mathcal{D}`
+    :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
     :param centers: Points in :math:`\Lambda` at which to approximate gradient
         information.
-    :type centers: :class:`np.ndarray` of shape (num_exval, Ldim)
+    :type centers: :class:`np.ndarray` of shape (num_exval, Lambda_dim)
     :param int num_neighbors: Number of nearest neighbors to use in gradient
         approximation. Default value is Lambda_dim + 2.
-    :param string RBF: Choice of radial basis function.
-        Default is Gaussian
+    :param string RBF: Choice of radial basis function. Default is Gaussian
     :param float ep: Choice of shape parameter for radial basis function.
         Default value is 1.0
-    :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
+
+    :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
 
@@ -346,20 +339,17 @@ def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
 
 def calculate_gradients_ffd(samples, data, normalize=True):
     """
-
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
-    in the parameter space for each QoI map.
-    THIS METHOD IS DEPENDENT ON USING pick_ffd_points TO CHOOSE
-    SAMPLES FOR THE CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
+    in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
+    pick_ffd_points TO CHOOSE SAMPLES FOR THE CFD STENCIL AROUND EACH CENTER.
+    THE ORDERING MATTERS.
 
     :param samples: Samples for which the model has been solved.
-    :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim) where
-        Ldim is the dimension of the parameter space :math:`\Lambda`
+    :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim)
     :param data: QoI values corresponding to each sample.
-    :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
-        the number of QoI (i.e. the dimension of the data space
-        :math:`\mathcal{D}`
-    :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
+    :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
+
+    :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
 
@@ -412,10 +402,9 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     :type samples: :class:`np.ndarray` of shape
         (2*Lambda_dim*num_centers, Lambda_dim)
     :param data: QoI values corresponding to each sample.
-    :type data: :class:`np.ndarray` of shape (num_samples, Ddim) where Ddim is
-        the number of QoI (i.e. the dimension of the data space
-        :math:`\mathcal{D}`
-    :rtype: :class:`np.ndarray` of shape (num_samples, Ddim, Ldim)
+    :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
+
+    :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
 
