@@ -11,14 +11,11 @@ import bet.sensitivity.gradients as grad
 import numpy as np
 import numpy.testing as nptest
 
-#TODO Look at the accuacy tests at the end, whats going on?...
-
 class GradientsMethods:
     """
     Test all methods in :module:`bet.sensitivity.gradients`
     """
     # Test sampling methods
-    #TODO make this put sample in correct order!!!
     def test_sample_linf_ball(self):
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
@@ -32,9 +29,9 @@ class GradientsMethods:
 
         # Check the method returns centers followed by the clusters around the
         # first center.
-        #nptest.assert_array_less(np.linalg.norm(self.samples[self.num_centers:\
-        #    self.num_centers + self.num_close, :] - self.centers[0,:], np.inf),
-        #    self.rvec)
+        self.repeat = np.repeat(self.centers, self.num_close, axis=0)
+        nptest.assert_array_less(np.linalg.norm(self.samples[self.num_centers:]\
+            - self.repeat, np.inf, axis=1), np.max(self.rvec))
 
         # Check that the samples are in lam_domain
         for Ldim in range(self.Lambda_dim):
@@ -453,21 +450,3 @@ class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
             self.Lambda_dim])
         self.G_exact[:, 0, 0] = 2 * self.centers[:, 0]
         self.G_exact[:, 1, 1] = 2 * self.centers[:, 1]
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
