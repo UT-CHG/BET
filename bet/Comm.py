@@ -60,6 +60,16 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
+    def scatter(self, val1, val2, root=0):
+        """
+        :param object val1: object to Scatter
+        :param object val2: object to Scatter
+        :param int root: 0
+        :rtype: object
+        :returns: val1
+        """
+        return val1
+
     def Allgather(self, val, val2=None):
         """
         :param object val: object to Allgather
