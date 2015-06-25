@@ -6,7 +6,7 @@ The module contains general tools for BET.
 
 import numpy as np
 import sys
-from bet.Comm import *
+from bet.Comm import comm
 import collections
 
 possible_types = {int:MPI.INT, float:MPI.DOUBLE}
