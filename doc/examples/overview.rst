@@ -18,7 +18,7 @@ in coastal ocean modeling.
 All of the example listed here and more are located in the ``BET/examples/``
 directory.
 
-=======================================
+
 Validation example
 =======================================
 
