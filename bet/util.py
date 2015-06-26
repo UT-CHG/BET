@@ -5,9 +5,9 @@ The module contains general tools for BET.
 """
 
 import numpy as np
-import sys
-from bet.Comm import comm
+from bet.Comm import comm, MPI
 import collections
+import sys
 
 possible_types = {int:MPI.INT, float:MPI.DOUBLE}
 
