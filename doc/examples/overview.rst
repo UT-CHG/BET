@@ -24,18 +24,21 @@ See :ref:`validation` for an example .
 
 
 =======================================
+Examples
+=======================================
+All of the example listed here and more are located in the ``BET/examples/``
+directory.
+
 Linear Map Example
 =======================================
 
 See :ref:`linearMap` for an example using a linear map.
 
-=======================================
 Non-Linear Map Example
 =======================================
 
 See :ref:`nonlinearMap` for an example using a nonlinear map.
 
-==============================================
 ADCIRC Based Examples
 ==============================================
 
