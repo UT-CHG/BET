@@ -35,6 +35,9 @@ import bet.postProcess.plotP as plotP
 lam_domain= np.array([[3.0, 6.0],
                       [1.0, 5.0]])
 
+# reference parameters
+ref_lam = [5.5, 4.5]
+
 '''
 Suggested changes for user:
     
@@ -59,14 +62,20 @@ if random_sample == False:
 else:
   n_samples = 1E3  
 
+#set up samples
+if random_sample == False:
+  vec0 = list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
+  vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
+  vecv0, vecv1 = np.meshgrid(vec0, vec1, indexing='ij')
+  samples = np.vstack((vecv0.flat[:], vecv1.flat[:])).transpose()
+else:
+  samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
+					    num_l_emulate = n_samples)
+
 # QoI function
 def QoI(x,y,lam1,lam2):
   z = np.sin(m.pi*x*lam1)*np.sin(m.pi*y*lam2)
   return z #np.vstack(z.flat[:]).transpose()
-
-  
-# reference parameters
-ref_lam = [5.5, 4.5]
 
 '''
 Suggested changes for user:
@@ -77,7 +86,7 @@ Play around with the x1, y1, and/or, x2, y2 values to try and
 "optimize" the QoI to give the highest probability region 
 on the reference parameter above. 
 
-Hint: Try using QoI_num == 1 and systematically varying the
+Hint: Try using QoI_num = 1 and systematically varying the
 x1 and y1 values to find QoI with contour structures (as inferred
 through the 2D marginal plots) that are nearly orthogonal.
 
@@ -97,8 +106,8 @@ if QoI_num == 1:
   Q_ref = np.array([QoI(x[0],y[0],ref_lam[0],ref_lam[1])])
 else:
   x1 = 0.5
-  y1 = 0.5
-  x2 = 0.25
+  y1 = 0.15
+  x2 = 0.15
   y2 = 0.25
   x = np.array([x1,x2])
   y = np.array([y1,y2])
@@ -117,17 +126,6 @@ else:
     z = np.array([Q1,Q2]).transpose()
     return z
   
-
-#set up samples
-if random_sample == False:
-  vec0 = list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
-  vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
-  vecv0, vecv1 = np.meshgrid(vec0, vec1, indexing='ij')
-  samples = np.vstack((vecv0.flat[:], vecv1.flat[:])).transpose()
-else:
-  samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
-					    num_l_emulate = n_samples)
-
 # calc data
 data = QoI_map(x,y,samples[:,0],samples[:,1])
 

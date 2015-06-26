@@ -1,14 +1,21 @@
 .. _linearMap:
 
+
 ===========================
-Example: Linear Uniform Map
+Example: Linear Map with Uniform Sampling
 ===========================
 
 We will wailk through the following :download:`example
 <../../../examples/linearMap/linearMapUniformSampling.py>`. This example
-generates uniform samples on a 3D grid and evaluates a linear map to a 2D
-space. Probabilities in the paramter space are calculated using emulated
-points.  1D and 2D marginals are calculated, smoothed, and plotted.
+generates uniform samples in a 3D input parameter space and evaluates a 
+linear map to a 2D data space. The stochastic inverse problem solved here
+is one of parameter identification under uncertainty. A reference parameter
+is defined for which a reference datum is computed. A probability measure
+is then defined around this reference datum and this probability measure
+is inverted using a non-intrusive measure-theoretic algorithm. 
+Probabilities in the parameter space are 
+calculated using emulated points.  1D and 2D marginals are calculated,
+smoothed, and plotted.
 
 Import the necessary modules::
 
@@ -19,12 +26,13 @@ Import the necessary modules::
     import bet.calculateP.calculateP as calculateP
     import bet.postProcess.plotP as plotP
 
-Define the parameter domain::
+Define the parameter domain and reference parameter::
 
-    lam_domain= np.array([[0.0, 1.0],
-                      [0.0, 1.0],
-                      [0.0, 1.0]])
+  lam_domain= np.array([[0.0, 1.0],
+		    [0.0, 1.0],
+		    [0.0, 1.0]])
 
+  ref_lam = [0.5, 0.5, 0.5]
 Suggested changes for user (1)
 ------------------------------
 
@@ -40,46 +48,50 @@ Then also try ``n_samples = 1E4``. What happens when ``n_samples = 1E2``?
 
 Define sampling types random or regular::
 
-    random_sample = True
+  random_sample = True
 
-    if random_sample == False:
-      n0 = 30 # number of samples in lam0 direction
-      n1 = 30 # number of samples in lam1 direction
-      n2 = 30 # number of samples in lam2 direction
-      n_samples = n0*n1*n2
-    else:
-      n_samples = 2E3  
+  if random_sample == False:
+    n0 = 30 # number of samples in lam0 direction
+    n1 = 30 # number of samples in lam1 direction
+    n2 = 30 # number of samples in lam2 direction
+    n_samples = n0*n1*n2
+  else:
+    n_samples = 2E3  
 
-Define the QoI map::
-
-    Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])
-
-Define the reference QoI::
-    
-    Q_ref =  np.array([0.422, 0.9385])
-
-Define the reference parameters::
-
-    ref_lam = [0.5, 0.5, 0.5]
 
 Set up the samples::
 
-    if random_sample == False:
-      vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
-      vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
-      vec2 = list(np.linspace(lam_domain[2][0], lam_domain[2][1], n2))
-      vecv0, vecv1, vecv2 = np.meshgrid(vec0, vec1, vec2, indexing='ij')
-      samples=np.vstack((vecv0.flat[:], vecv1.flat[:], vecv2.flat[:])).transpose()
-    else:
-      samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
-                                                num_l_emulate = n_samples)
+  if random_sample == False:
+    vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
+    vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
+    vec2 = list(np.linspace(lam_domain[2][0], lam_domain[2][1], n2))
+    vecv0, vecv1, vecv2 = np.meshgrid(vec0, vec1, vec2, indexing='ij')
+    samples=np.vstack((vecv0.flat[:], vecv1.flat[:], vecv2.flat[:])).transpose()
+  else:
+    samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
+					      num_l_emulate = n_samples)      
+      
+Define the QoI map::
 
-Calculate the data::
+  Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])
 
-    data= np.dot(samples,Q_map)
-    np.savetxt('3to2_samples.txt.gz', samples)
-    np.savetxt('3to2_data.txt.gz', data)
+Define the reference QoI::
+    
+  Q_ref =  np.array([0.422, 0.9385])
 
+
+Calculate and save the data.::
+
+  data= np.dot(samples,Q_map)
+  np.savetxt('3to2_samples.txt.gz', samples)
+  np.savetxt('3to2_data.txt.gz', data)
+
+Note that saving the data as shown above
+implies that all of the above code can be skipped in the future. Given files
+containing the parameter samples and associated QoI data from a computational model, 
+we can simply read in the arrays and solve the stochastic inverse problem
+as shown below. 
+  
 Suggested changes for user (2)
 ------------------------------
 
@@ -138,8 +150,8 @@ Note that you can always use::
 and this simply will imply that a standard Monte Carlo assumption is
 being used, which in a measure-theoretic context implies that each 
 Voronoi cell is assumed to have the same measure. This type of 
-approximation is more reasonable for large n_samples due to the slow 
-convergence rate of Monte Carlo (it converges like `1/sqrt(n_samples))`.
+approximation is more reasonable for large ``n_samples`` due to the slow 
+convergence rate of Monte Carlo (it converges like 1/sqrt(``n_samples``)).
 
 Set up volume emulation::
 
@@ -194,7 +206,7 @@ Smooth 1d marginal probs (optional)::
 
     marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.1)
 
-Plot 2d marginal probs::
+Plot 1d marginal probs::
 
     plotP.plot_1D_marginal_probs(marginals1D, bins, lam_domain, filename = "linearMap")
 
