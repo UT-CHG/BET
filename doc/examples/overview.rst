@@ -15,6 +15,8 @@ hydrodynamic models <http://dx.doi.org/10.1016/j.advwatres.2015.01.011>`_ for a 
 of the method for engineers as well as application to a physically relevant problem
 in coastal ocean modeling. 
 
+All of the example listed here and more are located in the ``BET/examples/``
+directory.
 
 =======================================
 Validation example
@@ -22,12 +24,6 @@ Validation example
 
 See :ref:`validation` for an example .
 
-
-=======================================
-Examples
-=======================================
-All of the example listed here and more are located in the ``BET/examples/``
-directory.
 
 Linear Map Example
 =======================================
