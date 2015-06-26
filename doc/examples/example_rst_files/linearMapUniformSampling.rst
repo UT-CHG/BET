@@ -99,26 +99,9 @@ Try different ways of discretizing the probability measure on
 :math:`\mathcal{D}` defined as a uniform probability measure on a rectangle
 (since :math:`\mathcal{D}` is 2-dimensional).
     
-*   unif_unif creates a uniform measure on a hyperbox with dimensions relative
-  to the size of the circumscribed hyperbox of the set :math:`\mathcal{D}`
-  using the bin_ratio. A total of M samples are drawn within a slightly larger
-  scaled hyperbox to discretize this measure defining M total generalized
-  contour events in Lambda.  The reason a slightly larger scaled hyperbox is
-  used to draw the samples to discretize :math:`\mathcal{D}` is because
-  otherwise every generalized contour event will have non-zero probability
-  which obviously defeats the purpose of "localizing" the probability within a
-  subset of :math:`\mathcal{D}`.
+*   unif_unif creates a uniform measure on a hyperbox with dimensions relative   to the size of the circumscribed hyperbox of the set :math:`\mathcal{D}`  using the bin_ratio. A total of M samples are drawn within a slightly larger  scaled hyperbox to discretize this measure defining M total generalized  contour events in Lambda.  The reason a slightly larger scaled hyperbox is  used to draw the samples to discretize :math:`\mathcal{D}` is because  otherwise every generalized contour event will have non-zero probability  which obviously defeats the purpose of "localizing" the probability within a  subset of :math:`\mathcal{D}`.
     
-*   uniform_hyperrectangle uses the same measure defined in the same way as
-  unif_unif, but the difference is in the discretization which is on a regular
-  grid defined by ``center_pts_per_edge``.  If ``center_pts_per_edge = 1``,
-  then the contour event corresponding to the entire support of
-  :math:`\rho_\mathcal{D}` is approximated as a single event. This is done by
-  carefully placing a regular 3x3 grid (since :math:`\mathcal{D}=2` in this
-  case) of points in :math:`\mathcal{D}` with the center point of the grid in
-  the center of the support of the measure and the other points placed outside
-  of the rectangle defining the support to define a total of 9 contour events
-  with 8 of them having exactly zero probability.
+*   uniform_hyperrectangle uses the same measure defined in the same way as  unif_unif, but the difference is in the discretization which is on a regular  grid defined by ``center_pts_per_edge``.  If ``center_pts_per_edge = 1``,  then the contour event corresponding to the entire support of  :math:`\rho_\mathcal{D}` is approximated as a single event. This is done by  carefully placing a regular 3x3 grid (since :math:`dim(\mathcal{D})=2` in this  case) of points in :math:`\mathcal{D}` with the center point of the grid in  the center of the support of the measure and the other points placed outside  of the rectangle defining the support to define a total of 9 contour events  with 8 of them having exactly zero probability.
 
 Create a simple function approximation of the probablity measure on
 :math:`\mathcal{D}`::
