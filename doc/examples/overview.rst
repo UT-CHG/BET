@@ -1,3 +1,28 @@
+
+=======================================
+Some References and Examples
+=======================================
+
+For more information about the method and algorithm, see `A Measure-Theoretic
+Computational Method for Inverse Sensitivity Problems III: Multiple Quantities of Interest 
+<http://dx.doi.org/10.1137/130930406>`_ for the formulation of the stochastic
+inverse problem in a measure theoretic framework along with proofs of existence
+and uniqueness of solutions, `Solving Stochastic Inverse Problems using Sigma-Algebras on Contour Maps 
+<http://arxiv.org/abs/1407.3851>`_ for the convergence 
+and error analysis of the non-intrusive algorithm, and
+`Definition and solution of a stochastic inverse problem for the Manning’s n parameter field in 
+hydrodynamic models <http://dx.doi.org/10.1016/j.advwatres.2015.01.011>`_ for a less technical description
+of the method for engineers as well as application to a physically relevant problem
+in coastal ocean modeling. 
+
+
+=======================================
+Validation example
+=======================================
+
+See :ref:`validation` for an example .
+
+
 =======================================
 Linear Map Example
 =======================================
@@ -8,9 +33,7 @@ See :ref:`linearMap` for an example using a linear map.
 Non-Linear Map Example
 =======================================
 
-See :download:`non linear map example
-<../../examples/nonlinearMap/nonlinearMapUniformSampling.py>` for an example using a non-linear
-map.
+See :ref:`nonlinearMap` for an example using a nonlinear map.
 
 ==============================================
 ADCIRC Based Examples
