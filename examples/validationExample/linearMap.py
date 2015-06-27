@@ -44,14 +44,6 @@ if random_sample == False:
 else:
   n_samples = 2.5E3  
 
-# QoI map
-Q_map = np.array([[0.506, 0.463],[0.253, 0.918]])
-
-# reference QoI
-Q_ref =  np.array([0.3795, 0.6905])
-
-# reference parameters
-ref_lam = [0.5, 0.5]
 
 #set up samples
 if random_sample == False:
@@ -62,6 +54,10 @@ if random_sample == False:
 else:
   samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
 					    num_l_emulate = n_samples)
+
+# QoI map
+Q_map = np.array([[0.506, 0.463],[0.253, 0.918]])
+
 
 # calc data
 data = np.dot(samples,Q_map)
@@ -173,7 +169,7 @@ plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain, filename = "linearMa
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(P_samples = P, samples = lambda_emulate, lam_domain = lam_domain, nbins = [10, 10])
 # smooth 1d marginal probs (optional)
 #marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.01)
-# plot 2d marginal probs
+# plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, lam_domain, filename = "linearMapValidation")
 
 
