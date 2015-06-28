@@ -33,3 +33,4 @@ notifications:
 branches:
     only:
         - master
+
