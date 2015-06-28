@@ -9,6 +9,7 @@ Subpackages
     bet.calculateP
     bet.postProcess
     bet.sampling
+    bet.sensitivity
 
 Submodules
 ----------
