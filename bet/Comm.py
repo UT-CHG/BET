@@ -51,7 +51,7 @@ class comm_for_no_mpi4py(object):
         :rtype: object
         :returns: val1
         """
-        return val1
+        return [val1]
 
     def allreduce(self, val1, op=None):
         """
