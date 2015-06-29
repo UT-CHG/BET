@@ -57,7 +57,7 @@ def smoothed_indicator_cw_outer(center, width, outer_boundary):
     """
     half_width = 0.5*width
     left = center-half_width
-    right = center-half_width
+    right = center+half_width
     inner_boundary = [[l, r] for l, r in zip(left, right)]
     inner_boundary = util.meshgrid_ndim(inner_boundary)
     return smoothed_indicator_inner_outer(inner_boundary, outer_boundary)
@@ -110,7 +110,7 @@ def smoothed_indicator_boundary_inner_outer(inner_boundary, middle_boundary,
         np.ones(outer_boundary.shape[0])))
     def indicator_function(inputs):
         "Function wrapper for griddata"
-        return griddata(points, values, inputs)
+        return griddata(points, values, inputs, fill_value=2.0)
     return indicator_function
 
 def smoothed_indicator_boundary_cw_outer(center, width, mid_width,
@@ -135,7 +135,7 @@ def smoothed_indicator_boundary_cw_outer(center, width, mid_width,
     """
     half_width = 0.5*width
     left = center-half_width
-    right = center-half_width
+    right = center+half_width
     inner_boundary = [[l+1.5*mid_width, r-1.5*mid_width] for l, r in zip(left, right)]
     midinner_boundary = [[l+.5*mid_width, r-.5*mid_width] for l, r in zip(left, right)]
     midouter_boundary = [[l-.5*mid_width, r+.5*mid_width] for l, r in zip(left, right)]
@@ -195,11 +195,11 @@ def smoothed_indicator_W_inner_outer(inner_boundary, center,
     points = np.concatenate((inner_boundary, center,
          outer_boundary))
     values = np.concatenate((0.0*np.ones(inner_boundary.shape[0]),
-        0.3*np.ones(center.shape[0]),
+        0.5*np.ones(center.shape[0]),
         np.ones(outer_boundary.shape[0])))
     def indicator_function(inputs):
         "Function wrapper for griddata"
-        return griddata(points, values, inputs)
+        return griddata(points, values, inputs, fill_value=2.0)
     return indicator_function
 
 def smoothed_indicator_W_cw_outer(center, width,
@@ -225,7 +225,7 @@ def smoothed_indicator_W_cw_outer(center, width,
 
     half_width = 0.5*width
     left = center-half_width
-    right = center-half_width
+    right = center+half_width
     inner_boundary = [[l, r] for l, r in zip(left, right)]
     inner_boundary = util.meshgrid_ndim(inner_boundary)
     center = util.fix_dimensions_data(center, dim=inner_boundary.shape[1])

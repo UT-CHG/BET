@@ -22,7 +22,7 @@ data = matfile['data']
 # We use 16 random points in lam_domain and approximate the gradient
 # at each of them.
 num_xeval = 16
-xeval = samples[:16,:]
+xeval = samples[:num_xeval,:]
 Lambda_dim = samples.shape[1]
 
 # The parameter domain is a 4d box with the same bounds in
@@ -55,11 +55,14 @@ indexstop = num_points*(timestepstop-1) + pointstop - 1
 
 # With a set of QoIs to consider, we check all possible combinations
 # of the QoIs and choose the best set.
-[min_condnum, qoiIndices] = cQoIs.chooseOptQoIs(G, indexstart, indexstop, num_qois_returned=Lambda_dim)
+min_condnum_indices = cQoIs.chooseOptQoIs(G, range(indexstart,indexstop+1), num_qois_return=Lambda_dim, num_optsets_return=10)
 
 if comm.rank==0:
-    print 'The minimum condition number found is : ', min_condnum
-    print 'This corresponds to the set of QoIs : ', qoiIndices
+    print min_condnum_indices.shape
+    print 'The minimum condition number found is : ', min_condnum_indices[0,0]
+    print 'This corresponds to the set of QoIs : ', min_condnum_indices[0,1:]
+    print 'The matrix is : '
+    print min_condnum_indices
 
 #################################
 # Choose a specific set of QoIs to test
