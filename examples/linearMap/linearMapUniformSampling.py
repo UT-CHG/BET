@@ -21,6 +21,9 @@ lam_domain= np.array([[0.0, 1.0],
                       [0.0, 1.0],
                       [0.0, 1.0]])
 
+# reference parameters
+ref_lam = [0.5, 0.5, 0.5]
+
 '''
 Suggested changes for user:
     
@@ -46,15 +49,6 @@ if random_sample == False:
 else:
   n_samples = 2E3  
 
-# QoI map
-Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])
-
-# reference QoI
-Q_ref =  np.array([0.422, 0.9385])
-
-# reference parameters
-ref_lam = [0.5, 0.5, 0.5]
-
 #set up samples
 if random_sample == False:
   vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
@@ -65,6 +59,12 @@ if random_sample == False:
 else:
   samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
 					    num_l_emulate = n_samples)
+
+# QoI map
+Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])
+
+# reference QoI
+Q_ref =  np.array([0.422, 0.9385])
 
 # calc data
 data= np.dot(samples,Q_map)
@@ -93,7 +93,7 @@ this case) of points in D with the center point of the grid in the center of the
 the measure and the other points placed outside of the rectangle defining the support to define
 a total of 9 contour events with 8 of them having exactly zero probability.
 '''
-deterministic_discretize_D = True
+deterministic_discretize_D = False
 
 if deterministic_discretize_D == True:
   (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(data=data,

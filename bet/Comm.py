@@ -60,7 +60,7 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
-    def scatter(self, val1, val2, root=0):
+    def scatter(self, val1, val2=None, root=0):
         """
         :param object val1: object to Scatter
         :param object val2: object to Scatter
