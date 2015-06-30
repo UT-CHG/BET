@@ -79,13 +79,11 @@
 <li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Linear Map Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#visualization-examples">Visualization Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
@@ -157,6 +155,13 @@
 <li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.adaptiveSampling">bet.sampling.adaptiveSampling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling">bet.sampling.basicSampling module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bet.sensitivity.html">bet.sensitivity package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs">bet.sensitivity.chooseQoIs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients">bet.sensitivity.gradients module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -363,12 +368,78 @@ install mpi4py.</p>
 </table>
 </dd></dl>
 
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.gather">
+<code class="descname">gather</code><span class="sig-paren">(</span><em>val1</em>, <em>val2=None</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.gather" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
+<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.Comm.comm_for_no_mpi4py.scatter">
+<code class="descname">scatter</code><span class="sig-paren">(</span><em>val1</em>, <em>val2=None</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to scatter</li>
+<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to scatter</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </dd></dl>
 
 </div>
 <div class="section" id="module-bet.util">
 <span id="bet-util-module"></span><h2>bet.util module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h2>
 <p>The module contains general tools for BET.</p>
+<dl class="function">
+<dt id="bet.util.clean_data">
+<code class="descclassname">bet.util.</code><code class="descname">clean_data</code><span class="sig-paren">(</span><em>data</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.clean_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean data so that NaN-&gt;0, inf-&gt; maxfloat, -inf-&gt; -maxfloat</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; numerical object</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of shape (data.shape)</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 <dl class="function">
 <dt id="bet.util.fix_dimensions_data">
 <code class="descclassname">bet.util.</code><code class="descname">fix_dimensions_data</code><span class="sig-paren">(</span><em>data</em>, <em>dim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_data" title="Permalink to this definition">¶</a></dt>
@@ -422,19 +493,10 @@ shape (dim, 2).</p>
 <dt id="bet.util.fix_dimensions_vector">
 <code class="descclassname">bet.util.</code><code class="descname">fix_dimensions_vector</code><span class="sig-paren">(</span><em>vector</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_vector" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
-shape (N,).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> &#8211; numerical object</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">array of shape (N,)</td>
-</tr>
-</tbody>
-</table>
+shape (N,).
+:param vector: numerical object
+:rtype: <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>
+:returns: array of shape (N,)</p>
 </dd></dl>
 
 <dl class="function">
@@ -521,7 +583,7 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 20, 2015.
+      Last updated on Jun 30, 2015.
     </p>
   </div>
 

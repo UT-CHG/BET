@@ -77,13 +77,11 @@
 <li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Linear Map Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#visualization-examples">Visualization Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
@@ -211,12 +209,12 @@
   <dt><a href="bet.html#module-bet.Comm">bet.Comm (module)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.postProcess.html#module-bet.postProcess">bet.postProcess (module)</a>, <a href="overview.html#module-bet.postProcess">[1]</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.postProcess.html#module-bet.postProcess.plotDomains">bet.postProcess.plotDomains (module)</a>
   </dt>
@@ -242,6 +240,18 @@
   </dt>
 
       
+  <dt><a href="bet.sensitivity.html#module-bet.sensitivity">bet.sensitivity (module)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs">bet.sensitivity.chooseQoIs (module)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#module-bet.sensitivity.gradients">bet.sensitivity.gradients (module)</a>
+  </dt>
+
+      
   <dt><a href="bet.html#module-bet.util">bet.util (module)</a>
   </dt>
 
@@ -260,6 +270,18 @@
   </dt>
 
       
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.calculate_gradients_cfd">calculate_gradients_cfd() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.calculate_gradients_ffd">calculate_gradients_ffd() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.calculate_gradients_rbf">calculate_gradients_rbf() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
   <dt><a href="bet.calculateP.html#bet.calculateP.voronoiHistogram.center_and_layer1_points">center_and_layer1_points() (in module bet.calculateP.voronoiHistogram)</a>
   </dt>
 
@@ -269,6 +291,18 @@
 
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.chooseQoIs.chooseOptQoIs">chooseOptQoIs() (in module bet.sensitivity.chooseQoIs)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose">chooseOptQoIs_verbose() (in module bet.sensitivity.chooseQoIs)</a>
+  </dt>
+
+      
+  <dt><a href="bet.html#bet.util.clean_data">clean_data() (in module bet.util)</a>
+  </dt>
+
       
   <dt><a href="bet.postProcess.html#bet.postProcess.postTools.collect_parallel_probs_csv">collect_parallel_probs_csv() (in module bet.postProcess.postTools)</a>
   </dt>
@@ -359,6 +393,10 @@
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="bet.html#bet.Comm.comm_for_no_mpi4py.gather">gather() (bet.Comm.comm_for_no_mpi4py method)</a>
+  </dt>
+
       
   <dt><a href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler.generalized_chains">generalized_chains() (bet.sampling.adaptiveSampling.sampler method)</a>
   </dt>
@@ -476,6 +514,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.pick_cfd_points">pick_cfd_points() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.pick_ffd_points">pick_ffd_points() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
   <dt><a href="bet.postProcess.html#bet.postProcess.plotP.plot_1D_marginal_probs">plot_1D_marginal_probs() (in module bet.postProcess.plotP)</a>
   </dt>
 
@@ -483,12 +529,12 @@
   <dt><a href="bet.postProcess.html#bet.postProcess.plotP.plot_2D_marginal_probs">plot_2D_marginal_probs() (in module bet.postProcess.plotP)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.calculateP.html#bet.calculateP.calculateP.prob">prob() (in module bet.calculateP.calculateP)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.calculateP.html#bet.calculateP.calculateP.prob_emulated">prob_emulated() (in module bet.calculateP.calculateP)</a>
   </dt>
@@ -504,6 +550,14 @@
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%" valign="top"><dl>
       
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.radial_basis_function">radial_basis_function() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.radial_basis_function_dxi">radial_basis_function_dxi() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
   <dt><a href="bet.sampling.html#bet.sampling.basicSampling.sampler.random_samples">random_samples() (bet.sampling.basicSampling.sampler method)</a>
   </dt>
 
@@ -511,12 +565,12 @@
   <dt><a href="bet.sampling.html#bet.sampling.adaptiveSampling.maxima_mean_kernel.reset">reset() (bet.sampling.adaptiveSampling.maxima_mean_kernel method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_kernel">rhoD_kernel (class in bet.sampling.adaptiveSampling)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler.run_gen">run_gen() (bet.sampling.adaptiveSampling.sampler method)</a>
   </dt>
@@ -537,6 +591,14 @@
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.postProcess.html#bet.postProcess.postTools.sample_highest_prob">sample_highest_prob() (in module bet.postProcess.postTools)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.sample_l1_ball">sample_l1_ball() (in module bet.sensitivity.gradients)</a>
+  </dt>
+
+      
+  <dt><a href="bet.sensitivity.html#bet.sensitivity.gradients.sample_linf_ball">sample_linf_ball() (in module bet.sensitivity.gradients)</a>
   </dt>
 
       
@@ -566,9 +628,15 @@
   </dt>
 
       
+  <dt><a href="bet.html#bet.Comm.comm_for_no_mpi4py.scatter">scatter() (bet.Comm.comm_for_no_mpi4py method)</a>
+  </dt>
+
+      
   <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_2D">scatter_2D() (in module bet.postProcess.plotDomains)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_3D">scatter_3D() (in module bet.postProcess.plotDomains)</a>
   </dt>
@@ -577,8 +645,6 @@
   <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.show_data">show_data() (in module bet.postProcess.plotDomains)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.show_data_domain_2D">show_data_domain_2D() (in module bet.postProcess.plotDomains)</a>
   </dt>
@@ -681,7 +747,7 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 20, 2015.
+      Last updated on Jun 30, 2015.
     </p>
   </div>
 
