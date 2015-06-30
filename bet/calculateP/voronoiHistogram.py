@@ -188,7 +188,7 @@ def histogramdd_volumes(edges, points):
     """
     Given a sequence of arrays describing the edges of voronoi cells (bins)
     along each dimension and an 'ij' ordered sequence of points (1 per voronoi
-    cell) returns a list of the volumes associated with these voronoic cells.
+    cell) returns a list of the volumes associated with these voronoi cells.
 
     :param edges: A sequence of arrays describing the edges of bins along
         each dimension.

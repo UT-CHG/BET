@@ -5,6 +5,7 @@ This module provides a workaround for people without mpi4py installed
 to run BET.
 """
 
+import collections
 
 class comm_for_no_mpi4py(object):
 
@@ -43,6 +44,16 @@ class comm_for_no_mpi4py(object):
         """
         return val
 
+    def gather(self, val1, val2=None, root=0):
+        """
+        :param object val1: object to gather
+        :param object val2: object to gather
+        :param int root: 0
+        :rtype: object
+        :returns: val1
+        """
+        return [val1]
+
     def allreduce(self, val1, op=None):
         """
         :param object val1: object to allreduce
@@ -62,12 +73,14 @@ class comm_for_no_mpi4py(object):
 
     def scatter(self, val1, val2=None, root=0):
         """
-        :param object val1: object to Scatter
-        :param object val2: object to Scatter
+        :param object val1: object to scatter
+        :param object val2: object to scatter
         :param int root: 0
         :rtype: object
         :returns: val1
         """
+        if isinstance(val1, collections.Iterable) and len(val1)==1:
+            val1 = val1[0]
         return val1
 
     def Allgather(self, val, val2=None):
