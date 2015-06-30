@@ -434,7 +434,7 @@ def determine_step_ratio(param_dist, MYsamples_old, nominal_ratio=0.50):
     all_samples = util.get_global_values(MYsamples_old) 
     dist = spatial.distance_matrix(all_samples, all_samples)
 
-    if dist.shape == (0,) or dist.shape == (1,) or dist.shape == (0, 0):
+    if dist.shape[0] == 0 or dist.shape[0] == 1:
         step_ratio = nominal_ratio*np.ones(MYsamples_old.shape[0])
     else:
         # set step ratio based on this distance
