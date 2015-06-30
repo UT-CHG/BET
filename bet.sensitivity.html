@@ -79,13 +79,11 @@
 <li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Linear Map Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#visualization-examples">Visualization Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples/overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
@@ -139,48 +137,82 @@
 </div>
 <div class="section" id="module-bet.sensitivity.chooseQoIs">
 <span id="bet-sensitivity-chooseqois-module"></span><h2>bet.sensitivity.chooseQoIs module<a class="headerlink" href="#module-bet.sensitivity.chooseQoIs" title="Permalink to this headline">¶</a></h2>
-<p>This module contains functions choosing optimal QoIs to use in
-the stochastic inverse problem.</p>
+<p>This module contains functions choosing optimal QoIs to use in the stochastic
+inverse problem.</p>
 <dl class="function">
 <dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs">
-<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs</code><span class="sig-paren">(</span><em>Grad_tensor</em>, <em>indexstart</em>, <em>indexstop</em>, <em>num_qois_returned</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>TODO:   This just cares about skewness, not sensitivity  (That is, we pass</dt>
-<dd><p class="first">in normalized gradient vectors).  So we want to implement
-sensitivity analysis as well later.
-Check out &#8216;magical min&#8217;.</p>
-<p class="last">If a singular value is zero, we let the condition number be 
-1E9 at that point.  Possibly this should be a function of the
-dimension(?) so that we don&#8217;t exclude a set simply because
-the vectors are parallel at one point in :math:Lambda, they could
-be much better in other regions.</p>
-</dd>
-</dl>
-<p>Given gradient vectors at some points(xeval) in the parameter space, a set
-of QoIs to choose from, and the number of desired QoIs to return, this
-method return the set of optimal QoIs to use in the inverse problem by
-choosing the set with optimal skewness properties.</p>
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>num_qois_return=None</em>, <em>num_optsets_return=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+set of QoIs to choose from, and the number of desired QoIs to return, this
+method returns the <code class="docutils literal"><span class="pre">num_optsets_return</span></code> best sets of QoIs with with repsect
+to skewness properties.  This method is brute force, i.e., if the method is
+given 10,000 QoIs and told to return the N best sets of 3, it will check all
+10,000 choose 3 possible sets.  This can be expensive, methods currently
+being developed will take a more careful approach and reduce computational
+cost.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_xeval,num_qois,Ldim)
-where num_xeval is the number of points in :math:&#8217;Lambda&#8217; we have
-approximated the gradient vectors, num_qois is the total number of
-possible QoIs to choose from, Ldim is the dimension of <span class="math">\(\Lambda\)</span>.) &#8211; Gradient vectors at each point of interest in the
-parameter space :math:&#8217;Lambda&#8217; for each QoI map.</li>
-<li><strong>indexstart</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Index of the list of QoIs to start at.</li>
-<li><strong>indexstop</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Index of the list of QoIs to stop at.</li>
-<li><strong>num_qois_returned</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of desired QoIs to use in the
-inverse problem.</li>
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, num_qois,
+Lambda_dim) where num_centers is the number of points in <span class="math">\(\Lambda\)</span>
+we have approximated the gradient vectors and num_qois is the total
+number of possible QoIs to choose from) &#8211; Gradient vectors at each point of interest in the
+parameter space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) &#8211; Set of QoIs to consider from grad_tensor.  Default is
+range(0, grad_tensor.shape[1])</li>
+<li><strong>num_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of desired QoIs to use in the
+inverse problem.  Default is Lambda_dim</li>
+<li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return
+Default is 10</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><cite>np.ndarray</cite> of shape (num_optsets_returned, num_qois_returned + 1)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">condnum_indices_mat</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs_verbose</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>num_qois_return=None</em>, <em>num_optsets_return=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points(centers) in the parameter space, a set
+of QoIs to choose from, and the number of desired QoIs to return, this
+method return the set of optimal QoIs to use in the inverse problem by
+choosing the set with optimal skewness properties.  Also a tensor that
+represents the singualre values of the matrices formed by the gradient
+vectors of the optimal QoIs at each center is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, num_qois,
+Lambda_dim) where num_centers is the number of points in <span class="math">\(\Lambda\)</span>
+we have approximated the gradient vectors and num_qois is the total
+number of possible QoIs to choose from) &#8211; Gradient vectors at each point of interest in the
+parameter space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) &#8211; Set of QoIs to consider from grad_tensor.  Default is
+range(0, grad_tensor.shape[1])</li>
+<li><strong>num_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of desired QoIs to use in the
+inverse problem.  Default is Lambda_dim</li>
+<li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return
+Default is 10</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(min_condum, qoiIndices)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(condnum_indices_mat, optsingvals) where condnum_indices_mat has
+shape (num_optsets_return, num_qois_return+1) and optsingvals
+has shape (num_centers, num_qois_return, num_optsets_return)</p>
 </td>
 </tr>
 </tbody>
@@ -190,45 +222,33 @@ inverse problem.</li>
 </div>
 <div class="section" id="module-bet.sensitivity.gradients">
 <span id="bet-sensitivity-gradients-module"></span><h2>bet.sensitivity.gradients module<a class="headerlink" href="#module-bet.sensitivity.gradients" title="Permalink to this headline">¶</a></h2>
-<p>This module contains functions for approximating gradient vectors
-of QoI maps.</p>
+<p>This module contains functions for approximating gradient vectors of QoI maps.</p>
+<p>All methods that cluster points around centers are written to return the samples
+in the following order : CENTERS, FOLLOWED BY THE CLUSTER AROUND THE FIRST
+CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.</p>
 <dl class="function">
 <dt id="bet.sensitivity.gradients.calculate_gradients_cfd">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">calculate_gradients_cfd</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>xeval</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_cfd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_xeval,</span> <span class="pre">xeval.shape[0]</span></code> points
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">calculate_gradients_cfd</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_cfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
 in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
-ON USING pick_cfd_points TO CHOOSE SAMPLES FOR THE CFD STENCIL AROUND
-EACH XEVAL.  THE ORDERING MATTERS.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ldim) where Ldim) &#8211; Samples for which the model has been solved.</td>
-</tr>
-</tbody>
-</table>
-<p>is the dimension of the parameter space <span class="math">\(\Lambda\)</span>
-:param data: QoI values corresponding to each sample.
-:type data: <code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ddim) where Ddim is</p>
-<blockquote>
-<div>the number of QoI (i.e. the dimension of the data space
-<span class="math">\(\mathcal{D}\)</span></div></blockquote>
+ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE 
+CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>xeval</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> at which to approximate gradient
-information.</li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Distance from center to place samples</li>
+<li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape
+(2*Lambda_dim*num_centers, Lambda_dim)) &#8211; Samples for which the model has been solved.</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim)) &#8211; QoI values corresponding to each sample.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ddim, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim, Lambda_dim)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tensor representation of the normalized gradient vectors of each
-QoI map at each point in xeval</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tensor representation of the gradient vectors of each
+QoI map at each point in centers</p>
 </td>
 </tr>
 </tbody>
@@ -237,32 +257,26 @@ QoI map at each point in xeval</p>
 
 <dl class="function">
 <dt id="bet.sensitivity.gradients.calculate_gradients_ffd">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">calculate_gradients_ffd</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>xeval</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_ffd" title="Permalink to this definition">¶</a></dt>
-<dd><p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_xeval,</span> <span class="pre">xeval.shape[0]</span></code> points
-in the parameter space for each QoI map.
-THIS METHOD IS DEPENDENT ON USING pick_ffd_points TO CHOOSE
-SAMPLES FOR THE CFD STENCIL AROUND EACH XEVAL.  THE ORDERING MATTERS.</p>
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">calculate_gradients_ffd</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_ffd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
+in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
+:meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
+CFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ldim) where Ldim
-is the dimension of the parameter space <span class="math">\(\Lambda\)</span>) &#8211; Samples for which the model has been solved.</li>
-<li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ddim) where Ddim is
-the number of QoI (i.e. the dimension of the data space
-<span class="math">\(\mathcal{D}\)</span>) &#8211; QoI values corresponding to each sample.</li>
-<li><strong>xeval</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> at which to approximate gradient
-information.</li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Distance from center to place samples</li>
+<li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Lambda_dim)) &#8211; Samples for which the model has been solved.</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim)) &#8211; QoI values corresponding to each sample.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ddim, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim, Lambda_dim)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tensor representation of the normalized gradient vectors of each
-QoI map at each point in xeval</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tensor representation of the gradient vectors of each
+QoI map at each point in centers</p>
 </td>
 </tr>
 </tbody>
@@ -271,36 +285,32 @@ QoI map at each point in xeval</p>
 
 <dl class="function">
 <dt id="bet.sensitivity.gradients.calculate_gradients_rbf">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">calculate_gradients_rbf</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>xeval</em>, <em>num_neighbors=None</em>, <em>RBF=None</em>, <em>ep=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_rbf" title="Permalink to this definition">¶</a></dt>
-<dd><p>TO DO: vectorize first for loop?</p>
-<p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_xeval,</span> <span class="pre">xeval.shape[0]</span></code> points
-in the parameter space for each QoI map.</p>
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">calculate_gradients_rbf</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>centers=None</em>, <em>num_neighbors=None</em>, <em>RBF=None</em>, <em>ep=None</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_rbf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
+in the parameter space for each QoI map using a radial basis function
+interpolation method.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ldim) where Ldim
-is the dimension of the parameter space <span class="math">\(\Lambda\)</span>) &#8211; Samples for which the model has been solved.</li>
-<li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ddim) where Ddim is
-the number of QoI (i.e. the dimension of the data space
-<span class="math">\(\mathcal{D}\)</span>) &#8211; QoI values corresponding to each sample.</li>
-<li><strong>xeval</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> at which to approximate gradient
+<li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Lambda_dim)) &#8211; Samples for which the model has been solved.</li>
+<li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim)) &#8211; QoI values corresponding to each sample.</li>
+<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Lambda_dim)) &#8211; Points in <span class="math">\(\Lambda\)</span> at which to approximate gradient
 information.</li>
 <li><strong>num_neighbors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of nearest neighbors to use in gradient
-approximation. Default value is 30.</li>
-<li><strong>RBF</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis function.
-Default is Gaussian</li>
+approximation. Default value is Lambda_dim + 2.</li>
+<li><strong>RBF</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis function. Default is Gaussian</li>
 <li><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Choice of shape parameter for radial basis function.
 Default value is 1.0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Ddim, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim, Lambda_dim)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tensor representation of the normalized gradient vectors of each
-QoI map at each point in xeval</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Tensor representation of the gradient vectors of each
+QoI map at each point in centers</p>
 </td>
 </tr>
 </tbody>
@@ -309,20 +319,26 @@ QoI map at each point in xeval</p>
 
 <dl class="function">
 <dt id="bet.sensitivity.gradients.pick_cfd_points">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">pick_cfd_points</code><span class="sig-paren">(</span><em>centers</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.pick_cfd_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pick 2*Lambda_dim points, for each center, for centered
-finite difference gradient approximation.</p>
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">pick_cfd_points</code><span class="sig-paren">(</span><em>centers</em>, <em>rvec</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.pick_cfd_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick 2*Lambda_dim points, for each center, for centered finite difference
+gradient approximation.  The center are not needed for the CFD gradient
+approximation, they are returned for consistency with the other methods and
+because of the common need to have not just the gradient but also the QoI
+value at the centers in adaptive sampling algorithms.The points are returned 
+in the order: centers, followed by the cluster around the first center, then 
+the cluster around the second center and so on.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> to cluster points around</li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Each side of the box will have length 2*r</li>
+<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, Lambda_dim)) &#8211; Points in <span class="math">\(\Lambda\)</span> to cluster points around</li>
+<li><strong>rvec</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (Lambda_dim,)) &#8211; The radius of the stencil, along each axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_close*num_centers, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape ((2*Lambda_dim+1)*num_centers,
+Lambda_dim)</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Samples for centered finite difference stencil for
@@ -335,21 +351,23 @@ each point in centers.</p>
 
 <dl class="function">
 <dt id="bet.sensitivity.gradients.pick_ffd_points">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">pick_ffd_points</code><span class="sig-paren">(</span><em>centers</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.pick_ffd_points" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">pick_ffd_points</code><span class="sig-paren">(</span><em>centers</em>, <em>rvec</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.pick_ffd_points" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pick Lambda_dim points, for each centers, for a forward finite
-difference gradient approximation.  The ordering of these samples
-is important.</p>
+difference gradient approximation.  The points are returned in the order:
+centers, followed by the cluster around the first center, then the cluster
+around the second center and so on.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> to cluster points around</li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Each side of the box will have length 2*r</li>
+<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, Lambda_dim)) &#8211; Points in <span class="math">\(\Lambda\)</span> the place stencil around</li>
+<li><strong>rvec</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (Lambda_dim,)) &#8211; The radius of the stencil, along each axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_close*num_centers, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape ((Lambda_dim+1)*num_centers,
+Lambda_dim)</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Samples for centered finite difference stencil for
@@ -363,17 +381,18 @@ each point in centers.</p>
 <dl class="function">
 <dt id="bet.sensitivity.gradients.radial_basis_function">
 <code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">radial_basis_function</code><span class="sig-paren">(</span><em>r</em>, <em>kernel=None</em>, <em>ep=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.radial_basis_function" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate a chosen radial basis function.  Allow for the
-choice of several radial basis functions to use in
-the calculate_gradients_rbf.</p>
+<dd><p>Evaluate a chosen radial basis function.  Allow for the choice of several
+radial basis functions to use in
+:meth:~bet.sensitivity.gradients.calculate_gradients_rbf</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>r</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Distances from the reference point</li>
-<li><strong>kernel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis funtion</li>
-<li><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Shape parameter for the radial basis function</li>
+<li><strong>kernel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis funtion. Default is C4Matern</li>
+<li><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Shape parameter for the radial basis function.
+Default is 1.0</li>
 </ul>
 </td>
 </tr>
@@ -390,9 +409,9 @@ the calculate_gradients_rbf.</p>
 <dl class="function">
 <dt id="bet.sensitivity.gradients.radial_basis_function_dxi">
 <code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">radial_basis_function_dxi</code><span class="sig-paren">(</span><em>r</em>, <em>xi</em>, <em>kernel=None</em>, <em>ep=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.radial_basis_function_dxi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Evaluate a partial derivative of a chosen radial basis function.
-Allow for the choice of several radial basis functions to
-use in the calculate_gradients_rbf.</p>
+<dd><p>Evaluate a partial derivative of a chosen radial basis function.  Allow for
+the choice of several radial basis functions to use in the
+:meth:~bet.sensitivity.gradients.calculate_gradients_rbf.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -400,8 +419,9 @@ use in the calculate_gradients_rbf.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>r</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Distances from the reference point</li>
 <li><strong>xi</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code>) &#8211; Distances from the reference point in dimension i</li>
-<li><strong>kernel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis funtion</li>
-<li><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Shape parameter for the radial basis function</li>
+<li><strong>kernel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis funtion. Default is C4Matern</li>
+<li><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Shape parameter for the radial basis function.
+Default is 1.0</li>
 </ul>
 </td>
 </tr>
@@ -417,34 +437,27 @@ use in the calculate_gradients_rbf.</p>
 
 <dl class="function">
 <dt id="bet.sensitivity.gradients.sample_l1_ball">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">sample_l1_ball</code><span class="sig-paren">(</span><em>centers</em>, <em>num_close</em>, <em>r=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_l1_ball" title="Permalink to this definition">¶</a></dt>
-<dd><dl class="docutils">
-<dt>TODO: Come up with better variable names. Vectorize the for loops.</dt>
-<dd>Split this into two methods, sample_simplex, simlex_to_diamond(?).
-Take in &#8216;hard&#8217; and &#8216;soft&#8217; lam_domain boundaries and either
-allow for sampes out side lam_domain (soft) or restrict them to
-be inside (hard).</dd>
-</dl>
-<p>Uniformly sample the l1-ball (defined by 2^dim simplices).  Then scale
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">sample_l1_ball</code><span class="sig-paren">(</span><em>centers</em>, <em>num_close</em>, <em>rvec</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_l1_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Uniformly sample the l1-ball (defined by 2^dim simplices).  Then scale
 each dimension according to rvec and translate the center to centers.
-Do this for each point in centers.  <strong>* This method currently allows
+Do this for each point in centers.  <em>This method currently allows
 samples to be placed outside of lam_domain.  Please place your
-centers accordingly.*</strong></p>
+centers accordingly.</em></p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> to cluster samples around</li>
-<li><strong>num_close</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples in each diamond</li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The radius of the diamond, along each axis</li>
+<li><strong>num_close</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples in each l1 ball</li>
+<li><strong>rvec</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (Lambda_dim)) &#8211; The radius of the l1 ball, along each axis</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples*num_centers, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape ((num_close+1)*num_centers, Lambda_dim)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Uniform random samples from a diamond around each center point</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Uniform random samples from an l1 ball around each center</p>
 </td>
 </tr>
 </tbody>
@@ -453,26 +466,26 @@ centers accordingly.*</strong></p>
 
 <dl class="function">
 <dt id="bet.sensitivity.gradients.sample_linf_ball">
-<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">sample_linf_ball</code><span class="sig-paren">(</span><em>lam_domain</em>, <em>centers</em>, <em>num_close</em>, <em>r</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_linf_ball" title="Permalink to this definition">¶</a></dt>
-<dd><p>Pick num_close points in a the l-infinity box of length
-2*r around a point in <span class="math">\(\Lambda\)</span>, do this for each point
-in centers.  If this box extends outside of <span class="math">\(\Lambda\)</span>, we
-sample the intersection.</p>
+<code class="descclassname">bet.sensitivity.gradients.</code><code class="descname">sample_linf_ball</code><span class="sig-paren">(</span><em>centers</em>, <em>num_close</em>, <em>rvec</em>, <em>lam_domain=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_linf_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick num_close points in a the l-infinity ball of length 2*rvec around a
+point in <span class="math">\(\Lambda\)</span>, do this for each point in centers.  If this box
+extends outside of <span class="math">\(\Lambda\)</span>, we sample the intersection.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, Lambda_dim)) &#8211; Points in <span class="math">\(\Lambda\)</span> to cluster points around</li>
 <li><strong>num_close</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of points in each cluster</li>
-<li><strong>centers</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_exval, Ldim)) &#8211; Points in <span class="math">\(\Lambda\)</span> to cluster points around</li>
-<li><strong>r</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Each side of the box will have length 2*r</li>
+<li><strong>rvec</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (Lambda_dim,)) &#8211; Each side of the box will have length 2*rvec[i]</li>
+<li><strong>lam_domain</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (Lambda_dim, 2)) &#8211; The domain of the parameter space</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_close*num_centers, Ldim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape ((num_close+1)*num_centers, Lambda_dim)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Clusters of samples near each point in centers</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">Centers and clusters of samples near each center</p>
 </td>
 </tr>
 </tbody>
@@ -486,7 +499,7 @@ sample the intersection.</p>
 QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
 <ul>
 <li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">py</span></code> provides methods for approximating</dt>
+<dt><a class="reference internal" href="#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal"><span class="pre">gradients</span></code></a> provides methods for approximating</dt>
 <dd><p class="first last">gradients of QoI maps.</p>
 </dd>
 </dl>
@@ -520,7 +533,7 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 17, 2015.
+      Last updated on Jun 30, 2015.
     </p>
   </div>
 
