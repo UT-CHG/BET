@@ -5,6 +5,7 @@ This module provides a workaround for people without mpi4py installed
 to run BET.
 """
 
+import collections
 
 class comm_for_no_mpi4py(object):
 
@@ -78,6 +79,8 @@ class comm_for_no_mpi4py(object):
         :rtype: object
         :returns: val1
         """
+        if isinstance(val1, collections.Iterable) and len(val1)==1:
+            val1 = val1[0]
         return val1
 
     def Allgather(self, val, val2=None):
