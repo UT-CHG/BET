@@ -70,6 +70,7 @@ class comm_for_no_mpi4py(object):
         """
         return val1
 
+
     def gather(self, val1, val2=None, root=0):
         """
         :param object val1: object to gather

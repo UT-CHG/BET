@@ -11,6 +11,15 @@ probability measure :math:`P_{\Lambda}`.
 * :mod:`~bet.calculateP.voronoiHistogram` provides methods for creating the
     generating points for cells that define a regular grid for use by
     :meth:`numpy.histogramdd` and for determining their volumes, etc. This
-    module is only for use by :mod:`~bet.calculateP.simpleFunP`.  
+    module is only for use by :mod:`~bet.calculateP.simpleFunP`. 
+
+The following developmental modules are OPERATIONAL:
+    * :mod:`~bet.calculateP.indicatorFunctions`
+
+The following developmental modules are NOT OPERATIONAL:
+    * :mod:`~bet.calculateP.dev_simpleFunP`
+    * :mod:`~bet.calculateP.dev_voronoiHistogram`
+
 """
-__all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram']
+__all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram', 'dev_simpleFunP',
+'dev_voronoiHistogram', 'indicatorFunctions']
