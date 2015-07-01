@@ -226,13 +226,18 @@ class sampler(asam.sampler):
 
         
         for batch in xrange(1, self.chain_length):
-            # print 'batch no.', batch
             # Determine the rank of the old samples
             rank_old = smoothIndicatorFun(MYdata_old)
             # For the centers that are not in the RoI do a newton step
             centers_in_RoI = (kern_old > 0)
             not_in_RoI = np.logical_not(centers_in_RoI)
 
+            # print 'batch no.', batch
+            msg = 'batch no. {}, '.format(batch)
+            msg += "{}/{} in RoI".format(np.sum(centers_in_RoI),
+                        self.num_chains_pproc)
+            print msg
+            
             if not_in_RoI.any():
                 # Determine indices to create np.concatenate([centers, clusters])
                 # for centers not in the RoI
@@ -404,10 +409,9 @@ class sampler(asam.sampler):
             np.shape(MYdata)[1]))
         # ``all_step_ratios`` is np.ndarray of shape (num_chains,
         # chain_length)
-        all_step_ratios = util.get_global_values(MYall_step_ratios,
-                shape=(self.num_samples,))
+        all_step_ratios = util.get_global_values(MYall_step_ratios)
         all_step_ratios = np.reshape(all_step_ratios, (self.num_chains,
-            self.chain_length-1))
+            all_step_ratios.shape[0]/self.num_chains))
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
