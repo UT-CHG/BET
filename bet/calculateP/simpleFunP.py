@@ -422,3 +422,13 @@ def uniform_data(data):
     d_distr_prob = np.ones((data.shape[0],), dtype=np.float)/data.shape[0]
     d_Tree = spatial.KDTree(data)
     return (d_distr_prob, data, d_Tree)
+
+# TODO: Write spherical versions of these
+"""
+We need to create a simple function approximation of rho_D where rho_D is
+uniform on a hypersphere. I'm not sure how we might do this because of (1) the
+apparent need for bounding voronoi cells and (2) allocating volume to the
+approximated sphere. Determining the volume given to the center point would be
+trivial if we could exactly represent a sphere with a set of voronoi cells
+which we can't. I haven't really thought about these two issues yet. 
+"""
