@@ -345,11 +345,11 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
             print 'Warning: center_pts_per_edge dimension mismatch.'
             print 'Using 1 in each dimension.'
     if np.any(np.less(center_pts_per_edge, 0)):
-            print 'Warning: center_pts_per_edge must be greater than 0'
+        print 'Warning: center_pts_per_edge must be greater than 0'
     if not isinstance(bin_size, collections.Iterable):
         bin_size = bin_size*np.ones((data.shape[1],))
     if np.any(np.less(bin_size, 0)):
-            print 'Warning: center_pts_per_edge must be greater than 0'
+        print 'Warning: center_pts_per_edge must be greater than 0'
 
     sur_domain = np.array([np.min(data, 0), np.max(data, 0)]).transpose()
 

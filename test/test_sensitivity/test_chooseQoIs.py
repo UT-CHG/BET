@@ -13,7 +13,6 @@ import numpy as np
 import numpy.testing as nptest
 
 class ChooseQoIsMethods:
-    #TODO: Test parallel implementation
     """
     Test :module:`bet.sensitivity.chooseQoIs`.
     """
@@ -72,11 +71,11 @@ class ChooseQoIsMethods:
         self.qoiIndices = range(0, self.num_qois)
         [self.condnum_indices_mat, self.optsingvals] = \
             cQoIs.chooseOptQoIs_verbose(self.G, self.qoiIndices,
-            self.num_qois_return)
+            self.num_qois_return, self.num_optsets_return)
 
         # Test that optsingvals is the right shape
         self.assertEqual(self.optsingvals.shape, ((self.num_centers,
-            self.num_qois_return)))
+            self.num_qois_return, self.num_optsets_return)))
 
 
 class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
