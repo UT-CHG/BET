@@ -3,7 +3,7 @@
 
 ============================================================================
 Example: Concentration of Contaminant in Wells Based on Transport Parameters
-===========================================================================
+============================================================================
 
 We will walk through the following `example
 <https://github.com/UT-CHG/BET/tree/master/examples/contaminantTransport>`. 
