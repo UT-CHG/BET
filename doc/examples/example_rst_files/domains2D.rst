@@ -11,7 +11,7 @@ Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following `example
-<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/plotDomains2D.py>` that visualizes
+<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/plotDomains2D.py>`_ that visualizes
 samples on a regular grid for a 2-dimensional parameter space. 
 
 The modules required by this example are::

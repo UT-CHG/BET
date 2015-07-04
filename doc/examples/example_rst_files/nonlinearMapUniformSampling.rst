@@ -5,7 +5,7 @@ Example: Nonlinear Map with Uniform Sampling
 ============================================
 
 We will wailk through the following `example
-<https://github.com/UT-CHG/BET/blob/master/examples/nonlinearMap/nonlinearMapUniformSampling.py>`. 
+<https://github.com/UT-CHG/BET/blob/master/examples/nonlinearMap/nonlinearMapUniformSampling.py>`_. 
 This example generates uniform samples in a 2D input parameter space 
 and evaluates a nonlinear map to either a 1D or 2D output data space.
 The nonlinear map is defined as either one or two quantities of 

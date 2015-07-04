@@ -6,7 +6,7 @@ Example: Linear Map with Uniform Sampling
 ===========================
 
 We will wailk through the following `example
-<https://github.com/UT-CHG/BET/blob/master/examples/linearMap/linearMapUniformSampling.py>`. This example
+<https://github.com/UT-CHG/BET/blob/master/examples/linearMap/linearMapUniformSampling.py>`_. This example
 generates uniform samples in a 3D input parameter space and evaluates a 
 linear map to a 2D data space. The stochastic inverse problem solved here
 is one of parameter identification under uncertainty. A reference parameter

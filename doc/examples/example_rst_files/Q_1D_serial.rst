@@ -15,7 +15,7 @@ This example demostrates three different methods to estimate
 
 These methods are distinguished primarily by the way :math:`\mathcal{V}_j` are
 defined and the approximation of the volume of :math:`\mathcal{V}_j`. See `Q_1D_serial.py
-<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_1D_serial.py>` for the example source code.
+<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_1D_serial.py>`_ for the example source code.
 
 First, import the necessary packages and modules::
 

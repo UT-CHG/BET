@@ -11,7 +11,7 @@ Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following `example
-<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/fromFile2D.py>` that uses a linear interpolant of
+<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/fromFile2D.py>`_ that uses a linear interpolant of
 the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 2-dimensional data space. The parameter space in this example is also
 2-dimensional. 

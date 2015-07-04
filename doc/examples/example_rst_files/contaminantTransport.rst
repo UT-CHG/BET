@@ -6,7 +6,7 @@ Example: Concentration of Contaminant in Wells Based on Transport Parameters
 ============================================================================
 
 We will walk through the following `example
-<https://github.com/UT-CHG/BET/tree/master/examples/contaminantTransport>`. 
+<https://github.com/UT-CHG/BET/tree/master/examples/contaminantTransport>`_. 
 This example takes uniformly distributed samples of parameters and
 output data from a simple groundwater contaminant transport model,
 and calculates solutions to the stochastic inverse problem.
@@ -47,6 +47,7 @@ Choose the bin ratio for the uniform output probability::
   bin_ratio = 0.25 #ratio of length of data region to invert
 
 Slice data and form approximate PDF for output for plotting::
+
   data = data[:,QoI_indices]
   Q_ref=Q_ref[QoI_indices]
 
