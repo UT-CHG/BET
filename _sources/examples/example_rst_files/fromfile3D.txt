@@ -11,7 +11,7 @@ Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following :download:`example
-<../../../examples/fromFile_ADCIRCMap/sandbox_test_3D.py>` that uses a linear interpolant
+<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/fromFile3D.py>`_ that uses a linear interpolant
 of the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_5(\lambda), q_2(\lambda))`
 for a 3-dimensional data space. The parameter space in this example is also
 3-dimensional. 

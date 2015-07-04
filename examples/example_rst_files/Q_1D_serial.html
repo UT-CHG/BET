@@ -81,6 +81,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#linear-map-example">Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
@@ -132,8 +133,7 @@ This example demostrates three different methods to estimate
 <div class="math">
 \[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
 <p>These methods are distinguished primarily by the way <span class="math">\(\mathcal{V}_j\)</span> are
-defined and the approximation of the volume of <span class="math">\(\mathcal{V}_j\)</span>. See
-<a class="reference download internal" href="../../_downloads/Q_1D_serial.py"><code class="xref download docutils literal"><span class="pre">Q_1D_serial.py</span></code></a> for the example source code.</p>
+defined and the approximation of the volume of <span class="math">\(\mathcal{V}_j\)</span>. See <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_1D_serial.py">Q_1D_serial.py</a> for the example source code.</p>
 <p>First, import the necessary packages and modules:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="kn">as</span> <span class="nn">calcP</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="kn">as</span> <span class="nn">sfun</span>
@@ -264,7 +264,7 @@ to visualize estimates of <span class="math">\(\rho_\Lambda\)</span>:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 30, 2015.
+      Last updated on Jul 04, 2015.
     </p>
   </div>
 
