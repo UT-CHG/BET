@@ -232,16 +232,15 @@ samples out side of the bounded parameter domain, <code class="docutils literal"
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-<a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code></a>. The set up in
-<a class="reference download internal" href="../../_downloads/sandbox_test_2D.py"><code class="xref download docutils literal"><span class="pre">sandbox_test_2D.py</span></code></a> is very similar to the
-set up in <a class="reference download internal" href="../../_downloads/fromFile2D.py"><code class="xref download docutils literal"><span class="pre">fromFile2D</span></code></a> and is
+<a class="reference external" href="https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/sandbox_test_2D.py">sandbox_test_2D.py</a>. The set up in
+sandbox_test_2D.py &lt;<a class="reference external" href="https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/sandbox_test_2D.py">https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/sandbox_test_2D.py</a>&gt;`_ is very similar to the
+set up in <a class="reference external" href="https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/fromFile2D.py">fromFile2D</a> and is
 omitted for brevity.</p>
 <p>We can explore several types of kernels:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">kernel_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
-<span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
 <span class="n">kernel_m</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
-<span class="n">kernel_md</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">multi_dist_kernel</span><span class="p">()</span>
-<span class="n">kern_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">kernel_mm</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">kernel_m</span><span class="p">,</span> <span class="n">kernel_md</span><span class="p">]</span>
+<span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
+<span class="n">kern_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">kernel_mm</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">kernel_m</span><span class="p">]</span>
 <span class="c"># Get samples</span>
 <span class="c"># Run with varying kernels</span>
 <span class="n">gen_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_gen</span><span class="p">(</span><span class="n">kern_list</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span>
