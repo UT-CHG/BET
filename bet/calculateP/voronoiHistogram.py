@@ -48,7 +48,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
     rect_domain = np.column_stack([center - .5*rect_width,
         center + .5*rect_width])
     if np.all(np.greater(r_size, rect_width)):
-        msg = "The hyperrectangle defined by this size is larger than the"
+        msg = "The hyperrectangle defined by this size is larger than the "
         msg += "original domain."
         print msg
     

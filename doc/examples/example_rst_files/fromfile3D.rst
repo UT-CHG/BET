@@ -11,7 +11,7 @@ Generating a single set of adaptive samples
 -------------------------------------------
 
 We will walk through the following :download:`example
-<../../../examples/fromFile_ADCIRCMap/sandbox_test_3D.py>` that uses a linear interpolant
+<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/fromFile3D.py>`_ that uses a linear interpolant
 of the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_5(\lambda), q_2(\lambda))`
 for a 3-dimensional data space. The parameter space in this example is also
 3-dimensional. 
@@ -117,9 +117,9 @@ In some instances the user may want to generate and compare several sets of
 adaptive samples using a surrogate model to determine what the best kernel,
 transition set, number of generalized chains, and chain length are before
 adaptively sampling a more computationally expensive model. See
-:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`. The set up in
-:download:`sandbox_test_2D.py <../../../examples/fromFile_ADCIRCMap/sandbox_test_2D.py>` is very similar to the
-set up in :download:`fromFile2D <../../../examples/fromFile_ADCIRCMap/fromFile2D.py>` and is
+`sandbox_test_2D.py <https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`_. The set up in
+`sandbox_test_2D.py <https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/sandbox_test_2D.py>`_ is very similar to the
+set up in `fromFile2D <https://github.com/UT-CHG/BET/tree/master/examples/fromFile_ADCIRCMap/fromFile2D.py>`_ and is
 omitted for brevity.
 
 We can explore several types of kernels::
@@ -127,8 +127,7 @@ We can explore several types of kernels::
     kernel_mm = asam.maxima_mean_kernel(np.array([Q_ref]), rho_D)
     kernel_rD = asam.rhoD_kernel(maximum, rho_D)
     kernel_m = asam.maxima_kernel(np.array([Q_ref]), rho_D)
-    kernel_md = asam.multi_dist_kernel()
-    kern_list = [kernel_mm, kernel_rD, kernel_m, kernel_md]
+    kern_list = [kernel_mm, kernel_rD, kernel_m]
     # Get samples
     # Run with varying kernels
     gen_results = sampler.run_gen(kern_list, rho_D, maximum, param_min,

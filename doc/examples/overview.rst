@@ -22,7 +22,7 @@ directory.
 Validation example
 =======================================
 
-See :ref:`validation` for an example .
+See :ref:`validation` for an example.
 
 
 Linear Map Example
@@ -73,3 +73,7 @@ Examples Estimating :math:`P_\Lambda`
     * :ref:`q1D`
     * :ref:`q2D`
     * :ref:`q3D`
+
+Contaminant Transport Example:
+==============================
+See :ref:`contaminantTransport` for an example.
