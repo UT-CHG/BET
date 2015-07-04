@@ -44,7 +44,7 @@ This example demostrates how to estimate :math:`\hat{\rho}_{\Lambda, j}` using
 
     P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.
 
-See :download:`Q_3D_parallel.py <../../../examples/fromFile_ADCIRCMap/Q_3D_serial.py>`
+See `Q_3D_parallel.py <../../../examples/fromFile_ADCIRCMap/Q_3D_serial.py>`_
 for the example source code. Since example is essentially the same as
 :ref:`q2D` we will only highlight the differences between the two.
 
