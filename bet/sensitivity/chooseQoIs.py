@@ -207,7 +207,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
     if comm.rank==0:
         print '*** find_unique_vecs ***'
         print 'num_zerovec : ', len(indz)
-        print 'Possible QoIs : ', qoi_combs.shape
+        print 'Possible pairs of QoIs : ', qoi_combs.shape
 
     # For each pair, check the angle between the vectors and throw out the
     # second if the angle is below some tolerance.  For pairs of vectors we
