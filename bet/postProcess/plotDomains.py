@@ -229,7 +229,7 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
             scatter_3D(data[:, [x, y, z]], sample_nos, rD, q_ref, save,
                     interactive, xlabel, ylabel, zlabel, savename)
 
-def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
+def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
         img_folder='figs/', ref_markers=None,
         ref_colors=None, showdim=None):
     r"""
@@ -265,7 +265,8 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
 
-    Q_ref = util.fix_dimensions_data(Q_ref, data.shape[1])
+    if Q_ref is not None:
+        Q_ref = util.fix_dimensions_data(Q_ref, data.shape[1])
 
     triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
     triangles = triangulation.triangles
@@ -278,11 +279,16 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
 
             filenames = [img_folder+'domain_q'+str(showdim+1)+'_q'+str(i+1)+'.eps',
                     img_folder+'q'+str(showdim+1)+'_q'+str(i+1)+'_domain_Q_cs.eps']
-                
-            show_data_domain_2D(samples, data[:, [showdim, i]], Q_ref[:,
-                [showdim, i]], ref_markers, ref_colors, xlabel=xlabel,
-                ylabel=ylabel, triangles=triangles, save=True,
-                interactive=False, filenames=filenames)
+            if Q_ref is not None:    
+                show_data_domain_2D(samples, data[:, [showdim, i]], Q_ref[:,
+                    [showdim, i]], ref_markers, ref_colors, xlabel=xlabel,
+                    ylabel=ylabel, triangles=triangles, save=True,
+                    interactive=False, filenames=filenames)
+            else:
+                show_data_domain_2D(samples, data[:, [showdim, i]], None,
+                        ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
+                        triangles=triangles, save=True, interactive=False,
+                        filenames=filenames)
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(Q_nums, 2):
             xlabel = r'$q_{'+str(x+1)+r'}$'
@@ -290,13 +296,19 @@ def show_data_domain_multi(samples, data, Q_ref, Q_nums=None,
 
             filenames = [img_folder+'domain_q'+str(x+1)+'_q'+str(y+1)+'.eps',
                     img_folder+'q'+str(x+1)+'_q'+str(y+1)+'_domain_Q_cs.eps']
-                
-            show_data_domain_2D(samples, data[:, [x, y]], Q_ref[:,
-                [x, y]], ref_markers, ref_colors, xlabel=xlabel,
-                ylabel=ylabel, triangles=triangles, save=True,
-                interactive=False, filenames=filenames)
+            
+            if Q_ref is not None:
+                show_data_domain_2D(samples, data[:, [x, y]], Q_ref[:, [x, y]],
+                        ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
+                        triangles=triangles, save=True, interactive=False,
+                        filenames=filenames)
+            else:
+                show_data_domain_2D(samples, data[:, [x, y]], None,
+                        ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
+                        triangles=triangles, save=True, interactive=False,
+                        filenames=filenames)
 
-def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
+def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2$',
         triangles=None, save=True, interactive=False, filenames=None):
     r"""
@@ -330,8 +342,9 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
         triangles = triangulation.triangles
     if filenames == None:
         filenames = ['domain_q1_q2_cs.eps', 'q1_q2_domain_Q_cs.eps']
-
-    Q_ref = util.fix_dimensions_data(Q_ref, 2)
+    
+    if Q_ref is not None:
+        Q_ref = util.fix_dimensions_data(Q_ref, 2)
 
     # Create figure
     plt.tricontourf(data[:, 0], data[:, 1], np.zeros((data.shape[0],)),
@@ -342,8 +355,9 @@ def show_data_domain_2D(samples, data, Q_ref, ref_markers=None,
     plt.savefig(filenames[0], bbox_inches='tight', transparent=True,
             pad_inches=0)
     # Add truth markers
-    for i in xrange(Q_ref.shape[0]):
-        plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
+    if Q_ref is not None:
+        for i in xrange(Q_ref.shape[0]):
+            plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                 marker=ref_markers[i])
     if save:
         plt.savefig(filenames[1], bbox_inches='tight', transparent=True,
