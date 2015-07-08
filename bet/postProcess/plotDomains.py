@@ -27,8 +27,8 @@ for m in Line2D.markers:
 
 colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k')
 
-def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
-        xlabel, ylabel, filename):
+def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True, interactive=False,
+        xlabel='x', ylabel='y', filename='scatter2d'):
     """
     Two-dimensional scatter plot of ``samples`` colored by ``color`` (usually
     an array of rho_D values).
@@ -49,9 +49,14 @@ def scatter_2D(samples, sample_nos, color, p_ref, save, interactive,
     """
     if type(sample_nos) == type(None):
         sample_nos = np.arange(samples.shape[0])
+    if color is None:
+        color = np.ones((samples.shape[0],))
+        cmap=None
+    else:
+        cmap=plt.cm.Oranges
     color = color[sample_nos]
     plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color, s=10,
-            alpha=.75, linewidth=.1, cmap=plt.cm.Oranges)
+            alpha=.75, linewidth=.1, cmap=cmap)
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(q)$')
     if type(p_ref) != type(None):
@@ -136,10 +141,10 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
 
     """
    
-    if rho_D != None:
+    if rho_D is not None and data is not None:
         rD = rho_D(data)
     else:
-        rD = np.ones(data.shape[0])
+        rD = np.ones(samples.shape[0])
     if type(lnums) == type(None):
         lnums = 1+np.array(range(samples.shape[1]))
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
@@ -355,7 +360,7 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
     plt.savefig(filenames[0], bbox_inches='tight', transparent=True,
-            pad_inches=0)
+            pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
         for i in xrange(Q_ref.shape[0]):
@@ -363,10 +368,71 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
                 marker=ref_markers[i])
     if save:
         plt.savefig(filenames[1], bbox_inches='tight', transparent=True,
-            pad_inches=0)
+            pad_inches=.2)
     if interactive:
         plt.show()
     else:
         plt.close()
 
+def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
+        interactive=False):
+    r"""
+    Plot the scatters of samples in 2D slices of multiple dimensions.
 
+    :param samples: Samples to plot
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
+        uses the first two dimensions.
+    :param string img_folder: folder to save the plots to
+    :param showdim: default ``all``. If int then flag to show all combinations with a
+        given dimension or if ``all`` show all combinations.
+    :type showdim: int or string
+
+    """
+    if showdim == None:
+        showdim = 0
+
+    if not os.path.isdir(img_folder):
+        os.mkdir(img_folder)
+
+    L_nums = range(samples.shape[1])
+
+    
+    if type(showdim) == int:
+        for i in L_nums:
+            xlabel = r'$\lambda_{'+str(showdim+1)+r'}$'
+            ylabel = r'$\lambda_{'+str(i+1)+r'}$'
+
+            filenames = [img_folder+'domain_l'+str(showdim+1)+'_q'+str(i+1)+'.eps',
+                    img_folder+'l'+str(showdim+1)+'_q'+str(i+1)+'_domain_L_cs.eps']
+            filename = filenames[0]
+            plt.scatter(samples[:,0], samples[:,1])
+            if save:
+                plt.autoscale(tight=True)
+                plt.xlabel(xlabel)
+                plt.ylabel(ylabel)
+                plt.savefig(filename, bbox_inches='tight', transparent=True,
+                        pad_inches=0)
+            if interactive:
+                plt.show()
+            else:
+                plt.close()
+
+    elif showdim == 'all' or showdim == 'ALL':
+        for x, y in combinations(L_nums, 2):
+            xlabel = r'$\lambda_{'+str(x+1)+r'}$'
+            ylabel = r'$\lambda_{'+str(y+1)+r'}$'
+
+            filenames = [img_folder+'domain_l'+str(x+1)+'_l'+str(y+1)+'.eps',
+                    img_folder+'l'+str(x+1)+'_l'+str(y+1)+'_domain_L_cs.eps']
+            filename = filenames[0]
+            plt.scatter(samples[:,x], samples[:,y])
+            if save:
+                plt.autoscale(tight=True)
+                plt.xlabel(xlabel)
+                plt.ylabel(ylabel)
+                plt.savefig(filename, bbox_inches='tight', transparent=True,
+                        pad_inches=0)
+            if interactive:
+                plt.show()
+            else:
+                plt.close()
