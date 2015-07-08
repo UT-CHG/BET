@@ -257,3 +257,14 @@ def smoothed_indicator_W_cws(center, width, sur_domain):
     outer_boundary = util.meshgrid_ndim(outer_boundary)
     return smoothed_indicator_W_cw_outer(center, width,  
             outer_boundary)
+
+# TODO: Write sphereical versions of this just using a distance function and
+# not griddata
+"""
+For the plain version define your value to be the distance from the center
+normalized by the radius and zero inside the radius so f(q) = (dist(q, c)-r)/r
+for dist(q, c) >= r-epsilon and 0 otherwise. For the boundary focused on define
+your value to be the distance from the center normalized by the radius and zero
+inside the radius so f(q) = (dist(q, c)-r_1)/r_1 for dist(q, c) >= r_1-epsilon;
+0 in between r_1, r_2; and (r_2-dist(q, c))/r_2 for dist(q, c) <= r_2-epsilon.
+"""
