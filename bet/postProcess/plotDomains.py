@@ -9,6 +9,8 @@ two-dimensional slices/projections of domains.
 import matplotlib.tri as tri
 import numpy as np
 import matplotlib.pyplot as plt
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 from matplotlib.lines import Line2D
 from itertools import combinations
 from mpl_toolkits.mplot3d import Axes3D
