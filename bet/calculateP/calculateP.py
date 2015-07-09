@@ -113,7 +113,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, d_Tree=None):
     :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
     :rtype: tuple of :class:`~numpy.ndarray` of sizes (num_samples,),
         (num_samples,), (ndim, num_l_emulate), (num_samples,), (num_l_emulate,)
-    :returns: (P, lam_vol, lambda_emulate, io_ptr) where P is the
+    :returns: (P, lam_vol, io_ptr) where P is the
         probability associated with samples, and lam_vol the volumes associated
         with the samples, io_ptr a pointer from data to M bins.
 

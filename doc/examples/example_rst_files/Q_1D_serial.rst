@@ -14,9 +14,8 @@ This example demostrates three different methods to estimate
     P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.
 
 These methods are distinguished primarily by the way :math:`\mathcal{V}_j` are
-defined and the approximation of the volume of :math:`\mathcal{V}_j`. See
-:download:`Q_1D_serial.py
-<../../../examples/fromFile_ADCIRCMap/Q_1D_serial.py>` for the example source code.
+defined and the approximation of the volume of :math:`\mathcal{V}_j`. See `Q_1D_serial.py
+<https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_1D_serial.py>`_ for the example source code.
 
 First, import the necessary packages and modules::
 
