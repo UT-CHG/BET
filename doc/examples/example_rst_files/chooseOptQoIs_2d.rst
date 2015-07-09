@@ -5,12 +5,8 @@
 Example: Heatplate Model with Clustered Sampling
 ===========================
 
-This examples takes in samples, specifically chosen in clusters around 16 random
-points in lam_domain, and corresponding QoIs (data) from a simulation modeling
-the variations in temperature of a this plate forced by a localized source.
-It then calcualtes the gradients using an RBF (FFD or CFD) scheme and uses the
-gradient information to choose the optimal set of 2 QoIs to use in the inverse
-problem.
+We will go through the example :download:`example
+<../../../examples/heatplate/chooseOptQoIs_2d.py>`This example takes in samples, specifically chosen in clusters around 16 random points in lam_domain, and corresponding QoIs (data) from a simulation modeling the variations in temperature of a this plate forced by a localized source. It then calcualtes the gradients using an RBF (FFD or CFD) scheme and uses the gradient information to choose the optimal set of 2 QoIs to use in the inverse problem.
 
 Import the necessary modules::
 
