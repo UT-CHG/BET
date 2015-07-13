@@ -146,8 +146,6 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     optsingvals_tensor = comm.bcast(optsingvals_tensor, root=0)
 
     return (condnum_indices_mat, optsingvals_tensor)
-<<<<<<< HEAD
-=======
 
 ########################################
 ########################################
