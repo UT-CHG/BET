@@ -1,0 +1,230 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Example: Heatplate Model with Clustered Sampling &mdash; BET 1.0.0 documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 1.0.0 documentation" href="../../index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../../index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../../index.html">Docs</a> &raquo;</li>
+      
+    <li>Example: Heatplate Model with Clustered Sampling</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../../_sources/examples/example_rst_files/chooseOptQoIs_2d.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="example-heatplate-model-with-clustered-sampling">
+<span id="chooseqois"></span><h1>Example: Heatplate Model with Clustered Sampling<a class="headerlink" href="#example-heatplate-model-with-clustered-sampling" title="Permalink to this headline">¶</a></h1>
+<p>This example takes in samples, specifically chosen in clusters around 16 random points in Lambda, and corresponding QoIs (data) from a simulation modeling the variations in temperature of a thin plate forced by a localized source. It then calculates the gradients using a Radial Basis Function (or Forward Finite Difference or Centered Finite Difference) scheme and uses the gradient information to choose the optimal set of 2 QoIs to use in the inverse problem.  This optimality is with respect to the skewness of the gradient vectors.</p>
+<p>Import the necessary modules:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">bet.sensitivity.gradients</span> <span class="kn">as</span> <span class="nn">grad</span>
+<span class="kn">import</span> <span class="nn">bet.sensitivity.chooseQoIs</span> <span class="kn">as</span> <span class="nn">cQoIs</span>
+<span class="kn">import</span> <span class="nn">bet.Comm</span> <span class="kn">as</span> <span class="nn">comm</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="kn">as</span> <span class="nn">sio</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+</pre></div>
+</div>
+<p>Import the data from the FEniCS simulation (RBF or FFD or CFD clusters).  The parameter space needs to be sampled with respect to the gradient approximation scheme chosen:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">matfile</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;heatplate_2d_16clustersRBF_1000qoi.mat&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate the gradient vectors at each of the 16 centers for each of the QoI
+maps:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">G</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We have gathered 1,000 QoIs from the model.  To ensure we choose the best possible pair of QoIs to use in the inverse problem we would want to check the conditioning of all 1,000 choose 2 possible pairs.  To illustrate the functionality of the method, we simply consider the first 20 QoIs and choose the best pair from the 20 choose 2 options:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">indexstart</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">indexstop</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">qoiIndices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">indexstart</span><span class="p">,</span> <span class="n">indexstop</span><span class="p">)</span>
+<span class="n">condnum_indices_mat</span> <span class="o">=</span> <span class="n">cQoIs</span><span class="o">.</span><span class="n">chooseOptQoIs</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">qoiIndices</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>A smaller condition number corresponds to a better conditioned pair of QoIs.  We print the top 10 pairs of QoIs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">comm</span><span class="o">.</span><span class="n">rank</span><span class="o">==</span><span class="mi">0</span><span class="p">:</span>
+    <span class="k">print</span> <span class="s">&#39;The 10 smallest condition numbers are in the first column, the </span><span class="se">\</span>
+<span class="s">corresponding sets of QoIs are in the following columns.&#39;</span>
+    <span class="k">print</span> <span class="n">condnum_indices_mat</span>
+</pre></div>
+</div>
+<p>If interested, we can find the condition number of any pair of QoIs:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">index1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">index2</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">singvals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linalg</span><span class="o">.</span><span class="n">svd</span><span class="p">(</span><span class="n">G</span><span class="p">[:,</span> <span class="p">[</span><span class="n">index1</span><span class="p">,</span> <span class="n">index2</span><span class="p">],</span> <span class="p">:],</span> <span class="n">compute_uv</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<span class="n">spec_condnum</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">singvals</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">/</span><span class="n">singvals</span><span class="p">[:,</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">/</span><span class="mi">16</span>
+</pre></div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
+      Last updated on Jul 14, 2015.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../../',
+            VERSION:'1.0.0',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../../_static/jquery.js"></script>
+      <script type="text/javascript" src="../../_static/underscore.js"></script>
+      <script type="text/javascript" src="../../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

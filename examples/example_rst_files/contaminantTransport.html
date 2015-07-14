@@ -82,6 +82,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
@@ -137,7 +138,8 @@ available. By changing the choice of QoIs that we use to solve the stochastic
 inverse problem, we see the effect of geometric distinctness.
 Probabilities in the parameter space are
 calculated using the MC assumption.  1D and 2D marginals are calculated,
-smoothed, and plotted.</p>
+smoothed, and plotted. The samples are then ranked by probability density
+and the volume of high-probability regions are calculated. Probabilistic predictions of other QoI are made.</p>
 <p>Import the necessary modules:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP</span> <span class="kn">as</span> <span class="nn">calculateP</span>
@@ -153,7 +155,7 @@ smoothed, and plotted.</p>
 <span class="n">ref_lam</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&quot;files/lam_ref.txt.gz&quot;</span><span class="p">)</span> <span class="c">#reference parameter set</span>
 <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&quot;files/Q_ref.txt.gz&quot;</span><span class="p">)</span> <span class="c">#reference QoI set</span>
 <span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&quot;files/samples.txt.gz&quot;</span><span class="p">)</span> <span class="c"># uniform samples in parameter domain</span>
-<span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&quot;files/data.txt.gz&quot;</span><span class="p">)</span> <span class="c"># data from model</span>
+<span class="n">dataf</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s">&quot;files/data.txt.gz&quot;</span><span class="p">)</span> <span class="c"># data from model</span>
 </pre></div>
 </div>
 <p>Choose which subset of the 11 QoIs to use for inversion:</p>
@@ -165,7 +167,7 @@ smoothed, and plotted.</p>
 </pre></div>
 </div>
 <p>Slice data and form approximate PDF for output for plotting:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span><span class="n">QoI_indices</span><span class="p">]</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">dataf</span><span class="p">[:,</span><span class="n">QoI_indices</span><span class="p">]</span>
 <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">[</span><span class="n">QoI_indices</span><span class="p">]</span>
 
 <span class="n">dmax</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -269,6 +271,20 @@ Try choosing only 2 or 3, instead of 4, indices and notice the higher-dimensiona
 <div class="section" id="suggested-changes-for-user-5">
 <h2>Suggested changes for user (5):<a class="headerlink" href="#suggested-changes-for-user-5" title="Permalink to this headline">¶</a></h2>
 <p>Change <code class="docutils literal"><span class="pre">percentile</span></code> to values between 1.0 and 0.0. Notice that while the region of nonzero probabibilty may have a significant volume, much of this volume contains relatively low probability. Change the value to 0.95, 0.9, 0.75, and 0.5 and notice the volume decrease significantly.</p>
+<p>Propogate highest probability part of the probability measure through a different QoI map:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">P_pred</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">_</span> <span class="p">,</span> <span class="n">data_pred</span><span class="p">)</span><span class="o">=</span> <span class="n">postTools</span><span class="o">.</span><span class="n">sample_highest_prob</span><span class="p">(</span><span class="n">top_percentile</span><span class="o">=</span><span class="n">percentile</span><span class="p">,</span> <span class="n">P_samples</span><span class="o">=</span><span class="n">P</span><span class="p">,</span> <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">lam_vol</span><span class="o">=</span><span class="n">lam_vol</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">dataf</span><span class="p">[:,</span><span class="mi">7</span><span class="p">],</span><span class="n">sort</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Calculate and plot PDF of predicted QoI:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">bins_pred</span><span class="p">,</span> <span class="n">marginals1D_pred</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">P_samples</span> <span class="o">=</span> <span class="n">P_pred</span><span class="p">,</span> <span class="n">samples</span> <span class="o">=</span> <span class="n">data_pred</span><span class="p">,</span> <span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data_pred</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data_pred</span><span class="p">)]]),</span> <span class="n">nbins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D_pred</span><span class="p">,</span> <span class="n">bins_pred</span><span class="p">,</span> <span class="n">lam_domain</span><span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">data_pred</span><span class="p">),</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">data_pred</span><span class="p">)]]),</span> <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;contaminant_prediction&quot;</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="suggested-changes-for-user-6">
+<h2>Suggested changes for user (6):<a class="headerlink" href="#suggested-changes-for-user-6" title="Permalink to this headline">¶</a></h2>
+<p>Change the prediction QoI map. Compare to the reference values.</p>
 </div>
 </div>
 

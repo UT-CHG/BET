@@ -84,6 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
@@ -166,6 +167,9 @@ installed you can run tests by typing:</p>
     plotP
     plotDomains
     postTools
+  sensitivity/
+    gradients
+    chooseQoIs
 </pre></div>
 </div>
 </div>
@@ -237,6 +241,25 @@ at a specified set of parameter samples.</p>
 <li><p class="first"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</p>
 </li>
 </ul>
+</div>
+<div class="section" id="module-bet.sensitivity">
+<span id="sensitivity-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">sensitivity</span></code> Package<a class="headerlink" href="#module-bet.sensitivity" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage provides methods for approximating gradients of
+QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal"><span class="pre">gradients</span></code></a> provides methods for approximating</dt>
+<dd><p class="first last">gradients of QoI maps.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal"><span class="pre">chooseQoIs</span></code></a> provides methods for choosing optimal</dt>
+<dd><p class="first last">QoIs to use in the inverse problem.</p>
+</dd>
+</dl>
+</li>
+</ul>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
 <p class="last"><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
@@ -256,7 +279,7 @@ at a specified set of parameter samples.</p>
 </div>
 <div class="section" id="external-dependencies">
 <h2>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
+<p>This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, sys, itertools, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
 <div class="highlight-python"><div class="highlight"><pre>matplotlib
   \-cm (bet.postProcess.plotP)
   \-pyplot (bet.postProcess.plotDomains,bet.postProcess.plotP)
@@ -266,12 +289,16 @@ mpi4py
   \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
 mpl_toolkits
   \-mplot3d (bet.postProcess.plotP)
-numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP)
+numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP,bet.sensitivity.gradients,bet.sensitivity.chooseQoIs)
 pyDOE (bet.sampling.basicSampling)
 scipy
   \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
-  \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP)
+  \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP,bet.sensitivity.gradients)
   \-stats (bet.calculateP.simpleFunP)
+itertools
+  (bet.sensitivity.chooseQoIs)
+sys
+  (bet.sensitivity.gradients)
 </pre></div>
 </div>
 </div>
