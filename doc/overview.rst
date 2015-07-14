@@ -49,6 +49,9 @@ The package layout is as follows::
       plotP
       plotDomains
       postTools
+    sensitivity/
+      gradients
+      chooseQoIs
 
 Code Overview
 --------------
@@ -68,6 +71,10 @@ Code Overview
 
 .. automodule:: bet.postProcess
 
+:mod:`sensitivity` Package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: bet.sensitivity
 
 .. seealso:: :ref:`modindex` for detailed documentation of modules, classes, etc.
 
@@ -85,7 +92,7 @@ Dependencies via :keyword:`import` statements::
 External dependencies
 ---------------------
 This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scipy.org>`_, mpl_toolkits,  `numpy
-<http://http://www.numpy.org>`_, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
+<http://http://www.numpy.org>`_, sys, itertools, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
 <http://http://docs.python.org/2>`_.
 
 ::    
@@ -99,12 +106,16 @@ This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scip
       \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
     mpl_toolkits 
       \-mplot3d (bet.postProcess.plotP)
-    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP)
+    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP,bet.sensitivity.gradients,bet.sensitivity.chooseQoIs)
     pyDOE (bet.sampling.basicSampling)
     scipy 
       \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
-      \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP)
+      \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP,bet.sensitivity.gradients)
       \-stats (bet.calculateP.simpleFunP)
+    itertools
+      (bet.sensitivity.chooseQoIs)
+    sys
+      (bet.sensitivity.gradients)
 
 
 
