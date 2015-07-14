@@ -92,7 +92,7 @@ Dependencies via :keyword:`import` statements::
 External dependencies
 ---------------------
 This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scipy.org>`_, mpl_toolkits,  `numpy
-<http://http://www.numpy.org>`_, sys, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
+<http://http://www.numpy.org>`_, sys, itertools, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
 <http://http://docs.python.org/2>`_.
 
 ::    
