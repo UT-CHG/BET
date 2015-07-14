@@ -92,7 +92,7 @@ Dependencies via :keyword:`import` statements::
 External dependencies
 ---------------------
 This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scipy.org>`_, mpl_toolkits,  `numpy
-<http://http://www.numpy.org>`_, sys, itertools, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
+<http://http://www.numpy.org>`_, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
 <http://http://docs.python.org/2>`_.
 
 ::    
@@ -112,10 +112,6 @@ This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scip
       \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
       \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP,bet.sensitivity.gradients)
       \-stats (bet.calculateP.simpleFunP)
-    itertools
-      (bet.sensitivity.chooseQoIs)
-    sys
-      (bet.sensitivity.gradients)
 
 
 
