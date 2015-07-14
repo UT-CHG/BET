@@ -84,6 +84,7 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
@@ -162,6 +163,8 @@ the <code class="docutils literal"><span class="pre">parallel</span></code> flag
   postProcess/
     plotP
     postTools
+  sensitivity/
+    chooseQoIs
 </pre></div>
 </div>
 <div class="section" id="util">
@@ -209,6 +212,10 @@ rank 0 processor.</p>
 <a class="reference internal" href="bet.postProcess.html#bet.postProcess.postTools.save_parallel_probs_mat" title="bet.postProcess.postTools.save_parallel_probs_mat"><code class="xref py py-meth docutils literal"><span class="pre">save_parallel_probs_mat()</span></code></a>, and
 <a class="reference internal" href="bet.postProcess.html#bet.postProcess.postTools.collect_parallel_probs_mat" title="bet.postProcess.postTools.collect_parallel_probs_mat"><code class="xref py py-meth docutils literal"><span class="pre">collect_parallel_probs_mat()</span></code></a> provide tools to
 save and collect probabitlies on separate processors as appropriately named files.</p>
+</div>
+<div class="section" id="sensitivity">
+<h3>sensitivity<a class="headerlink" href="#sensitivity" title="Permalink to this headline">¶</a></h3>
+<p>All methods in the module <a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal"><span class="pre">chooseQoIs</span></code></a> benefit from parallel execution.</p>
 </div>
 </div>
 </div>
