@@ -70,10 +70,11 @@ Code Overview
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.postProcess
+
+:mod:`sensitivity` Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.sensitivity
-
 
 .. seealso:: :ref:`modindex` for detailed documentation of modules, classes, etc.
 
