@@ -77,3 +77,7 @@ Examples Estimating :math:`P_\Lambda`
 Contaminant Transport Example:
 ==============================
 See :ref:`contaminantTransport` for an example.
+
+Choosing Optimal QoIs Example:
+==============================
+The files for these examples can be found in ``examples/heatplate``.
