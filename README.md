@@ -16,7 +16,17 @@ To build/update the documentation use the following commands::
 
 This creates the relevant documentation at ``BET/gh-pages/html``. To change the build location of the documentation you will need to update ``doc/Makefile``.
 
-You will need to run sphinx-apidoc AND reinstall BET anytime a new module or method in the source code has been added. If only the *.rst files have changed then you can simply run ``make html`` twice in the doc folder.
+You will need to run sphinx-apidoc AND reinstall BET anytime a new module or method in the source code has been added. If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
 
 Useful scripts are contained in ``examples/``
 
+Dependencies
+------------
+
+`BET` requires the following packages:
+
+1. [numpy](http://www.numpy.org/)
+2. [scipy](http://www.scipy.org/)
+3. [nose](https://nose.readthedocs.org/en/latest/)
+4. [pyDOE](https://pythonhosted.org/pyDOE/)
+5. [matplotlib](http://matplotlib.org/)
