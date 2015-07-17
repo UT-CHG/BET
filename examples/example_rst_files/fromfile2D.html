@@ -135,6 +135,14 @@ goal-oriented adaptive sampling algorithm.</p>
 the QoI map <span class="math">\(Q(\lambda) = (q_1(\lambda), q_6(\lambda))\)</span> for a
 2-dimensional data space. The parameter space in this example is also
 2-dimensional.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last simple">
+<li>In the lines 56, 57 change chain length and num chains to
+reduce the total number of forward solves.</li>
+<li>Saves to <code class="docutils literal"><span class="pre">sandbox2d.mat</span></code>.</li>
+</ul>
+</div>
 <p>The modules required by this example are:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">bet.sampling.adaptiveSampling</span> <span class="kn">as</span> <span class="nn">asam</span>
@@ -300,7 +308,7 @@ by <code class="docutils literal"><span class="pre">sort_ind</span></code>.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jul 14, 2015.
+      Last updated on Jul 17, 2015.
     </p>
   </div>
 
