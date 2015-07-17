@@ -20,3 +20,13 @@ You will need to run sphinx-apidoc AND reinstall BET anytime a new module or met
 
 Useful scripts are contained in ``examples/``
 
+Dependencies
+------------
+
+`BET` requires the following packages:
+
+1. [numpy](http://www.numpy.org/)
+2. [scipy](http://www.scipy.org/)
+3. [nose](https://nose.readthedocs.org/en/latest/)
+4. [pyDOE](https://pythonhosted.org/pyDOE/)
+5. [matplotlib](http://matplotlib.org/)
