@@ -4,7 +4,7 @@
 Example: Validation
 ============================================
 
-We will wailk through the following `example
+We will walk through the following `example
 <https://github.com/UT-CHG/BET/blob/master/examples/validationExample/linearMap.py>`_. 
 This 2D linear example shows that geometrically distinct QoI can
 recreate a probability measure on the input parameter space
