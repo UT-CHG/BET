@@ -7,6 +7,36 @@ inverse problem.
 import numpy as np
 from itertools import combinations
 from bet.Comm import comm
+import bet.util as util
+import sys
+
+def calculate_avg_condnum(grad_tensor, qoi_set):
+    """
+
+    :param grad_tensor: Gradient vectors at each point of interest in the
+        parameter space :math:`\Lambda` for each QoI map.
+    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
+        Lambda_dim) where num_centers is the number of points in :math:`\Lambda`
+        we have approximated the gradient vectors and num_qois is the total
+        number of possible QoIs to choose from
+    :param list qoi_set: List of QoI indices
+
+    :rtype: tuple
+    :returns: (condnum, singvals) where condnum is a float and singvals
+        has shape (num_centers, Data_dim)
+
+    """
+
+    singvals = np.linalg.svd(grad_tensor[:, qoi_set, :], compute_uv=False)
+
+    # Find the centers that have atleast one zero sinular value
+    indz = singvals[:, -1] == 0
+    indnz = singvals[:, -1] != 0
+
+    condnum = (np.sum(singvals[indnz, 0] / singvals[indnz, -1], \
+                      axis=0) + 1E9 * np.sum(indz)) / singvals.shape[0]
+
+    return condnum, singvals
 
 def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None,
         num_optsets_return=None):
@@ -102,15 +132,7 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
         num_optsets_return])
     for qoi_set in range(len(qoi_combs)):
-        singvals = np.linalg.svd(
-            grad_tensor[:, qoi_combs[qoi_set], :], compute_uv=False)
-
-        # Find the centers that have atleast one zero sinular value
-        indz = singvals[:, -1] == 0
-        indnz = singvals[:, -1] != 0
-
-        current_condnum = (np.sum(singvals[indnz, 0] / singvals[indnz, -1], \
-                          axis=0) + 1E9 * np.sum(indz)) / singvals.shape[0]
+        (current_condnum, singvals) = calculate_avg_condnum(grad_tensor, qoi_combs[qoi_set])
 
         if current_condnum < condnum_indices_mat[-1, 0]:
             condnum_indices_mat[-1, :] = np.append(np.array([current_condnum]),
@@ -260,17 +282,7 @@ def find_good_triplets(grad_tensor, cond_tol, qoiIndices=None):
 
     for qoi_set in range(len(qoi_combs)):
         curr_set = util.fix_dimensions_vector_2darray(qoi_combs[qoi_set]).transpose()
-        singvals = np.linalg.svd(
-            grad_tensor[:, qoi_combs[qoi_set], :], compute_uv=False)
-
-        # Find the centers that have atleast one zero sinular value
-        indz = singvals[:,-1]==0
-        indnz = singvals[:,-1]!=0
-
-        # As it is with 1E9, if and singval is zero (for any centers that is)
-        # we throw out that pair  (unless we have BIG num_centers)
-        current_condnum = (np.sum(singvals[indnz, 0] / singvals[indnz, -1],
-            axis=0) + 1E9 * np.sum(indz)) / singvals.shape[0]
+        (current_condnum, _) = calculate_avg_condnum(grad_tensor, qoi_combs[qoi_set])
 
         if current_condnum < cond_tol:
             good_mat = np.append(good_mat, curr_set, axis=0)
@@ -339,10 +351,13 @@ def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None, in
     for i in range(good_triplets.shape[0]):
         # Find all posible combinations of QoIs
         if comm.rank == 0:
-            l = util.fix_dimensions_vector_2darray(list(set(unique_inds)-set(good_triplets[i,:])))
-            qoi_combs = np.append(np.tile(good_triplets[i,:], [len(unique_inds) - 3, 1]), l, axis=1)
+            l = util.fix_dimensions_vector_2darray(list(set(unique_inds) - \
+                set(good_triplets[i,:])))
+            qoi_combs = np.append(np.tile(good_triplets[i,:],
+                [len(unique_inds) - 3, 1]), l, axis=1)
             if i==0:
-                print 'Possible quartets of QoIs : ', qoi_combs.shape[0] * good_triplets.shape[0]
+                print 'Possible quartets of QoIs : ', qoi_combs.shape[0] * \
+                    good_triplets.shape[0]
             qoi_combs = np.array_split(qoi_combs, comm.size)
         else:
             qoi_combs = None
@@ -352,14 +367,7 @@ def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None, in
 
         for qoi_set in range(len(qoi_combs)):
             lq = list(qoi_combs)
-            singvals = np.linalg.svd(grad_tensor[:, list(lq[qoi_set]), :], compute_uv=False)
-
-            # Find the centers that have atleast one zero singular value
-            indz = singvals[:,-1]==0
-            indnz = singvals[:,-1]!=0
-
-            current_condnum = (np.sum(singvals[indnz, 0] / singvals[indnz, -1], \
-                              axis=0) + 1E9 * np.sum(indz)) / singvals.shape[0]
+            (current_condnum, _) = calculate_avg_condnum(grad_tensor, list(lq[qoi_set]))
 
             if current_condnum < condnum_indices_mat[-1, 0]:
                 repeat_set = False
@@ -371,7 +379,7 @@ def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None, in
                         qoi_combs[qoi_set])
                     condnum_indices_mat = condnum_indices_mat[condnum_indices_mat[:, 
                         0].argsort()]
-                    optsingvals_tensor = singvals
+                    #optsingvals_tensor = singvals
 
         # Wait for all processes to get to this point
         comm.Barrier()
@@ -403,15 +411,169 @@ def find_good_quartets(grad_tensor, qoiIndices=None, num_optsets_return=None, in
 
     return (unique_inds, condnum_indices_mat)
 
-def increase_cond_num(grad_tensor, qoiIndices=None, num_optsets_return=None, savepairs=None):
+def find_good_sets(grad_tensor, good_sets_prev, qoiIndices=None, num_optsets_return=None, inner_prod_tol=None, cond_tol=None, unique_inds=None):
+    """
 
-    inner_prod_tol = 0.8
-    unique_inds = None
-    for i in range(2,10):
-        cond_tol = float(i)
-        (unique_inds, condnum_indices_mat) = find_good_quartets(grad_tensor, qoiIndices=qoiIndices, num_optsets_return=num_optsets_return, inner_prod_tol=inner_prod_tol, cond_tol=cond_tol, unique_inds=unique_inds)
-        if np.min(condnum_indices_mat[:,0]) < 1E11:
-            return condnum_indices_mat
+    :param grad_tensor: Gradient vectors at each centers in the parameter 
+        space :math:'\Lambda' for each QoI map.
+    :type grad_tensor: :class:`np.ndarray` of shape (num_centers,num_qois,Ldim)
+        where num_centers is the number of points in :math:'\Lambda' we have
+        approximated the gradient vectors, num_qois is the total number of
+        possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
+    :param qoiIndices: Set of QoIs to consider
+    :type qoiIndices: :class:'`np.ndarray` of size (1, num QoIs to consider)
+    :param int num_qois_return: Number of desired QoIs to use in the
+        inverse problem.
+    :param int num_optsets_return: Number of best sets to return
+
+    :rtype: tuple
+    :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
+        shape (num_optsets_return, num_qois_return+1) and optsingvals
+        has shape (num_centers, num_qois_return, num_optsets_return)
+
+    """
+    num_centers = grad_tensor.shape[0]
+    Lambda_dim = grad_tensor.shape[2]
+    num_qois_return = good_sets_prev.shape[1] + 1
+    if qoiIndices is None:
+        qoiIndices = range(0, grad_tensor.shape[1])
+    if num_optsets_return is None:
+        num_optsets_return = 10
+    if inner_prod_tol is None:
+        inner_prod_tol = 0.99
+    if cond_tol is None:
+        cond_tol = 20000000.0 #sys.float_info[0]
+
+    if unique_inds is None:
+        unique_inds = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
+
+    comm.Barrier()
+
+    best_sets = np.zeros([num_optsets_return, num_qois_return + 1])
+    best_sets[:,0] = 1E11
+    good_sets = np.zeros([1, num_qois_return])
+    for i in range(good_sets_prev.shape[0]):
+        # Find all posible combinations of QoIs
+        if comm.rank == 0:
+            l = util.fix_dimensions_vector_2darray(list(set(unique_inds) - \
+                set(good_sets_prev[i,:])))
+            qoi_combs = np.append(np.tile(good_sets_prev[i,:],
+                [len(unique_inds) - good_sets_prev.shape[1], 1]), l, axis=1)
+            if i==0:
+                print 'Possible sets of QoIs of size() : ', qoi_combs.shape[0] * \
+                    good_sets_prev.shape[0]
+            qoi_combs = np.array_split(qoi_combs, comm.size)
+        else:
+            qoi_combs = None
+
+        # Scatter them throughout the processors
+        qoi_combs = comm.scatter(qoi_combs, root=0)
+
+        # For each combination, check the skewness and throw out one from each pair
+        # that has global skewess>cond_tol.  For pairs of vectors we want to
+        # consider using the idea that we only know the vectors to within 10% error.
+        
+
+        for qoi_set in range(len(qoi_combs)):
+            curr_set = util.fix_dimensions_vector_2darray(qoi_combs[qoi_set]).transpose()
+            (current_condnum, _) = calculate_avg_condnum(grad_tensor, qoi_combs[qoi_set])
+            if current_condnum < cond_tol:
+                good_sets = np.append(good_sets, curr_set, axis=0)
+
+            if current_condnum < best_sets[-1, 0]:
+                repeat_set = False
+                for j in range(best_sets.shape[0]):
+                    if len(set(qoi_combs[qoi_set]) - set(best_sets[j, 1:])) == 0:
+                        repeat_set = True
+                if not repeat_set:
+                    best_sets[-1, :] = np.append(np.array([current_condnum]),
+                        qoi_combs[qoi_set])
+                    best_sets = best_sets[best_sets[:, 
+                        0].argsort()]
+
+    # Wait for all processes to get to this point
+    comm.Barrier()
+
+    # Gather the best sets and condition numbers from each processor
+    good_sets = np.array(comm.gather(good_sets, root=0))
+    best_sets = np.array(comm.gather(best_sets, root=0))
+
+    # Find the num_optsets_return smallest condition numbers from all processors
+    if comm.rank == 0:
+        best_sets = best_sets.reshape(num_optsets_return * \
+            comm.size, num_qois_return + 1)
+
+        [temp, uniq_inds] =  np.unique(best_sets[:, 0], return_index=True)
+        best_sets = best_sets[uniq_inds, :]
+        best_sets = best_sets[best_sets[:, 
+            0].argsort()]
+        best_sets = best_sets[:num_optsets_return, :]
+
+        temp = np.zeros([num_optsets_return, num_qois_return + 1])
+        temp[:,0] = 1E11
+
+        temp[:best_sets.shape[0], :] = best_sets
+        best_sets = temp
+
+        # good sets
+        good_sets_new = np.zeros([1, num_qois_return])
+        for each in good_sets:
+            good_sets_new = np.append(good_sets_new, each[1:], axis=0)
+            
+        good_sets = good_sets_new
+        print 'Good sets of QoIs of size() : ', good_sets.shape[0] - 1
+
+
+        comm.Barrier()
+    best_sets = comm.bcast(best_sets, root=0)
+    good_sets = comm.bcast(good_sets, root=0)
+
+    return (good_sets[1:], best_sets)
+
+
+def chooseOptQoIs_upto_Lambda_dim(grad_tensor, num_optsets_return=None, inner_prod_tol=None, cond_tol=None):
+    """
+
+    :param grad_tensor: Gradient vectors at each centers in the parameter 
+        space :math:'\Lambda' for each QoI map.
+    :type grad_tensor: :class:`np.ndarray` of shape (num_centers,num_qois,Ldim)
+        where num_centers is the number of points in :math:'\Lambda' we have
+        approximated the gradient vectors, num_qois is the total number of
+        possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
+    :param qoiIndices: Set of QoIs to consider
+    :type qoiIndices: :class:'`np.ndarray` of size (1, num QoIs to consider)
+    :param int num_qois_return: Number of desired QoIs to use in the
+        inverse problem.
+    :param int num_optsets_return: Number of best sets to return
+
+    :rtype: tuple
+    :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
+        shape (num_optsets_return, num_qois_return+1) and optsingvals
+        has shape (num_centers, num_qois_return, num_optsets_return)
+
+    """
+
+    num_centers = grad_tensor.shape[0]
+    Lambda_dim = grad_tensor.shape[2]
+    qoiIndices = range(0, grad_tensor.shape[1])
+
+    if num_optsets_return is None:
+        num_optsets_return = 10
+    if inner_prod_tol is None:
+        inner_prod_tol = 0.8
+    if cond_tol is None:
+        cond_tol = 20.0
+
+    unique_inds = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
+
+    for Ldim in range(3, Lambda_dim):
+        good_sets = find_good_sets(grad_tensor, cond_tol=cond_tol, qoiIndices=unique_inds)
+        
+
+
+
+
+
 
 
 
