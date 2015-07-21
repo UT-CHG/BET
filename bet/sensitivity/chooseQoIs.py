@@ -12,7 +12,7 @@ import sys
 
 def calculate_avg_condnum(grad_tensor, qoi_set):
     r"""
-    Given gradient vectors as some points (centers) in the parameter space
+    Given gradient vectors at some points (centers) in the parameter space
     and given a specific set of QoIs, caculate the average condition number
     of the matrices formed by the gradient vectors of each QoI map at each
     center.
@@ -33,7 +33,7 @@ def calculate_avg_condnum(grad_tensor, qoi_set):
     # Calculate the singular values at each center
     singvals = np.linalg.svd(grad_tensor[:, qoi_set, :], compute_uv=False)
 
-    # Find the centers that have atleast one zero sinular value
+    # Find the centers that have atleast one zero singular value
     indz = singvals[:, -1] == 0
     indnz = singvals[:, -1] != 0
 
@@ -85,12 +85,10 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     method returns the ``num_optsets_return`` best sets of QoIs with with repsect
     to skewness properties and a tensor that represents the singular values of
     the matrices formed by the gradient vectors of the optimal QoIs at each
-    center is returned..  This method is brute force, i.e., if the method is
+    center is returned.  This method is brute force, i.e., if the method is
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
-    computationally expensive approach.  Also a tensor that represents the
-    singular values of the matrices formed by the gradient vectors of the
-    optimal QoIs at each center is returned.
+    computationally expensive approach.
 
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
@@ -254,7 +252,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         inner_prod tol and condnum_tol.
 
     Given gradient vectors at each center in the parameter space and given
-    good sets of size n - 1, return good sets of size n.
+    good sets of size n - 1, return good sets of size n.  That is, return
+    sets of size n that have average condition number less than some tolerance.
 
     :param grad_tensor: Gradient vectors at each centers in the parameter
         space :math:'\Lambda' for each QoI map.
@@ -284,7 +283,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     comm.Barrier()
 
-    # Inistialize best sets and set all condition numbers large
+    # Initialize best sets and set all condition numbers large
     best_sets = np.zeros([num_optsets_return, num_qois_return + 1])
     best_sets[:, 0] = 1E11
     good_sets = np.zeros([1, num_qois_return])
@@ -312,8 +311,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         # Scatter them throughout the processors
         qoi_combs = comm.scatter(qoi_combs, root=0)
 
-        # For each combination, check the skewness and throw out one from each
-        # pair that has average skewess>cond_tol.
+        # For each combination, compute the average condition number and add the
+        # set to good_sets if it is less than cond_tol
         for qoi_set in range(len(qoi_combs)):
             count_qois += 1
             curr_set = util.fix_dimensions_vector_2darray(qoi_combs[qoi_set])\
@@ -323,6 +322,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
             if current_condnum < cond_tol:
                 good_sets = np.append(good_sets, curr_set, axis=0)
 
+                # If the average condition number is less than the max condition
+                # number in our best_sets, add it to best_sets
                 if current_condnum < best_sets[-1, 0]:
                     best_sets[-1, :] = np.append(np.array([current_condnum]),
                         qoi_combs[qoi_set])
@@ -371,8 +372,8 @@ def chooseOptQoIs_large(grad_tensor, qoiIndices=None, max_qois_return=None,
     Given gradient vectors at some points (centers) in the parameter space, a
     large set of QoIs to choose from, and the number of desired QoIs to return,
     this method return the set of optimal QoIs of size 1, 2, ... max_qois_return
-    to use in the inverse problem by choosing the set with optimal skewness
-    properties.
+    to use in the inverse problem by choosing the sets with the smallext average
+    condition number.
 
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
@@ -406,8 +407,8 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     Given gradient vectors at some points (centers) in the parameter space, a
     large set of QoIs to choose from, and the number of desired QoIs to return,
     this method return the set of optimal QoIs of size 1, 2, ... max_qois_return
-    to use in the inverse problem by choosing the set with optimal skewness
-    properties.  Also a tensor that represents the singular values of the
+    to use in the inverse problem by choosing the set with smallext average
+    condition number.  Also a tensor that represents the singular values of the
     matrices formed by the gradient vectors of the optimal QoIs at each center
     is returned.
 
@@ -431,8 +432,10 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
 
     :rtype: tuple
     :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
-        shape (num_optsets_return, num_qois_return+1) and optsingvals
-        has shape (num_centers, num_qois_return, num_optsets_return)
+        shape (num_optsets_return, num_qois_return+1) and optsingvals is a list
+        where each element has shape (num_centers, num_qois_return,
+        num_optsets_return).  num_qois_return will change for each element of
+        the list.
 
     """
     num_centers = grad_tensor.shape[0]
@@ -448,11 +451,13 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     if cond_tol is None:
         cond_tol = sys.float_info[0]
 
+    # Find the unique QoIs to consider
     unique_indices = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
     good_sets_curr = util.fix_dimensions_vector_2darray(unique_indices)
 
     best_sets = []
     optsingvals_list = []
+    # Given good sets of QoIs of size n - 1, find the good sets of size n
     for qois_return in range(2, max_qois_return + 1):
         (good_sets_curr, best_sets_curr, optsingvals_tensor_curr) = \
             find_good_sets(grad_tensor, good_sets_curr, unique_indices,
