@@ -11,6 +11,8 @@ import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoIs
 import numpy as np
 import numpy.testing as nptest
+from itertools import combinations
+import sys
 
 class ChooseQoIsMethods:
     """
@@ -77,6 +79,47 @@ class ChooseQoIsMethods:
         self.assertEqual(self.optsingvals.shape, ((self.num_centers,
             self.num_qois_return, self.num_optsets_return)))
 
+    def test_find_unique_vecs(self):
+        """
+        Test :meth:`bet.sensitivity.chooseQoIs.find_unique_vecs`.
+        """
+        self.qoiIndices = range(0, self.num_qois)
+        unique_indices = cQoIs.find_unique_vecs(self.G, self.inner_prod_tol, 
+            self.qoiIndices)
+
+        # Test that pairwise inner products are <= inner_prod_tol
+        pairs = np.array(list(combinations(list(unique_indices), 2)))
+        for pair in range(pairs.shape[0]):
+            curr_set = pairs[pair]
+            curr_inner_prod = np.sum(self.G[:, curr_set[0], :] * self.G[:,
+                curr_set[1], :]) / self.G.shape[0]
+            nptest.assert_array_less(curr_inner_prod, self.inner_prod_tol)
+
+    def test_chooseOptQoIs_large(self):
+        """
+        Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_large`.
+        """
+        self.qoiIndices = range(0, self.num_qois)
+        best_sets = cQoIs.chooseOptQoIs_large(self.G, qoiIndices=self.qoiIndices,
+            inner_prod_tol=self.inner_prod_tol, cond_tol=self.cond_tol)
+
+        for Ldim in range(self.Lambda_dim - 1):
+            nptest.assert_array_less(best_sets[Ldim][:, 0], self.cond_tol)
+
+    def test_chooseOptQoIs_large(self):
+        """
+        Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose`.
+        """
+        self.qoiIndices = range(0, self.num_qois)
+        [best_sets, optsingvals_list] = cQoIs.chooseOptQoIs_large_verbose(self.G,
+            qoiIndices=self.qoiIndices, num_optsets_return=self.num_optsets_return,
+            inner_prod_tol=self.inner_prod_tol, cond_tol=self.cond_tol)
+        print optsingvals_list[0].shape
+
+        self.assertEqual(len(optsingvals_list), self.Lambda_dim - 1)
+        for i in range(self.Lambda_dim - 1):
+            self.assertEqual(optsingvals_list[i].shape, (self.num_centers, i + 2, self.num_optsets_return))
+
 
 class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
@@ -99,6 +142,9 @@ class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
             self.G = grad.calculate_gradients_rbf(self.samples, self.data,
                 self.centers)
 
+            self.inner_prod_tol = 1.0
+            self.cond_tol = 100.0
+
 class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 4
@@ -106,7 +152,7 @@ class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.num_optsets_return = 5
             self.radius = 0.01
             np.random.seed(0)
-            self.num_centers = 10
+            self.num_centers = 100
             self.centers = np.random.random((self.num_centers, self.Lambda_dim))
             self.samples = grad.sample_l1_ball(self.centers,
                 self.Lambda_dim + 1, self.radius)
@@ -120,6 +166,9 @@ class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.G = grad.calculate_gradients_rbf(self.samples, self.data,
                 self.centers)
 
+            self.inner_prod_tol = 0.9
+            self.cond_tol = 20.0
+
 class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 9
@@ -127,7 +176,7 @@ class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
             self.num_optsets_return = 50
             self.radius = 0.01
             np.random.seed(0)
-            self.num_centers = 10
+            self.num_centers = 15
             self.centers = np.random.random((self.num_centers, self.Lambda_dim))
             self.samples = grad.sample_l1_ball(self.centers, self.Lambda_dim + \
                 1, self.radius)
@@ -141,6 +190,9 @@ class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
             self.G = grad.calculate_gradients_rbf(self.samples, self.data,
                 self.centers)
 
+            self.inner_prod_tol = 0.8
+            self.cond_tol = 100.0
+
 class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
             self.Lambda_dim = 9
@@ -148,7 +200,7 @@ class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.num_optsets_return = 1
             self.radius = 0.01
             np.random.seed(0)
-            self.num_centers = 10
+            self.num_centers = 11
             self.centers = np.random.random((self.num_centers, self.Lambda_dim))
             self.samples = grad.sample_l1_ball(self.centers,
                 self.Lambda_dim + 1, self.radius)
@@ -161,6 +213,9 @@ class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.data = self.samples.dot(self.coeffs)
             self.G = grad.calculate_gradients_rbf(self.samples, self.data,
                 self.centers)
+
+            self.inner_prod_tol = 0.9
+            self.cond_tol = 50.0
 
 class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
         def setUp(self):
@@ -183,3 +238,6 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
             self.data = self.samples.dot(self.coeffs)
             self.G = grad.calculate_gradients_rbf(self.samples, self.data,
                 self.centers)
+
+            self.inner_prod_tol = 0.9
+            self.cond_tol = sys.float_info[0]

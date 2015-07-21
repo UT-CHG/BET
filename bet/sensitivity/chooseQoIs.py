@@ -229,9 +229,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
         print 'Possible pairs of QoIs : ', qoi_combs.shape
 
     # For each pair, check the angle between the vectors and throw out the
-    # second if the angle is below some tolerance.  For pairs of vectors we
-    # want to consider using the idea that we only know the vectors to within
-    # 10% error.
+    # second if the angle is below some tolerance.
     repeat_vec = np.array([])
     for qoi_set in range(len(qoi_combs)):
         curr_set = qoi_combs[qoi_set]
@@ -249,8 +247,8 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
 
     return unique_vecs
 
-def find_good_sets(grad_tensor, good_sets_prev, unique_indices, num_optsets_return,
-        inner_prod_tol, cond_tol):
+def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
+        num_optsets_return, inner_prod_tol, cond_tol):
     r"""
     #TODO:  Use the idea we only know vectors are with 10% accuracy to guide
         inner_prod tol and condnum_tol.
@@ -367,6 +365,40 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices, num_optsets_retu
 
     return (good_sets[1:].astype(int), best_sets, optsingvals_tensor)
 
+def chooseOptQoIs_large(grad_tensor, qoiIndices=None, max_qois_return=None,
+        num_optsets_return=None, inner_prod_tol=None, cond_tol=None):
+    r"""
+    Given gradient vectors at some points (centers) in the parameter space, a
+    large set of QoIs to choose from, and the number of desired QoIs to return,
+    this method return the set of optimal QoIs of size 1, 2, ... max_qois_return
+    to use in the inverse problem by choosing the set with optimal skewness
+    properties.
+
+    :param grad_tensor: Gradient vectors at each point of interest in the
+        parameter space :math:`\Lambda` for each QoI map.
+    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
+        Lambda_dim) where num_centers is the number of points in :math:`\Lambda`
+        we have approximated the gradient vectors and num_qois is the total
+        number of possible QoIs to choose from
+    :param qoiIndices: Set of QoIs to consider from grad_tensor.  Default is
+        range(0, grad_tensor.shape[1])
+    :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
+    :param int max_qois_return: Maximum number of desired QoIs to use in the
+        inverse problem.  Default is Lambda_dim
+    :param int num_optsets_return: Number of best sets to return
+        Default is 10
+
+    :rtype: tuple
+    :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
+        shape (num_optsets_return, num_qois_return+1) and optsingvals
+        has shape (num_centers, num_qois_return, num_optsets_return)
+
+    """
+    (best_sets, _) = chooseOptQoIs_large_verbose(grad_tensor, qoiIndices,
+        max_qois_return, num_optsets_return, inner_prod_tol, cond_tol)
+
+    return best_sets
+
 def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
         max_qois_return=None, num_optsets_return=None, inner_prod_tol=None,
         cond_tol=None):
@@ -412,7 +444,7 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     if num_optsets_return is None:
         num_optsets_return = 10
     if inner_prod_tol is None:
-        inner_prod_tol = 0.99
+        inner_prod_tol = 0.9
     if cond_tol is None:
         cond_tol = sys.float_info[0]
 
@@ -427,40 +459,7 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
             num_optsets_return, inner_prod_tol, cond_tol)
         best_sets.append(best_sets_curr)
         optsingvals_list.append(optsingvals_tensor_curr)
-        print best_sets_curr
+        if comm.rank == 0:
+            print best_sets_curr
 
     return (best_sets, optsingvals_list)
-
-def chooseOptQoIs_large(grad_tensor, qoiIndices=None, max_qois_return=None,
-        num_optsets_return=None, inner_prod_tol=None, cond_tol=None):
-    r"""
-    Given gradient vectors at some points (centers) in the parameter space, a
-    large set of QoIs to choose from, and the number of desired QoIs to return,
-    this method return the set of optimal QoIs of size 1, 2, ... max_qois_return
-    to use in the inverse problem by choosing the set with optimal skewness
-    properties.
-
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        Lambda_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the total
-        number of possible QoIs to choose from
-    :param qoiIndices: Set of QoIs to consider from grad_tensor.  Default is
-        range(0, grad_tensor.shape[1])
-    :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
-    :param int max_qois_return: Maximum number of desired QoIs to use in the
-        inverse problem.  Default is Lambda_dim
-    :param int num_optsets_return: Number of best sets to return
-        Default is 10
-
-    :rtype: tuple
-    :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
-        shape (num_optsets_return, num_qois_return+1) and optsingvals
-        has shape (num_centers, num_qois_return, num_optsets_return)
-
-    """
-    (best_sets, _) = chooseOptQoIs_large_verbose(grad_tensor, qoiIndices,
-        max_qois_return, num_optsets_return, inner_prod_tol, cond_tol)
-
-    return best_sets
