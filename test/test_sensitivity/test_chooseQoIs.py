@@ -106,7 +106,7 @@ class ChooseQoIsMethods:
         for Ldim in range(self.Lambda_dim - 1):
             nptest.assert_array_less(best_sets[Ldim][:, 0], self.cond_tol)
 
-    def test_chooseOptQoIs_large(self):
+    def test_chooseOptQoIs_large_verbose(self):
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose`.
         """
