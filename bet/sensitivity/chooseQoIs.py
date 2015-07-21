@@ -177,7 +177,6 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
 
     return (condnum_indices_mat, optsingvals_tensor)
 
-
 def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
     r"""
     Given gradient vectors at each center in the parameter space, sort throught
@@ -217,14 +216,16 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
     for i in range(normG.shape[1]):
         if np.sum(normG[:, i] == 0) > 0:
             indz = np.append(indz, i)
-    qoiIndices = list(set(qoiIndices) - set(indz))
 
-    # Find all n choose 2 pairs of QoIs
-    qoi_combs = np.array(list(combinations(list(qoiIndices), 2)))
     if comm.rank == 0:
         print '*** find_unique_vecs ***'
-        print 'num_zerovec : ', len(indz)
-        print 'Possible pairs of QoIs : ', qoi_combs.shape
+        print 'num_zerovec : ', len(indz), 'of (', grad_tensor.shape[1],\
+            ') original QoIs'
+        print 'Possible QoIs : ', len(qoiIndices) - len(indz)
+    qoiIndices = list(set(qoiIndices) - set(indz))
+        
+    # Find all n choose 2 pairs of QoIs
+    qoi_combs = np.array(list(combinations(list(qoiIndices), 2)))
 
     # For each pair, check the angle between the vectors and throw out the
     # second if the angle is below some tolerance.
@@ -236,6 +237,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
             curr_inner_prod = np.sum(grad_tensor[:, curr_set[0], :] * \
                 grad_tensor[:, curr_set[1], :]) / grad_tensor.shape[0]
 
+            # If the innerprod>tol, throw out the second QoI
             if curr_inner_prod > inner_prod_tol:
                 repeat_vec = np.append(repeat_vec, qoi_combs[qoi_set, -1])
 
@@ -280,7 +282,6 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
     num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]
     num_qois_return = good_sets_prev.shape[1] + 1
-
     comm.Barrier()
 
     # Initialize best sets and set all condition numbers large
@@ -299,6 +300,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         if comm.rank == 0:
             inds_notin_set = util.fix_dimensions_vector_2darray(list(set(\
                 unique_indices) - set(good_sets_prev[i, :])))
+
+            # Choose only the QoI indices > min_ind so we do not repeat sets
             inds_notin_set = util.fix_dimensions_vector_2darray(inds_notin_set[\
                 inds_notin_set > min_ind])
             qoi_combs = util.fix_dimensions_vector_2darray(np.append(np.tile(\
@@ -319,6 +322,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
                 .transpose()
             (current_condnum, singvals) = calculate_avg_condnum(grad_tensor,
                 qoi_combs[qoi_set])
+
+            # If its a good set, add it to good_sets
             if current_condnum < cond_tol:
                 good_sets = np.append(good_sets, curr_set, axis=0)
 
@@ -330,6 +335,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
                     order = best_sets[:, 0].argsort()
                     best_sets = best_sets[order]
 
+                    # Store the corresponding singular values
                     optsingvals_tensor[:, :, -1] = singvals
                     optsingvals_tensor = optsingvals_tensor[:, :, order]
 
@@ -342,6 +348,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     # Find the num_optsets_return smallest condition numbers from all processors
     if comm.rank == 0:
+
         # Organize the best sets
         best_sets = best_sets.reshape(num_optsets_return * \
             comm.size, num_qois_return + 1)
@@ -354,9 +361,9 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         good_sets_new = np.zeros([1, num_qois_return])
         for each in good_sets:
             good_sets_new = np.append(good_sets_new, each[1:], axis=0)
-
         good_sets = good_sets_new
-        print 'Possible sets of QoIs of size %i : '%count_qois
+
+        print 'Possible sets of QoIs of size %i ~ '%good_sets.shape[1], count_qois * comm.size
         print 'Good sets of QoIs of size %i : '%good_sets.shape[1],\
             good_sets.shape[0] - 1
 
