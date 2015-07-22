@@ -223,7 +223,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
             ') original QoIs'
         print 'Possible QoIs : ', len(qoiIndices) - len(indz)
     qoiIndices = list(set(qoiIndices) - set(indz))
-        
+
     # Find all num_qois choose 2 pairs of QoIs
     qoi_combs = np.array(list(combinations(list(qoiIndices), 2)))
 
@@ -233,16 +233,14 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
     repeat_vec = np.array([])
     for qoi_set in range(len(qoi_combs)):
         curr_set = qoi_combs[qoi_set]
-        '''
-        SHOULD THERE BE AN ABSOLUTE VALUE IN HERE SOMEWHERE?????
-        '''
+
         # If neither of the current QoIs are in the repeat_vec, test them
         if curr_set[0] not in repeat_vec and curr_set[1] not in repeat_vec:
             curr_inner_prod = np.sum(grad_tensor[:, curr_set[0], :] * \
                 grad_tensor[:, curr_set[1], :]) / grad_tensor.shape[0]
 
             # If the innerprod>tol, throw out the second QoI
-            if curr_inner_prod > inner_prod_tol:
+            if np.abs(curr_inner_prod) > inner_prod_tol:
                 repeat_vec = np.append(repeat_vec, qoi_combs[qoi_set, -1])
 
     unique_vecs = np.array(list(set(qoiIndices) - set(repeat_vec)))
@@ -298,9 +296,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     # For each good set of size n - 1, find the possible sets of size n and
     # compute the average condition number of each
-    '''
-    MAKE COUNT A VEC, COUNT[comm.rank]+=1...
-    '''
+    count_qois = 0
     for i in range(good_sets_prev.shape[0]):
         min_ind = np.max(good_sets_prev[i, :])
         # Find all possible combinations of QoIs that include this set of n - 1
@@ -352,6 +348,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
     # Gather the best sets and condition numbers from each processor
     good_sets = np.array(comm.gather(good_sets, root=0))
     best_sets = np.array(comm.gather(best_sets, root=0))
+    count_qois = np.array(comm.gather(count_qois, root=0))
 
     # Find the num_optsets_return smallest condition numbers from all processors
     if comm.rank == 0:
@@ -370,7 +367,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
             good_sets_new = np.append(good_sets_new, each[1:], axis=0)
         good_sets = good_sets_new
 
-        print 'Possible sets of QoIs of size %i ~ '%good_sets.shape[1], count_qois * comm.size
+        print 'Possible sets of QoIs of size %i : '%good_sets.shape[1],\
+            np.sum(count_qois)
         print 'Good sets of QoIs of size %i : '%good_sets.shape[1],\
             good_sets.shape[0] - 1
 
@@ -467,10 +465,13 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
 
     # Find the unique QoIs to consider
     unique_indices = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
-    good_sets_curr = util.fix_dimensions_vector_2darray(unique_indices)
+    if comm.rank == 0:
+        print 'Unique Indices are : ', unique_indices
 
+    good_sets_curr = util.fix_dimensions_vector_2darray(unique_indices)
     best_sets = []
     optsingvals_list = []
+
     # Given good sets of QoIs of size n - 1, find the good sets of size n
     for qois_return in range(2, max_qois_return + 1):
         (good_sets_curr, best_sets_curr, optsingvals_tensor_curr) = \
