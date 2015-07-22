@@ -191,7 +191,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
         approximated the gradient vectors, num_qois is the total number of
         possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
     :param float inner_prod_tol: A real number between 0 and 1.
-    :param qoiIndices: Set of QoIs to consider
+    :param qoiIndices: Set of QoIs to consider.
     :type qoiIndices: :class:'`np.ndarray` of size (1, num QoIs to consider)
     :param int num_qois_return: Number of desired QoIs to use in the
         inverse problem.
@@ -206,7 +206,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
     if qoiIndices is None:
         qoiIndices = range(0, grad_tensor.shape[1])
 
-    # Remove any QoI that has a zero vector at atleast one of the centers
+    # Remove any QoI that has a zero vector at atleast one of the centers.
     # Up for discussion if this is the best move.  Possible the QoI has
     # a zero vector at one centers, and is perfectly orthogonal to another
     # QoI at all the other centers.  For now we simply remove, since during
@@ -224,14 +224,18 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None):
         print 'Possible QoIs : ', len(qoiIndices) - len(indz)
     qoiIndices = list(set(qoiIndices) - set(indz))
         
-    # Find all n choose 2 pairs of QoIs
+    # Find all num_qois choose 2 pairs of QoIs
     qoi_combs = np.array(list(combinations(list(qoiIndices), 2)))
 
     # For each pair, check the angle between the vectors and throw out the
-    # second if the angle is below some tolerance.
+    # second QoI if the angle is below some tolerance.  At this point all the
+    # vectors are normalized, so the inner product will be between -1 and 1.
     repeat_vec = np.array([])
     for qoi_set in range(len(qoi_combs)):
         curr_set = qoi_combs[qoi_set]
+        '''
+        SHOULD THERE BE AN ABSOLUTE VALUE IN HERE SOMEWHERE?????
+        '''
         # If neither of the current QoIs are in the repeat_vec, test them
         if curr_set[0] not in repeat_vec and curr_set[1] not in repeat_vec:
             curr_inner_prod = np.sum(grad_tensor[:, curr_set[0], :] * \
@@ -294,6 +298,9 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     # For each good set of size n - 1, find the possible sets of size n and
     # compute the average condition number of each
+    '''
+    MAKE COUNT A VEC, COUNT[comm.rank]+=1...
+    '''
     for i in range(good_sets_prev.shape[0]):
         min_ind = np.max(good_sets_prev[i, :])
         # Find all possible combinations of QoIs that include this set of n - 1
@@ -352,8 +359,8 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         # Organize the best sets
         best_sets = best_sets.reshape(num_optsets_return * \
             comm.size, num_qois_return + 1)
-        [temp, uniq_inds] = np.unique(best_sets[:, 0], return_index=True)
-        best_sets = best_sets[uniq_inds, :]
+        [temp, uniq_inds_best] = np.unique(best_sets[:, 0], return_index=True)
+        best_sets = best_sets[uniq_inds_best, :]
         best_sets = best_sets[best_sets[:, 0].argsort()]
         best_sets = best_sets[:num_optsets_return, :]
 
