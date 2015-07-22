@@ -17,7 +17,8 @@ available. By changing the choice of QoIs that we use to solve the stochastic
 inverse problem, we see the effect of geometric distinctness. 
 Probabilities in the parameter space are 
 calculated using the MC assumption.  1D and 2D marginals are calculated,
-smoothed, and plotted.
+smoothed, and plotted. The samples are then ranked by probability density
+and the volume of high-probability regions are calculated. Probabilistic predictions of other QoI are made.
 
 Import the necessary modules::
 
@@ -36,7 +37,7 @@ Import the samples, data, reference data, and reference parameters::
   ref_lam = np.loadtxt("files/lam_ref.txt.gz") #reference parameter set
   Q_ref = np.loadtxt("files/Q_ref.txt.gz") #reference QoI set
   samples = np.loadtxt("files/samples.txt.gz") # uniform samples in parameter domain
-  data = np.loadtxt("files/data.txt.gz") # data from model
+  dataf = np.loadtxt("files/data.txt.gz") # data from model
 
 Choose which subset of the 11 QoIs to use for inversion::
 
@@ -48,7 +49,7 @@ Choose the bin ratio for the uniform output probability::
 
 Slice data and form approximate PDF for output for plotting::
 
-  data = data[:,QoI_indices]
+  data = dataf[:,QoI_indices]
   Q_ref=Q_ref[QoI_indices]
 
   dmax = data.max(axis=0)
@@ -161,3 +162,18 @@ Suggested changes for user (5):
 -------------------------------
 Change ``percentile`` to values between 1.0 and 0.0. Notice that while the region of nonzero probabibilty may have a significant volume, much of this volume contains relatively low probability. Change the value to 0.95, 0.9, 0.75, and 0.5 and notice the volume decrease significantly. 
 
+
+
+Propogate highest probability part of the probability measure through a different QoI map::
+
+  (_, P_pred, _, _ , data_pred)= postTools.sample_highest_prob(top_percentile=percentile, P_samples=P, samples=samples, lam_vol=lam_vol,data = dataf[:,7],sort=True)
+
+Calculate and plot PDF of predicted QoI::
+
+  (bins_pred, marginals1D_pred) = plotP.calculate_1D_marginal_probs(P_samples = P_pred, samples = data_pred, lam_domain = np.array([[np.min(data_pred),np.max(data_pred)]]), nbins = 20)
+
+  plotP.plot_1D_marginal_probs(marginals1D_pred, bins_pred, lam_domain= np.array([[np.min(data_pred),np.max(data_pred)]]), filename = "contaminant_prediction", interactive=False)
+
+Suggested changes for user (6):
+-------------------------------
+Change the prediction QoI map. Compare to the reference values.
