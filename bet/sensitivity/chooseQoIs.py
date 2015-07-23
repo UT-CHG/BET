@@ -37,9 +37,11 @@ def calculate_avg_condnum(grad_tensor, qoi_set):
     indz = singvals[:, -1] == 0
     indnz = singvals[:, -1] != 0
 
-    # Compute the average condition number
-    condnum = (np.sum(singvals[indnz, 0] / singvals[indnz, -1], \
-                      axis=0) + 1E9 * np.sum(indz)) / singvals.shape[0]
+    # If a center has atleast one zero singular value, we add 1E20 to the
+    # average condition number.  For the centers with no zero singular values,
+    # we find the average condition number.
+    condnum = np.sum(singvals[indnz, 0] / singvals[indnz, -1], axis=0) / len(\
+        indnz) + np.sum(indz)  * 1E20
 
     return condnum, singvals
 
@@ -119,7 +121,7 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     if num_optsets_return is None:
         num_optsets_return = 10
 
-    qoiIndices = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
+    #qoiIndices = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices)
 
     # Find all posible combinations of QoIs
     if comm.rank == 0:
@@ -136,7 +138,7 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     # For each combination, check the skewness and keep the sets
     # that have the best skewness, i.e., smallest condition number
     condnum_indices_mat = np.zeros([num_optsets_return, num_qois_return + 1])
-    condnum_indices_mat[:, 0] = 1E11
+    condnum_indices_mat[:, 0] = 1E99
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
         num_optsets_return])
     for qoi_set in range(len(qoi_combs)):
@@ -288,7 +290,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     # Initialize best sets and set all condition numbers large
     best_sets = np.zeros([num_optsets_return, num_qois_return + 1])
-    best_sets[:, 0] = 1E11
+    best_sets[:, 0] = 1E99
     good_sets = np.zeros([1, num_qois_return])
     count_qois = 0
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
