@@ -83,6 +83,17 @@ class comm_for_no_mpi4py(object):
             val1 = val1[0]
         return val1
 
+
+    def gather(self, val1, val2=None, root=0):
+        """
+        :param object val1: object to gather
+        :param object val2: object to gather
+        :param int root: 0
+        :rtype: object
+        :returns: val1
+        """
+        return val1
+
     def Allgather(self, val, val2=None):
         """
         :param object val: object to Allgather
