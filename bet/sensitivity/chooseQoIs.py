@@ -9,6 +9,7 @@ from itertools import combinations
 from bet.Comm import comm
 import bet.util as util
 import sys
+from scipy import stats
 
 def calculate_avg_condnum(grad_tensor, qoi_set):
     r"""
@@ -30,18 +31,12 @@ def calculate_avg_condnum(grad_tensor, qoi_set):
     # vectors of each QoI map.  This gives a set of singular values for each
     # center.
     singvals = np.linalg.svd(grad_tensor[:, qoi_set, :], compute_uv=False)
+    condnums = singvals[indnz, 0] / singvals[indnz, -1]
 
-    # Find the centers that have atleast one zero singular value.
-    indz = singvals[:, -1] == 0
-    indnz = singvals[:, -1] != 0
+    # Find the harmonic mean of this set of condition numbers
+    hmean_condnum = stats.hmean(condnums)
 
-    # For each center that has atleast one zero singular value, we add 1E20 to
-    # the average condition number.  For the centers with no zero singular
-    # values, we find the average condition number.
-    condnum = np.sum(singvals[indnz, 0] / singvals[indnz, -1], axis=0) / len(\
-        indnz) + np.sum(indz)  * 1E20
-
-    return condnum, singvals
+    return hmean_condnum, singvals
 
 def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
     r"""
@@ -86,10 +81,9 @@ def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
     # Find the average produt of the singular values over each center, then use
     # this to compute the average volume of the inverse solution.
     if np.sum(indnz) == 0:
-        avg_volume = 1E98
+        avg_volume = np.inf
     else:
-        avg_prod_singvals = np.sum(np.prod(singvals[indnz, :], axis=1)) \
-            /len(indnz)
+        avg_prod_singvals = np.sum(np.prod(singvals, axis=1)) / singvals.shape[0]
         avg_volume = bin_volume / avg_prod_singvals
 
     return avg_volume, singvals
