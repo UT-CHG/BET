@@ -193,7 +193,7 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     # For each combination, check the skewness and keep the sets
     # that have the best skewness, i.e., smallest condition number
     condnum_indices_mat = np.zeros([num_optsets_return, num_qois_return + 1])
-    condnum_indices_mat[:, 0] = 1E99
+    condnum_indices_mat[:, 0] = np.inf
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
         num_optsets_return])
     for qoi_set in range(len(qoi_combs)):
@@ -356,7 +356,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     # Initialize best sets and set all condition numbers large
     best_sets = np.zeros([num_optsets_return, num_qois_return + 1])
-    best_sets[:, 0] = 1E99
+    best_sets[:, 0] = np.inf
     good_sets = np.zeros([1, num_qois_return])
     count_qois = 0
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
@@ -540,7 +540,7 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     if num_optsets_return is None:
         num_optsets_return = 10
     if inner_prod_tol is None:
-        inner_prod_tol = 0.9
+        inner_prod_tol = 1.0
     if cond_tol is None:
         cond_tol = sys.float_info[0]
 
