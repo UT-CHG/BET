@@ -80,7 +80,7 @@ def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
 
     # Find the average produt of the singular values over each center, then use
     # this to compute the average volume of the inverse solution.
-    avg_prod_singvals = np.sum(np.prod(singvals, axis=1)) / singvals.shape[0]
+    avg_prod_singvals = np.mean(np.prod(singvals, axis=1))
     if avg_prod_singvals == 0:
         avg_volume = np.inf
     else:
