@@ -2,7 +2,7 @@
 
 
 ===========================
-Example: Linear Map Choose QoIs (volume / bin_ratio)
+Example: Linear Map Choose QoIs (volume / bin_size / large)
 ===========================
 
 This examples generates uniform random samples in the unit hypercube and
@@ -14,10 +14,10 @@ Every real world problem requires special attention regarding how we choose
 *optimal QoIs*.  This set of examples (examples/sensitivity/linear) covers
 some of the more common scenarios using easy to understand linear maps.
 
-In this *volume_binratio* example we choose *optimal QoIs* to be the set of QoIs
-of size Lambda_dim that produces the smallest support of the inverse solution,
-assuming we define the uncertainty in our data relative to the range of data
-measured in each QoI (bin_ratio).
+In this *volume_binsize_large* example we choose *optimal QoIs* to be the set of 
+QoIs of size Lambda_dim that produces the smallest support of the inverse 
+solution, assuming we define the uncertainty in our data to be fixed, i.e.,
+independent of the range of data maesured for each QoI (bin_size).
 
 Import the necessary modules::
 
@@ -32,8 +32,8 @@ Import the necessary modules::
 
 Let Lambda be a 5 dimensional hypercube::
 
-    Lambda_dim = 5
-    Data_dim = 10
+    Lambda_dim = 10
+    Data_dim = 100
     num_samples = 1E5
     num_centers = 10
 
@@ -48,11 +48,11 @@ Choose random samples in parameter space to solve the model::
     data = Q.dot(samples.transpose()).transpose()
 
 Calculate the gradient vectors at some subset of the samples.  Here the 
-*normalize* argument is set to *True* because we are using *bin_ratio* to
+*normalize* argument is set to *False* because we are using *bin_size* to
 determine the uncertainty in our data::
 
     G = grad.calculate_gradients_rbf(samples, data,
-        centers=samples[:num_centers, :], normalize=True)
+        centers=samples[:num_centers, :], normalize=False)
 
 With these gradient vectors, we are now ready to choose an optimal set of
 QoIs to use in the inverse problem, based on minimizing the support of the
@@ -61,24 +61,30 @@ inverse solution (volume).  The most robust method for this is
 best set of 2, 3, 4 ... until Lambda_dim.  This method returns a list of
 matrices.  Each matrix has 10 rows, the first column representing the
 expected inverse volume ratio, and the rest of the columns the corresponding
-QoI indices::
+QoI indices.
 
-    best_sets = cQoI.chooseOptQoIs_large(G, volume=True)
+Here we set some arguments to speed up the search for optimal QoIs::
+
+    best_sets = cQoI.chooseOptQoIs_large(G, max_qois_return=5,
+        num_optsets_return=2, inner_prod_tol=0.9, cond_tol=1E2, volume=True)
+
+We see here the expected volume ratios are small.  This number represents the
+expected volume of the inverse image of a unit hypercube in the data space.
+With the bin_size definition of the uncertainty in the data, here we expect to
+see inverse solutions that have a smaller support (expected volume ratio < 1)
+than the original volume of the hypercube in the data space.
+
+This interpretation of the expected volume ratios is only valid for inverting
+from a data space that has the same dimensions as the paramter space.  When
+inverting into a higher dimensional space, this expected volume ratio is the
+expected volume of the cross section of the inverse solution.
 
 At this point we have determined the optimal set of QoIs to use in the inverse
 problem.  Now we compare the support of the inverse solution using
 different sets of these QoIs.  We set Q_ref to correspond to the center of
 the parameter space.  We choose the set of QoIs to consider::
 
-    QoI_indices = [3, 6]
-
-In this linear case we expect our ordering of sets of QoIs to be very good.  But
-we see in this example that the set [3, 4, 5, 8, 9] (set 1) has a smaller
-expected volume ratio than the set [2, 3, 6, 8, 9] (set 2), however the inverse 
-solution yields larger volume of support for set 1 than set 2.  This is likely
-due to the fact that we restrict ourselves to the parameter space [0, 1]^5, and 
-the actual support of the inverse solution may extend out of this space.  The 
-expected volume ratio is computed assuming an unbounded parameter space.
+    QoI_indices = [0, 7]
 
 Restrict the data to have just QoI_indices::
 

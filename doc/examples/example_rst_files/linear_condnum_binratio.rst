@@ -2,7 +2,7 @@
 
 
 ===========================
-Example: Linear Map Choose QoIs (volume / bin_ratio)
+Example: Linear Map Choose QoIs (condition number / bin_ratio)
 ===========================
 
 This examples generates uniform random samples in the unit hypercube and
@@ -14,10 +14,10 @@ Every real world problem requires special attention regarding how we choose
 *optimal QoIs*.  This set of examples (examples/sensitivity/linear) covers
 some of the more common scenarios using easy to understand linear maps.
 
-In this *volume_binratio* example we choose *optimal QoIs* to be the set of QoIs
-of size Lambda_dim that produces the smallest support of the inverse solution,
-assuming we define the uncertainty in our data relative to the range of data
-measured in each QoI (bin_ratio).
+In this *condnum_binratio* example we choose *optimal QoIs* to be the set of QoIs
+of size Lambda_dim that has optimal skewness properties which will yield an
+inverse solution that can be approximated well.  The uncertainty in our data is
+relative to the range of data measured in each QoI (bin_ratio).
 
 Import the necessary modules::
 
@@ -60,17 +60,17 @@ inverse solution (volume).  The most robust method for this is
 :meth:~bet.sensitivity.chooseQoIs.chooseOptQoIs_large which returns the
 best set of 2, 3, 4 ... until Lambda_dim.  This method returns a list of
 matrices.  Each matrix has 10 rows, the first column representing the
-expected inverse volume ratio, and the rest of the columns the corresponding
-QoI indices::
+condition number of the Jacobian of Q, and the rest of the columns the
+corresponding QoI indices::
 
-    best_sets = cQoI.chooseOptQoIs_large(G, volume=True)
+    best_sets = cQoI.chooseOptQoIs_large(G, volume=False)
 
 At this point we have determined the optimal set of QoIs to use in the inverse
 problem.  Now we compare the support of the inverse solution using
 different sets of these QoIs.  We set Q_ref to correspond to the center of
 the parameter space.  We choose the set of QoIs to consider::
 
-    QoI_indices = [3, 6]
+    QoI_indices = [3, 4]
 
 In this linear case we expect our ordering of sets of QoIs to be very good.  But
 we see in this example that the set [3, 4, 5, 8, 9] (set 1) has a smaller

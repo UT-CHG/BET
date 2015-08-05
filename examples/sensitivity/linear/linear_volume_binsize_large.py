@@ -27,7 +27,7 @@ import bet.Comm as comm
 # Let Lambda be a 5 dimensional hypercube
 Lambda_dim = 10
 Data_dim = 100
-num_samples = 1E6
+num_samples = 1E5
 num_centers = 10
 
 # Let the map Q be a random matrix of size (Data_dim, Lambda_dim)
@@ -83,7 +83,7 @@ QoI_indices = [0, 7] # choose up to Lambda_dim
 data = data[:, QoI_indices]
 Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(Lambda_dim))
 # bin_size defines the uncertainty in our data
-bin_size = 0.9
+bin_size = 0.25
 
 # Find the simple function approximation
 (d_distr_prob, d_distr_samples, d_Tree) =\
