@@ -8,7 +8,6 @@ import numpy as np
 from itertools import combinations
 from bet.Comm import comm
 import bet.util as util
-import sys
 from scipy import stats
 
 def calculate_avg_condnum(grad_tensor, qoi_set):
@@ -542,7 +541,7 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     if inner_prod_tol is None:
         inner_prod_tol = 1.0
     if cond_tol is None:
-        cond_tol = sys.float_info[0]
+        cond_tol = np.inf
 
     # Find the unique QoIs to consider
     unique_indices = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices,

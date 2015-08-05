@@ -300,4 +300,4 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
                 self.centers)
 
             self.inner_prod_tol = 0.9
-            self.cond_tol = sys.float_info[0]
+            self.cond_tol = np.inf
