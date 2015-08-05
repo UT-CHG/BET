@@ -39,7 +39,7 @@ samples = np.random.random([num_samples, Lambda_dim])
 data = Q.dot(samples.transpose()).transpose()
 
 # Calculate the gradient vectors at some subset of the samples.  Here the
-# *normalize* argument is set to *True* because we are using bin_ratio to
+# *normalize* argument is set to *True* because we are using *bin_ratio* to
 # determine the uncertainty in our data.
 G = grad.calculate_gradients_rbf(samples, data, centers=samples[:num_centers, :],
     normalize=True)
@@ -70,9 +70,20 @@ QoI_indices = [3, 6] # choose up to Lambda_dim
 #QoI_indices = [3, 5, 6, 7, 8]
 #QoI_indices = [0, 1, 2, 3, 4]
 
+'''
+In this linear case we expect our ordering of sets of QoIs to be very good.  But
+we see in this example that the set [3, 4, 5, 8, 9] (set 1) has a smaller
+expected volume ratio than the set [2, 3, 6, 8, 9] (set 2), however the inverse 
+solution yields larger volume of support for set 1 than set 2.  This is likely
+due to the fact that we restrict ourselves to the parameter space [0, 1]^5, and 
+the actual support of the inverse solution may extend out of this space.  The 
+expected volume ratio is computed assuming an unbounded parameter space.
+'''
+
 # Restrict the data to have just QoI_indices
 data = data[:, QoI_indices]
 Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(Lambda_dim))
+
 # bin_ratio defines the uncertainty in our data
 bin_ratio = 0.25
 

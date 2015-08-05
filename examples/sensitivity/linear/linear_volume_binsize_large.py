@@ -10,10 +10,10 @@ Every real world problem requires special attention regarding how we choose
 *optimal QoIs*.  This set of examples (examples/sensitivity/linear) covers
 some of the more common scenarios using easy to understand linear maps.
 
-In this *volume_binratio* example we choose *optimal QoIs* to be the set of QoIs
-of size Lambda_dim that produces the smallest support of the inverse solution,
-assuming we define the uncertainty in our data relative to the range of data
-measured in each QoI (bin_ratio).
+In this *volume_binsize_large* example we choose *optimal QoIs* to be the set of 
+QoIs of size Lambda_dim that produces the smallest support of the inverse 
+solution, assuming we define the uncertainty in our data to be fixed, i.e.,
+independent of the range of data maesured for each QoI (bin_size).
 """
 
 import numpy as np
@@ -27,7 +27,7 @@ import bet.Comm as comm
 # Let Lambda be a 5 dimensional hypercube
 Lambda_dim = 10
 Data_dim = 100
-num_samples = 1E5
+num_samples = 1E6
 num_centers = 10
 
 # Let the map Q be a random matrix of size (Data_dim, Lambda_dim)
@@ -53,8 +53,20 @@ G = grad.calculate_gradients_rbf(samples, data, centers=samples[:num_centers, :]
 # expected inverse volume ratio, and the rest of the columns the corresponding
 # QoI indices.
 best_sets = cQoI.chooseOptQoIs_large(G, max_qois_return=5,
-    num_optsets_return=5, inner_prod_tol=0.9, cond_tol=1E2, volume=True)
+    num_optsets_return=2, inner_prod_tol=0.9, cond_tol=1E2, volume=True)
 
+'''
+We see here the expected volume ratios are small.  This number represents the
+expected volume of the inverse image of a unit hypercube in the data space.
+With the bin_size definition of the uncertainty in the data, here we expect to
+see inverse solutions that have a smaller support (expected volume ratio < 1)
+than the original volume of the hypercube in the data space.
+
+This interpretation of the expected volume ratios is only valid for inverting
+from a data space that has the same dimensions as the paramter space.  When
+inverting into a higher dimensional space, this expected volume ratio is the
+expected volume of the cross section of the inverse solution.
+'''
 ###############################################################################
 
 # At this point we have determined the optimal set of QoIs to use in the inverse
@@ -71,7 +83,7 @@ QoI_indices = [0, 7] # choose up to Lambda_dim
 data = data[:, QoI_indices]
 Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(Lambda_dim))
 # bin_size defines the uncertainty in our data
-bin_size = 0.25
+bin_size = 0.9
 
 # Find the simple function approximation
 (d_distr_prob, d_distr_samples, d_Tree) =\

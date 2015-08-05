@@ -11,8 +11,8 @@ Every real world problem requires special attention regarding how we choose
 some of the more common scenarios using easy to understand linear maps.
 
 In this *condnum_binratio* example we choose *optimal QoIs* to be the set of QoIs
-of size Lambda_dim that has optimal skewness properties which will yield the
-best approximation to the inverse solution.  We the uncertainty in our data is
+of size Lambda_dim that has optimal skewness properties which will yield an
+inverse solution that can be approximated well.  The uncertainty in our data is
 relative to the range of data measured in each QoI (bin_ratio).
 """
 
