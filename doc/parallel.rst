@@ -43,6 +43,8 @@ The modules that have parallel capabilities are as follows::
     postProcess/
       plotP  
       postTools
+    sensitivity/
+      chooseQoIs
 
 util
 ~~~~
@@ -91,4 +93,8 @@ In :mod:`~bet.postProcess.postTools` the methods
 :meth:`~bet.postProcess.postTools.save_parallel_probs_mat`, and
 :meth:`~bet.postProcess.postTools.collect_parallel_probs_mat` provide tools to
 save and collect probabitlies on separate processors as appropriately named files.
+
+sensitivity
+~~~~~~~~~~~
+All methods in the module :mod:`~bet.sensitivity.chooseQoIs` benefit from parallel execution.
 

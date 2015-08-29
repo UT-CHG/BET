@@ -14,7 +14,7 @@ inverse problem, we see the effect of geometric distinctness.
 Probabilities in the parameter space are 
 calculated using the MC assumption.  1D and 2D marginals are calculated,
 smoothed, and plotted. The samples are then ranked by probability density
-and the volume of high-probability regions are calculated.
+and the volume of high-probability regions are calculated. Probabilistic predictions of other QoI are made.
 
 """
 
@@ -36,12 +36,12 @@ lam_domain = np.loadtxt("files/lam_domain.txt.gz") #parameter domain
 ref_lam = np.loadtxt("files/lam_ref.txt.gz") #reference parameter set
 Q_ref = np.loadtxt("files/Q_ref.txt.gz") #reference QoI set
 samples = np.loadtxt("files/samples.txt.gz") # uniform samples in parameter domain
-data = np.loadtxt("files/data.txt.gz") # data from model
+dataf = np.loadtxt("files/data.txt.gz") # data from model
 
 QoI_indices=[0,1,2,3] # Indices for output data with which you want to invert
 bin_ratio = 0.25 #ratio of length of data region to invert
 
-data = data[:,QoI_indices]
+data = dataf[:,QoI_indices]
 Q_ref=Q_ref[QoI_indices]
 
 dmax = data.max(axis=0)
@@ -95,7 +95,7 @@ plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain, filename = "contamin
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=1.0)
 
-# plot 2d marginal probs
+# plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, lam_domain, filename = "contaminant_map", interactive=False, lam_ref=ref_lam, lambda_label=labels)
 
 percentile = 1.0
@@ -105,3 +105,13 @@ percentile = 1.0
 # print the number of samples that make up the  highest percentile percent samples and
 # ratio of the volume of the parameter domain they take up
 print (num_samples, np.sum(lam_vol_high))
+
+# Propogate the probability measure through a different QoI map
+(_, P_pred, _, _ , data_pred)= postTools.sample_highest_prob(top_percentile=percentile, P_samples=P, samples=samples, lam_vol=lam_vol,data = dataf[:,7],sort=True)
+
+# Plot 1D pdf of predicted QoI
+# calculate 1d marginal probs
+(bins_pred, marginals1D_pred) = plotP.calculate_1D_marginal_probs(P_samples = P_pred, samples = data_pred, lam_domain = np.array([[np.min(data_pred),np.max(data_pred)]]), nbins = 20)
+
+# plot 1d pdf 
+plotP.plot_1D_marginal_probs(marginals1D_pred, bins_pred, lam_domain= np.array([[np.min(data_pred),np.max(data_pred)]]), filename = "contaminant_prediction", interactive=False)
