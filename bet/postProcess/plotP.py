@@ -203,7 +203,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
-            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".eps", transparent=True)
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".png", transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -226,7 +226,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
-                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".eps", transparent=True)
+                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".png", transparent=True)
                 if interactive:
                     plt.show()
                 else:
