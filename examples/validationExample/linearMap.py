@@ -161,9 +161,13 @@ structure of a high dimensional non-parametric probability measure.
 # smooth 2d marginals probs (optional)
 #marginals2D = plotP.smooth_marginals_2D(marginals2D,bins, sigma=0.01)
 
+print bins[0][:-1] + np.diff(bins[0])/2
+print bins[1]
+print marginals2D
+
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain, filename = "linearMapValidation",
-                             plot_surface=False)
+                             plot_surface=True, interactive=True)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(P_samples = P, samples = lambda_emulate, lam_domain = lam_domain, nbins = [10, 10])

@@ -213,9 +213,12 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             for k, (i, j) in enumerate(pairs):
                 fig = plt.figure(k)
                 ax = fig.gca(projection='3d')
-                X = bins[i]
-                Y = bins[j]
+                X = bins[i][:-1] + np.diff(bins[i])/2 
+                Y = bins[j][:-1] + np.diff(bins[j])/2
                 X, Y = np.meshgrid(X, Y, indexing='ij')
+                print X.shape
+                print Y.shape
+                print marginals[(i,j)].shape
                 surf = ax.plot_surface(X, Y, marginals[(i, j)], rstride=1,
                         cstride=1, cmap=cm.coolwarm, linewidth=0,
                         antialiased=False)
