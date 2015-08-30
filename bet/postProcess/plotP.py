@@ -172,6 +172,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     :type lambda_label: list of length nbins of strings or None
 
     """
+    print 'test'
     from matplotlib import cm
     if plot_surface:
         from mpl_toolkits.mplot3d import Axes3D
@@ -180,7 +181,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
         pairs = copy.deepcopy(marginals.keys())
         pairs.sort()
         for k, (i, j) in enumerate(pairs):
-            fig = plt.figure(k)
+	    fig = plt.figure(k)
             ax = fig.add_subplot(111)
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
             quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize,
@@ -219,6 +220,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 print X.shape
                 print Y.shape
                 print marginals[(i,j)].shape
+                '''                
                 surf = ax.plot_surface(X, Y, marginals[(i, j)], rstride=1,
                         cstride=1, cmap=cm.coolwarm, linewidth=0,
                         antialiased=False)
@@ -235,7 +237,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 else:
                     plt.close()
                 plt.clf()
-
+		'''
+		
 def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
     This function smooths 1D marginal probabilities.
