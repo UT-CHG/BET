@@ -249,7 +249,7 @@ def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
     :param string RBF: Choice of radial basis function. Default is Gaussian
     :param float ep: Choice of shape parameter for radial basis function.
         Default value is 1.0
-    :param boolean normalize:  If normailze is True, normalize each gradient
+    :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
@@ -328,7 +328,7 @@ def calculate_gradients_ffd(samples, data, normalize=True):
     :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim)
     :param data: QoI values corresponding to each sample.
     :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
-    :param boolean normalize:  If normailze is True, normalize each gradient
+    :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
@@ -381,7 +381,7 @@ def calculate_gradients_cfd(samples, data, normalize=True):
         (2*Lambda_dim*num_centers, Lambda_dim)
     :param data: QoI values corresponding to each sample.
     :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
-    :param boolean normalize:  If normailze is True, normalize each gradient
+    :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each

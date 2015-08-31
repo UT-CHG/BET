@@ -8,7 +8,7 @@ import numpy as np
 from itertools import combinations
 from bet.Comm import comm
 import bet.util as util
-import sys
+from scipy import stats
 
 def calculate_avg_condnum(grad_tensor, qoi_set):
     r"""
@@ -30,18 +30,16 @@ def calculate_avg_condnum(grad_tensor, qoi_set):
     # vectors of each QoI map.  This gives a set of singular values for each
     # center.
     singvals = np.linalg.svd(grad_tensor[:, qoi_set, :], compute_uv=False)
-
-    # Find the centers that have atleast one zero singular value.
     indz = singvals[:, -1] == 0
-    indnz = singvals[:, -1] != 0
+    if np.sum(indz) == singvals.shape[0]:
+        hmean_condnum = np.inf
+    else:
+        singvals[indz, 0] = np.inf
+        singvals[indz, -1] = 1
+        condnums = singvals[:, 0] / singvals[:, -1]
+        hmean_condnum = stats.hmean(condnums)
 
-    # For each center that has atleast one zero singular value, we add 1E20 to
-    # the average condition number.  For the centers with no zero singular
-    # values, we find the average condition number.
-    condnum = np.sum(singvals[indnz, 0] / singvals[indnz, -1], axis=0) / len(\
-        indnz) + np.sum(indz)  * 1E20
-
-    return condnum, singvals
+    return hmean_condnum, singvals
 
 def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
     r"""
@@ -79,17 +77,12 @@ def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
     # center.
     singvals = np.linalg.svd(grad_tensor[:, qoi_set, :], compute_uv=False)
 
-    # Find the centers that have atleast one zero singular value
-    indz = singvals[:, -1] == 0
-    indnz = singvals[:, -1] != 0
-
     # Find the average produt of the singular values over each center, then use
     # this to compute the average volume of the inverse solution.
-    if np.sum(indnz) == 0:
-        avg_volume = 1E98
+    avg_prod_singvals = np.mean(np.prod(singvals, axis=1))
+    if avg_prod_singvals == 0:
+        avg_volume = np.inf
     else:
-        avg_prod_singvals = np.sum(np.prod(singvals[indnz, :], axis=1)) \
-            /len(indnz)
         avg_volume = bin_volume / avg_prod_singvals
 
     return avg_volume, singvals
@@ -199,7 +192,7 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     # For each combination, check the skewness and keep the sets
     # that have the best skewness, i.e., smallest condition number
     condnum_indices_mat = np.zeros([num_optsets_return, num_qois_return + 1])
-    condnum_indices_mat[:, 0] = 1E99
+    condnum_indices_mat[:, 0] = np.inf
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
         num_optsets_return])
     for qoi_set in range(len(qoi_combs)):
@@ -362,7 +355,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
 
     # Initialize best sets and set all condition numbers large
     best_sets = np.zeros([num_optsets_return, num_qois_return + 1])
-    best_sets[:, 0] = 1E99
+    best_sets[:, 0] = np.inf
     good_sets = np.zeros([1, num_qois_return])
     count_qois = 0
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
@@ -546,9 +539,9 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     if num_optsets_return is None:
         num_optsets_return = 10
     if inner_prod_tol is None:
-        inner_prod_tol = 0.9
+        inner_prod_tol = 1.0
     if cond_tol is None:
-        cond_tol = sys.float_info[0]
+        cond_tol = np.inf
 
     # Find the unique QoIs to consider
     unique_indices = find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices,
