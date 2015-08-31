@@ -6,9 +6,10 @@ This module provides methods for plotting probabilities.
 
 from bet.Comm import comm, MPI 
 import matplotlib.pyplot as plt
+plt.rc('text', usetex=True)
+plt.rc('font', family='serif')
 import numpy as np
 import copy, math
-
 
 def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
         
@@ -184,12 +185,12 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             ax = fig.add_subplot(111)
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
             quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize,
-                    interpolation='bicubic', cmap=cm.jet, 
+                    interpolation='bicubic', cmap=cm.CMRmap_r, 
                     extent=[lam_domain[i][0], lam_domain[i][1],
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
                     vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
             if type(lam_ref) != type(None):
-                ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
+                ax.plot(lam_ref[i], lam_ref[j], 'wo', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
                 label2 = r'$\lambda_{' + str(j+1) + '}$'
