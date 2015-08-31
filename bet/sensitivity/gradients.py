@@ -2,7 +2,6 @@
 
 """
 This module contains functions for approximating gradient vectors of QoI maps.
-
 All methods that cluster points around centers are written to return the samples
 in the following order : CENTERS, FOLLOWED BY THE CLUSTER AROUND THE FIRST
 CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
@@ -17,7 +16,6 @@ def sample_linf_ball(centers, num_close, rvec, lam_domain=None):
     Pick num_close points in a the l-infinity ball of length 2*rvec around a
     point in :math:`\Lambda`, do this for each point in centers.  If this box
     extends outside of :math:`\Lambda`, we sample the intersection.
-
     :param centers: Points in :math:`\Lambda` to cluster points around
     :type centers: :class:`np.ndarray` of shape (num_centers, Lambda_dim)
     :param int num_close: Number of points in each cluster
@@ -25,10 +23,8 @@ def sample_linf_ball(centers, num_close, rvec, lam_domain=None):
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim,)
     :param lam_domain: The domain of the parameter space
     :type lam_domain: :class:`np.ndarray` of shape (Lambda_dim, 2)
-
     :rtype: :class:`np.ndarray` of shape ((num_close+1)*num_centers, Lambda_dim)
     :returns: Centers and clusters of samples near each center
-
     """
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
@@ -60,7 +56,6 @@ def sample_l1_ball(centers, num_close, rvec):
     Do this for each point in centers.  *This method currently allows
     samples to be placed outside of lam_domain.  Please place your
     centers accordingly.*
-
     :param centers: Points in :math:`\Lambda` to cluster samples around
     :type centers: :class:`np.ndarray` of shape (num_centers, Ldim)
     :param int num_close: Number of samples in each l1 ball
@@ -68,7 +63,6 @@ def sample_l1_ball(centers, num_close, rvec):
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim)
     :rtype: :class:`np.ndarray` of shape ((num_close+1)*num_centers, Lambda_dim)
     :returns: Uniform random samples from an l1 ball around each center
-
     """
     Lambda_dim = centers.shape[1]
     rvec = util.fix_dimensions_vector(rvec)
@@ -125,17 +119,14 @@ def pick_ffd_points(centers, rvec):
     difference gradient approximation.  The points are returned in the order:
     centers, followed by the cluster around the first center, then the cluster
     around the second center and so on.
-
     :param centers: Points in :math:`\Lambda` the place stencil around
     :type centers: :class:`np.ndarray` of shape (num_centers, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim,)
-
     :rtype: :class:`np.ndarray` of shape ((Lambda_dim+1)*num_centers,
         Lambda_dim)
     :returns: Samples for centered finite difference stencil for
         each point in centers.
-
     """
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
@@ -158,17 +149,14 @@ def pick_cfd_points(centers, rvec):
     value at the centers in adaptive sampling algorithms.The points are returned 
     in the order: centers, followed by the cluster around the first center, then 
     the cluster around the second center and so on.
-
     :param centers: Points in :math:`\Lambda` to cluster points around
     :type centers: :class:`np.ndarray` of shape (num_centers, Lambda_dim)
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (Lambda_dim,)
-
     :rtype: :class:`np.ndarray` of shape ((2*Lambda_dim+1)*num_centers,
         Lambda_dim)
     :returns: Samples for centered finite difference stencil for
         each point in centers.
-
     """
     Lambda_dim = centers.shape[1]
     num_centers = centers.shape[0]
@@ -188,16 +176,13 @@ def radial_basis_function(r, kernel=None, ep=None):
     Evaluate a chosen radial basis function.  Allow for the choice of several
     radial basis functions to use in
     :meth:~bet.sensitivity.gradients.calculate_gradients_rbf
-
     :param r: Distances from the reference point
     :type r: :class:`np.ndarray`
     :param string kernel: Choice of radial basis funtion. Default is C4Matern
     :param float ep: Shape parameter for the radial basis function.
         Default is 1.0
-
     :rtype: :class:`np.ndarray` of shape (r.shape)
     :returns: Radial basis function evaluated for each element of r
-
     """
     if ep is None:
         ep = 1.0
@@ -220,7 +205,6 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     Evaluate a partial derivative of a chosen radial basis function.  Allow for
     the choice of several radial basis functions to use in the
     :meth:~bet.sensitivity.gradients.calculate_gradients_rbf.
-
     :param r: Distances from the reference point
     :type r: :class:`np.ndarray`
     :param xi: Distances from the reference point in dimension i
@@ -228,10 +212,8 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     :param string kernel: Choice of radial basis funtion. Default is C4Matern
     :param float ep: Shape parameter for the radial basis function.
         Default is 1.0
-
     :rtype: :class:`np.ndarray` of shape (r.shape)
     :returns: Radial basis function evaluated for each element of r
-
     """
     if ep is None:
         ep = 1.0
@@ -255,7 +237,6 @@ def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map using a radial basis function
     interpolation method.
-
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim)
     :param data: QoI values corresponding to each sample.
@@ -268,11 +249,11 @@ def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
     :param string RBF: Choice of radial basis function. Default is Gaussian
     :param float ep: Choice of shape parameter for radial basis function.
         Default value is 1.0
-
+    :param boolean normalize:  If normalize is True, normalize each gradient
+        vector
     :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
-
     """
     data = util.fix_dimensions_vector_2darray(util.clean_data(data))
     Lambda_dim = samples.shape[1]
@@ -326,7 +307,7 @@ def calculate_gradients_rbf(samples, data, centers=None, num_neighbors=None,
 
     if normalize:
         # Compute the norm of each vector
-        norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+        norm_gradient_tensor = np.linalg.norm(gradient_tensor, ord=1, axis=2)
 
         # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
         norm_gradient_tensor[norm_gradient_tensor == 0] = 1.0
@@ -342,17 +323,16 @@ def calculate_gradients_ffd(samples, data, normalize=True):
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
     :meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
-    CFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.
-
+    FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape (num_samples, Lambda_dim)
     :param data: QoI values corresponding to each sample.
     :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
-
+    :param boolean normalize:  If normalize is True, normalize each gradient
+        vector
     :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
-
     """
     num_model_samples = samples.shape[0]
     Lambda_dim = samples.shape[1]
@@ -379,7 +359,7 @@ def calculate_gradients_ffd(samples, data, normalize=True):
 
     if normalize:
         # Compute the norm of each vector
-        norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+        norm_gradient_tensor = np.linalg.norm(gradient_tensor, ord=1, axis=2)
 
         # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
         norm_gradient_tensor[norm_gradient_tensor == 0] = 1.0
@@ -396,17 +376,16 @@ def calculate_gradients_cfd(samples, data, normalize=True):
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
     ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE 
     CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
-
     :param samples: Samples for which the model has been solved.
     :type samples: :class:`np.ndarray` of shape
         (2*Lambda_dim*num_centers, Lambda_dim)
     :param data: QoI values corresponding to each sample.
     :type data: :class:`np.ndarray` of shape (num_samples, Data_dim)
-
+    :param boolean normalize:  If normalize is True, normalize each gradient
+        vector
     :rtype: :class:`np.ndarray` of shape (num_samples, Data_dim, Lambda_dim)
     :returns: Tensor representation of the gradient vectors of each
         QoI map at each point in centers
-
     """
     num_model_samples = samples.shape[0]
     Lambda_dim = samples.shape[1]
@@ -437,7 +416,7 @@ def calculate_gradients_cfd(samples, data, normalize=True):
 
     if normalize:
         # Compute the norm of each vector
-        norm_gradient_tensor = np.linalg.norm(gradient_tensor, axis=2)
+        norm_gradient_tensor = np.linalg.norm(gradient_tensor, ord=1, axis=2)
 
         # If it is a zero vector (has 0 norm), set norm=1, avoid divide by zero
         norm_gradient_tensor[norm_gradient_tensor == 0] = 1.0
