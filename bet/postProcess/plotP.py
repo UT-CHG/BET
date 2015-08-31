@@ -46,7 +46,8 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     # Calculate marginals
     marginals = {}
     for i in range(num_dim):
-        [marg, _] = np.histogram(samples[:,i], bins=bins[i], weights=P_samples)
+        [marg, _] = np.histogram(samples[:, i], bins=bins[i], 
+                                 weights=P_samples)
         marg_temp = np.copy(marg)
         comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
         marginals[i] = marg_temp
@@ -89,8 +90,9 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     marginals = {}
     for i in range(num_dim):
         for j in range(i+1, num_dim):
-            (marg, _) = np.histogramdd(samples[:,[i,j]], bins = [bins[i], bins[j]], weights = P_samples)
-            marg=np.ascontiguousarray(marg)
+            (marg, _) = np.histogramdd(samples[:, [i, j]], bins=[bins[i],
+                                       bins[j]], weights=P_samples) 
+            marg = np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
             comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],
                     op=MPI.SUM) 
@@ -204,7 +206,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
-            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".eps", transparent=True)
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".eps", 
+                        transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -227,7 +230,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
-                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".eps", transparent=True)
+                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".eps",
+                            transparent=True) 
                 if interactive:
                     plt.show()
                 else:

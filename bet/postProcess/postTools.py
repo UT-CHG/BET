@@ -164,7 +164,8 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     """
     file_dict = {"P_samples": P_samples,
                "samples": samples}
-    sio.savemat(file_prefix + str(comm.rank), file_dict, do_compression=compress)
+    sio.savemat(file_prefix + str(comm.rank), file_dict,
+                do_compression=compress)
 
 def collect_parallel_probs_mat(file_prefix, num_files, save=False,
        compress=False):
