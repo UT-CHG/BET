@@ -99,7 +99,7 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
 
 def plot_1D_marginal_probs(marginals, bins, lam_domain,
         filename="file", lam_ref=None, interactive=False,
-        lambda_label=None):
+        lambda_label=None, fileExtension=".eps"):
         
     """
     This makes plots of every single marginal probability of
@@ -140,7 +140,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
                 label1 = lambda_label[i]
             ax.set_xlabel(label1) 
             ax.set_ylabel(r'$\rho$')
-            fig.savefig(filename + "_1D_" + str(i) + ".eps", transparent=True)
+            fig.savefig(filename + "_1D_" + str(i) + fileExtension, transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -149,7 +149,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
 
 def plot_2D_marginal_probs(marginals, bins, lam_domain,
         filename="file", lam_ref=None, plot_surface=False, interactive=False,
-        lambda_label=None):
+        lambda_label=None, fileExtension=".eps"):
         
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
@@ -172,7 +172,6 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     :type lambda_label: list of length nbins of strings or None
 
     """
-    print 'test'
     from matplotlib import cm
     if plot_surface:
         from mpl_toolkits.mplot3d import Axes3D
@@ -204,7 +203,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
-            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".png", transparent=True)
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + fileExtension, transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -217,10 +216,6 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 X = bins[i][:-1] + np.diff(bins[i])/2 
                 Y = bins[j][:-1] + np.diff(bins[j])/2
                 X, Y = np.meshgrid(X, Y, indexing='ij')
-                print X.shape
-                print Y.shape
-                print marginals[(i,j)].shape
-                '''                
                 surf = ax.plot_surface(X, Y, marginals[(i, j)], rstride=1,
                         cstride=1, cmap=cm.coolwarm, linewidth=0,
                         antialiased=False)
@@ -231,13 +226,13 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
-                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".png", transparent=True)
+                fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) + fileExtension, transparent=True)
                 if interactive:
                     plt.show()
                 else:
                     plt.close()
                 plt.clf()
-		'''
+		
 		
 def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
