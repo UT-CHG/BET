@@ -32,14 +32,17 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
                filename='scatter2d'): 
     """
     Two-dimensional scatter plot of ``samples`` colored by ``color`` (usually
-    an array of rho_D values).
+    an array of pointwise probability density values). A reference ``sample``
+    (``p_ref``) can be chosen by the user. This reference ``sample`` will be
+    plotted as a mauve circle twice the size of the other markers.
     
-    :param samples: Samples to plot
+    :param samples: Samples to plot. These are the locations in the x-axis and
+        y-axis.
     :type samples: :class:`numpy.ndarray`
-    :param list sample_nos: sample numbers to plot
-    :param color: array to color the samples by
+    :param list sample_nos: indicies of the ``samples`` to plot
+    :param color: values to color the ``samples`` by
     :type color: :class:`numpy.ndarray`
-    :param p_ref: reference parameter value
+    :param p_ref: reference parameter(``sample``) value
     :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
@@ -48,8 +51,11 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
+    # plot all of the samples by default
     if type(sample_nos) == type(None):
         sample_nos = np.arange(samples.shape[0])
+    # color all of the samples uniformly by default and set the default
+    # to the default colormap of matplotlib
     if color is None:
         color = np.ones((samples.shape[0],))
         cmap = None
@@ -57,11 +63,16 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
         cmap = plt.cm.PuBu
     markersize = 75
     color = color[sample_nos]
+    # create the scatter plot for the samples specified by sample_nos
     plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color,
             s=markersize,
             alpha=.75, linewidth=.1, cmap=cmap)
+    # add a colorbar and label for the colorbar usually we just assume the
+    # samples are colored by the pointwise probability density on the data
+    # space
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(q)$')
+    # if there is a reference value plot it with a notiable marker
     if type(p_ref) != type(None):
         plt.scatter(p_ref[0], p_ref[1], c='m', s=2*markersize)
     if save:
@@ -75,18 +86,22 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     else:
         plt.close()
 
-def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
-        xlabel, ylabel, zlabel, filename):
+def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
+               interactive=False, xlabel='x', ylabel='y', zlabel='z',
+               filename="scatter3d"):
     """
     Three-dimensional scatter plot of ``samples`` colored by ``color`` (usually
-    an array of rho_D values).
+    an array of pointwise probability density values). A reference ``sample``
+    (``p_ref``) can be chosen by the user. This reference ``sample`` will be
+    plotted as a mauve circle twice the size of the other markers.
     
-    :param samples: Samples to plot
+    :param samples: Samples to plot. These are the locations in the x-axis,
+        y-axis, and z-axis.
     :type samples: :class:`numpy.ndarray`
-    :param list sample_nos: sample numbers to plot
-    :param color: array to color the samples by
+    :param list sample_nos: indicies of the ``samples`` to plot
+    :param color: values to color the ``samples`` by
     :type color: :class:`numpy.ndarray`
-    :param p_ref: reference parameter value
+    :param p_ref: reference parameter(``sample``) value
     :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
@@ -96,18 +111,34 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
     :param string filename: filename to save the figure as
 
     """
-    if type(sample_nos) == type(None):
-        sample_nos = range(samples.shape[0])
-    color = color[sample_nos]
 
+    # plot all of the samples by default
+    if type(sample_nos) == type(None):
+        sample_nos = np.arange(samples.shape[0])
+    # color all of the samples uniformly by default and set the default
+    # to the default colormap of matplotlib
+    if color is None:
+        color = np.ones((samples.shape[0],))
+        cmap = None
+    else:
+        cmap = plt.cm.PuBu
+    markersize = 75
+    color = color[sample_nos]
+    # create the scatter plot for the samples specified by sample_nos
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], s=10, alpha=.75, linewidth=.1, c=color,
-            cmap=plt.cm.Oranges)
+            s=markersize,
+            cmap=cmap)
+    # add a colorbar and label for the colorbar usually we just assume the
+    # samples are colored by the pointwise probability density on the data
+    # space
+    cbar = plt.colorbar()
+    cbar.set_label(r'$\rho_\mathcal{D}(q)$') 
+    # if there is a reference value plot it with a notiable marker
     if type(p_ref) != type(None):
-        ax.scatter(p_ref[0], p_ref[1], p_ref[2], c='g')
-        
+        ax.scatter(p_ref[0], p_ref[1], p_ref[2], c='m', s=2*markersize)       
     ax.autoscale(tight=True)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -123,14 +154,17 @@ def scatter_3D(samples, sample_nos, color, p_ref, save, interactive,
 def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
         save=True, interactive=False, lnums=None, showdim=None):
     """
-    Plot samples in parameter space and colors them either by rho_D.
+    Create scatter plots of ``samples`` colored by ``color`` (usually
+    an array of pointwise probability density values). A reference ``sample``
+    (``p_ref``) can be chosen by the user. This reference ``sample`` will be
+    plotted as a mauve circle twice the size of the other markers.
 
     :param samples: Samples to plot
     :type samples: :class:`numpy.ndarray`
-    :param data: Data associated with ``samples``
+    :param data: Data value(s) associated with ``samples``
     :type data: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
-    :param rho_D: probability density on D
+    :param rho_D: probability density function on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
         :class:`numpy.ndarray`
     :param p_ref: reference parameter value
@@ -138,21 +172,30 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param list lnums: integers representing parameter domain coordinate
-        numbers
-    :param int showdim: 2 or 3, flag showing pairwise or tripletwise parameter
-        sample clouds
+        numbers to plot (e.g. i, where :math:`\lambda_i` is a coordinate in the
+        parameter space).
+    :param int showdim: 2 or 3, flag to determine whether or not to show
+        pairwise or tripletwise parameter sample scatter plots in 2 or 3
+        dimensions
 
     """
-   
+    # If there is density function given determine the pointwise probability
+    # values of each sample based on the value in the data space. Otherwise,
+    # color the samples in numerical order.
     if rho_D is not None and data is not None:
         rD = rho_D(data)
     else:
         rD = np.ones(samples.shape[0])
+    # If no specific coordinate numbers are given for the parameter coordinates
+    # (e.g. i, where \lambda_i is a coordinate in the parameter space), then
+    # set them to be the the counting numbers.
     if type(lnums) == type(None):
         lnums = 1+np.array(range(samples.shape[1]))
+    # Create the labels based on the user selected parameter coordinates
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
+    # Plot 2 or 3 dimensional scatter plots of the samples colored by rD.
     if samples.shape[1] == 2:
         scatter_2D(samples, sample_nos, rD, p_ref, save, interactive, xlabel,
                 ylabel, savename)
@@ -179,9 +222,13 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
 def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, interactive=False, Q_nums=None, showdim=None):
     """
-    Plot samples in data space and colors them either by rho_D.
+    Create scatter plots of ``data`` colored by ``color`` (usually
+    an array of pointwise probability density values). A reference ``data``
+    point (``Q_ref``) can be chosen by the user. This reference ``data`` will
+    be plotted as a mauve circle twice the size of the other markers.
 
-    :param data: Data associated with ``samples``
+    :param data: Data (the data associated with a given set of samples in the
+        data space)
     :type data: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density on D
@@ -191,20 +238,31 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     :type Q_ref: :class:`numpy.ndarray` of shape (mdim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
-    :param list Q_nums: integers representing data domain coordinates
-    :param int showdim: 2 or 3, flag showing pairwise or tripletwise data
-        sample clouds
+    :param list lnums: integers representing data domain coordinate
+        numbers to plot (e.g. i, where :math:`\q_i` is a coordinate in the
+        data space).
+    :param int showdim: 2 or 3, flag to determine whether or not to show
+        pairwise or tripletwise data sample scatter plots in 2 or 3
+        dimensions
 
-    """   
+    """  
+    # If there is density function given determine the pointwise probability
+    # values of each sample based on the value in the data space. Otherwise,
+    # color the samples in numerical order.
     if rho_D != None:
         rD = rho_D(data)
     else:
         rD = np.ones(data.shape[0])
+    # If no specific coordinate numbers are given for the data coordinates
+    # (e.g. i, where \q_i is a coordinate in the data space), then
+    # set them to be the the counting numbers.
     if  type(Q_nums) == type(None):
         Q_nums = range(data.shape[1])
+    # Create the labels based on the user selected data coordinates
     xlabel = r'$q_{'+str(Q_nums[0]+1)+'}$'
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
+    # Plot 2 or 3 dimensional scatter plots of the data colored by rD.
     if data.shape[1] == 2:
         q_ref = None
         if type(Q_ref) == np.ndarray:
