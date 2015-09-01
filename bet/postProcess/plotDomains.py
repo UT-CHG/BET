@@ -31,10 +31,10 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y',
                filename='scatter2d'): 
     """
-    Two-dimensional scatter plot of ``samples`` colored by ``color`` (usually
-    an array of pointwise probability density values). A reference ``sample``
-    (``p_ref``) can be chosen by the user. This reference ``sample`` will be
-    plotted as a mauve circle twice the size of the other markers.
+    Creates a two-dimensional scatter plot of ``samples`` colored by ``color``
+    (usually an array of pointwise probability density values). A reference
+    ``sample`` (``p_ref``) can be chosen by the user. This reference ``sample``
+    will be plotted as a mauve circle twice the size of the other markers.
     
     :param samples: Samples to plot. These are the locations in the x-axis and
         y-axis.
@@ -89,11 +89,12 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
 def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y', zlabel='z',
                filename="scatter3d"):
-    """
-    Three-dimensional scatter plot of ``samples`` colored by ``color`` (usually
-    an array of pointwise probability density values). A reference ``sample``
-    (``p_ref``) can be chosen by the user. This reference ``sample`` will be
-    plotted as a mauve circle twice the size of the other markers.
+    """ 
+    Creates a three-dimensional scatter plot of ``samples`` colored by
+    ``color`` (usually an array of pointwise probability density values). A
+    reference ``sample`` (``p_ref``) can be chosen by the user. This reference
+    ``sample`` will be plotted as a mauve circle twice the size of the other
+    markers.
     
     :param samples: Samples to plot. These are the locations in the x-axis,
         y-axis, and z-axis.
@@ -128,7 +129,7 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
     ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
-            samples[sample_nos, 2], s=10, alpha=.75, linewidth=.1, c=color,
+            samples[sample_nos, 2], alpha=.75, linewidth=.1, c=color,
             s=markersize,
             cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
@@ -153,7 +154,7 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
    
 def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
         save=True, interactive=False, lnums=None, showdim=None):
-    """
+    r"""
     Create scatter plots of ``samples`` colored by ``color`` (usually
     an array of pointwise probability density values). A reference ``sample``
     (``p_ref``) can be chosen by the user. This reference ``sample`` will be
@@ -221,7 +222,7 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
 
 def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, interactive=False, Q_nums=None, showdim=None):
-    """
+    r"""
     Create scatter plots of ``data`` colored by ``color`` (usually
     an array of pointwise probability density values). A reference ``data``
     point (``Q_ref``) can be chosen by the user. This reference ``data`` will
@@ -302,9 +303,10 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
         img_folder='figs/', ref_markers=None,
         ref_colors=None, showdim=None):
     r"""
-    Plot the data domain D using a triangulation based on the generating
-    samples where :math:`Q={q_1, q_i}` for ``i=Q_nums``, with a marker for
-    various :math:`Q_{ref}`. 
+    Plots 2-D projections of the data domain D using a triangulation based on
+    the first two coordinates (parameters) of the generating samples where
+    :math:`Q={q_1, q_i}` for ``i=Q_nums``, with a marker for various
+    :math:`Q_{ref}`. 
 
     :param samples: Samples to plot
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
@@ -318,29 +320,39 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
     :param list ref_colors: list of colors for :math:`Q_{ref}`
     :param showdim: default 1. If int then flag to show all combinations with a
-        given dimension or if ``all`` show all combinations.
+        given dimension (:math:`q_i`) or if ``all`` show all combinations.
     :type showdim: int or string
 
     """
+    # Set the default marker and colors
     if ref_markers == None:
         ref_markers = markers
     if ref_colors == None:
         ref_colors = colors
+    # If no specific coordinate numbers are given for the data coordinates
+    # (e.g. i, where \q_i is a coordinate in the data space), then
+    # set them to be the the counting numbers.
     if  type(Q_nums) == type(None):
         Q_nums = range(data.shape[1])
+    # If no specific coordinate number of choice is given set to be the first
+    # coordinate direction.
     if showdim == None:
         showdim = 0
 
+    # Create a folder for these figures if it doesn't already exist
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
 
+    # Make sure the shape of Q_ref is correct
     if Q_ref is not None:
         Q_ref = util.fix_dimensions_data(Q_ref, data.shape[1])
 
+    # Create the triangulization to use to define the topology of the samples
+    # in the data space from the first two parameters in the parameter space
     triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
     triangles = triangulation.triangles
 
-    
+    # Create plots of the showdim^th QoI (q_{showdim}) with all other QoI (q_i)
     if type(showdim) == int:
         for i in Q_nums:
             xlabel = r'$q_{'+str(showdim+1)+r'}$'
@@ -359,6 +371,7 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
                         ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
                         triangles=triangles, save=True, interactive=False,
                         filenames=filenames)
+    # Create plots of all combinations of QoI in 2D 
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(Q_nums, 2):
             xlabel = r'$q_{'+str(x+1)+r'}$'
@@ -382,12 +395,15 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2$',
         triangles=None, save=True, interactive=False, filenames=None):
     r"""
-    Plot the data domain D using a triangulation based on the generating
-    samples with a marker for various :math:`Q_{ref}`. Assumes that the first
-    dimension of data is :math:`q_1`.
+    Plots 2-D a single data domain D using a triangulation based on the first
+    two coordinates (parameters) of the generating samples where :math:`Q={q_1,
+    q_i}` for ``i=Q_nums``, with a marker for various :math:`Q_{ref}`. Assumes
+    that the first dimension of data is :math:`q_1`.
+
 
     :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
+        uses the first two dimensions.
     :param data: Data associated with ``samples``
     :type data: :class:`numpy.ndarray`
     :param Q_ref: reference data value
@@ -403,16 +419,22 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
     :param list filenames: file names for the unmarked and marked domain plots
 
     """
+    # Set the default marker and colors
     if ref_markers == None:
         ref_markers = markers
     if ref_colors == None:
         ref_colors = colors
+    # If no specific coordinate numbers are given for the data coordinates
+    # (e.g. i, where \q_i is a coordinate in the data space), then
+    # set them to be the the counting numbers.
     if type(triangles) == type(None):
         triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
         triangles = triangulation.triangles
+    # Set default file names
     if filenames == None:
         filenames = ['domain_q1_q2_cs.eps', 'q1_q2_domain_Q_cs.eps']
     
+    # Make sure the shape of Q_ref is correct
     if Q_ref is not None:
         Q_ref = util.fix_dimensions_data(Q_ref, 2)
 
@@ -440,26 +462,31 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
 def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
         interactive=False):
     r"""
-    Plot the scatters of samples in 2D slices of multiple dimensions.
 
-    :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
-        uses the first two dimensions.
+    Creates two-dimensional projections of scatter plots of ``samples``.
+    
+    :param samples: Samples to plot. 
+    :type samples: :class:`numpy.ndarray`
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
     :param string img_folder: folder to save the plots to
-    :param showdim: default ``all``. If int then flag to show all combinations
-        with a given dimension or if ``all`` show all combinations.
+    :param showdim: default 1. If int then flag to show all combinations with a
+        given dimension (:math:`\lambda_i`) or if ``all`` show all combinations.
     :type showdim: int or string
 
     """
+    # If no specific coordinate number of choice is given set to be the first
+    # coordinate direction.
     if showdim == None:
         showdim = 0
-
+    # Create a folder for these figures if it doesn't already exist
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
-
+    # Create list of all the parameter coordinates
     L_nums = range(samples.shape[1])
 
-    
+   # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
+   # other parameters
     if type(showdim) == int:
         for i in L_nums:
             xlabel = r'$\lambda_{'+str(showdim+1)+r'}$'
@@ -480,7 +507,7 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
                 plt.show()
             else:
                 plt.close()
-
+    # Create plots of all of the possible pairwise combinations of parameters
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(L_nums, 2):
             xlabel = r'$\lambda_{'+str(x+1)+r'}$'
@@ -505,26 +532,38 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
 def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
                     filename=None, label_char=r'$\lambda', showdim=None):
     r"""
-    Plot the scatters of samples in 2D slices of multiple dimensions.
+    Creates two-dimensional projections of scatter plots of ``samples`` colored
+    by ``color`` (usually an array of pointwise probability density values). A
+    reference ``sample`` (``p_ref``) can be chosen by the user. This reference
+    ``sample`` will be plotted as a mauve circle twice the size of the other
+    markers.
 
-    :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
-        uses the first two dimensions.
-    :param string img_folder: folder to save the plots to 
-    :param showdim: default ``all``. If int then flag to show all 
-        combinations with a given dimension or if ``all`` show all combinations.
+    :param samples: Samples to plot. 
+    :type samples: :class:`numpy.ndarray`
+    :param color: values to color the ``samples`` by
+    :type color: :class:`numpy.ndarray`
+    :param string filename: filename to save the figure as
+    :param string label_char: character to use to label coordinate axes
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string img_folder: folder to save the plots to
+    :param showdim: default 1. If int then flag to show all combinations with a
+        given dimension (:math:`\lambda_i`) or if ``all`` show all combinations.
     :type showdim: int or string
 
     """
+    # If no specific coordinate number of choice is given set to be the first
+    # coordinate direction.
     if showdim == None:
         showdim = 0
-
+    # Create a folder for these figures if it doesn't already exist
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
-
+    # Create list of all the parameter coordinates    
     p_nums = range(samples.shape[1])
 
-    
+   # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
+   # other parameters
     if type(showdim) == int:
         for i in p_nums:
             xlabel = label_char+r'_{'+str(showdim+1)+r'}$'
@@ -536,7 +575,7 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
             scatter_2D(samples[:, [showdim, i]], sample_nos=None, color=color,
                        p_ref=p_ref[[showdim, i]], save=True, interactive=False,
                        xlabel=xlabel, ylabel=ylabel, filename=myfilename)
-
+    # Create plots of all of the possible pairwise combinations of parameters
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(p_nums, 2):
             xlabel = label_char+r'_{'+str(x+1)+r'}$'
