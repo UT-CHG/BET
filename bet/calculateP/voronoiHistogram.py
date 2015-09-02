@@ -100,7 +100,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     """
     if np.all(np.greater(r_ratio, 1)):
         msg = "The hyperrectangle defined by this ratio is larger than the"
-        msg += "original domain."
+        msg += " original domain."
         print msg
 
     # determine r_size from the width of the surrounding domain
@@ -140,11 +140,11 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     """
     if np.any(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
+        msg += " original domain."
         print msg
     elif np.any(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
         msg = "The hyperrectangle defined by this size is larger than the"
-        msg += "original domain."
+        msg += " original domain."
         print msg
     
     rect_edges = list()

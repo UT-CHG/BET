@@ -6,8 +6,8 @@ This module provides methods for plotting probabilities.
 
 from bet.Comm import comm, MPI 
 import matplotlib.pyplot as plt
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
+#plt.rc('text', usetex=True)
+#plt.rc('font', family='serif')
 import numpy as np
 import copy, math
 
