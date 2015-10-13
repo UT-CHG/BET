@@ -112,7 +112,7 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-
+    
     # plot all of the samples by default
     if type(sample_nos) == type(None):
         sample_nos = np.arange(samples.shape[0])
@@ -128,14 +128,14 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     # create the scatter plot for the samples specified by sample_nos
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
+    p = ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], alpha=.75, linewidth=.1, c=color,
             s=markersize,
             cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
     # space
-    cbar = plt.colorbar()
+    cbar = fig.colorbar(p)
     cbar.set_label(r'$\rho_\mathcal{D}(q)$') 
     # if there is a reference value plot it with a notiable marker
     if type(p_ref) != type(None):
