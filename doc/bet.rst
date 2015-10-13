@@ -7,9 +7,9 @@ Subpackages
 .. toctree::
 
     bet.calculateP
-    bet.loadBalance
     bet.postProcess
     bet.sampling
+    bet.sensitivity
 
 Submodules
 ----------

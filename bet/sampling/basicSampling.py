@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2015 The BET Development Team
+
 # Lindley Graham 4/15/2014
 """
 This module contains functions for sampling. We assume we are given access to a
@@ -11,73 +13,8 @@ assume the measure on both spaces in Lebesgue.
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
-
-def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
-    """
-    Compare the quality of samples where ``sample_quality`` is the measure of
-    quality by which the sets of samples have been indexed and ``sort_ind`` is
-    an array of the sorted indicies.
-
-    :param list() sort_int: indicies that index ``sample_quality`` in sorted
-        order
-    :param list() sample_quality: a measure of quality by which the sets of 
-        samples are sorted
-    :param list() run_param: zipped list of :class:`~numpy.ndarray`s containing
-        information used to generate the sets of samples to be displayed
-
-    """
-    if column_headings == None:
-        column_headings = "Run parameters"
-    print "Sample Set No., Quality, "+ column_headings
-    for i in reversed(sort_ind):
-        print i, sample_quality[i], np.round(run_param[i], 3)
-
-def in_high_prob(data, rho_D, maximum, sample_nos=None):
-    """
-    Estimates the number of samples in high probability regions of D.
-
-    :param data: Data associated with ``samples``
-    :type data: :class:`np.ndarray`
-    :param rho_D: probability density on D
-    :type rho_D: callable function that takes a :class:`np.array` and returns a
-        :class:`np.ndarray`
-    :param list sample_nos: sample numbers to plot
-
-    :rtype: int
-    :returns: Estimate of number of samples in the high probability area.
-
-    """
-    if sample_nos == None:
-        sample_nos = range(data.shape[0])
-    rD = rho_D(data[sample_nos, :])
-    adjusted_total_prob = int(sum(rD)/maximum)
-    print "Samples in box "+str(adjusted_total_prob)
-    return adjusted_total_prob
-
-def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
-    """
-    Estimates the number of samples in high probability regions of D for a list
-    of results.
-
-    :param list results_list: list of (results, data) tuples
-    :param rho_D: probability density on D
-    :type rho_D: callable function that takes a :class:`np.array` and returns a
-        :class:`np.ndarray`
-    :param list sample_nos_list: list of sample numbers to plot (list of lists)
-
-    :rtype: list of int
-    :returns: Estimate of number of samples in the high probability area.
-
-    """
-    adjusted_total_prob = list()
-    if sample_nos_list:
-        for result, sample_nos in zip(results_list, sample_nos_list):
-            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
-                sample_nos))
-    else:
-        for result in results_list:
-            adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
-    return adjusted_total_prob
+import bet.util as util
+from bet.Comm import comm
 
 def loadmat(save_file, model=None):
     """
@@ -96,14 +33,16 @@ def loadmat(save_file, model=None):
     # load the samples
     if mdat.has_key('samples'):
         samples = mdat['samples']
+        num_samples = samples.shape[0]
     else:
         samples = None
+        num_samples = None
     # load the data
     if mdat.has_key('data'):
         data = mdat['data']
     else:
         data = None
-    loaded_sampler = sampler(model, mdat['num_samples'])    
+    loaded_sampler = sampler(model, num_samples)    
     return (loaded_sampler, samples, data)
 
 class sampler(object):
@@ -121,6 +60,10 @@ class sampler(object):
     def __init__(self, lb_model, num_samples=None):
         """
         Initialization
+        
+        :param lb_model: Interface to physics-based model takes an input of
+            shape (N, ndim) and returns an output of shape (N, mdim)
+        :param int num_samples: N, number of samples (optional)
         """
         self.num_samples = num_samples
         self.lb_model = lb_model
@@ -130,7 +73,7 @@ class sampler(object):
         Save matrices to a ``*.mat`` file for use by ``MATLAB BET`` code and
         :meth:`~bet.sampling.loadmat`
 
-        :param dict() mdict: dictonary of sampling data and sampler parameters
+        :param dict mdict: dictonary of sampling data and sampler parameters
         :param string save_file: file name
 
         """
@@ -140,13 +83,13 @@ class sampler(object):
         """
         Set up references for ``mdict``
 
-        :param dict() mdict: dictonary of sampler parameters
+        :param dict mdict: dictonary of sampler parameters
 
         """
         mdict['num_samples'] = self.num_samples
 
     def random_samples(self, sample_type, param_min, param_max,
-            savefile, num_samples=None, criterion='center'):
+            savefile, num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
 
@@ -161,12 +104,16 @@ class sampler(object):
             latin hypercube(lhs), regular grid (rg), or space-filling
             curve(TBD) 
         :param param_min: minimum value for each parameter dimension
-        :type param_min: np.array (ndim,)
+        :type param_min: :class:`numpy.ndarray` (ndim,)
         :param param_max: maximum value for each parameter dimension
-        :type param_max: np.array (ndim,)
+        :type param_max: :class:`numpy.ndarray` (ndim,)
         :param string savefile: filename to save samples and data
+        :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool parallel: Flag for parallel implementation. Uses
+            lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
+            divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
             ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
@@ -186,9 +133,9 @@ class sampler(object):
         elif sample_type == "random" or "r":
             samples = samples * np.random.random(param_left.shape) 
         samples = samples + param_left
-        return self.user_samples(samples, savefile)
+        return self.user_samples(samples, savefile, parallel)
 
-    def user_samples(self, samples, savefile):
+    def user_samples(self, samples, savefile, parallel=False):
         """
         Samples the model at ``samples`` and saves the results.
 
@@ -197,11 +144,14 @@ class sampler(object):
         provide sampler that utilizes user specified samples.
 
         :param samples: samples to evaluate the model at
-        :type samples: :class:`~numpy.ndarray` of shape (ndim, num_samples)
+        :type samples: :class:`~numpy.ndarray` of shape (num_smaples, ndim)
         :param string savefile: filename to save samples and data
+        :param bool parallel: Flag for parallel implementation. Uses
+            lowercase ``mpi4py`` methods if ``samples.shape[0]`` is not
+            divisible by ``size``. Default value is ``False``. 
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``) where
-            ``parameter_samples`` is np.ndarray of shape (ndim, num_samples)
+            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
             and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
 
         """
@@ -210,13 +160,36 @@ class sampler(object):
         self.num_samples = samples.shape[0]
 
         # Solve the model at the samples
-        data = self.lb_model(samples)
+        if not(parallel) or comm.size == 1:
+            data = self.lb_model(samples)
+        elif parallel:
+            my_len = self.num_samples/comm.size
+            if comm.rank != comm.size-1:
+                my_index = range(0+comm.rank*my_len, (comm.rank+1)*my_len)
+            else:
+                my_index = range(0+comm.rank*my_len, self.num_samples)
+            if len(samples.shape) == 1:
+                my_samples = samples[my_index]
+            else:
+                my_samples = samples[my_index, :]
+            my_data = self.lb_model(my_samples)
+            data = util.get_global_values(my_data)
+            samples = util.get_global_values(my_samples)
+        
+        # if data or samples are of shape (num_samples,) expand dimensions
+        if len(samples.shape) == 1:
+            samples = np.expand_dims(samples, axis=1)
+        if len(data.shape) == 1:
+            data = np.expand_dims(data, axis=1)
+
 
         mdat = dict()
         self.update_mdict(mdat)
         mdat['samples'] = samples
         mdat['data'] = data
-        self.save(mdat, savefile)
+
+        if comm.rank == 0:
+            self.save(mdat, savefile)
         
         return (samples, data)
 

@@ -8,9 +8,9 @@ Installation
 ------------
 
 The code currently resides at `GitHub
-<https://github.com/smattis/BET>`_.
+<https://github.com/UT-CHG/BET>`_.
 If you have a 
-`zip file <https://github.com/smattis/BET/archive/master.zip>`_ you can install
+`zip file <https://github.com/UT-CHG/BET/archive/master.zip>`_ you can install
 BET using::
 
     python setup.py install
@@ -21,6 +21,17 @@ change in the future. This pacakge requires `matplotlib <http://http://matplotli
 <http://http://www.numpy.org>`_, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
 <http://http://docs.python.org/2>`_.
 
+If you have `nose <http://nose.readthedocs.org/en/latest/index.html>`_
+installed you can run tests by typing::
+
+    nosetests
+
+in ``BET`` to run the serial tests or ::
+
+    mpirun -np NPROC nosetests
+
+to run the parallel tests.
+
 Package Layout
 --------------
 
@@ -28,26 +39,25 @@ The package layout is as follows::
 
   bet/
     calculateP/
-      calculateP.py  
-      simpleFunP.py  
-      voronoiHistogram.py
+      calculateP 
+      simpleFunP
+      voronoiHistogram
     sampling/
-      basicSampling.py  
-      adaptiveSampling.py
+      basicSampling 
+      adaptiveSampling
     postProcess/
-      plotP.py  
-      plotDomains.py 
+      plotP
+      plotDomains
       postTools
-    loadBalance/        # !!! IN ACTIVE DEVELOPMENT !!!
-      lb_PADCIRC.py  
-      load_balance.py  
-      lb_DIAMOND.py
+    sensitivity/
+      gradients
+      chooseQoIs
 
 Code Overview
 --------------
 
 :mod:`calculateP` Package
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.calculateP
 
@@ -61,10 +71,10 @@ Code Overview
 
 .. automodule:: bet.postProcess
 
-:mod:`loadBalance` Package
+:mod:`sensitivity` Package
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-.. automodule:: bet.loadBalance
+.. automodule:: bet.sensitivity
 
 .. seealso:: :ref:`modindex` for detailed documentation of modules, classes, etc.
 
@@ -96,11 +106,11 @@ This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scip
       \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
     mpl_toolkits 
       \-mplot3d (bet.postProcess.plotP)
-    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP)
+    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP,bet.sensitivity.gradients,bet.sensitivity.chooseQoIs)
     pyDOE (bet.sampling.basicSampling)
     scipy 
       \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
-      \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP)
+      \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP,bet.sensitivity.gradients)
       \-stats (bet.calculateP.simpleFunP)
 
 
