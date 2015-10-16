@@ -1,3 +1,4 @@
+.. _examples:
 
 =======================================
 Some References and Examples

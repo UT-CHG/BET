@@ -6,9 +6,6 @@ This module provides methods for calulating the probability measure
 
 * :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
     the probability for a set of emulation points.
-* :mod:`~bet.calculateP.calculateP.prob_samples_ex` calculates the exact
-    volumes of the interior voronoi cells and estimates the volumes of the
-    exterior voronoi cells by using a set of bounding points
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the volumes of
     the voronoi cells using MC integration
 """

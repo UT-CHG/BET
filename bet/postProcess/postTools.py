@@ -75,7 +75,7 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
                 lam_vol, data)
 
     P_sum = np.cumsum(P_samples)
-    num_samples = np.sum(P_sum <= top_percentile)
+    num_samples = np.sum(np.logical_and(0.0 < P_sum, P_sum <= top_percentile))
     P_samples = P_samples[0:num_samples]
     samples = samples[0:num_samples, :]
     if type(lam_vol) != type(None):
@@ -164,7 +164,8 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     """
     file_dict = {"P_samples": P_samples,
                "samples": samples}
-    sio.savemat(file_prefix + str(comm.rank), file_dict, do_compression=compress)
+    sio.savemat(file_prefix + str(comm.rank), file_dict,
+                do_compression=compress)
 
 def collect_parallel_probs_mat(file_prefix, num_files, save=False,
        compress=False):
