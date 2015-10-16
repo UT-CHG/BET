@@ -9,8 +9,8 @@ two-dimensional slices/projections of domains.
 import matplotlib.tri as tri
 import numpy as np
 import matplotlib.pyplot as plt
-plt.rc('text', usetex=True)
-plt.rc('font', family='serif')
+#plt.rc('text', usetex=True)
+#plt.rc('font', family='serif')
 from matplotlib.lines import Line2D
 from itertools import combinations
 from mpl_toolkits.mplot3d import Axes3D
@@ -128,14 +128,14 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     # create the scatter plot for the samples specified by sample_nos
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
+    p = ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
             samples[sample_nos, 2], alpha=.75, linewidth=.1, c=color,
             s=markersize,
             cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
     # space
-    cbar = plt.colorbar()
+    cbar = fig.colorbar(p)
     cbar.set_label(r'$\rho_\mathcal{D}(q)$') 
     # if there is a reference value plot it with a notiable marker
     if type(p_ref) != type(None):
@@ -530,7 +530,7 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
                 plt.close()
 
 def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
-                    filename=None, label_char=r'$\lambda', showdim=None):
+                    filename="scatter2Dm", label_char=r'$\lambda', showdim=None):
     r"""
     Creates two-dimensional projections of scatter plots of ``samples`` colored
     by ``color`` (usually an array of pointwise probability density values). A
@@ -571,10 +571,17 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
 
             postfix = '_d'+str(showdim+1)+'_d'+str(i+1)+'.eps'
             myfilename = os.path.join(img_folder, filename+postfix)
+            if p_ref:
+                scatter_2D(samples[:, [showdim, i]], sample_nos=None,
+                        color=color, p_ref=p_ref[[showdim, i]], save=True,
+                        interactive=False, xlabel=xlabel, ylabel=ylabel,
+                        filename=myfilename)
+            else:
+                scatter_2D(samples[:, [showdim, i]], sample_nos=None,
+                        color=color, p_ref=None, save=True,
+                        interactive=False, xlabel=xlabel, ylabel=ylabel,
+                        filename=myfilename)
 
-            scatter_2D(samples[:, [showdim, i]], sample_nos=None, color=color,
-                       p_ref=p_ref[[showdim, i]], save=True, interactive=False,
-                       xlabel=xlabel, ylabel=ylabel, filename=myfilename)
     # Create plots of all of the possible pairwise combinations of parameters
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(p_nums, 2):
@@ -583,7 +590,12 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
 
             postfix = '_d'+str(x+1)+'_d'+str(y+1)+'.eps'
             myfilename = os.path.join(img_folder, filename+postfix)
-
-            scatter_2D(samples[:, [x, y]], sample_nos=None, color=color,
+            
+            if p_ref:
+                scatter_2D(samples[:, [x, y]], sample_nos=None, color=color,
                        p_ref=p_ref[[x, y]], save=True, interactive=False,
+                       xlabel=xlabel, ylabel=ylabel, filename=myfilename)
+            else:
+                scatter_2D(samples[:, [x, y]], sample_nos=None, color=color,
+                       p_ref=None, save=True, interactive=False,
                        xlabel=xlabel, ylabel=ylabel, filename=myfilename)
