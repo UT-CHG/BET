@@ -48,7 +48,7 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
 
     return (P_samples, samples, lam_vol, data, indices)
 
-def sample_highest(percentile, P_samples, samples, lam_vol=None,
+def sample_prob(percentile, P_samples, samples, lam_vol=None,
         data=None, sort=True, descending=False): 
     """
     This calculates the highest/lowest probability samples whose probability sum to a
@@ -86,7 +86,8 @@ def sample_highest(percentile, P_samples, samples, lam_vol=None,
     if descending:
         P_samples = P_samples[::-1]
         samples = samples[::-1]
-        lam_vol = lam_vol[::-1]
+        if lam_vol is not None:
+            lam_vol = lam_vol[::-1]
         data = data[::-1]
         indices = indices[::-1]
 
@@ -158,7 +159,7 @@ def sample_lowest_prob(bottom_percentile, P_samples, samples, lam_vol=None,
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
-    return sample_prob(top_percentile, P_samples, samples, lam_vol, data,
+    return sample_prob(bottom_percentile, P_samples, samples, lam_vol, data,
             sort, descending=True)
 
 def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
