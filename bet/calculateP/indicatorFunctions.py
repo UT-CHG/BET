@@ -1,3 +1,5 @@
+# Copyright (C) 2015-2016 The BET Development Team
+
 # Lindley Graham 04/27/2015
 r"""
 This module provides various indicator functions, :math:`\mathbf{1}_A` for various sets :math:`A
@@ -149,8 +151,6 @@ def boundary_hyperrectangle_size_ratio(center, width, boundary_ratio):
     """
     return boundary_hyperrectangle_size(center, width, width*boundary_ratio)
 
-# TODO: Write spherical versions of this just using a distnace function
-
 def hypersphere(center, radius):
     r"""
     Pointwise indicator function for a hypersphere defined by a center and a
@@ -169,12 +169,47 @@ def hypersphere(center, radius):
     def ifun(points):
         # calculate distance from the center
         dist = np.linalg.norm(center-points, ord=2, axis=1)
-        return None
+        return points <= dist
+    return ifun
 
-# TODO: Write spherical versions of this just using a distance function
-"""
-bet/calculateP/indicatorFunction.py -- For the plain version define your in/out
-test based on whether or not your distance from the center is less than or
-equal to the radius. For the boundary focused one the in/out test is based on
-whether or not your distance from the center is between two predefined radii.
-"""
+def boundary_hypersphere(center, radius, boundary_width):
+    r"""
+    Pointwise indicator function for a hypersphere defined by a center and a
+    radius.
+
+    If radius is a vector and not a scalar this will work for an hyperellipse.
+
+    :param center: center of the hypersphere/ellipse
+    :type center: :class:`numpy.ndarray` of shape (ndim,)
+    :param radius: radius or radii of the hypereliipse
+    :type radius: ``float`` or :class:`numpy.ndarray` of shape(ndim,)
+    :param boundary_width: Width of the boundary 
+
+    :rtype: callable
+    :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
+    """
+    def ifun(points):
+        # calculate distance from the center
+        dist = np.linalg.norm(center-points, ord=2, axis=1)
+        return np.logical_and(points <= dist+boundary_width*.5, 
+                              points >= dist-boundary_width*.5)
+    return ifun
+
+def boundary_hypersphere_ratio(center, radius, boundary_ratio):
+    r"""
+    Pointwise indicator function for a hypersphere defined by a center and a
+    radius.
+
+    If radius is a vector and not a scalar this will work for an hyperellipse.
+
+    :param center: center of the hypersphere/ellipse
+    :type center: :class:`numpy.ndarray` of shape (ndim,)
+    :param radius: radius or radii of the hypereliipse
+    :type radius: ``float`` or :class:`numpy.ndarray` of shape(ndim,)
+    :param boundary_ratio: Ratio of the width of the boundary 
+
+    :rtype: callable
+    :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
+    """
+    return boundary_hypersphere(center, radius, radius*boundary_ratio)
+
