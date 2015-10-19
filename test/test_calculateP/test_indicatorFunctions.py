@@ -72,21 +72,18 @@ class check_inside(object):
         # create a list of coordinates that are in on the boundary of the
         # domain
         oncoords_rect = []
-        oncoords_sphere = []
-        for l, r, bw in zip(self.left, self.right, self.boundary_width):
+        dim = len(self.width)
+        for l, r, bw in zip(self.left, self.right, self.boundary_width): 
             outcoords_rect.append(np.array([l-bw, r+bw]))
             outcoords_sphere.append(np.array([self.center-self.radius\
                     -self.boundary_width_radius,
                 self.center+self.radius+self.boundary_width_radius]))
             oncoords_rect.append(np.array([l, r]))
-            oncoords_sphere.append(np.array([self.center-self.radius,
-                self.center+self.radius]))
         self.outcoords_rect = util.meshgrid_ndim(outcoords_rect)
-        self.outcoords_sphere = util.meshgrid_ndim(outcoords_sphere)       
-        print "SPHERE", self.center, self.radius, oncoords_sphere
         self.oncoords_rect = util.meshgrid_ndim(oncoords_rect)
-        print "RECT", self.left, self.right, self.oncoords_rect
-        self.oncoords_sphere = util.meshgrid_ndim(oncoords_sphere)
+        self.outcoords_sphere = util.meshgrid_ndim(outcoords_sphere)
+        self.oncoords_sphere = np.row_stack((-np.eye(dim),
+            np.eye(dim).transpose()))*self.radius+self.center 
         print "SPHERE", self.center, self.radius, self.oncoords_sphere
 
     def test_hyperrectangle(self):
