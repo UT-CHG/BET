@@ -92,7 +92,7 @@ def sample_prob(percentile, P_samples, samples, lam_vol=None,
         indices = indices[::-1]
 
     P_sum = np.cumsum(P_samples)
-    num_samples = np.sum(np.logical_and(0.0 < P_sum, P_sum <= top_percentile))
+    num_samples = np.sum(np.logical_and(0.0 < P_sum, P_sum <= percentile))
     P_samples = P_samples[0:num_samples]
     samples = samples[0:num_samples, :]
     if type(lam_vol) != type(None):
