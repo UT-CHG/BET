@@ -169,7 +169,7 @@ def hypersphere(center, radius):
     def ifun(points):
         # calculate distance from the center
         dist = np.linalg.norm(center-points, ord=2, axis=1)
-        return points <= dist
+        return dist <= radius
     return ifun
 
 def boundary_hypersphere(center, radius, boundary_width):
@@ -191,8 +191,8 @@ def boundary_hypersphere(center, radius, boundary_width):
     def ifun(points):
         # calculate distance from the center
         dist = np.linalg.norm(center-points, ord=2, axis=1)
-        return np.logical_and(points <= dist+boundary_width*.5, 
-                              points >= dist-boundary_width*.5)
+        return np.logical_and(dist <= radius+boundary_width*.5, 
+                              dist >= radius-boundary_width*.5)
     return ifun
 
 def boundary_hypersphere_ratio(center, radius, boundary_ratio):

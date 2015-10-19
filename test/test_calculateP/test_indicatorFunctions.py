@@ -24,8 +24,7 @@ class domain_1D(object):
         """
         self.center = np.array([5.0])
         self.radius = 5.0
-        self.left = np.array([-1.0])
-        self.right = np.array([9.0])
+        self.width = np.array([9.0])
 
 class domain_2D(object):
     """
@@ -37,8 +36,7 @@ class domain_2D(object):
         """
         self.center = np.array([5.0, 5.0])
         self.radius = 3.0
-        self.left = np.array([-1.0, -2.0])
-        self.right = np.array([9.0, 8.0])
+        self.width = np.array([11.0, 7.0])
 
 class domain_3D(object):
     """
@@ -51,8 +49,7 @@ class domain_3D(object):
         self.center = np.array([5.0, 5.0, 5.0])
         self.domain = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
         self.radius = 2.0
-        self.left = np.array([-1.0, -2.0, -3.0])
-        self.right = np.array([10.0, 9.0, 8.0])
+        self.width = np.array([11.0, 7.0, 10.0])
 
 class check_inside(object):
     """
@@ -66,7 +63,8 @@ class check_inside(object):
         self.boundary_width_radius = self.radius*self.boundary_ratio_radius
         self.boundary_width = np.ones(self.center.shape) + \
                 0.1*np.arange(len(self.center))
-        self.width = self.right-self.left
+        self.right = self.center + .5*self.width
+        self.left = self.center - .5*self.width
         self.boundary_ratio = self.boundary_width/self.width
         # create a list of coordinates that are outside the domain
         outcoords_rect = []
@@ -85,15 +83,18 @@ class check_inside(object):
                 self.center+self.radius]))
         self.outcoords_rect = util.meshgrid_ndim(outcoords_rect)
         self.outcoords_sphere = util.meshgrid_ndim(outcoords_sphere)       
+        print "SPHERE", self.center, self.radius, oncoords_sphere
         self.oncoords_rect = util.meshgrid_ndim(oncoords_rect)
+        print "RECT", self.left, self.right, self.oncoords_rect
         self.oncoords_sphere = util.meshgrid_ndim(oncoords_sphere)
+        print "SPHERE", self.center, self.radius, self.oncoords_sphere
 
     def test_hyperrectangle(self):
         """
         Test :meth:`bet.calculateP.indicatorFunctions.hyperrectangle`
         """
         indicator = ifun.hyperrectangle(self.left, self.right)
-        assert np.all(indicator(self.center))
+        assert np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_rect))
     
     def test_hyperrectangle_size(self):
@@ -101,7 +102,7 @@ class check_inside(object):
         Test :meth:`bet.calculateP.indicatorFunctions.hyperrectangle_size`
         """
         indicator = ifun.hyperrectangle_size(self.center, self.width)
-        assert np.all(indicator(self.center))
+        assert np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_rect))
 
     def test_boundary_hyperrectangle(self):
@@ -110,7 +111,7 @@ class check_inside(object):
         """
         indicator = ifun.boundary_hyperrectangle(self.left, self.right,
                 self.boundary_width)
-        assert False == np.all(indicator(self.center))
+        assert False == np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_rect))
         assert np.all(indicator(self.oncoords_rect))
     
@@ -121,7 +122,7 @@ class check_inside(object):
         """
         indicator = ifun.boundary_hyperrectangle_size(self.center, self.width,
                 self.boundary_width)
-        assert False == np.all(indicator(self.center))
+        assert False == np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_rect))
         assert np.all(indicator(self.oncoords_rect))
 
@@ -132,7 +133,7 @@ class check_inside(object):
         """
         indicator = ifun.boundary_hyperrectangle_ratio(self.left, self.right,
                 self.boundary_ratio)
-        assert False == np.all(indicator(self.center))
+        assert False == np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_rect))
         assert np.all(indicator(self.oncoords_rect))
     
@@ -143,7 +144,7 @@ class check_inside(object):
         """
         indicator = ifun.boundary_hyperrectangle_size_ratio(self.center,
                 self.width, self.boundary_ratio)
-        assert False == np.all(indicator(self.center))
+        assert False == np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_rect))
         assert np.all(indicator(self.oncoords_rect))
 
@@ -152,7 +153,7 @@ class check_inside(object):
         Test :meth:`bet.calculateP.indicatorFunctions.hypersphere`
         """
         indicator = ifun.hypersphere(self.center, self.radius)
-        assert np.all(indicator(self.center))
+        assert np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_sphere))
     
     def test_boundary_hypersphere(self):
@@ -161,7 +162,7 @@ class check_inside(object):
         """
         indicator = ifun.boundary_hypersphere(self.center, self.radius,
                 self.boundary_width_radius)
-        assert False == np.all(indicator(self.center))
+        assert False == np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_sphere))
         assert np.all(indicator(self.oncoords_sphere))
     
@@ -172,7 +173,7 @@ class check_inside(object):
         """
         indicator = ifun.boundary_hypersphere_ratio(self.center, self.radius,
                 self.boundary_ratio_radius)
-        assert False == np.all(indicator(self.center))
+        assert False == np.all(indicator(util.fix_dimensions_vector_2darray(self.center)))
         assert False == np.all(indicator(self.outcoords_sphere))
         assert np.all(indicator(self.oncoords_sphere))
 
