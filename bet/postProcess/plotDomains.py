@@ -112,7 +112,7 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-
+    
     # plot all of the samples by default
     if type(sample_nos) == type(None):
         sample_nos = np.arange(samples.shape[0])
