@@ -85,7 +85,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
@@ -142,16 +143,90 @@
 <p>This module contains functions choosing optimal QoIs to use in the stochastic
 inverse problem.</p>
 <dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.calculate_avg_condnum">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">calculate_avg_condnum</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoi_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.calculate_avg_condnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space and
+given a specific set of QoIs, caculate the average condition number of the
+matrices formed by the gradient vectors of each QoI map at each center.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, num_qois,
+Lambda_dim) where num_centers is the number of points in <span class="math">\(\Lambda\)</span>
+we have approximated the gradient vectors and num_qois is the number of
+QoIs we are given.) &#8211; Gradient vectors at each center in the parameter space
+<span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>qoi_set</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List of QoI indices</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(condnum, singvals) where condnum is a float and singvals
+has shape (num_centers, Data_dim)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.calculate_avg_volume">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">calculate_avg_volume</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoi_set</em>, <em>bin_volume=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.calculate_avg_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>If you are using <code class="docutils literal"><span class="pre">bin_ratio</span></code> to define the hyperrectangle in the Data
+space you must must give this method gradient vectors normalized with
+respect to the 1-norm.  If you are using <code class="docutils literal"><span class="pre">bin_size</span></code> to define the
+hyperrectangle in the Data space you must give this method the original
+gradient vectors. If you also give a <code class="docutils literal"><span class="pre">bin_volume</span></code>, this method will
+approximate the volume of the region of non-zero probability in the inverse
+solution.
+Given gradient vectors at some points (centers) in the parameter space
+and given a specific set of QoIs, calculate the average volume of the 
+inverse image of a box in the data space assuming the mapping is linear near
+each center.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, num_qois,
+Lambda_dim) where num_centers is the number of points in <span class="math">\(\Lambda\)</span>
+we have approximated the gradient vectors and num_qois is the number of
+QoIs we are given.) &#8211; Gradient vectors at each point of interest in the
+parameter space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>qoi_set</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; List of QoI indices</li>
+<li><strong>bin_volume</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; The volume of the Data_dim hyperrectangle to
+invert into <span class="math">\(\Lambda\)</span></li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(avg_volume, singvals) where avg_volume is a float and singvals
+has shape (num_centers, Data_dim)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs">
-<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>num_qois_return=None</em>, <em>num_optsets_return=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>num_qois_return=None</em>, <em>num_optsets_return=None</em>, <em>inner_prod_tol=1.0</em>, <em>volume=False</em>, <em>remove_zeros=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Given gradient vectors at some points (centers) in the parameter space, a
 set of QoIs to choose from, and the number of desired QoIs to return, this
-method returns the <code class="docutils literal"><span class="pre">num_optsets_return</span></code> best sets of QoIs with with repsect
-to skewness properties.  This method is brute force, i.e., if the method is
+method returns the <code class="docutils literal"><span class="pre">num_optsets_return</span></code> best sets of QoIs with with
+repsect to either the average condition number of the matrix formed by the
+gradient vectors of each QoI map, or the average volume of the inverse
+problem us this set of QoIs, computed as the product of the singular values
+of the same matrix.  This method is brute force, i.e., if the method is
 given 10,000 QoIs and told to return the N best sets of 3, it will check all
-10,000 choose 3 possible sets.  This can be expensive, methods currently
-being developed will take a more careful approach and reduce computational
-cost.</p>
+10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
+computationally expensive approach.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -168,6 +243,11 @@ range(0, grad_tensor.shape[1])</li>
 inverse problem.  Default is Lambda_dim</li>
 <li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return
 Default is 10</li>
+<li><strong>volume</strong> (<em>boolean</em>) &#8211; If measure is True, use <code class="docutils literal"><span class="pre">calculate_avg_volume</span></code>
+to determine optimal QoIs</li>
+<li><strong>remove_zeros</strong> (<em>boolean</em>) &#8211; If True, <code class="docutils literal"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math">\(\Lambda\)</span>.</li>
 </ul>
 </td>
 </tr>
@@ -182,14 +262,13 @@ Default is 10</li>
 </dd></dl>
 
 <dl class="function">
-<dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose">
-<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs_verbose</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>num_qois_return=None</em>, <em>num_optsets_return=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given gradient vectors at some points(centers) in the parameter space, a set
-of QoIs to choose from, and the number of desired QoIs to return, this
-method return the set of optimal QoIs to use in the inverse problem by
-choosing the set with optimal skewness properties.  Also a tensor that
-represents the singualre values of the matrices formed by the gradient
-vectors of the optimal QoIs at each center is returned.</p>
+<dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs_large">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs_large</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>max_qois_return=None</em>, <em>num_optsets_return=None</em>, <em>inner_prod_tol=None</em>, <em>cond_tol=None</em>, <em>volume=False</em>, <em>remove_zeros=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_large" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+large set of QoIs to choose from, and the number of desired QoIs to return,
+this method return the set of optimal QoIs of size 2, 3, ... max_qois_return
+to use in the inverse problem by choosing the sets with the smallext average
+condition number or volume.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -202,10 +281,19 @@ number of possible QoIs to choose from) &#8211; Gradient vectors at each point o
 parameter space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
 <li><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) &#8211; Set of QoIs to consider from grad_tensor.  Default is
 range(0, grad_tensor.shape[1])</li>
-<li><strong>num_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of desired QoIs to use in the
+<li><strong>max_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum number of desired QoIs to use in the
 inverse problem.  Default is Lambda_dim</li>
 <li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return
 Default is 10</li>
+<li><strong>inner_prod_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Maximum acceptable average inner product
+between two QoI maps.</li>
+<li><strong>cond_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Throw out all sets of QoIs with average condition
+number greater than this.</li>
+<li><strong>volume</strong> (<em>boolean</em>) &#8211; If volume is True, use <code class="docutils literal"><span class="pre">calculate_avg_volume</span></code>
+to determine optimal QoIs</li>
+<li><strong>remove_zeros</strong> (<em>boolean</em>) &#8211; If True, <code class="docutils literal"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math">\(\Lambda\)</span>.</li>
 </ul>
 </td>
 </tr>
@@ -221,11 +309,193 @@ has shape (num_centers, num_qois_return, num_optsets_return)</p>
 </table>
 </dd></dl>
 
+<dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs_large_verbose</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>max_qois_return=None</em>, <em>num_optsets_return=None</em>, <em>inner_prod_tol=None</em>, <em>cond_tol=None</em>, <em>volume=False</em>, <em>remove_zeros=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+large set of QoIs to choose from, and the number of desired QoIs to return,
+this method return the set of optimal QoIs of size 1, 2, ... max_qois_return
+to use in the inverse problem by choosing the set with smallext average
+condition number.  Also a tensor that represents the singular values of the
+matrices formed by the gradient vectors of the optimal QoIs at each center
+is returned.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, num_qois,
+Lambda_dim) where num_centers is the number of points in <span class="math">\(\Lambda\)</span>
+we have approximated the gradient vectors and num_qois is the total
+number of possible QoIs to choose from.) &#8211; Gradient vectors at each point of interest in the
+parameter space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) &#8211; Set of QoIs to consider from grad_tensor.  Default is
+range(0, grad_tensor.shape[1]).</li>
+<li><strong>max_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum number of desired QoIs to use in the
+inverse problem.  Default is Lambda_dim.</li>
+<li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return.  Default is
+10.</li>
+<li><strong>inner_prod_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Throw out one vectors from each pair of
+QoIs that has average inner product greater than this.  Default is 0.9.</li>
+<li><strong>cond_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Throw out all sets of QoIs with average condition
+number greater than this.  Default is max_float.</li>
+<li><strong>volume</strong> (<em>boolean</em>) &#8211; If volume is True, use <code class="docutils literal"><span class="pre">calculate_avg_volume</span></code>
+to determine optimal QoIs</li>
+<li><strong>remove_zeros</strong> (<em>boolean</em>) &#8211; If True, <code class="docutils literal"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math">\(\Lambda\)</span>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(condnum_indices_mat, optsingvals) where condnum_indices_mat has
+shape (num_optsets_return, num_qois_return+1) and optsingvals is a list
+where each element has shape (num_centers, num_qois_return,
+num_optsets_return).  num_qois_return will change for each element of
+the list.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">chooseOptQoIs_verbose</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>qoiIndices=None</em>, <em>num_qois_return=None</em>, <em>num_optsets_return=None</em>, <em>inner_prod_tol=1.0</em>, <em>volume=False</em>, <em>remove_zeros=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+set of QoIs to choose from, and the number of desired QoIs to return, this
+method returns the <code class="docutils literal"><span class="pre">num_optsets_return</span></code> best sets of QoIs with with
+repsect to either the average condition number of the matrix formed by the
+gradient vectors of each QoI map, or the average volume of the inverse
+problem us this set of QoIs, computed as the product of the singular values
+of the same matrix.  This method is brute force, i.e., if the method is
+given 10,000 QoIs and told to return the N best sets of 3, it will check all
+10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
+computationally expensive approach.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers, num_qois,
+Lambda_dim) where num_centers is the number of points in <span class="math">\(\Lambda\)</span>
+we have approximated the gradient vectors and num_qois is the total
+number of possible QoIs to choose from) &#8211; Gradient vectors at each point of interest in the
+parameter space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) &#8211; Set of QoIs to consider from grad_tensor.  Default is
+range(0, grad_tensor.shape[1])</li>
+<li><strong>num_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of desired QoIs to use in the
+inverse problem.  Default is Lambda_dim</li>
+<li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return
+Default is 10</li>
+<li><strong>volume</strong> (<em>boolean</em>) &#8211; If volume is True, use <code class="docutils literal"><span class="pre">calculate_avg_volume</span></code>
+to determine optimal QoIs</li>
+<li><strong>remove_zeros</strong> (<em>boolean</em>) &#8211; If True, <code class="docutils literal"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math">\(\Lambda\)</span>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(condnum_indices_mat, optsingvals) where condnum_indices_mat has
+shape (num_optsets_return, num_qois_return+1) and optsingvals
+has shape (num_centers, num_qois_return, num_optsets_return)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.find_good_sets">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">find_good_sets</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>good_sets_prev</em>, <em>unique_indices</em>, <em>num_optsets_return</em>, <em>cond_tol</em>, <em>volume</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.find_good_sets" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Use the idea we only know vectors are with 10% accuracy to guide
+inner_prod tol and condnum_tol.</p>
+</div>
+<p>Given gradient vectors at each center in the parameter space and given
+good sets of size n - 1, return good sets of size n.  That is, return
+sets of size n that have average condition number less than some tolerance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers,num_qois,Ldim)
+where num_centers is the number of points in :math:&#8217;Lambda&#8217; we have
+approximated the gradient vectors, num_qois is the total number of
+possible QoIs to choose from, Ldim is the dimension of <span class="math">\(\Lambda\)</span>.) &#8211; Gradient vectors at each centers in the parameter
+space <span class="math">\(\Lambda\)</span> for each QoI map.</li>
+<li><strong>good_sets_prev</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (num_good_sets_prev, n -
+1)) &#8211; Good sets of QoIs of size n - 1.</li>
+<li><strong>unique_indices</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of size (num_unique_qois, 1)) &#8211; Unique QoIs to consider.</li>
+<li><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of best sets to return</li>
+<li><strong>cond_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Throw out all sets of QoIs with average condition
+number greater than this.</li>
+<li><strong>volume</strong> (<em>boolean</em>) &#8211; If volume is True, use <code class="docutils literal"><span class="pre">calculate_avg_volume</span></code>
+to determine optimal QoIs</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(good_sets, best_sets, optsingvals_tensor) where good sets has
+size (num_good_sets, n), best sets has size (num_optsets_return,
+n + 1) and optsingvals_tensor has size (num_centers, n, Lambda_dim)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sensitivity.chooseQoIs.find_unique_vecs">
+<code class="descclassname">bet.sensitivity.chooseQoIs.</code><code class="descname">find_unique_vecs</code><span class="sig-paren">(</span><em>grad_tensor</em>, <em>inner_prod_tol</em>, <em>qoiIndices=None</em>, <em>remove_zeros=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.find_unique_vecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at each center in the parameter space, sort throught
+them and remove any QoI that has a zero vector at any center, then remove
+one from any pair of QoIs that have an average inner product greater than
+some tolerance, i.e., an average angle between the two vectors smaller than
+some tolerance.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>grad_tensor</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_centers,num_qois,Ldim)
+where num_centers is the number of points in :math:&#8217;Lambda&#8217; we have
+approximated the gradient vectors, num_qois is the total number of
+possible QoIs to choose from, Ldim is the dimension of <span class="math">\(\Lambda\)</span>.) &#8211; Gradient vectors at each point of interest in the
+parameter space :math:&#8217;Lambda&#8217; for each QoI map.</li>
+<li><strong>inner_prod_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Maximum acceptable average inner product
+between two QoI maps.</li>
+<li><strong>qoiIndices</strong> (:class:&#8217;<cite>np.ndarray</cite> of size (1, num QoIs to consider)) &#8211; Set of QoIs to consider.</li>
+<li><strong>remove_zeros</strong> (<em>boolean</em>) &#8211; If True, <code class="docutils literal"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math">\(\Lambda\)</span>.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><cite>np.ndarray</cite> of shape (num_unique_vecs, 1)</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">unique_vecs</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
 </div>
 <div class="section" id="module-bet.sensitivity.gradients">
 <span id="bet-sensitivity-gradients-module"></span><h2>bet.sensitivity.gradients module<a class="headerlink" href="#module-bet.sensitivity.gradients" title="Permalink to this headline">¶</a></h2>
-<p>This module contains functions for approximating gradient vectors of QoI maps.</p>
-<p>All methods that cluster points around centers are written to return the samples
+<p>This module contains functions for approximating gradient vectors of QoI maps.
+All methods that cluster points around centers are written to return the samples
 in the following order : CENTERS, FOLLOWED BY THE CLUSTER AROUND THE FIRST
 CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.</p>
 <dl class="function">
@@ -243,6 +513,8 @@ CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.</p>
 <li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape
 (2*Lambda_dim*num_centers, Lambda_dim)) &#8211; Samples for which the model has been solved.</li>
 <li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim)) &#8211; QoI values corresponding to each sample.</li>
+<li><strong>normalize</strong> (<em>boolean</em>) &#8211; If normalize is True, normalize each gradient
+vector</li>
 </ul>
 </td>
 </tr>
@@ -263,7 +535,7 @@ QoI map at each point in centers</p>
 <dd><p>Approximate gradient vectors at <code class="docutils literal"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
 in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
 :meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
-CFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.</p>
+FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -271,6 +543,8 @@ CFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>samples</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Lambda_dim)) &#8211; Samples for which the model has been solved.</li>
 <li><strong>data</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (num_samples, Data_dim)) &#8211; QoI values corresponding to each sample.</li>
+<li><strong>normalize</strong> (<em>boolean</em>) &#8211; If normalize is True, normalize each gradient
+vector</li>
 </ul>
 </td>
 </tr>
@@ -305,6 +579,8 @@ approximation. Default value is Lambda_dim + 2.</li>
 <li><strong>RBF</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Choice of radial basis function. Default is Gaussian</li>
 <li><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; Choice of shape parameter for radial basis function.
 Default value is 1.0</li>
+<li><strong>normalize</strong> (<em>boolean</em>) &#8211; If normalize is True, normalize each gradient
+vector</li>
 </ul>
 </td>
 </tr>
@@ -535,7 +811,7 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jul 14, 2015.
+      Last updated on Oct 20, 2015.
     </p>
   </div>
 

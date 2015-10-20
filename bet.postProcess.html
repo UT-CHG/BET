@@ -85,7 +85,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
@@ -142,19 +143,51 @@
 <p>This module provides methods used to plot two-dimensional domains and/or
 two-dimensional slices/projections of domains.</p>
 <dl class="function">
-<dt id="bet.postProcess.plotDomains.scatter_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_ref</em>, <em>save</em>, <em>interactive</em>, <em>xlabel</em>, <em>ylabel</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Two-dimensional scatter plot of <code class="docutils literal"><span class="pre">samples</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code> (usually
-an array of rho_D values).</p>
+<dt id="bet.postProcess.plotDomains.scatter2D_multi">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter2D_multi</code><span class="sig-paren">(</span><em>samples</em>, <em>color=None</em>, <em>p_ref=None</em>, <em>img_folder='figs/'</em>, <em>filename='scatter2Dm'</em>, <em>label_char='$\\lambda'</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter2D_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates two-dimensional projections of scatter plots of <code class="docutils literal"><span class="pre">samples</span></code> colored
+by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise probability density values). A
+reference <code class="docutils literal"><span class="pre">sample</span></code> (<code class="docutils literal"><span class="pre">p_ref</span></code>) can be chosen by the user. This reference
+<code class="docutils literal"><span class="pre">sample</span></code> will be plotted as a mauve circle twice the size of the other
+markers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot</li>
-<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
-<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; array to color the samples by</li>
-<li><strong>p_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot.</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the <code class="docutils literal"><span class="pre">samples</span></code> by</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+<li><strong>label_char</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; character to use to label coordinate axes</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
+<li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
+<li><strong>img_folder</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; folder to save the plots to</li>
+<li><strong>showdim</strong> (<em>int or string</em>) &#8211; default 1. If int then flag to show all combinations with a
+given dimension (<span class="math">\(\lambda_i\)</span>) or if <code class="docutils literal"><span class="pre">all</span></code> show all combinations.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.plotDomains.scatter_2D">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>p_ref=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>filename='scatter2d'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a two-dimensional scatter plot of <code class="docutils literal"><span class="pre">samples</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code>
+(usually an array of pointwise probability density values). A reference
+<code class="docutils literal"><span class="pre">sample</span></code> (<code class="docutils literal"><span class="pre">p_ref</span></code>) can be chosen by the user. This reference <code class="docutils literal"><span class="pre">sample</span></code>
+will be plotted as a mauve circle twice the size of the other markers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot. These are the locations in the x-axis and
+y-axis.</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; indicies of the <code class="docutils literal"><span class="pre">samples</span></code> to plot</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the <code class="docutils literal"><span class="pre">samples</span></code> by</li>
+<li><strong>p_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter(<code class="docutils literal"><span class="pre">sample</span></code>) value</li>
 <li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
@@ -169,18 +202,22 @@ an array of rho_D values).</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_3D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos</em>, <em>color</em>, <em>p_ref</em>, <em>save</em>, <em>interactive</em>, <em>xlabel</em>, <em>ylabel</em>, <em>zlabel</em>, <em>filename</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Three-dimensional scatter plot of <code class="docutils literal"><span class="pre">samples</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code> (usually
-an array of rho_D values).</p>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D</code><span class="sig-paren">(</span><em>samples</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>p_ref=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>zlabel='z'</em>, <em>filename='scatter3d'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a three-dimensional scatter plot of <code class="docutils literal"><span class="pre">samples</span></code> colored by
+<code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise probability density values). A
+reference <code class="docutils literal"><span class="pre">sample</span></code> (<code class="docutils literal"><span class="pre">p_ref</span></code>) can be chosen by the user. This reference
+<code class="docutils literal"><span class="pre">sample</span></code> will be plotted as a mauve circle twice the size of the other
+markers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot</li>
-<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
-<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; array to color the samples by</li>
-<li><strong>p_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot. These are the locations in the x-axis,
+y-axis, and z-axis.</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; indicies of the <code class="docutils literal"><span class="pre">samples</span></code> to plot</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the <code class="docutils literal"><span class="pre">samples</span></code> by</li>
+<li><strong>p_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter(<code class="docutils literal"><span class="pre">sample</span></code>) value</li>
 <li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
 <li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
@@ -195,24 +232,53 @@ an array of rho_D values).</p>
 </dd></dl>
 
 <dl class="function">
-<dt id="bet.postProcess.plotDomains.show_data">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data</code><span class="sig-paren">(</span><em>data</em>, <em>rho_D=None</em>, <em>Q_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>Q_nums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot samples in data space and colors them either by rho_D.</p>
+<dt id="bet.postProcess.plotDomains.scatter_param_multi">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_param_multi</code><span class="sig-paren">(</span><em>samples</em>, <em>img_folder='figs/'</em>, <em>showdim='all'</em>, <em>save=True</em>, <em>interactive=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_param_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates two-dimensional projections of scatter plots of <code class="docutils literal"><span class="pre">samples</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Data associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot.</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
+<li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
+<li><strong>img_folder</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; folder to save the plots to</li>
+<li><strong>showdim</strong> (<em>int or string</em>) &#8211; default 1. If int then flag to show all combinations with a
+given dimension (<span class="math">\(\lambda_i\)</span>) or if <code class="docutils literal"><span class="pre">all</span></code> show all combinations.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.plotDomains.show_data">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data</code><span class="sig-paren">(</span><em>data</em>, <em>rho_D=None</em>, <em>Q_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>Q_nums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create scatter plots of <code class="docutils literal"><span class="pre">data</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code> (usually
+an array of pointwise probability density values). A reference <code class="docutils literal"><span class="pre">data</span></code>
+point (<code class="docutils literal"><span class="pre">Q_ref</span></code>) can be chosen by the user. This reference <code class="docutils literal"><span class="pre">data</span></code> will
+be plotted as a mauve circle twice the size of the other markers.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Data (the data associated with a given set of samples in the
+data space)</li>
 <li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
 <li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns a
 <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
 <li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; reference data value</li>
 <li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
-<li><strong>Q_nums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; integers representing data domain coordinates</li>
-<li><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 2 or 3, flag showing pairwise or tripletwise data
-sample clouds</li>
+<li><strong>lnums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; integers representing data domain coordinate
+numbers to plot (e.g. i, where <span class="math">\(\q_i\)</span> is a coordinate in the
+data space).</li>
+<li><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 2 or 3, flag to determine whether or not to show
+pairwise or tripletwise data sample scatter plots in 2 or 3
+dimensions</li>
 </ul>
 </td>
 </tr>
@@ -222,16 +288,18 @@ sample clouds</li>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2$'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the data domain D using a triangulation based on the generating
-samples with a marker for various <span class="math">\(Q_{ref}\)</span>. Assumes that the first
-dimension of data is <span class="math">\(q_1\)</span>.</p>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref=None</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2$'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 2-D a single data domain D using a triangulation based on the first
+two coordinates (parameters) of the generating samples where <span class="math">\(Q={q_1,
+q_i}\)</span> for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for various <span class="math">\(Q_{ref}\)</span>. Assumes
+that the first dimension of data is <span class="math">\(q_1\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; Samples to plot</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim). Only
+uses the first two dimensions.) &#8211; Samples to plot</li>
 <li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Data associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
 <li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (M, 2)) &#8211; reference data value</li>
 <li><strong>ref_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <span class="math">\(Q_{ref}\)</span></li>
@@ -251,10 +319,11 @@ dimension of data is <span class="math">\(q_1\)</span>.</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_multi">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_multi</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref</em>, <em>Q_nums=None</em>, <em>img_folder='figs/'</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot the data domain D using a triangulation based on the generating
-samples where <span class="math">\(Q={q_1, q_i}\)</span> for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for
-various <span class="math">\(Q_{ref}\)</span>.</p>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_multi</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>Q_ref=None</em>, <em>Q_nums=None</em>, <em>img_folder='figs/'</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 2-D projections of the data domain D using a triangulation based on
+the first two coordinates (parameters) of the generating samples where
+<span class="math">\(Q={q_1, q_i}\)</span> for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for various
+<span class="math">\(Q_{ref}\)</span>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -269,7 +338,7 @@ uses the first two dimensions.) &#8211; Samples to plot</li>
 <li><strong>ref_markers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of marker types for <span class="math">\(Q_{ref}\)</span></li>
 <li><strong>ref_colors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of colors for <span class="math">\(Q_{ref}\)</span></li>
 <li><strong>showdim</strong> (<em>int or string</em>) &#8211; default 1. If int then flag to show all combinations with a
-given dimension or if <code class="docutils literal"><span class="pre">all</span></code> show all combinations.</li>
+given dimension (<span class="math">\(q_i\)</span>) or if <code class="docutils literal"><span class="pre">all</span></code> show all combinations.</li>
 </ul>
 </td>
 </tr>
@@ -280,24 +349,29 @@ given dimension or if <code class="docutils literal"><span class="pre">all</span
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_param">
 <code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_param</code><span class="sig-paren">(</span><em>samples</em>, <em>data</em>, <em>rho_D=None</em>, <em>p_ref=None</em>, <em>sample_nos=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>lnums=None</em>, <em>showdim=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_param" title="Permalink to this definition">¶</a></dt>
-<dd><p>Plot samples in parameter space and colors them either by rho_D.</p>
+<dd><p>Create scatter plots of <code class="docutils literal"><span class="pre">samples</span></code> colored by <code class="docutils literal"><span class="pre">color</span></code> (usually
+an array of pointwise probability density values). A reference <code class="docutils literal"><span class="pre">sample</span></code>
+(<code class="docutils literal"><span class="pre">p_ref</span></code>) can be chosen by the user. This reference <code class="docutils literal"><span class="pre">sample</span></code> will be
+plotted as a mauve circle twice the size of the other markers.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Samples to plot</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Data associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Data value(s) associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
 <li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; sample numbers to plot</li>
 <li><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal"><span class="pre">np.array</span></code> and returns a
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density function on D</li>
 <li><strong>p_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
 <li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
 <li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
 <li><strong>lnums</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; integers representing parameter domain coordinate
-numbers</li>
-<li><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 2 or 3, flag showing pairwise or tripletwise parameter
-sample clouds</li>
+numbers to plot (e.g. i, where <span class="math">\(\lambda_i\)</span> is a coordinate in the
+parameter space).</li>
+<li><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 2 or 3, flag to determine whether or not to show
+pairwise or tripletwise parameter sample scatter plots in 2 or 3
+dimensions</li>
 </ul>
 </td>
 </tr>
@@ -472,8 +546,8 @@ shape (nbins+1,) as values) &#8211; 1D marginal probabilities</li>
 <dl class="function">
 <dt id="bet.postProcess.postTools.collect_parallel_probs_csv">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">collect_parallel_probs_csv</code><span class="sig-paren">(</span><em>P_file</em>, <em>lam_file</em>, <em>num_files</em>, <em>save=False</em>, <em>compress=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.collect_parallel_probs_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Collects probabilities and samples saved in .csv format from parallel runs
-into single arrays.</p>
+<dd><p>Collects probabilities and samples saved in <code class="docutils literal"><span class="pre">.csv</span></code> format from parallel
+runs into single arrays.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -482,17 +556,19 @@ into single arrays.</p>
 <li><strong>P_file</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; file prefix for probabilities</li>
 <li><strong>lam_file</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; file prefix for samples</li>
 <li><strong>num_files</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of files</li>
-<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Save collected arrays as a .csv file.</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Save collected arrays as a <code class="docutils literal"><span class="pre">.csv</span></code> file.</li>
 <li><strong>compress</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Compress file</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(P, lam)</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>:returns (P, lam)</p>
 </dd></dl>
 
 <dl class="function">
@@ -512,12 +588,14 @@ into single arrays.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(P, lam)</p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>:returns (P, lam)</p>
 </dd></dl>
 
 <dl class="function">
@@ -535,7 +613,7 @@ an array of the sorted indicies.</p>
 order</li>
 <li><strong>sample_quality</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; a measure of quality by which the sets of 
 samples are sorted</li>
-<li><strong>run_param</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; zipped list of :class:<a href="#id1"><span class="problematic" id="id2">`</span></a>~numpy.ndarray`s containing
+<li><strong>run_param</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; zipped list of <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> containing
 information used to generate the sets of samples to be displayed</li>
 <li><strong>column_headings</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; Column headings to print to screen</li>
 </ul>
@@ -606,9 +684,8 @@ of results.</p>
 <dd><p>This calculates the highest probability samples whose probability sum to a
 given value.  The number of high probability samples that sum to the value
 and the probabilities, samples, volumes, and data are returned. This
-assumes that <code class="docutils literal"><span class="pre">P_samples</span></code>,
-<code class="docutils literal"><span class="pre">samples</span></code>, <code class="docutils literal"><span class="pre">lam_vol</span></code>, and <code class="docutils literal"><span class="pre">data</span></code> have all be sorted using
-<code class="xref py py-meth docutils literal"><span class="pre">sort_by_rho()</span></code>.</p>
+assumes that <code class="docutils literal"><span class="pre">P_samples</span></code>, <code class="docutils literal"><span class="pre">samples</span></code>, <code class="docutils literal"><span class="pre">lam_vol</span></code>, and <code class="docutils literal"><span class="pre">data</span></code> have all
+be sorted using <code class="xref py py-meth docutils literal"><span class="pre">sort_by_rho()</span></code>.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -619,6 +696,77 @@ assumes that <code class="docutils literal"><span class="pre">P_samples</span></
 <li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
 <li><strong>lam_vol</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,)) &#8211; Volume of cell associated with sample.</li>
 <li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, mdim)) &#8211; QoI data from running the model with the given samples.</li>
+<li><strong>indices</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; sorting indices of unsorted <code class="docutils literal"><span class="pre">P_samples</span></code></li>
+<li><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag whether or not to sort</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">( num_samples, P_samples, samples, lam_vol, data)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.postTools.sample_lowest_prob">
+<code class="descclassname">bet.postProcess.postTools.</code><code class="descname">sample_lowest_prob</code><span class="sig-paren">(</span><em>bottom_percentile</em>, <em>P_samples</em>, <em>samples</em>, <em>lam_vol=None</em>, <em>data=None</em>, <em>sort=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sample_lowest_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates the lowest probability samples whose probability sum to a
+given value.  The number of low probability samples that sum to the value
+and the probabilities, samples, volumes, and data are returned. This
+assumes that <code class="docutils literal"><span class="pre">P_samples</span></code>, <code class="docutils literal"><span class="pre">samples</span></code>, <code class="docutils literal"><span class="pre">lam_vol</span></code>, and <code class="docutils literal"><span class="pre">data</span></code> have all
+be sorted using <code class="xref py py-meth docutils literal"><span class="pre">sort_by_rho()</span></code>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>top_percentile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; ratio of highest probability samples to select</li>
+<li><strong>P_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,)) &#8211; Probabilities.</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lam_vol</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,)) &#8211; Volume of cell associated with sample.</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, mdim)) &#8211; QoI data from running the model with the given samples.</li>
+<li><strong>indices</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; sorting indices of unsorted <code class="docutils literal"><span class="pre">P_samples</span></code></li>
+<li><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag whether or not to sort</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">( num_samples, P_samples, samples, lam_vol, data)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.postTools.sample_prob">
+<code class="descclassname">bet.postProcess.postTools.</code><code class="descname">sample_prob</code><span class="sig-paren">(</span><em>percentile</em>, <em>P_samples</em>, <em>samples</em>, <em>lam_vol=None</em>, <em>data=None</em>, <em>sort=True</em>, <em>descending=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sample_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates the highest/lowest probability samples whose probability
+sum to a given value.  The number of high/low probability samples that sum
+to the value and the probabilities, samples, volumes, and data are
+returned. This assumes that <code class="docutils literal"><span class="pre">P_samples</span></code>, <code class="docutils literal"><span class="pre">samples</span></code>, <code class="docutils literal"><span class="pre">lam_vol</span></code>, and
+<code class="docutils literal"><span class="pre">data</span></code> have all be sorted using <code class="xref py py-meth docutils literal"><span class="pre">sort_by_rho()</span></code>. The
+<code class="docutils literal"><span class="pre">descending</span></code> flag determines whether or not to calcuate the
+highest/lowest.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>percentile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; ratio of highest probability samples to select</li>
+<li><strong>P_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,)) &#8211; Probabilities.</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lam_vol</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,)) &#8211; Volume of cell associated with sample.</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, mdim)) &#8211; QoI data from running the model with the given samples.</li>
+<li><strong>indices</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; sorting indices of unsorted <code class="docutils literal"><span class="pre">P_samples</span></code></li>
+<li><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag whether or not to sort</li>
+<li><strong>descending</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag order of sorting</li>
 </ul>
 </td>
 </tr>
@@ -635,8 +783,8 @@ assumes that <code class="docutils literal"><span class="pre">P_samples</span></
 <dl class="function">
 <dt id="bet.postProcess.postTools.save_parallel_probs_csv">
 <code class="descclassname">bet.postProcess.postTools.</code><code class="descname">save_parallel_probs_csv</code><span class="sig-paren">(</span><em>P_samples</em>, <em>samples</em>, <em>P_file</em>, <em>lam_file</em>, <em>compress=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.save_parallel_probs_csv" title="Permalink to this definition">¶</a></dt>
-<dd><p>Saves probabilites and samples from parallel runs in individual .csv files
-for each process.</p>
+<dd><p>Saves probabilites and samples from parallel runs in individual <code class="docutils literal"><span class="pre">.csv</span></code>
+files for each process.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -695,13 +843,14 @@ to sort the QoI data, but be sure to do so if using it later.</p>
 <li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
 <li><strong>lam_vol</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,)) &#8211; Volume of cell associated with sample.</li>
 <li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, mdim)) &#8211; QoI data from running the model with the given samples.</li>
+<li><strong>indices</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; sorting indices of unsorted <code class="docutils literal"><span class="pre">P_samples</span></code></li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(P_samples, samples, lam_vol, data)</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(P_samples, samples, lam_vol, data, indicices)</p>
 </td>
 </tr>
 </tbody>
@@ -750,7 +899,7 @@ to sort the QoI data, but be sure to do so if using it later.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jul 14, 2015.
+      Last updated on Oct 20, 2015.
     </p>
   </div>
 

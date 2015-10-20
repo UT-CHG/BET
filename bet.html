@@ -85,7 +85,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
@@ -139,6 +140,7 @@
 <li class="toctree-l1"><a class="reference internal" href="bet.calculateP.html">bet.calculateP package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#submodules">Submodules</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP">bet.calculateP.calculateP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.indicatorFunctions">bet.calculateP.indicatorFunctions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP">bet.calculateP.simpleFunP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.voronoiHistogram">bet.calculateP.voronoiHistogram module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP">Module contents</a></li>
@@ -269,9 +271,10 @@ install mpi4py.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">0</td>
+</tr>
 </tbody>
 </table>
-<p>:returns 0</p>
 </dd></dl>
 
 <dl class="method">
@@ -315,7 +318,7 @@ install mpi4py.</p>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.allgather">
-<code class="descname">allgather</code><span class="sig-paren">(</span><em>val</em>, <em>val2=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
+<code class="descname">allgather</code><span class="sig-paren">(</span><em>val</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -372,14 +375,13 @@ install mpi4py.</p>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.gather">
-<code class="descname">gather</code><span class="sig-paren">(</span><em>val1</em>, <em>val2=None</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.gather" title="Permalink to this definition">¶</a></dt>
+<code class="descname">gather</code><span class="sig-paren">(</span><em>val1</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.gather" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
-<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
 <li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
@@ -396,14 +398,13 @@ install mpi4py.</p>
 
 <dl class="method">
 <dt id="bet.Comm.comm_for_no_mpi4py.scatter">
-<code class="descname">scatter</code><span class="sig-paren">(</span><em>val1</em>, <em>val2=None</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.scatter" title="Permalink to this definition">¶</a></dt>
+<code class="descname">scatter</code><span class="sig-paren">(</span><em>val1</em>, <em>root=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.scatter" title="Permalink to this definition">¶</a></dt>
 <dd><table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to scatter</li>
-<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to scatter</li>
 <li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
@@ -563,7 +564,25 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 </div>
 <div class="section" id="module-contents">
 <h2>Module contents<a class="headerlink" href="#module-contents" title="Permalink to this headline">¶</a></h2>
-<span class="target" id="module-bet"></span></div>
+<span class="target" id="module-bet"></span><p>Butler, Estep, Tavener Method</p>
+<p>This package provides tools for solving stochastic inverse problems using a
+measure-theoretic. It is named for the developers of the key algorithm in
+<a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">bet.calculateP.calculateP</span></code></a>.</p>
+<dl class="docutils">
+<dt>Comm <a class="reference internal" href="#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install</dt>
+<dd>:program:<code class="docutils literal"><span class="pre">mpi4py</span></code>.</dd>
+<dt>util <a class="reference internal" href="#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides some general use methods for creating grids,</dt>
+<dd>checking/fixing dimensions, and globalizing arrays.</dd>
+</dl>
+<p>calculateP <a class="reference internal" href="overview.html#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides tools to approximate probabilities.</p>
+<p>sampling <a class="reference internal" href="overview.html#module-bet.sampling" title="bet.sampling"><code class="xref py py-mod docutils literal"><span class="pre">sampling</span></code></a> provides various sampling algorithms.</p>
+<dl class="docutils">
+<dt>sensitivity <a class="reference internal" href="overview.html#module-bet.sensitivity" title="bet.sensitivity"><code class="xref py py-mod docutils literal"><span class="pre">sensitivity</span></code></a> provides tools for approximating</dt>
+<dd>derivatives and optimally choosing quantities of interest.</dd>
+<dt>postProcess <a class="reference internal" href="overview.html#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal"><span class="pre">postProcess</span></code></a> provides plotting tools and tools to sort</dt>
+<dd>samples by probabilities.</dd>
+</dl>
+</div>
 </div>
 
 
@@ -585,7 +604,7 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jul 14, 2015.
+      Last updated on Oct 20, 2015.
     </p>
   </div>
 
