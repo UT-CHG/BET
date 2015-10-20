@@ -31,7 +31,6 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     """
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
-    num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
     # Make list of bins if only an integer is given
@@ -74,7 +73,6 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     """
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
-    num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
     # Make list of bins if only an integer is given
@@ -135,7 +133,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
             ax = fig.add_subplot(111)
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
             ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
-            if type(lam_ref) != type(None):
+            if lam_ref is not None:
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
@@ -191,7 +189,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                     extent=[lam_domain[i][0], lam_domain[i][1],
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
                     vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
-            if type(lam_ref) != type(None):
+            if lam_ref is not None:
                 ax.plot(lam_ref[i], lam_ref[j], 'wo', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'

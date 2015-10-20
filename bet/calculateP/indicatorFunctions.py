@@ -2,14 +2,14 @@
 
 # Lindley Graham 04/27/2015
 r"""
-This module provides various indicator functions, :math:`\mathbf{1}_A` for various sets :math:`A
-\subset \mathbb{R}^n` where given a set of points in :math:`\{x_i\}_{i=0}^{N} \in
-\mathbf{R}^n` returns :math:`\{ \mathbf{1}_A(x_i) \}_{i=0}^{N}`.
+This module provides various indicator functions, :math:`\mathbf{1}_A` for
+various sets :math:`A \subset \mathbb{R}^n` where given a set of points in
+:math:`\{x_i\}_{i=0}^{N} \in \mathbf{R}^n` returns :math:`\{ \mathbf{1}_A(x_i)
+\}_{i=0}^{N}`.
 """
 
 # import necessary modules
 import numpy as np
-import collections
 
 def hyperrectangle(left, right):
     r"""
@@ -83,7 +83,9 @@ def boundary_hyperrectangle(left, right, boundary_width):
         :type points: :class:`np.ndarray` of shape (N, ndim)
     
         :rtype: boolean :class:`np.ndarray` of shape (ndim,)
-        :returns: :math:`\{ \mathbf{1}_{\partial A \plusminus \epsilon}(x_i) \}_{i=0}^{N}`
+        :returns: :math:`\{ \mathbf{1}_{\partial A \plusminus \epsilon}(x_i)
+            \}_{i=0}^{N}` 
+        
         """
         return np.logical_and(outer(points), np.logical_not(inner(points)))
 
@@ -165,6 +167,7 @@ def hypersphere(center, radius):
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
+    
     """
     def ifun(points):
         # calculate distance from the center
@@ -187,6 +190,7 @@ def boundary_hypersphere(center, radius, boundary_width):
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
+    
     """
     def ifun(points):
         # calculate distance from the center
@@ -210,6 +214,7 @@ def boundary_hypersphere_ratio(center, radius, boundary_ratio):
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
+    
     """
     return boundary_hypersphere(center, radius, radius*boundary_ratio)
 

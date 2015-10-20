@@ -24,6 +24,7 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
     :param indices: sorting indices of unsorted ``P_samples``
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
+    
     :rtype: tuple
     :returns: (P_samples, samples, lam_vol, data, indicices)
 
@@ -33,13 +34,13 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     if P_samples.shape != (samples.shape[0],):
         raise ValueError("P_samples must be of the shape (num_samples,)")
     nnz = np.sum(P_samples > 0)
-    if type(lam_vol) == type(None):
+    if lam_vol is None:
         indices = np.argsort(P_samples)[::-1][0:nnz]
     else:
         indices = np.argsort(P_samples/lam_vol)[::-1][0:nnz]
     P_samples = P_samples[indices]
     samples = samples[indices, :]
-    if type(lam_vol) != type(None):
+    if lam_vol is not None:
         lam_vol = lam_vol[indices]
     if data is not None:
         if len(data.shape) == 1:
@@ -51,12 +52,13 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
 def sample_prob(percentile, P_samples, samples, lam_vol=None,
         data=None, sort=True, descending=False): 
     """
-    This calculates the highest/lowest probability samples whose probability sum to a
-    given value.  The number of high/low probability samples that sum to the value
-    and the probabilities, samples, volumes, and data are returned. This
-    assumes that ``P_samples``, ``samples``, ``lam_vol``, and ``data`` have all
-    be sorted using :meth:`~bet.postProcess.sort_by_rho`. The ``descending``
-    flag determines whether or not to calcuate the highest/lowest.
+    This calculates the highest/lowest probability samples whose probability
+    sum to a given value.  The number of high/low probability samples that sum
+    to the value and the probabilities, samples, volumes, and data are
+    returned. This assumes that ``P_samples``, ``samples``, ``lam_vol``, and
+    ``data`` have all be sorted using :meth:`~bet.postProcess.sort_by_rho`. The
+    ``descending`` flag determines whether or not to calcuate the
+    highest/lowest.
 
     :param percentile: ratio of highest probability samples to select
     :type percentile: float
@@ -72,6 +74,7 @@ def sample_prob(percentile, P_samples, samples, lam_vol=None,
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
     :param bool descending: Flag order of sorting
+    
     :rtype: tuple
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
@@ -95,9 +98,9 @@ def sample_prob(percentile, P_samples, samples, lam_vol=None,
     num_samples = np.sum(np.logical_and(0.0 < P_sum, P_sum <= percentile))
     P_samples = P_samples[0:num_samples]
     samples = samples[0:num_samples, :]
-    if type(lam_vol) != type(None):
+    if lam_vol is not None:
         lam_vol = lam_vol[0:num_samples]
-    if type(data) != type(None):
+    if data is not None:
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
         data = data[0:num_samples, :]
@@ -127,6 +130,7 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
+    
     :rtype: tuple
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
@@ -155,6 +159,7 @@ def sample_lowest_prob(bottom_percentile, P_samples, samples, lam_vol=None,
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
+    
     :rtype: tuple
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
@@ -178,7 +183,9 @@ def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
     :type lam_file: str
     :param compress: Compress file
     :type compress: bool
+    
     :returns: None
+    
     """
     if compress:
         suffix = '.csv.gz'
@@ -204,8 +211,10 @@ def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
     :type save: bool
     :param compress: Compress file
     :type compress: bool
+    
     :rtype: tuple 
     :returns (P, lam)
+    
     """
     if compress:
         suffix = '.csv.gz'
@@ -235,7 +244,9 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param file_prefix: file prefix for probabilities
     :type file_prefix: str
+    
     :returns: None
+    
     """
     file_dict = {"P_samples": P_samples,
                "samples": samples}
@@ -256,8 +267,10 @@ def collect_parallel_probs_mat(file_prefix, num_files, save=False,
     :type save: bool
     :param compress: Compress file
     :type compress: bool
+    
     :rtype: tuple 
     :returns (P, lam)
+    
     """
     file_dict = sio.io.loadmat(file_prefix + "0")
     P = file_dict["P_samples"]
@@ -313,7 +326,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     :returns: Estimate of number of samples in the high probability area.
 
     """
-    if type(sample_nos) == type(None):
+    if sample_nos is None:
         sample_nos = range(data.shape[0])
     if len(data.shape) == 1:
         rD = rho_D(data[sample_nos])

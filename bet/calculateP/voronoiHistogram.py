@@ -171,12 +171,12 @@ def edges_from_points(points):
     
     :param points: the coordindates of voronoi points that would generate
         these bins in each dimensions
-    :type points: list of dim :class:`numpy.ndarray`s of shape (nbins+2,)
+    :type points: list of dim :class:`numpy.ndarray` of shape (nbins+2,)
 
+    :rtype edges: A list() containing mdim :class:`numpy.ndarray` of shape
+        (nbins_per_dim+1,)
     :returns: edges, A sequence of arrays describing the edges of bins along
         each dimension.
-    :rtype edges: A list() containing mdim :class:`numpy.ndarray`s of shape
-        (nbins_per_dim+1,)
 
     """
     edges = list()
@@ -187,12 +187,12 @@ def edges_from_points(points):
 def histogramdd_volumes(edges, points):
     """
     Given a sequence of arrays describing the edges of voronoi cells (bins)
-    along each dimension and an 'ij' ordered sequence of points (1 per voronoi
+    along each dimension and an ``ij`` ordered sequence of points (1 per voronoi
     cell) returns a list of the volumes associated with these voronoi cells.
 
     :param edges: A sequence of arrays describing the edges of bins along
         each dimension.
-    :type edges: A list() containing mdim :class:`numpy.ndarray`s of shape
+    :type edges: A list() containing mdim :class:`numpy.ndarray` of shape
         (nbins_per_dim+1,)
     :param points: points used to define the voronoi tesselation (only the
         points that define regions of finite volumes)

@@ -15,6 +15,7 @@ def calculate_avg_condnum(grad_tensor, qoi_set):
     Given gradient vectors at some points (centers) in the parameter space and
     given a specific set of QoIs, caculate the average condition number of the
     matrices formed by the gradient vectors of each QoI map at each center.
+
     :param grad_tensor: Gradient vectors at each center in the parameter space
         :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
@@ -22,9 +23,11 @@ def calculate_avg_condnum(grad_tensor, qoi_set):
         we have approximated the gradient vectors and num_qois is the number of
         QoIs we are given.
     :param list qoi_set: List of QoI indices
+    
     :rtype: tuple
     :returns: (condnum, singvals) where condnum is a float and singvals
         has shape (num_centers, Data_dim)
+    
     """
     # Calculate the singular values of the matrix formed by the gradient
     # vectors of each QoI map.  This gives a set of singular values for each
@@ -54,6 +57,7 @@ def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
     and given a specific set of QoIs, calculate the average volume of the 
     inverse image of a box in the data space assuming the mapping is linear near
     each center.
+    
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
@@ -63,9 +67,11 @@ def calculate_avg_volume(grad_tensor, qoi_set, bin_volume=None):
     :param list qoi_set: List of QoI indices
     :param float bin_volume: The volume of the Data_dim hyperrectangle to
         invert into :math:`\Lambda`
+    
     :rtype: tuple
     :returns: (avg_volume, singvals) where avg_volume is a float and singvals
         has shape (num_centers, Data_dim)
+    
     """
     # If no volume is given, we consider how this set of QoIs we change the
     # volume of the unit hypercube.
@@ -101,6 +107,7 @@ def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None,
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
+    
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
@@ -119,8 +126,10 @@ def chooseOptQoIs(grad_tensor, qoiIndices=None, num_qois_return=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
+    
     :rtype: `np.ndarray` of shape (num_optsets_returned, num_qois_returned + 1)
     :returns: condnum_indices_mat
+    
     """
     (condnum_indices_mat, _) = chooseOptQoIs_verbose(grad_tensor,
         qoiIndices, num_qois_return, num_optsets_return, inner_prod_tol, volume,
@@ -142,6 +151,7 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
+    
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
@@ -160,10 +170,12 @@ def chooseOptQoIs_verbose(grad_tensor, qoiIndices=None, num_qois_return=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
+    
     :rtype: tuple
     :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
         shape (num_optsets_return, num_qois_return+1) and optsingvals
         has shape (num_centers, num_qois_return, num_optsets_return)
+    
     """
     num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]
@@ -246,6 +258,7 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None,
     one from any pair of QoIs that have an average inner product greater than
     some tolerance, i.e., an average angle between the two vectors smaller than
     some tolerance.
+    
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:'\Lambda' for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers,num_qois,Ldim)
@@ -259,8 +272,10 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
+    
     :rtype: `np.ndarray` of shape (num_unique_vecs, 1)
     :returns: unique_vecs
+    
     """
 
     num_centers = grad_tensor.shape[0]
@@ -323,30 +338,34 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None,
 def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         num_optsets_return, cond_tol, volume):
     r"""
-    #TODO:  Use the idea we only know vectors are with 10% accuracy to guide
+    .. todo::  Use the idea we only know vectors are with 10% accuracy to guide
         inner_prod tol and condnum_tol.
     Given gradient vectors at each center in the parameter space and given
     good sets of size n - 1, return good sets of size n.  That is, return
     sets of size n that have average condition number less than some tolerance.
+    
     :param grad_tensor: Gradient vectors at each centers in the parameter
-        space :math:'\Lambda' for each QoI map.
+        space :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers,num_qois,Ldim)
         where num_centers is the number of points in :math:'\Lambda' we have
         approximated the gradient vectors, num_qois is the total number of
         possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
     :param good_sets_prev: Good sets of QoIs of size n - 1.
-    :type good_sets_prev: :class:`np.ndarray` of size (num_good_sets_prev, n - 1)
+    :type good_sets_prev: :class:`np.ndarray` of size (num_good_sets_prev, n -
+        1) 
     :param unique_indices: Unique QoIs to consider.
-    :type unique_indices: :class:'np.ndarray' of size (num_unique_qois, 1)
+    :type unique_indices: :class:`np.ndarray` of size (num_unique_qois, 1)
     :param int num_optsets_return: Number of best sets to return
     :param float cond_tol: Throw out all sets of QoIs with average condition
         number greater than this.
     :param boolean volume: If volume is True, use ``calculate_avg_volume``
         to determine optimal QoIs
+    
     :rtype: tuple
     :returns: (good_sets, best_sets, optsingvals_tensor) where good sets has
         size (num_good_sets, n), best sets has size (num_optsets_return,
         n + 1) and optsingvals_tensor has size (num_centers, n, Lambda_dim)
+    
     """
     num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]
@@ -458,6 +477,7 @@ def chooseOptQoIs_large(grad_tensor, qoiIndices=None, max_qois_return=None,
     this method return the set of optimal QoIs of size 2, 3, ... max_qois_return
     to use in the inverse problem by choosing the sets with the smallext average
     condition number or volume.
+    
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
@@ -480,10 +500,12 @@ def chooseOptQoIs_large(grad_tensor, qoiIndices=None, max_qois_return=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
+    
     :rtype: tuple
     :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
         shape (num_optsets_return, num_qois_return+1) and optsingvals
         has shape (num_centers, num_qois_return, num_optsets_return)
+    
     """
     (best_sets, _) = chooseOptQoIs_large_verbose(grad_tensor, qoiIndices,
         max_qois_return, num_optsets_return, inner_prod_tol, cond_tol, volume,
@@ -502,6 +524,7 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     condition number.  Also a tensor that represents the singular values of the
     matrices formed by the gradient vectors of the optimal QoIs at each center
     is returned.
+    
     :param grad_tensor: Gradient vectors at each point of interest in the
         parameter space :math:`\Lambda` for each QoI map.
     :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
@@ -523,12 +546,14 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
+    
     :rtype: tuple
     :returns: (condnum_indices_mat, optsingvals) where condnum_indices_mat has
         shape (num_optsets_return, num_qois_return+1) and optsingvals is a list
         where each element has shape (num_centers, num_qois_return,
         num_optsets_return).  num_qois_return will change for each element of
         the list.
+    
     """
     num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]

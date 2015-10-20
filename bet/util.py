@@ -80,7 +80,7 @@ def get_global_values(array, shape=None):
                 mpi_dtype = True
                 dtype = ptype
 
-        if type(shape) == type(None) or not mpi_dtype:
+        if shape is None or not mpi_dtype:
             # do a lowercase allgather
             a_shape = len(array.shape)
             array = comm.allgather(array)
