@@ -123,7 +123,7 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     This method can also be used to tile ``sur_domain`` with points to define
     voronoi regions if the user sets ``r_ratio = 1``. use binratio below
 
-    :param list() center_pts_per_edge: number of center points per edge and
+    :param list center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
     :param rect_domain: The rectangular domain to define the voronoi
         tesselation for. This domain should be contained in the ``sur_domain``.
@@ -134,7 +134,7 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: interior_and_layer1 is a list of dim :class:`numpy.ndarray`s of
+    :returns: interior_and_layer1 is a list of dim :class:`numpy.ndarray` of
         shape (center_pts_per_edge+2,)
 
     """

@@ -170,8 +170,8 @@ def sample_lowest_prob(bottom_percentile, P_samples, samples, lam_vol=None,
 def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
         compress=False):
     """
-    Saves probabilites and samples from parallel runs in individual .csv files
-    for each process.
+    Saves probabilites and samples from parallel runs in individual ``.csv``
+    files for each process.
 
     :param P_samples: Probabilities.
     :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
@@ -198,8 +198,8 @@ def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
 def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
         compress=False):
     """
-    Collects probabilities and samples saved in .csv format from parallel runs
-    into single arrays.
+    Collects probabilities and samples saved in ``.csv`` format from parallel
+    runs into single arrays.
 
     :param P_file: file prefix for probabilities
     :type P_file: str
@@ -207,13 +207,13 @@ def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
     :type lam_file: str
     :param num_files: number of files
     :type num_files: int
-    :param save: Save collected arrays as a .csv file.
+    :param save: Save collected arrays as a ``.csv`` file.
     :type save: bool
     :param compress: Compress file
     :type compress: bool
     
     :rtype: tuple 
-    :returns (P, lam)
+    :returns: (P, lam)
     
     """
     if compress:
@@ -269,7 +269,7 @@ def collect_parallel_probs_mat(file_prefix, num_files, save=False,
     :type compress: bool
     
     :rtype: tuple 
-    :returns (P, lam)
+    :returns: (P, lam)
     
     """
     file_dict = sio.io.loadmat(file_prefix + "0")
@@ -298,7 +298,7 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
         order
     :param list sample_quality: a measure of quality by which the sets of 
         samples are sorted
-    :param list run_param: zipped list of :class:`~numpy.ndarray`s containing
+    :param list run_param: zipped list of :class:`~numpy.ndarray` containing
         information used to generate the sets of samples to be displayed
     :param list column_headings: Column headings to print to screen
 

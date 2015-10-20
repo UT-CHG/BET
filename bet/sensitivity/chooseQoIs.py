@@ -278,7 +278,6 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None,
     
     """
 
-    num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]
     if qoiIndices is None:
         qoiIndices = range(0, grad_tensor.shape[1])
@@ -338,8 +337,10 @@ def find_unique_vecs(grad_tensor, inner_prod_tol, qoiIndices=None,
 def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         num_optsets_return, cond_tol, volume):
     r"""
+
     .. todo::  Use the idea we only know vectors are with 10% accuracy to guide
         inner_prod tol and condnum_tol.
+    
     Given gradient vectors at each center in the parameter space and given
     good sets of size n - 1, return good sets of size n.  That is, return
     sets of size n that have average condition number less than some tolerance.
@@ -368,7 +369,6 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
     
     """
     num_centers = grad_tensor.shape[0]
-    Lambda_dim = grad_tensor.shape[2]
     num_qois_return = good_sets_prev.shape[1] + 1
     comm.Barrier()
 
@@ -446,7 +446,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
         # Organize the best sets
         best_sets = best_sets.reshape(num_optsets_return * \
             comm.size, num_qois_return + 1)
-        [temp, uniq_inds_best] = np.unique(best_sets[:, 0], return_index=True)
+        [_, uniq_inds_best] = np.unique(best_sets[:, 0], return_index=True)
         best_sets = best_sets[uniq_inds_best, :]
         best_sets = best_sets[best_sets[:, 0].argsort()]
         best_sets = best_sets[:num_optsets_return, :]
@@ -536,9 +536,10 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
     :param int max_qois_return: Maximum number of desired QoIs to use in the
         inverse problem.  Default is Lambda_dim.
-    :param int num_optsets_return: Number of best sets to return.  Default is 10.
-    :param float inner_prod_tol: Throw out one vectors from each pair of QoIs
-        that has average inner product greater than this.  Default is 0.9.
+    :param int num_optsets_return: Number of best sets to return.  Default is
+        10.  
+    :param float inner_prod_tol: Throw out one vectors from each pair of
+        QoIs that has average inner product greater than this.  Default is 0.9.
     :param float cond_tol: Throw out all sets of QoIs with average condition
         number greater than this.  Default is max_float.
     :param boolean volume: If volume is True, use ``calculate_avg_volume``
@@ -555,7 +556,6 @@ def chooseOptQoIs_large_verbose(grad_tensor, qoiIndices=None,
         the list.
     
     """
-    num_centers = grad_tensor.shape[0]
     Lambda_dim = grad_tensor.shape[2]
     if qoiIndices is None:
         qoiIndices = range(0, grad_tensor.shape[1])

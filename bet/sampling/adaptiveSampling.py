@@ -261,8 +261,8 @@ class sampler(bsam.sampler):
         
         :rtype: tuple
         :returns: (``parameter_samples``, ``data_samples``,
-            ``all_step_ratios``) where ``parameter_samples`` is np.ndarray of shape
-            (num_samples, ndim), ``data_samples`` is np.ndarray of shape
+            ``all_step_ratios``) where ``parameter_samples`` is np.ndarray of
+            shape (num_samples, ndim), ``data_samples`` is np.ndarray of shape
             (num_samples, mdim), and ``all_step_ratios`` is np.ndarray of shape
             (num_chains, chain_length)
         

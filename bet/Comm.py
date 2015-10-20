@@ -35,7 +35,7 @@ class comm_for_no_mpi4py(object):
         """
         
         :rtype: int
-        :returns 0
+        :returns: 0
         
         """
         return 0
