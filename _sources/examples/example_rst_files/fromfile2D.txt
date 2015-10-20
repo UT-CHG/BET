@@ -14,7 +14,13 @@ We will walk through the following `example
 <https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/fromFile2D.py>`_ that uses a linear interpolant of
 the QoI map :math:`Q(\lambda) = (q_1(\lambda), q_6(\lambda))` for a
 2-dimensional data space. The parameter space in this example is also
-2-dimensional. 
+2-dimensional.
+
+.. note::
+
+    * In the lines 56, 57 change chain length and num chains to
+      reduce the total number of forward solves.
+    * Saves to ``sandbox2d.mat``.
 
 The modules required by this example are::
 

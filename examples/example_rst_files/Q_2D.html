@@ -30,7 +30,10 @@
   
 
   
-    <link rel="top" title="BET 1.0.0 documentation" href="../../index.html"/> 
+    <link rel="top" title="BET 1.0.0 documentation" href="../../index.html"/>
+        <link rel="up" title="Some References and Examples" href="../overview.html"/>
+        <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 3D data space" href="Q_3D.html"/>
+        <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 1D data space" href="Q_1D_serial.html"/> 
 
   
   <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
@@ -61,7 +64,7 @@
         
           
           
-              <ul>
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
@@ -82,7 +85,14 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-example">Choosing Optimal QoIs Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="reference internal" href="../overview.html">Some References and Examples</a><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
@@ -114,6 +124,8 @@
   <ul class="wy-breadcrumbs">
     <li><a href="../../index.html">Docs</a> &raquo;</li>
       
+          <li><a href="../overview.html">Some References and Examples</a> &raquo;</li>
+      
     <li>Example: Estimate the parameter space probabiliy density with  a 2D data space</li>
       <li class="wy-breadcrumbs-aside">
         
@@ -138,6 +150,29 @@ defined and the approximation of the volume of <span class="math">\(\mathcal{V}_
 <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_2D_serial.py">Q_2D_serial.py</a> for the example source code. Since
 this example is essentially the same as <a class="reference internal" href="Q_1D_serial.html#q1d"><span>Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a> we will only highlight the
 differences between the two.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<ul class="last">
+<li><dl class="first docutils">
+<dt>In line 36 reduce number of emulated points to 1e4 so that it will run</dt>
+<dd><p class="first last">quickly.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>reduce number of <code class="docutils literal"><span class="pre">ref_nums</span></code> to a single number so that we only</dt>
+<dd><p class="first last">examine a single set of QoI</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt>add plotting of marginals using</dt>
+<dd><p class="first last"><a class="reference internal" href="../../bet.postProcess.html#bet.postProcess.plotP.plot_2D_marginal_probs" title="bet.postProcess.plotP.plot_2D_marginal_probs"><code class="xref py py-mod docutils literal"><span class="pre">bet.postProcess.plotP.plot_2D_marginal_probs</span></code></a></p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
 <p>Define the filename to save <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">station_nums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
@@ -179,13 +214,22 @@ differences between the two.</p>
           </div>
           <footer>
   
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="Q_3D.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 3D data space">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="Q_1D_serial.html" class="btn btn-neutral" title="Example: Estimate the parameter space probabiliy density with a 1D data space"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
 
   <hr/>
 
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jul 14, 2015.
+      Last updated on Oct 20, 2015.
     </p>
   </div>
 
