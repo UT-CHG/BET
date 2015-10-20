@@ -15,9 +15,6 @@ Contents:
    overview
    parallel
    examples/*
-   examples/linearMap/*
-   examples/fromFileMap/*
-   examples/fromADCIRCMap/*
    modules
    todo_list
 
