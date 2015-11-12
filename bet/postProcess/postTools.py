@@ -292,9 +292,9 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
 
     Compare the quality of samples where ``sample_quality`` is the measure of
     quality by which the sets of samples have been indexed and ``sort_ind`` is
-    an array of the sorted indicies.
+    an array of the sorted indices.
 
-    :param list sort_ind: indicies that index ``sample_quality`` in sorted
+    :param list sort_ind: indices that index ``sample_quality`` in sorted
         order
     :param list sample_quality: a measure of quality by which the sets of 
         samples are sorted
