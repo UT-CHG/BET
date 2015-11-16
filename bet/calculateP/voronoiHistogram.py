@@ -123,7 +123,7 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     This method can also be used to tile ``sur_domain`` with points to define
     voronoi regions if the user sets ``r_ratio = 1``. use binratio below
 
-    :param list() center_pts_per_edge: number of center points per edge and
+    :param list center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
     :param rect_domain: The rectangular domain to define the voronoi
         tesselation for. This domain should be contained in the ``sur_domain``.
@@ -134,7 +134,7 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     :type sur_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
     :rtype: tuple
-    :returns: interior_and_layer1 is a list of dim :class:`numpy.ndarray`s of
+    :returns: interior_and_layer1 is a list of dim :class:`numpy.ndarray` of
         shape (center_pts_per_edge+2,)
 
     """
@@ -171,12 +171,12 @@ def edges_from_points(points):
     
     :param points: the coordindates of voronoi points that would generate
         these bins in each dimensions
-    :type points: list of dim :class:`numpy.ndarray`s of shape (nbins+2,)
+    :type points: list of dim :class:`numpy.ndarray` of shape (nbins+2,)
 
+    :rtype edges: A list() containing mdim :class:`numpy.ndarray` of shape
+        (nbins_per_dim+1,)
     :returns: edges, A sequence of arrays describing the edges of bins along
         each dimension.
-    :rtype edges: A list() containing mdim :class:`numpy.ndarray`s of shape
-        (nbins_per_dim+1,)
 
     """
     edges = list()
@@ -187,12 +187,12 @@ def edges_from_points(points):
 def histogramdd_volumes(edges, points):
     """
     Given a sequence of arrays describing the edges of voronoi cells (bins)
-    along each dimension and an 'ij' ordered sequence of points (1 per voronoi
+    along each dimension and an ``ij`` ordered sequence of points (1 per voronoi
     cell) returns a list of the volumes associated with these voronoi cells.
 
     :param edges: A sequence of arrays describing the edges of bins along
         each dimension.
-    :type edges: A list() containing mdim :class:`numpy.ndarray`s of shape
+    :type edges: A list() containing mdim :class:`numpy.ndarray` of shape
         (nbins_per_dim+1,)
     :param points: points used to define the voronoi tesselation (only the
         points that define regions of finite volumes)

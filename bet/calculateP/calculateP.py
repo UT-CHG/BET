@@ -29,7 +29,8 @@ def emulate_iid_lebesgue(lam_domain, num_l_emulate):
     :returns: a set of samples for emulation
 
     """
-    num_l_emulate = (num_l_emulate/comm.size) + (comm.rank < num_l_emulate%comm.size)
+    num_l_emulate = (num_l_emulate/comm.size) + \
+            (comm.rank < num_l_emulate%comm.size)
     lam_width = lam_domain[:, 1] - lam_domain[:, 0]
     lambda_emulate = lam_width*np.random.random((num_l_emulate,
         lam_domain.shape[0]))+lam_domain[:, 0] 
@@ -63,11 +64,11 @@ def prob_emulated(samples, data, rho_D_M, d_distr_samples,
         samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
-    if type(lambda_emulate) == type(None):
+    if lambda_emulate is None:
         lambda_emulate = samples
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
-    if type(d_Tree) == type(None):
+    if d_Tree is None:
         d_Tree = spatial.KDTree(d_distr_samples)
         
     # Determine which inputs go to which M bins using the QoI
@@ -121,7 +122,7 @@ def prob(samples, data, rho_D_M, d_distr_samples, d_Tree=None):
         data = np.expand_dims(data, axis=1) 
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
-    if type(d_Tree) == type(None):
+    if d_Tree is None:
         d_Tree = spatial.KDTree(d_distr_samples)
 
     # Set up local arrays for parallelism
@@ -183,11 +184,11 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         samples = np.expand_dims(samples, axis=1) 
     if len(data.shape) == 1:
         data = np.expand_dims(data, axis=1) 
-    if type(lambda_emulate) == type(None):
+    if lambda_emulate is None:
         lambda_emulate = samples
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
-    if type(d_Tree) == type(None):
+    if d_Tree is None:
         d_Tree = spatial.KDTree(d_distr_samples)
         
     # Determine which inputs go to which M bins using the QoI
