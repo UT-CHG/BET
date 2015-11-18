@@ -94,6 +94,7 @@ class TestEstimateVolume(unittest.TestCase):
         self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
                 self.num_l_emulate)
         self.samples = util.meshgrid_ndim(d1_arrays)
+        self.volume_exact = 1.0/self.samples.shape[0]
         self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
                 estimate_volume(self.samples, self.lambda_emulate)
         
