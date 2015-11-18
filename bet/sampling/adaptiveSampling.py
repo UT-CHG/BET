@@ -317,28 +317,32 @@ class sampler(bsam.sampler):
             data = MYdata_old
             all_step_ratios = step_ratio
             (kern_old, proposal) = kern.delta_step(MYdata_old, None)
-            mdat = dict()
-            self.update_mdict(mdat)
             start_ind = 1
         if hot_start:
             # LOAD FILES
             if hot_start == 1: # HOT START FROM PARTIAL RUN
+                if comm.rank == 0:
+                    print "HOT START from partial run"
                 # Find and open save files
                 save_dir = os.path.dirname(savefile)
                 base_name = os.path.dirname(savefile)
                 mdat_files = glob.glob(os.path.join(save_dir,
                         "proc*{}".format(base_name)))
-                if mdat_files == 0:
+                if len(mdat_files) == 0:
                     mdat = sio.loadmat(savefile)
                     samples = mdat['samples']
+                    data = mdat['data']
+                    kern_old = np.squeeze(mdat['kern_old'])
+                    all_step_ratios = mdat['step_ratios']
                     chain_length = samples.shape[0]/self.num_chains
-                    samples = np.reshape(samples, (self.num_chains,
-                        chain_length, -1), 'F')
-                    data = np.reshape(mdat['data'], (self.num_chains,
-                        chain_length, -1), 'F')
-                    kern_old = mdat['kern_old']
-                    all_step_ratios = np.reshape(mdat['step_ratios'],
-                            (self.num_chains, chain_length), 'F')
+                    # reshape if parallel
+                    if comm.size > 1:
+                        samples = np.reshape(samples, (self.num_chains,
+                            chain_length, -1), 'F')
+                        data = np.reshape(data, (self.num_chains,
+                            chain_length, -1), 'F')
+                        all_step_ratios = np.reshape(step_ratios,
+                                (self.num_chains, chain_length), 'F')
                 elif len(mdat_files) == comm.size:
                     # if the number of processors is the same then set mdat to
                     # be the one with the matching processor number (doesn't
@@ -346,7 +350,7 @@ class sampler(bsam.sampler):
                     mdat = sio.loadmat(mdat_files[comm.rank])
                     samples = mdat['samples']
                     data = mdat['data']
-                    kern_old = mdat['kern_old']
+                    kern_old = np.squeeze(mdat['kern_old'])
                     all_step_ratios = mdat['step_ratios']
                 else:
                     # Determine how many processors the previous data used
@@ -386,10 +390,12 @@ class sampler(bsam.sampler):
                     all_step_ratios = np.concatenate(all_step_ratios)
                     kern_old = np.concatenate(kern_old)
             elif hot_start == 2: # HOT START FROM COMPLETED RUN:
+                if comm.rank == 0:
+                    print "HOT START from completed run"
                 mdat = sio.loadmat(savefile)
                 samples = mdat['samples']
                 data = mdat['data']
-                kern_old = mdat['kern_old']
+                kern_old = np.squeeze(mdat['kern_old'])
                 all_step_ratios = mdat['step_ratios']
             # SPLIT DATA IF NECESSARY
             if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
@@ -406,13 +412,20 @@ class sampler(bsam.sampler):
                     (self.num_chains_pproc*chain_length,), 'F')
                 kern_old = np.reshape(np.split(kern_old, self.num_chains_pproc,
                     0)[comm.rank], (self.num_chains_pproc,), 'F')
+            else:
+                chain_length = samples.shape[0]/self.num_chains
+                all_step_ratios = np.reshape(all_step_ratios,
+                        (self.num_chains_pproc*chain_length,), 'F')
+
             # Set samples, data, all_step_ratios, mdat, step_ratio,
             # MYsamples_old, and kern_old accordingly
             step_ratio = all_step_ratios[-self.num_chains_pproc:]
             MYsamples_old = samples[-self.num_chains_pproc:, :]
             # Determine how many batches have been run
             start_ind = samples.shape[0]/self.num_chains_pproc
-
+        
+        mdat = dict()
+        self.update_mdict(mdat)
         for batch in xrange(start_ind, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.

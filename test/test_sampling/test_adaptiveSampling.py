@@ -423,6 +423,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         for _, QoI_range, sampler, param_min, param_max, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
                 for hot_start in range(3):
+                    print len(param_min)
                     verify_samples(QoI_range, sampler, param_min, param_max,
                             t_set, savefile, initial_sample_type, hot_start)
 
