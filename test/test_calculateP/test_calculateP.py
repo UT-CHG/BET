@@ -106,14 +106,14 @@ class TestEstimateVolume(unittest.TestCase):
         nptest.assert_array_equal(self.lam_vol_local.shape,
                 (len(self.samples)/comm.size, ))
         nptest.assert_array_equal(self.lam_vol_local.shape,
-                self.local_index.shape)
+                len(self.local_index))
 
     def test_volumes(self):
         """
         Check that the volumes are within a tolerance for a regular grid of
         samples.
         """
-        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 4)
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 3)
         nptest.assert_array_equal(self.lam_vol_local,
                 self.lam_vol[self.local_index])
 

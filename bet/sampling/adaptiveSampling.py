@@ -360,10 +360,10 @@ class sampler(bsam.sampler):
                     for mlist in mdat_list:
                         mdat_global.extend(mlist)
                     # get num_proc and num_chains_pproc for previous run
-                    old_num_proc = len(mdat_list)
+                    old_num_proc = max((len(mdat_list), 1))
                     old_num_chains_pproc = self.num_chains/old_num_proc
                     # get batch size and/or number of dimensions
-                    chain_length = mdat_local[0]['samples'].shape[0]/\
+                    chain_length = mdat_global[0]['samples'].shape[0]/\
                             old_num_chains_pproc
                     # create lists of local data
                     samples = []
