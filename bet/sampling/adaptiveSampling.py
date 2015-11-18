@@ -16,7 +16,7 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
-import math, os
+import math, os, glob
 from bet.Comm import comm, MPI 
 
 
@@ -292,8 +292,8 @@ class sampler(bsam.sampler):
             step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
            
             # Initiative first batch of N samples (maybe taken from latin
-            # hypercube/space-filling curve to fully explore parameter space - not
-            # necessarily random). Call these Samples_old.
+            # hypercube/space-filling curve to fully explore parameter space -
+            # not necessarily random). Call these Samples_old.
             (samples_old, data_old) = super(sampler, self).random_samples(
                     initial_sample_type, param_min, param_max, savefile,
                     self.num_chains, criterion)
@@ -327,30 +327,31 @@ class sampler(bsam.sampler):
                 save_dir = os.path.dirname(savefile)
                 base_name = os.path.dirname(savefile)
                 mdat_files = glob.glob(os.path.join(save_dir,
-                        "proc*{}".format(savefile)))
+                        "proc*{}".format(base_name)))
                 if mdat_files == 0:
                     mdat = sio.loadmat(savefile)
                     samples = mdat['samples']
                     chain_length = samples.shape[0]/self.num_chains
-                    samples = np.reshape(samples, (self.num_chains, chain_length,
-                        -1), 'F')
-                    data = np.reshape(mdat['data'], (self.num_chains, chain_length,
-                        -1), 'F')
+                    samples = np.reshape(samples, (self.num_chains,
+                        chain_length, -1), 'F')
+                    data = np.reshape(mdat['data'], (self.num_chains,
+                        chain_length, -1), 'F')
                     kern_old = mdat['kern_old']
                     all_step_ratios = np.reshape(mdat['step_ratios'],
                             (self.num_chains, chain_length), 'F')
                 elif len(mdat_files) == comm.size:
-                    # if the number of processors is the same then set mdat to be the
-                    # one with the matching processor number (doesn't really matter)
-                    mdat = sio.loadmat(mdat_files(comm.rank))
+                    # if the number of processors is the same then set mdat to
+                    # be the one with the matching processor number (doesn't
+                    # really matter)
+                    mdat = sio.loadmat(mdat_files[comm.rank])
                     samples = mdat['samples']
                     data = mdat['data']
                     kern_old = mdat['kern_old']
                     all_step_ratios = mdat['step_ratios']
                 else:
                     # Determine how many processors the previous data used
-                    # otherwise gather the data from mdat and then scatter among the
-                    # processors and update mdat
+                    # otherwise gather the data from mdat and then scatter
+                    # among the processors and update mdat
                     mdat_files_local = comm.scatter(mdat_files)
                     mdat_local = [sio.loadmat(m) for m in mdat_files_local]
                     mdat_list = comm.allgather(mdat_local)
@@ -362,7 +363,6 @@ class sampler(bsam.sampler):
                     old_num_proc = len(mdat_list)
                     old_num_chains_pproc = self.num_chains/old_num_proc
                     # get batch size and/or number of dimensions
-                    dim = mdat_local[0]['samples'].shape[1]
                     chain_length = mdat_local[0]['samples'].shape[0]/\
                             old_num_chains_pproc
                     # create lists of local data
@@ -371,11 +371,11 @@ class sampler(bsam.sampler):
                     all_step_ratios = []
                     kern_old = []
                     # RESHAPE old_num_chains_pproc, chain_length(or batch), dim
-                    for old_proc in mdat_global:
+                    for mdat in mdat_global:
                         samples.append(np.reshape(mdat['samples'],
                             (old_num_chains_pproc, chain_length, -1), 'F'))
-                        data.append(np.reshape(mdat['data'], (old_num_chains_pproc,
-                            chain_length, -1), 'F'))
+                        data.append(np.reshape(mdat['data'],
+                            (old_num_chains_pproc, chain_length, -1), 'F'))
                         all_step_ratios.append(np.reshape(mdat['step_ratios'],
                             (old_num_chains_pproc, chain_length, -1), 'F'))
                         kern_old.append(np.reshape(mdat['kern_old'],
@@ -392,7 +392,7 @@ class sampler(bsam.sampler):
                 kern_old = mdat['kern_old']
                 all_step_ratios = mdat['step_ratios']
             # SPLIT DATA IF NECESSARY
-            if comm.size>1 and (hot_start==2 or (hot_start==1 and \
+            if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
                     len(mdat_files) != comm.size)):
                 # Use split to split along num_chains
                 samples = np.reshape(np.split(samples, self.num_chains_pproc,
