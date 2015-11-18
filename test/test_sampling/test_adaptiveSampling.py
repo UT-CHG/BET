@@ -105,13 +105,14 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
     else:
         # cold start
         sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
-                lb_model)
-        (samples, data, all_step_ratios) = sampler1.generalized_chains(param_min,
-                param_max, t_set, kernel_rD, savefile, initial_sample_type)
+                sampler.lb_model)
+        (samples, data, all_step_ratios) = sampler1.generalized_chains(\
+                param_min, param_max, t_set, kernel_rD, savefile,
+                initial_sample_type)
         # hot start 
-        (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
-                param_max, t_set, kernel_rD, savefile, initial_sample_type,
-                hot_start=hot_start)
+        (samples, data, all_step_ratios) = sampler.generalized_chains(\
+                param_min, param_max, t_set, kernel_rD, savefile,
+                initial_sample_type, hot_start=hot_start)
 
     # check dimensions of samples
     assert samples.shape == (sampler.num_samples, len(param_min))
@@ -198,7 +199,8 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         num_samples = 100
         chain_length = 10
-        num_chains_pproc = int(np.ceil(num_samples/float(chain_length*comm.size)))
+        num_chains_pproc = int(np.ceil(num_samples/float(chain_length*\
+                comm.size)))
         num_chains = comm.size * num_chains_pproc
         num_samples = chain_length * np.array(num_chains)
 
@@ -289,7 +291,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert step_sizes.shape == (sampler.num_chains,
                     sampler.chain_length) 
         for num_hps in results_rD:
-            assert type(num_hps) == int
+            assert isinstance(num_hps, int)
         for inds in sort_ind:
             assert np.issubdtype(type(inds), int)
         for asr in mean_ss:
@@ -331,8 +333,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         max_ratio = [1.0, .75, .5]
 
         # run run_gen
-        output = sampler.run_tk(init_ratio, min_ratio, max_ratio, ifun, maximum, param_min,
-                param_max, kernel_rD, savefile)
+        output = sampler.run_tk(init_ratio, min_ratio, max_ratio, ifun,
+                maximum, param_min, param_max, kernel_rD, savefile)
         
         results, r_step_size, results_rD, sort_ind, mean_ss = output
 
@@ -346,7 +348,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert step_sizes.shape == (sampler.num_chains,
                     sampler.chain_length) 
         for num_hps in results_rD:
-            assert type(num_hps) == int
+            assert isinstance(num_hps, int)
         for inds in sort_ind:
             assert np.issubdtype(type(inds), int)
         for asr, mir, mar in zip(mean_ss, min_ratio, max_ratio):
@@ -388,8 +390,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         t_set = asam.transition_set(.5, .5**5, 1.0) 
 
         # run run_gen
-        output = sampler.run_inc_dec(increase, decrease, tolerance, ifun, maximum, param_min,
-                param_max, t_set, savefile)
+        output = sampler.run_inc_dec(increase, decrease, tolerance, ifun,
+                maximum, param_min, param_max, t_set, savefile)
 
         results, r_step_size, results_rD, sort_ind, mean_ss = output
 
@@ -403,7 +405,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert step_sizes.shape == (sampler.num_chains,
                     sampler.chain_length) 
         for num_hps in results_rD:
-            assert type(num_hps) == int
+            assert isinstance(num_hps, int)
         for inds in sort_ind:
             assert np.issubdtype(type(inds), int)
         for asr in mean_ss:
@@ -460,9 +462,9 @@ class test_kernels(unittest.TestCase):
         """
         kern_list = asam.kernels(Q_ref, rhoD, maximum)
         assert len(kern_list) == 3
-        assert type(kern_list[0]) == asam.maxima_mean_kernel
-        assert type(kern_list[1]) == asam.rhoD_kernel
-        assert type(kern_list[2]) == asam.maxima_kernel
+        assert isinstance(kern_list[0], asam.maxima_mean_kernel)
+        assert isinstance(kern_list[1], asam.rhoD_kernel)
+        assert isinstance(kern_list[2], asam.maxima_kernel)
 
 class data_1D(object):
     """
@@ -615,7 +617,8 @@ class rhoD_kernel(kernel):
 
     def test_init(self):
         """
-        Test the initalization of :class:`bet.sampling.adaptiveSampling.rhoD_kernel`
+        Test the initalization of
+        :class:`bet.sampling.adaptiveSampling.rhoD_kernel` 
         """
         assert self.kernel.TOL == 1e-8
         assert self.kernel.increase == 2.0
@@ -680,11 +683,13 @@ class maxima_kernel(kernel):
         """
         Set up
         """
-        self.kernel = asam.maxima_kernel(np.vstack([self.Q_ref, self.Q_ref+.5]), self.rho_D)
+        self.kernel = asam.maxima_kernel(np.vstack([self.Q_ref,
+            self.Q_ref+.5]), self.rho_D)
 
     def test_init(self):
         """
-        Test the initalization of :class:`bet.sampling.adaptiveSampling.maxima_kernel`
+        Test the initalization of
+        :class:`bet.sampling.adaptiveSampling.maxima_kernel`
         """
         assert self.kernel.TOL == 1e-8
         assert self.kernel.increase == 2.0
@@ -717,7 +722,8 @@ class maxima_kernel(kernel):
 
 class test_maxima_kernel_1D(maxima_kernel, data_1D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 1D data space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 1D data
+    space.
     """
     def setUp(self):
         """
@@ -728,7 +734,8 @@ class test_maxima_kernel_1D(maxima_kernel, data_1D):
       
 class test_maxima_kernel_2D(maxima_kernel, data_2D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 2D data space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 2D data
+    space.  
     """
     def setUp(self):
         """
@@ -739,7 +746,8 @@ class test_maxima_kernel_2D(maxima_kernel, data_2D):
       
 class test_maxima_kernel_3D(maxima_kernel, data_3D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 3D data space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 3D data
+    space.
     """
     def setUp(self):
         """
@@ -757,7 +765,8 @@ class maxima_mean_kernel(maxima_kernel):
         """
         Set up
         """
-        self.kernel = asam.maxima_mean_kernel(np.vstack([self.Q_ref, self.Q_ref+.5]), self.rho_D)
+        self.kernel = asam.maxima_mean_kernel(np.vstack([self.Q_ref,
+            self.Q_ref+.5]), self.rho_D)
 
     def test_init(self):
         """
@@ -792,7 +801,8 @@ class maxima_mean_kernel(maxima_kernel):
         
 class test_maxima_mean_kernel_1D(maxima_mean_kernel, data_1D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 1D data space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 1D data
+    space.
     """
     def setUp(self):
         """
@@ -803,7 +813,8 @@ class test_maxima_mean_kernel_1D(maxima_mean_kernel, data_1D):
       
 class test_maxima_mean_kernel_2D(maxima_mean_kernel, data_2D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 2D data space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 2D data
+    space.
     """
     def setUp(self):
         """
@@ -814,7 +825,8 @@ class test_maxima_mean_kernel_2D(maxima_mean_kernel, data_2D):
       
 class test_maxima_mean_kernel_3D(maxima_mean_kernel, data_3D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 3D data space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 3D data
+    space.
     """
     def setUp(self):
         """
@@ -836,7 +848,8 @@ class transition_set(object):
 
     def test_init(self):
         """
-        Tests the initialization of :class:`bet.sampling.adaptiveSamplinng.transition_set`
+        Tests the initialization of
+        :class:`bet.sampling.adaptiveSamplinng.transition_set`
         """
         assert self.t_set.init_ratio == .5
         assert self.t_set.min_ratio == .5**5
@@ -877,7 +890,8 @@ class transition_set(object):
 
 class test_transition_set_1D(transition_set, data_1D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 1D data space.
+    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 1D data
+    space.
     """
     def setUp(self):
         """
@@ -888,7 +902,8 @@ class test_transition_set_1D(transition_set, data_1D):
       
 class test_transition_set_2D(transition_set, data_2D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 2D data space.
+    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 2D data
+    space.
     """
     def setUp(self):
         """
@@ -899,7 +914,8 @@ class test_transition_set_2D(transition_set, data_2D):
       
 class test_transition_set_3D(transition_set, data_3D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 3D data space.
+    Test :class:`bet.sampling.adaptiveSampling.transition_set` on a 3D data
+    space.
     """
     def setUp(self):
         """
