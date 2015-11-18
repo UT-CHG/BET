@@ -60,6 +60,59 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         self.assertLessEqual(np.max(self.lambda_emulate[:,1]), 4.0)
         self.assertLessEqual(np.max(self.lambda_emulate[:,2]), 0.5)
 
+class TestEstimateVolume(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_volulme`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3,3))
+        self.lam_domain[:,0] = lam_left
+        self.lam_domain[:,1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.num_l_emulate = 1000001
+
+        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+                self.num_l_emulate)
+        self.samples = util.meshgrid_ndim(d1_arrays)
+        self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
+                estimate_volume(samples, self.lambda_emulate)
+        
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.samples),))
+        nptest.assert_array_equal(self.lam_vol_local.shape,
+                (len(sel.samples)/comm.size,))
+        nptest.assert_array_equal(self.lam_vol_local.shape,
+                self.local_index.shape)
+
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 4)
+        nptest.assert_array_equal(self.lam_vol_local, self.lam_vol[self.local_index])
+
 class prob:
     def test_prob_sum_to_1(self):
         """

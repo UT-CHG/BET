@@ -34,7 +34,8 @@ def test_loadmat_init():
     model = "this is not a model"
     
     num_samples = np.array([50, 60])
-    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples/float(chain_length*comm.size)).astype('int')
+    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples/float(\
+            chain_length*comm.size)).astype('int')
     num_chains1, num_chains2 = comm.size * np.array([num_chains_pproc1,
         num_chains_pproc2])
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
@@ -71,7 +72,7 @@ def test_loadmat_init():
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_samples(QoI_range, sampler, param_min, param_max,
-        t_set, savefile, initial_sample_type):
+        t_set, savefile, initial_sample_type, hot_start=0):
     """
     Run :meth:`bet.sampling.adaptiveSampling.sampler.generalized_chains` and
     verify that the samples have the correct dimensions and are containted in
@@ -96,10 +97,21 @@ def verify_samples(QoI_range, sampler, param_min, param_max,
         
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
-
-    # run generalized chains
-    (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
-            param_max, t_set, kernel_rD, savefile, initial_sample_type)
+    
+    if not hot_start:
+        # run generalized chains
+        (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
+                param_max, t_set, kernel_rD, savefile, initial_sample_type)
+    else:
+        # cold start
+        sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
+                lb_model)
+        (samples, data, all_step_ratios) = sampler1.generalized_chains(param_min,
+                param_max, t_set, kernel_rD, savefile, initial_sample_type)
+        # hot start 
+        (samples, data, all_step_ratios) = sampler.generalized_chains(param_min,
+                param_max, t_set, kernel_rD, savefile, initial_sample_type,
+                hot_start=hot_start)
 
     # check dimensions of samples
     assert samples.shape == (sampler.num_samples, len(param_min))
@@ -184,8 +196,8 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         # define parameters for the adaptive sampler
 
-        num_samples = 1000
-        chain_length = 100
+        num_samples = 100
+        chain_length = 10
         num_chains_pproc = int(np.ceil(num_samples/float(chain_length*comm.size)))
         num_chains = comm.size * num_chains_pproc
         num_samples = chain_length * np.array(num_chains)
@@ -408,8 +420,9 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         for _, QoI_range, sampler, param_min, param_max, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
-                verify_samples(QoI_range, sampler, param_min, param_max, t_set,
-                        savefile, initial_sample_type)
+                for hot_start in range(3):
+                    verify_samples(QoI_range, sampler, param_min, param_max,
+                            t_set, savefile, initial_sample_type, hot_start)
 
 class test_kernels(unittest.TestCase):
     """

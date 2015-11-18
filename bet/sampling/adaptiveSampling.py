@@ -239,8 +239,8 @@ class sampler(bsam.sampler):
                 t_set, savefile, initial_sample_type, criterion)
 
     def generalized_chains(self, param_min, param_max, t_set, kern,
-            savefile, initial_sample_type="random", hot_start=0,
-            criterion='center'): 
+            savefile, initial_sample_type="random", criterion='center',
+            hot_start=0): 
         """
         Basic adaptive sampling algorithm using generalized chains.
        
