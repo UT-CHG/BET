@@ -275,7 +275,7 @@ class sampler(bsam.sampler):
         """
         if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(comm.rank, os.path.basename(savefile)))
+                    "proc{}_{}".format(comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -327,7 +327,7 @@ class sampler(bsam.sampler):
                 save_dir = os.path.dirname(savefile)
                 base_name = os.path.dirname(savefile)
                 mdat_files = glob.glob(os.path.join(save_dir,
-                        "proc*{}".format(base_name)))
+                        "proc*_{}".format(base_name)))
                 if len(mdat_files) == 0:
                     print "HOT START using serial file"
                     mdat = sio.loadmat(savefile)
@@ -342,13 +342,12 @@ class sampler(bsam.sampler):
                         hot_start = 2
                     # reshape if parallel
                     if comm.size > 1:
-                        "print here"
                         samples = np.reshape(samples, (self.num_chains,
                             chain_length, -1), 'F')
                         data = np.reshape(data, (self.num_chains,
                             chain_length, -1), 'F')
                         all_step_ratios = np.reshape(all_step_ratios,
-                                (self.num_chains, chain_length), 'F')
+                                (self.num_chains, -1), 'F')
                 elif hot_start == 1 and len(mdat_files) == comm.size:
                     print "HOT START using parallel files (same nproc)"
                     # if the number of processors is the same then set mdat to
@@ -359,7 +358,7 @@ class sampler(bsam.sampler):
                     data = mdat['data']
                     kern_old = np.squeeze(mdat['kern_old'])
                     all_step_ratios = np.squeeze(mdat['step_ratios'])
-                elif hot_start == 1:
+                elif hot_start == 1 and len(mdat_files) != comm.size:
                     print "HOT START using parallel files (diff nproc)"
                     # Determine how many processors the previous data used
                     # otherwise gather the data from mdat and then scatter
@@ -419,10 +418,6 @@ class sampler(bsam.sampler):
             if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
                     len(mdat_files) != comm.size)):
                 # Use split to split along num_chains
-                print len(mdat_files)
-                print hot_start, samples.shape, comm.size,self.num_chains_pproc, chain_length
-                print self.num_chains_pproc*chain_length
-                print self.num_chains
                 samples = np.reshape(np.split(samples, comm.size,
                     0)[comm.rank], (self.num_chains_pproc*chain_length, -1),
                     'F')
@@ -438,7 +433,6 @@ class sampler(bsam.sampler):
             # Set samples, data, all_step_ratios, mdat, step_ratio,
             # MYsamples_old, and kern_old accordingly
             step_ratio = all_step_ratios[-self.num_chains_pproc:]
-            print step_ratio.shape, kern_old.shape
             MYsamples_old = samples[-self.num_chains_pproc:, :]
             # Determine how many batches have been run
             start_ind = samples.shape[0]/self.num_chains_pproc
