@@ -329,21 +329,28 @@ class sampler(bsam.sampler):
                 mdat_files = glob.glob(os.path.join(save_dir,
                         "proc*{}".format(base_name)))
                 if len(mdat_files) == 0:
+                    print "HOT START using serial file"
                     mdat = sio.loadmat(savefile)
                     samples = mdat['samples']
                     data = mdat['data']
                     kern_old = np.squeeze(mdat['kern_old'])
-                    all_step_ratios = mdat['step_ratios']
+                    all_step_ratios = np.squeeze(mdat['step_ratios'])
                     chain_length = samples.shape[0]/self.num_chains
+                    if all_step_ratios.shape == (self.num_chains,
+                            chain_length):
+                        print "Serial file, from completed run updating hot_start"
+                        hot_start = 2
                     # reshape if parallel
                     if comm.size > 1:
+                        "print here"
                         samples = np.reshape(samples, (self.num_chains,
                             chain_length, -1), 'F')
                         data = np.reshape(data, (self.num_chains,
                             chain_length, -1), 'F')
-                        all_step_ratios = np.reshape(step_ratios,
+                        all_step_ratios = np.reshape(all_step_ratios,
                                 (self.num_chains, chain_length), 'F')
-                elif len(mdat_files) == comm.size:
+                elif hot_start == 1 and len(mdat_files) == comm.size:
+                    print "HOT START using parallel files (same nproc)"
                     # if the number of processors is the same then set mdat to
                     # be the one with the matching processor number (doesn't
                     # really matter)
@@ -351,8 +358,9 @@ class sampler(bsam.sampler):
                     samples = mdat['samples']
                     data = mdat['data']
                     kern_old = np.squeeze(mdat['kern_old'])
-                    all_step_ratios = mdat['step_ratios']
-                else:
+                    all_step_ratios = np.squeeze(mdat['step_ratios'])
+                elif hot_start == 1:
+                    print "HOT START using parallel files (diff nproc)"
                     # Determine how many processors the previous data used
                     # otherwise gather the data from mdat and then scatter
                     # among the processors and update mdat
@@ -389,37 +397,48 @@ class sampler(bsam.sampler):
                     data = np.concatenate(data)
                     all_step_ratios = np.concatenate(all_step_ratios)
                     kern_old = np.concatenate(kern_old)
-            elif hot_start == 2: # HOT START FROM COMPLETED RUN:
+            if hot_start == 2: # HOT START FROM COMPLETED RUN:
                 if comm.rank == 0:
                     print "HOT START from completed run"
                 mdat = sio.loadmat(savefile)
                 samples = mdat['samples']
                 data = mdat['data']
                 kern_old = np.squeeze(mdat['kern_old'])
-                all_step_ratios = mdat['step_ratios']
+                all_step_ratios = np.squeeze(mdat['step_ratios'])
+                chain_length = samples.shape[0]/self.num_chains
+                mdat_files = []
+                # reshape if parallel
+                if comm.size > 1:
+                    samples = np.reshape(samples, (self.num_chains,
+                        chain_length, -1), 'F')
+                    data = np.reshape(data, (self.num_chains,
+                        chain_length, -1), 'F')
+                    all_step_ratios = np.reshape(all_step_ratios,
+                            (self.num_chains, chain_length), 'F')
             # SPLIT DATA IF NECESSARY
             if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
                     len(mdat_files) != comm.size)):
                 # Use split to split along num_chains
-                samples = np.reshape(np.split(samples, self.num_chains_pproc,
+                print len(mdat_files)
+                print hot_start, samples.shape, comm.size,self.num_chains_pproc, chain_length
+                print self.num_chains_pproc*chain_length
+                print self.num_chains
+                samples = np.reshape(np.split(samples, comm.size,
                     0)[comm.rank], (self.num_chains_pproc*chain_length, -1),
                     'F')
-                data = np.reshape(np.split(data, self.num_chains_pproc,
-                    0)[comm.rank], (self.num_chains_pproc*chain_length, -1),
-                    'F')
+                data = np.reshape(np.split(data, comm.size, 0)[comm.rank],
+                        (self.num_chains_pproc*chain_length, -1), 'F')
                 all_step_ratios = np.reshape(np.split(all_step_ratios,
-                    self.num_chains_pproc, 0)[comm.rank],
+                    comm.size, 0)[comm.rank],
                     (self.num_chains_pproc*chain_length,), 'F')
-                kern_old = np.reshape(np.split(kern_old, self.num_chains_pproc,
+                kern_old = np.reshape(np.split(kern_old, comm.size,
                     0)[comm.rank], (self.num_chains_pproc,), 'F')
             else:
-                chain_length = samples.shape[0]/self.num_chains
-                all_step_ratios = np.reshape(all_step_ratios,
-                        (self.num_chains_pproc*chain_length,), 'F')
-
+                all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
             # Set samples, data, all_step_ratios, mdat, step_ratio,
             # MYsamples_old, and kern_old accordingly
             step_ratio = all_step_ratios[-self.num_chains_pproc:]
+            print step_ratio.shape, kern_old.shape
             MYsamples_old = samples[-self.num_chains_pproc:, :]
             # Determine how many batches have been run
             start_ind = samples.shape[0]/self.num_chains_pproc
@@ -448,7 +467,7 @@ class sampler(bsam.sampler):
             # Save and export concatentated arrays
             if self.chain_length < 4:
                 pass
-            elif (batch+1)%(self.chain_length/4) == 0:
+            elif comm.rank == 0 and (batch+1)%(self.chain_length/4) == 0:
                 print "Current chain length: "+\
                             str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new))
