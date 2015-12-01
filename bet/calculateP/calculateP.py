@@ -170,7 +170,8 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
         parition of D to for the simple function approximation
     :type d_distr_samples: :class:`~numpy.ndarray` of shape  (M, mdim) 
     :param d_Tree: :class:`~scipy.spatial.KDTree` for d_distr_samples
-    :param lambda_emulate: Samples used to partition the parameter space
+    :param lambda_emulate: Samples used to estimate the volumes of the Voronoi
+        cells associated with ``samples``
 
     :rtype: tuple of :class:`~numpy.ndarray` of sizes (num_samples,),
         (num_samples,), (ndim, num_l_emulate), (num_samples,), (num_l_emulate,)
@@ -198,26 +199,14 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     l_Tree = spatial.KDTree(samples)
     (_, emulate_ptr) = l_Tree.query(lambda_emulate)
 
-    # Apply the standard MC approximation to determine the number of emulated
-    # samples per model run sample. This is for approximating 
-    # \mu_Lambda(A_i \intersect b_j)
-    lam_vol = np.zeros((samples.shape[0],)) 
-    for i in range(samples.shape[0]):
-        lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
-    clam_vol = np.copy(lam_vol) 
-    comm.Allreduce([lam_vol, MPI.DOUBLE], [clam_vol, MPI.DOUBLE], op=MPI.SUM)
-    lam_vol = clam_vol
-    num_emulated = lambda_emulate.shape[0]
-    num_emulated = comm.allreduce(num_emulated, op=MPI.SUM)
-    lam_vol = lam_vol/(num_emulated)
+    lam_vol, lam_vol_local, local_index = estimate_volume(samples,
+            lambda_emulate)
 
-    # Set up local arrays for parallelism
-    local_index = range(0+comm.rank, samples.shape[0], comm.size)
-    samples_local = samples[local_index, :]
-    data_local = data[local_index, :]
-    lam_vol_local = lam_vol[local_index]
     local_array = np.array(local_index, dtype='int64')
-        
+    data_local = data[local_index, :]
+    samples_local = samples[local_index, :]
+    
+    
     # Determine which inputs go to which M bins using the QoI
     (_, io_ptr_local) = d_Tree.query(data_local)
 
@@ -235,10 +224,54 @@ def prob_mc(samples, data, rho_D_M, d_distr_samples,
     P[global_index] = P_global[:]
     return (P, lam_vol, lambda_emulate, io_ptr, emulate_ptr)
 
+def estimate_volume(samples, lambda_emulate=None):
+    r"""
+    Estimate the volume fraction of the Voronoi cells associated with
+    ``samples`` using ``lambda_emulate`` as samples for Monte Carlo
+    integration. Specifically we are estimating 
+    :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
+    
+    :param samples: The samples in parameter space for which the model was run.
+    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
+    :param lambda_emulate: Samples used to partition the parameter space
+    :type lambda_emulate: :class:`~numpy.ndarray` of shape (num_l_emulate, ndim)
 
+    :rtype: tuple
+    :returns: (lam_vol, lam_vol_local, local_index) where ``lam_vol`` is the
+        global array of volume fractions, ``lam_vol_local`` is the local array
+        of volume fractions, and ``local_index`` a list of the global indices
+        for local arrays on this particular processor ``lam_vol_local =
+        lam_vol[local_index]``
+    
+    """
 
+    if len(samples.shape) == 1:
+        samples = np.expand_dims(samples, axis=1) 
+    if lambda_emulate is None:
+        lambda_emulate = samples
+ 
+    # Determine which emulated samples match with which model run samples
+    l_Tree = spatial.KDTree(samples)
+    (_, emulate_ptr) = l_Tree.query(lambda_emulate)
 
+    # Apply the standard MC approximation to determine the number of emulated
+    # samples per model run sample. This is for approximating 
+    # \mu_Lambda(A_i \intersect b_j)
+    lam_vol = np.zeros((samples.shape[0],)) 
+    for i in range(samples.shape[0]):
+        lam_vol[i] = np.sum(np.equal(emulate_ptr, i))
+    clam_vol = np.copy(lam_vol) 
+    comm.Allreduce([lam_vol, MPI.DOUBLE], [clam_vol, MPI.DOUBLE], op=MPI.SUM)
+    lam_vol = clam_vol
+    num_emulated = lambda_emulate.shape[0]
+    num_emulated = comm.allreduce(num_emulated, op=MPI.SUM)
+    lam_vol = lam_vol/(num_emulated)
 
+    # Set up local arrays for parallelism
+    local_index = range(0+comm.rank, samples.shape[0], comm.size)
+    lam_vol_local = lam_vol[local_index]
+
+    return (lam_vol, lam_vol_local, local_index)
 
 
     
