@@ -42,6 +42,7 @@ The package layout is as follows::
       calculateP 
       simpleFunP
       voronoiHistogram
+      indicatorFunctions
     sampling/
       basicSampling 
       adaptiveSampling

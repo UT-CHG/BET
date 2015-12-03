@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bet.calculateP package &mdash; BET 1.0.0 documentation</title>
+  <title>bet.calculateP package &mdash; BET 1.0.2 documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="BET 1.0.0 documentation" href="index.html"/>
+    <link rel="top" title="BET 1.0.2 documentation" href="index.html"/>
         <link rel="up" title="bet package" href="bet.html"/>
         <link rel="next" title="bet.postProcess package" href="bet.postProcess.html"/>
         <link rel="prev" title="bet package" href="bet.html"/> 
@@ -167,15 +167,46 @@ assumuption/approximation</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>lam_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (ndim, 2)) &#8211; The domain for each parameter for the model.</li>
+<li><strong>lam_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (ndim, 2)) &#8211; The domain for each parameter for the model.</li>
 <li><strong>num_l_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of emulated samples.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_l_emulate, ndim)</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_l_emulate, ndim)</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">a set of samples for emulation</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.calculateP.estimate_volume">
+<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">estimate_volume</code><span class="sig-paren">(</span><em>samples</em>, <em>lambda_emulate=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.estimate_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimate the volume fraction of the Voronoi cells associated with
+<code class="docutils literal"><span class="pre">samples</span></code> using <code class="docutils literal"><span class="pre">lambda_emulate</span></code> as samples for Monte Carlo
+integration. Specifically we are estimating 
+<span class="math">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>lambda_emulate</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_l_emulate, ndim)) &#8211; Samples used to partition the parameter space</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(lam_vol, lam_vol_local, local_index) where <code class="docutils literal"><span class="pre">lam_vol</span></code> is the
+global array of volume fractions, <code class="docutils literal"><span class="pre">lam_vol_local</span></code> is the local array
+of volume fractions, and <code class="docutils literal"><span class="pre">local_index</span></code> a list of the global indices
+for local arrays on this particular processor <code class="docutils literal"><span class="pre">lam_vol_local</span> <span class="pre">=</span>
+<span class="pre">lam_vol[local_index]</span></code></p>
 </td>
 </tr>
 </tbody>
@@ -194,16 +225,16 @@ cells are assumed to be equal under the MC assumption.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; The data from running the model given the samples.</li>
-<li><strong>rho_D_M</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M,)) &#8211; The simple function approximation of rho_D</li>
-<li><strong>d_distr_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M, mdim)) &#8211; The samples in the data space that define a
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; The data from running the model given the samples.</li>
+<li><strong>rho_D_M</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M,)) &#8211; The simple function approximation of rho_D</li>
+<li><strong>d_distr_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M, mdim)) &#8211; The samples in the data space that define a
 parition of D to for the simple function approximation</li>
 <li><strong>d_Tree</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of sizes (num_samples,),
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of sizes (num_samples,),
 (num_samples,), (ndim, num_l_emulate), (num_samples,), (num_l_emulate,)</p>
 </td>
 </tr>
@@ -227,13 +258,13 @@ probability assoicated with a set of voronoi cells defined by
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; The data from running the model given the samples.</li>
-<li><strong>rho_D_M</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M,)) &#8211; The simple function approximation of rho_D</li>
-<li><strong>d_distr_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M, mdim)) &#8211; The samples in the data space that define a
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; The data from running the model given the samples.</li>
+<li><strong>rho_D_M</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M,)) &#8211; The simple function approximation of rho_D</li>
+<li><strong>d_distr_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M, mdim)) &#8211; The samples in the data space that define a
 parition of D to for the simple function approximation</li>
 <li><strong>d_Tree</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</li>
-<li><strong>lambda_emulate</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_l_emulate, ndim)) &#8211; Samples used to partition the parameter space</li>
+<li><strong>lambda_emulate</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_l_emulate, ndim)) &#8211; Samples used to partition the parameter space</li>
 </ul>
 </td>
 </tr>
@@ -259,17 +290,18 @@ cells are approximated using MC integration.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; The data from running the model given the samples.</li>
-<li><strong>rho_D_M</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M,)) &#8211; The simple function approximation of rho_D</li>
-<li><strong>d_distr_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M, mdim)) &#8211; The samples in the data space that define a
+<li><strong>samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples, ndim)) &#8211; The samples in parameter space for which the model was run.</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; The data from running the model given the samples.</li>
+<li><strong>rho_D_M</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M,)) &#8211; The simple function approximation of rho_D</li>
+<li><strong>d_distr_samples</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape  (M, mdim)) &#8211; The samples in the data space that define a
 parition of D to for the simple function approximation</li>
 <li><strong>d_Tree</strong> &#8211; <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</li>
-<li><strong>lambda_emulate</strong> &#8211; Samples used to partition the parameter space</li>
+<li><strong>lambda_emulate</strong> &#8211; Samples used to estimate the volumes of the Voronoi
+cells associated with <code class="docutils literal"><span class="pre">samples</span></code></li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of sizes (num_samples,),
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of sizes (num_samples,),
 (num_samples,), (ndim, num_l_emulate), (num_samples,), (num_l_emulate,)</p>
 </td>
 </tr>
@@ -410,8 +442,8 @@ radius.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
-<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
+<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
+<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
 <li><strong>boundary_width</strong> &#8211; Width of the boundary</li>
 </ul>
 </td>
@@ -437,8 +469,8 @@ radius.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
-<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
+<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
+<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
 <li><strong>boundary_ratio</strong> &#8211; Ratio of the width of the boundary</li>
 </ul>
 </td>
@@ -514,8 +546,8 @@ radius.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
-<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
+<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
+<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
 </ul>
 </td>
 </tr>
@@ -552,8 +584,8 @@ play around with it and you can get reasonable results with a
 relatively small number here like 50.</li>
 <li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC
 assumption</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>std</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; The standard deviation of each QoI</li>
+<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
+<li><strong>std</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; The standard deviation of each QoI</li>
 </ul>
 </td>
 </tr>
@@ -561,7 +593,7 @@ assumption</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code>  is (M,) and
-<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is
+<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is
 the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</p>
 </td>
 </tr>
@@ -588,8 +620,8 @@ play around with it and you can get reasonable results with a
 relatively small number here like 50.</li>
 <li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC
 assumption</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>std</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; The standard deviation of each QoI</li>
+<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
+<li><strong>std</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; The standard deviation of each QoI</li>
 </ul>
 </td>
 </tr>
@@ -597,7 +629,7 @@ assumption</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code> is (M,) and
-<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is
+<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is
 the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</p>
 </td>
 </tr>
@@ -638,9 +670,9 @@ relatively small number here like 50.</li>
 uniform distributiion as <code class="docutils literal"><span class="pre">bin_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*bin_ratio</span></code></li>
 <li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC
 assumption</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim
 diminsional</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\)</span>lambda_{reference})`</li>
+<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\)</span>lambda_{reference})`</li>
 </ul>
 </td>
 </tr>
@@ -648,7 +680,7 @@ diminsional</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code> is (M,) and
-<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is
+<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is
 the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</p>
 </td>
 </tr>
@@ -671,7 +703,7 @@ distributions over irregularly shaped domains.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
 <li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
 additional two points will be added to create the bounding layer</li>
 </ul>
@@ -681,7 +713,7 @@ additional two points will be added to create the bounding layer</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code> is (M,) and
-<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite>
+<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite>
 is the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</p>
 </td>
 </tr>
@@ -708,8 +740,8 @@ to represent it exactly with <code class="docutils literal"><span class="pre">M<
 uniform distributiion as <code class="docutils literal"><span class="pre">bin_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*bin_ratio</span></code></li>
 <li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC
 assumption</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
+<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
 <li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
 additional two points will be added to create the bounding layer</li>
 </ul>
@@ -719,7 +751,7 @@ additional two points will be added to create the bounding layer</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code> is (M,) and
-<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite>
+<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite>
 is the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</p>
 </td>
 </tr>
@@ -745,8 +777,8 @@ to represent it exactly with <code class="docutils literal"><span class="pre">M<
 distribution</li>
 <li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC 
 assumption</li>
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
+<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
 <li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge
 and additional two points will be added to create the bounding layer</li>
 </ul>
@@ -757,7 +789,7 @@ and additional two points will be added to create the bounding layer</li>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where
 <code class="docutils literal"><span class="pre">rho_D_M</span></code> is (M,) and <code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim)
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code>
+<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite> is the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code>
 for d_distr_samples</p>
 </td>
 </tr>
@@ -780,8 +812,8 @@ hyperrectangle we should we able to represent it exactly with
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
-<li><strong>domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (2, mdim)) &#8211; The domain overwhich <span class="math">\(\rho_\mathcal{D}\)</span> is
+<li><strong>data</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (num_samples, mdim)) &#8211; Array containing QoI data where the QoI is mdim diminsional</li>
+<li><strong>domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (2, mdim)) &#8211; The domain overwhich <span class="math">\(\rho_\mathcal{D}\)</span> is
 uniform.</li>
 <li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
 additional two points will be added to create the bounding layer</li>
@@ -792,7 +824,7 @@ additional two points will be added to create the bounding layer</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, d_distr_samples, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code> is (M,) and
-<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite>
+<code class="docutils literal"><span class="pre">d_distr_samples</span></code> are (M, mdim) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and <cite>d_Tree</cite>
 is the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for d_distr_samples</p>
 </td>
 </tr>
@@ -823,10 +855,10 @@ voronoi regions if the user sets <code class="docutils literal"><span class="pre
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
 additional two points will be added to create the bounding layer</li>
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
+<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
 <li><strong>r_ratio</strong> (<em>double or list()</em>) &#8211; ratio of the length of the sides of the
 hyperrectangle rect_domain to definie voronoi cells for</li>
-<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
+<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
 surrounding domain. The surrounding domain is the bounded domain
 in the data space (i.e. the data domain).</li>
 </ul>
@@ -836,7 +868,7 @@ in the data space (i.e. the data domain).</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(points, interior_and_layer1, rect_domain) where where points is
-an <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points, dim),
+an <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points, dim),
 interior_and_layer1 is a list() of dim <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray`s</span> <span class="pre">of</span> <span class="pre">shape</span>
 <span class="pre">(center_pts_per_edge+2,),</span> <span class="pre">rect_domain</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">:class:`numpy.ndarray</span></code> of
 shape (mdim, 2).</p>
@@ -863,10 +895,10 @@ voronoi regions if the user sets <code class="docutils literal"><span class="pre
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
 additional two points will be added to create the bounding layer</li>
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
+<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
 <li><strong>r_size</strong> (<em>double or list()</em>) &#8211; size of the length of the sides of the
 hyperrectangle rect_domain to definie voronoi cells for</li>
-<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
+<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
 surrounding domain. The surrounding domain is the bounded domain
 in the data space (i.e. the data domain).</li>
 </ul>
@@ -876,7 +908,7 @@ in the data space (i.e. the data domain).</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(points, interior_and_layer1, rect_domain) where where points is
-an <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points, dim),
+an <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points, dim),
 interior_and_layer1 is a list() of dim <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray`s</span> <span class="pre">of</span> <span class="pre">shape</span>
 <span class="pre">(center_pts_per_edge+2,),</span> <span class="pre">rect_domain</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">:class:`numpy.ndarray</span></code> of
 shape (mdim, 2)</p>
@@ -896,10 +928,10 @@ formed by voronoi cells along each dimensions.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (list of dim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (nbins+2,)) &#8211; the coordindates of voronoi points that would generate
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (list of dim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (nbins+2,)) &#8211; the coordindates of voronoi points that would generate
 these bins in each dimensions</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Rtype edges:</th><td class="field-body">A list() containing mdim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
+<tr class="field-even field"><th class="field-name">Rtype edges:</th><td class="field-body">A list() containing mdim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
 (nbins_per_dim+1,)</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">edges, A sequence of arrays describing the edges of bins along
@@ -929,9 +961,9 @@ voronoi regions if the user sets <code class="docutils literal"><span class="pre
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>center_pts_per_edge</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; number of center points per edge and
 additional two points will be added to create the bounding layer</li>
-<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; The rectangular domain to define the voronoi
+<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; The rectangular domain to define the voronoi
 tesselation for. This domain should be contained in the <code class="docutils literal"><span class="pre">sur_domain</span></code>.</li>
-<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
+<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
 surrounding domain. The surrounding domain is the bounded domain
 in the data space (i.e. the data domain).</li>
 </ul>
@@ -940,7 +972,7 @@ in the data space (i.e. the data domain).</li>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">interior_and_layer1 is a list of dim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">interior_and_layer1 is a list of dim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
 shape (center_pts_per_edge+2,)</p>
 </td>
 </tr>
@@ -959,7 +991,7 @@ cell) returns a list of the volumes associated with these voronoi cells.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>edges</strong> (A list() containing mdim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
+<li><strong>edges</strong> (A list() containing mdim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
 (nbins_per_dim+1,)) &#8211; A sequence of arrays describing the edges of bins along
 each dimension.</li>
 <li><strong>points</strong> (<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarrray</span></code> of shape (num_points, mdim)) &#8211; points used to define the voronoi tesselation (only the
@@ -971,7 +1003,7 @@ points that define regions of finite volumes)</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">H is the result of <code class="xref py py-meth docutils literal"><span class="pre">np.histogramdd(points,</span> <span class="pre">edges,</span>
-<span class="pre">normed=True)()</span></code>, volumes is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
+<span class="pre">normed=True)()</span></code>, volumes is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
 (len(points),) continaing the  finite volumes associated with
 <code class="docutils literal"><span class="pre">points</span></code></p>
 </td>
@@ -991,10 +1023,10 @@ distribution over the hyperrectangle defined by <code class="docutils literal"><
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>points</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points,)) &#8211; points used to define the voronoi tesselation (only the
+<li><strong>points</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points,)) &#8211; points used to define the voronoi tesselation (only the
 points that define regions of finite volumes)</li>
 <li><strong>volumes</strong> (<em>list()</em>) &#8211; finite volumes associated with <code class="docutils literal"><span class="pre">points</span></code></li>
-<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
+<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
 hyperrectangle of uniform probability</li>
 </ul>
 </td>
@@ -1003,7 +1035,7 @@ hyperrectangle of uniform probability</li>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(rho_D_M, points, d_Tree) where <code class="docutils literal"><span class="pre">rho_D_M</span></code> and
-<code class="docutils literal"><span class="pre">points</span></code> are (mdim, M) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.9)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and
+<code class="docutils literal"><span class="pre">points</span></code> are (mdim, M) <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> and
 <cite>d_Tree</cite> is the <code class="xref py py-class docutils literal"><span class="pre">KDTree</span></code> for points</p>
 </td>
 </tr>
@@ -1066,7 +1098,7 @@ module is only for use by <a class="reference internal" href="#module-bet.calcul
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Oct 20, 2015.
+      Last updated on Dec 03, 2015.
     </p>
   </div>
 
@@ -1087,7 +1119,7 @@ module is only for use by <a class="reference internal" href="#module-bet.calcul
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0.0',
+            VERSION:'1.0.2',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
