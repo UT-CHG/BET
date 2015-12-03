@@ -11,7 +11,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='bet',
-      version='1.0.0',
+      version='1.0.2',
       description='Butler, Estep, Tavener method',
       author='Steven Mattis',
       author_email='steve.a.mattis@gmail.com',
