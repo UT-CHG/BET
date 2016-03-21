@@ -290,3 +290,29 @@ class test_plotDomains(unittest.TestCase):
             go = False
         nptest.assert_equal(go, True)      
 
+    def test_scatter_param_multi(self):
+        """
+        Test :meth:`bet.postTools.plotDomains.show_data_domain_multi`
+        """
+        if not os.path.exists('figs/'):
+            os.mkdir('figs/')
+        try:
+            plotDomains.scatter_param_multi(self.samples[:, [0,1,2]])
+            go = True
+        except (RuntimeError, TypeError, NameError):
+            go = False
+        nptest.assert_equal(go, True)
+        
+    def test_scatter2D_multi(self):
+        """
+        Test :meth:`bet.postTools.plotDomins.scatter2D_multi`
+        """
+        if not os.path.exists('figs/'):
+            os.mkdir('figs/')
+        try:
+            plotDomains.scatter2D_multi(self.samples[:, [0,1,2]])
+            go = True
+        except (RuntimeError, TypeError, NameError):
+            go = False
+        nptest.assert_equal(go, True)
+

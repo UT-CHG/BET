@@ -12,5 +12,7 @@ probability measure :math:`P_{\Lambda}`.
     generating points for cells that define a regular grid for use by
     :meth:`numpy.histogramdd` and for determining their volumes, etc. This
     module is only for use by :mod:`~bet.calculateP.simpleFunP`.  
+* :mod:`~bet.calculateP.indicatorFunctions` provides methods for creating
+    indicator functions for use by various other classes.
 """
-__all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram']
+__all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram', 'indicatorFunctions']

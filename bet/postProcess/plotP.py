@@ -6,9 +6,10 @@ This module provides methods for plotting probabilities.
 
 from bet.Comm import comm, MPI 
 import matplotlib.pyplot as plt
+#plt.rc('text', usetex=True)
+#plt.rc('font', family='serif')
 import numpy as np
 import copy, math
-
 
 def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
         
@@ -30,7 +31,6 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     """
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
-    num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
     # Make list of bins if only an integer is given
@@ -45,7 +45,8 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     # Calculate marginals
     marginals = {}
     for i in range(num_dim):
-        [marg, _] = np.histogram(samples[:,i], bins=bins[i], weights=P_samples)
+        [marg, _] = np.histogram(samples[:, i], bins=bins[i], 
+                                 weights=P_samples)
         marg_temp = np.copy(marg)
         comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
         marginals[i] = marg_temp
@@ -72,7 +73,6 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     """
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
-    num_samples = samples.shape[0]
     num_dim = samples.shape[1]
 
     # Make list of bins if only an integer is given
@@ -88,8 +88,9 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     marginals = {}
     for i in range(num_dim):
         for j in range(i+1, num_dim):
-            (marg, _) = np.histogramdd(samples[:,[i,j]], bins = [bins[i], bins[j]], weights = P_samples)
-            marg=np.ascontiguousarray(marg)
+            (marg, _) = np.histogramdd(samples[:, [i, j]], bins=[bins[i],
+                                       bins[j]], weights=P_samples) 
+            marg = np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
             comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],
                     op=MPI.SUM) 
@@ -132,7 +133,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
             ax = fig.add_subplot(111)
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
             ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
-            if type(lam_ref) != type(None):
+            if lam_ref is not None:
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
@@ -184,12 +185,12 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             ax = fig.add_subplot(111)
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
             quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize,
-                    interpolation='bicubic', cmap=cm.jet, 
+                    interpolation='bicubic', cmap=cm.CMRmap_r, 
                     extent=[lam_domain[i][0], lam_domain[i][1],
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
                     vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
-            if type(lam_ref) != type(None):
-                ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=10)
+            if lam_ref is not None:
+                ax.plot(lam_ref[i], lam_ref[j], 'wo', markersize=10)
             if lambda_label == None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
                 label2 = r'$\lambda_{' + str(j+1) + '}$'
@@ -203,7 +204,8 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
             fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
-            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + fileExtension, transparent=True)
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + ".eps", 
+                        transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -226,7 +228,12 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
+<<<<<<< HEAD
                 fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) + fileExtension, transparent=True)
+=======
+                fig.savefig(filename + "_surf_"+str(i)+"_"+str(j)+".eps",
+                            transparent=True) 
+>>>>>>> upstream/master
                 if interactive:
                     plt.show()
                 else:

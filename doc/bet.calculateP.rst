@@ -12,6 +12,14 @@ bet.calculateP.calculateP module
     :undoc-members:
     :show-inheritance:
 
+bet.calculateP.indicatorFunctions module
+----------------------------------------
+
+.. automodule:: bet.calculateP.indicatorFunctions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bet.calculateP.simpleFunP module
 --------------------------------
 

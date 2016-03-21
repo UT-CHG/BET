@@ -16,7 +16,7 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
-import math, os
+import math, os, glob
 from bet.Comm import comm, MPI 
 
 
@@ -24,11 +24,14 @@ def loadmat(save_file, lb_model=None):
     """
     Loads data from ``save_file`` into a
     :class:`~bet.sampling.adaptiveSampling.sampler` object.
+    
     :param string save_file: file name
     :param lb_model: runs the model at a given set of parameter samples, (N,
         ndim), and returns data (N, mdim)
+    
     :rtype: tuple
     :returns: (sampler, samples, data)
+    
     """
     # load the data from a *.mat file
     mdat = sio.loadmat(save_file)
@@ -61,18 +64,24 @@ class sampler(bsam.sampler):
         number of samples per batch (either a single int or a list of int)
     lb_model
         :class:`~bet.loadBalance.load_balance` runs the model at a given set of
-        parameter samples and returns data """
+        parameter samples and returns data 
+    
+    """
     def __init__(self, num_samples, chain_length, lb_model):
         """
+        
         Initialization
+        
         :param int num_samples: Total number of samples
         :param int chain_length: Number of samples per chain
         :param lb_model: runs the model at a given set of parameter samples, (N,
             ndim), and returns data (N, mdim)
+        
         """
         super(sampler, self).__init__(lb_model, num_samples)
         self.chain_length = chain_length
-        self.num_chains_pproc = int(math.ceil(num_samples/float(chain_length*comm.size)))
+        self.num_chains_pproc = int(math.ceil(num_samples/\
+                    float(chain_length*comm.size)))
         self.num_chains = comm.size * self.num_chains_pproc
         self.num_samples = chain_length * self.num_chains
         self.lb_model = lb_model
@@ -113,11 +122,13 @@ class sampler(bsam.sampler):
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-         :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        
         :rtype: tuple
         :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+        
         """
         # generalized chains
         results = list()
@@ -163,11 +174,13 @@ class sampler(bsam.sampler):
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-         :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        
         :rtype: tuple
         :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+        
         """
         results = list()
         r_step_size = list()
@@ -211,11 +224,13 @@ class sampler(bsam.sampler):
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-         :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        
         :rtype: tuple
         :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
+        
         """
         kern_list = list()
         for i, j, z in zip(increase, decrease, tolerance):
@@ -224,7 +239,8 @@ class sampler(bsam.sampler):
                 t_set, savefile, initial_sample_type, criterion)
 
     def generalized_chains(self, param_min, param_max, t_set, kern,
-            savefile, initial_sample_type="lhs", criterion='center'):
+            savefile, initial_sample_type="random", criterion='center',
+            hot_start=0): 
         """
         Basic adaptive sampling algorithm using generalized chains.
        
@@ -241,18 +257,25 @@ class sampler(bsam.sampler):
             determine the proposed change to the ``step_size``
         :type kernel: :class:~`bet.sampling.adaptiveSampling.kernel` object.
         :param string savefile: filename to save samples and data
+        :param int hot_start: Flag whether or not hot start the sampling
+            chains from a previous set of chains. Note that ``num_chains`` must
+            be the same, but ``num_chains_pproc`` need not be the same. 0 -
+            cold start, 1 - hot start from uncompleted run, 2 - hot
+            start from finished run
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        
         :rtype: tuple
-        :returns: (``parameter_samples``, ``data_samples``, ``all_step_ratios``) where
-            ``parameter_samples`` is np.ndarray of shape (num_samples, ndim),
-            ``data_samples`` is np.ndarray of shape (num_samples, mdim), and 
-            ``all_step_ratios`` is np.ndarray of shape (num_chains,
-            chain_length)
+        :returns: (``parameter_samples``, ``data_samples``,
+            ``all_step_ratios``) where ``parameter_samples`` is np.ndarray of
+            shape (num_samples, ndim), ``data_samples`` is np.ndarray of shape
+            (num_samples, mdim), and ``all_step_ratios`` is np.ndarray of shape
+            (num_chains, chain_length)
+        
         """
         if comm.size > 1:
             psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}{}".format(comm.rank, os.path.basename(savefile)))
+                    "proc{}_{}".format(comm.rank, os.path.basename(savefile)))
 
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
@@ -264,41 +287,164 @@ class sampler(bsam.sampler):
         # Calculate step_size
         max_ratio = t_set.max_ratio
         min_ratio = t_set.min_ratio
-        step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
-       
-        # Initiative first batch of N samples (maybe taken from latin
-        # hypercube/space-filling curve to fully explore parameter space - not
-        # necessarily random). Call these Samples_old.
-        (samples_old, data_old) = super(sampler, self).random_samples(
-                initial_sample_type, param_min, param_max, savefile,
-                self.num_chains, criterion)
-        self.num_samples = self.chain_length * self.num_chains
-        comm.Barrier()
-        
-        # now split it all up
-        if comm.size > 1:
-            MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size, np.shape(samples_old)[1]))
-            comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old, MPI.DOUBLE])
-            MYdata_old = np.empty((np.shape(data_old)[0]/comm.size, np.shape(data_old)[1]))
-            comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old,
-                                                  MPI.DOUBLE])
-        else:
-            MYsamples_old = np.copy(samples_old)
-            MYdata_old = np.copy(data_old)
 
-        samples = MYsamples_old
-        data = MYdata_old
-        all_step_ratios = step_ratio
-        (kern_old, proposal) = kern.delta_step(MYdata_old, None)
+        if not hot_start:
+            step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
+           
+            # Initiative first batch of N samples (maybe taken from latin
+            # hypercube/space-filling curve to fully explore parameter space -
+            # not necessarily random). Call these Samples_old.
+            (samples_old, data_old) = super(sampler, self).random_samples(
+                    initial_sample_type, param_min, param_max, savefile,
+                    self.num_chains, criterion)
+            self.num_samples = self.chain_length * self.num_chains
+            comm.Barrier()
+            
+            # now split it all up
+            if comm.size > 1:
+                MYsamples_old = np.empty((np.shape(samples_old)[0]/comm.size,
+                    np.shape(samples_old)[1])) 
+                comm.Scatter([samples_old, MPI.DOUBLE], [MYsamples_old,
+                    MPI.DOUBLE])
+                MYdata_old = np.empty((np.shape(data_old)[0]/comm.size,
+                    np.shape(data_old)[1])) 
+                comm.Scatter([data_old, MPI.DOUBLE], [MYdata_old, MPI.DOUBLE])
+            else:
+                MYsamples_old = np.copy(samples_old)
+                MYdata_old = np.copy(data_old)
+
+            samples = MYsamples_old
+            data = MYdata_old
+            all_step_ratios = step_ratio
+            (kern_old, proposal) = kern.delta_step(MYdata_old, None)
+            start_ind = 1
+        if hot_start:
+            # LOAD FILES
+            if hot_start == 1: # HOT START FROM PARTIAL RUN
+                if comm.rank == 0:
+                    print "HOT START from partial run"
+                # Find and open save files
+                save_dir = os.path.dirname(savefile)
+                base_name = os.path.dirname(savefile)
+                mdat_files = glob.glob(os.path.join(save_dir,
+                        "proc*_{}".format(base_name)))
+                if len(mdat_files) == 0:
+                    print "HOT START using serial file"
+                    mdat = sio.loadmat(savefile)
+                    samples = mdat['samples']
+                    data = mdat['data']
+                    kern_old = np.squeeze(mdat['kern_old'])
+                    all_step_ratios = np.squeeze(mdat['step_ratios'])
+                    chain_length = samples.shape[0]/self.num_chains
+                    if all_step_ratios.shape == (self.num_chains,
+                            chain_length):
+                        print "Serial file, from completed run updating hot_start"
+                        hot_start = 2
+                    # reshape if parallel
+                    if comm.size > 1:
+                        samples = np.reshape(samples, (self.num_chains,
+                            chain_length, -1), 'F')
+                        data = np.reshape(data, (self.num_chains,
+                            chain_length, -1), 'F')
+                        all_step_ratios = np.reshape(all_step_ratios,
+                                (self.num_chains, -1), 'F')
+                elif hot_start == 1 and len(mdat_files) == comm.size:
+                    print "HOT START using parallel files (same nproc)"
+                    # if the number of processors is the same then set mdat to
+                    # be the one with the matching processor number (doesn't
+                    # really matter)
+                    mdat = sio.loadmat(mdat_files[comm.rank])
+                    samples = mdat['samples']
+                    data = mdat['data']
+                    kern_old = np.squeeze(mdat['kern_old'])
+                    all_step_ratios = np.squeeze(mdat['step_ratios'])
+                elif hot_start == 1 and len(mdat_files) != comm.size:
+                    print "HOT START using parallel files (diff nproc)"
+                    # Determine how many processors the previous data used
+                    # otherwise gather the data from mdat and then scatter
+                    # among the processors and update mdat
+                    mdat_files_local = comm.scatter(mdat_files)
+                    mdat_local = [sio.loadmat(m) for m in mdat_files_local]
+                    mdat_list = comm.allgather(mdat_local)
+                    mdat_global = []
+                    # instead of a list of lists, create a list of mdat
+                    for mlist in mdat_list:
+                        mdat_global.extend(mlist)
+                    # get num_proc and num_chains_pproc for previous run
+                    old_num_proc = max((len(mdat_list), 1))
+                    old_num_chains_pproc = self.num_chains/old_num_proc
+                    # get batch size and/or number of dimensions
+                    chain_length = mdat_global[0]['samples'].shape[0]/\
+                            old_num_chains_pproc
+                    # create lists of local data
+                    samples = []
+                    data = []
+                    all_step_ratios = []
+                    kern_old = []
+                    # RESHAPE old_num_chains_pproc, chain_length(or batch), dim
+                    for mdat in mdat_global:
+                        samples.append(np.reshape(mdat['samples'],
+                            (old_num_chains_pproc, chain_length, -1), 'F'))
+                        data.append(np.reshape(mdat['data'],
+                            (old_num_chains_pproc, chain_length, -1), 'F'))
+                        all_step_ratios.append(np.reshape(mdat['step_ratios'],
+                            (old_num_chains_pproc, chain_length, -1), 'F'))
+                        kern_old.append(np.reshape(mdat['kern_old'],
+                            (old_num_chains_pproc,), 'F'))
+                    # turn into arrays
+                    samples = np.concatenate(samples)
+                    data = np.concatenate(data)
+                    all_step_ratios = np.concatenate(all_step_ratios)
+                    kern_old = np.concatenate(kern_old)
+            if hot_start == 2: # HOT START FROM COMPLETED RUN:
+                if comm.rank == 0:
+                    print "HOT START from completed run"
+                mdat = sio.loadmat(savefile)
+                samples = mdat['samples']
+                data = mdat['data']
+                kern_old = np.squeeze(mdat['kern_old'])
+                all_step_ratios = np.squeeze(mdat['step_ratios'])
+                chain_length = samples.shape[0]/self.num_chains
+                mdat_files = []
+                # reshape if parallel
+                if comm.size > 1:
+                    samples = np.reshape(samples, (self.num_chains,
+                        chain_length, -1), 'F')
+                    data = np.reshape(data, (self.num_chains,
+                        chain_length, -1), 'F')
+                    all_step_ratios = np.reshape(all_step_ratios,
+                            (self.num_chains, chain_length), 'F')
+            # SPLIT DATA IF NECESSARY
+            if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
+                    len(mdat_files) != comm.size)):
+                # Use split to split along num_chains
+                samples = np.reshape(np.split(samples, comm.size,
+                    0)[comm.rank], (self.num_chains_pproc*chain_length, -1),
+                    'F')
+                data = np.reshape(np.split(data, comm.size, 0)[comm.rank],
+                        (self.num_chains_pproc*chain_length, -1), 'F')
+                all_step_ratios = np.reshape(np.split(all_step_ratios,
+                    comm.size, 0)[comm.rank],
+                    (self.num_chains_pproc*chain_length,), 'F')
+                kern_old = np.reshape(np.split(kern_old, comm.size,
+                    0)[comm.rank], (self.num_chains_pproc,), 'F')
+            else:
+                all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
+            # Set samples, data, all_step_ratios, mdat, step_ratio,
+            # MYsamples_old, and kern_old accordingly
+            step_ratio = all_step_ratios[-self.num_chains_pproc:]
+            MYsamples_old = samples[-self.num_chains_pproc:, :]
+            # Determine how many batches have been run
+            start_ind = samples.shape[0]/self.num_chains_pproc
+        
         mdat = dict()
         self.update_mdict(mdat)
-
-        for batch in xrange(1, self.chain_length):
+        for batch in xrange(start_ind, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.
             samples_new = t_set.step(step_ratio, param_width,
                     param_left, param_right, MYsamples_old)
-            
+        
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
             
@@ -315,14 +461,16 @@ class sampler(bsam.sampler):
             # Save and export concatentated arrays
             if self.chain_length < 4:
                 pass
-            elif (batch+1)%(self.chain_length/4) == 0:
-                print "Current chain length: "+str(batch+1)+"/"+str(self.chain_length)
+            elif comm.rank == 0 and (batch+1)%(self.chain_length/4) == 0:
+                print "Current chain length: "+\
+                            str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
             mdat['samples'] = samples
             mdat['data'] = data
+            mdat['kern_old'] = kern_old
             if comm.size > 1:
                 super(sampler, self).save(mdat, psavefile)
             else:
@@ -343,12 +491,15 @@ class sampler(bsam.sampler):
         # chain_length)
         all_step_ratios = util.get_global_values(MYall_step_ratios,
                 shape=(self.num_samples,))
-        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains, self.chain_length))
+        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains,
+            self.chain_length), 'F')
 
         # save everything
         mdat['step_ratios'] = all_step_ratios
         mdat['samples'] = samples
         mdat['data'] = data
+        mdat['kern_old'] = util.get_global_values(kern_old,
+                shape=(self.num_chains,))
         super(sampler, self).save(mdat, savefile)
 
         return (samples, data, all_step_ratios)
@@ -356,14 +507,17 @@ class sampler(bsam.sampler):
 def kernels(Q_ref, rho_D, maximum):
     """
     Generates a list of kernstic objects.
+    
     :param Q_ref: reference parameter value
     :type Q_ref: :class:`numpy.ndarray`
     :param rho_D: probability density on D
-    :type rho_D: callable function that takes a :class:`numpy.ndarray` and returns
-        a :class:`numpy.ndarray`
+    :type rho_D: callable function that takes a :class:`numpy.ndarray` and
+        returns a :class:`numpy.ndarray`
     :param float maximum: maximum value of rho_D
+    
     :rtype: list
     :returns: [maxima_mean_kernel, rhoD_kernel, maxima_kernel]
+    
     """
     kern_list = list()
     kern_list.append(maxima_mean_kernel(np.array([Q_ref]), rho_D))
@@ -379,12 +533,14 @@ class transition_set(object):
     different implementations of the
     :meth:~`polysim.run_framework.apdative_sampling.step` method.
     This basic transition set is designed without a preferential direction.
+    
     init_ratio
         Initial step size ratio compared to the parameter domain.
     min_ratio
         Minimum step size compared to the initial step size.
     max_ratio
         Maximum step size compared to the maximum step size.
+    
     """
 
     def __init__(self, init_ratio, min_ratio, max_ratio):
@@ -406,21 +562,24 @@ class transition_set(object):
         Generate ``num_samples`` new steps using ``step_ratio`` and
         ``param_width`` to calculate the ``step size``. Each step will have a
         random direction.
+        
         :param step_ratio: define maximum step_size = ``step_ratio*param_width``
         :type step_ratio: :class:`numpy.ndarray` of shape (num_samples,)
         :param param_width: width of the parameter domain
         :type param_width: :class:`numpy.ndarray` of shape (ndim,)
         :param param_left: minimum boundary of the parameter domain
-        :type param_left: :class:`numpy.ndarray` of shape (ndim, N) where N is the
-            length of ``step_ratio``
+        :type param_left: :class:`numpy.ndarray` of shape (ndim, N) where N is
+            the length of ``step_ratio``
         :param param_right: maximum boundary of the parameter domain
-        :type param_right: :class:`numpy.ndarray` of shape (ndim, N) where N is the
-            length of ``step_ratio``
+        :type param_right: :class:`numpy.ndarray` of shape (ndim, N) where N is
+            the length of ``step_ratio``
         :param samples_old: Parameter samples from the previous step.
         :type samples_old: :class:`~numpy.ndarray` of shape (num_samples,
             ndim)
+        
         :rtype: :class:`numpy.ndarray` of shape (num_samples, ndim)
         :returns: samples_new
+        
         """
         # calculate maximum step size
         step_size = np.repeat([step_ratio], param_width.shape[1],
@@ -456,6 +615,7 @@ class kernel(object):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
+    
     """
 
     def __init__(self, tolerance=1E-08, increase=1.0, decrease=1.0):
@@ -474,11 +634,14 @@ class kernel(object):
     def delta_step(self, data_new, kern_old=None):
         """
         This method determines the proposed change in step size. 
+        
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
+        
         :rtype: typle
         :returns: (kern_new, proposal)
+        
         """
         return (None, np.ones((data_new.shape[0],)))
 
@@ -492,6 +655,7 @@ class rhoD_kernel(kernel):
     probability in D than the QoI at samples_old(k).  For example, if they are
     closer, then we can reduce the step_size(k) by 1/2.
     Note: This only works well with smooth rho_D.
+
     maximum
         maximum value of rho_D on D
     rho_D
@@ -502,6 +666,7 @@ class rhoD_kernel(kernel):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
+    
     """
 
     def __init__(self, maximum, rho_D, tolerance=1E-08, increase=2.0, 
@@ -528,13 +693,15 @@ class rhoD_kernel(kernel):
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
+        
         :rtype: tuple
         :returns: (kern_new, proposal)
+        
         """
         # Evaluate kernel for new data.
         kern_new = self.rho_D(data_new)
-
-        if type(kern_old) == type(None):
+        
+        if kern_old is None:
             return (kern_new, None)
         else:
             kern_diff = (kern_new-kern_old)/self.MAX
@@ -564,6 +731,7 @@ class maxima_kernel(kernel):
     QoI at each of the samples_new(k) are closer or farther away from a region
     of high probability in D than the QoI at samples_old(k). For example, if
     they are closer, then we can reduce the step_size(k) by 1/2.
+
     maxima
         locations of the maxima of rho_D on D
         :class:`numpy.ndarray` of shape (num_maxima, mdim)
@@ -575,17 +743,19 @@ class maxima_kernel(kernel):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
+
     """
 
     def __init__(self, maxima, rho_D, tolerance=1E-08, increase=2.0, 
             decrease=0.5):
         """
         Initialization
+        
         :param maxima: locations of the maxima of rho_D on D 
         :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`numpy.ndarray` and returns
-            a class:`numpy.ndarray`
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and
+            returns a class:`numpy.ndarray`
         :param float tolerance: Tolerance for comparing two values
         :param float increase: The multiple to increase the step size by
         :param float decrease: The multiple to decrease the step size by
@@ -604,8 +774,10 @@ class maxima_kernel(kernel):
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
+        
         :rtype: tuple
         :returns: (kern_new, proposal)
+        
         """
         # Evaluate kernel for new data.
         kern_new = np.zeros((data_new.shape[0]))
@@ -619,8 +791,8 @@ class maxima_kernel(kernel):
                 1)/self.rho_max
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
-
-        if type(kern_old) == type(None):
+        
+        if kern_old is None:
             return (kern_new, None)
         else:
             kern_diff = (kern_new-kern_old)
@@ -649,6 +821,7 @@ class maxima_mean_kernel(maxima_kernel):
     QoI at each of the samples_new(k) are closer or farther away from a region
     of high probability in D than the QoI at samples_old(k). For example, if
     they are closer, then we can reduce the step_size(k) by 1/2.
+
     maxima
         locations of the maxima of rho_D on D
         np.array of shape (num_maxima, mdim)
@@ -660,17 +833,19 @@ class maxima_mean_kernel(maxima_kernel):
         the multiple to increase the step size by
     decrease
         the multiple to decrease the step size by
+    
     """
 
     def __init__(self, maxima, rho_D, tolerance=1E-08, increase=2.0, 
             decrease=0.5):
         """
         Initialization
+        
         :param maxima: locations of the maxima of rho_D on D 
         :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
-        :type rho_D: callable function that takes a :class:`numpy.ndarray` and returns
-            a class:`numpy.ndarray`
+        :type rho_D: callable function that takes a :class:`numpy.ndarray` and
+            returns a class:`numpy.ndarray`
         :param float tolerance: Tolerance for comparing two values
         :param float increase: The multiple to increase the step size by
         :param float decrease: The multiple to decrease the step size by
@@ -698,8 +873,10 @@ class maxima_mean_kernel(maxima_kernel):
         :param data_new: QoI for a given batch of samples 
         :type data_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
+        
         :rtype: tuple
         :returns: (kern_new, proposal)
+        
         """
         # Evaluate kernel for new data.
         kern_new = np.zeros((data_new.shape[0]))
@@ -714,8 +891,7 @@ class maxima_mean_kernel(maxima_kernel):
                 1)/self.rho_max
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
-
-        if type(kern_old) == type(None):
+        if kern_old is None:
             # calculate the mean
             self.mean = np.mean(data_new, 0)
             # calculate the distance from the mean

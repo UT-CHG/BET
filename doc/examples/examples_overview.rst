@@ -1,3 +1,4 @@
+.. _examples:
 
 =======================================
 Some References and Examples
@@ -78,6 +79,15 @@ Contaminant Transport Example:
 ==============================
 See :ref:`contaminantTransport` for an example.
 
-Choosing Optimal QoIs Example:
+Choosing Optimal QoIs Examples:
 ==============================
-The files for these examples can be found in ``examples/heatplate``.
+The files for these examples can be found in ``examples/sensitivity``.
+
+List of all examples
+====================
+.. toctree::
+   :maxdepth: 1
+   :glob:
+
+   example_rst_files/*
+ 

@@ -64,7 +64,7 @@ class ChooseQoIsMethods:
         # Check that the 'global condition number' is greater than or equal to 1
         nptest.assert_array_less(1.0, self.condnum_indices_mat[:, 0])
 
-        # For voluem, check that it is greater than or equal to 0
+        # For volume, check that it is greater than or equal to 0
         nptest.assert_array_less(0.0, self.condnum_indices_mat_vol[:, 0])
 
         # Test the method returns the known best set of QoIs  (chosen to be
@@ -159,9 +159,12 @@ class ChooseQoIsMethods:
         best_sets = cQoIs.chooseOptQoIs_large(self.G, qoiIndices=self.qoiIndices,
             inner_prod_tol=self.inner_prod_tol, cond_tol=self.cond_tol)
 
-        # Test that the best_sets have conditiobn number less than the tolerance
+        if self.cond_tol == np.inf:
+            self.cond_tol = sys.float_info[0]
+        # Test that the best_sets have condition number less than the tolerance
         for Ldim in range(self.Lambda_dim - 1):
-            nptest.assert_array_less(best_sets[Ldim][:, 0], self.cond_tol)
+            inds = best_sets[Ldim][:, 0] != np.inf
+            nptest.assert_array_less(best_sets[Ldim][inds, 0], self.cond_tol)
 
     def test_chooseOptQoIs_large_verbose(self):
         """
@@ -300,4 +303,4 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
                 self.centers)
 
             self.inner_prod_tol = 0.9
-            self.cond_tol = sys.float_info[0]
+            self.cond_tol = np.inf

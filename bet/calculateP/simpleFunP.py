@@ -46,10 +46,12 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
+    
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-    ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
+        the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    
     """
     data = util.fix_dimensions_data(data)
     bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio
@@ -109,7 +111,8 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
             op=MPI.SUM)
     count_neighbors = ccount_neighbors
-    rho_D_M = count_neighbors.astype(np.float64) / float(num_d_emulate*comm.size)
+    rho_D_M = count_neighbors.astype(np.float64) / \
+            float(num_d_emulate*comm.size)
 
     '''
     NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -131,16 +134,17 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
         relatively small number here like 50. 
-    int num_d_emulate: Number of samples used to emulate using an MC
+    :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
+    
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M``  is (M,) and
-    ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
+        the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
     import scipy.stats as stats
@@ -185,8 +189,8 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     for i in range(M):
         Itemp = np.equal(k, i)
         count_neighbors[i] = np.sum(Itemp)
-        volumes[i] = np.sum(1.0/stats.multivariate_normal.pdf(d_distr_emulate[Itemp, 
-            :], Q_ref, covariance))
+        volumes[i] = np.sum(1.0/stats.multivariate_normal.pdf\
+                (d_distr_emulate[Itemp, :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
     ccount_neighbors = np.copy(count_neighbors)
@@ -222,10 +226,11 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
+    
     :rtype: tuple
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-    ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
-    the :class:`~scipy.spatial.KDTree` for d_distr_samples
+        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
+        the :class:`~scipy.spatial.KDTree` for d_distr_samples
 
     """
     r'''Create M smaples defining M bins in D used to define
@@ -297,6 +302,7 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
     :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
         ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
         is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    
     """
     # make sure the shape of the data and the domain are correct
     data = util.fix_dimensions_data(data)
@@ -307,7 +313,8 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
     return uniform_hyperrectangle_binsize(data, domain_center, domain_lengths,
             center_pts_per_edge)
 
-def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1):
+def uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
+        center_pts_per_edge=1): 
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -329,10 +336,11 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
     :param list() center_pts_per_edge: number of center points per edge
         and additional two points will be added to create the bounding layer
 
-    :rtype: tuple :returns: (rho_D_M, d_distr_samples, d_Tree) where
-    ``rho_D_M`` is (M,) and ``d_distr_samples`` are (M, mdim)
-    :class:`~numpy.ndarray` and `d_Tree` is the :class:`~scipy.spatial.KDTree`
-    for d_distr_samples
+    :rtype: tuple 
+    :returns: (rho_D_M, d_distr_samples, d_Tree) where
+        ``rho_D_M`` is (M,) and ``d_distr_samples`` are (M, mdim)
+        :class:`~numpy.ndarray` and `d_Tree` is the :class:`~scipy.spatial.KDTree`
+        for d_distr_samples
 
     """
     data = util.fix_dimensions_data(data)
@@ -353,8 +361,8 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size, center_pts_per_edge=1)
 
     sur_domain = np.array([np.min(data, 0), np.max(data, 0)]).transpose()
 
-    points, _, rect_domain = vHist.center_and_layer1_points_binsize(center_pts_per_edge, 
-            Q_ref, bin_size, sur_domain)
+    points, _, rect_domain = vHist.center_and_layer1_points_binsize\
+            (center_pts_per_edge, Q_ref, bin_size, sur_domain)
     edges = vHist.edges_regular(center_pts_per_edge, rect_domain, sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     return vHist.simple_fun_uniform(points, volumes, rect_domain)

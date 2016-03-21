@@ -20,6 +20,16 @@ defined and the approximation of the volume of :math:`\mathcal{V}_j`. See
 this example is essentially the same as :ref:`q1D` we will only highlight the
 differences between the two.
 
+
+.. note::
+
+    * In line 36 reduce number of emulated points to 1e4 so that it will run
+        quickly.
+    * reduce number of ``ref_nums`` to a single number so that we only
+        examine a single set of QoI
+    * add plotting of marginals using
+        :mod:`bet.postProcess.plotP.plot_2D_marginal_probs`
+
 Define the filename to save :math:`\hat{\rho}_{\Lambda, j}` to::
 
         filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
