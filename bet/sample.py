@@ -150,7 +150,7 @@ class sample_set(object):
         return self._error_estimates_local
 
     def local_to_global(self):
-        num = check_num_local()
+        num = self.check_num_local()
         local = comm.rank*np.ones((num,), dytpe='np.int')
         first = True
         for array_name in self._array_names:
@@ -164,7 +164,7 @@ class sample_set(object):
         pass
 
     def global_to_local(self):
-        num = check_num()
+        num = self.check_num()
         local_num = num % comm.size
         local_val = min(local_num*(comm.rank + 1), num)
         self._local_index = range(local_num*comm.rank, local_val) 
