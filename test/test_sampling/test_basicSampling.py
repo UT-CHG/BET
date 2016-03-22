@@ -11,6 +11,8 @@ import numpy as np
 import bet.sampling.basicSampling as bsam
 import scipy.io as sio
 from bet.Comm import comm 
+from bet.sample import sample_set
+from bet.sample import discreization
 
 local_path = os.path.join(os.path.dirname(bet.__file__), "../test/test_sampling")
 
