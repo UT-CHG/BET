@@ -181,7 +181,7 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
         pairs = copy.deepcopy(marginals.keys())
         pairs.sort()
         for k, (i, j) in enumerate(pairs):
-	    fig = plt.figure(k)
+	        fig = plt.figure(k)
             ax = fig.add_subplot(111)
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
             quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize,
