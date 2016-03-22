@@ -165,10 +165,8 @@ class sample_set(object):
 
     def global_to_local(self):
         num = self.check_num()
-        local_num = num % comm.size
-        local_val = min(local_num*(comm.rank + 1), num)
-        self._local_index = range(local_num*comm.rank, local_val) 
-        #self._local_index = range(0+comm.rank, self._values.shape[0], comm.size)
+        global_index = np.arange(num, dytpe=np.int)
+        self._local_index = np.array_split(global_index, comm.size)
         for array_name in self._array_names:
             current_array = getattr(self, array_name)
             if current_array:
@@ -205,34 +203,34 @@ class discretization(object):
         if self._input_sample_set._values.shape[0] != self._output_sample_set._values.shape[0]:
             raise length_not_matching("input and output lengths do not match")
 
-    def set_io_ptr(self, localize = False):
+    def set_io_ptr(self, globalize = True):
         if not self._output_sample_set._values_local:
             self._output_sample_set.get_local_values()
         (_, self._io_ptr_local) = self._output_probability_set.get_kdtree.query(self._output_sample_set.values_local)
-        if not localize:
+        if globalize:
             self.io_ptr = util.get_global_values(self._io_ptr_local)
         pass
 
     def get_io_ptr(self):
         return self._io_ptr
                 
-    def set_emulated_ii_ptr(self, localize = False):
+    def set_emulated_ii_ptr(self, globalize = True):
         if not self._emulated_input_sample_set.values._local:
             self._output_sample_set.get_local_values()
         (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree.query(self._emulated_input_sample_set._values_local)
-        if not localize:
-            self.emulate_ii_ptr_local = util.get_global_values(self._emulated_ii_ptr_local)
+        if globalize:
+            self.emulate_ii_ptr = util.get_global_values(self._emulated_ii_ptr_local)
         pass
 
     def get_emulated_ii_ptr(self):
         return self._emulated_ii_ptr
 
-    def set_emulated_oo_ptr(self, localize = False):
+    def set_emulated_oo_ptr(self, globalize = True):
         if not self._emulated_output_sample_set.values._local:
             self._emulated_output_sampe_set.get_local_values()
         (_, self._emulated_oo_ptr_local) = self._output_probability_set.get_kdtree.query(self._emulated_output_sample_set._values_local)
-        if not localize:
+        if globalize:
             self.emulate_oo_ptr = util.get_global_values(self._emulated_oo_ptr_local)
 
     def get_emulated_oo_ptr(self):
-        return self._emulated_oo_ptr = self._emulated_oo_ptr
+        return self._emulated_oo_ptr
