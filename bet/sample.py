@@ -2,20 +2,21 @@ import numpy as np
 import bet.util as util
 import scipy.spatial as spatial
 
-class no_list(exception):
+class no_list(Exception):
 	pass
 
-class length_not_matching(exception):
+class length_not_matching(Exception):
 	pass
 
-class dim_not_matching(exception):
+class dim_not_matching(Exception):
     pass
 
 
 class sample_set(object):
     def __init__(self, dim):
         self._array_names = ['_values', '_volumes', '_probabilities', '_jacobians', '_error_estimates']
-        self._dim = dim 
+        self._dim = dim
+        self.domain = None
         self._values = None
         self._volumes = None
         self._probabilities = None
@@ -38,12 +39,18 @@ class sample_set(object):
     def get_dim(self):
         return self._dim
 
+    def set_domain(self, domain):
+        self._domain = domain
+
+    def get_domain(self):
+        return self._domain
+
     def set_values(self, values):
         """
         Sets values. input is a list or 1D array
         """
         self._values = util.fix_dimensions_data(values)
-        if self._values.shape[0] != self._dim:
+        if self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         pass
 
@@ -77,7 +84,7 @@ class sample_set(object):
         pass
 
     def get_jacobians(self):
-        return self._jacobians = jacobians
+        return self._jacobians
 
     def append_jacobians(self, new_jacobians):
         self._jacobians = np.concatenate((self._jacobians, new_jacobians), axis=0)
