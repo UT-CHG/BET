@@ -2,13 +2,13 @@ import numpy as np
 import bet.util as util
 import scipy.spatial as spatial
 
-class no_list(exception):
+class no_list(Exception):
 	pass
 
-class length_not_matching(exception):
+class length_not_matching(Exception):
 	pass
 
-class dim_not_matching(exception):
+class dim_not_matching(Exception):
     pass
 
 
@@ -77,7 +77,7 @@ class sample_set(object):
         pass
 
     def get_jacobians(self):
-        return self._jacobians = jacobians
+        return self._jacobians
 
     def append_jacobians(self, new_jacobians):
         self._jacobians = np.concatenate((self._jacobians, new_jacobians), axis=0)
