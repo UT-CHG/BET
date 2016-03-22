@@ -10,20 +10,20 @@ This module contains data structure/storage classes for BET. Notably:
 """
 
 import numpy as np
-import bet.util as util
 import scipy.spatial as spatial
+import bet.util as util
 
-class length_not_matching(exception):
+class length_not_matching(Exception):
     """
     Exception for when the length of the array is inconsistent.
     """
-    pass
+    
 
-class dim_not_matching(exception):
+class dim_not_matching(Exception):
     """
     Exception for when the dimension of the array is inconsistent.
     """
-    pass
+    
 
 class sample_set(object):
     """
@@ -59,8 +59,9 @@ class sample_set(object):
         self._error_estimates = None
         #: The sample domain :class:`numpy.ndarray` of shape (dim, 2)
         self._domain = None
-        pass
-
+        #: :class:`scipy.spatial.KDTree`
+        self._kdtree = None
+        
     def check_num(self):
         """
         
@@ -83,7 +84,7 @@ class sample_set(object):
                     if num != current_array.shape[0]:
                         raise length_not_matching("length of " + array_name +"\
                                 inconsistent with " + first_array) 
-        reutrn num
+        return num
 
     def get_dim(self):
         """
@@ -107,8 +108,7 @@ class sample_set(object):
         self._values = util.fix_dimensions_data(values)
         if self._values.shape[0] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
-        pass
-
+        
     def get_values(self):
         """
         Returns sample values.
@@ -134,8 +134,7 @@ class sample_set(object):
         """
         new_values = util.fix_dimensions_data(new_values)
         self._values = np.concatenate((self._values, new_values), axis=0)
-        pass
-
+        
     def set_domain(self, domain):
         """
         Sets the domain.
@@ -144,12 +143,11 @@ class sample_set(object):
         :type domain: :class:`numpy.ndarray` of shape (dim, 2)
         
         """
-        if domiain.shape[0] != self._dim:
+        if domain.shape[0] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         else:
             self._domain = domain
-        pass
-
+        
     def get_domain(self):
         """
         Returns the sample domain,
@@ -169,8 +167,7 @@ class sample_set(object):
 
         """
         self._volumes = volumes
-        pass
-
+        
     def get_volumes(self):
         """
         Returns sample Voronoi cell volumes.
@@ -190,8 +187,7 @@ class sample_set(object):
 
         """
         self._probabilities = probabilities
-        pass
-
+        
     def get_probabilities(self):
         """
         Returns sample probabilities.
@@ -211,20 +207,19 @@ class sample_set(object):
 
         """
         self._jacobians = jacobians
-        pass
-
+        
     def get_jacobians(self):
-         """
+        """
         Returns sample jacobians.
 
         :rtype: :class:`numpy.ndarray` of shape (num, other_dim, dim)
         :returns: sample jacobians
 
         """
-        return self._jacobians = jacobians
+        return self._jacobians 
 
     def append_jacobians(self, new_jacobians):
-         """
+        """
         Appends the ``new_jacobians`` to ``self._jacobians``. 
 
         .. note::
@@ -233,11 +228,12 @@ class sample_set(object):
             :meth:`~sample.sample.check_num` does not fail.
 
         :param new_jacobians: New jacobians to append.
-        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, dim)
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+            dim)
 
         """
-        self._jacobians = np.concatenate((self._jacobians, new_jacobians), axis=0)
-        pass
+        self._jacobians = np.concatenate((self._jacobians, new_jacobians),
+                axis=0)
 
     def set_error_estimates(self, error_estimates):
         """
@@ -248,7 +244,6 @@ class sample_set(object):
 
         """
         self._error_estimates = error_estimates
-        pass
 
     def get_error_estimates(self):
         """
@@ -275,15 +270,13 @@ class sample_set(object):
         """
         self._error_estimates = np.concatenate((self._error_estimates,
             new_error_estimates), axis=0) 
-        pass
-
+        
     def set_kdtree(self):
         """
         Creates a :class:`scipy.spatial.KDTree` for this set of samples.
         """
         self._kdtree = spatial.KDTree(self._values)
-        pass
-
+        
     def get_kdtree(self):
         """
         Returns a :class:`scipy.spatial.KDTree` for this set of samples.
@@ -293,6 +286,7 @@ class sample_set(object):
         
         """
         return self._kdtree
+
 
 class discretization(object):
     """
@@ -312,7 +306,8 @@ class discretization(object):
         self._emulated_output_sample_set = emulated_output_sample_set
         #: Output probability set :class:`~bet.sample.sample_set`
         self._output_probability_set = output_probability_set
-        #: Pointer from ``self._output_sample_set`` to ``self._output_probability_set`` 
+        #: Pointer from ``self._output_sample_set`` to 
+        #: ``self._output_probability_set`` 
         self._io_ptr = None
         #: Pointer from ``self._emulated_input_sample_set`` to
         #: ``self._input_sample_set`` 
@@ -321,8 +316,7 @@ class discretization(object):
         #: ``self._output_probability_set``
         self._emulated_oo_ptr = None
         self.check_nums()
-        pass
-
+        
     def check_nums(self):
         """
         
@@ -352,8 +346,7 @@ class discretization(object):
         """
         (_, self._io_ptr) = self._output_probability_set.get_kdtree.query(\
                 self._output_sample_set.get_values())
-        pass
-
+        
     def get_io_ptr(self):
         """
         
@@ -384,7 +377,6 @@ class discretization(object):
         """
         (_, self._emulated_ii_ptr) = self._input_sample_set.get_kdtree.query(\
                 self._emulated_input_sample_set.get_values())
-        pass
 
     def get_emulated_ii_ptr(self):
         """
