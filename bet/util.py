@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2015 The BET Development Team
 
 """
-The module contains general tools for BET.
+This module contains general tools for BET.
 """
 
 import numpy as np
