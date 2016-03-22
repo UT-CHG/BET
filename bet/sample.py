@@ -341,6 +341,9 @@ class sample_set(object):
         return self._error_estimates_local
 
     def local_to_global(self):
+        """
+        Makes global arrays from available local ones.
+        """
         for array_name in self._array_names:
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local:
@@ -348,6 +351,9 @@ class sample_set(object):
         pass
 
     def global_to_local(self):
+        """
+        Makes local arrays from available global ones.
+        """
         num = self.check_num()
         global_index = np.arange(num, dytpe=np.int)
         self._local_index = np.array_split(global_index, comm.size)
