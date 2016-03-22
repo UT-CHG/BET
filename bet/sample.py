@@ -295,44 +295,141 @@ class sample_set(object):
         return self._kdtree
 
 class discretization(object):
-    def __init__(self, input_sample_set, output_sample_set, input_domain=None, output_domain=None,
-                 emulated_input_sample_set=None, emulated_output_sample_set=None,
-                 output_probability_set=None):
+    """
+    A data structure to store all of the :class:`~bet.sample.sample_set`
+    objects and associated pointers to solve an stochastic inverse problem. 
+    """
+    def __init__(self, input_sample_set, output_sample_set,
+            emulated_input_sample_set=None, emulated_output_sample_set=None,
+            output_probability_set=None):
+        #: Input sample set :class:`~bet.sample.sample_set`
         self._input_sample_set = input_sample_set
+        #: Output sample set :class:`~bet.sample.sample_set`
         self._output_sample_set = output_sample_set
-        self._input_domain = input_domain
-        self._output_domain = output_domain
+        #: Emulated Input sample set :class:`~bet.sample.sample_set`
         self._emulated_input_sample_set = emulated_input_sample_set
+        #: Emulated output sample set :class:`~bet.sample.sample_set`
         self._emulated_output_sample_set = emulated_output_sample_set
+        #: Output probability set :class:`~bet.sample.sample_set`
         self._output_probability_set = output_probability_set
+        #: Pointer from ``self._output_sample_set`` to ``self._output_probability_set`` 
         self._io_ptr = None
+        #: Pointer from ``self._emulated_input_sample_set`` to
+        #: ``self._input_sample_set`` 
         self._emulated_ii_ptr = None
+        #: Pointer from ``self._emulated_output_sample_set`` to 
+        #: ``self._output_probability_set``
         self._emulated_oo_ptr = None
         self.check_nums()
         pass
 
     def check_nums(self):
-        if self._input_sample_set._values.shape[0] != self._output_sample_set._values.shape[0]:
+        """
+        
+        Checks that ``self._input_sample_set`` and ``self._output_sample_set``
+        both have the same number of samples.
+
+        :rtype: int
+        :returns: Number of samples
+
+        """
+        if self._input_sample_set._values.shape[0] != \
+                self._output_sample_set._values.shape[0]:
             raise length_not_matching("input and output lengths do not match")
         else:
             return self._input_sample_set.check_num()
 
     def set_io_ptr(self):
-        (_, self._io_ptr) = self._output_probability_set.get_kdtree.query(self._output_sample_set.get_values())
+        """
+        
+        Creates the pointer from ``self._output_sample_set`` to
+        ``self._output_probability_set``
+
+        .. seealso::
+            
+            :meth:`scipy.spatial.KDTree.query``
+
+        """
+        (_, self._io_ptr) = self._output_probability_set.get_kdtree.query(\
+                self._output_sample_set.get_values())
         pass
 
     def get_io_ptr(self):
+        """
+        
+        Returns the pointer from ``self._output_sample_set`` to
+        ``self._output_probability_set``
+
+        .. seealso::
+            
+            :meth:`scipy.spatial.KDTree.query``
+
+        :rtype: :class:`numpy.ndarray` of int of shape
+            (self._output_sample_set._values.shape[0],)
+        :returns: self._io_ptr
+
+        """
         return self._io_ptr
                 
     def set_emulated_ii_ptr(self):
-        (_, self._emulated_ii_ptr) = self._input_sample_set.get_kdtree.query(self._emulated_input_sample_set.get_values())
+        """
+        
+        Creates the pointer from ``self._emulated_input_sample_set`` to
+        ``self._input_sample_set``
+
+        .. seealso::
+            
+            :meth:`scipy.spatial.KDTree.query``
+
+        """
+        (_, self._emulated_ii_ptr) = self._input_sample_set.get_kdtree.query(\
+                self._emulated_input_sample_set.get_values())
         pass
 
     def get_emulated_ii_ptr(self):
+        """
+        
+        Returns the pointer from ``self._emulated_input_sample_set`` to
+        ``self._input_sample_set``
+
+        .. seealso::
+            
+            :meth:`scipy.spatial.KDTree.query``
+
+        :rtype: :class:`numpy.ndarray` of int of shape
+            (self._output_sample_set._values.shape[0],)
+        :returns: self._emulated_ii_ptr
+
+        """
         return self._emulated_ii_ptr
 
     def set_emulated_oo_ptr(self):
-        (_, self._emulated_oo_ptr) = self._output_probability_set.get_kdtree.query(self._emulated_output_sample_set.get_values())
+        """
+        
+        Creates the pointer from ``self._emulated_output_sample_set`` to
+        ``self._output_probability_set``
+
+        .. seealso::
+            
+            :meth:`scipy.spatial.KDTree.query``
+
+        """
+        (_, self._emulated_oo_ptr) = self._output_probability_set.get_kdtree.\
+                query(self._emulated_output_sample_set.get_values())
 
     def get_emulated_oo_ptr(self):
+        """
+        
+        Returns the pointer from ``self._emulated_output_sample_set`` to
+        ``self._output_probabilityset``
+
+        .. seealso::
+            
+            :meth:`scipy.spatial.KDTree.query``
+
+        :rtype: :class:`numpy.ndarray` of int of shape
+            (self._output_sample_set._values.shape[0],)
+        :returns: self._emulated_ii_ptr
+
+        """
         return self._emulated_oo_ptr
