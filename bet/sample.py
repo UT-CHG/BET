@@ -11,6 +11,7 @@ This module contains data structure/storage classes for BET. Notably:
 
 import numpy as np
 import scipy.spatial as spatial
+from bet.Comm import comm
 import bet.util as util
 
 class length_not_matching(Exception):
@@ -24,7 +25,6 @@ class dim_not_matching(Exception):
     Exception for when the dimension of the array is inconsistent.
     """
     
-
 class sample_set(object):
     """
 
@@ -61,7 +61,25 @@ class sample_set(object):
         self._domain = None
         #: :class:`scipy.spatial.KDTree`
         self._kdtree = None
-        
+        #: Local values for parallelism, :class:`numpy.ndarray` of shape
+        #: (local_num, dim)
+        self._values_local = None
+        #: Local volumes for parallelism, :class:`numpy.ndarray` of shape
+        #: (local_num,)
+        self._volumes_local = None
+        #: Local probabilities for parallelism, :class:`numpy.ndarray` of shape
+        #: (local_num,)
+        self._probabilities_local = None
+        #: Local Jacobians for parallelism, :class:`numpy.ndarray` of shape
+        #: (local_num, other_dim, dim)
+        self._jacobians_local = None
+        #: Local error_estimates for parallelism, :class:`numpy.ndarray` of
+        #: shape (local_num,)
+        self._error_estimates_local = None
+        #: Local indicies of global arrays, :class:`numpy.ndarray` of shape
+        #: (local_num,)
+        self._local_index = None
+
     def check_num(self):
         """
         
@@ -287,6 +305,58 @@ class sample_set(object):
         """
         return self._kdtree
 
+    def set_values_local(self, values_local):
+        self._values_local = values_local
+        pass
+        
+    def get_values_local(self):
+        return self._values_local
+
+    def set_volumes_local(self, volumes_local):
+        self._volumes_local = volumes_local
+        pass
+
+    def get_volumes_local(self):
+        return self._volumes_local
+
+    def set_probabilities_local(self, probabilities_local):
+        self._probabilities_local = probabilities_local
+        pass
+
+    def get_probabilities_local(self):
+        return self._probabilities_local
+
+    def set_jacobians_local(self, jacobians_local):
+        self._jacobians_local = jacobians_local
+        pass
+
+    def get_jacobians_local(self):
+        return self._jacobians_local
+
+    def set_error_estimates_local(self, error_estimates_local):
+        self._error_estimates_local = error_estimates_local
+        pass
+
+    def get_error_estimates_local(self):
+        return self._error_estimates_local
+
+    def local_to_global(self):
+        for array_name in self._array_names:
+            current_array_local = getattr(self, array_name + "_local")
+            if current_array_local:
+                setattr(self, array_name, util.get_global(current_array_local))
+        pass
+
+    def global_to_local(self):
+        num = self.check_num()
+        global_index = np.arange(num, dytpe=np.int)
+        self._local_index = np.array_split(global_index, comm.size)
+        for array_name in self._array_names:
+            current_array = getattr(self, array_name)
+            if current_array:
+                setattr(self, array_name + "_local",
+                        current_array[self._local_index]) 
+                
 
 class discretization(object):
     """
@@ -315,6 +385,12 @@ class discretization(object):
         #: Pointer from ``self._emulated_output_sample_set`` to 
         #: ``self._output_probability_set``
         self._emulated_oo_ptr = None
+        #: local io pointer for parallelism
+        self._io_ptr_local = None
+        #: local emulated ii ptr for parallelsim
+        self._emulated_ii_ptr_local = None
+        #: local emulated oo ptr for parallelism
+        self._emulated_oo_ptr_local = None
         self.check_nums()
         
     def check_nums(self):
@@ -333,7 +409,7 @@ class discretization(object):
         else:
             return self._input_sample_set.check_num()
 
-    def set_io_ptr(self):
+    def set_io_ptr(self, globalize=True):
         """
         
         Creates the pointer from ``self._output_sample_set`` to
@@ -342,11 +418,15 @@ class discretization(object):
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
-
-        """
-        (_, self._io_ptr) = self._output_probability_set.get_kdtree.query(\
-                self._output_sample_set.get_values())
         
+        """
+        if not self._output_sample_set._values_local:
+            self._output_sample_set.get_local_values()
+        (_, self._io_ptr_local) = self._output_probability_set.get_kdtree.query\
+                (self._output_sample_set.values_local)
+        if globalize:
+            self._io_ptr = util.get_global_values(self._io_ptr_local)
+       
     def get_io_ptr(self):
         """
         
@@ -364,7 +444,7 @@ class discretization(object):
         """
         return self._io_ptr
                 
-    def set_emulated_ii_ptr(self):
+    def set_emulated_ii_ptr(self, globalize=True):
         """
         
         Creates the pointer from ``self._emulated_input_sample_set`` to
@@ -375,8 +455,13 @@ class discretization(object):
             :meth:`scipy.spatial.KDTree.query``
 
         """
-        (_, self._emulated_ii_ptr) = self._input_sample_set.get_kdtree.query(\
-                self._emulated_input_sample_set.get_values())
+        if not self._emulated_input_sample_set.values._local:
+            self._output_sample_set.get_local_values()
+        (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree.\
+                query(self._emulated_input_sample_set._values_local)
+        if globalize:
+            self._emulated_ii_ptr = util.get_global_values\
+                    (self._emulated_ii_ptr_local)
 
     def get_emulated_ii_ptr(self):
         """
@@ -395,7 +480,7 @@ class discretization(object):
         """
         return self._emulated_ii_ptr
 
-    def set_emulated_oo_ptr(self):
+    def set_emulated_oo_ptr(self, globalize=True):
         """
         
         Creates the pointer from ``self._emulated_output_sample_set`` to
@@ -406,8 +491,13 @@ class discretization(object):
             :meth:`scipy.spatial.KDTree.query``
 
         """
-        (_, self._emulated_oo_ptr) = self._output_probability_set.get_kdtree.\
-                query(self._emulated_output_sample_set.get_values())
+        if not self._emulated_output_sample_set.values._local:
+            self._emulated_output_sampe_set.get_local_values()
+        (_, self._emulated_oo_ptr_local) = self._output_probability_set.\
+                get_kdtree.query(self._emulated_output_sample_set._values_local)
+        if globalize:
+            self._emulated_oo_ptr = util.get_global_values\
+                    (self._emulated_oo_ptr_local)
 
     def get_emulated_oo_ptr(self):
         """
