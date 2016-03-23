@@ -148,6 +148,13 @@ class Test_sample_set(unittest.TestCase):
             if current_array is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, array_name),
                                           getattr(self.sam_set, array_name + "_old"))
+    def test_domain(self):
+        """
+        Test domain information.
+        """
+        domain = np.ones((self.dim,), dtype=np.int)
+        self.sam_set.set_domain(domain)
+        nptest.assert_array_equal(domain, self.sam_set.get_domain())
                 
                                     
 class Test_sample_set_1d(Test_sample_set):
@@ -157,3 +164,63 @@ class Test_sample_set_1d(Test_sample_set):
         self.values = np.ones((self.num, self.dim))
         self.sam_set = sample.sample_set(dim=self.dim)
         self.sam_set.set_values(self.values)
+
+class Test_discretization_simple(unittest.TestCase):
+    def setUp(self):
+        self.dim1 = 3
+        self.num = 100
+        self.dim2 = 1
+        values1 = np.ones((self.num, self.dim1))
+        values2 = np.ones((self.num, self.dim2))
+        values3 = np.ones((self.num, self.dim2))
+        self.input = sample.sample_set(dim=self.dim1)
+        self.output = sample.sample_set(dim=self.dim2)
+        self.output_probability_set = sample.sample_set(dim=self.dim2)
+        self.input.set_values(values1)
+        self.output.set_values(values2)
+        self.output_probability_set.set_values(values3)
+        self.disc = sample.discretization(input_sample_set = self.input,
+                                          output_sample_set = self.output,
+                                          output_probability_set = self.output_probability_set)
+        
+    def Test_check_nums(self):
+        """
+        Test number checking.
+        """
+        num = self.disc.check_nums()
+        self.assertEqual(num, self.num)
+
+    def Test_set_io_ptr(self):
+        """
+        Test setting io ptr
+        """
+        self.disc.set_io_ptr(globalize=True)
+        self.disc.get_io_ptr()
+        self.disc.set_io_ptr(globalize=False)
+        self.disc.get_io_ptr()
+
+    def Test_set_emulated_ii_ptr(self):
+        """
+        Test setting emulated ii ptr
+        """
+        values = np.ones((10, self.dim1))
+        self.emulated = sample.sample_set(dim=self.dim1)
+        self.emulated.set_values(values)
+        self.disc._emulated_input_sample_set = self.emulated
+        self.disc.set_emulated_ii_ptr(globalize=True)
+        self.disc.get_emulated_ii_ptr()
+        self.disc.set_emulated_ii_ptr(globalize=False)
+        self.disc.get_emulated_ii_ptr()
+        
+    def Test_set_emulated_oo_ptr(self):
+        """
+        Test setting emulated oo ptr
+        """
+        values = np.ones((10, self.dim2))
+        self.emulated = sample.sample_set(dim=self.dim2)
+        self.emulated.set_values(values)
+        self.disc._emulated_output_sample_set = self.emulated
+        self.disc.set_emulated_oo_ptr(globalize=True)
+        self.disc.get_emulated_oo_ptr()
+        self.disc.set_emulated_oo_ptr(globalize=False)
+        self.disc.get_emulated_oo_ptr()        

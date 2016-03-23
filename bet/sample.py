@@ -426,10 +426,12 @@ class discretization(object):
             :meth:`scipy.spatial.KDTree.query``
         
         """
-        if not self._output_sample_set._values_local:
-            self._output_sample_set.get_local_values()
-        (_, self._io_ptr_local) = self._output_probability_set.get_kdtree.query\
-                (self._output_sample_set.values_local)
+        if self._output_sample_set._values_local is None:
+            self._output_sample_set.global_to_local()
+        if self._output_probability_set._kdtree is None:
+            self._output_probability_set.set_kdtree()
+        (_, self._io_ptr_local) = self._output_probability_set.get_kdtree().query\
+                (self._output_sample_set._values_local)
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
        
@@ -461,9 +463,11 @@ class discretization(object):
             :meth:`scipy.spatial.KDTree.query``
 
         """
-        if not self._emulated_input_sample_set.values._local:
-            self._output_sample_set.get_local_values()
-        (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree.\
+        if self._emulated_input_sample_set._values_local is None:
+            self._emulated_input_sample_set.global_to_local()
+        if self._input_sample_set._kdtree is None:
+            self._input_sample_set.set_kdtree()
+        (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree().\
                 query(self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
@@ -497,10 +501,12 @@ class discretization(object):
             :meth:`scipy.spatial.KDTree.query``
 
         """
-        if not self._emulated_output_sample_set.values._local:
-            self._emulated_output_sampe_set.get_local_values()
+        if self._emulated_output_sample_set._values_local is None:
+            self._emulated_output_sample_set.global_to_local()
+        if self._output_probability_set._kdtree is None:
+            self._output_probability_set.set_kdtree()
         (_, self._emulated_oo_ptr_local) = self._output_probability_set.\
-                get_kdtree.query(self._emulated_output_sample_set._values_local)
+                get_kdtree().query(self._emulated_output_sample_set._values_local)
         if globalize:
             self._emulated_oo_ptr = util.get_global_values\
                     (self._emulated_oo_ptr_local)
