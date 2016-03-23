@@ -5,14 +5,16 @@
 This module contains unittests for :mod:`~bet.sampling.basicSampling:`
 """
 
-import unittest, os, bet, pyDOE
+import unittest, os, pyDOE
 import numpy.testing as nptest
 import numpy as np
 import scipy.io as sio
+import bet
 import bet.sampling.basicSampling as bsam
 from bet.Comm import comm 
 import bet.sample
-from bet.sample import sample_set, disc 
+from bet.sample import sample_set
+from bet.sample import discretization as disc 
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
     "../test/test_sampling")
@@ -32,20 +34,20 @@ def test_loadmat():
     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
     sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
-    (loaded_sampler1, discreitzation1) = bsam.loadmat(os.path.join(local_path,
+    (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
         'testfile1'))
-    nptest.assert_array_equal(discreitzation1._input_sample_set._values,
+    nptest.assert_array_equal(discretization1._input_sample_set._values,
             mdat1['input'])
-    nptest.assert_array_equal(discreitzation1._output_sample_set._values,
+    nptest.assert_array_equal(discretization1._output_sample_set._values,
             mdat1['output'])
     assert loaded_sampler1.num_samples == 5
     assert loaded_sampler1.lb_model is None
 
-    (loaded_sampler2, discreitzation2) = bsam.loadmat(os.path.join(local_path,
+    (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
         'testfile2'), model)
-    nptest.assert_array_equal(discreitzation2._input_sample_set._values,
+    nptest.assert_array_equal(discretization2._input_sample_set._values,
             mdat2['samples'])
-    nptest.assert_array_equal(discreitzation2._output_sample_set._values, None)
+    nptest.assert_array_equal(discretization2._output_sample_set._values, None)
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
     if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
@@ -61,32 +63,32 @@ def verify_user_samples(model, sampler, input_sample_set, savefile, parallel):
     output_values = (model(input_sample_set._values))
     output_sample_set = sample_set(output_values.shape[1])
     output_sample_set.set_values(output_values)
-    discreitzation = disc(input_sample_set, output_sample_set)
+    discretization = disc(input_sample_set, output_sample_set)
 
     # evaluate the model at the samples
-    my_discreitzation = sampler.user_samples(input_sample_set, savefile,
+    my_discretization = sampler.user_samples(input_sample_set, savefile,
             parallel) 
-    my_num = my_discreitzation.check_nums() 
+    my_num = my_discretization.check_nums() 
 
     # compare the samples
-    nptest.assert_array_equal(my_discreitzation._input_set.get_values(),
-            discreitzation._input_sample_set.get_values())
+    nptest.assert_array_equal(my_discretization._input_set.get_values(),
+            discretization._input_sample_set.get_values())
     # compare the data
-    nptest.assert_array_equal(my_discreitzation._output_set.get_values(),
-            discreitzation._output_sample_set.get_values())
+    nptest.assert_array_equal(my_discretization._output_set.get_values(),
+            discretization._output_sample_set.get_values())
 
     # did num_samples get updated?
     assert my_num == sampler.num_samples
     
     # did the file get correctly saved?
     if comm.rank == 0:
-        saved_disc = bet.sample.load_discreitzation(savefile)
+        saved_disc = bet.sample.load_discretization(savefile)
         
         # compare the samples
-        nptest.assert_array_equal(my_discreitzation._input_set.get_values(),
+        nptest.assert_array_equal(my_discretization._input_set.get_values(),
             saved_disc._input_sample_set.get_values())
         # compare the data
-        nptest.assert_array_equal(my_discreitzation._output_set.get_values(),
+        nptest.assert_array_equal(my_discretization._output_set.get_values(),
            saved_disc._output_sample_set.get_values())
         
     comm.Barrier()
@@ -124,34 +126,34 @@ def verify_random_samples(model, sampler, sample_type, input_domain,
         np.random.seed(1)
 
     # evaluate the model at the samples
-    my_discreitzation = sampler.random_samples(sample_type, input_domain,
+    my_discretization = sampler.random_samples(sample_type, input_domain,
             savefile, num_samples=num_samples, parallel=parallel)
-    my_num = my_discreitzation.check_nums() 
+    my_num = my_discretization.check_nums() 
     
     
     # make sure that the samples are within the boundaries
-    assert np.all(my_discreitzation._input_sample_set._values <= input_right)
-    assert np.all(my_discreitzation._input_sample_set._values >= input_left)
+    assert np.all(my_discretization._input_sample_set._values <= input_right)
+    assert np.all(my_discretization._input_sample_set._values >= input_left)
 
     # compare the samples
     nptest.assert_array_equal(input_sample_set._values,
-            my_discreitzation._input_sample_set._values)
+            my_discretization._input_sample_set._values)
     # compare the data
     nptest.assert_array_equal(output_sample_set._values,
-            my_discreitzation._output_sample_set._values)
+            my_discretization._output_sample_set._values)
 
     # did num_samples get updated?
     assert my_num == sampler.num_samples
     
     # did the file get correctly saved?
     if comm.rank == 0:
-        saved_disc = bet.sample.load_discreitzation(savefile)
+        saved_disc = bet.sample.load_discretization(savefile)
         
         # compare the samples
-        nptest.assert_array_equal(my_discreitzation._input_set.get_values(),
+        nptest.assert_array_equal(my_discretization._input_set.get_values(),
             saved_disc._input_sample_set.get_values())
         # compare the data
-        nptest.assert_array_equal(my_discreitzation._output_set.get_values(),
+        nptest.assert_array_equal(my_discretization._output_set.get_values(),
            saved_disc._output_sample_set.get_values())
     comm.Barrier()
 
