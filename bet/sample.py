@@ -16,7 +16,7 @@ class sample_set(object):
     def __init__(self, dim):
         self._array_names = ['_values', '_volumes', '_probabilities', '_jacobians', '_error_estimates']
         self._dim = dim
-        self.domain = None
+        self._domain = None
         self._values = None
         self._volumes = None
         self._probabilities = None
