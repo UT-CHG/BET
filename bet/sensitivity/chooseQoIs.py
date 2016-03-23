@@ -16,12 +16,9 @@ def calculate_avg_condnum(input_set, qoi_set):
     given a specific set of QoIs, caculate the average condition number of the
     matrices formed by the gradient vectors of each QoI map at each center.
 
-    :param grad_tensor: Gradient vectors at each center in the parameter space
-        :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        input_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the number of
-        QoIs we are given.
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
     
     :rtype: tuple
@@ -61,12 +58,9 @@ def calculate_avg_volume(input_set, qoi_set, bin_volume=None):
     inverse image of a box in the data space assuming the mapping is linear near
     each center.
     
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        input_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the number of
-        QoIs we are given.
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
     :param float bin_volume: The volume of the Data_dim hyperrectangle to
         invert into :math:`\Lambda`
@@ -114,12 +108,9 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
     
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        input_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the total
-        number of possible QoIs to choose from
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider from grad_tensor.  Default is
         range(0, grad_tensor.shape[1])
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
@@ -158,12 +149,9 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
     
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        input_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the total
-        number of possible QoIs to choose from
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider from grad_tensor.  Default is
         range(0, grad_tensor.shape[1])
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
@@ -268,12 +256,9 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     some tolerance, i.e., an average angle between the two vectors smaller than
     some tolerance.
     
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:'\Lambda' for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers,num_qois,Ldim)
-        where num_centers is the number of points in :math:'\Lambda' we have
-        approximated the gradient vectors, num_qois is the total number of
-        possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param float inner_prod_tol: Maximum acceptable average inner product
         between two QoI maps.
     :param qoiIndices: Set of QoIs to consider.
@@ -286,11 +271,10 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     :returns: unique_vecs
     
     """
-
     input_dim = input_set._dim
     grad_tensor = input_set._jacobians
     if grad_tensor is None:
-        raise ValueError("You must have jacobians to compute optimal sets of QoI.")
+        raise ValueError("You must have jacobians to use this method.")
     if qoiIndices is None:
         qoiIndices = range(0, grad_tensor.shape[1])
 
@@ -357,12 +341,9 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
     good sets of size n - 1, return good sets of size n.  That is, return
     sets of size n that have average condition number less than some tolerance.
     
-    :param grad_tensor: Gradient vectors at each centers in the parameter
-        space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers,num_qois,Ldim)
-        where num_centers is the number of points in :math:'\Lambda' we have
-        approximated the gradient vectors, num_qois is the total number of
-        possible QoIs to choose from, Ldim is the dimension of :math:`\Lambda`.
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param good_sets_prev: Good sets of QoIs of size n - 1.
     :type good_sets_prev: :class:`np.ndarray` of size (num_good_sets_prev, n -
         1) 
@@ -380,6 +361,9 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
         n + 1) and optsingvals_tensor has size (num_centers, n, input_dim)
     
     """
+    grad_tensor = input_set._jacobians
+    if grad_tensor is None:
+        raise ValueError("You must have jacobians to use this method.")
     num_centers = input_set._jacobians.shape[0]
     num_qois_return = good_sets_prev.shape[1] + 1
     comm.Barrier()
@@ -490,12 +474,9 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
     to use in the inverse problem by choosing the sets with the smallext average
     condition number or volume.
     
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        input_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the total
-        number of possible QoIs to choose from
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider from grad_tensor.  Default is
         range(0, grad_tensor.shape[1])
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
@@ -537,12 +518,9 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     matrices formed by the gradient vectors of the optimal QoIs at each center
     is returned.
     
-    :param grad_tensor: Gradient vectors at each point of interest in the
-        parameter space :math:`\Lambda` for each QoI map.
-    :type grad_tensor: :class:`np.ndarray` of shape (num_centers, num_qois,
-        input_dim) where num_centers is the number of points in :math:`\Lambda`
-        we have approximated the gradient vectors and num_qois is the total
-        number of possible QoIs to choose from.
+    :param input_set: The input sample set.  Make sure the attribute _jacobians
+        is not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider from grad_tensor.  Default is
         range(0, grad_tensor.shape[1]).
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)

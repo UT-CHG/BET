@@ -17,8 +17,9 @@ def sample_linf_ball(input_set, num_close, rvec):
     point in :math:`\Lambda`, do this for each point in centers.  If this box
     extends outside of :math:`\Lambda`, we sample the intersection.
 
-    :param input_set: sample object
-    :type input_set: :class:`sample`
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of points in each cluster
     :param rvec: Each side of the box will have length 2*rvec[i]
     :type rvec: :class:`np.ndarray` of shape (input_dim,)
@@ -27,6 +28,8 @@ def sample_linf_ball(input_set, num_close, rvec):
     :returns: Centers and clusters of samples near each center
     
     """
+    if input_set._values is None:
+        raise ValueError("You must have values to use this method.")
     input_dim = input_set._dim
     centers = input_set._values
     num_centers = centers.shape[0]
@@ -60,8 +63,9 @@ def sample_l1_ball(input_set, num_close, rvec):
     samples to be placed outside of lam_domain.  Please place your
     centers accordingly.*
     
-    :param input_set: sample object
-    :type input_set: :class:`sample`
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of samples in each l1 ball
     :param rvec: The radius of the l1 ball, along each axis
     :type rvec: :class:`np.ndarray` of shape (input_dim)
@@ -70,6 +74,8 @@ def sample_l1_ball(input_set, num_close, rvec):
     :returns: Uniform random samples from an l1 ball around each center
     
     """
+    if input_set._values is None:
+        raise ValueError("You must have values to use this method.")
     input_dim = input_set._dim
     centers = input_set._values
     rvec = util.fix_dimensions_vector(rvec)
@@ -127,8 +133,9 @@ def pick_ffd_points(input_set, rvec):
     centers, followed by the cluster around the first center, then the cluster
     around the second center and so on.
     
-    :param input_set: sample object
-    :type input_set: :class:`sample`
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (input_dim,)
     
@@ -138,6 +145,8 @@ def pick_ffd_points(input_set, rvec):
         each point in centers.
     
     """
+    if input_set._values is None:
+        raise ValueError("You must have values to use this method.")
     input_dim = input_set._dim
     centers = input_set._values
     num_centers = centers.shape[0]
@@ -161,8 +170,9 @@ def pick_cfd_points(input_set, rvec):
     in the order: centers, followed by the cluster around the first center, then 
     the cluster around the second center and so on.
     
-    :param input_set: sample object
-    :type input_set: :class:`sample`
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (input_dim,)
     
@@ -172,6 +182,8 @@ def pick_cfd_points(input_set, rvec):
         each point in centers.
     
     """
+    if input_set._values is None:
+        raise ValueError("You must have values to use this method.")
     input_dim = input_set._dim
     centers = input_set._values
     num_centers = centers.shape[0]
@@ -258,17 +270,15 @@ def calculate_gradients_rbf(input_set, output_set, input_set_centers=None, num_n
     in the parameter space for each QoI map using a radial basis function
     interpolation method.
     
-    :param input_set: sample object
-    :type input_set: :class:`sample`
-    :param output_set: sample object
-    :type output_set: :class:`sample`
-    :param input_set_centers: sample object
-    :type input_set_centers: :class:`sample`
-    :param data: QoI values corresponding to each sample.
-    :type data: :class:`np.ndarray` of shape (num_samples, output_dim)
-    :param centers: Points in :math:`\Lambda` at which to approximate gradient
-        information.
-    :type centers: :class:`np.ndarray` of shape (num_exval, input_dim)
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
+    :param output_set: The output sample set.  Make sure the attribute _values is
+        not None.
+    :type output_set: :class:`~bet.sample.sample_set`
+    :param input_set_centers: The input centers sample set.  Make sure the
+        attribute _values is not None.
+    :type input_set_centers: :class:`~bet.sample.sample_set`
     :param int num_neighbors: Number of nearest neighbors to use in gradient
         approximation. Default value is input_dim + 2.
     :param string RBF: Choice of radial basis function. Default is Gaussian
@@ -282,6 +292,8 @@ def calculate_gradients_rbf(input_set, output_set, input_set_centers=None, num_n
         QoI map at each point in centers
     
     """
+    if input_set._values is None or output_set._values is None:
+        raise ValueError("You must have values to use this method.")
     samples = input_set._values
     data = output_set._values
 
@@ -356,10 +368,12 @@ def calculate_gradients_ffd(input_set, output_set, normalize=True):
     :meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
     FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.
     
-    :param input_set: sample object
-    :type input_set: :class:`sample`
-    :param output_set: sample object
-    :type output_set: :class:`sample`
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
+    :param output_set: The output sample set.  Make sure the attribute _values is
+        not None.
+    :type output_set: :class:`~bet.sample.sample_set`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     
@@ -368,6 +382,8 @@ def calculate_gradients_ffd(input_set, output_set, normalize=True):
         QoI map at each point in centers
     
     """
+    if input_set._values is None or output_set._values is None:
+        raise ValueError("You must have values to use this method.")
     samples = input_set._values
     data = output_set._values
 
@@ -414,10 +430,12 @@ def calculate_gradients_cfd(input_set, output_set, normalize=True):
     ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE 
     CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
     
-    :param input_set: sample object
-    :type input_set: :class:`sample`
-    :param output_set: sample object
-    :type output_set: :class:`sample`
+    :param input_set: The input sample set.  Make sure the attribute _values is
+        not None.
+    :type input_set: :class:`~bet.sample.sample_set`
+    :param output_set: The output sample set.  Make sure the attribute _values is
+        not None.
+    :type output_set: :class:`~bet.sample.sample_set`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     
@@ -426,6 +444,8 @@ def calculate_gradients_cfd(input_set, output_set, normalize=True):
         QoI map at each point in centers
     
     """
+    if input_set._values is None or output_set._values is None:
+        raise ValueError("You must have values to use this method.")
     samples = input_set._values
     data = output_set._values
 
