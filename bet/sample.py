@@ -31,6 +31,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
     Saves this :class:`bet.sample.sample_set` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
     saved to a MATLAB-style file.
+
     :param save_set: sample set to save
     :type save_set: :class:`bet.sample.sample_set`
     :param string file_name: Name of the ``.mat`` file, no extension is
@@ -38,6 +39,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
     :param string sample_set_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.sample_set` objects to a single
         ``.mat`` file
+
     """
     if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
         mdat = sio.loadmat(file_name)
@@ -57,11 +59,13 @@ def load_sample_set(file_name, sample_set_name=None):
     contains multiple :class:`~bet.sample.sample_set` objects then
     ``sample_set_name`` is used to distinguish which between different
     :class:`~bet.sample.sample_set` objects.
+
     :param string file_name: Name of the ``.mat`` file, no extension is
         needed.
     :param string sample_set_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.sample_set` objects to a single
         ``.mat`` file
+
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     """
@@ -83,7 +87,9 @@ def load_sample_set(file_name, sample_set_name=None):
 
 class sample_set(object):
     """
+
     A data structure containing arrays specific to a set of samples.
+
     """
     # TODO self._array_names should be moved here since it doesn't change 
     #: List of attribute names for attributes which are vectors or 1D
@@ -98,9 +104,11 @@ class sample_set(object):
 
     def __init__(self, dim):
         """
+
         Initialization
         
         :param int dim: Dimension of the space in which these samples reside.
+
         """
         # TODO remove this
         #: List of attribute names for attributes that are
@@ -155,6 +163,7 @@ class sample_set(object):
         
         :rtype: int
         :returns: num
+
         """
         num = None
         for array_name in self._array_names:
@@ -171,10 +180,12 @@ class sample_set(object):
 
     def get_dim(self):
         """
+
         Return the dimension of the sample space.
         
         :rtype: int
         :returns: Dimension of the sample space.
+
         """
         return self._dim
 
@@ -184,6 +195,7 @@ class sample_set(object):
         
         :param values: sample values
         :type values: :class:`numpy.ndarray` of shape (num, dim)
+
         """
         self._values = util.fix_dimensions_data(values)
         if self._values.shape[0] != self._dim:
@@ -192,19 +204,25 @@ class sample_set(object):
     def get_values(self):
         """
         Returns sample values.
+
         :rtype: :class:`numpy.ndarray`
         :returns: sample values
+
         """
         return self._values
 
     def append_values(self, new_values):
         """
         Appends the ``new_values`` to ``self._values``. 
+
         .. note::
+
             Remember to update the other member attribute arrays so that
             :meth:`~sample.sample.check_num` does not fail.
+
         :param new_values: New values to append.
         :type new_values: :class:`numpy.ndarray` of shape (num, dim)
+
         """
         new_values = util.fix_dimensions_data(new_values)
         self._values = np.concatenate((self._values, new_values), axis=0)
@@ -212,6 +230,7 @@ class sample_set(object):
     def set_domain(self, domain):
         """
         Sets the domain.
+
         :param domain: Sample domain
         :type domain: :class:`numpy.ndarray` of shape (dim, 2)
         
@@ -224,68 +243,86 @@ class sample_set(object):
     def get_domain(self):
         """
         Returns the sample domain,
+
         :rtype: :class:`numpy.ndarray` of shape (dim, 2)
         :returns: Sample domain
+
         """
         return self._domain
 
     def set_volumes(self, volumes):
         """
         Sets sample Voronoi cell volumes.
+
         :type volumes: :class:`numpy.ndarray` of shape (num,)
         :param volumes: sample Voronoi cell volumes
+
         """
         self._volumes = volumes
         
     def get_volumes(self):
         """
         Returns sample Voronoi cell volumes.
+
         :rtype: :class:`numpy.ndarray` of shape (num,)
         :returns: sample Voronoi cell volumes
+
         """
         return self._volumes
 
     def set_probabilities(self, probabilities):
         """
         Set sample probabilities.
+
         :type probabilities: :class:`numpy.ndarray` of shape (num,)
         :param probabilities: sample probabilities
+
         """
         self._probabilities = probabilities
         
     def get_probabilities(self):
         """
         Returns sample probabilities.
+
         :rtype: :class:`numpy.ndarray` of shape (num,)
         :returns: sample probabilities
+
         """
         return self._probabilities
 
     def set_jacobians(self, jacobians):
         """
         Returns sample jacobians.
+
         :type jacobians: :class:`numpy.ndarray` of shape (num, other_dim, dim)
         :param jacobians: sample jacobians
+
         """
         self._jacobians = jacobians
         
     def get_jacobians(self):
         """
         Returns sample jacobians.
+
         :rtype: :class:`numpy.ndarray` of shape (num, other_dim, dim)
         :returns: sample jacobians
+
         """
         return self._jacobians 
 
     def append_jacobians(self, new_jacobians):
         """
         Appends the ``new_jacobians`` to ``self._jacobians``. 
+
         .. note::
+
             Remember to update the other member attribute arrays so that
             :meth:`~sample.sample.check_num` does not fail.
+
         :param new_jacobians: New jacobians to append.
         :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
             dim)
+
         """
         self._jacobians = np.concatenate((self._jacobians, new_jacobians),
                 axis=0)
@@ -293,27 +330,35 @@ class sample_set(object):
     def set_error_estimates(self, error_estimates):
         """
         Returns sample error estimates.
+
         :type error_estimates: :class:`numpy.ndarray` of shape (num,)
         :param error_estimates: sample error estimates
+
         """
         self._error_estimates = error_estimates
 
     def get_error_estimates(self):
         """
         Returns sample error_estimates.
+
         :rtype: :class:`numpy.ndarray` of shape (num,)
         :returns: sample error_estimates
+
         """
         return self._error_estimates
 
     def append_error_estimates(self, new_error_estimates):
         """
         Appends the ``new_error_estimates`` to ``self._error_estimates``. 
+
         .. note::
+
             Remember to update the other member attribute arrays so that
             :meth:`~sample.sample.check_num` does not fail.
+
         :param new_error_estimates: New error_estimates to append.
         :type new_error_estimates: :class:`numpy.ndarray` of shape (num,)
+
         """
         self._error_estimates = np.concatenate((self._error_estimates,
             new_error_estimates), axis=0) 
@@ -391,6 +436,7 @@ def save_discretization(save_disc, file_name, discretization_name=None):
     Saves this :class:`bet.sample.discretization` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
     saved to a MATLAB-style file.
+
     :param save_disc: sample set to save
     :type save_disc: :class:`bet.sample.discretization`
     :param string file_name: Name of the ``.mat`` file, no extension is
@@ -398,6 +444,7 @@ def save_discretization(save_disc, file_name, discretization_name=None):
     :param string discretization_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.discretization` objects to a single
         ``.mat`` file
+
     """
     new_mdat = dict()
 
@@ -426,11 +473,13 @@ def load_discretization(file_name, discretization_name=None):
     contains multiple :class:`~bet.sample.discretization` objects then
     ``discretization_name`` is used to distinguish which between different
     :class:`~bet.sample.discretization` objects.
+
     :param string file_name: Name of the ``.mat`` file, no extension is
         needed.
     :param string discretization_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.discretization` objects to a single
         ``.mat`` file
+
     :rtype: :class:`~bet.sample.discretization`
     :returns: the ``discretization`` that matches the ``discretization_name``
     """
@@ -513,8 +562,10 @@ class discretization(object):
         
         Checks that ``self._input_sample_set`` and ``self._output_sample_set``
         both have the same number of samples.
+
         :rtype: int
         :returns: Number of samples
+
         """
         if self._input_sample_set._values.shape[0] != \
                 self._output_sample_set._values.shape[0]:
@@ -527,6 +578,7 @@ class discretization(object):
         
         Creates the pointer from ``self._output_sample_set`` to
         ``self._output_probability_set``
+
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
@@ -544,12 +596,15 @@ class discretization(object):
         
         Returns the pointer from ``self._output_sample_set`` to
         ``self._output_probability_set``
+
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+
         :rtype: :class:`numpy.ndarray` of int of shape
             (self._output_sample_set._values.shape[0],)
         :returns: self._io_ptr
+
         """
         return self._io_ptr
                 
@@ -558,9 +613,11 @@ class discretization(object):
         
         Creates the pointer from ``self._emulated_input_sample_set`` to
         ``self._input_sample_set``
+
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+
         """
         if not self._emulated_input_sample_set.values._local:
             self._output_sample_set.get_local_values()
@@ -575,12 +632,15 @@ class discretization(object):
         
         Returns the pointer from ``self._emulated_input_sample_set`` to
         ``self._input_sample_set``
+
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+
         :rtype: :class:`numpy.ndarray` of int of shape
             (self._output_sample_set._values.shape[0],)
         :returns: self._emulated_ii_ptr
+
         """
         return self._emulated_ii_ptr
 
@@ -589,9 +649,11 @@ class discretization(object):
         
         Creates the pointer from ``self._emulated_output_sample_set`` to
         ``self._output_probability_set``
+
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+
         """
         if not self._emulated_output_sample_set.values._local:
             self._emulated_output_sampe_set.get_local_values()
@@ -606,11 +668,14 @@ class discretization(object):
         
         Returns the pointer from ``self._emulated_output_sample_set`` to
         ``self._output_probabilityset``
+
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+
         :rtype: :class:`numpy.ndarray` of int of shape
             (self._output_sample_set._values.shape[0],)
         :returns: self._emulated_ii_ptr
+
         """
         return self._emulated_oo_ptr
