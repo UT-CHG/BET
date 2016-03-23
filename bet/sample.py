@@ -534,8 +534,8 @@ class discretization(object):
 
  
     def __init__(self, input_sample_set, output_sample_set,
-            emulated_input_sample_set=None, emulated_output_sample_set=None,
-            output_probability_set=None):
+                 output_probability_set=None,
+                 emulated_input_sample_set=None, emulated_output_sample_set=None):
         #: Input sample set :class:`~bet.sample.sample_set`
         self._input_sample_set = input_sample_set
         #: Output sample set :class:`~bet.sample.sample_set`
