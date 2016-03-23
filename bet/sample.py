@@ -76,13 +76,13 @@ def load_sample_set(file_name, sample_set_name=None):
     loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
 
     for attrname in dir(loaded_set):
-        if attrname is not '_dim' and is not '_kdtree':
+        if attrname is not '_dim' and attrname is not '_kdtree':
             if attrname in mdat.keys():
                 if attrname in sample_set.vector_names:
                     setattr(loaded_set, attrname,
-                        np.squeeze(mdat[sample_set_name+attrname))
+                        np.squeeze(mdat[sample_set_name+attrname]))
                 else:
-                    setattr(loaded_set, attrname, mdat[sample_set_name+attrname)
+                    setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     return loaded_set
 
 class sample_set(object):
@@ -459,7 +459,7 @@ def save_discretization(save_disc, file_name, discretization_name=None):
     for attrname in dir(save_disc):
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
-            if attrname is in discretization.sample_set_names:
+            if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
                     distrcretization_name+attrname)
             else:
@@ -505,15 +505,15 @@ def load_discretization(file_name, discretization_name=None):
         return None
 
     for attrname in dir(loaded_disc):
-        if attrname is not '_input_sample_set' and is not '_output_sample_set':
+        if attrname is not '_input_sample_set' and atrrname is not '_output_sample_set':
             if attrname in discretization.vector_names:
                 setattr(loaded_disc, attrname,
-                        np.squeeze(mdat[discretization_name+attrname))
+                        np.squeeze(mdat[discretization_name+attrname]))
             elif attrname in discreitzation.sample_set_sames:
                 setattr(loaded_disc, attrname, load_sample_set(file_name,
-                    distrcretization_name+attrname))
+                    discretization_name+attrname))
             elif attrname in mdat.keys():
-                setattr(loaded_disc, attrname, mdat[discretization_name+attrname)
+                        setattr(loaded_disc, attrname, mdat[discretization_name+attrname])
     return loaded_disc
 
 
