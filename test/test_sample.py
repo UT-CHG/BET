@@ -152,7 +152,7 @@ class Test_sample_set(unittest.TestCase):
         """
         Test domain information.
         """
-        domain = np.ones((self.dim,), dtype=np.int)
+        domain = np.ones((self.dim,2))
         self.sam_set.set_domain(domain)
         nptest.assert_array_equal(domain, self.sam_set.get_domain())
                 
@@ -194,6 +194,7 @@ class Test_discretization_simple(unittest.TestCase):
         """
         Test setting io ptr
         """
+        #TODO be careful if we change Kdtree
         self.disc.set_io_ptr(globalize=True)
         self.disc.get_io_ptr()
         self.disc.set_io_ptr(globalize=False)
@@ -203,6 +204,7 @@ class Test_discretization_simple(unittest.TestCase):
         """
         Test setting emulated ii ptr
         """
+        #TODO be careful if we change Kdtree
         values = np.ones((10, self.dim1))
         self.emulated = sample.sample_set(dim=self.dim1)
         self.emulated.set_values(values)
@@ -216,6 +218,7 @@ class Test_discretization_simple(unittest.TestCase):
         """
         Test setting emulated oo ptr
         """
+        #TODO be careful if we change Kdtree
         values = np.ones((10, self.dim2))
         self.emulated = sample.sample_set(dim=self.dim2)
         self.emulated.set_values(values)

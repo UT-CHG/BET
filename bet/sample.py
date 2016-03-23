@@ -505,7 +505,7 @@ def load_discretization(file_name, discretization_name=None):
         return None
 
     for attrname in dir(loaded_disc):
-        if attrname is not '_input_sample_set' and atrrname is not '_output_sample_set':
+        if attrname is not '_input_sample_set' and attrname is not '_output_sample_set':
             if attrname in discretization.vector_names:
                 setattr(loaded_disc, attrname,
                         np.squeeze(mdat[discretization_name+attrname]))
