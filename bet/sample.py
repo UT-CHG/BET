@@ -123,7 +123,7 @@ class sample_set(object):
 
         """
         self._values = util.fix_dimensions_data(values)
-        if self._values.shape[0] != self._dim:
+        if self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         
     def get_values(self):

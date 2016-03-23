@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 # Lindley Graham 04/07/2015
 # Troy Butler 03/22/2016
@@ -52,7 +52,7 @@ class test_plotDomains(unittest.TestCase):
         output_samples.set_values(input_samples.get_values()*3.0)
         output_samples.set_domain(3.0*input_samples.get_domain())
 
-        self.disc = discretization(input_samples, output_samples)
+        self.disc = sample.discretization(input_samples, output_samples)
 
         self.filename = "testfigure"
 
