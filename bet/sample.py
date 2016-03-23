@@ -235,7 +235,7 @@ class sample_set(object):
         :type domain: :class:`numpy.ndarray` of shape (dim, 2)
         
         """
-        if domain.shape[0] != self._dim:
+        if (domain.shape[0], 2) != (self._dim, 2):
             raise dim_not_matching("dimension of values incorrect")
         else:
             self._domain = domain
