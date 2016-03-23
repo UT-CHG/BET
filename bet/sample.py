@@ -94,14 +94,14 @@ class sample_set(object):
         num = None
         for array_name in self._array_names:
             current_array = getattr(self, array_name)
-            if current_array:
+            if current_array is not None:
                 if num is None:
                     num = current_array.shape[0]
                     first_array = array_name
                 else:
                     if num != current_array.shape[0]:
-                        raise length_not_matching("length of " + array_name +"\
-                                inconsistent with " + first_array) 
+                        raise length_not_matching("length of " + array_name +
+                                                  " inconsistent with " + first_array) 
         return num
 
     def get_dim(self):
@@ -124,7 +124,7 @@ class sample_set(object):
 
         """
         self._values = util.fix_dimensions_data(values)
-        if self._values.shape[0] != self._dim:
+        if self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         
     def get_values(self):
@@ -346,8 +346,8 @@ class sample_set(object):
         """
         for array_name in self._array_names:
             current_array_local = getattr(self, array_name + "_local")
-            if current_array_local:
-                setattr(self, array_name, util.get_global(current_array_local))
+            if current_array_local is not None:
+                setattr(self, array_name, util.get_global_values(current_array_local))
         pass
 
     def global_to_local(self):
@@ -355,11 +355,11 @@ class sample_set(object):
         Makes local arrays from available global ones.
         """
         num = self.check_num()
-        global_index = np.arange(num, dytpe=np.int)
-        self._local_index = np.array_split(global_index, comm.size)
+        global_index = np.arange(num, dtype=np.int)
+        self._local_index = np.array_split(global_index, comm.size)[comm.rank]
         for array_name in self._array_names:
             current_array = getattr(self, array_name)
-            if current_array:
+            if current_array is not None:
                 setattr(self, array_name + "_local",
                         current_array[self._local_index]) 
                 
