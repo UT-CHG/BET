@@ -20,7 +20,7 @@ class GradientsMethods:
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
         """
-        self.input_set.set_values(grad.sample_linf_ball(self.centers, self.num_close, self.rvec, self.input_set._domain))
+        self.input_set._values = grad.sample_linf_ball(self.input_set_centers, self.num_close, self.rvec)
 
         # Test the method returns the correct dimensions
         self.assertEqual(self.input_set._values.shape, ((self.num_close+1) * self.num_centers, self.input_dim))
@@ -43,17 +43,11 @@ class GradientsMethods:
         """
         Test :meth:`bet.sensitivity.gradients.sample_l1_ball`.
         """
-        self.input_set.set_values(grad.sample_l1_ball(self.centers, self.num_close, self.rvec))
-
-
-        #self.samples = grad.sample_l1_ball(self.centers, self.num_close,
-        #    self.rvec)
+        self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.num_close, self.rvec)
 
         # Test that the samples are within max(rvec) of center (l1 dist)
         self.repeat = np.repeat(self.centers, self.num_close, axis=0)
         nptest.assert_array_less(np.linalg.norm(self.input_set._values[self.num_centers:] - self.repeat, np.inf, axis=1), np.max(self.rvec))
-
-        #nptest.assert_array_less(np.linalg.norm(self.samples[self.num_centers:] - self.repeat, 1, axis=1), np.max(self.rvec))
 
         # Test the method returns the correct dimensions
         self.assertEqual(self.input_set._values.shape, ((self.num_close+1) * self.num_centers, self.input_dim))
@@ -63,7 +57,7 @@ class GradientsMethods:
         """
         Test :meth:`bet.sensitivity.gradients.sample_linf_ball`.
         """
-        self.input_set.set_values(grad.pick_ffd_points(self.centers, self.rvec))
+        self.input_set._values = grad.pick_ffd_points(self.input_set_centers, self.rvec)
 
         #self.samples = grad.pick_ffd_points(self.centers, self.rvec)
 
@@ -82,7 +76,7 @@ class GradientsMethods:
         """
         Test :meth:`bet.sensitivity.gradients.sample_l1_ball`.
         """
-        self.input_set.set_values(grad.pick_cfd_points(self.centers, self.rvec))
+        self.input_set._values = grad.pick_cfd_points(self.input_set_centers, self.rvec)
 
         if not isinstance(self.rvec, np.ndarray):
             self.rvec = np.ones(self.input_dim) * self.rvec
@@ -129,9 +123,9 @@ class GradientsMethods:
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
         """
         self.output_set = sample.sample_set(self.output_dim)
-        self.input_set.set_values(grad.sample_l1_ball(self.centers, self.num_close, self.rvec))
-        self.output_set.set_values(self.input_set._values.dot(self.coeffs))
-        self.input_set.set_jacobians(grad.calculate_gradients_rbf(self.input_set._values, self.output_set._values, self.centers))
+        self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.num_close, self.rvec)
+        self.output_set._values = self.input_set._values.dot(self.coeffs)
+        self.input_set._jacobians = grad.calculate_gradients_rbf(self.input_set, self.output_set, self.input_set_centers)
 
         # Test the method returns the correct size tensor
         self.assertEqual(self.input_set._jacobians.shape, (self.num_centers, self.output_dim,
@@ -149,9 +143,9 @@ class GradientsMethods:
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
         """
         self.output_set = sample.sample_set(self.output_dim)
-        self.input_set.set_values(grad.pick_ffd_points(self.centers, self.rvec))
-        self.output_set.set_values(self.input_set._values.dot(self.coeffs))
-        self.input_set.set_jacobians(grad.calculate_gradients_ffd(self.input_set._values, self.output_set._values))
+        self.input_set._values = grad.pick_ffd_points(self.input_set_centers, self.rvec)
+        self.output_set._values = self.input_set._values.dot(self.coeffs)
+        self.input_set._jacobians = grad.calculate_gradients_ffd(self.input_set, self.output_set)
 
         # Test the method returns the correct size tensor
         self.assertEqual(self.input_set._jacobians.shape, (self.num_centers, self.output_dim,
@@ -169,9 +163,9 @@ class GradientsMethods:
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
         """
         self.output_set = sample.sample_set(self.output_dim)
-        self.input_set.set_values(grad.pick_cfd_points(self.centers, self.rvec))
-        self.output_set.set_values(self.input_set._values.dot(self.coeffs))
-        self.input_set.set_jacobians(grad.calculate_gradients_cfd(self.input_set._values, self.output_set._values))
+        self.input_set._values = grad.pick_cfd_points(self.input_set_centers, self.rvec)
+        self.output_set._values = self.input_set._values.dot(self.coeffs)
+        self.input_set._jacobians = grad.calculate_gradients_cfd(self.input_set, self.output_set)
 
         # Test the method returns the correct size tensor
         self.assertEqual(self.input_set._jacobians.shape, (self.num_centers, self.output_dim,
@@ -194,7 +188,7 @@ class GradientsAccuracy:
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
         """
-        self.input_set_rbf.set_jacobians(grad.calculate_gradients_rbf(self.input_set_rbf._values, self.output_set_rbf._values, normalize=False))
+        self.input_set_rbf._jacobians = grad.calculate_gradients_rbf(self.input_set_rbf, self.output_set_rbf, normalize=False)
 
         nptest.assert_array_almost_equal(self.input_set_rbf._jacobians - self.G_exact, 0, decimal = 2)
 
@@ -202,7 +196,7 @@ class GradientsAccuracy:
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
         """
-        self.input_set_ffd.set_jacobians(grad.calculate_gradients_ffd(self.input_set_ffd._values, self.output_set_ffd._values, normalize=False))
+        self.input_set_ffd._jacobians = grad.calculate_gradients_ffd(self.input_set_ffd, self.output_set_ffd, normalize=False)
 
         nptest.assert_array_almost_equal(self.input_set_ffd._jacobians - self.G_exact, 0, decimal = 2)
 
@@ -210,7 +204,7 @@ class GradientsAccuracy:
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
         """
-        self.input_set_cfd.set_jacobians(grad.calculate_gradients_cfd(self.input_set_cfd._values, self.output_set_cfd._values, normalize=False))
+        self.input_set_cfd._jacobians = grad.calculate_gradients_cfd(self.input_set_cfd, self.output_set_cfd, normalize=False)
 
         nptest.assert_array_almost_equal(self.input_set_cfd._jacobians - self.G_exact, 0, decimal = 2)
 
@@ -222,12 +216,14 @@ class test_1to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
         # Define the input domain (Lambda)
         self.input_dim = 1
         self.input_set = sample.sample_set(self.input_dim)
+        self.input_set_centers = sample.sample_set(self.input_dim)
 
         self.lam_domain = np.zeros((self.input_set._dim, 2))
         self.lam_domain[:,0] = np.zeros(self.input_set._dim)
         self.lam_domain[:,1] = np.ones(self.input_set._dim)
 
-        self.input_set.set_domain(self.lam_domain)
+        self.input_set._domain = self.lam_domain
+        self.input_set_centers._domain = self.lam_domain
 
         # Choose random centers in input_domian to cluster points around
         self.num_centers = 1
@@ -235,6 +231,7 @@ class test_1to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
         self.rvec = 0.1
         np.random.seed(0)
         self.centers = np.random.uniform(self.lam_domain[:, 0], self.lam_domain[:, 1] - self.lam_domain[:, 0], [self.num_centers, self.input_set._dim])
+        self.input_set_centers._values = self.centers
 
         # Choose array shapes for RBF methods
         np.random.seed(0)
@@ -254,17 +251,20 @@ class test_2to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
         # Define the parameter space (Lambda)
         self.input_dim = 2
         self.input_set = sample.sample_set(self.input_dim)
+        self.input_set_centers = sample.sample_set(self.input_dim)
 
         self.lam_domain = np.zeros((self.input_dim, 2))
         self.lam_domain[:,0] = np.zeros(self.input_dim)
         self.lam_domain[:,1] = np.ones(self.input_dim)
 
-        self.input_set.set_domain(self.lam_domain)
+        self.input_set._domain = self.lam_domain
+        self.input_set_centers._domain = self.lam_domain
 
         # Choose random centers to cluster points around
         self.num_centers = 1
         np.random.seed(0)
         self.centers = np.random.uniform(self.lam_domain[:, 0], self.lam_domain[:, 1] - self.lam_domain[:, 0], [self.num_centers, self.input_set._dim])
+        self.input_set_centers._values = self.centers
         self.num_close = self.input_dim + 1
         self.rvec = np.random.random(self.input_dim)
 
@@ -287,17 +287,20 @@ class test_4to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
         # Define the parameter space (Lambda)
         self.input_dim = 4
         self.input_set = sample.sample_set(self.input_dim)
+        self.input_set_centers = sample.sample_set(self.input_dim)
 
         self.lam_domain = np.zeros((self.input_dim, 2))
         np.random.seed(0)
         self.lam_domain[:,0] = np.random.random(self.input_dim)
         self.lam_domain[:,1] = np.random.random(self.input_dim) + 2
 
-        self.input_set.set_domain(self.lam_domain)
+        self.input_set._domain = self.lam_domain
+        self.input_set_centers._domain = self.lam_domain
 
         # Choose random centers to cluster points around
         self.num_centers = 100
         self.centers = np.random.uniform(self.lam_domain[:, 0], self.lam_domain[:, 1] - self.lam_domain[:, 0], [self.num_centers, self.input_set._dim])
+        self.input_set_centers._values = self.centers
         self.num_close = self.input_set._dim + 1
         self.rvec = 0.1
 
@@ -320,17 +323,20 @@ class test_9to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
         # Define the parameter space (Lambda)
         self.input_dim = 9
         self.input_set = sample.sample_set(self.input_dim)
+        self.input_set_centers = sample.sample_set(self.input_dim)
 
         self.lam_domain = np.zeros((self.input_dim, 2))
         np.random.seed(0)
         self.lam_domain[:,0] = np.random.random(self.input_dim)
         self.lam_domain[:,1] = np.random.random(self.input_dim) + 2
 
-        self.input_set.set_domain(self.lam_domain)
+        self.input_set._domain = self.lam_domain
+        self.input_set_centers._domain = self.lam_domain
 
         # Choose random centers to cluster points around
         self.num_centers = 100
         self.centers = np.random.uniform(self.lam_domain[:, 0], self.lam_domain[:, 1] - self.lam_domain[:, 0], [self.num_centers, self.input_set._dim])
+        self.input_set_centers._values = self.centers
         self.num_close = self.input_dim + 1
         self.rvec = 0.1
 
@@ -354,19 +360,22 @@ class test_15to37_143centers_negrandomhyperbox(GradientsMethods,
         # Define the parameter space (Lambda)
         self.input_dim = 15
         self.input_set = sample.sample_set(self.input_dim)
+        self.input_set_centers = sample.sample_set(self.input_dim)
 
         self.lam_domain = np.zeros((self.input_dim, 2))
         np.random.seed(0)
         self.lam_domain[:,0] = -1*np.random.random(self.input_dim) - 2
         self.lam_domain[:,1] = -1*np.random.random(self.input_dim)
 
-        self.input_set.set_domain(self.lam_domain)
+        self.input_set._domain = self.lam_domain
+        self.input_set_centers._domain = self.lam_domain
 
         # Choose random centers to cluster points around
         self.num_centers = 143
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.input_dim)) + \
             self.lam_domain[:,0]
+        self.input_set_centers._values = self.centers
         self.num_close = self.input_dim + 1
         self.rvec = 0.1
 
@@ -390,19 +399,22 @@ class test_9to30_100centers_randomhyperbox_zeroQoIs(GradientsMethods,
         # Define the parameter space (Lambda)
         self.input_dim = 9
         self.input_set = sample.sample_set(self.input_dim)
+        self.input_set_centers = sample.sample_set(self.input_dim)
 
         self.lam_domain = np.zeros((self.input_dim, 2))
         np.random.seed(0)
         self.lam_domain[:,0] = np.random.random(self.input_dim)
         self.lam_domain[:,1] = np.random.random(self.input_dim) + 2
 
-        self.input_set.set_domain(self.lam_domain)
+        self.input_set._domain = self.lam_domain
+        self.input_set_centers._domain = self.lam_domain
 
         # Choose random centers to cluster points around
         self.num_centers = 100
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.input_dim)) + \
             self.lam_domain[:,0]
+        self.input_set_centers._values = self.centers
         self.num_close = self.input_dim + 1
         self.rvec = np.random.random(self.input_dim)
 
@@ -430,6 +442,8 @@ class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
         self.input_set_ffd = sample.sample_set(self.input_dim)
         self.input_set_cfd = sample.sample_set(self.input_dim)
 
+        self.input_set_centers = sample.sample_set(self.input_dim)
+
         self.output_dim = 2
         self.output_set_rbf = sample.sample_set(self.output_dim)
         self.output_set_ffd = sample.sample_set(self.output_dim)
@@ -439,9 +453,9 @@ class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
         self.lam_domain[:,0] = np.zeros(self.input_dim)
         self.lam_domain[:,1] = np.ones(self.input_dim)
 
-        self.input_set_rbf.set_domain(self.lam_domain)
-        self.input_set_ffd.set_domain(self.lam_domain)
-        self.input_set_cfd.set_domain(self.lam_domain)
+        self.input_set_rbf._domain = self.lam_domain
+        self.input_set_ffd._domain = self.lam_domain
+        self.input_set_cfd._domain = self.lam_domain
 
         # Choose random centers to cluster points around
         self.num_centers = 100
@@ -449,13 +463,13 @@ class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
         self.centers = (self.lam_domain[:,1] - self.lam_domain[:,0]) * \
             np.random.random((self.num_centers,self.input_dim)) + \
             self.lam_domain[:,0]
+        self.input_set_centers._values = self.centers
         self.num_close = self.input_dim + 1
         self.rvec = 0.01 * np.ones(self.input_dim)
 
-        self.input_set_rbf.set_values(grad.sample_l1_ball(self.centers, self.num_close,
-            self.rvec))
-        self.input_set_ffd.set_values(grad.pick_ffd_points(self.centers, self.rvec))
-        self.input_set_cfd.set_values(grad.pick_cfd_points(self.centers, self.rvec))
+        self.input_set_rbf._values = grad.sample_l1_ball(self.input_set_centers, self.num_close, self.rvec)
+        self.input_set_ffd._values = grad.pick_ffd_points(self.input_set_centers, self.rvec)
+        self.input_set_cfd._values = grad.pick_cfd_points(self.input_set_centers, self.rvec)
 
         # Define a vector valued function f : [0,1]x[0,1] -> [x^2, y^2]
         def f(x):
@@ -464,9 +478,9 @@ class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
             f[:, 1] = x[:, 1]**2
             return f
 
-        self.output_set_rbf.set_values(f(self.input_set_rbf._values))
-        self.output_set_ffd.set_values(f(self.input_set_ffd._values))
-        self.output_set_cfd.set_values(f(self.input_set_cfd._values))
+        self.output_set_rbf._values = f(self.input_set_rbf._values)
+        self.output_set_ffd._values = f(self.input_set_ffd._values)
+        self.output_set_cfd._values = f(self.input_set_cfd._values)
 
         self.G_exact = np.zeros([self.num_centers, self.output_dim,
             self.input_dim])

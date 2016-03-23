@@ -252,14 +252,18 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 
     return rbfdxi
 
-def calculate_gradients_rbf(intput_set, output_set, input_set_centers=None, num_neighbors=None, RBF=None, ep=None, normalize=True):
+def calculate_gradients_rbf(input_set, output_set, input_set_centers=None, num_neighbors=None, RBF=None, ep=None, normalize=True):
     r"""
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map using a radial basis function
     interpolation method.
     
-    :param samples: Samples for which the model has been solved.
-    :type samples: :class:`np.ndarray` of shape (num_samples, input_dim)
+    :param input_set: sample object
+    :type input_set: :class:`sample`
+    :param output_set: sample object
+    :type output_set: :class:`sample`
+    :param input_set_centers: sample object
+    :type input_set_centers: :class:`sample`
     :param data: QoI values corresponding to each sample.
     :type data: :class:`np.ndarray` of shape (num_samples, output_dim)
     :param centers: Points in :math:`\Lambda` at which to approximate gradient
@@ -278,6 +282,9 @@ def calculate_gradients_rbf(intput_set, output_set, input_set_centers=None, num_
         QoI map at each point in centers
     
     """
+    samples = input_set._values
+    data = output_set._values
+
     data = util.fix_dimensions_vector_2darray(util.clean_data(data))
     input_dim = samples.shape[1]
     num_model_samples = samples.shape[0]
@@ -292,10 +299,11 @@ def calculate_gradients_rbf(intput_set, output_set, input_set_centers=None, num_
 
     # If centers is None we assume the user chose clusters of size
     # input_dim + 2
-    if centers is None:
+    if input_set_centers is None:
         num_centers = num_model_samples / (input_dim + 2)
         centers = samples[:num_centers]
     else:
+        centers = input_set_centers._values
         num_centers = centers.shape[0]
 
     rbf_tensor = np.zeros([num_centers, num_model_samples, input_dim])
@@ -341,17 +349,17 @@ def calculate_gradients_rbf(intput_set, output_set, input_set_centers=None, num_
 
     return gradient_tensor
 
-def calculate_gradients_ffd(samples, data, normalize=True):
+def calculate_gradients_ffd(input_set, output_set, normalize=True):
     """
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
     :meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
     FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.
     
-    :param samples: Samples for which the model has been solved.
-    :type samples: :class:`np.ndarray` of shape (num_samples, input_dim)
-    :param data: QoI values corresponding to each sample.
-    :type data: :class:`np.ndarray` of shape (num_samples, output_dim)
+    :param input_set: sample object
+    :type input_set: :class:`sample`
+    :param output_set: sample object
+    :type output_set: :class:`sample`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     
@@ -360,6 +368,9 @@ def calculate_gradients_ffd(samples, data, normalize=True):
         QoI map at each point in centers
     
     """
+    samples = input_set._values
+    data = output_set._values
+
     num_model_samples = samples.shape[0]
     input_dim = samples.shape[1]
     num_centers = num_model_samples / (input_dim + 1)
@@ -396,18 +407,17 @@ def calculate_gradients_ffd(samples, data, normalize=True):
 
     return gradient_tensor
 
-def calculate_gradients_cfd(samples, data, normalize=True):
+def calculate_gradients_cfd(input_set, output_set, normalize=True):
     """
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
     ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE 
     CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
     
-    :param samples: Samples for which the model has been solved.
-    :type samples: :class:`np.ndarray` of shape
-        (2*input_dim*num_centers, input_dim)
-    :param data: QoI values corresponding to each sample.
-    :type data: :class:`np.ndarray` of shape (num_samples, output_dim)
+    :param input_set: sample object
+    :type input_set: :class:`sample`
+    :param output_set: sample object
+    :type output_set: :class:`sample`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
     
@@ -416,6 +426,9 @@ def calculate_gradients_cfd(samples, data, normalize=True):
         QoI map at each point in centers
     
     """
+    samples = input_set._values
+    data = output_set._values
+
     num_model_samples = samples.shape[0]
     input_dim = samples.shape[1]
     num_centers = num_model_samples / (2*input_dim + 1)
