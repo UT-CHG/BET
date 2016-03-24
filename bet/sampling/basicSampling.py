@@ -13,7 +13,6 @@ assume the measure on both spaces in Lebesgue.
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
-import bet.util as util
 from bet.Comm import comm
 import bet.sample as sample
 
@@ -36,7 +35,7 @@ def loadmat(save_file, model=None):
         discretization = sample.load_discretization(save_file)
         num_samples = discretization.check_nums()
     else:
-        discretization= None
+        discretization = None
     loaded_sampler = sampler(model, num_samples)    
     return (loaded_sampler, discretization)
 
@@ -116,21 +115,21 @@ class sampler(object):
 
         """
         # Create N samples
-        if num_samples == None:
+        if num_samples is None:
             num_samples = self.num_samples
         
         input_sample_set = sample.sample_set(input_domain.shape[0])
         input_sample_set.set_domain(input_domain)
 
         input_left = np.repeat([input_domain[:, 0]], num_samples, 0)
-        input_right = np.repeat([input_domain[:,1]], num_samples, 0)
+        input_right = np.repeat([input_domain[:, 1]], num_samples, 0)
         input_values = (input_right-input_left)
          
         if sample_type == "lhs":
             input_values = input_values * lhs(input_sample_set.get_dim(),
-                    num_input_values, criterion)
+                    num_samples, criterion)
         elif sample_type == "random" or "r":
-            input_values = input_values * np.random.random(param_left.shape) 
+            input_values = input_values * np.random.random(input_left.shape) 
         input_values = input_values + input_left
         input_sample_set.set_values(input_values)
 
@@ -165,7 +164,7 @@ class sampler(object):
             output_values = self.lb_model(\
                     input_sample_set.get_values())
             # figure out the dimension of the output
-            if (output_values.shape) == 0:
+            if len(output_values.shape) == 0:
                 output_dim = 1
             else:
                 output_dim = output_values.shape[1]
@@ -176,7 +175,7 @@ class sampler(object):
             local_output_values = self.lb_model(\
                     input_sample_set.get_values_local())
             # figure out the dimension of the output
-             if (output_values.shape) == 0:
+            if len(output_values.shape) == 0:
                 output_dim = 1
             else:
                 output_dim = output_values.shape[1]
@@ -192,7 +191,7 @@ class sampler(object):
         self.update_mdict(mdat)
 
         if comm.rank == 0:
-            self.save(self, mdat, savefile, discretization)
+            self.save(mdat, savefile, discretization)
         
         return discretization
 
