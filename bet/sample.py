@@ -380,7 +380,9 @@ class sample_set(object):
         return self._kdtree
 
     def set_values_local(self, values_local):
-        self._values_local = values_local
+        self._values_local = util.fix_dimensions_data(values_local)
+        if self._values_local.shape[1] != self._dim:
+            raise dim_not_matching("dimension of values incorrect")
         pass
         
     def get_values_local(self):
