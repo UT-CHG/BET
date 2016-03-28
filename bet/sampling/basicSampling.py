@@ -30,10 +30,10 @@ def loadmat(save_file, model=None):
     """
     # load the data from a *.mat file
     mdat = sio.loadmat(save_file)
+    num_samples = mdat['num_samples']
     # load the discretization
     if mdat.has_key('samples'):
         discretization = sample.load_discretization(save_file)
-        num_samples = discretization.check_nums()
     else:
         discretization = None
     loaded_sampler = sampler(model, num_samples)    

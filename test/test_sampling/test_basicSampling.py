@@ -165,18 +165,18 @@ class Test_basic_sampler(unittest.TestCase):
 
     def setUp(self):
         # create 1-1 map
-        self.input_domain1 = np.column_stack(np.zeros((1,)), np.ones((1,)))
+        self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
         def map_1t1(x):
             return np.sin(x)
         # create 3-1 map
-        self.input_domain3 = np.column_stack(np.zeros((3,)), np.ones((3,)))
+        self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
         def map_3t1(x):
             return np.sum(x, 1)
         # create 3-2 map
         def map_3t2(x):
             return np.vstack(([x[:, 0]+x[:, 1], x[:, 2]])).transpose()
         # create 10-4 map
-        self.input_domain10 = np.column_stack(np.zeros((10,)), np.ones((10,)))
+        self.input_domain10 = np.column_stack((np.zeros((10,)), np.ones((10,))))
         def map_10t4(x):
             x1 = x[:, 0] + x[:, 1]
             x2 = x[:, 2] + x[:, 3]
@@ -242,7 +242,7 @@ class Test_basic_sampler(unittest.TestCase):
 
         for i, array in enumerate(list_of_samples):
             list_of_sample_sets[i] = sample_set(list_of_dims[i])
-            list_of_sample_sets.set_values(array)
+            list_of_sample_sets[i].set_values(array)
 
         test_list = zip(self.models, self.samplers, list_of_sample_sets, 
                 self.savefiles)

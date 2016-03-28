@@ -9,6 +9,7 @@ This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.dim_not_matching`
 """
 
+import os
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -463,7 +464,7 @@ def save_discretization(save_disc, file_name, discretization_name=None):
         if curr_attr is not None:
             if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
-                    distrcretization_name+attrname)
+                    discretization_name+attrname)
             else:
                 new_mdat[discretization_name+attrname] = curr_attr
     
