@@ -16,14 +16,18 @@ from pyDOE import lhs
 from bet.Comm import comm
 import bet.sample as sample
 
-def loadmat(save_file, model=None):
+def loadmat(save_file, disc_name=None, model=None):
     """
     Loads data from ``save_file`` into a
     :class:`~bet.basicSampling.sampler` object.
 
     :param string save_file: file name
+    :param string disc_name: name of :class:`~bet.sample.discretization` in
+        file
     :param model: runs the model at a given set of parameter samples and
         returns data 
+    :type model: callable
+
     :rtype: tuple
     :returns: (sampler, discretization)
 
@@ -32,10 +36,7 @@ def loadmat(save_file, model=None):
     mdat = sio.loadmat(save_file)
     num_samples = mdat['num_samples']
     # load the discretization
-    if mdat.has_key('samples'):
-        discretization = sample.load_discretization(save_file)
-    else:
-        discretization = None
+    discretization = sample.load_discretization(save_file, disc_name)
     loaded_sampler = sampler(model, num_samples)    
     return (loaded_sampler, discretization)
 

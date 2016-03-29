@@ -45,22 +45,22 @@ def test_loadmat():
     bet.sample.save_discretization(disc(my_input1, my_output),
             'testfile1')
     bet.sample.save_discretization(disc(my_input2, None),
-            'testfile2')
+            'testfile2', "NAME")
 
     (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
         'testfile1'))
-    nptest.assert_array_equal(discretization1._input_sample_set._values,
-            mdat1['input'])
-    nptest.assert_array_equal(discretization1._output_sample_set._values,
-            mdat1['output'])
+    nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
+            my_input1.get_values())
+    nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
+            my_output.get_values())
     assert loaded_sampler1.num_samples == 5
     assert loaded_sampler1.lb_model is None
 
     (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
-        'testfile2'), model)
-    nptest.assert_array_equal(discretization2._input_sample_set._values,
-            mdat2['samples'])
-    nptest.assert_array_equal(discretization2._output_sample_set._values, None)
+        'testfile2'), disc_name="NAME", model=model)
+    nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
+            my_input2.get_values())
+    assert discretization2._output_sample_set is None
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
     if os.path.exists(os.path.join(local_path, 'testfile1.mat')):

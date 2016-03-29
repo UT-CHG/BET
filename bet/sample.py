@@ -81,6 +81,7 @@ def load_sample_set(file_name, sample_set_name=None):
     if sample_set_name+"_dim" in mdat.keys():
         loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
+        warnings.warn("No sample_set with _dim in file")
         return None
 
     for attrname in sample_set.vector_names:
@@ -574,7 +575,7 @@ class discretization(object):
         self._emulated_ii_ptr_local = None
         #: local emulated oo ptr for parallelism
         self._emulated_oo_ptr_local = None
-        if output_probability_set is not None:
+        if output_sample_set is not None:
             self.check_nums()
         else:
             warnings.warn("No output_sample_set")
