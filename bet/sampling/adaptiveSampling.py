@@ -18,40 +18,31 @@ import bet.sampling.basicSampling as bsam
 import bet.util as util
 import math, os, glob
 from bet.Comm import comm, MPI 
+import bet.sample as sample
 
-
-def loadmat(save_file, lb_model=None):
+def loadmat(save_file, disc_name=None, lb_model=None):
     """
     Loads data from ``save_file`` into a
     :class:`~bet.sampling.adaptiveSampling.sampler` object.
     
     :param string save_file: file name
+    :param string disc_name: name of :class:`~bet.sample.discretization` file
     :param lb_model: runs the model at a given set of parameter samples, (N,
         ndim), and returns data (N, mdim)
     
     :rtype: tuple
-    :returns: (sampler, samples, data)
+    :returns: (sampler, discretization)
     
     """
     # load the data from a *.mat file
     mdat = sio.loadmat(save_file)
-    # load the samples
-    if mdat.has_key('samples'):
-        samples = mdat['samples']
-        num_samples = samples.shape[0]
-    else:
-        samples = None
-        num_samples = np.squeeze(mdat['num_samples'])
-    # load the data
-    if mdat.has_key('data'):
-        data = mdat['data']
-    else:
-        data = None
+    # load the discretization
+    discretization = sample.load_discretization(save_file, disc_name)
+    num_samples = np.squeeze(mdat['num_samples'])
     # recreate the sampler
     new_sampler = sampler(num_samples,
             np.squeeze(mdat['chain_length']), lb_model)
-    
-    return (new_sampler, samples, data)
+    return (new_sampler, discretization)
 
 class sampler(bsam.sampler):
     """
@@ -100,7 +91,7 @@ class sampler(bsam.sampler):
         mdict['num_chains'] = self.num_chains
         mdict['sample_batch_no'] = self.sample_batch_no
         
-    def run_gen(self, kern_list, rho_D, maximum, param_min, param_max,
+    def run_gen(self, kern_list, rho_D, maximum, input_domain,
             t_set, savefile, initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and a list of different
@@ -112,10 +103,8 @@ class sampler(bsam.sampler):
         :type rho_D: callable function that takes a :class:`numpy.ndarray` and
             returns a :class:`numpy.ndarray`
         :param float maximum: maximum value of rho_D
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: :class:`numpy.ndarray` (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: :class:`numpy.ndarray` (ndim,)
+        :param input_domain: min, max value for each input dimension
+        :type input_domain: :class:`numpy.ndarray` (ndim, 2)
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
@@ -126,7 +115,7 @@ class sampler(bsam.sampler):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         
         :rtype: tuple
-        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+        :returns: ((samples, data), step_ratio_set, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
         
         """
@@ -136,10 +125,10 @@ class sampler(bsam.sampler):
         results_rD = list()
         mean_ss = list()
         for kern in kern_list:
-            (samples, data, step_sizes) = self.generalized_chains(
-                    param_min, param_max, t_set, kern, savefile,
+            (discretization, step_sizes) = self.generalized_chains(
+                    input_domain, t_set, kern, savefile,
                     initial_sample_type, criterion)
-            results.append((samples, data))
+            results.append(discretization)
             r_step_size.append(step_sizes)
             results_rD.append(int(sum(rho_D(data)/maximum)))
             mean_ss.append(np.mean(step_sizes))
@@ -147,7 +136,7 @@ class sampler(bsam.sampler):
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
     def run_tk(self, init_ratio, min_ratio, max_ratio, rho_D, maximum,
-            param_min, param_max, kernel, savefile,
+            input_domain, kernel, savefile,
             initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and
@@ -164,10 +153,8 @@ class sampler(bsam.sampler):
         :type rho_D: callable function that takes a :class:`numpy.ndarray` and
             returns a :class:`numpy.ndarray`
         :param float maximum: maximum value of rho_D
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: :class:`numpy.ndarray` (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: :class:`numpy.ndarray` (ndim,)
+        :param input_domain: min, max value for each input dimension
+        :type input_domain: :class:`numpy.ndarray` (ndim, 2)
         :param kernel: functional that acts on the data used to
             determine the proposed change to the ``step_size``
         :type kernel: :class:`bet.sampling.adaptiveSampling.kernel` object.
@@ -178,7 +165,7 @@ class sampler(bsam.sampler):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         
         :rtype: tuple
-        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+        :returns: ((samples, data), step_ratio_set, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
         
         """
@@ -188,10 +175,10 @@ class sampler(bsam.sampler):
         mean_ss = list()
         for i, j, k  in zip(init_ratio, min_ratio, max_ratio):
             ts = transition_set(i, j, k)
-            (samples, data, step_sizes) = self.generalized_chains(
-                    param_min, param_max, ts, kernel, savefile,
+            (discretization, step_sizes) = self.generalized_chains(
+                   input_domain, ts, kernel, savefile,
                     initial_sample_type, criterion)
-            results.append((samples, data))
+            results.append(discretization)
             r_step_size.append(step_sizes)
             results_rD.append(int(sum(rho_D(data)/maximum)))
             mean_ss.append(np.mean(step_sizes))
@@ -199,7 +186,7 @@ class sampler(bsam.sampler):
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
 
     def run_inc_dec(self, increase, decrease, tolerance, rho_D, maximum,
-            param_min, param_max, t_set, savefile,
+            input_domain, t_set, savefile,
             initial_sample_type="lhs", criterion='center'):
         """
         Generates samples using generalized chains and
@@ -214,10 +201,8 @@ class sampler(bsam.sampler):
         :type rho_D: callable function that takes a :class:`numpy.ndarray` and
             returns a :class:`numpy.ndarray`
         :param float maximum: maximum value of rho_D
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: :class:`numpy.ndarray` (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: :class:`numpy.ndarray` (ndim,)
+        :param input_domain: min, max value for each input dimension
+        :type input_domain: :class:`numpy.ndarray` (ndim, 2)
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
@@ -228,17 +213,17 @@ class sampler(bsam.sampler):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         
         :rtype: tuple
-        :returns: ((samples, data), all_step_ratios, num_high_prob_samples,
+        :returns: ((samples, data), step_ratio_set, num_high_prob_samples,
             sorted_incidices_of_num_high_prob_samples, average_step_ratio)
         
         """
         kern_list = list()
         for i, j, z in zip(increase, decrease, tolerance):
             kern_list.append(rhoD_kernel(maximum, rho_D, i, j, z)) 
-        return self.run_gen(kern_list, rho_D, maximum, param_min, param_max,
+        return self.run_gen(kern_list, rho_D, maximum, input_domain,
                 t_set, savefile, initial_sample_type, criterion)
 
-    def generalized_chains(self, param_min, param_max, t_set, kern,
+    def generalized_chains(self, input_domain, t_set, kern,
             savefile, initial_sample_type="random", criterion='center',
             hot_start=0): 
         """
@@ -246,10 +231,8 @@ class sampler(bsam.sampler):
        
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-        :param param_min: minimum value for each parameter dimension
-        :type param_min: :class:`numpy.ndarray` (ndim,)
-        :param param_max: maximum value for each parameter dimension
-        :type param_max: :class:`numpy.ndarray` (ndim,)
+        :param input_domain: min, max value for each input dimension
+        :type input_domain: :class:`numpy.ndarray` (ndim, 2)
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
@@ -266,10 +249,11 @@ class sampler(bsam.sampler):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         
         :rtype: tuple
-        :returns: (``parameter_samples``, ``data_samples``,
-            ``all_step_ratios``) where ``parameter_samples`` is np.ndarray of
-            shape (num_samples, ndim), ``data_samples`` is np.ndarray of shape
-            (num_samples, mdim), and ``all_step_ratios`` is np.ndarray of shape
+        :returns: (``discretization``,
+            ``step_ratio_set``) where ``discretization`` is a
+            :class:`~bet.sample.discretization` object containing
+            ``num_samples``  and ``step_ratio_set`` is a
+            :class:`~bet.sample.sample.set` object with values of shape
             (num_chains, chain_length)
         
         """
@@ -280,10 +264,10 @@ class sampler(bsam.sampler):
         # Initialize Nx1 vector Step_size = something reasonable (based on size
         # of domain and transition set type)
         # Calculate domain size
-        param_left = np.repeat([param_min], self.num_chains_pproc, 0)
-        param_right = np.repeat([param_max], self.num_chains_pproc, 0)
+        input_left = np.repeat([input_domain[:, 0]], self.num_chains_pproc, 0)
+        input_right = np.repeat([input_domain[:, 1]], self.num_chains_pproc, 0)
 
-        param_width = param_right - param_left
+        input_width = input_right - input_left
         # Calculate step_size
         max_ratio = t_set.max_ratio
         min_ratio = t_set.min_ratio
@@ -315,7 +299,7 @@ class sampler(bsam.sampler):
 
             samples = MYsamples_old
             data = MYdata_old
-            all_step_ratios = step_ratio
+            step_ratio_set = step_ratio
             (kern_old, proposal) = kern.delta_step(MYdata_old, None)
             start_ind = 1
         if hot_start:
@@ -334,9 +318,9 @@ class sampler(bsam.sampler):
                     samples = mdat['samples']
                     data = mdat['data']
                     kern_old = np.squeeze(mdat['kern_old'])
-                    all_step_ratios = np.squeeze(mdat['step_ratios'])
+                    step_ratio_set = np.squeeze(mdat['step_ratios'])
                     chain_length = samples.shape[0]/self.num_chains
-                    if all_step_ratios.shape == (self.num_chains,
+                    if step_ratio_set.shape == (self.num_chains,
                             chain_length):
                         print "Serial file, from completed run updating hot_start"
                         hot_start = 2
@@ -346,7 +330,7 @@ class sampler(bsam.sampler):
                             chain_length, -1), 'F')
                         data = np.reshape(data, (self.num_chains,
                             chain_length, -1), 'F')
-                        all_step_ratios = np.reshape(all_step_ratios,
+                        step_ratio_set = np.reshape(step_ratio_set,
                                 (self.num_chains, -1), 'F')
                 elif hot_start == 1 and len(mdat_files) == comm.size:
                     print "HOT START using parallel files (same nproc)"
@@ -357,7 +341,7 @@ class sampler(bsam.sampler):
                     samples = mdat['samples']
                     data = mdat['data']
                     kern_old = np.squeeze(mdat['kern_old'])
-                    all_step_ratios = np.squeeze(mdat['step_ratios'])
+                    step_ratio_set = np.squeeze(mdat['step_ratios'])
                 elif hot_start == 1 and len(mdat_files) != comm.size:
                     print "HOT START using parallel files (diff nproc)"
                     # Determine how many processors the previous data used
@@ -379,7 +363,7 @@ class sampler(bsam.sampler):
                     # create lists of local data
                     samples = []
                     data = []
-                    all_step_ratios = []
+                    step_ratio_set = []
                     kern_old = []
                     # RESHAPE old_num_chains_pproc, chain_length(or batch), dim
                     for mdat in mdat_global:
@@ -387,14 +371,14 @@ class sampler(bsam.sampler):
                             (old_num_chains_pproc, chain_length, -1), 'F'))
                         data.append(np.reshape(mdat['data'],
                             (old_num_chains_pproc, chain_length, -1), 'F'))
-                        all_step_ratios.append(np.reshape(mdat['step_ratios'],
+                        step_ratio_set.append(np.reshape(mdat['step_ratios'],
                             (old_num_chains_pproc, chain_length, -1), 'F'))
                         kern_old.append(np.reshape(mdat['kern_old'],
                             (old_num_chains_pproc,), 'F'))
                     # turn into arrays
                     samples = np.concatenate(samples)
                     data = np.concatenate(data)
-                    all_step_ratios = np.concatenate(all_step_ratios)
+                    step_ratio_set = np.concatenate(step_ratio_set)
                     kern_old = np.concatenate(kern_old)
             if hot_start == 2: # HOT START FROM COMPLETED RUN:
                 if comm.rank == 0:
@@ -403,7 +387,7 @@ class sampler(bsam.sampler):
                 samples = mdat['samples']
                 data = mdat['data']
                 kern_old = np.squeeze(mdat['kern_old'])
-                all_step_ratios = np.squeeze(mdat['step_ratios'])
+                step_ratio_set = np.squeeze(mdat['step_ratios'])
                 chain_length = samples.shape[0]/self.num_chains
                 mdat_files = []
                 # reshape if parallel
@@ -412,7 +396,7 @@ class sampler(bsam.sampler):
                         chain_length, -1), 'F')
                     data = np.reshape(data, (self.num_chains,
                         chain_length, -1), 'F')
-                    all_step_ratios = np.reshape(all_step_ratios,
+                    step_ratio_set = np.reshape(step_ratio_set,
                             (self.num_chains, chain_length), 'F')
             # SPLIT DATA IF NECESSARY
             if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
@@ -423,16 +407,16 @@ class sampler(bsam.sampler):
                     'F')
                 data = np.reshape(np.split(data, comm.size, 0)[comm.rank],
                         (self.num_chains_pproc*chain_length, -1), 'F')
-                all_step_ratios = np.reshape(np.split(all_step_ratios,
+                step_ratio_set = np.reshape(np.split(step_ratio_set,
                     comm.size, 0)[comm.rank],
                     (self.num_chains_pproc*chain_length,), 'F')
                 kern_old = np.reshape(np.split(kern_old, comm.size,
                     0)[comm.rank], (self.num_chains_pproc,), 'F')
             else:
-                all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
-            # Set samples, data, all_step_ratios, mdat, step_ratio,
+                step_ratio_set = np.reshape(step_ratio_set, (-1,), 'F')
+            # Set samples, data, step_ratio_set, mdat, step_ratio,
             # MYsamples_old, and kern_old accordingly
-            step_ratio = all_step_ratios[-self.num_chains_pproc:]
+            step_ratio = step_ratio_set[-self.num_chains_pproc:]
             MYsamples_old = samples[-self.num_chains_pproc:, :]
             # Determine how many batches have been run
             start_ind = samples.shape[0]/self.num_chains_pproc
@@ -442,8 +426,8 @@ class sampler(bsam.sampler):
         for batch in xrange(start_ind, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples samples_new.
-            samples_new = t_set.step(step_ratio, param_width,
-                    param_left, param_right, MYsamples_old)
+            samples_new = t_set.step(step_ratio, input_width,
+                    input_left, input_right, MYsamples_old)
         
             # Solve the model for the samples_new.
             data_new = self.lb_model(samples_new)
@@ -466,8 +450,8 @@ class sampler(bsam.sampler):
                             str(batch+1)+"/"+str(self.chain_length)
             samples = np.concatenate((samples, samples_new))
             data = np.concatenate((data, data_new))
-            all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
-            mdat['step_ratios'] = all_step_ratios
+            step_ratio_set = np.concatenate((step_ratio_set, step_ratio))
+            mdat['step_ratios'] = step_ratio_set
             mdat['samples'] = samples
             mdat['data'] = data
             mdat['kern_old'] = kern_old
@@ -480,29 +464,29 @@ class sampler(bsam.sampler):
         # collect everything
         MYsamples = np.copy(samples)
         MYdata = np.copy(data)
-        MYall_step_ratios = np.copy(all_step_ratios)
+        MYstep_ratio_set = np.copy(step_ratio_set)
         # ``parameter_samples`` is np.ndarray of shape (num_samples, ndim)
         samples = util.get_global_values(MYsamples,
                 shape=(self.num_samples, np.shape(MYsamples)[1]))           
         # and ``data_samples`` is np.ndarray of shape (num_samples, mdim)
         data = util.get_global_values(MYdata, shape=(self.num_samples,
             np.shape(MYdata)[1]))
-        # ``all_step_ratios`` is np.ndarray of shape (num_chains,
+        # ``step_ratio_set`` is np.ndarray of shape (num_chains,
         # chain_length)
-        all_step_ratios = util.get_global_values(MYall_step_ratios,
+        step_ratio_set = util.get_global_values(MYstep_ratio_set,
                 shape=(self.num_samples,))
-        all_step_ratios = np.reshape(all_step_ratios, (self.num_chains,
+        step_ratio_set = np.reshape(step_ratio_set, (self.num_chains,
             self.chain_length), 'F')
 
         # save everything
-        mdat['step_ratios'] = all_step_ratios
+        mdat['step_ratios'] = step_ratio_set
         mdat['samples'] = samples
         mdat['data'] = data
         mdat['kern_old'] = util.get_global_values(kern_old,
                 shape=(self.num_chains,))
         super(sampler, self).save(mdat, savefile)
 
-        return (samples, data, all_step_ratios)
+        return (samples, data, step_ratio_set)
         
 def kernels(Q_ref, rho_D, maximum):
     """
@@ -556,51 +540,51 @@ class transition_set(object):
         self.min_ratio = min_ratio
         self.max_ratio = max_ratio
     
-    def step(self, step_ratio, param_width, param_left, param_right,
-            samples_old): 
+    def step(self, step_ratio, input_width, input_left, input_right,
+            input_old): 
         """
         Generate ``num_samples`` new steps using ``step_ratio`` and
-        ``param_width`` to calculate the ``step size``. Each step will have a
+        ``input_width`` to calculate the ``step size``. Each step will have a
         random direction.
         
-        :param step_ratio: define maximum step_size = ``step_ratio*param_width``
+        :param step_ratio: define maximum step_size = ``step_ratio*input_width``
         :type step_ratio: :class:`numpy.ndarray` of shape (num_samples,)
-        :param param_width: width of the parameter domain
-        :type param_width: :class:`numpy.ndarray` of shape (ndim,)
-        :param param_left: minimum boundary of the parameter domain
-        :type param_left: :class:`numpy.ndarray` of shape (ndim, N) where N is
+        :param input_width: width of the parameter domain
+        :type input_width: :class:`numpy.ndarray` of shape (ndim,)
+        :param input_left: minimum boundary of the parameter domain
+        :type input_left: :class:`numpy.ndarray` of shape (ndim, N) where N is
             the length of ``step_ratio``
-        :param param_right: maximum boundary of the parameter domain
-        :type param_right: :class:`numpy.ndarray` of shape (ndim, N) where N is
+        :param input_right: maximum boundary of the parameter domain
+        :type input_right: :class:`numpy.ndarray` of shape (ndim, N) where N is
             the length of ``step_ratio``
-        :param samples_old: Parameter samples from the previous step.
-        :type samples_old: :class:`~numpy.ndarray` of shape (num_samples,
+        :param input_old: Input from the previous step.
+        :type input_old: :class:`~numpy.ndarray` of shape (num_samples,
             ndim)
         
         :rtype: :class:`numpy.ndarray` of shape (num_samples, ndim)
-        :returns: samples_new
+        :returns: input_new
         
         """
         # calculate maximum step size
-        step_size = np.repeat([step_ratio], param_width.shape[1],
-                0).transpose()*param_width
+        step_size = np.repeat([step_ratio], input_width.shape[1],
+                0).transpose()*input_width
         # check to see if step will take you out of parameter space
         # calculate maximum proposed step
-        samples_right = samples_old + 0.5*step_size
-        samples_left = samples_old - 0.5*step_size
+        input_right = input_old + 0.5*step_size
+        input_left = input_old - 0.5*step_size
         # Is the new sample greaters than the right limit?
-        far_right = samples_right >= param_right
-        far_left = samples_left <= param_left
-        # If the samples could leave the domain then truncate the box defining
+        far_right = input_right >= input_right
+        far_left = input_left <= input_left
+        # If the input could leave the domain then truncate the box defining
         # the step_size
-        samples_right[far_right] = param_right[far_right]
-        samples_left[far_left] = param_left[far_left]
-        samples_width = samples_right-samples_left
-        #samples_center = (samples_right+samples_left)/2.0
-        samples_new = samples_width * np.random.random(samples_old.shape)
-        samples_new = samples_new + samples_left
+        input_right[far_right] = input_right[far_right]
+        input_left[far_left] = input_left[far_left]
+        input_width = input_right-input_left
+        #input_center = (input_right+input_left)/2.0
+        input_new = input_width * np.random.random(input_old.shape)
+        input_new = input_new + input_left
         
-        return samples_new
+        return input_new
 
 class kernel(object):
     """

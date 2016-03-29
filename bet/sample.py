@@ -186,6 +186,8 @@ class sample_set(object):
                         raise length_not_matching("length of {} inconsistent \
                                 with {}".format(array_name,
                                                   first_array)) 
+        if self._values is not None and self._values.shape[1] != self._dim:
+            raise dim_not_matching("dimension of values incorrect")
         return num
 
     def get_dim(self):
@@ -590,11 +592,12 @@ class discretization(object):
         :returns: Number of samples
 
         """
-        if self._input_sample_set._values.shape[0] != \
-                self._output_sample_set._values.shape[0]:
+        out_num = self._output_sample_set.check_num()
+        in_num = self._input_sample_set.check_num()
+        if out_num != in_num
             raise length_not_matching("input and output lengths do not match")
         else:
-            return self._input_sample_set.check_num()
+            return in_num
 
     def set_io_ptr(self, globalize=True):
         """
