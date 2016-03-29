@@ -9,7 +9,7 @@ This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.dim_not_matching`
 """
 
-import os
+import os, warnings
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -47,12 +47,16 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
     else:
         mdat = dict()
     if sample_set_name is None:
-        sample_set_name = ''
-    for attrname in dir(save_set):
-        if attrname is not '_kdtree':
-            curr_attr = getattr(save_set, attrname)
-            if curr_attr is not None:
-                mdat[sample_set_name+attrname] = curr_attr 
+        sample_set_name = 'default'
+    for attrname in sample_set.vector_names:
+        curr_attr = getattr(save_set, attrname)
+        if curr_attr is not None:
+            mdat[sample_set_name+attrname] = curr_attr
+    for attrname in sample_set.array_names:
+        curr_attr = getattr(save_set, attrname)
+        if curr_attr is not None:
+            mdat[sample_set_name+attrname] = curr_attr
+    sio.savemat(file_name, mdat)
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -72,18 +76,21 @@ def load_sample_set(file_name, sample_set_name=None):
     """
     mdat = sio.loadmat(file_name)
     if sample_set_name is None:
-        sample_set_name = ''
+        sample_set_name = 'default'
     
-    loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
+    if sample_set_name+"_dim" in mdat.keys():
+        loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
+    else:
+        return None
 
-    for attrname in dir(loaded_set):
-        if attrname is not '_dim' and attrname is not '_kdtree':
-            if attrname in mdat.keys():
-                if attrname in sample_set.vector_names:
-                    setattr(loaded_set, attrname,
-                        np.squeeze(mdat[sample_set_name+attrname]))
-                else:
-                    setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
+    for attrname in sample_set.vector_names:
+        if attrname is not '_dim':
+            if sample_set_name+attrname in mdat.keys():
+                setattr(loaded_set, attrname,
+                    np.squeeze(mdat[sample_set_name+attrname]))
+    for attrname in sample_set.array_names:
+        if sample_set_name+attrname in mdat.keys():
+            setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     return loaded_set
 
 class sample_set(object):
@@ -94,10 +101,10 @@ class sample_set(object):
     """
     # TODO self._array_names should be moved here since it doesn't change 
     #: List of attribute names for attributes which are vectors or 1D
-    #: :class:`numpy.ndarray`
+    #: :class:`numpy.ndarray` or int/float
     vector_names = ['_error_estimates', '_error_estimates_local',
             '_probabilities', '_probabilities_local', '_volumes',
-            '_volumes_local', '_local_index']
+            '_volumes_local', '_local_index', '_dim']
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
@@ -175,8 +182,9 @@ class sample_set(object):
                     first_array = array_name
                 else:
                     if num != current_array.shape[0]:
-                        raise length_not_matching("length of " + array_name +
-                                                  " inconsistent with " + first_array) 
+                        raise length_not_matching("length of {} inconsistent \
+                                with {}".format(array_name,
+                                                  first_array)) 
         return num
 
     def get_dim(self):
@@ -424,8 +432,8 @@ class sample_set(object):
         for array_name in self._array_names:
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local is not None:
-                setattr(self, array_name, util.get_global_values(current_array_local))
-        pass
+                setattr(self, array_name,
+                        util.get_global_values(current_array_local)) 
 
     def global_to_local(self):
         """
@@ -458,15 +466,19 @@ def save_discretization(save_disc, file_name, discretization_name=None):
     new_mdat = dict()
 
     if discretization_name is None:
-        discretization_name = ''
-    for attrname in dir(save_disc):
+        discretization_name = 'default'
+
+    for attrname in discretization.sample_set_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
                     discretization_name+attrname)
-            else:
-                new_mdat[discretization_name+attrname] = curr_attr
+    
+    for attrname in discretization.vector_names:
+        curr_attr = getattr(save_disc, attrname)
+        if curr_attr is not None:
+            new_mdat[discretization_name+attrname] = curr_attr
     
     if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
         mdat = sio.loadmat(file_name)
@@ -494,7 +506,7 @@ def load_discretization(file_name, discretization_name=None):
     """
     mdat = sio.loadmat(file_name)
     if discretization_name is None:
-        discretization_name = ''
+        discretization_name = 'default'
 
     input_sample_set = load_sample_set(file_name,
             discretization_name+'_input_sample_set')
@@ -502,21 +514,18 @@ def load_discretization(file_name, discretization_name=None):
     output_sample_set = load_sample_set(file_name,
             discretization_name+'_output_sample_set')
 
-    if input_sample_set is not None:
-        loaded_disc = discretization(input_sample_set, output_sample_set)
-    else:
-        return None
-
-    for attrname in dir(loaded_disc):
-        if attrname is not '_input_sample_set' and attrname is not '_output_sample_set':
-            if attrname in discretization.vector_names:
-                setattr(loaded_disc, attrname,
-                        np.squeeze(mdat[discretization_name+attrname]))
-            elif attrname in discreitzation.sample_set_sames:
-                setattr(loaded_disc, attrname, load_sample_set(file_name,
+    loaded_disc = discretization(input_sample_set, output_sample_set)
+        
+    for attrname in discretization.sample_set_names:
+        if attrname is not '_input_sample_set' and \
+                attrname is not '_output_sample_set':
+            setattr(loaded_disc, attrname, load_sample_set(file_name,
                     discretization_name+attrname))
-            elif attrname in mdat.keys():
-                        setattr(loaded_disc, attrname, mdat[discretization_name+attrname])
+    
+    for attrname in discretization.vector_names:
+        if discretization_name+attrname in mdat.keys():
+            setattr(loaded_disc, attrname,
+                        np.squeeze(mdat[discretization_name+attrname]))
     return loaded_disc
 
 
@@ -538,7 +547,8 @@ class discretization(object):
  
     def __init__(self, input_sample_set, output_sample_set,
                  output_probability_set=None,
-                 emulated_input_sample_set=None, emulated_output_sample_set=None):
+                 emulated_input_sample_set=None,
+                 emulated_output_sample_set=None): 
         #: Input sample set :class:`~bet.sample.sample_set`
         self._input_sample_set = input_sample_set
         #: Output sample set :class:`~bet.sample.sample_set`
@@ -564,7 +574,10 @@ class discretization(object):
         self._emulated_ii_ptr_local = None
         #: local emulated oo ptr for parallelism
         self._emulated_oo_ptr_local = None
-        self.check_nums()
+        if output_probability_set is not None:
+            self.check_nums()
+        else:
+            warnings.warn("No output_sample_set")
         
     def check_nums(self):
         """
@@ -597,8 +610,8 @@ class discretization(object):
             self._output_sample_set.global_to_local()
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
-        (_, self._io_ptr_local) = self._output_probability_set.get_kdtree().query\
-                (self._output_sample_set._values_local)
+        (_, self._io_ptr_local) = self._output_probability_set.get_kdtree().\
+                query(self._output_sample_set._values_local)
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
        
@@ -673,7 +686,8 @@ class discretization(object):
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
         (_, self._emulated_oo_ptr_local) = self._output_probability_set.\
-                get_kdtree().query(self._emulated_output_sample_set._values_local)
+                get_kdtree().query(self._emulated_output_sample_set.\
+                _values_local)
         if globalize:
             self._emulated_oo_ptr = util.get_global_values\
                     (self._emulated_oo_ptr_local)

@@ -26,13 +26,26 @@ def test_loadmat():
     Tests :meth:`bet.sampling.basicSampling.loadmat`
     """
     np.random.seed(1)
-    mdat1 = {'input':np.random.random((5, 1)),
-            'output':np.random.random((5, 1)), 'num_samples':5}
-    mdat2 = {'input':np.random.random((6, 1)), 'num_samples':6}
+    mdat1 = {'num_samples':5}
+    mdat2 = {'num_samples':6}
     model = "this is not a model"
+
+    my_input1 = sample_set(1)
+    my_input1.set_values(np.random.random((5,1)))
+    my_output = sample_set(1)
+    my_output.set_values(np.random.random((5,1)))
+    my_input2 = sample_set(1)
+    my_input2.set_values(np.random.random((6,1)))
+
 
     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
     sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
+
+    
+    bet.sample.save_discretization(disc(my_input1, my_output),
+            'testfile1')
+    bet.sample.save_discretization(disc(my_input2, None),
+            'testfile2')
 
     (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
         'testfile1'))
@@ -61,7 +74,10 @@ def verify_user_samples(model, sampler, input_sample_set, savefile, parallel):
     """
     # evalulate the model at the samples directly
     output_values = (model(input_sample_set._values))
-    output_sample_set = sample_set(output_values.shape[1])
+    if len(output_values.shape) == 1:
+        output_sample_set = sample_set(1)
+    else:
+        output_sample_set = sample_set(output_values.shape[1])
     output_sample_set.set_values(output_values)
     discretization = disc(input_sample_set, output_sample_set)
 
@@ -71,10 +87,10 @@ def verify_user_samples(model, sampler, input_sample_set, savefile, parallel):
     my_num = my_discretization.check_nums() 
 
     # compare the samples
-    nptest.assert_array_equal(my_discretization._input_set.get_values(),
+    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
             discretization._input_sample_set.get_values())
     # compare the data
-    nptest.assert_array_equal(my_discretization._output_set.get_values(),
+    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
             discretization._output_sample_set.get_values())
 
     # did num_samples get updated?
@@ -85,16 +101,17 @@ def verify_user_samples(model, sampler, input_sample_set, savefile, parallel):
         saved_disc = bet.sample.load_discretization(savefile)
         
         # compare the samples
-        nptest.assert_array_equal(my_discretization._input_set.get_values(),
+        nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
             saved_disc._input_sample_set.get_values())
         # compare the data
-        nptest.assert_array_equal(my_discretization._output_set.get_values(),
+        nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
         
     comm.Barrier()
 
 def verify_random_samples(model, sampler, sample_type, input_domain,
         num_samples, savefile, parallel):
+    np.random.seed(1)
     # recreate the samples
     if num_samples is None:
         num_samples = sampler.num_samples
@@ -108,28 +125,28 @@ def verify_random_samples(model, sampler, sample_type, input_domain,
     input_values = (input_right-input_left)
     if sample_type == "lhs":
         input_values = input_values * pyDOE.lhs(input_sample_set.get_dim(),
-                num_samples) 
+                num_samples, 'center') 
     elif sample_type == "random" or "r":
-        np.random.seed(1)
         input_values = input_values * np.random.random(input_left.shape)
     input_values = input_values + input_left
     input_sample_set.set_values(input_values)
     
     # evalulate the model at the samples directly
-    output_values = model(input_values)
-    output_sample_set = sample_set(output_values.shape[1])
+    output_values = (model(input_sample_set._values))
+    if len(output_values.shape) == 1:
+        output_sample_set = sample_set(1)
+    else:
+        output_sample_set = sample_set(output_values.shape[1])
     output_sample_set.set_values(output_values)
 
     # evaluate the model at the samples
     # reset the random seed
-    if sample_type == "random" or "r":
-        np.random.seed(1)
+    np.random.seed(1)
 
     # evaluate the model at the samples
     my_discretization = sampler.random_samples(sample_type, input_domain,
             savefile, num_samples=num_samples, parallel=parallel)
     my_num = my_discretization.check_nums() 
-    
     
     # make sure that the samples are within the boundaries
     assert np.all(my_discretization._input_sample_set._values <= input_right)
@@ -150,10 +167,10 @@ def verify_random_samples(model, sampler, sample_type, input_domain,
         saved_disc = bet.sample.load_discretization(savefile)
         
         # compare the samples
-        nptest.assert_array_equal(my_discretization._input_set.get_values(),
+        nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
             saved_disc._input_sample_set.get_values())
         # compare the data
-        nptest.assert_array_equal(my_discretization._output_set.get_values(),
+        nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
     comm.Barrier()
 

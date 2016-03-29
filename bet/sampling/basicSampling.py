@@ -164,7 +164,7 @@ class sampler(object):
             output_values = self.lb_model(\
                     input_sample_set.get_values())
             # figure out the dimension of the output
-            if len(output_values.shape) == 0:
+            if len(output_values.shape) == 1:
                 output_dim = 1
             else:
                 output_dim = output_values.shape[1]
