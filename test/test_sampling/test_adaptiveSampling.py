@@ -36,11 +36,11 @@ def test_loadmat_init():
     model = "this is not a model"
 
     my_input1 = sample_set(1)
-    my_input1.set_values(np.random.random((50,1)))
+    my_input1.set_values(np.random.random((50, 1)))
     my_output = sample_set(1)
-    my_output.set_values(np.random.random((50,1)))
+    my_output.set_values(np.random.random((50, 1)))
     my_input2 = sample_set(1)
-    my_input2.set_values(np.random.random((60,1)))
+    my_input2.set_values(np.random.random((60, 1)))
 
 
     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
@@ -57,9 +57,9 @@ def test_loadmat_init():
     bet.sample.save_discretization(disc(my_input1, my_output),
             'testfile1')
     bet.sample.save_discretization(disc(my_input2, None),
-            'testfile2', "NAME")
+            'testfile2')
 
-    (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
+    (loaded_sampler1, discretization1) = asam.loadmat(os.path.join(local_path,
         'testfile1'))
     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
             my_input1.get_values())
@@ -73,8 +73,8 @@ def test_loadmat_init():
             loaded_sampler1.sample_batch_no)
     assert loaded_sampler1.lb_model == None
 
-    (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
-        'testfile2'), disc_name="NAME", model=model)
+    (loaded_sampler2, discretization2) = asam.loadmat(os.path.join(local_path,
+        'testfile2'), lb_model=model)
     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
             my_input2.get_values())
     assert discretization2._output_sample_set is None    
@@ -118,16 +118,16 @@ def verify_samples(QoI_range, sampler, input_domain,
     
     if not hot_start:
         # run generalized chains
-        (my_discretization, step_ratio_set) = sampler.generalized_chains(\
+        (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
     else:
         # cold start
         sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
                 sampler.lb_model)
-        (my_discretization, step_ratio_set) = sampler1.generalized_chains(\
+        (my_discretization, all_step_ratios) = sampler1.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
         # hot start 
-        (my_discretization, step_ratio_set) = sampler.generalized_chains(\
+        (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type,
                 hot_start=hot_start)
 
@@ -137,35 +137,34 @@ def verify_samples(QoI_range, sampler, input_domain,
     # are the input in bounds?
     input_left = np.repeat([input_domain[:, 0]], sampler.num_samples, 0)
     input_right = np.repeat([input_domain[:, 1]], sampler.num_samples, 0)
-    assert np.all(my_discretization._input_sample_set.get_values() <= input_right)
-    assert np.all(my_discretization._input_sample_set.get_values() >= input_left)
+    assert np.all(my_discretization._input_sample_set.get_values() <= \
+            input_right)
+    assert np.all(my_discretization._input_sample_set.get_values() >= \
+            input_left)
 
     # check dimensions of output
     assert my_discretization._output_sample_set.get_dim() == len(QoI_range)
 
-    # check dimensions of step_ratio_set
-    assert step_ratio_set.get_values().shape == (sampler.num_chains, sampler.chain_length)
+    # check dimensions of all_step_ratios
+    assert all_step_ratios.shape == (sampler.num_chains, sampler.chain_length)
 
     # are all the step ratios of an appropriate size?
-    assert np.all(step_ratio_set.get_values() >= t_set.min_ratio)
-    assert np.all(step_ratio_set.get_values() <= t_set.max_ratio)
+    assert np.all(all_step_ratios >= t_set.min_ratio)
+    assert np.all(all_step_ratios <= t_set.max_ratio)
     
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = dict()
     if comm.rank == 0:
         saved_disc = bet.sample.load_discretization(savefile)
-        saved_step_ratio_set = bet.sample.load_sample_set(savefile, "step_ratio_set")
         mdat = sio.loadmat(savefile)
          # compare the input 
-        nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
-            saved_disc._input_sample_set.get_values())
+        nptest.assert_array_equal(my_discretization._input_sample_set.\
+                get_values(), saved_disc._input_sample_set.get_values())
         # compare the output
-        nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
-           saved_disc._output_sample_set.get_values())
+        nptest.assert_array_equal(my_discretization._output_sample_set.\
+                get_values(), saved_disc._output_sample_set.get_values())
 
-        nptest.assert_array_equal(saved_step_ratio_set.get_values(),
-            
-           step_ratio_set.get_values())
+        nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
         assert sampler.chain_length == mdat['chain_length']
         assert sampler.num_samples == mdat['num_samples']
         assert sampler.num_chains == mdat['num_chains']
@@ -256,10 +255,10 @@ class Test_adaptive_sampler(unittest.TestCase):
         Run :meth:`bet.sampling.adaptiveSampling.sampler.run_gen` and verify
         that the output has the correct dimensions.
         """
-        # sampler.run_gen(kern_list, rho_D, maximum, param_min, param_max,
+        # sampler.run_gen(kern_list, rho_D, maximum, input_domain,
         # t_set, savefile, initial_sample_type)
         # returns list where each member is a tuple (discretization,
-        # step_ratio_set, num_high_prob_samples,
+        # all_step_ratios, num_high_prob_samples,
         # sorted_indices_of_num_high_prob_samples, average_step_ratio)
             # create indicator function
         inputs = self.test_list[3]
@@ -286,7 +285,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         t_set = asam.transition_set(.5, .5**5, 1.0) 
 
         # run run_gen
-        output = sampler.run_gen(kern_list, ifun, maximum, input_domain, t_set, savefile)
+        output = sampler.run_gen(kern_list, ifun, maximum, input_domain, t_set,
+                savefile)
 
         results, r_step_size, results_rD, sort_ind, mean_ss = output
 
@@ -314,9 +314,9 @@ class Test_adaptive_sampler(unittest.TestCase):
         that the output has the correct dimensions.
         """
         # sampler.run_tk(init_ratio, min_raio, max_ratio, rho_D, maximum,
-        # param_min, param_max, kernel, savefile, intial_sample_type)
+        # input_domain, kernel, savefile, intial_sample_type)
         # returns list where each member is a tuple (discretization,
-        # step_ratio_set, num_high_prob_samples,
+        # all_step_ratios, num_high_prob_samples,
         # sorted_indices_of_num_high_prob_samples, average_step_ratio)
         inputs = self.test_list[3]
         _, QoI_range, sampler, input_domain, savefile = inputs
@@ -372,9 +372,9 @@ class Test_adaptive_sampler(unittest.TestCase):
         that the output has the correct dimensions.
         """
         # sampler.run_inc_dec(increase, decrease, tolerance, rho_D, maximum,
-        # param_min, param_max, t_set, savefile, initial_sample_type)
+        # input_domain, t_set, savefile, initial_sample_type)
         # returns list where each member is a tuple (discretization,
-        # step_ratio_set, num_high_prob_samples,
+        # all_step_ratios, num_high_prob_samples,
         # sorted_indices_of_num_high_prob_samples, average_step_ratio)
         inputs = self.test_list[3]
         _, QoI_range, sampler, input_domain, savefile = inputs
@@ -435,7 +435,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
                 for hot_start in range(3):
-                    print len(param_min)
+                    print len(input_domain.shape[0])
                     verify_samples(QoI_range, sampler, input_domain,
                             t_set, savefile, initial_sample_type, hot_start)
 
@@ -491,7 +491,6 @@ class output_1D(object):
         self.Q_ref = np.array([5.0])
         self.output_domain = np.expand_dims(np.array([0.0, 10.0]), axis=0)
         self.mdim = 1
-        self.output_sample_set = sample_set(1)
         bin_size = 0.15*self.output_domain[:, 1]
         self.maximum = 1/np.product(bin_size)
         def ifun(outputs):
@@ -658,7 +657,8 @@ class rhoD_kernel(kernel):
 
 class test_rhoD_kernel_1D(rhoD_kernel, output_1D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 1D output space.
+    Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 1D output
+    space.  
     """
     def setUp(self):
         """
@@ -669,7 +669,8 @@ class test_rhoD_kernel_1D(rhoD_kernel, output_1D):
       
 class test_rhoD_kernel_2D(rhoD_kernel, output_2D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 2D output space.
+    Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 2D output
+    space.  
     """
     def setUp(self):
         """
@@ -680,7 +681,8 @@ class test_rhoD_kernel_2D(rhoD_kernel, output_2D):
       
 class test_rhoD_kernel_3D(rhoD_kernel, output_3D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 3D output space.
+    Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 3D output
+    space.  
     """
     def setUp(self):
         """
@@ -815,8 +817,8 @@ class maxima_mean_kernel(maxima_kernel):
         
 class test_maxima_mean_kernel_1D(maxima_mean_kernel, output_1D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 1D output
-    space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 1D
+    output space.
     """
     def setUp(self):
         """
@@ -827,8 +829,8 @@ class test_maxima_mean_kernel_1D(maxima_mean_kernel, output_1D):
       
 class test_maxima_mean_kernel_2D(maxima_mean_kernel, output_2D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 2D output
-    space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 2D
+    output space.
     """
     def setUp(self):
         """
@@ -839,8 +841,8 @@ class test_maxima_mean_kernel_2D(maxima_mean_kernel, output_2D):
       
 class test_maxima_mean_kernel_3D(maxima_mean_kernel, output_3D):
     """
-    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 3D output
-    space.
+    Test :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel` on a 3D
+    output space.
     """
     def setUp(self):
         """
@@ -859,6 +861,11 @@ class transition_set(object):
         Set Up
         """
         self.t_set = asam.transition_set(.5, .5**5, 1.0) 
+        self.output_set = sample_set(1)
+        self.output_set.set_values(self.output)
+        self.output_set.global_to_local()
+        # Update _right_local, _left_local, _width_local
+        self.output_set.update_bounds_local()
 
     def test_init(self):
         """
@@ -874,32 +881,29 @@ class transition_set(object):
         Tests the method
         :meth:`bet.sampling.adaptiveSampling.transition_set.step`
         """
-        # define step_ratio, input_width, input_left, input_right, samples_old
-        # from output
-        input_left = np.repeat([self.output_domain[:, 0]], self.output.shape[0], 0)
-        input_right = np.repeat([self.output_domain[:, 1]], self.output.shape[0], 0)
-        input_width = input_right - input_left
-
-        step_ratio = 0.5*np.ones(self.output.shape[0],)
-        step_ratio[self.output.shape[0]/2:] = .1
-        step_size = np.repeat([step_ratio], input_width.shape[1],
-                0).transpose()*input_width
+        # define step_ratio from output_set
+        local_num = self.output_set._values_local.shape[0] 
+        step_ratio = 0.5*np.ones(local_num,)
+        step_ratio[local_num/2:] = .1
+        step_size = np.repeat([step_ratio], self.output_set.get_dim(),
+                0).transpose()*self.output_set._width_local
         # take a step
-        samples_new = self.t_set.step(step_ratio, input_width, input_left,
-                input_right, self.output)
+        samples_new = self.t_set.step(step_ratio, self.output_set)
 
         # make sure the proposed steps are inside the domain
         # check dimensions of samples
-        assert samples_new.shape == self.output.shape
+        assert samples_new.shape() == self.output_set.shape()
 
         # are the samples in bounds?
-        assert np.all(samples_new <= input_right)
-        assert np.all(samples_new >= input_left)
+        assert np.all(samples_new.get_values() <= self.output_set._right_local)
+        assert np.all(samples_new.get_values() >= self.output_set._left_local)
 
         # make sure the proposed steps are inside the box defined around their
         # generating old samples
-        assert np.all(samples_new <= self.output+0.5*step_size)
-        assert np.all(samples_new >= self.output-0.5*step_size)
+        assert np.all(samples_new.get_values() <= self.output_set.get_values()\
+                +0.5*step_size)
+        assert np.all(samples_new.get_values() >= self.output_set.get_values()\
+                -0.5*step_size)
 
 
 class test_transition_set_1D(transition_set, output_1D):

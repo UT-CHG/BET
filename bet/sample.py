@@ -42,6 +42,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         ``.mat`` file
 
     """
+    # TODO add a test for me
     if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
         mdat = sio.loadmat(file_name)
     else:
@@ -74,6 +75,7 @@ def load_sample_set(file_name, sample_set_name=None):
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     """
+    # TODO add a test for me
     mdat = sio.loadmat(file_name)
     if sample_set_name is None:
         sample_set_name = 'default'
@@ -161,7 +163,80 @@ class sample_set(object):
         #: (local_num,)
         self._local_index = None
 
+        #: Local pointwise left (local_num, dim)
+        self._left_local = None
+        #: Local pointwise right (local_num, dim)
+        self._right_local = None
+        #: Local pointwise width (local_num, dim)
+        self._width_local = None
 
+        #: Pointwise left (num, dim)
+        self._left = None
+        #: Pointwise right (num, dim)
+        self._right = None
+        #: Pointwise width (num, dim)
+        self._width = None
+
+    def update_bounds(self, num=None):
+        """
+        Creates ``self._right``, ``self._left``, ``self._width``.
+
+        :param int num: Determinzes shape of pointwise bounds (num, dim)
+
+        """
+        # TODO create a test for this
+        if num == None:
+            num = self._values.shape[0]
+        self._left = np.repeat([self._domain[:, 0]], num, 0)
+        self._right = np.repeat([self._domain[:, 1]], num, 0)
+        self._width = self._right-self._left
+
+    def update_bounds_local(self, local_num=None):
+        """
+        Creates local versions of ``self._right``, ``self._left``,
+        ``self._width`` (``self._right_local``, ``self._left_local``,
+        ``self._width_local``).
+
+        :param int local_num: Determinzes shape of local pointwise bounds
+            (local_num, dim)
+
+        """
+        # TODO create a test for this
+        if local_num == None:
+            local_num = self._values_local.shape[0]
+        self._left_local = np.repeat([self._domain[:, 0]], local_num, 0)
+        self._right_local = np.repeat([self._domain[:, 1]], local_num, 0)
+        self._width_local = self._right_local-self._left
+
+    def append_values(self, values):
+        """
+        Appends the values in ``_values`` to ``self._values``.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values: values to append
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        # TODO create a test for this
+        self._values = np.concatentate(self._values,
+                util.fix_dimensions_data(values), 0)
+
+    def append_values_local(self, values_local):
+        """
+        Appends the values in ``_values_local`` to ``self._values``.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values_local: values to append
+        :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        # TODO create a test for this
+        self._values_local = np.concatentate(self._values_local,
+                util.fix_dimensions_data(values_local), 0)
 
     def check_num(self):
         """
@@ -222,22 +297,6 @@ class sample_set(object):
 
         """
         return self._values
-
-    def append_values(self, new_values):
-        """
-        Appends the ``new_values`` to ``self._values``. 
-
-        .. note::
-
-            Remember to update the other member attribute arrays so that
-            :meth:`~sample.sample.check_num` does not fail.
-
-        :param new_values: New values to append.
-        :type new_values: :class:`numpy.ndarray` of shape (num, dim)
-
-        """
-        new_values = util.fix_dimensions_data(new_values)
-        self._values = np.concatenate((self._values, new_values), axis=0)
         
     def set_domain(self, domain):
         """
@@ -432,6 +491,7 @@ class sample_set(object):
         """
         Makes global arrays from available local ones.
         """
+        # TODO Do we want to make sample sets local as well?
         for array_name in self._array_names:
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local is not None:
@@ -442,6 +502,7 @@ class sample_set(object):
         """
         Makes local arrays from available global ones.
         """
+        # TODO Do we want to make sample sets local as well?
         num = self.check_num()
         global_index = np.arange(num, dtype=np.int)
         self._local_index = np.array_split(global_index, comm.size)[comm.rank]
@@ -449,7 +510,72 @@ class sample_set(object):
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(self, array_name + "_local",
-                        current_array[self._local_index]) 
+                        current_array[self._local_index])
+
+    def copy(self):
+        """
+        Makes a copy using :meth:`numpy.copy`.
+
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: Copy of this :class:`~bet.sample.sample_set`
+
+        """
+        # TODO make a test for this
+        my_copy = sample_set(self.get_dim())
+        for array_name in sample_set.array_names:
+            current_array = getattr(self, array_name)
+            if current_array is not None:
+                setattr(my_copy, array_name,
+                        np.copy(current_array))
+        for vector_name in sample_set.vector_names:
+            if vector_name is not "_dim":
+                current_vector = getattr(self, vector_name)
+                if current_vector is not None:
+                    setattr(my_copy, vector_name, np.copy(current_vector))
+        if self._kdtree is not None:
+            my_copy.set_kdtree()
+        return my_copy
+
+    def shape(self):
+        """
+        
+        Returns the shape of ``self._values``
+
+        :rtype: tuple
+        :returns: (num, dim)
+
+        """
+        return self._values.shape
+
+    """
+    def __abs__
+    def __add__
+    def __and__
+    def __or__
+    def __div__
+    def __mod__
+    def __mul__
+    def __eq__
+    def __ge__
+    def __gt__
+    def __ne__
+    def __neg__
+    def __pos__
+    def __pow__
+    def __radd__
+    def __rand__
+    def __rdiv__
+    def __rmul__
+    def __ror__
+    def __rpow__
+    def __iadd__
+    def __iand__
+    def __idiv__
+    def __imul__
+    def __ioi__
+    def __ipow__
+    """
+    
 
 def save_discretization(save_disc, file_name, discretization_name=None):
     """
@@ -466,6 +592,7 @@ def save_discretization(save_disc, file_name, discretization_name=None):
         ``.mat`` file
 
     """
+    # TODO add a test for me
     new_mdat = dict()
 
     if discretization_name is None:
@@ -507,6 +634,7 @@ def load_discretization(file_name, discretization_name=None):
     :rtype: :class:`~bet.sample.discretization`
     :returns: the ``discretization`` that matches the ``discretization_name``
     """
+    # TODO add a test for me
     mdat = sio.loadmat(file_name)
     if discretization_name is None:
         discretization_name = 'default'
@@ -594,7 +722,7 @@ class discretization(object):
         """
         out_num = self._output_sample_set.check_num()
         in_num = self._input_sample_set.check_num()
-        if out_num != in_num
+        if out_num != in_num:
             raise length_not_matching("input and output lengths do not match")
         else:
             return in_num
@@ -712,3 +840,28 @@ class discretization(object):
 
         """
         return self._emulated_oo_ptr
+
+    def copy(self):
+        """
+        Makes a copy using :meth:`numpy.copy`.
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: Copy of this :class:`~bet.sample.discretization`
+
+        """
+        # TODO make a test for this
+        my_copy = discretization(self._input_sample_set.copy(),
+                self._output_sample_set.copy())
+        
+        for attrname in discretization.sample_set_names:
+            if attrname is not '_input_sample_set' and \
+                    attrname is not '_output_sample_set':
+                curr_sample_set = getattr(self, attrname)
+                if curr_sample_set is not None:
+                    setattr(my_copy, attrname, curr_sample_set.copy())
+        
+        for array_name in discretization.vector_names:
+            current_array = getattr(self, array_name)
+            if current_array is not None:
+                setattr(my_copy, array_name, np.copy(current_array))
+        return my_copy
