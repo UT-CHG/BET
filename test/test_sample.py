@@ -35,6 +35,12 @@ class Test_sample_set(unittest.TestCase):
         Check get_samples.
         """
         nptest.assert_array_equal(util.fix_dimensions_data(self.values), self.sam_set.get_values())
+    def test_get_shape(self):
+        """
+        Check get_samples.
+        """
+        nptest.assert_array_equal(util.fix_dimensions_data(self.values).shape,
+                self.sam_set.shape())
     def test_append_values(self):
         """
         Check appending of values.
@@ -42,6 +48,15 @@ class Test_sample_set(unittest.TestCase):
         new_values = np.zeros((10, self.dim))
         self.sam_set.append_values(new_values)
         nptest.assert_array_equal(util.fix_dimensions_data(new_values), self.sam_set.get_values()[self.num::,:])
+    def test_append_values_local(self):
+        """
+        Check appending of local values.
+        """
+        new_values = np.zeros((10, self.dim))
+        self.global_to_local()
+        self.sam_set.append_values_local(new_values)
+        nptest.assert_array_equal(util.fix_dimensions_data(new_values),
+                self.sam_set.get_values_local()[self.num::,:])
     def test_get_dim(self):
         """
         Check to see if dimensions are correct.
@@ -125,17 +140,23 @@ class Test_sample_set(unittest.TestCase):
             for array_name in self.sam_set._array_names:
                 current_array = getattr(self.sam_set, array_name+"_local")
                 if current_array is not None:
-                    self.assertGreater(getattr(self.sam_set, array_name).shape[0], current_array.shape[0]) 
+                    self.assertGreater(getattr(self.sam_set,
+                        array_name).shape[0], current_array.shape[0])
                     local_size = current_array.shape[0]
                     num = comm.allreduce(local_size, op=MPI.SUM)
                     self.assertEqual(num, self.num)
                     current_array_global = util.get_global_values(current_array)
-                    nptest.assert_array_equal(getattr(self.sam_set, array_name), current_array_global)
+                    nptest.assert_array_equal(getattr(self.sam_set,
+                        array_name), current_array_global) 
+                    if array_name is "_values":
+                        assert self.sam_set.shape_local() == (local_size, dim)
         else:
             for array_name in self.sam_set._array_names:
                 current_array = getattr(self.sam_set, array_name+"_local")
                 if current_array is not None:
                     nptest.assert_array_equal(getattr(self.sam_set, array_name), current_array)
+                    if array_name is "_values":
+                        assert self.sam_set.shape_local() == (self.num, dim)
                     
         for array_name in self.sam_set._array_names:
             current_array = getattr(self.sam_set, array_name)

@@ -102,7 +102,6 @@ class sample_set(object):
     A data structure containing arrays specific to a set of samples.
 
     """
-    # TODO self._array_names should be moved here since it doesn't change 
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_error_estimates', '_error_estimates_local',
@@ -219,7 +218,6 @@ class sample_set(object):
         :param values: values to append
         :type values: :class:`numpy.ndarray` of shape (some_num, dim)
         """
-        # TODO create a test for this
         self._values = np.concatenate((self._values,
                 util.fix_dimensions_data(values)), 0)
 
@@ -234,7 +232,6 @@ class sample_set(object):
         :param values_local: values to append
         :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
         """
-        # TODO create a test for this
         self._values_local = np.concatenate((self._values_local,
                 util.fix_dimensions_data(values_local)), 0)
 
@@ -543,7 +540,6 @@ class sample_set(object):
         :returns: (num, dim)
 
         """
-        # TODO add a test for me
         return self._values.shape
     
     def shape_local(self):
@@ -555,38 +551,8 @@ class sample_set(object):
         :returns: (local_num, dim)
 
         """
-        # TODO add a test for me
         return self._values_local.shape
 
-    """
-    def __abs__
-    def __add__
-    def __and__
-    def __or__
-    def __div__
-    def __mod__
-    def __mul__
-    def __eq__
-    def __ge__
-    def __gt__
-    def __ne__
-    def __neg__
-    def __pos__
-    def __pow__
-    def __radd__
-    def __rand__
-    def __rdiv__
-    def __rmul__
-    def __ror__
-    def __rpow__
-    def __iadd__
-    def __iand__
-    def __idiv__
-    def __imul__
-    def __ioi__
-    def __ipow__
-    """
-    
 
 def save_discretization(save_disc, file_name, discretization_name=None):
     """
