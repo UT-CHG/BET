@@ -738,7 +738,7 @@ class discretization(object):
         else:
             return in_num
 
-    def set_io_ptr(self, globalize=True):
+    def set_io_ptr(self, globalize=True, p=2):
         """
         
         Creates the pointer from ``self._output_sample_set`` to
@@ -747,6 +747,11 @@ class discretization(object):
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+
+        :param bool globalize: flag whether or not to globalize
+            ``self._output_sample_set``
+        :param int p: Which Minkowski p-norm to use. (1 <= p <= infinity)
+
         
         """
         if self._output_sample_set._values_local is None:
@@ -754,7 +759,7 @@ class discretization(object):
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
         (_, self._io_ptr_local) = self._output_probability_set.get_kdtree().\
-                query(self._output_sample_set._values_local)
+                query(self._output_sample_set._values_locali, p=p)
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
        
@@ -775,7 +780,7 @@ class discretization(object):
         """
         return self._io_ptr
                 
-    def set_emulated_ii_ptr(self, globalize=True):
+    def set_emulated_ii_ptr(self, globalize=True, p=2):
         """
         
         Creates the pointer from ``self._emulated_input_sample_set`` to
@@ -784,6 +789,10 @@ class discretization(object):
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+            
+        :param bool globalize: flag whether or not to globalize
+            ``self._output_sample_set``
+        :param int p: Which Minkowski p-norm to use. (1 <= p <= infinity)
 
         """
         if self._emulated_input_sample_set._values_local is None:
@@ -791,7 +800,7 @@ class discretization(object):
         if self._input_sample_set._kdtree is None:
             self._input_sample_set.set_kdtree()
         (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree().\
-                query(self._emulated_input_sample_set._values_local)
+                query(self._emulated_input_sample_set._values_local, p=p)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
                     (self._emulated_ii_ptr_local)
@@ -813,7 +822,7 @@ class discretization(object):
         """
         return self._emulated_ii_ptr
 
-    def set_emulated_oo_ptr(self, globalize=True):
+    def set_emulated_oo_ptr(self, globalize=True, p=2):
         """
         
         Creates the pointer from ``self._emulated_output_sample_set`` to
@@ -822,6 +831,10 @@ class discretization(object):
         .. seealso::
             
             :meth:`scipy.spatial.KDTree.query``
+            
+        :param bool globalize: flag whether or not to globalize
+            ``self._output_sample_set``
+        :param int p: Which Minkowski p-norm to use. (1 <= p <= infinity)
 
         """
         if self._emulated_output_sample_set._values_local is None:
@@ -830,7 +843,7 @@ class discretization(object):
             self._output_probability_set.set_kdtree()
         (_, self._emulated_oo_ptr_local) = self._output_probability_set.\
                 get_kdtree().query(self._emulated_output_sample_set.\
-                _values_local)
+                _values_local, p=p)
         if globalize:
             self._emulated_oo_ptr = util.get_global_values\
                     (self._emulated_oo_ptr_local)
