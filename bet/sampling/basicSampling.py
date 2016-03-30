@@ -49,8 +49,8 @@ class sampler(object):
         total number of samples OR list of number of samples per dimension such
         that total number of samples is prob(num_samples)
     lb_model
-        :class:`~bet.loadBalance.load_balance` runs the model at a given set of
-        parameter samples and returns data 
+        callable function that runs the model at a given set of input and
+        returns output
     """
     def __init__(self, lb_model, num_samples=None):
         """
@@ -58,9 +58,16 @@ class sampler(object):
         
         :param lb_model: Interface to physics-based model takes an input of
             shape (N, ndim) and returns an output of shape (N, mdim)
+        :type lb_model: callable function
         :param int num_samples: N, number of samples (optional)
         """
+        #: int, total number of samples OR list of number of samples per
+        #: dimension such that total number of samples is prob(num_samples)
         self.num_samples = num_samples
+        #: callable function that runs the model at a given set of input and
+        #: returns output
+        parameter samples and returns data 
+
         self.lb_model = lb_model
 
     def save(self, mdict, save_file, discretization=None):
