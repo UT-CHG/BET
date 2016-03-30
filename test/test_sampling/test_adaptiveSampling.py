@@ -155,9 +155,9 @@ def verify_samples(QoI_range, sampler, input_domain,
     # did the savefiles get created? (proper number, contain proper keys)
     mdat = dict()
     if comm.rank == 0:
-        saved_disc = bet.sample.load_discretization(savefile)
         mdat = sio.loadmat(savefile)
-         # compare the input 
+        saved_disc = bet.sample.load_discretization(savefile)
+        # compare the input
         nptest.assert_array_equal(my_discretization._input_sample_set.\
                 get_values(), saved_disc._input_sample_set.get_values())
         # compare the output
@@ -298,7 +298,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
             assert my_disc._output_sample_set.get_dim() == len(QoI_range)
         for step_sizes in r_step_size:
-            assert step_sizes.get_values().shape == (sampler.num_chains,
+            assert step_sizes.shape == (sampler.num_chains,
                     sampler.chain_length) 
         for num_hps in results_rD:
             assert isinstance(num_hps, int)
@@ -316,7 +316,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         # sampler.run_tk(init_ratio, min_raio, max_ratio, rho_D, maximum,
         # input_domain, kernel, savefile, intial_sample_type)
         # returns list where each member is a tuple (discretization,
-        # all_step_ratios, num_high_prob_samples,
+        # all_step_ra)tios, num_high_prob_samples,
         # sorted_indices_of_num_high_prob_samples, average_step_ratio)
         inputs = self.test_list[3]
         _, QoI_range, sampler, input_domain, savefile = inputs
@@ -356,7 +356,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
             assert my_disc._output_sample_set.get_dim() == len(QoI_range)
         for step_sizes in r_step_size:
-            assert step_sizes.get_values().shape == (sampler.num_chains,
+            assert step_sizes.shape == (sampler.num_chains,
                     sampler.chain_length)         
         for num_hps in results_rD:
             assert isinstance(num_hps, int)
@@ -414,7 +414,7 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
             assert my_disc._output_sample_set.get_dim() == len(QoI_range)
         for step_sizes in r_step_size:
-            assert step_sizes.get_values().shape == (sampler.num_chains,
+            assert step_sizes.shape == (sampler.num_chains,
                     sampler.chain_length) 
         for num_hps in results_rD:
             assert isinstance(num_hps, int)
@@ -435,7 +435,6 @@ class Test_adaptive_sampler(unittest.TestCase):
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
                 for hot_start in range(3):
-                    print len(input_domain.shape[0])
                     verify_samples(QoI_range, sampler, input_domain,
                             t_set, savefile, initial_sample_type, hot_start)
 
@@ -861,10 +860,11 @@ class transition_set(object):
         Set Up
         """
         self.t_set = asam.transition_set(.5, .5**5, 1.0) 
-        self.output_set = sample_set(1)
+        self.output_set = sample_set(self.mdim)
         self.output_set.set_values(self.output)
         self.output_set.global_to_local()
         # Update _right_local, _left_local, _width_local
+        self.output_set.set_domain(self.output_domain)
         self.output_set.update_bounds_local()
 
     def test_init(self):

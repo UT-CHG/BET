@@ -53,7 +53,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
-    for attrname in sample_set.array_names:
+    for attrname in sample_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
@@ -91,7 +91,7 @@ def load_sample_set(file_name, sample_set_name=None):
             if sample_set_name+attrname in mdat.keys():
                 setattr(loaded_set, attrname,
                     np.squeeze(mdat[sample_set_name+attrname]))
-    for attrname in sample_set.array_names:
+    for attrname in sample_set.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     return loaded_set
@@ -108,10 +108,15 @@ class sample_set(object):
     vector_names = ['_error_estimates', '_error_estimates_local',
             '_probabilities', '_probabilities_local', '_volumes',
             '_volumes_local', '_local_index', '_dim']
-    #: List of attribute names for attributes that are
+    #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
-    '_error_estimates'] 
+    '_error_estimates', '_right', '_left', '_width'] 
+    #: List of attribute names for attributes that are
+    #: :class:`numpy.ndarray` with dim > 1
+    all_ndarray_names = ['_values', '_values_local', '_left', '_left_local',
+            '_right', '_right_local', '_width', '_width_local', '_domain'] 
+
 
     def __init__(self, dim):
         """
@@ -121,11 +126,6 @@ class sample_set(object):
         :param int dim: Dimension of the space in which these samples reside.
 
         """
-        # TODO remove this
-        #: List of attribute names for attributes that are
-        #: :class:`numpy.ndarray`
-        self._array_names = ['_values', '_volumes', '_probabilities',
-                '_jacobians', '_error_estimates'] 
         #: Dimension of the sample space
         self._dim = dim 
         #: :class:`numpy.ndarray` of sample values of shape (num, dim)
@@ -206,7 +206,7 @@ class sample_set(object):
             local_num = self._values_local.shape[0]
         self._left_local = np.repeat([self._domain[:, 0]], local_num, 0)
         self._right_local = np.repeat([self._domain[:, 1]], local_num, 0)
-        self._width_local = self._right_local-self._left
+        self._width_local = self._right_local-self._left_local
 
     def append_values(self, values):
         """
@@ -220,8 +220,8 @@ class sample_set(object):
         :type values: :class:`numpy.ndarray` of shape (some_num, dim)
         """
         # TODO create a test for this
-        self._values = np.concatentate(self._values,
-                util.fix_dimensions_data(values), 0)
+        self._values = np.concatenate((self._values,
+                util.fix_dimensions_data(values)), 0)
 
     def append_values_local(self, values_local):
         """
@@ -235,8 +235,8 @@ class sample_set(object):
         :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
         """
         # TODO create a test for this
-        self._values_local = np.concatentate(self._values_local,
-                util.fix_dimensions_data(values_local), 0)
+        self._values_local = np.concatenate((self._values_local,
+                util.fix_dimensions_data(values_local)), 0)
 
     def check_num(self):
         """
@@ -250,7 +250,7 @@ class sample_set(object):
 
         """
         num = None
-        for array_name in self._array_names:
+        for array_name in sample_set.array_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 if num is None:
@@ -491,8 +491,7 @@ class sample_set(object):
         """
         Makes global arrays from available local ones.
         """
-        # TODO Do we want to make sample sets local as well?
-        for array_name in self._array_names:
+        for array_name in sample_set.array_names:
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local is not None:
                 setattr(self, array_name,
@@ -502,11 +501,10 @@ class sample_set(object):
         """
         Makes local arrays from available global ones.
         """
-        # TODO Do we want to make sample sets local as well?
         num = self.check_num()
         global_index = np.arange(num, dtype=np.int)
         self._local_index = np.array_split(global_index, comm.size)[comm.rank]
-        for array_name in self._array_names:
+        for array_name in sample_set.array_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(self, array_name + "_local",
@@ -522,7 +520,7 @@ class sample_set(object):
         """
         # TODO make a test for this
         my_copy = sample_set(self.get_dim())
-        for array_name in sample_set.array_names:
+        for array_name in sample_set.all_ndarray_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(my_copy, array_name,
@@ -545,7 +543,20 @@ class sample_set(object):
         :returns: (num, dim)
 
         """
+        # TODO add a test for me
         return self._values.shape
+    
+    def shape_local(self):
+        """
+        
+        Returns the shape of ``self._values_local``
+
+        :rtype: tuple
+        :returns: (local_num, dim)
+
+        """
+        # TODO add a test for me
+        return self._values_local.shape
 
     """
     def __abs__

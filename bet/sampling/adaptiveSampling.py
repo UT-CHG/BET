@@ -266,6 +266,7 @@ class sampler(bsam.sampler):
         min_ratio = t_set.min_ratio
 
         if not hot_start:
+            print "COLD START"
             step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
            
             # Initiative first batch of N samples (maybe taken from latin
@@ -308,8 +309,7 @@ class sampler(bsam.sampler):
                     chain_length = disc.check_nums()/self.num_chains
                     if all_step_ratios.shape == (self.num_chains,
                                                         chain_length):
-                        print "Serial file, from completed run updating \
-                                hot_start"
+                        print "Serial file, from completed run updating hot_start"
                         hot_start = 2
                     # reshape if parallel
                     if comm.size > 1:
@@ -417,8 +417,9 @@ class sampler(bsam.sampler):
             # OPERATE ON _local_values
             # Set mdat, step_ratio, input_old, start_ind appropriately
             step_ratio = all_step_ratios[-self.num_chains_pproc:]
-            input_old = sample.sample_set(disc_old._input_sample_set.get_dim())
-            input_old.set_values_local(disc_old._input_sample_set.\
+            input_old = sample.sample_set(disc._input_sample_set.get_dim())
+            input_old.set_domain(disc._input_sample_set.get_domain())
+            input_old.set_values_local(disc._input_sample_set.\
                     get_values_local()[-self.num_chains_pproc:, :])
 
             # Determine how many batches have been run
@@ -426,7 +427,6 @@ class sampler(bsam.sampler):
         
         mdat = dict()
         self.update_mdict(mdat)
-
         input_old.update_bounds_local()
 
         for batch in xrange(start_ind, self.chain_length):
@@ -453,19 +453,17 @@ class sampler(bsam.sampler):
             elif comm.rank == 0 and (batch+1)%(self.chain_length/4) == 0:
                 print "Current chain length: "+\
                             str(batch+1)+"/"+str(self.chain_length)
-            disc._input_sample_set.append_local_values(input_new.\
+            disc._input_sample_set.append_values_local(input_new.\
                     get_values_local())
-            disc._output_sample_set.append_local_values(output_new_values)
+            disc._output_sample_set.append_values_local(output_new_values)
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
             mdat['kern_old'] = kern_old
             
             if comm.size > 1:
-                super(sampler, self).save(mdat, psavefile)
-                sample.save_discretization(disc, psavefile)
+                super(sampler, self).save(mdat, psavefile, disc)
             else:
-                super(sampler, self).save(mdat, savefile)
-                sample.save_discretization(disc, savefile)
+                super(sampler, self).save(mdat, savefile, disc)
             input_old = input_new
 
         # collect everything
@@ -482,11 +480,10 @@ class sampler(bsam.sampler):
             self.chain_length), 'F')
 
         # save everything
-        sample.save_discretization(disc, savefile)
         mdat['step_ratios'] = all_step_ratios
         mdat['kern_old'] = util.get_global_values(kern_old,
                 shape=(self.num_chains,))
-        super(sampler, self).save(mdat, savefile)
+        super(sampler, self).save(mdat, savefile, disc)
 
         return (disc, all_step_ratios)
         
@@ -559,8 +556,8 @@ class transition_set(object):
                 0).transpose()*input_old._width_local
         # check to see if step will take you out of parameter space
         # calculate maximum proposed step
-        my_right = input_old.get_local_values() + 0.5*step_size
-        my_left = input_old.get_local_values() - 0.5*step_size
+        my_right = input_old.get_values_local() + 0.5*step_size
+        my_left = input_old.get_values_local() - 0.5*step_size
         # Is the new sample greaters than the right limit?
         far_right = my_right >= input_old._right_local
         far_left = my_left <= input_old._left_local
@@ -570,7 +567,7 @@ class transition_set(object):
         my_left[far_left] = input_old._left_local[far_left]
         my_width = my_right-my_left
         #input_center = (input_right+input_left)/2.0
-        input_new_values = my_width * np.random.random(input_old.shape())
+        input_new_values = my_width * np.random.random(input_old.shape_local())
         input_new_values = input_new_values + my_left
         input_new = input_old.copy()
         input_new.set_values_local(input_new_values)
