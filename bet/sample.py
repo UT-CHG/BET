@@ -42,7 +42,6 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         ``.mat`` file
 
     """
-    # TODO add a test for me
     if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
         mdat = sio.loadmat(file_name)
     else:
@@ -75,7 +74,6 @@ def load_sample_set(file_name, sample_set_name=None):
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     """
-    # TODO add a test for me
     mdat = sio.loadmat(file_name)
     if sample_set_name is None:
         sample_set_name = 'default'
@@ -83,7 +81,8 @@ def load_sample_set(file_name, sample_set_name=None):
     if sample_set_name+"_dim" in mdat.keys():
         loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
-        warnings.warn("No sample_set with _dim in file")
+        warnings.warn("No sample_set named {} with _dim in file".\
+                format(sample_set_name))
         return None
 
     for attrname in sample_set.vector_names:
@@ -104,8 +103,7 @@ class sample_set(object):
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
-    vector_names = ['_error_estimates', '_error_estimates_local',
-            '_probabilities', '_probabilities_local', '_volumes',
+    vector_names = [ '_probabilities', '_probabilities_local', '_volumes',
             '_volumes_local', '_local_index', '_dim']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
@@ -113,8 +111,9 @@ class sample_set(object):
     '_error_estimates', '_right', '_left', '_width'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
-    all_ndarray_names = ['_values', '_values_local', '_left', '_left_local',
-            '_right', '_right_local', '_width', '_width_local', '_domain'] 
+    all_ndarray_names = ['_error_estimates', '_error_estimates_local',
+            '_values', '_values_local', '_left', '_left_local', '_right',
+            '_right_local', '_width', '_width_local', '_domain'] 
 
 
     def __init__(self, dim):
@@ -137,7 +136,7 @@ class sample_set(object):
         #: other_dim, dim)
         self._jacobians = None
         #: :class:`numpy.ndarray` of model error estimates at samples of shape
-        #: (num,) 
+        #: (num, dim) 
         self._error_estimates = None
         #: The sample domain :class:`numpy.ndarray` of shape (dim, 2)
         self._domain = None
@@ -159,7 +158,7 @@ class sample_set(object):
         #: shape (local_num,)
         self._error_estimates_local = None
         #: Local indicies of global arrays, :class:`numpy.ndarray` of shape
-        #: (local_num,)
+        #: (local_num, dim)
         self._local_index = None
 
         #: Local pointwise left (local_num, dim)
@@ -183,7 +182,6 @@ class sample_set(object):
         :param int num: Determinzes shape of pointwise bounds (num, dim)
 
         """
-        # TODO create a test for this
         if num == None:
             num = self._values.shape[0]
         self._left = np.repeat([self._domain[:, 0]], num, 0)
@@ -200,7 +198,6 @@ class sample_set(object):
             (local_num, dim)
 
         """
-        # TODO create a test for this
         if local_num == None:
             local_num = self._values_local.shape[0]
         self._left_local = np.repeat([self._domain[:, 0]], local_num, 0)
@@ -448,6 +445,13 @@ class sample_set(object):
         return self._kdtree
 
     def set_values_local(self, values_local):
+        """
+        Sets the local sample values. 
+        
+        :param values_local: sample local values
+        :type values_local: :class:`numpy.ndarray` of shape (local_num, dim)
+
+        """
         self._values_local = util.fix_dimensions_data(values_local)
         if self._values_local.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
@@ -515,7 +519,6 @@ class sample_set(object):
         :returns: Copy of this :class:`~bet.sample.sample_set`
 
         """
-        # TODO make a test for this
         my_copy = sample_set(self.get_dim())
         for array_name in sample_set.all_ndarray_names:
             current_array = getattr(self, array_name)
@@ -569,7 +572,6 @@ def save_discretization(save_disc, file_name, discretization_name=None):
         ``.mat`` file
 
     """
-    # TODO add a test for me
     new_mdat = dict()
 
     if discretization_name is None:
@@ -611,7 +613,6 @@ def load_discretization(file_name, discretization_name=None):
     :rtype: :class:`~bet.sample.discretization`
     :returns: the ``discretization`` that matches the ``discretization_name``
     """
-    # TODO add a test for me
     mdat = sio.loadmat(file_name)
     if discretization_name is None:
         discretization_name = 'default'
@@ -725,7 +726,7 @@ class discretization(object):
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
         (_, self._io_ptr_local) = self._output_probability_set.get_kdtree().\
-                query(self._output_sample_set._values_locali, p=p)
+                query(self._output_sample_set._values_local, p=p)
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
        
@@ -839,7 +840,6 @@ class discretization(object):
         :returns: Copy of this :class:`~bet.sample.discretization`
 
         """
-        # TODO make a test for this
         my_copy = discretization(self._input_sample_set.copy(),
                 self._output_sample_set.copy())
         

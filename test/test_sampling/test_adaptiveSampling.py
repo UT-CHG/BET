@@ -55,9 +55,9 @@ def test_loadmat_init():
         num_chains2])
 
     bet.sample.save_discretization(disc(my_input1, my_output),
-            'testfile1')
+            os.path.join(local_path, 'testfile1'))
     bet.sample.save_discretization(disc(my_input2, None),
-            'testfile2')
+            os.path.join(local_path, 'testfile2'))
 
     (loaded_sampler1, discretization1) = asam.loadmat(os.path.join(local_path,
         'testfile1'))
