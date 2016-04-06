@@ -1,6 +1,7 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 # Steven Mattis and Lindley Graham 04/06/2015
+# Steven Mattis 03/24/2016
 """
 This module contains tests for :module:`bet.calculateP.calculateP`.
 
@@ -13,6 +14,7 @@ import unittest
 import bet
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as simpleFunP
+import bet.sample as samp
 import numpy as np
 import numpy.testing as nptest
 import bet.util as util
@@ -31,36 +33,38 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         lambda_domain.
 
         """
+        self.dim = 3
+        self.num_l_emulate = 1000001
         lam_left = np.array([0.0, .25, .4])
         lam_right = np.array([1.0, 4.0, .5])
 
-        self.lam_domain = np.zeros((3, 3))
-        self.lam_domain[:, 0] = lam_left
-        self.lam_domain[:, 1] = lam_right
-
-        self.num_l_emulate = 1000001
-
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
-                self.num_l_emulate)
+        lam_domain = np.zeros((self.dim, 2))
+        lam_domain[:, 0] = lam_left
+        lam_domain[:, 1] = lam_right
+        
+        self.s_set_emulated = calcP.emulate_iid_lebesgue(lam_domain,
+                                                        num_l_emulate)
  
     def test_dimension(self):
         """
         Check the dimension.
         """
-        nptest.assert_array_equal(self.lambda_emulate.shape,
-                ((self.num_l_emulate/comm.size) + (comm.rank < \
-                    self.num_l_emulate%comm.size), 3))
+        #nptest.assert_array_equal(self.lambda_emulate.shape,
+        #        ((self.num_l_emulate/comm.size) + (comm.rank < \
+        #            self.num_l_emulate%comm.size), 3))
+        self.s_set_emulated.local_to_global()
+        self.assertEqual(self.s_set_emulated._values.shape, (self.num_l_emulate, self.dim))
 
     def test_bounds(self):
         """
         Check that the samples are all within the correct bounds
         """
-        self.assertGreaterEqual(np.min(self.lambda_emulate[:, 0]), 0.0)
-        self.assertGreaterEqual(np.min(self.lambda_emulate[:, 1]), 0.25)
-        self.assertGreaterEqual(np.min(self.lambda_emulate[:, 2]), 0.4)
-        self.assertLessEqual(np.max(self.lambda_emulate[:, 0]), 1.0)
-        self.assertLessEqual(np.max(self.lambda_emulate[:, 1]), 4.0)
-        self.assertLessEqual(np.max(self.lambda_emulate[:, 2]), 0.5)
+        self.assertGreaterEqual(np.min(self.s_set_emulated._values[:, 0]), 0.0)
+        self.assertGreaterEqual(np.min(self.s_set_emulated._values[:, 1]), 0.25)
+        self.assertGreaterEqual(np.min(self.s_set_emulated._values[:, 2]), 0.4)
+        self.assertLessEqual(np.max(self.s_set_emulated._values[:, 0]), 1.0)
+        self.assertLessEqual(np.max(self.s_set_emulated._values[:, 1]), 4.0)
+        self.assertLessEqual(np.max(self.s_set_emulated._values[:, 2]), 0.5)
 
 class TestEstimateVolume(unittest.TestCase):
     """
@@ -77,9 +81,9 @@ class TestEstimateVolume(unittest.TestCase):
         lam_right = np.array([1.0, 4.0, .5])
         lam_width = lam_right-lam_left
 
-        self.lam_domain = np.zeros((3, 3))
-        self.lam_domain[:, 0] = lam_left
-        self.lam_domain[:, 1] = lam_right
+        lam_domain = np.zeros((3, 3))
+        lam_domain[:, 0] = lam_left
+        lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
         start = lam_left+lam_width/(2*num_samples_dim)
@@ -88,75 +92,82 @@ class TestEstimateVolume(unittest.TestCase):
         
         for l, r in zip(start, stop):
             d1_arrays.append(np.linspace(l, r, num_samples_dim))
+        
+        num_l_emulate = 1000001
+        self.s_set_emulated = calcP.emulate_iid_lebesgue(lam_domain,
+                                                         num_l_emulate)
 
-        self.num_l_emulate = 1000001
-
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
-                self.num_l_emulate)
-        self.samples = util.meshgrid_ndim(d1_arrays)
-        self.volume_exact = 1.0/self.samples.shape[0]
-        self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
-                estimate_volume(self.samples, self.lambda_emulate)
+        #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+        #        self.num_l_emulate)
+        self.s_set = samp.(dim=num_samples_dim) 
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        self.volumes_exact = 1.0/self.s_set._values.shape[0]
+        #self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
+        #        estimate_volume(self.samples, self.lambda_emulate)
+        calcP.estimate_volume(self.s_set, self.s_set_emulated)
+        self.s_set.local_to_global()
         
     def test_dimension(self):
         """
         Check the dimension.
         """
-        nptest.assert_array_equal(self.lam_vol.shape, (len(self.samples), ))
-        nptest.assert_array_equal(self.lam_vol_local.shape,
-                (len(self.samples)/comm.size, ))
-        nptest.assert_array_equal(self.lam_vol_local.shape,
-                len(self.local_index))
+        self.s_set.check_num()
+        #nptest.assert_array_equal(self.s_set._volumes.shape, (len(self.samples), ))
+        #nptest.assert_array_equal(self.lam_vol_local.shape,
+        #        (len(self.samples)/comm.size, ))
+        #nptest.assert_array_equal(self.lam_vol_local.shape,
+        #        len(self.local_index))
 
     def test_volumes(self):
         """
         Check that the volumes are within a tolerance for a regular grid of
         samples.
         """
-        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 3)
-        nptest.assert_array_equal(self.lam_vol_local,
-                self.lam_vol[self.local_index])
+        nptest.assert_array_almost_equal(self.s_set._volumes, self.volume_exact, 3)
+        #nptest.assert_array_equal(self.s_set._volumes_local,
+        #        self.s_set._volumes[self.s_set.local_index])
+        nptest.assert_almost_equal(np.sum(self.s_set._volumes), 1.0)
 
 class prob:
     def test_prob_sum_to_1(self):
         """
         Test to see if the prob. sums to 1.
         """
-        nptest.assert_almost_equal(np.sum(self.P), 1.0)
+        nptest.assert_almost_equal(np.sum(self.inputs._probabilities), 1.0)
     #@unittest.skipIf(comm.size > 1, 'Only run in serial')
     def test_P_matches_true(self):
         """
         Test against reference probs. (Only in serial)
         """
-        nptest.assert_almost_equal(self.P_ref, self.P)
+        nptest.assert_almost_equal(self.P_ref, self.inputs._probabilities)
     def test_vol_sum_to_1(self):
         """
         Test that volume ratios sum to 1.
         """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+        nptest.assert_almost_equal(np.sum(self.inputs._volumes), 1.0)
     def test_prob_pos(self):
         """
         Test that all probs are non-negative.
         """
-        self.assertEqual(np.sum(np.less(self.P, 0)), 0)
+        self.assertEqual(np.sum(np.less(self.inputs._probabilities, 0)), 0)
 
 class prob_emulated:
     def test_P_sum_to_1(self):
         """
         Test that prob. sums to 1.
         """
-        nptest.assert_almost_equal(np.sum(self.P_emulate), 1.0)
+        nptest.assert_almost_equal(np.sum(self.inputs_emulated._probabilities), 1.0)
     def test_P_matches_true(self):
         """
         Test that probabilites match reference values.
         """
         if comm.size == 1:
-            nptest.assert_almost_equal(self.P_emulate_ref, self.P_emulate)
+            nptest.assert_almost_equal(self.P_emulate_ref, self.inputs_emulated._probabilities)
     def test_prob_pos(self):
         """
         Test that all probabilites are non-negative.
         """
-        self.assertEqual(np.sum(np.less(self.P_emulate, 0)), 0)
+        self.assertEqual(np.sum(np.less(self.inputs_emulated._probabilities, 0)), 0)
 
 
 class prob_mc:
@@ -188,19 +199,24 @@ class TestProbMethod_3to2(unittest.TestCase):
     Sets up 3 to 2 map problem.
     """
     def setUp(self):
-        self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
-        self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")
+        #self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
+        #self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")
+        self.inputs = samp.sample_set(3)
+        self.outputs = samp.sample_set(2)
+        self.inputs.set_values(np.loadtxt(data_path + "/3to2_samples.txt.gz"))
+        self.output.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))
         Q_ref = np.array([0.422, 0.9385])
-        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
-                uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
-                bin_ratio=0.2, center_pts_per_edge=1)
-        self.lam_domain = np.array([[0.0, 1.0],
-                                   [0.0, 1.0],
-                                   [0.0, 1.0]])
+        #(self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
+        #        uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
+        #        bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+
+        self.input.set_domain(np.array([[0.0, 1.0],
+                                        [0.0, 1.0],
+                                        [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(\
-                lam_domain=self.lam_domain, num_l_emulate=1001)
+        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001)
 
 
 class Test_prob_3to2(TestProbMethod_3to2, prob):

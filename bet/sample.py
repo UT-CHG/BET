@@ -132,6 +132,8 @@ class sample_set(object):
         self._domain = None
         #: :class:`scipy.spatial.KDTree`
         self._kdtree = None
+        #: Bounding box of values, :class:`numpy.ndarray`of shape (dim, 2)
+        self._bounding_box = None
         #: Local values for parallelism, :class:`numpy.ndarray` of shape
         #: (local_num, dim)
         self._values_local = None
@@ -187,6 +189,23 @@ class sample_set(object):
 
         """
         return self._dim
+
+    def set_bounding_box(self):
+        """
+        Set the bounding box of the values.
+        """
+        mins = np.min(self._values, axis=0)
+        maxes = np.max(self._values, axis=0)
+        self._bounding_box = np.vstack((mins,maxes)).transpose()
+        pass
+
+    def get_bounding_box(self):
+        """
+        Get the bounding box of the values.
+        """
+        if self._bounding_box is None:
+            self.set_bounding_box()
+        return self._bounding_box
 
     def set_values(self, values):
         """
