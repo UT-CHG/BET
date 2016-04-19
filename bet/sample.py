@@ -1,6 +1,5 @@
 # Copyright (C) 2016 The BET Development Team
 
-
 """
 This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.sample_set`
@@ -373,7 +372,7 @@ class sample_set(object):
         :returns: sample jacobians
 
         """
-        return self._jacobians 
+        return self._jacobians
 
     def append_jacobians(self, new_jacobians):
         """
