@@ -18,7 +18,9 @@ class comm_for_no_mpi4py(object):
         """
         Initialization
         """
+        #: size, 1
         self.size = 1
+        #: rank, 0
         self.rank = 0
         pass
 
@@ -158,9 +160,13 @@ class MPI_for_no_mpi4py(object):
         """
         Initialization
         """
+        #: fake sum 
         self.SUM = None
+        #: float type
         self.DOUBLE = float
+        #: int type
         self.INT = int
+        #: bool type
         self.BOOL = bool
 
 try:
