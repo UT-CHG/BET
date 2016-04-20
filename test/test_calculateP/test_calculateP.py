@@ -99,7 +99,7 @@ class TestEstimateVolume(unittest.TestCase):
 
         #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
         #        self.num_l_emulate)
-        self.s_set = samp.(dim=num_samples_dim) 
+        self.s_set = samp(dim=num_samples_dim) 
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
         self.volumes_exact = 1.0/self.s_set._values.shape[0]
         #self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
@@ -211,13 +211,16 @@ class TestProbMethod_3to2(unittest.TestCase):
         #        bin_ratio=0.2, center_pts_per_edge=1)
         self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
 
-        self.input.set_domain(np.array([[0.0, 1.0],
+        self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
         self.inputs_emulated = calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001)
-
+        self.disc = samp.discretization(input_sample_set = self.inputs,
+                                        output_sample_set = self.outputs,
+                                        output_probability_set = self.output_prob,
+                                        emulated_input_sample_set = self.input_emulated)
 
 class Test_prob_3to2(TestProbMethod_3to2, prob):
     """
@@ -228,9 +231,10 @@ class Test_prob_3to2(TestProbMethod_3to2, prob):
         Set up problem.
         """
         super(Test_prob_3to2, self).setUp()
-        (self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
-                data=self.data, rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        #(self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
+        #        data=self.data, rho_D_M=self.d_distr_prob,
+        #        d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        calcP.prob(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
 
 
@@ -242,15 +246,16 @@ class Test_prob_emulated_3to2(TestProbMethod_3to2, prob_emulated):
         """
         Set up 3 to 2 map.
         """
-        super(Test_prob_emulated_3to2, self).setUp()
-        (self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
-                samples=self.samples, data=self.data,
-                rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples,
-                lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        #super(Test_prob_emulated_3to2, self).setUp()
+        #(self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
+        #        samples=self.samples, data=self.data,
+        #        rho_D_M=self.d_distr_prob,
+        #        d_distr_samples=self.d_distr_samples,
+        #        lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_emulated(self.disc)
         self.P_emulate_ref = np.loadtxt(data_path+"/3to2_prob_emulated.txt.gz")
-        self.P_emulate = util.get_global_values(self.P_emulate)
-
+        #self.P_emulate = util.get_global_values(self.P_emulate)
+        
 
 class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
     """
@@ -261,32 +266,61 @@ class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
         Set up 3 to 2 problem.
         """
         super(Test_prob_mc_3to2, self).setUp()
-        (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
-                data=self.data, rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples,
-                lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        #(self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
+        #        data=self.data, rho_D_M=self.d_distr_prob,
+        #        d_distr_samples=self.d_distr_samples,
+        #        lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_mc(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob_mc.txt.gz")
  
 
+# class TestProbMethod_3to1(unittest.TestCase):
+#     """
+#     Set up 3 to 1 map problem.
+#     """
+#     def setUp(self):
+#         """
+#         Set up problem.
+#         """
+#         self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
+#         self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")[:, 0]
+#         Q_ref = np.array([0.422])
+#         (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
+#                 uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
+#                         bin_ratio=0.2, center_pts_per_edge=1) 
+#         self.lam_domain = np.array([[0.0, 1.0], [0.0, 1.0], [0.0, 1.0]])
+#         import numpy.random as rnd
+#         rnd.seed(1)
+#         self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=\
+#                 self.lam_domain, num_l_emulate=1001)
+
 class TestProbMethod_3to1(unittest.TestCase):
     """
-    Set up 3 to 1 map problem.
+    Sets up 3 to 1 map problem.
     """
     def setUp(self):
-        """
-        Set up problem.
-        """
-        self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
-        self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")[:, 0]
+        #self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
+        #self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")
+        self.inputs = samp.sample_set(3)
+        self.outputs = samp.sample_set(2)
+        self.inputs.set_values(np.loadtxt(data_path + "/3to2_samples.txt.gz"))
+        self.output.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))[:,0]
         Q_ref = np.array([0.422])
-        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
-                uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
-                        bin_ratio=0.2, center_pts_per_edge=1) 
-        self.lam_domain = np.array([[0.0, 1.0], [0.0, 1.0], [0.0, 1.0]])
+        #(self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
+        #        uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
+        #        bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+
+        self.inputs.set_domain(np.array([[0.0, 1.0],
+                                        [0.0, 1.0],
+                                        [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain=\
-                self.lam_domain, num_l_emulate=1001)
+        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001)
+        self.disc = samp.discretization(input_sample_set = self.inputs,
+                                        output_sample_set = self.outputs,
+                                        output_probability_set = self.output_prob,
+                                        emulated_input_sample_set = self.input_emulated)
 
 class Test_prob_3to1(TestProbMethod_3to1, prob):
     """
@@ -297,9 +331,10 @@ class Test_prob_3to1(TestProbMethod_3to1, prob):
         Set up problem.
         """
         super(Test_prob_3to1, self).setUp()
-        (self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
-                data=self.data, rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        #(self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
+        #        data=self.data, rho_D_M=self.d_distr_prob,
+        #        d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        calcP.prob(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to1_prob.txt.gz")
 
 
@@ -312,13 +347,14 @@ class Test_prob_emulated_3to1(TestProbMethod_3to1, prob_emulated):
         Set up problem.
         """
         super(Test_prob_emulated_3to1, self).setUp()
-        (self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
-                samples=self.samples, data=self.data,
-                rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples,
-                lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        #(self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
+        #        samples=self.samples, data=self.data,
+        #        rho_D_M=self.d_distr_prob,
+        #        d_distr_samples=self.d_distr_samples,
+        #        lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_emulated(self.disc)
         self.P_emulate_ref = np.loadtxt(data_path+"/3to1_prob_emulated.txt.gz")
-        self.P_emulate = util.get_global_values(self.P_emulate)
+        #self.P_emulate = util.get_global_values(self.P_emulate)
 
 
 class Test_prob_mc_3to1(TestProbMethod_3to1, prob_mc):
@@ -330,10 +366,11 @@ class Test_prob_mc_3to1(TestProbMethod_3to1, prob_mc):
         Set up problem.
         """
         super(Test_prob_mc_3to1, self).setUp()
-        (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
-                    data=self.data, rho_D_M=self.d_distr_prob,
-                    d_distr_samples=self.d_distr_samples,
-                    lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        # (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
+        #             data=self.data, rho_D_M=self.d_distr_prob,
+        #             d_distr_samples=self.d_distr_samples,
+        #             lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_mc(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to1_prob_mc.txt.gz")
 
   
@@ -347,18 +384,27 @@ class TestProbMethod_10to4(unittest.TestCase):
         """
         import numpy.random as rnd
         rnd.seed(1)
+        self.inputs = samp.sample_set(10)
+        self.outputs = samp.sample_set(4)
         self.lam_domain = np.zeros((10, 2))
         self.lam_domain[:, 0] = 0.0
         self.lam_domain[:, 1] = 1.0
-        self.num_l_emulate = 1001
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
-                self.num_l_emulate) 
-        self.samples = calcP.emulate_iid_lebesgue(self.lam_domain, 100)
-        self.data = np.dot(self.samples, rnd.rand(10, 4))
+        self.inputs.set_domain(self.lam_domain)
+        #self.num_l_emulate = 1001
+        #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+        #        self.num_l_emulate) 
+        #self.samples = calcP.emulate_iid_lebesgue(self.lam_domain, 100)
+        self.inputs.set_values(calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001))
+        self.outputs.set_values(np.dot(self.samples, rnd.rand(10, 4)))
         Q_ref = np.mean(self.data, axis=0)
         (self.d_distr_prob, self.d_distr_samples, self.d_Tree) =\
-        simpleFunP.uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
-                bin_ratio=0.2, center_pts_per_edge=1)
+        #simpleFunP.uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
+        #        bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.disc = samp.discretization(input_sample_set = self.inputs,
+                                        output_sample_set = self.outputs,
+                                        output_probability_set = self.output_prob,
+                                        emulated_input_sample_set = self.input_emulated)
 
     @unittest.skip("No reference data")
     def test_P_matches_true(self):
@@ -373,9 +419,10 @@ class Test_prob_10to4(TestProbMethod_10to4, prob):
         Set up problem.
         """
         super(Test_prob_10to4, self).setUp()
-        (self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
-                data=self.data, rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        #(self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
+        #        data=self.data, rho_D_M=self.d_distr_prob,
+        #        d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        calcP.prob(self.disc)
 
 
 class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
@@ -388,11 +435,12 @@ class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
         """
         super(Test_prob_emulated_10to4, self).setUp()
 
-        (self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
-                samples=self.samples, data=self.data,
-                rho_D_M=self.d_distr_prob,
-                d_distr_samples=self.d_distr_samples,
-                lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        # (self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
+        #         samples=self.samples, data=self.data,
+        #         rho_D_M=self.d_distr_prob,
+        #         d_distr_samples=self.d_distr_samples,
+        #         lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_emulated(self.disc)
         self.P_emulate = util.get_global_values(self.P_emulate)
 
 class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
@@ -404,10 +452,11 @@ class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
         Set up problem.
         """
         super(Test_prob_mc_10to4, self).setUp()
-        (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
-                    data=self.data, rho_D_M=self.d_distr_prob,
-                    d_distr_samples=self.d_distr_samples,
-                    lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        # (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
+        #             data=self.data, rho_D_M=self.d_distr_prob,
+        #             d_distr_samples=self.d_distr_samples,
+        #             lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_mc(self.disc)
 
 
 class TestProbMethod_1to1(unittest.TestCase):
@@ -418,20 +467,45 @@ class TestProbMethod_1to1(unittest.TestCase):
         """
         Set up problem.
         """
+
         import numpy.random as rnd
         rnd.seed(1)
+        self.inputs = samp.sample_set(1)
+        self.outputs = samp.sample_set(1)
         self.lam_domain = np.zeros((1, 2))
-        self.lam_domain[0, 0] = 0.0
-        self.lam_domain[0, 1] = 1.0
-        self.num_l_emulate = 1001
-        self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
-                self.num_l_emulate) 
-        self.samples = rnd.rand(100,)
-        self.data = 2.0*self.samples
+        self.lam_domain[:, 0] = 0.0
+        self.lam_domain[:, 1] = 1.0
+        self.inputs.set_domain(self.lam_domain)
+        #self.num_l_emulate = 1001
+        #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+        #        self.num_l_emulate) 
+        #self.samples = calcP.emulate_iid_lebesgue(self.lam_domain, 100)
+        self.inputs.set_values(calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001))
+        #self.outputs.set_values(np.dot(self.samples, rnd.rand(10, 4)))
+        self.outputs.set_values(2.0*self.inputs._values)
         Q_ref = np.mean(self.data, axis=0)
-        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
-                uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
-                        bin_ratio=0.2, center_pts_per_edge=1)
+        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) =\
+        #simpleFunP.uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
+        #        bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.disc = samp.discretization(input_sample_set = self.inputs,
+                                        output_sample_set = self.outputs,
+                                        output_probability_set = self.output_prob,
+                                        emulated_input_sample_set = self.input_emulated)
+        # import numpy.random as rnd
+        # rnd.seed(1)
+        # self.lam_domain = np.zeros((1, 2))
+        # self.lam_domain[0, 0] = 0.0
+        # self.lam_domain[0, 1] = 1.0
+        # self.num_l_emulate = 1001
+        # self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+        #         self.num_l_emulate) 
+        # self.samples = rnd.rand(100,)
+        # self.data = 2.0*self.samples
+        # Q_ref = np.mean(self.data, axis=0)
+        # (self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
+        #         uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
+        #                 bin_ratio=0.2, center_pts_per_edge=1)
     @unittest.skip("No reference data")
     def test_P_matches_true(self):
         pass
@@ -445,10 +519,11 @@ class Test_prob_1to1(TestProbMethod_1to1, prob):
         Set up problem.
         """
         super(Test_prob_1to1, self).setUp()
-        (self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
-                        data=self.data, rho_D_M=self.d_distr_prob,
-                        d_distr_samples=self.d_distr_samples,
-                        d_Tree=self.d_Tree)
+        # (self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
+        #                 data=self.data, rho_D_M=self.d_distr_prob,
+        #                 d_distr_samples=self.d_distr_samples,
+        #                 d_Tree=self.d_Tree)
+        calcP.prob(self.disc)
 
 
 class Test_prob_emulated_1to1(TestProbMethod_1to1, prob_emulated):
@@ -460,12 +535,13 @@ class Test_prob_emulated_1to1(TestProbMethod_1to1, prob_emulated):
         Set up problem.
         """
         super(Test_prob_emulated_1to1, self).setUp()
-        (self.P_emulate, self.lambda_emulate, _, _) =\
-                calcP.prob_emulated(samples=self.samples, data=self.data,
-                        rho_D_M=self.d_distr_prob,
-                        d_distr_samples=self.d_distr_samples,
-                        lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
-        self.P_emulate = util.get_global_values(self.P_emulate)
+        # (self.P_emulate, self.lambda_emulate, _, _) =\
+        #         calcP.prob_emulated(samples=self.samples, data=self.data,
+        #                 rho_D_M=self.d_distr_prob,
+        #                 d_distr_samples=self.d_distr_samples,
+        #                 lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        #self.P_emulate = util.get_global_values(self.P_emulate)
+        calcP.prob_emulated(self.disc)
 
 
 class Test_prob_mc_1to1(TestProbMethod_1to1, prob_mc):
@@ -477,9 +553,9 @@ class Test_prob_mc_1to1(TestProbMethod_1to1, prob_mc):
         Set up problem.
         """
         super(Test_prob_mc_1to1, self).setUp()
-        (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
-                        data=self.data, rho_D_M=self.d_distr_prob,
-                        d_distr_samples=self.d_distr_samples,
-                        lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
-
+        # (self.P, self.lam_vol, _, _, _) = calcP.prob_mc(samples=self.samples,
+        #                 data=self.data, rho_D_M=self.d_distr_prob,
+        #                 d_distr_samples=self.d_distr_samples,
+        #                 lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        calcP.prob_mc(self.disc)
 
