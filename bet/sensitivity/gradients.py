@@ -14,8 +14,9 @@ import sys
 def sample_linf_ball(input_set, num_close, rvec):
     r"""
     Pick num_close points in a the l-infinity ball of length 2*rvec around a
-    point in :math:`\Lambda`, do this for each point in centers.  If this box
-    extends outside of :math:`\Lambda`, we sample the intersection.
+    point in the input space, do this for each point in centers.  If this box
+    extends outside of the domain of the input space, we sample the
+    intersection.
 
     :param input_set: The input sample set.  Make sure the attribute _values is
         not None.
@@ -190,7 +191,7 @@ def pick_cfd_points(input_set, rvec):
     samples = np.repeat(centers, 2 * input_dim, axis=0)
     rvec = util.fix_dimensions_vector(rvec)
 
-    # Contstruct a [num_centers*2*input_dim, input_dim] matrix that
+    # Contstruct a [num_centers*2*input_dim, input_dim] array that
     # translates the centers to the CFD points
     ident = np.eye(input_dim) * rvec
     translate = np.tile(np.append(ident, -ident, axis=0), (num_centers, 1))
@@ -322,8 +323,9 @@ def calculate_gradients_rbf(input_set, output_set, input_set_centers=None, num_n
     gradient_tensor = np.zeros([num_centers, output_dim, input_dim])
     tree = spatial.KDTree(samples)
 
-    # For each centers, interpolate the data using the rbf chosen and
-    # then evaluate the partial derivative of that rbf at the desired point.
+    # For each center, interpolate the data using the rbf chosen and
+    # then evaluate the partial derivative of that interpolant at the desired
+    # point.
     for c in range(num_centers):
         # Find the k nearest neighbors and their distances to centers[c,:]
         [r, nearest] = tree.query(centers[c, :], k=num_neighbors)
