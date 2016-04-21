@@ -19,9 +19,9 @@ class Test_comm_for_no_mpi4py(unittest.TestCase):
         self.assertEqual(self.comm.Get_size(), 1)
     def test_Get_rank(self):
         self.assertEqual(self.comm.Get_rank(), 0)
-    def test_allgrather(self):
+    def test_allgather(self):
         thing = range(4)
-        self.assertEqual(self.comm.allgather(thing), thing)
+        self.assertEqual(self.comm.allgather(thing), [thing])
     def test_allreduce(self):
         thing = 4
         self.assertEqual(self.comm.allreduce(thing, op=None), thing)
