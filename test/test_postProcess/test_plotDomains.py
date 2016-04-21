@@ -1,6 +1,7 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 # Lindley Graham 04/07/2015
+# Troy Butler 03/22/2016
 """
 This module contains tests for :module:`bet.postProcess.plotDomains`.
 
@@ -16,6 +17,7 @@ from matplotlib.lines import Line2D
 import numpy as np
 import numpy.testing as nptest
 from bet.Comm import comm
+import bet.sample as sample
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
         "../test/test_sampling")
@@ -31,19 +33,32 @@ class test_plotDomains(unittest.TestCase):
         """
         Set up problem.
         """
-        self.lam_domain = np.array([[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]])
-        self.samples = util.meshgrid_ndim((np.linspace(self.lam_domain[0][0],
-            self.lam_domain[0][1], 10), np.linspace(self.lam_domain[1][0],
-            self.lam_domain[1][1], 10), np.linspace(self.lam_domain[1][0],
-            self.lam_domain[1][1], 10), np.linspace(self.lam_domain[1][0],
-            self.lam_domain[1][1], 10)))
-        self.data = self.samples*3.0
-        self.P_samples = (1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
+        # Create sample_set object for input_samples
+        input_samples = sample.sample_set(4)
+
+        input_samples.set_domain(np.array([[0.0, 1.0], [0.0, 1.0], [0.0, 1.0], [0.0, 1.0]]))
+        input_samples.set_values(util.meshgrid_ndim((np.linspace(input_samples.get_domain()[0,0],
+            input_samples.get_domain()[0,1], 10), np.linspace(input_samples.get_domain()[1,0],
+            input_samples.get_domain()[1,1], 10), np.linspace(input_samples.get_domain()[2,0],
+            input_samples.get_domain()[2,1], 10), np.linspace(input_samples.get_domain()[3,0],
+            input_samples.get_domain()[3,1], 10))))
+        input_samples.set_probabilities((1.0/float(input_samples.get_values().shape[0]))
+                                         *np.ones((input_samples.get_values().shape[0],)))
+
+        input_samples.check_num() # Check that probabilities and values arrays have same number of entries
+
+        # Create sample_set object for output_samples
+        output_samples = sample.sample_set(4)
+        output_samples.set_values(input_samples.get_values()*3.0)
+        output_samples.set_domain(3.0*input_samples.get_domain())
+
+        self.disc = sample.discretization(input_samples, output_samples)
+
         self.filename = "testfigure"
 
-        QoI_range = np.array([3.0, 3.0, 3.0, 3.0])
-        Q_ref = QoI_range*0.5
-        bin_size = 0.15*QoI_range
+        output_ref_datum = np.mean(output_samples.get_domain(), axis=1)
+
+        bin_size = 0.15*(np.max(output_samples.get_domain(), axis=1) - np.min(output_samples.get_domain(), axis=1))
         maximum = 1/np.product(bin_size)
         def ifun(outputs):
             """
@@ -53,8 +68,8 @@ class test_plotDomains(unittest.TestCase):
             :rtype: :class:`numpy.ndarray` of shape (N,)
             :returns: 0 if outside of set or positive number if inside set
             """
-            left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
-            right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
+            left = np.repeat([output_ref_datum-.5*bin_size], outputs.shape[0], 0)
+            right = np.repeat([output_ref_datum+.5*bin_size], outputs.shape[0], 0)
             left = np.all(np.greater_equal(outputs, left), axis=1)
             right = np.all(np.less_equal(outputs, right), axis=1)
             inside = np.logical_and(left, right)
@@ -107,19 +122,19 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.scatter_2D`
         """
         sample_nos = [None, 25]
-        p_ref = [None, self.samples[4, [0, 1]]]
+        p_ref = [None, self.disc._input_sample_set.get_values()[4, [0, 1]]]
+        #p_ref = [None, self.samples[4, [0, 1]]]
         for sn, pr in zip(sample_nos, p_ref):
             self.check_scatter_2D(sn, pr, True)
 
     def check_scatter_2D(self, sample_nos, p_ref, save):
         """
-
         Check to see that the :meth:`bet.postTools.plotDomains.scatter_2D` ran
         without generating an error.
         """
         try:
-            plotDomains.scatter_2D(self.samples[:, [0, 1]], sample_nos,
-                    self.P_samples, p_ref, save, False, 'XLABEL', 'YLABEL',
+            plotDomains.scatter_2D(self.disc._input_sample_set.get_values()[:, [0, 1]], sample_nos,
+                    self.disc._input_sample_set.get_probabilities(), p_ref, save, False, 'XLABEL', 'YLABEL',
                     self.filename)
             go = True
         except (RuntimeError, TypeError, NameError):
@@ -131,7 +146,7 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.scatter_3D`
         """
         sample_nos = [None, 25]
-        p_ref = [None, self.samples[4, :]]
+        p_ref = [None, self.disc._input_sample_set.get_values()[4, :]]
         for sn, pr in zip(sample_nos, p_ref):
                 self.check_scatter_3D(sn, pr, True)
 
@@ -141,8 +156,8 @@ class test_plotDomains(unittest.TestCase):
         without generating an error.
         """
         try:
-            plotDomains.scatter_3D(self.samples[:, [0, 1, 2]], sample_nos,
-                    self.P_samples, p_ref, save, False, 'XLABEL', 'YLABEL',
+            plotDomains.scatter_3D(self.disc._input_sample_set.get_values()[:, [0, 1, 2]], sample_nos,
+                    self.disc._input_sample_set.get_probabilities(), p_ref, save, False, 'XLABEL', 'YLABEL',
                     'ZLABEL', self.filename) 
             go = True
         except (RuntimeError, TypeError, NameError):
@@ -154,8 +169,8 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.show_param`
         """
         sample_nos = [None, 25]
-        samples = [self.samples, self.samples[:, [0, 1]],
-                self.samples[:, [0, 1, 2]]]
+        samples = [self.disc._input_sample_set.get_values(), self.disc._input_sample_set.get_values()[:, [0, 1]],
+                self.disc._input_sample_set.get_values()[:, [0, 1, 2]]]
         lnums = [None, self.lnums]
 
         for sample in samples:
@@ -176,7 +191,7 @@ class test_plotDomains(unittest.TestCase):
         without generating an error.
         """
         try:
-            plotDomains.show_param(samples, self.data, self.rho_D, p_ref,
+            plotDomains.show_param(samples, self.disc._output_sample_set.get_values(), self.rho_D, p_ref,
                     sample_nos, save, False, lnums, showdim) 
             go = True
         except (RuntimeError, TypeError, NameError):
@@ -188,7 +203,7 @@ class test_plotDomains(unittest.TestCase):
         Test :meth:`bet.postProcess.plotDomains.show_data`
         """
         sample_nos = [None, 25]
-        data_sets = [self.data, self.data[:, [0, 1]]]
+        data_sets = [self.disc._output_sample_set.get_values(), self.disc._output_sample_set.get_values()[:, [0, 1]]]
         qnums = [None, [0, 1, 2]]#self.lnums]
 
         for data, qn, sn in zip(data_sets, qnums, sample_nos):
@@ -243,12 +258,12 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_2D` ran
         without generating an error.
         """
-        Q_ref = self.data[:, [0, 1]]
+        Q_ref = self.disc._output_sample_set.get_values()[:, [0, 1]]
         Q_ref = Q_ref[[1,4],:]
         print Q_ref.shape
-        data = self.data[:, [0, 1]]
+        data = self.disc._output_sample_set.get_values()[:, [0, 1]]
         try:
-            plotDomains.show_data_domain_2D(self.samples, data, Q_ref,
+            plotDomains.show_data_domain_2D(self.disc._input_sample_set.get_values(), data, Q_ref,
                     ref_markers, ref_colors, triangles=triangles, save=save,
                     filenames=filenames)
             go = True
@@ -280,11 +295,12 @@ class test_plotDomains(unittest.TestCase):
         :meth:`bet.postTools.plotDomains.show_data_domain_multi` ran
         without generating an error.
         """
-        Q_ref = self.data[[4, 2], :]
+        Q_ref = self.disc._output_sample_set.get_values()[[4, 2], :]
         try:
-            plotDomains.show_data_domain_multi(self.samples, self.data,
-                    Q_ref, Q_nums, ref_markers=ref_markers,
-                    ref_colors=ref_colors, showdim=showdim)
+            plotDomains.show_data_domain_multi(self.disc._input_sample_set.get_values(),
+                                               self.disc._output_sample_set.get_values(),
+                                               Q_ref, Q_nums, ref_markers=ref_markers,
+                                               ref_colors=ref_colors, showdim=showdim)
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False
@@ -297,7 +313,7 @@ class test_plotDomains(unittest.TestCase):
         if not os.path.exists('figs/'):
             os.mkdir('figs/')
         try:
-            plotDomains.scatter_param_multi(self.samples[:, [0,1,2]])
+            plotDomains.scatter_param_multi(self.disc._input_sample_set.get_values()[:, [0,1,2]])
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False
@@ -310,7 +326,7 @@ class test_plotDomains(unittest.TestCase):
         if not os.path.exists('figs/'):
             os.mkdir('figs/')
         try:
-            plotDomains.scatter2D_multi(self.samples[:, [0,1,2]])
+            plotDomains.scatter2D_multi(self.disc._input_sample_set.get_values()[:, [0,1,2]])
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False

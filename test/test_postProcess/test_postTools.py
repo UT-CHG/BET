@@ -1,6 +1,7 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 # Steven Mattis 04/07/2015
+# Troy Butler 03/23/2016
 """
 This module contains tests for :module:`bet.postProcess.postTools`.
 
@@ -14,7 +15,8 @@ import numpy as np
 import scipy.spatial as spatial
 import numpy.testing as nptest
 import bet.util as util
-from bet.Comm import comm 
+from bet.Comm import comm
+import bet.sample as sample
 
 def test_in_high_prob():
     """
