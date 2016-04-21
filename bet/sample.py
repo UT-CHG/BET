@@ -107,12 +107,13 @@ class sample_set(object):
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
-    '_error_estimates', '_right', '_left', '_width'] 
+                   '_error_estimates', '_right', '_left', '_width', '_kdtree_values'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
-            '_values', '_values_local', '_left', '_left_local', '_right',
-            '_right_local', '_width', '_width_local', '_domain'] 
+                         '_values', '_values_local', '_left', '_left_local', 
+                         '_right','_right_local', '_width', '_width_local', 
+                         '_domain', '_kdtree_values'] 
 
 
     def __init__(self, dim):
@@ -139,8 +140,6 @@ class sample_set(object):
         self._error_estimates = None
         #: The sample domain :class:`numpy.ndarray` of shape (dim, 2)
         self._domain = None
-        #: :class:`scipy.spatial.KDTree`
-        self._kdtree = None
         #: Bounding box of values, :class:`numpy.ndarray`of shape (dim, 2)
         self._bounding_box = None
         #: Local values for parallelism, :class:`numpy.ndarray` of shape
@@ -161,7 +160,10 @@ class sample_set(object):
         #: Local indicies of global arrays, :class:`numpy.ndarray` of shape
         #: (local_num, dim)
         self._local_index = None
-
+        #: :class:`scipy.spatial.KDTree`
+        self._kdtree = None
+        #: Values defining kd tree, :class;`numpy.ndarray` of shape (num, dim)
+        self._kdtree_values
         #: Local pointwise left (local_num, dim)
         self._left_local = None
         #: Local pointwise right (local_num, dim)
@@ -446,21 +448,6 @@ class sample_set(object):
         self._error_estimates = np.concatenate((self._error_estimates,
             new_error_estimates), axis=0) 
         
-    def set_kdtree(self):
-        """
-        Creates a :class:`scipy.spatial.KDTree` for this set of samples.
-        """
-        self._kdtree = spatial.KDTree(self._values)
-        
-    def get_kdtree(self):
-        """
-        Returns a :class:`scipy.spatial.KDTree` for this set of samples.
-        
-        :rtype: :class:`scipy.spatial.KDTree`
-        :returns: :class:`scipy.spatial.KDTree` for this set of samples.
-        
-        """
-        return self._kdtree
 
     def set_values_local(self, values_local):
         """
@@ -474,6 +461,23 @@ class sample_set(object):
         if self._values_local.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         pass
+
+    def set_kdtree(self):
+        """
+        Creates a :class:`scipy.spatial.KDTree` for this set of samples.
+        """
+        self._kdtree = spatial.KDTree(self._values)
+        self._kdtree_values = self._kdtree.data
+
+    def get_kdtree(self):
+        """
+        Returns a :class:`scipy.spatial.KDTree` for this set of samples.
+        
+        :rtype: :class:`scipy.spatial.KDTree`
+        :returns: :class:`scipy.spatial.KDTree` for this set of samples.
+        
+        """
+        return self._kdtree
         
     def get_values_local(self):
         return self._values_local
@@ -514,7 +518,15 @@ class sample_set(object):
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local is not None:
                 setattr(self, array_name,
-                        util.get_global_values(current_array_local)) 
+                        util.get_global_values(current_array_local))
+    def query(self, x):
+        """
+        Identify which value points x are associated with for discretization.
+
+        :param x: points for query
+        :type x: :class:`numpy.ndarray` of shape (*, dim)
+        """
+        pass
 
     def global_to_local(self):
         """
@@ -655,7 +667,34 @@ def load_discretization(file_name, discretization_name=None):
                         np.squeeze(mdat[discretization_name+attrname]))
     return loaded_disc
 
+class voronoi_sample_set(sample_set):
+    """
 
+    A data structure containing arrays specific to a set of samples defining
+    a Voronoi tesselation.
+
+    """
+    def __init__(self, dim, p_norm=2):
+        super(sample_set, self).__init__(dim)
+        
+        #: p-norm to use for nearest neighbor search
+        self.p_norm = p_norm
+
+    def query(self, x):
+        """
+        Identify which value points x are associated with for discretization.
+
+        :param x: points for query
+        :type x: :class:`numpy.ndarray` of shape (*, dim)
+        """
+        if self._kdtree is None:
+            self.set_kdtree()
+        else:
+            self.check_num()
+        #TODO add exception if dimensions of x are wrong
+        (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
+        return ptr
+        
 class discretization(object):
     """
     A data structure to store all of the :class:`~bet.sample.sample_set`
