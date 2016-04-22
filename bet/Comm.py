@@ -50,7 +50,7 @@ class comm_for_no_mpi4py(object):
         :returns: val
         
         """
-        return val
+        return [val]
 
     def gather(self, val1, root=0):
         """
