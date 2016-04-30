@@ -16,6 +16,7 @@ from itertools import combinations
 from mpl_toolkits.mplot3d import Axes3D
 import bet.util as util
 import os
+import bet.sample as sample
 
 markers = []
 for m in Line2D.markers:
@@ -27,10 +28,23 @@ for m in Line2D.markers:
 
 colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k')
 
-def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
+class dim_not_matching(Exception):
+    """
+    Exception for when the dimension of the array is inconsistent.
+    """
+
+class bad_object(Exception):
+    """
+    Exception for when the wrong type of object is used.
+    """
+
+def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y',
                filename='scatter2d'): 
-    """
+    r"""
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    NEED TO UPDATE COMMENTING: INPUT OF 'samples' IS NOW A SAMPLE_SET OBJECT
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     Creates a two-dimensional scatter plot of ``samples`` colored by ``color``
     (usually an array of pointwise probability density values). A reference
     ``sample`` (``p_ref``) can be chosen by the user. This reference ``sample``
@@ -51,22 +65,29 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
+    if type(sample_obj) is not sample.sample_set:
+        raise bad_object("Improper sample object")
+    # check dimension of data to plot
+    if sample_obj.get_dim() != 2:
+        raise dim_not_matching("Cannot create 2D plot of non-2D sample "
+                               "object")
+
     # plot all of the samples by default
     if sample_nos is None:
-        sample_nos = np.arange(samples.shape[0])
+        sample_nos = np.arange(sample_obj.get_values().shape[0])
     # color all of the samples uniformly by default and set the default
     # to the default colormap of matplotlib
     if color is None:
-        color = np.ones((samples.shape[0],))
+        color = np.ones((sample_obj.get_values().shape[0],))
         cmap = None
     else:
         cmap = plt.cm.PuBu
     markersize = 75
     color = color[sample_nos]
     # create the scatter plot for the samples specified by sample_nos
-    plt.scatter(samples[sample_nos, 0], samples[sample_nos, 1], c=color,
-            s=markersize,
-            alpha=.75, linewidth=.1, cmap=cmap)
+    plt.scatter(sample_obj.get_values()[sample_nos, 0],
+                sample_obj.get_values()[sample_nos, 1],
+                c=color, s=markersize, alpha=.75, linewidth=.1, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
     # space
@@ -86,10 +107,13 @@ def scatter_2D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     else:
         plt.close()
 
-def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
+def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y', zlabel='z',
                filename="scatter3d"):
-    """ 
+    r"""
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    NEED TO UPDATE COMMENTING: INPUT OF 'samples' IS NOW A SAMPLE_SET OBJECT
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     Creates a three-dimensional scatter plot of ``samples`` colored by
     ``color`` (usually an array of pointwise probability density values). A
     reference ``sample`` (``p_ref``) can be chosen by the user. This reference
@@ -112,14 +136,20 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-    
+    if type(sample_obj) is not sample.sample_set:
+        raise bad_object("Improper sample object")
+    # check dimension of data to plot
+    if sample_obj.get_dim() != 3:
+        raise dim_not_matching("Cannot create 3D plot of non-3D sample "
+                               "object")
+
     # plot all of the samples by default
     if sample_nos is None:
-        sample_nos = np.arange(samples.shape[0])
+        sample_nos = np.arange(sample_obj.get_values().shape[0])
     # color all of the samples uniformly by default and set the default
     # to the default colormap of matplotlib
     if color is None:
-        color = np.ones((samples.shape[0],))
+        color = np.ones((sample_obj.get_values().shape[0],))
         cmap = None
     else:
         cmap = plt.cm.PuBu
@@ -128,10 +158,10 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     # create the scatter plot for the samples specified by sample_nos
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    p = ax.scatter(samples[sample_nos, 0], samples[sample_nos, 1],
-            samples[sample_nos, 2], alpha=.75, linewidth=.1, c=color,
-            s=markersize,
-            cmap=cmap)
+    p = ax.scatter(sample_obj.get_values()[sample_nos, 0],
+                   sample_obj.get_values()[sample_nos, 1],
+                   sample_obj.get_values()[sample_nos, 2],
+                   alpha=.75, linewidth=.1, c=color, s=markersize, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
     # space
@@ -152,16 +182,20 @@ def scatter_3D(samples, sample_nos=None, color=None, p_ref=None, save=True,
     else:
         plt.close()
    
-def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
+def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
         save=True, interactive=False, lnums=None, showdim=None):
     r"""
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+    NEED TO UPDATE COMMENTING: INPUT OF 'samples' IS NOW EITHER A SAMPLE_SET
+    OR DISCRETIZATION OBJECT
+    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     Create scatter plots of ``samples`` colored by ``color`` (usually
     an array of pointwise probability density values). A reference ``sample``
     (``p_ref``) can be chosen by the user. This reference ``sample`` will be
     plotted as a mauve circle twice the size of the other markers.
 
-    :param samples: Samples to plot
-    :type samples: :class:`numpy.ndarray`
+    :param sample_disc: Object containing the samples to plot
+    :type sample: :class:`sample.discretization` or `sample.sample_set`
     :param data: Data value(s) associated with ``samples``
     :type data: :class:`numpy.ndarray`
     :param list sample_nos: sample numbers to plot
@@ -183,44 +217,56 @@ def show_param(samples, data, rho_D=None, p_ref=None, sample_nos=None,
     # If there is density function given determine the pointwise probability
     # values of each sample based on the value in the data space. Otherwise,
     # color the samples in numerical order.
-    if rho_D is not None and data is not None:
-        rD = rho_D(data)
+    if type(sample_disc) is sample.discretization and rho_D is not None:
+        rD = rho_D(sample_disc._output_sample_set.get_values())
+        sample_obj = sample_disc._input_sample_set
     else:
-        rD = np.ones(samples.shape[0])
+        if type(sample_disc) is sample.discretization:
+            sample_obj = sample_disc._input_sample_set
+        elif type(sample_disc) is sample.sample_set:
+            sample_obj = sample_disc
+        else:
+            raise bad_object("Improper sample object")
+        rD = np.ones(sample_obj.get_values().shape[0])
     # If no specific coordinate numbers are given for the parameter coordinates
     # (e.g. i, where \lambda_i is a coordinate in the parameter space), then
     # set them to be the the counting numbers.
     if lnums is None:
-        lnums = 1+np.array(range(samples.shape[1]))
+        lnums = 1+np.array(range(sample_obj.get_values().shape[1]))
     # Create the labels based on the user selected parameter coordinates
     xlabel = r'$\lambda_{'+str(lnums[0])+'}$'
     ylabel = r'$\lambda_{'+str(lnums[1])+'}$'
     savename = 'param_samples_cs.eps'
     # Plot 2 or 3 dimensional scatter plots of the samples colored by rD.
-    if samples.shape[1] == 2:
-        scatter_2D(samples, sample_nos, rD, p_ref, save, interactive, xlabel,
-                ylabel, savename)
-    elif samples.shape[1] == 3:
+    if sample_obj.get_dim() == 2:
+        scatter_2D(sample_obj, sample_nos, rD, p_ref, save,
+                   interactive, xlabel, ylabel, savename)
+    elif sample_obj.get_dim() == 3:
         zlabel = r'$\lambda_{'+str(lnums[2])+'}$'
-        scatter_3D(samples, sample_nos, rD, p_ref, save, interactive, xlabel,
-                ylabel, zlabel, savename)
-    elif samples.shape[1] > 2 and showdim == 2:
+        scatter_3D(sample_obj, sample_nos, rD, p_ref, save,
+                   interactive, xlabel, ylabel, zlabel, savename)
+    elif sample_obj.get_dim() > 2 and showdim == 2:
+        temp_obj = sample.sample_set(2)
         for x, y in combinations(lnums, 2):
             xlabel = r'$\lambda_{'+str(x)+'}$'
             ylabel = r'$\lambda_{'+str(y)+'}$'
             savename = 'param_samples_l'+str(x)+'l'+str(y)+'_cs.eps'
-            scatter_2D(samples[:, [x-1, y-1]], sample_nos, rD, p_ref, save,
-                    interactive, xlabel, ylabel, savename)
-    elif samples.shape[1] > 3 and showdim == 3:
+            temp_obj.set_values(sample_obj.get_values()[:, [x-1, y-1]])
+            scatter_2D(temp_obj, sample_nos, rD, p_ref, save,
+                       interactive, xlabel, ylabel, savename)
+    elif sample_obj.get_dim() > 3 and showdim == 3:
+        temp_obj = sample.sample_set(3)
         for x, y, z in combinations(lnums, 3):
             xlabel = r'$\lambda_{'+str(x)+'}$'
             ylabel = r'$\lambda_{'+str(y)+'}$'
             zlabel = r'$\lambda_{'+str(z)+'}$'
-            savename = 'param_samples_l'+str(x)+'l'+str(y)+'l'+str(z)+'_cs.eps'
-            scatter_3D(samples[:, [x-1, y-1, z-1]], sample_nos, rD, p_ref, save,
-                    interactive, xlabel, ylabel, zlabel, savename)
+            savename = 'param_samples_l'+str(x)+'l'+str(y)+'l'+str(z)+\
+                       '_cs.eps'
+            temp_obj.set_values(sample_obj.get_values()[:, [x-1, y-1, z-1]])
+            scatter_3D(temp_obj, sample_nos, rD, p_ref, save,
+                       interactive, xlabel, ylabel, zlabel, savename)
 
-def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
+def show_data(sample_obj, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, interactive=False, Q_nums=None, showdim=None):
     r"""
     Create scatter plots of ``data`` colored by ``color`` (usually
@@ -251,32 +297,32 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
     # values of each sample based on the value in the data space. Otherwise,
     # color the samples in numerical order.
     if rho_D != None:
-        rD = rho_D(data)
+        rD = rho_D(sample_obj.get_values())
     else:
-        rD = np.ones(data.shape[0])
+        rD = np.ones(sample_obj.get_values().shape[0])
     # If no specific coordinate numbers are given for the data coordinates
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
     if Q_nums is None:
-        Q_nums = range(data.shape[1])
+        Q_nums = range(sample_obj.get_dim())
     # Create the labels based on the user selected data coordinates
     xlabel = r'$q_{'+str(Q_nums[0]+1)+'}$'
     ylabel = r'$q_{'+str(Q_nums[1]+1)+'}$'
     savename = 'data_samples_cs.eps'
     # Plot 2 or 3 dimensional scatter plots of the data colored by rD.
-    if data.shape[1] == 2:
+    if sample_obj.get_dim() == 2:
         q_ref = None
         if isinstance(Q_ref, np.ndarray):
             q_ref = Q_ref[Q_nums[:2]]
-        scatter_2D(data, sample_nos, rD, q_ref, save, interactive, xlabel,
+        scatter_2D(sample_obj, sample_nos, rD, q_ref, save, interactive, xlabel,
                 ylabel, savename)
-    elif data.shape[1] == 3:
+    elif sample_obj.get_dim() == 3:
         zlabel = r'$q_{'+str(Q_nums[2]+1)+'}$'
         if isinstance(Q_ref, np.ndarray):
             q_ref = Q_ref[Q_nums[:3]]
-        scatter_3D(data, sample_nos, rD, q_ref, save, interactive, xlabel,
+        scatter_3D(sample_obj, sample_nos, rD, q_ref, save, interactive, xlabel,
                 ylabel, zlabel, savename)
-    elif data.shape[1] > 2 and showdim == 2:
+    elif sample_obj.get_dim() > 2 and showdim == 2:
         for x, y in combinations(Q_nums, 2):
             xlabel = r'$q_{'+str(x+1)+'}$'
             ylabel = r'$q_{'+str(y+1)+'}$'
@@ -284,9 +330,13 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
             q_ref = None
             if isinstance(Q_ref, np.ndarray):
                 q_ref = Q_ref[[x, y]]
-            scatter_2D(data[:, [x, y]], sample_nos, rD, q_ref, save,
+
+            sample_obj_temp = sample.sample_set(2)
+            sample_obj_temp.set_values(sample_obj.get_values()[:, [x, y]])
+
+            scatter_2D(sample_obj_temp, sample_nos, rD, q_ref, save,
                     interactive, xlabel, ylabel, savename)
-    elif data.shape[1] > 3 and showdim == 3:
+    elif sample_obj.get_dim() > 3 and showdim == 3:
         for x, y, z in combinations(Q_nums, 3):
             xlabel = r'$q_{'+str(x+1)+'}$'
             ylabel = r'$q_{'+str(y+1)+'}$'
@@ -296,10 +346,14 @@ def show_data(data, rho_D=None, Q_ref=None, sample_nos=None,
                 q_ref = Q_ref[[x, y, z]]
             savename = 'data_samples_q'+str(x+1)+'q'+str(y+1)+'q'\
                        +str(z+1)+'_cs.eps'
-            scatter_3D(data[:, [x, y, z]], sample_nos, rD, q_ref, save,
+
+            sample_obj_temp = sample.sample_set(3)
+            sample_obj_temp.set_values(sample_obj.get_values()[:, [x, y, z]])
+
+            scatter_3D(sample_obj_temp, sample_nos, rD, q_ref, save,
                     interactive, xlabel, ylabel, zlabel, savename)
 
-def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
+def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
         img_folder='figs/', ref_markers=None,
         ref_colors=None, showdim=None):
     r"""
@@ -324,16 +378,22 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
     :type showdim: int or string
 
     """
+    if type(sample_disc) is not sample.discretization:
+        raise bad_object("Improper sample object")
+
     # Set the default marker and colors
     if ref_markers == None:
         ref_markers = markers
     if ref_colors == None:
         ref_colors = colors
+
+    data_obj = sample_disc._output_sample_set
+    sample_obj = sample_disc._input_sample_set
     # If no specific coordinate numbers are given for the data coordinates
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
     if Q_nums is None:
-        Q_nums = range(data.shape[1])
+        Q_nums = range(data_obj.get_dim())
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim == None:
@@ -345,11 +405,12 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
 
     # Make sure the shape of Q_ref is correct
     if Q_ref is not None:
-        Q_ref = util.fix_dimensions_data(Q_ref, data.shape[1])
+        Q_ref = util.fix_dimensions_data(Q_ref, data_obj.get_dim())
 
     # Create the triangulization to use to define the topology of the samples
     # in the data space from the first two parameters in the parameter space
-    triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
+    triangulation = tri.Triangulation(sample_obj.get_values()[:, 0],
+                                      sample_obj.get_values()[:, 1])
     triangles = triangulation.triangles
 
     # Create plots of the showdim^th QoI (q_{showdim}) with all other QoI (q_i)
@@ -361,13 +422,18 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
             filenames = [img_folder+'domain_q'+str(showdim+1)+'_q'+\
                     str(i+1)+'.eps', img_folder+'q'+str(showdim+1)+\
                     '_q'+str(i+1)+'_domain_Q_cs.eps']
-            if Q_ref is not None:    
-                show_data_domain_2D(samples, data[:, [showdim, i]], Q_ref[:,
-                    [showdim, i]], ref_markers, ref_colors, xlabel=xlabel,
+
+            data_obj_temp = sample.sample_set(2)
+            data_obj_temp.set_values(data_obj.get_values()[:, [showdim, i]])
+            sample_disc_temp = sample.discretization(sample_obj, data_obj_temp)
+
+            if Q_ref is not None:
+                show_data_domain_2D(sample_disc_temp, Q_ref[:,[showdim, i]],
+                    ref_markers, ref_colors, xlabel=xlabel,
                     ylabel=ylabel, triangles=triangles, save=True,
                     interactive=False, filenames=filenames)
             else:
-                show_data_domain_2D(samples, data[:, [showdim, i]], None,
+                show_data_domain_2D(sample_disc_temp, None,
                         ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
                         triangles=triangles, save=True, interactive=False,
                         filenames=filenames)
@@ -379,19 +445,23 @@ def show_data_domain_multi(samples, data, Q_ref=None, Q_nums=None,
 
             filenames = [img_folder+'domain_q'+str(x+1)+'_q'+str(y+1)+'.eps',
                     img_folder+'q'+str(x+1)+'_q'+str(y+1)+'_domain_Q_cs.eps']
-            
+
+            data_obj_temp = sample.sample_set(2)
+            data_obj_temp.set_values(data_obj.get_values()[:, [x, y]])
+            sample_disc_temp = sample.discretization(sample_obj, data_obj_temp)
+
             if Q_ref is not None:
-                show_data_domain_2D(samples, data[:, [x, y]], Q_ref[:, [x, y]],
+                show_data_domain_2D(sample_disc_temp, Q_ref[:, [x, y]],
                         ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
                         triangles=triangles, save=True, interactive=False,
                         filenames=filenames)
             else:
-                show_data_domain_2D(samples, data[:, [x, y]], None,
+                show_data_domain_2D(sample_disc_temp, None,
                         ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
                         triangles=triangles, save=True, interactive=False,
                         filenames=filenames)
 
-def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
+def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2$',
         triangles=None, save=True, interactive=False, filenames=None):
     r"""
@@ -419,6 +489,12 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
     :param list filenames: file names for the unmarked and marked domain plots
 
     """
+    if type(sample_disc) is not sample.discretization:
+        raise bad_object("Improper sample object")
+
+    data_obj = sample_disc._output_sample_set
+    sample_obj = sample_disc._input_sample_set
+
     # Set the default marker and colors
     if ref_markers == None:
         ref_markers = markers
@@ -428,7 +504,8 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
     if triangles is None:
-        triangulation = tri.Triangulation(samples[:, 0], samples[:, 1])
+        triangulation = tri.Triangulation(sample_obj.get_values()[:, 0],
+                                          sample_obj.get_values()[:, 1])
         triangles = triangulation.triangles
     # Set default file names
     if filenames == None:
@@ -439,7 +516,8 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
         Q_ref = util.fix_dimensions_data(Q_ref, 2)
 
     # Create figure
-    plt.tricontourf(data[:, 0], data[:, 1], np.zeros((data.shape[0],)),
+    plt.tricontourf(data_obj.get_values()[:, 0], data_obj.get_values()[:, 1],
+                    np.zeros((data_obj.get_values().shape[0],)),
             triangles=triangles, colors='grey') 
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
@@ -459,7 +537,7 @@ def show_data_domain_2D(samples, data, Q_ref=None, ref_markers=None,
     else:
         plt.close()
 
-def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
+def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True,
         interactive=False):
     r"""
 
@@ -475,6 +553,9 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
     :type showdim: int or string
 
     """
+    if type(sample_obj) is not sample.sample_set:
+        raise bad_object("Improper sample object")
+
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim == None:
@@ -483,7 +564,7 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
     # Create list of all the parameter coordinates
-    L_nums = range(samples.shape[1])
+    L_nums = range(sample_obj.get_dim())
 
    # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
    # other parameters
@@ -496,7 +577,7 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
                     str(i+1)+'.eps', img_folder+'l'+str(showdim+1)+\
                     '_l'+str(i+1)+'_domain_L_cs.eps']
             filename = filenames[0]
-            plt.scatter(samples[:, 0], samples[:, 1])
+            plt.scatter(sample_obj.get_values()[:, 0], sample_obj.get_values()[:, 1])
             if save:
                 plt.autoscale(tight=True)
                 plt.xlabel(xlabel)
@@ -517,7 +598,7 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
                     str(y+1)+'.eps', img_folder+'l'+str(x+1)+\
                     '_l'+str(y+1)+'_domain_L_cs.eps']
             filename = filenames[0]
-            plt.scatter(samples[:, x], samples[:, y])
+            plt.scatter(sample_obj.get_values()[:, x], sample_obj.get_values()[:, y])
             if save:
                 plt.autoscale(tight=True)
                 plt.xlabel(xlabel)
@@ -529,7 +610,7 @@ def scatter_param_multi(samples, img_folder='figs/', showdim='all', save=True,
             else:
                 plt.close()
 
-def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
+def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
                     filename="scatter2Dm", label_char=r'$\lambda',
                     showdim=None): 
     r"""
@@ -553,6 +634,8 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
     :type showdim: int or string
 
     """
+    if type(sample_obj) is not sample.sample_set:
+        raise bad_object("Improper sample object")
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim == None:
@@ -561,7 +644,7 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
     # Create list of all the parameter coordinates    
-    p_nums = range(samples.shape[1])
+    p_nums = range(sample_obj.get_dim())
 
    # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
    # other parameters
@@ -572,13 +655,17 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
 
             postfix = '_d'+str(showdim+1)+'_d'+str(i+1)+'.eps'
             myfilename = os.path.join(img_folder, filename+postfix)
+
+            sample_obj_temp = sample.sample_set(2)
+            sample_obj_temp.set_values(sample_obj.get_values()[:, [showdim, i]])
+
             if p_ref:
-                scatter_2D(samples[:, [showdim, i]], sample_nos=None,
+                scatter_2D(sample_obj_temp, sample_nos=None,
                         color=color, p_ref=p_ref[[showdim, i]], save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
                         filename=myfilename)
             else:
-                scatter_2D(samples[:, [showdim, i]], sample_nos=None,
+                scatter_2D(sample_obj_temp, sample_nos=None,
                         color=color, p_ref=None, save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
                         filename=myfilename)
@@ -591,12 +678,15 @@ def scatter2D_multi(samples, color=None, p_ref=None, img_folder='figs/',
 
             postfix = '_d'+str(x+1)+'_d'+str(y+1)+'.eps'
             myfilename = os.path.join(img_folder, filename+postfix)
-            
+
+            sample_obj_temp = sample.sample_set(2)
+            sample_obj_temp.set_values(sample_obj.get_values()[:, [x, y]])
+
             if p_ref:
-                scatter_2D(samples[:, [x, y]], sample_nos=None, color=color,
+                scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                        p_ref=p_ref[[x, y]], save=True, interactive=False,
                        xlabel=xlabel, ylabel=ylabel, filename=myfilename)
             else:
-                scatter_2D(samples[:, [x, y]], sample_nos=None, color=color,
+                scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                        p_ref=None, save=True, interactive=False,
                        xlabel=xlabel, ylabel=ylabel, filename=myfilename)

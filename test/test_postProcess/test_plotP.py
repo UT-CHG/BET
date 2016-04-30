@@ -1,7 +1,5 @@
 # Copyright (C) 2014-2015 The BET Development Team
 
-# Steven Mattis 04/07/2015
-# Troy Butler 03/23/2016
 """
 This module contains tests for :module:`bet.postProcess.plotP`.
 
@@ -93,7 +91,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         input_samples.set_domain(np.array([[0.0,1.0],[0.0,1.0]]))
         input_samples.set_values(util.meshgrid_ndim((np.linspace(input_samples.get_domain()[0][0], input_samples.get_domain()[0][1], 10),
                                                      np.linspace(input_samples.get_domain()[1][0], input_samples.get_domain()[1][1], 10))))
-        input_samples.set_probabilities(1.0/float(comm.size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],)))
+        input_samples.set_probabilities(1.0/float(comm.size)*(1.0/float(input_samples.get_values().shape[0]))*np.ones((input_samples.get_values().shape[0],)))
         #self.lam_domain=np.array([[0.0,1.0],[0.0,1.0]])
         #self.samples=util.meshgrid_ndim((np.linspace(self.lam_domain[0][0], self.lam_domain[0][1], 10),np.linspace(self.lam_domain[1][0], self.lam_domain[1][1], 10)))
         #self.P_samples = 1.0/float(comm.size)*(1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
