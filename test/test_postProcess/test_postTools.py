@@ -126,101 +126,73 @@ class Test_PostTools(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.postTools.sort_by_rho`.
         """
-        (P_samples, samples, _ , data, _) = postTools.sort_by_rho(self.data.get_probabilities(),
-                                                                  self.data.get_values(),
-                                                                  lam_vol=None,
-                                                                  data=self.data.get_values())
-        self.assertGreater(np.min(P_samples),0.0)
-        nptest.assert_almost_equal(np.sum(P_samples),1.0)
+        (self.data, _) = postTools.sort_by_rho(self.data)
+        self.assertGreater(np.min(self.data.get_probabilities()),0.0)
+        nptest.assert_almost_equal(np.sum(self.data.get_probabilities()),1.0)
 
     def test_sample_prob(self):
         """
         Test :meth:`bet.postProcess.postTools.sample_prob`.
         """
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_prob(1.0,
-                                                                           self.data.get_probabilities(),
-                                                                           self.data.get_values(),
-                                                                           lam_vol=None,
-                                                                           data=self.data.get_values(),
-                                                                           sort=True,
-                                                                           descending=True)
-        nptest.assert_almost_equal(np.sum(P_samples),1.0)
-        nptest.assert_equal(num_samples,1000)
-        
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_prob(0.8,
-                                                                           self.data.get_probabilities(),
-                                                                           self.data.get_values(),
-                                                                           lam_vol=None,
-                                                                           data=self.data.get_values(),
-                                                                           sort=True,
-                                                                           descending=True)
-        nptest.assert_allclose(np.sum(P_samples),0.8,0.001)
+        (num_samples, sample_set_out, _) = postTools.sample_prob(1.0, self.data,
+                                                             sort=True,
+                                                             descending=True)
 
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_prob(1.0,
-                                                                           self.data.get_probabilities(),
-                                                                           self.data.get_values(),
-                                                                           lam_vol=None,
-                                                                           data=self.data.get_values(),
-                                                                           sort=True,
-                                                                           descending=False)
-        nptest.assert_almost_equal(np.sum(P_samples),1.0)
+        nptest.assert_almost_equal(np.sum(sample_set_out.get_probabilities()),1.0)
         nptest.assert_equal(num_samples,1000)
         
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_prob(0.8,
-                                                                           self.data.get_probabilities(),
-                                                                           self.data.get_values(),
-                                                                           lam_vol=None,
-                                                                           data=self.data.get_values(),
-                                                                           sort=True,
-                                                                           descending=False)
-        nptest.assert_allclose(np.sum(P_samples),0.8,0.001)
+        (num_samples, sample_set_out, _) = postTools.sample_prob(0.8,
+                                                                self.data,
+                                                                sort=True,
+                                                                descending=True)
+
+        nptest.assert_allclose(np.sum(sample_set_out.get_probabilities()),0.8,0.001)
+
+        (num_samples, sample_set_out, _) = postTools.sample_prob(1.0,
+                                                               self.data,
+                                                               sort=True,
+                                                               descending=False)
+
+        nptest.assert_almost_equal(np.sum(sample_set_out.get_probabilities()),1.0)
+        nptest.assert_equal(num_samples,1000)
+        
+        (num_samples, sample_set_out, _) = postTools.sample_prob(0.8,
+                                                               self.data,
+                                                               sort=True,
+                                                               descending=False)
+
+        nptest.assert_allclose(np.sum(sample_set_out.get_probabilities()),0.8,0.001)
     
     def test_sample_highest_prob(self):
         """
         Test :meth:`bet.postProcess.postTools.sample_highest_prob`.
         """
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_highest_prob(1.0,
-                                                                                  self.data.get_probabilities(),
-                                                                                  self.data.get_values(),
-                                                                                  lam_vol=None,
-                                                                                  data=self.data.get_values(),
-                                                                                  sort=True)
-        '''
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_highest_prob(1.0,
-                                                                                  idata.get_probabilities(),
-                                                                                  idata.get_values(),
-                                                                                  lam_vol=None,
-                                                                                  data=idata.get_values(),
-                                                                                  sort=True)
-        '''
-        nptest.assert_almost_equal(np.sum(P_samples),1.0)
+        (num_samples, sample_set_out, _) = postTools.sample_highest_prob(1.0,
+                                                                      self.data,
+                                                                      sort=True)
+
+        nptest.assert_almost_equal(np.sum(sample_set_out.get_probabilities()),1.0)
         nptest.assert_equal(num_samples,1000)
         
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_highest_prob(0.8,
-                                                                                  self.data.get_probabilities(),
-                                                                                  self.data.get_values(),
-                                                                                  lam_vol=None,
-                                                                                  data=self.data.get_values(),
-                                                                                  sort=True)
-        nptest.assert_allclose(np.sum(P_samples),0.8,0.001)
+        (num_samples, sample_set_out, _) = postTools.sample_highest_prob(0.8,
+                                                                      self.data,
+                                                                      sort=True)
+
+        nptest.assert_allclose(np.sum(sample_set_out.get_probabilities()),0.8,0.001)
     
     def test_sample_lowest_prob(self):
         """
         Test :meth:`bet.postProcess.postTools.sample_lowest_prob`.
         """
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_lowest_prob(1.0,
-                                                                                  self.data.get_probabilities(),
-                                                                                  self.data.get_values(),
-                                                                                  lam_vol=None,
-                                                                                  data=self.data.get_values(),
-                                                                                  sort=True)
-        nptest.assert_almost_equal(np.sum(P_samples),1.0)
+        (num_samples, sample_set_out, _) = postTools.sample_lowest_prob(1.0,
+                                                                      self.data,
+                                                                      sort=True)
+
+        nptest.assert_almost_equal(np.sum(sample_set_out.get_probabilities()),1.0)
         nptest.assert_equal(num_samples,1000)
         
-        (num_samples,P_samples, samples, _ , data, _) = postTools.sample_lowest_prob(0.8,
-                                                                                  self.data.get_probabilities(),
-                                                                                  self.data.get_values(),
-                                                                                  lam_vol=None,
-                                                                                  data=self.data.get_values(),
-                                                                                  sort=True)
-        nptest.assert_allclose(np.sum(P_samples),0.8,0.001)
+        (num_samples, sample_set_out, _) = postTools.sample_lowest_prob(0.8,
+                                                                      self.data,
+                                                                      sort=True)
+
+        nptest.assert_allclose(np.sum(sample_set_out.get_probabilities()),0.8,0.001)

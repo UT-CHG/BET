@@ -6,9 +6,20 @@ This module provides methods for postprocessing probabilities and data.
 from bet.Comm import comm
 import numpy as np
 import scipy.io as sio
+import bet.sample as sample
 
 
-def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
+class dim_not_matching(Exception):
+    """
+    Exception for when the dimension of the array is inconsistent.
+    """
+
+class bad_object(Exception):
+    """
+    Exception for when the wrong type of object is used.
+    """
+
+def sort_by_rho(sample_set):
     """
     This sorts the samples by probability density. It returns the sorted
     values.  If the samples are iid, no volume data is needed. It is optional
@@ -29,6 +40,19 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
     :returns: (P_samples, samples, lam_vol, data, indicices)
 
     """
+    if type(sample_set) is sample.discretization:
+        samples = sample_set._input_sample_set.get_values()
+        P_samples = sample_set._input_sample_set.get_probabilities()
+        lam_vol = sample_set._input_sample_set.get_volumes()
+        data = sample_set._output_sample_set.get_values()
+    elif type(sample_set) is sample.sample_set:
+        samples = sample_set.get_values()
+        P_samples = sample_set.get_probabilities()
+        lam_vol = sample_set.get_volumes()
+        data = None
+    else:
+        raise bad_object("Improper sample object")
+
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
     if P_samples.shape != (samples.shape[0],):
@@ -47,10 +71,19 @@ def sort_by_rho(P_samples, samples, lam_vol=None, data=None):
             data = np.expand_dims(data, axis=1)
         data = data[indices, :]
 
-    return (P_samples, samples, lam_vol, data, indices)
+    if type(sample_set) is sample.discretization:
+        sample_set._input_sample_set.set_values(samples)
+        sample_set._input_sample_set.set_probabilities(P_samples)
+        sample_set._input_sample_set.set_volumes(lam_vol)
+        sample_set._output_sample_set.set_data(data)
+    else:
+        sample_set.set_values(samples)
+        sample_set.set_probabilities(P_samples)
+        sample_set.set_volumes(lam_vol)
 
-def sample_prob(percentile, P_samples, samples, lam_vol=None,
-        data=None, sort=True, descending=False): 
+    return (sample_set, indices)
+
+def sample_prob(percentile, sample_set, sort=True, descending=False):
     """
     This calculates the highest/lowest probability samples whose probability
     sum to a given value.  The number of high/low probability samples that sum
@@ -79,19 +112,42 @@ def sample_prob(percentile, P_samples, samples, lam_vol=None,
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
+    if type(sample_set) is sample.discretization:
+        samples = sample_set._input_sample_set.get_values()
+        P_samples = sample_set._input_sample_set.get_probabilities()
+        lam_vol = sample_set._input_sample_set.get_volumes()
+        data = sample_set._output_sample_set.get_values()
+    elif type(sample_set) is sample.sample_set:
+        samples = sample_set.get_values()
+        P_samples = sample_set.get_probabilities()
+        lam_vol = sample_set.get_volumes()
+        data = None
+    else:
+        raise bad_object("Improper sample object")
+
     if len(samples.shape) == 1:
         samples = np.expand_dims(samples, axis=1)
     if P_samples.shape != (samples.shape[0],):
         raise ValueError("P_samples must be of the shape (num_samples,)")
     if sort:
-        (P_samples, samples, lam_vol, data, indices) = sort_by_rho(P_samples,
-                samples, lam_vol, data)
+        (sample_set, indices) = sort_by_rho(sample_set)
+        if type(sample_set) is sample.discretization:
+            samples = sample_set._input_sample_set.get_values()
+            P_samples = sample_set._input_sample_set.get_probabilities()
+            lam_vol = sample_set._input_sample_set.get_volumes()
+            data = sample_set._output_sample_set.get_values()
+        elif type(sample_set) is sample.sample_set:
+            samples = sample_set.get_values()
+            P_samples = sample_set.get_probabilities()
+            lam_vol = sample_set.get_volumes()
+            data = None
     if descending:
         P_samples = P_samples[::-1]
         samples = samples[::-1]
         if lam_vol is not None:
             lam_vol = lam_vol[::-1]
-        data = data[::-1]
+        if data is not None:
+            data = data[::-1]
         indices = indices[::-1]
 
     P_sum = np.cumsum(P_samples)
@@ -104,12 +160,25 @@ def sample_prob(percentile, P_samples, samples, lam_vol=None,
         if len(data.shape) == 1:
             data = np.expand_dims(data, axis=1)
         data = data[0:num_samples, :]
-        
-    return  (num_samples, P_samples, samples, lam_vol, data,
+
+    if type(sample_set) is sample.discretization:
+        samples_out = sample.sample_set(sample_set._input_sample_set.get_dim())
+        data_out = sample.sample_set(sample_set._output_sample_set.get_dim())
+        sample_set_out = sample.discretization(samples_out, data_out)
+        sample_set_out._input_sample_set.set_values(samples)
+        sample_set_out._input_sample_set.set_probabilities(P_samples)
+        sample_set_out._input_sample_set.set_volumes(lam_vol)
+        sample_set_out._output_sample_set.set_data(data)
+    else:
+        sample_set_out = sample.sample_set(sample_set.get_dim())
+        sample_set_out.set_values(samples)
+        sample_set_out.set_probabilities(P_samples)
+        sample_set_out.set_volumes(lam_vol)
+
+    return  (num_samples, sample_set_out,
             indices[0:num_samples])
 
-def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
-        data=None, sort=True): 
+def sample_highest_prob(top_percentile, sample_set, sort=True):
     """
     This calculates the highest probability samples whose probability sum to a
     given value.  The number of high probability samples that sum to the value
@@ -135,10 +204,9 @@ def sample_highest_prob(top_percentile, P_samples, samples, lam_vol=None,
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
-    return sample_prob(top_percentile, P_samples, samples, lam_vol, data, sort)
+    return sample_prob(top_percentile, sample_set, sort)
 
-def sample_lowest_prob(bottom_percentile, P_samples, samples, lam_vol=None,
-        data=None, sort=True): 
+def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     """
     This calculates the lowest probability samples whose probability sum to a
     given value.  The number of low probability samples that sum to the value
@@ -164,7 +232,7 @@ def sample_lowest_prob(bottom_percentile, P_samples, samples, lam_vol=None,
     :returns: ( num_samples, P_samples, samples, lam_vol, data)
 
     """
-    return sample_prob(bottom_percentile, P_samples, samples, lam_vol, data,
+    return sample_prob(bottom_percentile, sample_set,
             sort, descending=True)
 
 def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
