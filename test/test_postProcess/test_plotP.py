@@ -48,16 +48,8 @@ class Test_calc_marg_1D(unittest.TestCase):
         """
         Test that marginals sum to 1 and have correct shape.
         """
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
                                                               nbins = 1)
-        '''
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 1)
-        '''
         nptest.assert_almost_equal(marginals[0][0], 1.0)
         nptest.assert_equal(marginals[0].shape, (1,))
 
@@ -65,16 +57,8 @@ class Test_calc_marg_1D(unittest.TestCase):
         """
         Test that marginals sum to 1 and have correct shape.
         """
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
         nptest.assert_almost_equal(np.sum(marginals[0]), 1.0)
         nptest.assert_equal(marginals[0].shape, (10,))
 
@@ -103,16 +87,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """ 
         Test that 1D marginals sum to 1 and have right shape.
         """
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
                                                               nbins = 1)
-        '''
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 1)
-        '''
         nptest.assert_almost_equal(marginals[0][0], 1.0)
         nptest.assert_almost_equal(marginals[1][0], 1.0)
         nptest.assert_equal(marginals[0].shape, (1,))
@@ -122,16 +98,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """ 
         Test that 1D marginals sum to 1 and have right shape.
         """
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
         nptest.assert_almost_equal(np.sum(marginals[0]), 1.0)
         nptest.assert_almost_equal(np.sum(marginals[1]), 1.0)
         nptest.assert_equal(marginals[0].shape, (10,))
@@ -140,16 +108,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """ 
         Test that 2D marginals sum to 1 and have right shape.
         """
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
                                                               nbins = 1)
-        '''
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 1)
-        '''
         nptest.assert_almost_equal(marginals[(0,1)][0], 1.0)
         nptest.assert_equal(marginals[(0,1)].shape, (1,1))
 
@@ -157,16 +117,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """ 
         Test that 2D marginals sum to 1 and have right shape.
         """
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
         nptest.assert_almost_equal(np.sum(marginals[(0,1)]), 1.0)
         nptest.assert_equal(marginals[(0,1)].shape, (10,10))
 
@@ -174,16 +126,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """ 
         Test that 1D marginals sum to 1 and have right shape.
         """
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
                                                               nbins = [5,10])
-        '''
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = [5,10])
-        '''
         nptest.assert_almost_equal(np.sum(marginals[(0,1)]), 1.0)
         nptest.assert_equal(marginals[(0,1)].shape, (5,10))
 
@@ -192,16 +136,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotP.smooth_marginals_1D`.
         """
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
         marginals_smooth = plotP.smooth_marginals_1D(marginals, bins, sigma = 10.0)
         nptest.assert_equal(marginals_smooth[0].shape,  marginals[0].shape)
         nptest.assert_almost_equal(np.sum(marginals_smooth[0]), 1.0)
@@ -210,16 +146,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotP.smooth_marginals_2D`.
         """
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
         marginals_smooth = plotP.smooth_marginals_2D(marginals, bins, sigma = 10.0)
         nptest.assert_equal(marginals_smooth[(0,1)].shape,  marginals[(0,1)].shape)
         nptest.assert_almost_equal(np.sum(marginals_smooth[(0,1)]), 1.0)
@@ -228,19 +156,12 @@ class Test_calc_marg_2D(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotP.plot_1D_marginal_probs`.
         """
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_1D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
+
         try:
-            plotP.plot_1D_marginal_probs(marginals, bins, self.samples.get_domain(), filename = "file", interactive=False)
-            #plotP.plot_1D_marginal_probs(marginals, bins,self.lam_domain, filename = "file", interactive=False)
+            plotP.plot_1D_marginal_probs(marginals, bins, self.samples,
+                                         filename = "file", interactive=False)
             go = True
             if os.path.exists("file_1D_0.eps"):
                 os.remove("file_1D_0.eps")
@@ -254,20 +175,13 @@ class Test_calc_marg_2D(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotP.plot_2D_marginal_probs`.
         """
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples.get_probabilities(),
-                                                              self.samples.get_values(),
-                                                              self.samples.get_domain(),
+        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
                                                               nbins = 10)
-        '''
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.P_samples,
-                                                              self.samples,
-                                                              self.lam_domain,
-                                                              nbins = 10)
-        '''
         marginals[(0,1)][0][0]=0.0
         marginals[(0,1)][0][1]*=2.0
         try:
-            plotP.plot_2D_marginal_probs(marginals, bins,self.samples.get_domain(), filename = "file", interactive=False)
+            plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
+                                         filename = "file", interactive=False)
             go = True
             if os.path.exists("file_2D_0_1.eps"):
                 os.remove("file_2D_0_1.eps")

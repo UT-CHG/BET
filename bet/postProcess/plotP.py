@@ -10,8 +10,20 @@ import matplotlib.pyplot as plt
 #plt.rc('font', family='serif')
 import numpy as np
 import copy, math
+import bet.sample as sample
 
-def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
+
+class dim_not_matching(Exception):
+    """
+    Exception for when the dimension of the array is inconsistent.
+    """
+
+class bad_object(Exception):
+    """
+    Exception for when the wrong type of object is used.
+    """
+
+def calculate_1D_marginal_probs(sample_set, nbins=20):
         
     """
     This calculates every single marginal of
@@ -29,31 +41,42 @@ def calculate_1D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     :returns: (bins, marginals)
 
     """
-    if len(samples.shape) == 1:
-        samples = np.expand_dims(samples, axis=1)
-    num_dim = samples.shape[1]
+    if type(sample_set) is sample.discretization:
+        sample_obj = sample_obj._input_sample_set
+    elif type(sample_set) is sample.sample_set:
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    # check dimension of data to plot
+    if sample_obj.get_dim() == 1:
+        sample_obj.set_values( np.expand_dims(sample_obj.get_values(), axis=1) )
+        sample_obj.set_probabilities( np.expand_dims(
+            sample_obj.get_probabilities(), axis=1) )
 
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
-        nbins = nbins*np.ones(num_dim, dtype=np.int)
+        nbins = nbins*np.ones(sample_obj.get_dim(), dtype=np.int)
  
     # Create bins
     bins = []
-    for i in range(num_dim):
-        bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1], nbins[i]+1))
+    for i in range(sample_obj.get_dim()):
+        bins.append(np.linspace(sample_obj.get_domain()[i][0],
+                                sample_obj.get_domain()[i][1],
+                                nbins[i]+1))
         
     # Calculate marginals
     marginals = {}
-    for i in range(num_dim):
-        [marg, _] = np.histogram(samples[:, i], bins=bins[i], 
-                                 weights=P_samples)
+    for i in range(sample_obj.get_dim()):
+        [marg, _] = np.histogram(sample_obj.get_values()[:, i], bins=bins[i],
+                                 weights=sample_obj.get_probabilities())
         marg_temp = np.copy(marg)
         comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
         marginals[i] = marg_temp
 
     return (bins, marginals)
 
-def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
+def calculate_2D_marginal_probs(sample_set, nbins=20):
         
     """
     This calculates every pair of marginals (or joint in 2d case) of
@@ -71,25 +94,34 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
     :returns: (bins, marginals)
 
     """
-    if len(samples.shape) == 1:
-        samples = np.expand_dims(samples, axis=1)
-    num_dim = samples.shape[1]
+    if type(sample_set) is sample.discretization:
+        sample_obj = sample_obj._input_sample_set
+    elif type(sample_set) is sample.sample_set:
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    if sample_obj.get_dim() < 2:
+        raise dim_not_matching("Incompatible dimensions of sample set"
+                               " for plotting")
 
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
-        nbins = nbins*np.ones(num_dim, dtype=np.int)
+        nbins = nbins*np.ones(sample_obj.get_dim(), dtype=np.int)
 
     # Create bins
     bins = []
-    for i in range(num_dim):
-        bins.append(np.linspace(lam_domain[i][0], lam_domain[i][1], nbins[i]+1))
-    
+    for i in range(sample_obj.get_dim()):
+        bins.append(np.linspace(sample_obj.get_domain()[i][0],
+                                sample_obj.get_domain()[i][1],
+                                nbins[i]+1))
+
     # Calculate marginals
     marginals = {}
-    for i in range(num_dim):
-        for j in range(i+1, num_dim):
-            (marg, _) = np.histogramdd(samples[:, [i, j]], bins=[bins[i],
-                                       bins[j]], weights=P_samples) 
+    for i in range(sample_obj.get_dim()):
+        for j in range(i+1, sample_obj.get_dim()):
+            (marg, _) = np.histogramdd(sample_obj.get_values()[:, [i, j]], bins=[bins[i],
+                                       bins[j]], weights=sample_obj.get_probabilities())
             marg = np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
             comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],
@@ -98,7 +130,7 @@ def calculate_2D_marginal_probs(P_samples, samples, lam_domain, nbins=20):
 
     return (bins, marginals)
 
-def plot_1D_marginal_probs(marginals, bins, lam_domain,
+def plot_1D_marginal_probs(marginals, bins, sample_set,
         filename="file", lam_ref=None, interactive=False,
         lambda_label=None, file_extension=".eps"):
         
@@ -123,6 +155,15 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
     :type lambda_label: list of length nbins of strings or None
 
     """
+    if type(sample_set) is sample.discretization:
+        sample_obj = sample_obj._input_sample_set
+    elif type(sample_set) is sample.sample_set:
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    lam_domain = sample_obj.get_domain()
+
     if comm.rank == 0:
         index = copy.deepcopy(marginals.keys())
         index.sort()
@@ -148,7 +189,7 @@ def plot_1D_marginal_probs(marginals, bins, lam_domain,
                 plt.close()
             plt.clf()
 
-def plot_2D_marginal_probs(marginals, bins, lam_domain,
+def plot_2D_marginal_probs(marginals, bins, sample_set,
         filename="file", lam_ref=None, plot_surface=False, interactive=False,
         lambda_label=None, file_extension=".eps"):
         
@@ -173,6 +214,15 @@ def plot_2D_marginal_probs(marginals, bins, lam_domain,
     :type lambda_label: list of length nbins of strings or None
 
     """
+    if type(sample_set) is sample.discretization:
+        sample_obj = sample_obj._input_sample_set
+    elif type(sample_set) is sample.sample_set:
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    lam_domain = sample_obj.get_domain()
+
     from matplotlib import cm
     if plot_surface:
         from mpl_toolkits.mplot3d import Axes3D
