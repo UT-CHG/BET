@@ -87,7 +87,7 @@ percentile = 1.0
 # Sort samples by highest probability density and find how many samples lie in
 # the support of the inverse solution.  With the Monte Carlo assumption, this
 # also tells us the approximate volume of this support.
-(num_samples, P_high, samples_high, lam_vol_high, data_high) =\
+(num_samples, P_high, samples_high, lam_vol_high, data_high, sort) =\
     postTools.sample_highest_prob(top_percentile=percentile, P_samples=P,
     samples=samples, lam_vol=lam_vol,data = data,sort=True)
 
