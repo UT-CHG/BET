@@ -34,4 +34,5 @@ notifications:
 branches:
     only:
         - master
+        - v2_master
 
