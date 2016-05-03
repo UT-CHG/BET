@@ -43,7 +43,7 @@ def test_loadmat():
 
     
     bet.sample.save_discretization(disc(my_input1, my_output),
-            (os.path.join(local_path, 'testfile1'))
+            os.path.join(local_path, 'testfile1'))
     bet.sample.save_discretization(disc(my_input2, None),
             os.path.join(local_path, 'testfile2'), "NAME")
 
