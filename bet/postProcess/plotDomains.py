@@ -30,7 +30,7 @@ colors = ('b', 'g', 'r', 'c', 'm', 'y', 'k')
 
 class dim_not_matching(Exception):
     """
-    Exception for when the dimension of the array is inconsistent.
+    Exception for when the dimension is inconsistent.
     """
 
 class bad_object(Exception):
@@ -42,21 +42,18 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y',
                filename='scatter2d'): 
     r"""
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    NEED TO UPDATE COMMENTING: INPUT OF 'samples' IS NOW A SAMPLE_SET OBJECT
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    Creates a two-dimensional scatter plot of ``samples`` colored by ``color``
-    (usually an array of pointwise probability density values). A reference
-    ``sample`` (``p_ref``) can be chosen by the user. This reference ``sample``
-    will be plotted as a mauve circle twice the size of the other markers.
-    
-    :param samples: Samples to plot. These are the locations in the x-axis and
-        y-axis.
-    :type samples: :class:`numpy.ndarray`
-    :param list sample_nos: indicies of the ``samples`` to plot
-    :param color: values to color the ``samples`` by
+    Creates a two-dimensional scatter plot of the samples within the sample object
+    colored by ``color`` (usually an array of pointwise probability density values).
+    A reference sample (``p_ref``) can be chosen by the user.
+    This reference sample will be plotted as a mauve circle twice the size of the
+    other markers.
+
+    :param sample_obj: contains samples to create scatter plot
+    :type sample_obj: :class:`~bet.sample.sample_set`
+    :param list sample_nos: indicies of the samples to plot
+    :param color: values to color the samples by
     :type color: :class:`numpy.ndarray`
-    :param p_ref: reference parameter(``sample``) value
+    :param p_ref: reference parameter value
     :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
@@ -111,22 +108,18 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y', zlabel='z',
                filename="scatter3d"):
     r"""
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    NEED TO UPDATE COMMENTING: INPUT OF 'samples' IS NOW A SAMPLE_SET OBJECT
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    Creates a three-dimensional scatter plot of ``samples`` colored by
-    ``color`` (usually an array of pointwise probability density values). A
-    reference ``sample`` (``p_ref``) can be chosen by the user. This reference
-    ``sample`` will be plotted as a mauve circle twice the size of the other
-    markers.
+    Creates a three-dimensional scatter plot of samples within the sample object
+    colored by ``color`` (usually an array of pointwise probability density values).
+    A reference sample (``p_ref``) can be chosen by the user.
+    This reference sample will be plotted as a mauve circle twice the size of the
+    other markers.
     
-    :param samples: Samples to plot. These are the locations in the x-axis,
-        y-axis, and z-axis.
-    :type samples: :class:`numpy.ndarray`
-    :param list sample_nos: indicies of the ``samples`` to plot
-    :param color: values to color the ``samples`` by
+    :param sample_obj: Object containing the samples to plot
+    :type sample_obj: :class:`~bet.sample.sample_set`
+    :param list sample_nos: indicies of the samples to plot
+    :param color: values to color the samples by
     :type color: :class:`numpy.ndarray`
-    :param p_ref: reference parameter(``sample``) value
+    :param p_ref: reference parameter value
     :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
@@ -185,19 +178,14 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
 def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
         save=True, interactive=False, lnums=None, showdim=None):
     r"""
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    NEED TO UPDATE COMMENTING: INPUT OF 'samples' IS NOW EITHER A SAMPLE_SET
-    OR DISCRETIZATION OBJECT
-    ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    Create scatter plots of ``samples`` colored by ``color`` (usually
-    an array of pointwise probability density values). A reference ``sample``
-    (``p_ref``) can be chosen by the user. This reference ``sample`` will be
-    plotted as a mauve circle twice the size of the other markers.
+    Create scatter plots of samples within the sample object
+    colored by ``color`` (usually an array of pointwise probability density values).
+    A reference sample (``p_ref``) can be chosen by the user.
+    This reference sample will be plotted as a mauve circle twice the size of the
+    other markers.
 
     :param sample_disc: Object containing the samples to plot
-    :type sample: :class:`sample.discretization` or `sample.sample_set`
-    :param data: Data value(s) associated with ``samples``
-    :type data: :class:`numpy.ndarray`
+    :type sample_disc: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density function on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
@@ -269,14 +257,14 @@ def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
 def show_data(sample_obj, rho_D=None, Q_ref=None, sample_nos=None,
         save=True, interactive=False, Q_nums=None, showdim=None):
     r"""
-    Create scatter plots of ``data`` colored by ``color`` (usually
-    an array of pointwise probability density values). A reference ``data``
-    point (``Q_ref``) can be chosen by the user. This reference ``data`` will
-    be plotted as a mauve circle twice the size of the other markers.
+    Create scatter plots of data within the sample_obj colored by ``color``
+    (usually an array of pointwise probability density values).
+    A reference datum point (``Q_ref``) can be chosen by the user.
+    This reference datum is plotted as a mauve circle twice the size of
+    the other markers.
 
-    :param data: Data (the data associated with a given set of samples in the
-        data space)
-    :type data: :class:`numpy.ndarray`
+    :param sample_obj: Object containing the samples to plot
+    :type sample_obj: :class:`~bet.sample.sample_set`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
@@ -362,11 +350,8 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     :math:`Q={q_1, q_i}` for ``i=Q_nums``, with a marker for various
     :math:`Q_{ref}`. 
 
-    :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
-        uses the first two dimensions.
-    :param data: Data associated with ``samples``
-    :type data: :class:`numpy.ndarray`
+    :param sample_disc: Object containing the samples to plot
+    :type sample_disc: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
@@ -471,11 +456,8 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     that the first dimension of data is :math:`q_1`.
 
 
-    :param samples: Samples to plot
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim). Only
-        uses the first two dimensions.
-    :param data: Data associated with ``samples``
-    :type data: :class:`numpy.ndarray`
+    :param sample_disc: Object containing the samples to plot
+    :type sample_disc: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, 2)
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
@@ -541,10 +523,10 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True
         interactive=False):
     r"""
 
-    Creates two-dimensional projections of scatter plots of ``samples``.
+    Creates two-dimensional projections of scatter plots of samples.
     
-    :param samples: Samples to plot. 
-    :type samples: :class:`numpy.ndarray`
+    :param sample_obj: Object containing the samples to plot
+    :type sample_obj: :class:`~bet.sample.sample_set`
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param string img_folder: folder to save the plots to
@@ -614,14 +596,14 @@ def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
                     filename="scatter2Dm", label_char=r'$\lambda',
                     showdim=None): 
     r"""
-    Creates two-dimensional projections of scatter plots of ``samples`` colored
+    Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
-    reference ``sample`` (``p_ref``) can be chosen by the user. This reference
-    ``sample`` will be plotted as a mauve circle twice the size of the other
+    reference sample (``p_ref``) can be chosen by the user. This reference
+    sample will be plotted as a mauve circle twice the size of the other
     markers.
 
-    :param samples: Samples to plot. 
-    :type samples: :class:`numpy.ndarray`
+    :param sample_obj: Object containing the samples to plot
+    :type sample_obj: :class:`~bet.sample.sample_set`
     :param color: values to color the ``samples`` by
     :type color: :class:`numpy.ndarray`
     :param string filename: filename to save the figure as

@@ -15,7 +15,7 @@ import bet.sample as sample
 
 class dim_not_matching(Exception):
     """
-    Exception for when the dimension of the array is inconsistent.
+    Exception for when the dimension is inconsistent.
     """
 
 class bad_object(Exception):
@@ -25,16 +25,14 @@ class bad_object(Exception):
 
 def calculate_1D_marginal_probs(sample_set, nbins=20):
         
-    """
-    This calculates every single marginal of
-    input probability measure defined by P_samples on a 1D grid.
+    r"""
+    This calculates every single marginal of the probability measure
+    described by the probabilities within the sample_set object.
+    If the sample_set object is a discretization object, we assume
+    that the probabilities to be plotted are from the input space.
 
-    :param P_samples: Probabilities.
-    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
     :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
@@ -80,14 +78,12 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
         
     """
     This calculates every pair of marginals (or joint in 2d case) of
-    input probability measure defined by P_samples on a rectangular grid.
+    input probability measure defined on a rectangular grid.
+    If the sample_set object is a discretization object, we assume
+    that the probabilities to be plotted are from the input space.
 
-    :param P_samples: Probabilities.
-    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
     :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
@@ -136,15 +132,17 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
         
     """
     This makes plots of every single marginal probability of
-    input probability measure defined by P_samples on a 1D  grid.
+    input probability measure on a 1D  grid.
+    If the sample_set object is a discretization object, we assume
+    that the probabilities to be plotted are from the input space.
 
     :param marginals: 1D marginal probabilities
     :type marginals: dictionary with int as keys and :class:`~numpy.ndarray` of
         shape (nbins+1,) as values :param bins: Endpoints of bins used in
         calculating marginals
     :type bins: :class:`~numpy.ndarray` of shape (nbins+1,)
-    :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :param filename: Prefix for output files.
     :type filename: str
     :param lam_ref: True parameters.
@@ -195,15 +193,17 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
         
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
-    input probability measure defined by P_samples on a rectangular grid.
+    input probability measure on a rectangular grid.
+    If the sample_set object is a discretization object, we assume
+    that the probabilities to be plotted are from the input space.
 
     :param marginals: 2D marginal probabilities
     :type marginals: dictionary with tuples of 2 integers as keys and
         :class:`~numpy.ndarray` of shape (nbins+1,) as values 
     :param bins: Endpoints of bins used in calculating marginals
     :type bins: :class:`~numpy.ndarray` of shape (nbins+1,2)
-    :param lam_domain: The domain for each parameter for the model.
-    :type lam_domain: :class:`~numpy.ndarray` of shape (ndim, 2)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :param filename: Prefix for output files.
     :type filename: str
     :param lam_ref: True parameters.

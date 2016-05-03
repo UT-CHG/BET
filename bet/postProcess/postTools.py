@@ -11,7 +11,7 @@ import bet.sample as sample
 
 class dim_not_matching(Exception):
     """
-    Exception for when the dimension of the array is inconsistent.
+    Exception for when the dimension is inconsistent.
     """
 
 class bad_object(Exception):
@@ -21,23 +21,19 @@ class bad_object(Exception):
 
 def sort_by_rho(sample_set):
     """
-    This sorts the samples by probability density. It returns the sorted
-    values.  If the samples are iid, no volume data is needed. It is optional
-    to sort the QoI data, but be sure to do so if using it later.
+    This sorts the samples within the sample_set by probability density.
+    If a discretization object is given, then the QoI data is also sorted
+    to maintain the correspondence.
+    Any volumes present in the input space (or just the sample object)
+    are also sorted.
 
-    :param P_samples: Probabilities.
-    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param lam_vol: Volume of cell associated with sample.
-    :type lam_vol: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param data: QoI data from running the model with the given samples.
-    :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
-    :param indices: sorting indices of unsorted ``P_samples``
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :param indices: sorting indices
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     
     :rtype: tuple
-    :returns: (P_samples, samples, lam_vol, data, indicices)
+    :returns: (sample_set, indicices)
 
     """
     if type(sample_set) is sample.discretization:
@@ -86,30 +82,25 @@ def sort_by_rho(sample_set):
 def sample_prob(percentile, sample_set, sort=True, descending=False):
     """
     This calculates the highest/lowest probability samples whose probability
-    sum to a given value.  The number of high/low probability samples that sum
-    to the value and the probabilities, samples, volumes, and data are
-    returned. This assumes that ``P_samples``, ``samples``, ``lam_vol``, and
-    ``data`` have all be sorted using :meth:`~bet.postProcess.sort_by_rho`. The
-    ``descending`` flag determines whether or not to calcuate the
+    sum to a given value.
+    A new sample_set with the samples corresponding to these highest/lowest
+    probability samples is returned along with the number of samples and
+    the indices.
+    This uses :meth:`~bet.postProcess.sort_by_rho`.
+    The ``descending`` flag determines whether or not to calcuate the
     highest/lowest.
 
     :param percentile: ratio of highest probability samples to select
     :type percentile: float
-    :param P_samples: Probabilities.
-    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param lam_vol: Volume of cell associated with sample.
-    :type lam_vol: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param data: QoI data from running the model with the given samples.
-    :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
-    :param indices: sorting indices of unsorted ``P_samples``
+    :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param bool descending: Flag order of sorting
     
     :rtype: tuple
-    :returns: ( num_samples, P_samples, samples, lam_vol, data)
+    :returns: ( num_samples, sample_set_out, data)
 
     """
     if type(sample_set) is sample.discretization:
@@ -181,23 +172,17 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
 def sample_highest_prob(top_percentile, sample_set, sort=True):
     """
     This calculates the highest probability samples whose probability sum to a
-    given value.  The number of high probability samples that sum to the value
-    and the probabilities, samples, volumes, and data are returned. This
-    assumes that ``P_samples``, ``samples``, ``lam_vol``, and ``data`` have all
-    be sorted using :meth:`~bet.postProcess.sort_by_rho`.
+    given value.
+    The number of high probability samples that sum to the value,
+    a new sample_set, and the indices are returned.
+    This uses :meth:`~bet.postProcess.sort_by_rho`.
 
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
-    :param P_samples: Probabilities.
-    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param lam_vol: Volume of cell associated with sample.
-    :type lam_vol: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param data: QoI data from running the model with the given samples.
-    :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
-    :param indices: sorting indices of unsorted ``P_samples``
+    :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     
     :rtype: tuple
@@ -209,21 +194,15 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
 def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     """
     This calculates the lowest probability samples whose probability sum to a
-    given value.  The number of low probability samples that sum to the value
-    and the probabilities, samples, volumes, and data are returned. This
-    assumes that ``P_samples``, ``samples``, ``lam_vol``, and ``data`` have all
-    be sorted using :meth:`~bet.postProcess.sort_by_rho`.
+    given value.
+    The number of low probability samples that sum to the value,
+    a new sample_set, and the indices are returned.
+    This uses :meth:`~bet.postProcess.sort_by_rho`.
 
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
-    :param P_samples: Probabilities.
-    :type P_samples: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param lam_vol: Volume of cell associated with sample.
-    :type lam_vol: :class:`~numpy.ndarray` of shape (num_samples,)
-    :param data: QoI data from running the model with the given samples.
-    :type data: :class:`~numpy.ndarray` of shape (num_samples, mdim)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
