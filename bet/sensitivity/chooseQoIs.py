@@ -11,7 +11,6 @@ import bet.util as util
 from scipy import stats
 
 
-
 def calculate_avg_skewness(grad_tensor, qoi_set):
     r"""
     Given gradient vectors at some points (centers) in the parameter space and
