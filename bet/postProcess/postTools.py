@@ -217,6 +217,8 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
 def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
         compress=False):
     """
+    TODO: Revisit when save features in sample.py are stable
+
     Saves probabilites and samples from parallel runs in individual ``.csv``
     files for each process.
 
@@ -245,6 +247,8 @@ def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
 def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
         compress=False):
     """
+    TODO: Revisit when save features in sample.py are stable
+
     Collects probabilities and samples saved in ``.csv`` format from parallel
     runs into single arrays.
 
@@ -282,6 +286,8 @@ def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
 
 def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     """
+    TODO: Revisit when save features in sample.py are stable
+
     Saves probabilites and samples from parallel runs in individual .mat files
     for each process.
 
@@ -303,6 +309,8 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
 def collect_parallel_probs_mat(file_prefix, num_files, save=False,
        compress=False):
     """
+    TODO: Revisit when save features in sample.py are stable
+
     Collects probabilities and samples saved in .mat format from parallel runs
     into single arrays.
 
@@ -336,6 +344,7 @@ def collect_parallel_probs_mat(file_prefix, num_files, save=False,
 
 def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
+    TODO: Revisit to deprecate later.
 
     Compare the quality of samples where ``sample_quality`` is the measure of
     quality by which the sets of samples have been indexed and ``sort_ind`` is
@@ -358,6 +367,7 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
 
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
+    TODO: Revisit to deprecate later.
 
     Estimates the number of samples in high probability regions of D.
 
@@ -385,6 +395,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
+    TODO: Revisit to deprecate later.
 
     Estimates the number of samples in high probability regions of D for a list
     of results.
