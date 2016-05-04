@@ -8,7 +8,6 @@ import numpy as np
 import scipy.io as sio
 import bet.sample as sample
 
-
 class dim_not_matching(Exception):
     """
     Exception for when the dimension is inconsistent.
@@ -31,17 +30,19 @@ def sort_by_rho(sample_set):
     :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :param indices: sorting indices
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
-    
+    :param sample_set_out: Object containing sorted samples and probabilities
+    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+
     :rtype: tuple
-    :returns: (sample_set, indicices)
+    :returns: (sample_set_out, indicices)
 
     """
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         samples = sample_set._input_sample_set.get_values()
         P_samples = sample_set._input_sample_set.get_probabilities()
         lam_vol = sample_set._input_sample_set.get_volumes()
         data = sample_set._output_sample_set.get_values()
-    elif type(sample_set) is sample.sample_set:
+    elif isinstance(sample_set, sample.sample_set):
         samples = sample_set.get_values()
         P_samples = sample_set.get_probabilities()
         lam_vol = sample_set.get_volumes()
@@ -49,10 +50,6 @@ def sort_by_rho(sample_set):
     else:
         raise bad_object("Improper sample object")
 
-    if len(samples.shape) == 1:
-        samples = np.expand_dims(samples, axis=1)
-    if P_samples.shape != (samples.shape[0],):
-        raise ValueError("P_samples must be of the shape (num_samples,)")
     nnz = np.sum(P_samples > 0)
     if lam_vol is None:
         indices = np.argsort(P_samples)[::-1][0:nnz]
@@ -63,21 +60,23 @@ def sort_by_rho(sample_set):
     if lam_vol is not None:
         lam_vol = lam_vol[indices]
     if data is not None:
-        if len(data.shape) == 1:
-            data = np.expand_dims(data, axis=1)
         data = data[indices, :]
 
-    if type(sample_set) is sample.discretization:
-        sample_set._input_sample_set.set_values(samples)
-        sample_set._input_sample_set.set_probabilities(P_samples)
-        sample_set._input_sample_set.set_volumes(lam_vol)
-        sample_set._output_sample_set.set_data(data)
+    if isinstance(sample_set, sample.discretization):
+        samples_out = sample.sample_set(sample_set._input_sample_set.get_dim())
+        data_out = sample.sample_set(sample_set._output_sample_set.get_dim())
+        sample_set_out = sample.discretization(samples_out, data_out)
+        sample_set_out._input_sample_set.set_values(samples)
+        sample_set_out._input_sample_set.set_probabilities(P_samples)
+        sample_set_out._input_sample_set.set_volumes(lam_vol)
+        sample_set_out._output_sample_set.set_data(data)
     else:
-        sample_set.set_values(samples)
-        sample_set.set_probabilities(P_samples)
-        sample_set.set_volumes(lam_vol)
+        sample_set_out = sample.sample_set(sample_set.get_dim())
+        sample_set_out.set_values(samples)
+        sample_set_out.set_probabilities(P_samples)
+        sample_set_out.set_volumes(lam_vol)
 
-    return (sample_set, indices)
+    return (sample_set_out, indices)
 
 def sample_prob(percentile, sample_set, sort=True, descending=False):
     """
@@ -98,17 +97,19 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param bool descending: Flag order of sorting
-    
+    :param sample_set_out: Object containing sorted samples and probabilities
+    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, data)
 
     """
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         samples = sample_set._input_sample_set.get_values()
         P_samples = sample_set._input_sample_set.get_probabilities()
         lam_vol = sample_set._input_sample_set.get_volumes()
         data = sample_set._output_sample_set.get_values()
-    elif type(sample_set) is sample.sample_set:
+    elif isinstance(sample_set, sample.sample_set):
         samples = sample_set.get_values()
         P_samples = sample_set.get_probabilities()
         lam_vol = sample_set.get_volumes()
@@ -116,18 +117,14 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
     else:
         raise bad_object("Improper sample object")
 
-    if len(samples.shape) == 1:
-        samples = np.expand_dims(samples, axis=1)
-    if P_samples.shape != (samples.shape[0],):
-        raise ValueError("P_samples must be of the shape (num_samples,)")
     if sort:
         (sample_set, indices) = sort_by_rho(sample_set)
-        if type(sample_set) is sample.discretization:
+        if isinstance(sample_set, sample.discretization):
             samples = sample_set._input_sample_set.get_values()
             P_samples = sample_set._input_sample_set.get_probabilities()
             lam_vol = sample_set._input_sample_set.get_volumes()
             data = sample_set._output_sample_set.get_values()
-        elif type(sample_set) is sample.sample_set:
+        elif isinstance(sample_set, sample.sample_set):
             samples = sample_set.get_values()
             P_samples = sample_set.get_probabilities()
             lam_vol = sample_set.get_volumes()
@@ -152,7 +149,7 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
             data = np.expand_dims(data, axis=1)
         data = data[0:num_samples, :]
 
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         samples_out = sample.sample_set(sample_set._input_sample_set.get_dim())
         data_out = sample.sample_set(sample_set._output_sample_set.get_dim())
         sample_set_out = sample.discretization(samples_out, data_out)
@@ -184,9 +181,11 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
-    
+    :param sample_set_out: Object containing sorted samples and probabilities
+    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+
     :rtype: tuple
-    :returns: ( num_samples, P_samples, samples, lam_vol, data)
+    :returns: ( num_samples, sample_set_out, indices)
 
     """
     return sample_prob(top_percentile, sample_set, sort)
@@ -206,9 +205,11 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
-    
+    :param sample_set_out: Object containing sorted samples and probabilities
+    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+
     :rtype: tuple
-    :returns: ( num_samples, P_samples, samples, lam_vol, data)
+    :returns: ( num_samples, sample_set_out, indices)
 
     """
     return sample_prob(bottom_percentile, sample_set,
@@ -217,7 +218,9 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
 def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
         compress=False):
     """
-    TODO: Revisit when save features in sample.py are stable
+    .. todo::
+
+       Revisit when save features in sample.py are stable
 
     Saves probabilites and samples from parallel runs in individual ``.csv``
     files for each process.
@@ -247,7 +250,9 @@ def save_parallel_probs_csv(P_samples, samples, P_file, lam_file,
 def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
         compress=False):
     """
-    TODO: Revisit when save features in sample.py are stable
+    .. todo::
+
+       Revisit when save features in sample.py are stable
 
     Collects probabilities and samples saved in ``.csv`` format from parallel
     runs into single arrays.
@@ -286,7 +291,9 @@ def collect_parallel_probs_csv(P_file, lam_file, num_files, save=False,
 
 def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
     """
-    TODO: Revisit when save features in sample.py are stable
+    .. todo::
+
+       Revisit when save features in sample.py are stable
 
     Saves probabilites and samples from parallel runs in individual .mat files
     for each process.
@@ -309,7 +316,9 @@ def save_parallel_probs_mat(P_samples, samples, file_prefix, compress=False):
 def collect_parallel_probs_mat(file_prefix, num_files, save=False,
        compress=False):
     """
-    TODO: Revisit when save features in sample.py are stable
+    .. todo::
+
+       Revisit when save features in sample.py are stable
 
     Collects probabilities and samples saved in .mat format from parallel runs
     into single arrays.
@@ -344,7 +353,9 @@ def collect_parallel_probs_mat(file_prefix, num_files, save=False,
 
 def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
-    TODO: Revisit to deprecate later.
+    .. todo::
+
+       Revisit to deprecate later.
 
     Compare the quality of samples where ``sample_quality`` is the measure of
     quality by which the sets of samples have been indexed and ``sort_ind`` is
@@ -367,7 +378,9 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
 
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
-    TODO: Revisit to deprecate later.
+    .. todo::
+
+       Revisit to deprecate later.
 
     Estimates the number of samples in high probability regions of D.
 
@@ -395,7 +408,9 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
-    TODO: Revisit to deprecate later.
+    .. todo::
+
+       Revisit to deprecate later.
 
     Estimates the number of samples in high probability regions of D for a list
     of results.

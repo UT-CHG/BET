@@ -39,18 +39,12 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     :returns: (bins, marginals)
 
     """
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         sample_obj = sample_obj._input_sample_set
-    elif type(sample_set) is sample.sample_set:
+    elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
-
-    # check dimension of data to plot
-    if sample_obj.get_dim() == 1:
-        sample_obj.set_values( np.expand_dims(sample_obj.get_values(), axis=1) )
-        sample_obj.set_probabilities( np.expand_dims(
-            sample_obj.get_probabilities(), axis=1) )
 
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
@@ -90,9 +84,9 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     :returns: (bins, marginals)
 
     """
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         sample_obj = sample_obj._input_sample_set
-    elif type(sample_set) is sample.sample_set:
+    elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
@@ -153,9 +147,9 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     :type lambda_label: list of length nbins of strings or None
 
     """
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         sample_obj = sample_obj._input_sample_set
-    elif type(sample_set) is sample.sample_set:
+    elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
@@ -214,9 +208,9 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     :type lambda_label: list of length nbins of strings or None
 
     """
-    if type(sample_set) is sample.discretization:
+    if isinstance(sample_set, sample.discretization):
         sample_obj = sample_obj._input_sample_set
-    elif type(sample_set) is sample.sample_set:
+    elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")

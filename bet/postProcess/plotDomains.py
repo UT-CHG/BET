@@ -62,7 +62,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-    if type(sample_obj) is not sample.sample_set:
+    if not isinstance(sample_obj, sample.sample_set):
         raise bad_object("Improper sample object")
     # check dimension of data to plot
     if sample_obj.get_dim() != 2:
@@ -129,7 +129,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-    if type(sample_obj) is not sample.sample_set:
+    if not isinstance(sample_obj, sample.sample_set):
         raise bad_object("Improper sample object")
     # check dimension of data to plot
     if sample_obj.get_dim() != 3:
@@ -205,13 +205,13 @@ def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
     # If there is density function given determine the pointwise probability
     # values of each sample based on the value in the data space. Otherwise,
     # color the samples in numerical order.
-    if type(sample_disc) is sample.discretization and rho_D is not None:
+    if isinstance(sample_disc, sample.discretization) and rho_D is not None:
         rD = rho_D(sample_disc._output_sample_set.get_values())
         sample_obj = sample_disc._input_sample_set
     else:
-        if type(sample_disc) is sample.discretization:
+        if isinstance(sample_disc, sample.discretization):
             sample_obj = sample_disc._input_sample_set
-        elif type(sample_disc) is sample.sample_set:
+        elif isinstance(sample_disc, sample.sample_set):
             sample_obj = sample_disc
         else:
             raise bad_object("Improper sample object")
@@ -363,7 +363,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     :type showdim: int or string
 
     """
-    if type(sample_disc) is not sample.discretization:
+    if not isinstance(sample_disc, sample.discretization):
         raise bad_object("Improper sample object")
 
     # Set the default marker and colors
@@ -471,7 +471,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     :param list filenames: file names for the unmarked and marked domain plots
 
     """
-    if type(sample_disc) is not sample.discretization:
+    if not isinstance(sample_disc, sample.discretization):
         raise bad_object("Improper sample object")
 
     data_obj = sample_disc._output_sample_set
@@ -535,7 +535,7 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True
     :type showdim: int or string
 
     """
-    if type(sample_obj) is not sample.sample_set:
+    if not isinstance(sample_obj, sample.sample_set):
         raise bad_object("Improper sample object")
 
     # If no specific coordinate number of choice is given set to be the first
@@ -616,7 +616,7 @@ def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
     :type showdim: int or string
 
     """
-    if type(sample_obj) is not sample.sample_set:
+    if not isinstance(sample_obj, sample.sample_set):
         raise bad_object("Improper sample object")
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
