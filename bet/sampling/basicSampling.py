@@ -67,7 +67,6 @@ class sampler(object):
         #: callable function that runs the model at a given set of input and
         #: returns output
         #: parameter samples and returns data 
-
         self.lb_model = lb_model
 
     def save(self, mdict, save_file, discretization=None):
