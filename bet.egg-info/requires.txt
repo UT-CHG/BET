@@ -1,0 +1,5 @@
+matplotlib
+pyDOE
+scipy
+numpy
+nose
