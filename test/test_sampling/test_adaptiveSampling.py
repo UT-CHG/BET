@@ -895,8 +895,8 @@ class transition_set(object):
         assert samples_new.shape() == self.output_set.shape()
 
         # are the samples in bounds?
-        assert np.all(samples_new.get_values() <= self.output_set._right_local)
-        assert np.all(samples_new.get_values() >= self.output_set._left_local)
+        assert np.all(samples_new.get_values() <= self.output_set._right)
+        assert np.all(samples_new.get_values() >= self.output_set._left)
 
         # make sure the proposed steps are inside the box defined around their
         # generating old samples
