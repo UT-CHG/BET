@@ -865,6 +865,7 @@ class transition_set(object):
         self.output_set.global_to_local()
         # Update _right_local, _left_local, _width_local
         self.output_set.set_domain(self.output_domain)
+        self.output_set.update_bounds()
         self.output_set.update_bounds_local()
 
     def test_init(self):
@@ -895,8 +896,10 @@ class transition_set(object):
         assert samples_new.shape() == self.output_set.shape()
 
         # are the samples in bounds?
-        assert np.all(samples_new.get_values() <= self.output_set._right)
-        assert np.all(samples_new.get_values() >= self.output_set._left)
+        assert np.all(samples_new.get_values_local() <=\
+                self.output_set._right_local)
+        assert np.all(samples_new.get_values_local() >=\
+                self.output_set._left_local)
 
         # make sure the proposed steps are inside the box defined around their
         # generating old samples
