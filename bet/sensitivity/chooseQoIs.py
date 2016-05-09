@@ -476,7 +476,7 @@ def find_good_sets(grad_tensor, good_sets_prev, unique_indices,
             count_qois += 1
             curr_set = util.fix_dimensions_vector_2darray(qoi_combs[qoi_set])\
                 .transpose()
-            if volume == False:
+            if volume == False: # This is where the change occurred - skewness instead of condnum.
                 (current_condnum, singvals) = calculate_avg_skewness(grad_tensor,
                     qoi_combs[qoi_set])
             else:
