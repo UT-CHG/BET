@@ -61,7 +61,7 @@ best_sets = cQoI.chooseOptQoIs_large(G, volume=False)
 # different sets of these QoIs.  We set Q_ref to correspond to the center of
 # the parameter space.  We choose the set of QoIs to consider.
 
-QoI_indices = [3, 4] # choose up to Lambda_dim
+QoI_indices = [3, 4] # choose up to Data_dim
 #QoI_indices = [3, 6]
 #QoI_indices = [0, 3]
 #QoI_indices = [3, 5, 6, 8, 9]
