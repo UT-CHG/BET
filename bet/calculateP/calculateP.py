@@ -309,7 +309,9 @@ def exact_volume_1D(samples, input_domain):
     # cells and bound the cells by the domain
     edges = np.concatenate(([input_domain[:, 0]], (sorted_samples[:-1, :] +\
         sorted_samples[1:, :])*.5, [input_domain[:, 1]]))
-    lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
+    sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
+    lam_vol = np.zeros(sorted_lam_vol.shape)
+    lam_vol[sort_ind] = sorted_lam_vol
 
     # Set up local arrays for parallelism
     local_index = np.array_split(np.arange(samples.shape[0]),
