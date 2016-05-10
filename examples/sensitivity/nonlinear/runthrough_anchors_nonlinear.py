@@ -19,6 +19,7 @@ num_anchors = 1
 bin_ratio = 0.25
 
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
+for num_anchors in range(5,101,5):
 
 # define samples in parameter space, random anchor points
 np.random.seed(0)
