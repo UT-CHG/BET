@@ -41,34 +41,37 @@ np.random.seed(0)
 Lambda_min = 0.0 # unused right now. - implementinto random samples.
 Lambda_max = 1.0
 
-# what do these two lines do? - computes n choose k.
+# compute possible sets of quantities of interest
 combs = int(comb(Data_dim, Lambda_dim))
-combs_array = np.array(list(combinations(range(10),2)))
+combs_array = np.array(list(combinations(range(Data_dim),2)))
 
 rand_int = np.int(np.round(np.random.random(1) * 1000))
 
 r = [[0.19, -0.25, 0.09, -0.86, -0.07, 0.29], \
     [0.80, 0.47, 0.08, -0.64,  -0.98,  -1.0], \
     [-0.49, -0.44, -0.21, 0.67,  -0.10, 1.2]]
-def Q(x):
-    np.random.seed(rand_int)
+def ThreeQ(x): # example case for Lambda_dim = 2, Data_dim = 3
     q = np.zeros([x.shape[0], Data_dim])
     for i in range(Data_dim):
-        # rand_vec = 2 * np.random.random(6) - 1
-        # q[:, i] = rand_vec[0] * x[:, 0]**5 + rand_vec[1] * x[:, 1]**3 + \
-        #     rand_vec[2] * x[:, 0] **3 * x[:, 1] + rand_vec[3] * x[:, 0] + \
-        #     rand_vec[4] * x[:, 1] + rand_vec[5]
         q[:, i] = r[i][0] * x[:, 0]**5 + r[i][1] * x[:, 1]**3 + \
             r[i][2] * x[:, 0] **3 * x[:, 1] + r[i][3] * x[:, 0] + \
             r[i][4] * x[:, 1] + r[i][5]
     np.random.seed(None)
     return q
 
-np.random.seed(0)
+def Q(x): # QoI map using quintic functions for Lambda_dim = 2, Data_dim arbitrary
+    np.random.seed(rand_int)
+    q = np.zeros([x.shape[0], Data_dim])
+    for i in range(Data_dim):
+        rand_vec = 2 * np.random.random(6) - 1
+        q[:, i] = rand_vec[0] * x[:, 0]**5 + rand_vec[1] * x[:, 1]**3 + \
+            rand_vec[2] * x[:, 0] **3 * x[:, 1] + rand_vec[3] * x[:, 0] + \
+            rand_vec[4] * x[:, 1] + rand_vec[5]
+    np.random.seed(None)
+    return q
+
 samples = np.random.random([num_samples, Lambda_dim])
 data = Q(samples)
-# Let the map Q be a random matrix of size (Data_dim, Lambda_dim)
-
 #####
 
 
