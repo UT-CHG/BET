@@ -15,13 +15,15 @@ import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
+import bet.sample as sample
+import bet.sampling.basicSampling as bsam
 
-# parameter domain
-lam_domain= np.array([[0.0, 1.0],
-                      [0.0, 1.0],
-                      [0.0, 1.0]])
+# Initialize 3-dimensional input parameter sample set object
+input_samples = sample.sample_set(3)
+# Set parameter domain
+input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
 
-# reference parameters
+# Set reference parameter
 ref_lam = [0.5, 0.5, 0.5]
 
 '''
@@ -49,16 +51,25 @@ if random_sample == False:
 else:
   n_samples = 2E3  
 
-#set up samples
+# Set the parameter samples
 if random_sample == False:
-  vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
-  vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
-  vec2 = list(np.linspace(lam_domain[2][0], lam_domain[2][1], n2))
-  vecv0, vecv1, vecv2 = np.meshgrid(vec0, vec1, vec2, indexing='ij')
-  samples=np.vstack((vecv0.flat[:], vecv1.flat[:], vecv2.flat[:])).transpose()
+    sampler = bsam.sampler(None, n_samples)
+
+    # Define a regular grid for the samples, eventually update to use basicSampling
+    vec0=list(np.linspace(lam_domain[0][0], lam_domain[0][1], n0))
+    vec1 = list(np.linspace(lam_domain[1][0], lam_domain[1][1], n1))
+    vec2 = list(np.linspace(lam_domain[2][0], lam_domain[2][1], n2))
+    vecv0, vecv1, vecv2 = np.meshgrid(vec0, vec1, vec2, indexing='ij')
+
+    input_samples.set_values(
+                    np.vstack((vecv0.flat[:],
+                               vecv1.flat[:],
+                               vecv2.flat[:])).transpose()
+                            )
 else:
-  samples = calculateP.emulate_iid_lebesgue(lam_domain=lam_domain, 
-					    num_l_emulate = n_samples)
+    # Use uniform i.i.d. random samples from the domain
+    sampler = bsam.sampler(None, n_samples)
+    input_samples = sampler.random_samples('random', input_samples)
 
 # QoI map
 Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])

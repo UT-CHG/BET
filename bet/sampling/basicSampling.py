@@ -67,6 +67,7 @@ class sampler(object):
         #: callable function that runs the model at a given set of input and
         #: returns output
         #: parameter samples and returns data 
+
         self.lb_model = lb_model
 
     def save(self, mdict, save_file, discretization=None):
@@ -91,7 +92,7 @@ class sampler(object):
         """
         mdict['num_samples'] = self.num_samples
 
-    def random_samples(self, sample_type, input_domain, savefile,
+    def random_samples_set(self, sample_type, input_sample_set,
             num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
@@ -106,9 +107,9 @@ class sampler(object):
         :param string sample_type: type sampling random (or r),
             latin hypercube(lhs), regular grid (rg), or space-filling
             curve(TBD)
-        :param input_domain: min and max bounds for the input values, 
-            ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``
-        :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
+        :param input_sample_set: samples to evaluate the model at
+        :type input_sample_set: :class:`~bet.sample.sample_set` with
+            num_smaples
         :param string savefile: filename to save discretization
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
@@ -122,27 +123,103 @@ class sampler(object):
 
         """
         # Create N samples
+        dim = input_sample_set.get_dim()
+
         if num_samples is None:
             num_samples = self.num_samples
-        
-        input_sample_set = sample.sample_set(input_domain.shape[0])
-        input_sample_set.set_domain(input_domain)
 
-        input_left = np.repeat([input_domain[:, 0]], num_samples, 0)
-        input_right = np.repeat([input_domain[:, 1]], num_samples, 0)
-        input_values = (input_right-input_left)
+        if input_sample_set.get_domain() is None:
+            input_left = np.repeat(np.zeros([1, dim]), num_samples, 0)
+            input_right = np.repeat(np.ones([1, dim]), num_samples, 0)
+            input_values = (input_right-input_left)
+        else:
+            input_left = np.repeat([input_sample_set.get_domain()[:, 0]], num_samples, 0)
+            input_right = np.repeat([input_sample_set.get_domain()[:, 1]], num_samples, 0)
+            input_values = (input_right - input_left)
          
         if sample_type == "lhs":
-            input_values = input_values * lhs(input_sample_set.get_dim(),
+            input_values = input_values * lhs(dim,
                     num_samples, criterion)
         elif sample_type == "random" or "r":
             input_values = input_values * np.random.random(input_left.shape) 
         input_values = input_values + input_left
         input_sample_set.set_values(input_values)
 
-        return self.user_samples(input_sample_set, savefile, parallel)
+        return input_sample_set
 
-    def user_samples(self, input_sample_set, savefile, parallel=False):
+    def random_samples_domain(self, sample_type, input_domain,
+                           num_samples=None, criterion='center', parallel=False):
+        """
+        Sampling algorithm with three basic options
+
+            * ``random`` (or ``r``) generates ``num_samples`` samples in
+                ``lam_domain`` assuming a Lebesgue measure.
+            * ``lhs`` generates a latin hyper cube of samples.
+
+        Note: This function is designed only for generalized rectangles and
+        assumes a Lebesgue measure on the parameter space.
+
+        :param string sample_type: type sampling random (or r),
+            latin hypercube(lhs), regular grid (rg), or space-filling
+            curve(TBD)
+        :param input_domain: min and max bounds for the input values,
+            ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``
+        :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
+        :param string savefile: filename to save discretization
+        :param int num_samples: N, number of samples (optional)
+        :param string criterion: latin hypercube criterion see
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool parallel: Flag for parallel implementation.  Default value
+            is ``False``.
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output of ``num_samples``
+
+        """
+        # Create N samples
+        input_sample_set = sample.sample_set(input_domain.shape[0])
+        input_sample_set.set_domain(input_domain)
+
+        return self.random_samples_set(sample_type, input_sample_set,
+                                       num_samples, criterion, parallel)
+
+    def random_samples_dimension(self, sample_type, input_dim,
+                              num_samples=None, criterion='center', parallel=False):
+        """
+        Sampling algorithm with three basic options
+
+            * ``random`` (or ``r``) generates ``num_samples`` samples in
+                ``lam_domain`` assuming a Lebesgue measure.
+            * ``lhs`` generates a latin hyper cube of samples.
+
+        Note: A default input space of a hypercube is created and the
+        Lebesgue measure is assumed on a space of dimension specified
+        by ``input_dim``
+
+        :param string sample_type: type sampling random (or r),
+            latin hypercube(lhs), regular grid (rg), or space-filling
+            curve(TBD)
+        :param int input_dim: the dimension of the input space
+        :param string savefile: filename to save discretization
+        :param int num_samples: N, number of samples (optional)
+        :param string criterion: latin hypercube criterion see
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool parallel: Flag for parallel implementation.  Default value
+            is ``False``.
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output of ``num_samples``
+
+        """
+        # Create N samples
+        input_sample_set = sample.sample_set(input_dim)
+
+        return self.random_samples_set(sample_type, input_sample_set,
+                                       num_samples, criterion, parallel)
+
+    def compute_QoI_and_create_discretization(self, input_sample_set, savefile=None, parallel=False):
         """
         Samples the model at ``input_sample_set`` and saves the results.
 
@@ -151,8 +228,8 @@ class sampler(object):
         provide sampler that utilizes user specified samples.
 
         :param input_sample_set: samples to evaluate the model at
-        :type input_sample_set: :class:`~bet.sample.sample_set`` with
-            num_smaples 
+        :type input_sample_set: :class:`~bet.sample.sample_set` with
+            num_smaples
         :param string savefile: filename to save samples and data
         :param bool parallel: Flag for parallel implementation. Default value
             is ``False``.  
@@ -197,9 +274,54 @@ class sampler(object):
         mdat = dict()
         self.update_mdict(mdat)
 
-        if comm.rank == 0:
+        if comm.rank == 0 and savefile is not None:
             self.save(mdat, savefile, discretization)
         
         return discretization
 
 
+    def create_random_discretization(self, sample_type, input_obj, savefile = None,
+                       num_samples=None, criterion='center', parallel=False):
+        """
+        Sampling algorithm with three basic options
+            * ``random`` (or ``r``) generates ``num_samples`` samples in
+                ``lam_domain`` assuming a Lebesgue measure.
+            * ``lhs`` generates a latin hyper cube of samples.
+        Note: This function is designed only for generalized rectangles and
+        assumes a Lebesgue measure on the parameter space.
+
+        :param string sample_type: type sampling random (or r),
+            latin hypercube(lhs), regular grid (rg), or space-filling
+            curve(TBD)
+        :param input_obj: Either a sample set object for an input space,
+        an array of min and max bounds for the input values with
+        ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
+        or the dimension of an input space
+        :type input_obj: :class: `~bet.sample.sample_set`,
+        :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
+        :param string savefile: filename to save discretization
+        :param int num_samples: N, number of samples (optional)
+        :param string criterion: latin hypercube criterion see
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool parallel: Flag for parallel implementation.  Default value
+            is ``False``.
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output sample sets with ``num_samples`` total samples
+        """
+        # Create N samples
+        if num_samples is None:
+            num_samples = self.num_samples
+
+        if isinstance(input_obj, sample.sample_set):
+            input_sample_set = self.random_samples_set(sample_type, input_obj,
+                                           num_samples, criterion, parallel)
+        elif isinstance(input_obj, np.ndarray):
+            input_sample_set = self.random_samples_domain(sample_type, input_obj,
+                                           num_samples, criterion, parallel)
+        else:
+            input_sample_set = self.random_samples_dimension(sample_type, input_obj,
+                                           num_samples, criterion, parallel)
+
+        return self.compute_QoI_and_create_discretization(input_sample_set, savefile, parallel)
