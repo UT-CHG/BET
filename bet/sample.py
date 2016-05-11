@@ -94,7 +94,7 @@ def load_sample_set(file_name, sample_set_name=None):
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     return loaded_set
 
-class sample_set(object):
+class sample_set_base(object):
     """
 
     A data structure containing arrays specific to a set of samples.
@@ -337,20 +337,20 @@ class sample_set(object):
 
     def set_volumes(self, volumes):
         """
-        Sets sample Voronoi cell volumes.
+        Sets sample cell volumes.
 
         :type volumes: :class:`numpy.ndarray` of shape (num,)
-        :param volumes: sample Voronoi cell volumes
+        :param volumes: sample cell volumes
 
         """
         self._volumes = volumes
         
     def get_volumes(self):
         """
-        Returns sample Voronoi cell volumes.
+        Returns sample cell volumes.
 
         :rtype: :class:`numpy.ndarray` of shape (num,)
-        :returns: sample Voronoi cell volumes
+        :returns: sample cell volumes
 
         """
         return self._volumes
@@ -528,6 +528,37 @@ class sample_set(object):
         """
         pass
 
+    def estimate_volume_mc(self, n_mc_points=int(1E4)):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration of exactly. 
+
+        :parm n_mc_points: If estimate is True, number of MC points to use
+        :type n_mc_points: int
+        """
+        num=self.check_num()
+        n_mc_points_local = (n_mc_points/comm.size) + \
+                            (comm.rank < n_mc_points%comm.size)
+        width = self._domain[:,1] - self._domain[:,0]
+        mc_points = width*np.random.random((n_mc_points_local,
+                                            self._domain.shape[0]))+self._domain[:, 0]
+        (_, emulate_ptr) = self.query(mc_points)
+        vol = np.zeros((num,))
+        for i in range(num):
+            vol[i] = np.sum(np.equal(emulate_ptr,i))
+        cvol = np.copy(vol)
+        comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
+        vol = cvol
+        vol = vol/float(n_mc_points)
+        self._volumes = vol
+        
+    def estimate_volume_uniform(self):
+        """
+        Give all cells the same volume fraction based on the Monte Carlo assumption
+        """
+        num = self.check_num()
+        self._volumes = 1.0/float(num)
+
     def global_to_local(self):
         """
         Makes local arrays from available global ones.
@@ -586,6 +617,12 @@ class sample_set(object):
         """
         return self._values_local.shape
 
+    def calculate_volumes(self):
+        """
+
+        Calculate the volumes of cells. Depends on sample set type.
+
+        """
 
 def save_discretization(save_disc, file_name, discretization_name=None):
     """
@@ -667,7 +704,7 @@ def load_discretization(file_name, discretization_name=None):
                         np.squeeze(mdat[discretization_name+attrname]))
     return loaded_disc
 
-class voronoi_sample_set(sample_set):
+class voronoi_sample_set(sample_set_base):
     """
 
     A data structure containing arrays specific to a set of samples defining
@@ -675,7 +712,7 @@ class voronoi_sample_set(sample_set):
 
     """
     def __init__(self, dim, p_norm=2):
-        super(sample_set, self).__init__(dim)
+        super(sample_set_base, self).__init__(dim)
         
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
@@ -686,6 +723,9 @@ class voronoi_sample_set(sample_set):
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape (*, dim)
+
+        :rtype: tuple
+        :returns: (dist, ptr)
         """
         if self._kdtree is None:
             self.set_kdtree()
@@ -693,8 +733,13 @@ class voronoi_sample_set(sample_set):
             self.check_num()
         #TODO add exception if dimensions of x are wrong
         (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
-        return ptr
-        
+        return (dist, ptr)
+
+class sample_set(voronoi_sample_set):
+    """
+    Set Voronoi cells as the default for now.
+    """
+                
 class discretization(object):
     """
     A data structure to store all of the :class:`~bet.sample.sample_set`
@@ -762,28 +807,24 @@ class discretization(object):
         else:
             return in_num
 
-    def set_io_ptr(self, globalize=True, p=2):
+    def set_io_ptr(self, globalize=True):
         """
         
         Creates the pointer from ``self._output_sample_set`` to
         ``self._output_probability_set``
 
-        .. seealso::
-            
-            :meth:`scipy.spatial.KDTree.query``
-
         :param bool globalize: flag whether or not to globalize
             ``self._output_sample_set``
-        :param int p: Which Minkowski p-norm to use. (1 <= p <= infinity)
-
         
         """
         if self._output_sample_set._values_local is None:
             self._output_sample_set.global_to_local()
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
-        (_, self._io_ptr_local) = self._output_probability_set.get_kdtree().\
-                query(self._output_sample_set._values_local, p=p)
+        #(_, self._io_ptr_local) = self._output_probability_set.get_kdtree().\
+        #        query(self._output_sample_set._values_local, p=p)
+        (_, self._io_ptr_local) =  self._output_probability_set.query(self._output_sample_set._values_local)
+                                                            
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
        
@@ -804,7 +845,7 @@ class discretization(object):
         """
         return self._io_ptr
                 
-    def set_emulated_ii_ptr(self, globalize=True, p=2):
+    def set_emulated_ii_ptr(self, globalize=True):
         """
         
         Creates the pointer from ``self._emulated_input_sample_set`` to
@@ -823,8 +864,9 @@ class discretization(object):
             self._emulated_input_sample_set.global_to_local()
         if self._input_sample_set._kdtree is None:
             self._input_sample_set.set_kdtree()
-        (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree().\
-                query(self._emulated_input_sample_set._values_local, p=p)
+        # (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree().\
+        #         query(self._emulated_input_sample_set._values_local, p=p)
+        (_, self._emulate_ii_ptr_local) = self._input_sample_set.query(self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
                     (self._emulated_ii_ptr_local)
@@ -846,7 +888,7 @@ class discretization(object):
         """
         return self._emulated_ii_ptr
 
-    def set_emulated_oo_ptr(self, globalize=True, p=2):
+    def set_emulated_oo_ptr(self, globalize=True):
         """
         
         Creates the pointer from ``self._emulated_output_sample_set`` to
@@ -865,9 +907,8 @@ class discretization(object):
             self._emulated_output_sample_set.global_to_local()
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
-        (_, self._emulated_oo_ptr_local) = self._output_probability_set.\
-                get_kdtree().query(self._emulated_output_sample_set.\
-                _values_local, p=p)
+        (_, self._emulated_oo_ptr_local) =  self._output_probability_set.query(self._emulated_output_sample_set._values_local)
+                                                                
         if globalize:
             self._emulated_oo_ptr = util.get_global_values\
                     (self._emulated_oo_ptr_local)
