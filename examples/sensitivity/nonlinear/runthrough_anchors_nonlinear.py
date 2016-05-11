@@ -16,10 +16,13 @@ Lambda_dim = 2
 Data_dim = 3
 num_samples = 1E5
 num_anchors = 1
-bin_ratio = 0.25
+bin_ratio = 0.05
 highest_prob = []
+ref_N = 5
+ref_lambda = np.linspace(0+1.0/ref_N,1-1.0/ref_N,num=ref_N)
+
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
-for num_anchors in range(5,101,5):
+for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
     # define samples in parameter space, random anchor points
     np.random.seed(0)
     samples = np.random.random([num_samples, Lambda_dim])
@@ -28,7 +31,8 @@ for num_anchors in range(5,101,5):
     np.random.seed(0)
 
     # define QoI maps and map samples to data space
-    rand_int = np.int(np.round(np.random.random(1) * 1000))
+    rand_int = int(np.round(np.random.random(1) * 1000))
+    print '\n random integer: %d \n'%rand_int
     r = [[0.19, -0.25, 0.09, -0.86, -0.07, 0.29], \
         [0.80, 0.47, 0.08, -0.64,  -0.98,  -1.0], \
         [-0.49, -0.44, -0.21, 0.67,  -0.10, 1.2]]
@@ -53,7 +57,7 @@ for num_anchors in range(5,101,5):
         return q
 
 
-    data = Q(samples)
+    data = randQ(samples)
     # print data[0:10]
     # perform nearest neighbor searches to set of K anchor points
     tree = spatial.KDTree(anchors)
@@ -72,7 +76,7 @@ for num_anchors in range(5,101,5):
     for k in range(num_anchors):
         samples_k = np.array(anchors[k],ndmin=2)
         # samples_k =  np.array(anchors[k:k+1], ndmin =2)
-        data_k = Q(samples_k) # CANNOT GET THIS LINE WORKING
+        data_k = randQ(samples_k) # CANNOT GET THIS LINE WORKING
 
         # Calculate the gradient vectors at some anchor points.
         # Here the *normalize* argument is set to *True* because we are using bin_ratio to
@@ -110,12 +114,12 @@ for num_anchors in range(5,101,5):
     P = np.zeros(num_samples)
     lam_vol = np.zeros(num_samples)
     total = []
+    ref_lambda  = [0.5, 0.5]
     for k in range(num_anchors):
         QoI_indices = best_sets[k]
         temp_samples = samples[ part_inds[k] ]
         temp_data = data[:, QoI_indices]
-        ref_lambda  = [0.5, 0.5]
-        Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
+        Q_ref = randQ(np.array([ref_lambda]))[0][QoI_indices]
 
         # Find the simple function approximation to data space density
         (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\

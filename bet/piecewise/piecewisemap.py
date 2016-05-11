@@ -28,16 +28,16 @@ anchors  = np.random.random([num_anchors, Lambda_dim])
 np.random.seed(0)
 
 # define QoI maps and map samples to data space
-rand_int = np.int(np.round(np.random.random(1) * 1000))
-r = [[0.19, -0.25, 0.09, -0.86, -0.07, 0.29], \
+rand_int = int(np.round(np.random.random(1) * 1000))
+coeffs = [[0.19, -0.25, 0.09, -0.86, -0.07, 0.29], \
     [0.80, 0.47, 0.08, -0.64,  -0.98,  -1.0], \
     [-0.49, -0.44, -0.21, 0.67,  -0.10, 1.2]]
 def Q(x): # example case for Lambda_dim = 2, Data_dim = 3
     q = np.zeros([x.shape[0], Data_dim])
     for i in range(Data_dim):
-        q[:, i] = r[i][0] * x[:, 0]**5 + r[i][1] * x[:, 1]**3 + \
-            r[i][2] * x[:, 0] **3 * x[:, 1] + r[i][3] * x[:, 0] + \
-            r[i][4] * x[:, 1] + r[i][5]
+        q[:, i] = coeffs[i][0] * x[:, 0]**5 + coeffs[i][1] * x[:, 1]**3 + \
+            coeffs[i][2] * x[:, 0] **3 * x[:, 1] + coeffs[i][3] * x[:, 0] + \
+            coeffs[i][4] * x[:, 1] + coeffs[i][5]
     np.random.seed(None)
     return q
 
@@ -110,11 +110,11 @@ print  '\n'
 P = np.zeros(num_samples)
 lam_vol = np.zeros(num_samples)
 total = []
+ref_lambda  = [0.5, 0.5]
 for k in range(num_anchors):
     QoI_indices = best_sets[k]
     temp_samples = samples[ part_inds[k] ]
     temp_data = data[:, QoI_indices]
-    ref_lambda  = [0.5, 0.5]
     Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
 
     # Find the simple function approximation to data space density
