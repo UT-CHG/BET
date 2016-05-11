@@ -129,20 +129,19 @@ class sampler(object):
             num_samples = self.num_samples
 
         if input_sample_set.get_domain() is None:
-            input_left = np.repeat(np.zeros([1, dim]), num_samples, 0)
-            input_right = np.repeat(np.ones([1, dim]), num_samples, 0)
-            input_values = (input_right-input_left)
-        else:
-            input_left = np.repeat([input_sample_set.get_domain()[:, 0]], num_samples, 0)
-            input_right = np.repeat([input_sample_set.get_domain()[:, 1]], num_samples, 0)
-            input_values = (input_right - input_left)
+            # create the domain
+            input_domain = np.array([[0., 1.]]*dim)
+            input_sample_set.set_domain(input_domain)
+        # update the bounds based on the number of samples
+        input_sample_set.update_bounds(num_samples)
+        input_values = np.copy(input_sample_set._width)
          
         if sample_type == "lhs":
             input_values = input_values * lhs(dim,
                     num_samples, criterion)
         elif sample_type == "random" or "r":
-            input_values = input_values * np.random.random(input_left.shape) 
-        input_values = input_values + input_left
+            input_values = input_values * np.random.random(input_values.shape) 
+        input_values = input_values + input_sample_set._left
         input_sample_set.set_values(input_values)
 
         return input_sample_set
