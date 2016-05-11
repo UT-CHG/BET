@@ -273,7 +273,8 @@ def estimate_volume(samples, lambda_emulate=None):
 
     return (lam_vol, lam_vol_local, local_index)
 
-def exact_volume_1D(samples, input_domain):
+def exact_volume_1D(samples, input_domain, distribution='uniform', a=None,
+        b=None): 
     r"""
 
     Exactly calculates the volume fraction of the Voronoice cells associated
@@ -284,6 +285,10 @@ def exact_volume_1D(samples, input_domain):
     :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
     :param input_domain: The limits of the domain :math:`\mathcal{D}`.
     :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
+    :param string distribution: Probability distribution (uniform, normal,
+        truncnorm, beta)
+    :param float a: mean or alpha (normal/truncnorm, beta)
+    :param float b: covariance or beta (normal/truncnorm, beta)
 
     :rtype: tuple
     :returns: (lam_vol, lam_vol_local, local_index) where ``lam_vol`` is the
@@ -304,26 +309,17 @@ def exact_volume_1D(samples, input_domain):
     # sort the samples
     sort_ind = np.squeeze(np.argsort(samples, 0))
     sorted_samples = samples[sort_ind]
+    domain_width = input_domain[:, 1] - input_domain[:, 0]
 
     # determine the mid_points which are the edges of the associated voronoi
     # cells and bound the cells by the domain
     edges = np.concatenate(([input_domain[:, 0]], (sorted_samples[:-1, :] +\
         sorted_samples[1:, :])*.5, [input_domain[:, 1]]))
-    sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
-    lam_vol = np.zeros(sorted_lam_vol.shape)
-    lam_vol[sort_ind] = sorted_lam_vol
-
-    # Set up local arrays for parallelism
-    local_index = np.array_split(np.arange(samples.shape[0]),
-            comm.size)[comm.rank]
-    lam_vol_local = lam_vol[local_index]
-
-    return (lam_vol, lam_vol_local, local_index)
-    
-
-    
-    
-    
-
-    
-    
+    if distribution == 'normal':
+        edges = scipy.stats.norm.cdf(edges, loc=a, scale=np.sqrt(b))
+    elif distribution == 'truncnorm':
+        l = (input_domain[:, 0] - a) / np.sqrt(b)
+        r = (input_domain[:, 1] - a) / np.sqrt(b)
+        edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a, scale=np.sqrt(b))
+    elif distribution == 'beta':
+        edges = scipy.stats.beta.cdf(edges, a=a, b=b,
