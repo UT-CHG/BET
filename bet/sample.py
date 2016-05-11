@@ -57,7 +57,6 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
             mdat[sample_set_name+attrname] = curr_attr
     if comm.rank == 0:
         sio.savemat(file_name, mdat)
-    comm.Barrier()
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -604,7 +603,6 @@ def save_discretization(save_disc, file_name, discretization_name=None):
             sio.savemat(file_name, mdat)
         else:
             sio.savemat(file_name, new_mdat)
-    comm.barrier()
 
 def load_discretization(file_name, discretization_name=None):
     """

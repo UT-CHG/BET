@@ -106,8 +106,7 @@ def verify_user_samples(model, sampler, input_sample_set, savefile, parallel):
         # compare the data
         nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
-        
-    comm.Barrier()
+    #comm.Barrier()
 
 def verify_random_samples(model, sampler, sample_type, input_domain,
         num_samples, savefile, parallel):
@@ -172,7 +171,7 @@ def verify_random_samples(model, sampler, sample_type, input_domain,
         # compare the data
         nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
-    comm.Barrier()
+    #comm.Barrier()
 
 
 class Test_basic_sampler(unittest.TestCase):
