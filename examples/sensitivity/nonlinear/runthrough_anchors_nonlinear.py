@@ -109,59 +109,64 @@ for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
     # have a dictionary object or something comparable track all nonempty choices of
     # sets of QoI maps, list of indices into samples.
 
-    # feed each along with the set of QoIs into the inverse problem.
-    # solve inverse problem.
-    P = np.zeros(num_samples)
-    lam_vol = np.zeros(num_samples)
-    total = []
-    ref_lambda  = [0.5, 0.5]
-    for k in range(num_anchors):
-        QoI_indices = best_sets[k]
-        temp_samples = samples[ part_inds[k] ]
-        temp_data = data[:, QoI_indices]
-        Q_ref = randQ(np.array([ref_lambda]))[0][QoI_indices]
+        # feed each along with the set of QoIs into the inverse problem.
+        # solve inverse problem for a given reference lambda.
+    lambda_info = []
+    for lambda_test in [[x_ref, y_ref] for x_ref in ref_lambda for y_ref in ref_lambda]
+        P = np.zeros(num_samples)
+        lam_vol = np.zeros(num_samples)
+        total = []
+        print '\n \t Lambda_ref = (%0.2f, %0.2f)\n'%(ref_lambda[0], ref_lambda[1])
 
-        # Find the simple function approximation to data space density
-        (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
-                                                data = temp_data, \
-                                                Q_ref = Q_ref, \
-                                                bin_ratio = bin_ratio, \
-                                                center_pts_per_edge = 1)
+        for k in range(num_anchors):
+            QoI_indices = best_sets[k]
+            temp_samples = samples[ part_inds[k] ]
+            temp_data = data[:, QoI_indices]
+            Q_ref = randQ(np.array([lambda_test]))[0][QoI_indices]
 
-        # Calculate probablities making the Monte Carlo assumption
-        (temp_P,  temp_lam_vol, io_ptr) = calculateP.prob(samples = temp_samples, \
-                                                data = temp_data, \
-                                                rho_D_M = d_distr_prob, \
-                                                d_distr_samples = d_distr_samples)
-        # P[ part_inds[k] ] = temp_P*len( samples[ part_inds[k] ] )
-        # lam_vol[ part_inds[k] ] = temp_lam_vol*len( samples[ part_inds[k] ] )
-        P[ part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
-        lam_vol[ part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
-        total.append( len(temp_P[temp_P>0]) )
-    P = P/sum(total)
-    lam_vol = lam_vol/sum(total)
-    ptol = 1E-4
-    if abs(1-sum(P))>ptol:
-        sys.exit('Probability measure deviates from 1 by more than %f. %f'%(sum(P), ptol) )
+            # Find the simple function approximation to data space density
+            (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
+                                                    data = temp_data, \
+                                                    Q_ref = Q_ref, \
+                                                    bin_ratio = bin_ratio, \
+                                                    center_pts_per_edge = 1)
 
-    percentile = 1.0
-    # Sort samples by highest probability density and find how many samples lie in
-    # the support of the inverse solution.  With the Monte Carlo assumption, this
-    # also tells us the approximate volume of this support.
-    (num_high_samples, P_high, samples_high, lam_vol_high, data_high, sort) =\
-        postTools.sample_highest_prob(top_percentile = percentile, \
-                                        P_samples = P, \
-                                        samples = samples, \
-                                        data = data, \
-                                        lam_vol = lam_vol, \
-                                        sort = True)
+            # Calculate probablities making the Monte Carlo assumption
+            (temp_P,  temp_lam_vol, io_ptr) = calculateP.prob(samples = temp_samples, \
+                                                    data = temp_data, \
+                                                    rho_D_M = d_distr_prob, \
+                                                    d_distr_samples = d_distr_samples)
+            # P[ part_inds[k] ] = temp_P*len( samples[ part_inds[k] ] )
+            # lam_vol[ part_inds[k] ] = temp_lam_vol*len( samples[ part_inds[k] ] )
+            P[ part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
+            lam_vol[ part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
+            total.append( len(temp_P[temp_P>0]) )
+        P = P/sum(total)
+        lam_vol = lam_vol/sum(total)
+        ptol = 1E-4
+        if abs(1-sum(P))>ptol:
+            sys.exit('Probability measure deviates from 1 by more than %f. %f'%(sum(P), ptol) )
 
-        # Print the number of samples that make up the highest percentile percent
-        # samples and ratio of the volume of the parameter domain they take up
-    print '\n'
-    if comm.rank == 0:
-        print (num_high_samples, np.sum(lam_vol_high), sum(P)), '\n\n\n'
-    highest_prob.append([num_anchors, num_high_samples])
+        percentile = 1.0
+        # Sort samples by highest probability density and find how many samples lie in
+        # the support of the inverse solution.  With the Monte Carlo assumption, this
+        # also tells us the approximate volume of this support.
+        (num_high_samples, P_high, samples_high, lam_vol_high, data_high, sort) =\
+            postTools.sample_highest_prob(top_percentile = percentile, \
+                                            P_samples = P, \
+                                            samples = samples, \
+                                            data = data, \
+                                            lam_vol = lam_vol, \
+                                            sort = True)
+
+            # Print the number of samples that make up the highest percentile percent
+            # samples and ratio of the volume of the parameter domain they take up
+        print '\n'
+        if comm.rank == 0:
+            print (num_high_samples, np.sum(lam_vol_high), sum(P)), '\n\n\n'
+        lambda_info.append([lambda_test, num_high_samples])
+    lambda_info = np.array(lambda_info)
+    highest_prob.append([num_anchors, lambda_info, np.mean(lambda_info[:,1])])
 
 print highest_prob
 
