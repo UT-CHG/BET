@@ -16,8 +16,7 @@ import bet.sample
 from bet.sample import sample_set
 from bet.sample import discretization as disc 
 
-local_path = os.path.join(os.path.dirname(bet.__file__),
-    "../test/test_sampling")
+local_path = os.path.join(".")
 
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
