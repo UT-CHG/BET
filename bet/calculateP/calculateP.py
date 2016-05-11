@@ -322,4 +322,23 @@ def exact_volume_1D(samples, input_domain, distribution='uniform', a=None,
         r = (input_domain[:, 1] - a) / np.sqrt(b)
         edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a, scale=np.sqrt(b))
     elif distribution == 'beta':
+
         edges = scipy.stats.beta.cdf(edges, a=a, b=b,
+                loc=input_domain[:, 0], scale=domain_width)
+    # calculate difference between right and left of each cell and renormalize
+    sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
+    lam_vol = np.zeros(sorted_lam_vol.shape)
+    lam_vol[sort_ind] = sorted_lam_vol
+    if distribution == 'uniform':
+        lam_vol = lam_vol/domain_width
+    # Set up local arrays for parallelism
+    local_index = np.array_split(np.arange(samples.shape[0]),
+            comm.size)[comm.rank]
+    local_index = np.array(local_index, dtype='int64')
+    lam_vol_local = lam_vol[local_index]
+
+    return (lam_vol, lam_vol_local, local_index)
+    
+
+    
+    
