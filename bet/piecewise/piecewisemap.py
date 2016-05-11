@@ -136,7 +136,9 @@ for k in range(num_anchors):
     total.append( len(temp_P[temp_P>0]) )
 P = P/sum(total)
 lam_vol = lam_vol/sum(total)
-if abs(1-sum(P))>1E-4: sys.exit('Probability sums to greater than 1. %f'%sum(P))
+ptol = 1E-4
+if abs(1-sum(P))>ptol:
+    sys.exit('Probability measure deviates from 1 by more than %f. %f'%(sum(P), ptol) )
 
 percentile = 1.0
 # Sort samples by highest probability density and find how many samples lie in
