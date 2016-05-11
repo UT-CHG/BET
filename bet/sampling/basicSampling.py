@@ -180,7 +180,7 @@ class sampler(object):
         input_sample_set = sample.sample_set(input_domain.shape[0])
         input_sample_set.set_domain(input_domain)
 
-        return self.random_sample_set_set(sample_type, input_sample_set,
+        return self.random_sample_set(sample_type, input_sample_set,
                                        num_samples, criterion, parallel)
 
     def random_sample_set_dimension(self, sample_type, input_dim,
@@ -215,7 +215,7 @@ class sampler(object):
         # Create N samples
         input_sample_set = sample.sample_set(input_dim)
 
-        return self.random_sample_set_set(sample_type, input_sample_set,
+        return self.random_sample_set(sample_type, input_sample_set,
                                        num_samples, criterion, parallel)
 
     def compute_QoI_and_create_discretization(self, input_sample_set, savefile=None, parallel=False):
@@ -314,7 +314,7 @@ class sampler(object):
             num_samples = self.num_samples
 
         if isinstance(input_obj, sample.sample_set):
-            input_sample_set = self.random_sample_set_set(sample_type, input_obj,
+            input_sample_set = self.random_sample_set(sample_type, input_obj,
                                            num_samples, criterion, parallel)
         elif isinstance(input_obj, np.ndarray):
             input_sample_set = self.random_sample_set_domain(sample_type, input_obj,
