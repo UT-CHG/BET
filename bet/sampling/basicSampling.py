@@ -280,48 +280,48 @@ class sampler(object):
         return discretization
 
 
-def create_random_discretization(self, sample_type, input_obj, savefile = None,
-                   num_samples=None, criterion='center', parallel=False):
-    """
-    Sampling algorithm with three basic options
-        * ``random`` (or ``r``) generates ``num_samples`` samples in
-            ``lam_domain`` assuming a Lebesgue measure.
-        * ``lhs`` generates a latin hyper cube of samples.
-    Note: This function is designed only for generalized rectangles and
-    assumes a Lebesgue measure on the parameter space.
+    def create_random_discretization(self, sample_type, input_obj, savefile = None,
+                       num_samples=None, criterion='center', parallel=False):
+        """
+        Sampling algorithm with three basic options
+            * ``random`` (or ``r``) generates ``num_samples`` samples in
+                ``lam_domain`` assuming a Lebesgue measure.
+            * ``lhs`` generates a latin hyper cube of samples.
+        Note: This function is designed only for generalized rectangles and
+        assumes a Lebesgue measure on the parameter space.
 
-    :param string sample_type: type sampling random (or r),
-        latin hypercube(lhs), regular grid (rg), or space-filling
-        curve(TBD)
-    :param input_obj: Either a sample set object for an input space,
-    an array of min and max bounds for the input values with
-    ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
-    or the dimension of an input space
-    :type input_obj: :class: `~bet.sample.sample_set`,
-    :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
-    :param string savefile: filename to save discretization
-    :param int num_samples: N, number of samples (optional)
-    :param string criterion: latin hypercube criterion see
-        `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-    :param bool parallel: Flag for parallel implementation.  Default value
-        is ``False``.
+        :param string sample_type: type sampling random (or r),
+            latin hypercube(lhs), regular grid (rg), or space-filling
+            curve(TBD)
+        :param input_obj: Either a sample set object for an input space,
+        an array of min and max bounds for the input values with
+        ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
+        or the dimension of an input space
+        :type input_obj: :class: `~bet.sample.sample_set`,
+        :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
+        :param string savefile: filename to save discretization
+        :param int num_samples: N, number of samples (optional)
+        :param string criterion: latin hypercube criterion see
+            `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool parallel: Flag for parallel implementation.  Default value
+            is ``False``.
 
-    :rtype: :class:`~bet.sample.discretization`
-    :returns: :class:`~bet.sample.discretization` object which contains
-        input and output sample sets with ``num_samples`` total samples
-    """
-    # Create N samples
-    if num_samples is None:
-        num_samples = self.num_samples
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output sample sets with ``num_samples`` total samples
+        """
+        # Create N samples
+        if num_samples is None:
+            num_samples = self.num_samples
 
-    if isinstance(input_obj, sample.sample_set):
-        input_sample_set = self.random_samples_set(sample_type, input_obj,
-                                       num_samples, criterion, parallel)
-    elif isinstance(input_obj, np.array):
-        input_sample_set = self.random_samples_domain(sample_type, input_obj,
-                                       num_samples, criterion, parallel)
-    else:
-        input_sample_set = self.random_samples_dimension(sample_type, input_obj,
-                                       num_samples, criterion, parallel)
+        if isinstance(input_obj, sample.sample_set):
+            input_sample_set = self.random_samples_set(sample_type, input_obj,
+                                           num_samples, criterion, parallel)
+        elif isinstance(input_obj, np.ndarray):
+            input_sample_set = self.random_samples_domain(sample_type, input_obj,
+                                           num_samples, criterion, parallel)
+        else:
+            input_sample_set = self.random_samples_dimension(sample_type, input_obj,
+                                           num_samples, criterion, parallel)
 
-    return self.compute_QoI_and_create_discretization(input_sample_set, savefile, parallel)
+        return self.compute_QoI_and_create_discretization(input_sample_set, savefile, parallel)
