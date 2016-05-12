@@ -10,6 +10,7 @@ volumes of these cells.
 import numpy as np
 from scipy import spatial
 import bet.util as util
+import bet.sample as samp
 
 def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
         sur_domain): 

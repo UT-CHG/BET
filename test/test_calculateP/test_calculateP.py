@@ -21,7 +21,7 @@ import bet.util as util
 from bet.Comm import comm 
 
 data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
-
+#data_path = ("/Users/smattis/src/BET-1/test/test_calculateP/datafiles")
 class TestEmulateIIDLebesgue(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.emulate_iid_lebesgue`.
@@ -43,7 +43,8 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         lam_domain[:, 1] = lam_right
         
         self.s_set_emulated = calcP.emulate_iid_lebesgue(lam_domain,
-                                                        num_l_emulate)
+                                                         self.num_l_emulate,
+                                                         globalize=True)
  
     def test_dimension(self):
         """
@@ -66,67 +67,67 @@ class TestEmulateIIDLebesgue(unittest.TestCase):
         self.assertLessEqual(np.max(self.s_set_emulated._values[:, 1]), 4.0)
         self.assertLessEqual(np.max(self.s_set_emulated._values[:, 2]), 0.5)
 
-class TestEstimateVolume(unittest.TestCase):
-    """
-    Test :meth:`bet.calculateP.calculateP.estimate_volulme`.
-    """
+# class TestEstimateVolume(unittest.TestCase):
+#     """
+#     Test :meth:`bet.calculateP.calculateP.estimate_volulme`.
+#     """
     
-    def setUp(self):
-        """
-        Test dimension, number of samples, and that all the samples are within
-        lambda_domain.
+#     def setUp(self):
+#         """
+#         Test dimension, number of samples, and that all the samples are within
+#         lambda_domain.
 
-        """
-        lam_left = np.array([0.0, .25, .4])
-        lam_right = np.array([1.0, 4.0, .5])
-        lam_width = lam_right-lam_left
+#         """
+#         lam_left = np.array([0.0, .25, .4])
+#         lam_right = np.array([1.0, 4.0, .5])
+#         lam_width = lam_right-lam_left
 
-        lam_domain = np.zeros((3, 3))
-        lam_domain[:, 0] = lam_left
-        lam_domain[:, 1] = lam_right
+#         lam_domain = np.zeros((3, 3))
+#         lam_domain[:, 0] = lam_left
+#         lam_domain[:, 1] = lam_right
 
-        num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
-        d1_arrays = []
+#         num_samples_dim = 2
+#         start = lam_left+lam_width/(2*num_samples_dim)
+#         stop = lam_right-lam_width/(2*num_samples_dim)
+#         d1_arrays = []
         
-        for l, r in zip(start, stop):
-            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+#         for l, r in zip(start, stop):
+#             d1_arrays.append(np.linspace(l, r, num_samples_dim))
         
-        num_l_emulate = 1000001
-        self.s_set_emulated = calcP.emulate_iid_lebesgue(lam_domain,
-                                                         num_l_emulate)
+#         num_l_emulate = 1000001
+#         self.s_set_emulated = calcP.emulate_iid_lebesgue(lam_domain,
+#                                                          num_l_emulate)
 
-        #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
-        #        self.num_l_emulate)
-        self.s_set = samp(dim=num_samples_dim) 
-        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
-        self.volumes_exact = 1.0/self.s_set._values.shape[0]
-        #self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
-        #        estimate_volume(self.samples, self.lambda_emulate)
-        calcP.estimate_volume(self.s_set, self.s_set_emulated)
-        self.s_set.local_to_global()
+#         #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+#         #        self.num_l_emulate)
+#         self.s_set = samp(dim=num_samples_dim) 
+#         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+#         self.volumes_exact = 1.0/self.s_set._values.shape[0]
+#         #self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
+#         #        estimate_volume(self.samples, self.lambda_emulate)
+#         calcP.estimate_volume(self.s_set, self.s_set_emulated)
+#         self.s_set.local_to_global()
         
-    def test_dimension(self):
-        """
-        Check the dimension.
-        """
-        self.s_set.check_num()
-        #nptest.assert_array_equal(self.s_set._volumes.shape, (len(self.samples), ))
-        #nptest.assert_array_equal(self.lam_vol_local.shape,
-        #        (len(self.samples)/comm.size, ))
-        #nptest.assert_array_equal(self.lam_vol_local.shape,
-        #        len(self.local_index))
+#     def test_dimension(self):
+#         """
+#         Check the dimension.
+#         """
+#         self.s_set.check_num()
+#         #nptest.assert_array_equal(self.s_set._volumes.shape, (len(self.samples), ))
+#         #nptest.assert_array_equal(self.lam_vol_local.shape,
+#         #        (len(self.samples)/comm.size, ))
+#         #nptest.assert_array_equal(self.lam_vol_local.shape,
+#         #        len(self.local_index))
 
-    def test_volumes(self):
-        """
-        Check that the volumes are within a tolerance for a regular grid of
-        samples.
-        """
-        nptest.assert_array_almost_equal(self.s_set._volumes, self.volume_exact, 3)
-        #nptest.assert_array_equal(self.s_set._volumes_local,
-        #        self.s_set._volumes[self.s_set.local_index])
-        nptest.assert_almost_equal(np.sum(self.s_set._volumes), 1.0)
+#     def test_volumes(self):
+#         """
+#         Check that the volumes are within a tolerance for a regular grid of
+#         samples.
+#         """
+#         nptest.assert_array_almost_equal(self.s_set._volumes, self.volume_exact, 3)
+#         #nptest.assert_array_equal(self.s_set._volumes_local,
+#         #        self.s_set._volumes[self.s_set.local_index])
+#         nptest.assert_almost_equal(np.sum(self.s_set._volumes), 1.0)
 
 class prob:
     def test_prob_sum_to_1(self):
@@ -175,23 +176,23 @@ class prob_mc:
         """
         Test that probs sum to 1.
         """
-        nptest.assert_almost_equal(np.sum(self.P), 1.0)
+        nptest.assert_almost_equal(np.sum(self.inputs._probabilities), 1.0)
     def test_P_matches_true(self):
         """
         Test the probs. match reference values.
         """
         if comm.size == 1:
-            nptest.assert_almost_equal(self.P_ref, self.P)
+            nptest.assert_almost_equal(self.P_ref, self.inputs._probabilities)
     def test_vol_sum_to_1(self):
         """
         Test that volume ratios sum to 1.
         """
-        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+        nptest.assert_almost_equal(np.sum(self.inputs._volumes), 1.0)
     def test_prob_pos(self):
         """
         Test that all probs are non-negative.
         """
-        self.assertEqual(np.sum(np.less(self.P, 0)), 0)
+        self.assertEqual(np.sum(np.less(self.inputs._probabilities, 0)), 0)
         
     
 class TestProbMethod_3to2(unittest.TestCase):
@@ -204,23 +205,23 @@ class TestProbMethod_3to2(unittest.TestCase):
         self.inputs = samp.sample_set(3)
         self.outputs = samp.sample_set(2)
         self.inputs.set_values(np.loadtxt(data_path + "/3to2_samples.txt.gz"))
-        self.output.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))
+        self.outputs.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))
         Q_ref = np.array([0.422, 0.9385])
         #(self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
         #        uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
         #        bin_ratio=0.2, center_pts_per_edge=1)
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
 
         self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001)
+        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
         self.disc = samp.discretization(input_sample_set = self.inputs,
                                         output_sample_set = self.outputs,
                                         output_probability_set = self.output_prob,
-                                        emulated_input_sample_set = self.input_emulated)
+                                        emulated_input_sample_set = self.inputs_emulated)
 
 class Test_prob_3to2(TestProbMethod_3to2, prob):
     """
@@ -234,6 +235,7 @@ class Test_prob_3to2(TestProbMethod_3to2, prob):
         #(self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
         #        data=self.data, rho_D_M=self.d_distr_prob,
         #        d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        self.disc._input_sample_set.estimate_volume_uniform()
         calcP.prob(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
 
@@ -246,7 +248,7 @@ class Test_prob_emulated_3to2(TestProbMethod_3to2, prob_emulated):
         """
         Set up 3 to 2 map.
         """
-        #super(Test_prob_emulated_3to2, self).setUp()
+        super(Test_prob_emulated_3to2, self).setUp()
         #(self.P_emulate, self.lambda_emulate, _, _) = calcP.prob_emulated(\
         #        samples=self.samples, data=self.data,
         #        rho_D_M=self.d_distr_prob,
@@ -270,6 +272,7 @@ class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
         #        data=self.data, rho_D_M=self.d_distr_prob,
         #        d_distr_samples=self.d_distr_samples,
         #        lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
+        #self.disc._input_sample_set.estimate_volume_mc(n_mc_points=1001)
         calcP.prob_mc(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob_mc.txt.gz")
  
@@ -302,25 +305,25 @@ class TestProbMethod_3to1(unittest.TestCase):
         #self.samples = np.loadtxt(data_path + "/3to2_samples.txt.gz")
         #self.data = np.loadtxt(data_path + "/3to2_data.txt.gz")
         self.inputs = samp.sample_set(3)
-        self.outputs = samp.sample_set(2)
+        self.outputs = samp.sample_set(1)
         self.inputs.set_values(np.loadtxt(data_path + "/3to2_samples.txt.gz"))
-        self.output.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))[:,0]
+        self.outputs.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz")[:,0])
         Q_ref = np.array([0.422])
         #(self.d_distr_prob, self.d_distr_samples, self.d_Tree) = simpleFunP.\
         #        uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
         #        bin_ratio=0.2, center_pts_per_edge=1)
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
 
         self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001)
+        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
         self.disc = samp.discretization(input_sample_set = self.inputs,
                                         output_sample_set = self.outputs,
                                         output_probability_set = self.output_prob,
-                                        emulated_input_sample_set = self.input_emulated)
+                                        emulated_input_sample_set = self.inputs_emulated)
 
 class Test_prob_3to1(TestProbMethod_3to1, prob):
     """
@@ -334,6 +337,7 @@ class Test_prob_3to1(TestProbMethod_3to1, prob):
         #(self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
         #        data=self.data, rho_D_M=self.d_distr_prob,
         #        d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        self.disc._input_sample_set.estimate_volume_uniform()
         calcP.prob(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to1_prob.txt.gz")
 
@@ -394,17 +398,18 @@ class TestProbMethod_10to4(unittest.TestCase):
         #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
         #        self.num_l_emulate) 
         #self.samples = calcP.emulate_iid_lebesgue(self.lam_domain, 100)
-        self.inputs.set_values(calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001))
-        self.outputs.set_values(np.dot(self.samples, rnd.rand(10, 4)))
-        Q_ref = np.mean(self.data, axis=0)
-        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) =\
+        self.inputs = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=101, globalize=True)
+        self.outputs.set_values(np.dot(self.inputs._values, rnd.rand(10, 4)))
+        Q_ref = np.mean(self.outputs._values, axis=0)
+        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
+        #(self.d_distr_prob, self.d_distr_samples, self.d_Tree) =\
         #simpleFunP.uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
         #        bin_ratio=0.2, center_pts_per_edge=1)
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
         self.disc = samp.discretization(input_sample_set = self.inputs,
                                         output_sample_set = self.outputs,
                                         output_probability_set = self.output_prob,
-                                        emulated_input_sample_set = self.input_emulated)
+                                        emulated_input_sample_set = self.inputs_emulated)
 
     @unittest.skip("No reference data")
     def test_P_matches_true(self):
@@ -422,6 +427,7 @@ class Test_prob_10to4(TestProbMethod_10to4, prob):
         #(self.P, self.lam_vol, _) = calcP.prob(samples=self.samples,
         #        data=self.data, rho_D_M=self.d_distr_prob,
         #        d_distr_samples=self.d_distr_samples, d_Tree=self.d_Tree)
+        self.disc._input_sample_set.estimate_volume_uniform()
         calcP.prob(self.disc)
 
 
@@ -441,8 +447,8 @@ class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
         #         d_distr_samples=self.d_distr_samples,
         #         lambda_emulate=self.lambda_emulate, d_Tree=self.d_Tree)
         calcP.prob_emulated(self.disc)
-        self.P_emulate = util.get_global_values(self.P_emulate)
-
+        #self.P_emulate = util.get_global_values(self.P_emulate)
+        
 class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
     """
     Test :meth:`bet.calculateP.calculateP.prob_mc` on a 10 to 4 map.
@@ -476,22 +482,26 @@ class TestProbMethod_1to1(unittest.TestCase):
         self.lam_domain[:, 0] = 0.0
         self.lam_domain[:, 1] = 1.0
         self.inputs.set_domain(self.lam_domain)
-        #self.num_l_emulate = 1001
+        self.inputs.set_values(rnd.rand(100,))
+        self.num_l_emulate = 1001
         #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
         #        self.num_l_emulate) 
         #self.samples = calcP.emulate_iid_lebesgue(self.lam_domain, 100)
-        self.inputs.set_values(calcP.emulate_iid_lebesgue(self.input.get_domain(), num_l_emulate=1001))
+        self.inputs = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
         #self.outputs.set_values(np.dot(self.samples, rnd.rand(10, 4)))
         self.outputs.set_values(2.0*self.inputs._values)
-        Q_ref = np.mean(self.data, axis=0)
-        (self.d_distr_prob, self.d_distr_samples, self.d_Tree) =\
+        Q_ref = np.mean(self.outputs._values, axis=0)
+        #(self.d_distr_prob, self.d_distr_samples, self.d_Tree) =\
         #simpleFunP.uniform_hyperrectangle(data=self.data, Q_ref=Q_ref,
         #        bin_ratio=0.2, center_pts_per_edge=1)
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.output.get_bounding_box(), Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.lam_domain,
+                                                         self.num_l_emulate,
+                                                         globalize = True) 
+        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
         self.disc = samp.discretization(input_sample_set = self.inputs,
                                         output_sample_set = self.outputs,
                                         output_probability_set = self.output_prob,
-                                        emulated_input_sample_set = self.input_emulated)
+                                        emulated_input_sample_set = self.inputs_emulated)
         # import numpy.random as rnd
         # rnd.seed(1)
         # self.lam_domain = np.zeros((1, 2))
@@ -523,6 +533,7 @@ class Test_prob_1to1(TestProbMethod_1to1, prob):
         #                 data=self.data, rho_D_M=self.d_distr_prob,
         #                 d_distr_samples=self.d_distr_samples,
         #                 d_Tree=self.d_Tree)
+        self.disc._input_sample_set.estimate_volume_uniform()
         calcP.prob(self.disc)
 
 

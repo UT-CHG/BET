@@ -19,6 +19,7 @@ import os, bet, unittest, collections
 import bet.calculateP.simpleFunP as sFun
 import numpy as np
 import numpy.testing as nptest
+import bet.sample as samp
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
 '../test/test_calulateP')
@@ -44,7 +45,7 @@ class prob(object):
         """
         assert self.rho_D_M.shape[0] == self.d_distr_samples.shape[0]
         assert self.mdim == self.d_distr_samples.shape[1]
-        assert (self.d_Tree.n, self.d_Tree.m) == self.d_distr_samples.shape
+        #assert (self.d_Tree.n, self.d_Tree.m) == self.d_distr_samples.shape
 
 
 class prob_uniform(prob):
@@ -133,7 +134,7 @@ class data_3D(object):
         """
         self.data = samp.sample_set(3)
         self.data.set_values(np.random.random((100,3))*10.0)
-        self.data = np.random.random((100, 3))*10.0
+        #self.data = np.random.random((100, 3))*10.0
         self.Q_ref = np.array([5.0, 5.0, 5.0])
         self.data_domain = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
         self.mdim = 3
@@ -248,7 +249,7 @@ class normal_normal(prob):
             std = np.ones(self.Q_ref.shape)
         #self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.normal_normal(self.Q_ref, 
 	#	M=67, std=std, num_d_emulate=1E3)
- self.data_prob = sFun.normal_normal(self.Q_ref, M=67, std=std, num_d_emulate=1E3)
+        self.data_prob = sFun.normal_normal(self.Q_ref, M=67, std=std, num_d_emulate=1E3)
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
          
@@ -727,7 +728,7 @@ class uniform_hyperrectangle_ratio_list(uniform_hyperrectangle_list):
         # self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle(self.data, 
         #         self.Q_ref, binratio, self.center_pts_per_edge)
 
-         self.data_prob = sFun.uniform_hyperrectangle(self.data, self.Q_ref, binratio, self.center_pts_per_edge)
+        self.data_prob = sFun.uniform_hyperrectangle(self.data, self.Q_ref, binratio, self.center_pts_per_edge)
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
 
@@ -833,7 +834,10 @@ class uniform_data(prob_uniform):
         """
         Set up problem.
         """
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_data(self.data)
+        self.data_prob = sFun.uniform_data(self.data)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
+        self.data = self.data._values
 
         if type(self.Q_ref) != np.array:
             self.Q_ref = np.array([self.Q_ref])

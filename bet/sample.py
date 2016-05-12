@@ -12,7 +12,7 @@ import os, warnings
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
-from bet.Comm import comm
+from bet.Comm import comm, MPI
 import bet.util as util
 
 class length_not_matching(Exception):
@@ -163,7 +163,9 @@ class sample_set_base(object):
         #: :class:`scipy.spatial.KDTree`
         self._kdtree = None
         #: Values defining kd tree, :class;`numpy.ndarray` of shape (num, dim)
-        self._kdtree_values
+        self._kdtree_values = None
+        #: Local values defining kd tree, :class;`numpy.ndarray` of shape (num, dim)
+        self._kdtree_values_local = None
         #: Local pointwise left (local_num, dim)
         self._left_local = None
         #: Local pointwise right (local_num, dim)
@@ -557,8 +559,8 @@ class sample_set_base(object):
         Give all cells the same volume fraction based on the Monte Carlo assumption
         """
         num = self.check_num()
-        self._volumes = 1.0/float(num)
-
+        self._volumes = 1.0/float(num)*np.ones((num,))
+        self.global_to_local()
     def global_to_local(self):
         """
         Makes local arrays from available global ones.
@@ -712,8 +714,8 @@ class voronoi_sample_set(sample_set_base):
 
     """
     def __init__(self, dim, p_norm=2):
-        super(sample_set_base, self).__init__(dim)
-        
+        #super(sample_set_base, self).__init__(dim)
+        sample_set_base.__init__(self, dim)
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
 
@@ -866,7 +868,7 @@ class discretization(object):
             self._input_sample_set.set_kdtree()
         # (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree().\
         #         query(self._emulated_input_sample_set._values_local, p=p)
-        (_, self._emulate_ii_ptr_local) = self._input_sample_set.query(self._emulated_input_sample_set._values_local)
+        (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
                     (self._emulated_ii_ptr_local)

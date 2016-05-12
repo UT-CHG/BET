@@ -52,7 +52,7 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :returns: sample_set object defininng simple function approximation
     """
     data_set.check_num()
-    bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio
+    bin_size = (np.max(data_set._values, 0) - np.min(data_set._values, 0))*bin_ratio
 
 
     r'''
@@ -79,9 +79,9 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     '''
     if comm.rank == 0:
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
-            data.shape[1]))-0.5)+Q_ref 
+            data_set._values.shape[1]))-0.5)+Q_ref 
     else:
-        d_distr_samples = np.empty((M, data.shape[1]))
+        d_distr_samples = np.empty((M, data_set._values.shape[1]))
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
     
     # Initialize sample set object
@@ -99,7 +99,7 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     # Generate the samples from :math:`\rho_{\mathcal{D}}`
     num_d_emulate = int(num_d_emulate/comm.size)+1
     d_distr_emulate = bin_size*(np.random.random((num_d_emulate,
-        data.shape[1]))-0.5) + Q_ref
+        data_set._values.shape[1]))-0.5) + Q_ref
 
     # Bin these samples using nearest neighbor searches
     (_, k) = s_set.query(d_distr_emulate)
@@ -171,7 +171,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
     # Initialize sample set object
-    s_set = samp.voronoi_sample_set(data_set._dim)
+    s_set = samp.voronoi_sample_set(len(Q_ref))
     s_set.set_values(d_distr_samples)
     s_set.set_kdtree()
 
@@ -250,7 +250,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
     # Initialize sample set object
-    s_set = samp.voronoi_sample_set(data_set._dim)
+    s_set = samp.voronoi_sample_set(len(Q_ref))
     s_set.set_values(d_distr_samples)
     s_set.set_kdtree()
  
@@ -399,13 +399,13 @@ def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
 
     """
     data_set.check_num()
-    data = data.get_values()
+    data = data_set.get_values()
 
     if not isinstance(bin_ratio, collections.Iterable):
         bin_ratio = bin_ratio*np.ones((data.shape[1], ))
 
     bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio 
-    return uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
+    return uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
             center_pts_per_edge)
 
 def uniform_data(data_set):
@@ -429,6 +429,6 @@ def uniform_data(data_set):
     """
     data_set.check_num()
     data = data_set.get_values()
-    s_set = check_num.copy()
+    s_set = data_set.copy()
     s_set.set_probabilities(np.ones((data.shape[0],), dtype=np.float)/data.shape[0])
     return s_set
