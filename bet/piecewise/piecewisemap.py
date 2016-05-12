@@ -72,7 +72,7 @@ best_sets = []
 for k in range(num_anchors):
     samples_k = np.array(anchors[k],ndmin=2)
     # samples_k =  np.array(anchors[k:k+1], ndmin =2)
-    data_k = Q(samples_k) 
+    data_k = Q(samples_k)
 
     # Calculate the gradient vectors at some anchor points.
     # Here the *normalize* argument is set to *True* because we are using bin_ratio to
