@@ -533,7 +533,7 @@ class sample_set_base(object):
     def estimate_volume_mc(self, n_mc_points=int(1E4)):
         """
         Calculate the volume faction of cells approximately using Monte
-        Carlo integration of exactly. 
+        Carlo integration. 
 
         :parm n_mc_points: If estimate is True, number of MC points to use
         :type n_mc_points: int
@@ -556,7 +556,7 @@ class sample_set_base(object):
         
     def estimate_volume_uniform(self):
         """
-        Give all cells the same volume fraction based on the Monte Carlo assumption
+        Give all cells the same volume fraction based on the Monte Carlo assumption.
         """
         num = self.check_num()
         self._volumes = 1.0/float(num)*np.ones((num,))
@@ -714,7 +714,6 @@ class voronoi_sample_set(sample_set_base):
 
     """
     def __init__(self, dim, p_norm=2):
-        #super(sample_set_base, self).__init__(dim)
         sample_set_base.__init__(self, dim)
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
@@ -823,8 +822,6 @@ class discretization(object):
             self._output_sample_set.global_to_local()
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
-        #(_, self._io_ptr_local) = self._output_probability_set.get_kdtree().\
-        #        query(self._output_sample_set._values_local, p=p)
         (_, self._io_ptr_local) =  self._output_probability_set.query(self._output_sample_set._values_local)
                                                             
         if globalize:
@@ -866,8 +863,6 @@ class discretization(object):
             self._emulated_input_sample_set.global_to_local()
         if self._input_sample_set._kdtree is None:
             self._input_sample_set.set_kdtree()
-        # (_, self._emulated_ii_ptr_local) = self._input_sample_set.get_kdtree().\
-        #         query(self._emulated_input_sample_set._values_local, p=p)
         (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
