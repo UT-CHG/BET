@@ -11,7 +11,7 @@ from bet.Comm import comm
 # Parameter space is nD
 # Data space is n/2 D
 
-def main(io_file_name):
+def my_model(io_file_name):
     # read in input from file
     io_mdat = sio.loadmat(io_file_name)
     input = io_mdat['input']
@@ -29,6 +29,6 @@ def usage():
 
 if __name__ == "__main__":
     if len(sys.argv) == 3:
-        main(sys.argv[1])
+        my_model(sys.argv[1])
     else:
         usage()
