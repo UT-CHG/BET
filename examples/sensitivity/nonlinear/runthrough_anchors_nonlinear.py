@@ -13,7 +13,7 @@ from itertools import combinations
 from pylab import *
 
 Lambda_dim = 2
-Data_dim = 3
+Data_dim = 5
 num_samples = 1E5
 num_anchors = 1
 bin_ratio = 0.05
@@ -76,7 +76,7 @@ for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
     for k in range(num_anchors):
         samples_k = np.array(anchors[k],ndmin=2)
         # samples_k =  np.array(anchors[k:k+1], ndmin =2)
-        data_k = randQ(samples_k) # CANNOT GET THIS LINE WORKING
+        data_k = randQ(samples_k)
 
         # Calculate the gradient vectors at some anchor points.
         # Here the *normalize* argument is set to *True* because we are using bin_ratio to
@@ -93,18 +93,6 @@ for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
         # for each anchor point, record best_sets (accessing [0] for the best one).
     print  '\n'
     # print best_sets
-
-
-
-    ##### NOT WHAT WE'LL DO
-    # define a quantity of interest map of Lambda_dim where we run nearest neighbor
-    # on the point against anchor points, then access the best QoI for that anchor point,
-    # use it to access the appropriate quantity of interest component maps.
-
-    # map parameter space under this new map.
-    # solve inverse problem with this piecwise-defined quantity of interest map.
-
-    ####
 
     # have a dictionary object or something comparable track all nonempty choices of
     # sets of QoI maps, list of indices into samples.
