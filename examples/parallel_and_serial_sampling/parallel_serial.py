@@ -27,5 +27,5 @@ def lb_model(input_data):
 
 my_sampler = bsam.sampler(lb_model)
 my_discretization = my_sampler.create_random_discretization(sample_type='r',
-        input_obj=4, savefile="serial_serial_example", num_samples=100,
+        input_obj=4, savefile="parallel_serial_example", num_samples=100,
         parallel=True)

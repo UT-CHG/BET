@@ -2,7 +2,7 @@
 
 # -*- coding: utf-8 -*-
 
-# This demonstrates how to use BET in serial to sample a serial external model. 
+# This demonstrates how to use BET in serial to sample a parallel external model. 
 # run by calling "python serial_parallel.py"
 
 import os, subprocess
@@ -28,4 +28,4 @@ def lb_model(input_data, nprocs=2):
 
 my_sampler = bsam.sampler(lb_model)
 my_discretization = my_sampler.create_random_discretization(sample_type='r',
-        input_obj=4, savefile="serial_serial_example", num_samples=100)
+        input_obj=4, savefile="serial_parallel_example", num_samples=100)
