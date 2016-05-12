@@ -471,7 +471,7 @@ class sampler(bsam.sampler):
             input_old = input_new
 
         # collect everything
-        
+        disc._input_sample_set.update_bounds_local() 
         disc._input_sample_set.local_to_global()
         disc._output_sample_set.local_to_global()
 
