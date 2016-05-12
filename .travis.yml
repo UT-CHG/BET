@@ -6,17 +6,6 @@ python:
     #- "3.3"
     #- "3.4"
 
-# cache: apt
-
-# addons:
-#   apt:
-#     packages:
-#     - gfortran
-#     - libblas-dev
-#     - liblapack-dev
-#     - mpich2
-#     - libmpich2-dev
-
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
@@ -37,33 +26,17 @@ script:
   - pip uninstall -y mpi4py
   - nosetests
 
-# # command to install dependencies
-# before_install:
-#     - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
-#     - pip install pyDOE mpi4py
-
-# # install package:
-#     - python setup.py install
-# # script to run before running tests
-# before_script:
-#     - mkdir -p shippable/testresults
-# # command to run tests
-# script:
-#     - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_serial.xml
-#     - mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_parallel.xml
-#     - pip uninstall -y mpi4py
-#     - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_nompi4py.xml
 # notification settings
 notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
-            #- lichgraham@gmail.com
-            #- scottw13@gmail.com
+            - lichgraham@gmail.com
+            - scottw13@gmail.com
         on_success: change
         on_failure: always
 # whitelist
 branches:
     only:
         - master
-        - v2_master2
+        - v2_master
