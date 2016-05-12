@@ -22,7 +22,7 @@ ref_N = 5
 ref_lambda = np.linspace(0+1.0/ref_N,1-1.0/ref_N,num=ref_N)
 
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
-for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
+for num_anchors in [1]: #[1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
     # define samples in parameter space, random anchor points
     np.random.seed(0)
     samples = np.random.random([num_samples, Lambda_dim])
@@ -112,11 +112,11 @@ for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
         # feed each along with the set of QoIs into the inverse problem.
         # solve inverse problem for a given reference lambda.
     lambda_info = []
-    for lambda_test in [[x_ref, y_ref] for x_ref in ref_lambda for y_ref in ref_lambda]
+    for lambda_test in [[x_ref, y_ref] for x_ref in ref_lambda for y_ref in ref_lambda]:
         P = np.zeros(num_samples)
         lam_vol = np.zeros(num_samples)
         total = []
-        print '\n \t Lambda_ref = (%0.2f, %0.2f)\n'%(ref_lambda[0], ref_lambda[1])
+        print '\t Lambda_ref = (%0.2f, %0.2f)'%(lambda_test[0], lambda_test[1])
 
         for k in range(num_anchors):
             QoI_indices = best_sets[k]
@@ -167,9 +167,9 @@ for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
         lambda_info.append([lambda_test, num_high_samples])
     lambda_info = np.array(lambda_info)
     highest_prob.append([num_anchors, lambda_info, np.mean(lambda_info[:,1])])
-
-print highest_prob
-
+highest_prob = np.array(highest_prob)
+print highest_prob[:,[0,2]]
+np.save('prob_reduction_results',highest_prob)
 # weights distributed as proportion of total weight in cell multiplied by the
 # proportion it represents of all samples across partitions that fell in one
 # of the data space  densities. really your only contribution is this latter proportioning.
