@@ -6,18 +6,19 @@ python:
     #- "3.3"
     #- "3.4"
 
-cache: apt
+# cache: apt
 
-addons:
-  apt:
-    packages:
-    - gfortran
-    - libblas-dev
-    - liblapack-dev
-    - mpich2
-    - libmpich2-dev
+# addons:
+#   apt:
+#     packages:
+#     - gfortran
+#     - libblas-dev
+#     - liblapack-dev
+#     - mpich2
+#     - libmpich2-dev
 
 before_install:
+  - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
