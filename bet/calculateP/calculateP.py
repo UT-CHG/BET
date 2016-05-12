@@ -69,7 +69,7 @@ def prob_emulated(discretization, globalize=True):
         discretization.set_emulated_ii_ptr(globalize=False)
 
     # Calculate Probabilties
-    P = np.zeros((discretization._emulated_input_sample_set._values.shape[0],))
+    P = np.zeros((discretization._emulated_input_sample_set._values_local.shape[0],))
     d_distr_emu_ptr = discretization._io_ptr[discretization._emulated_ii_ptr_local]
     for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
@@ -79,7 +79,7 @@ def prob_emulated(discretization, globalize=True):
             if Itemp_sum > 0:
                 P[Itemp] = discretization._output_probability_set._probabilities[i]/Itemp_sum
     
-    discretization._emulated_input_sample_set._probabilities = P
+    discretization._emulated_input_sample_set._probabilities_local = P
     
     pass
 

@@ -92,17 +92,20 @@ class prob_emulated:
         """
         Test that prob. sums to 1.
         """
+        self.inputs_emulated.local_to_global()
         nptest.assert_almost_equal(np.sum(self.inputs_emulated._probabilities), 1.0)
     def test_P_matches_true(self):
         """
         Test that probabilites match reference values.
         """
+        self.inputs_emulated.local_to_global()
         if comm.size == 1:
             nptest.assert_almost_equal(self.P_emulate_ref, self.inputs_emulated._probabilities)
     def test_prob_pos(self):
         """
         Test that all probabilites are non-negative.
         """
+        self.inputs_emulated.local_to_global()
         self.assertEqual(np.sum(np.less(self.inputs_emulated._probabilities, 0)), 0)
 
 
