@@ -134,8 +134,7 @@ class TestExactVolume1D(unittest.TestCase):
                 num_samples+1)
         self.samples = (edges[1:]+edges[:-1])*.5
         np.random.shuffle(self.samples)
-        self.volume_exact = float(self.lam_domain[:, 1]-self.lam_domain[:, 0])/\
-                self.samples.shape[0]
+        self.volume_exact = 1./self.samples.shape[0]
         self.volume_exact = self.volume_exact * np.ones((num_samples,))
         self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
                 exact_volume_1D(self.samples, self.lam_domain)
