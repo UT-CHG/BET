@@ -187,9 +187,10 @@ class Test_sample_set(unittest.TestCase):
         """
         new_values = np.zeros((10, self.dim))
         self.sam_set.global_to_local()
+        new_num = self.sam_set._values_local.shape[0]
         self.sam_set.append_values_local(new_values)
         nptest.assert_array_equal(util.fix_dimensions_data(new_values),
-                self.sam_set.get_values_local()[self.num::, :])
+                self.sam_set.get_values_local()[new_num::, :])
     def test_get_dim(self):
         """
         Check to see if dimensions are correct.
