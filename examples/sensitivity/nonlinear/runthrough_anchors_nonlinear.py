@@ -22,7 +22,7 @@ ref_N = 5
 ref_lambda = np.linspace(0+1.0/ref_N,1-1.0/ref_N,num=ref_N)
 
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
-for num_anchors in [1]: #[1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
+for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
     # define samples in parameter space, random anchor points
     np.random.seed(0)
     samples = np.random.random([num_samples, Lambda_dim])
