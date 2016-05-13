@@ -55,7 +55,8 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
-    sio.savemat(file_name, mdat)
+    if comm.rank == 0:
+        sio.savemat(file_name, mdat)
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -92,6 +93,12 @@ def load_sample_set(file_name, sample_set_name=None):
     for attrname in sample_set.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
+    
+    comm.barrier()
+    # localize arrays if necessary
+    if sample_set_name+"_values_local" in mdat.keys():
+        loaded_set.global_to_local()
+
     return loaded_set
 
 class sample_set_base(object):
@@ -658,13 +665,14 @@ def save_discretization(save_disc, file_name, discretization_name=None):
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
     
-    if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-        mdat = sio.loadmat(file_name)
-        for i, v in new_mdat.iteritems():
-            mdat[i] = v
-        sio.savemat(file_name, mdat)
-    else:
-        sio.savemat(file_name, new_mdat)
+    if comm.rank == 0:
+        if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
+            mdat = sio.loadmat(file_name)
+            for i, v in new_mdat.iteritems():
+                mdat[i] = v
+            sio.savemat(file_name, mdat)
+        else:
+            sio.savemat(file_name, new_mdat)
 
 def load_discretization(file_name, discretization_name=None):
     """

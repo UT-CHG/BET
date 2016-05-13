@@ -224,7 +224,7 @@ class sampler(bsam.sampler):
         return self.run_gen(kern_list, rho_D, maximum, input_domain,
                 t_set, savefile, initial_sample_type, criterion)
 
-    def generalized_chains(self, input_domain, t_set, kern,
+    def generalized_chains(self, input_obj, t_set, kern,
             savefile, initial_sample_type="random", criterion='center',
             hot_start=0): 
         """
@@ -232,8 +232,12 @@ class sampler(bsam.sampler):
        
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-        :param input_domain: min, max value for each input dimension
-        :type input_domain: :class:`numpy.ndarray` (ndim, 2)
+        :param input_obj: Either a :class:`bet.sample.sample_set` object for an
+            input space, an array of min and max bounds for the input values
+            with ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
+            or the dimension of an input space
+        :type input_obj: :class: `~bet.sample.sample_set`,
+            :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
         :type t_set: :class:`bet.sampling.adaptiveSampling.transition_set`
@@ -272,8 +276,8 @@ class sampler(bsam.sampler):
             # Initiative first batch of N samples (maybe taken from latin
             # hypercube/space-filling curve to fully explore parameter space -
             # not necessarily random). Call these Samples_old.
-            disc_old = super(sampler, self).random_samples(
-                    initial_sample_type, input_domain, savefile,
+            disc_old = super(sampler, self).create_random_discretization(
+                    initial_sample_type, input_obj, savefile,
                     self.num_chains, criterion)
             self.num_samples = self.chain_length * self.num_chains
             comm.Barrier()
@@ -467,7 +471,7 @@ class sampler(bsam.sampler):
             input_old = input_new
 
         # collect everything
-        
+        disc._input_sample_set.update_bounds_local() 
         disc._input_sample_set.local_to_global()
         disc._output_sample_set.local_to_global()
 
