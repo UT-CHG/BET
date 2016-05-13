@@ -10,7 +10,8 @@ import bet.sample as sample
 import bet.util as util
 from bet.Comm import comm, MPI
 
-local_path = os.path.join(os.path.dirname(bet.__file__), "../test")
+#local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
+local_path = ''
     
 class Test_sample_set(unittest.TestCase):
     def setUp(self):
@@ -67,8 +68,9 @@ class Test_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if os.path.exists(os.path.join(local_path, 'testfile.mat')):
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
             os.remove(os.path.join(local_path, 'testfile.mat'))
+
     def test_copy(self):
         """
         Check save_sample_set and load_sample_set.
@@ -187,9 +189,10 @@ class Test_sample_set(unittest.TestCase):
         """
         new_values = np.zeros((10, self.dim))
         self.sam_set.global_to_local()
+        local_size = self.sam_set.get_values_local().shape[0]
         self.sam_set.append_values_local(new_values)
         nptest.assert_array_equal(util.fix_dimensions_data(new_values),
-                self.sam_set.get_values_local()[self.num::, :])
+                self.sam_set.get_values_local()[local_size::, :])
     def test_get_dim(self):
         """
         Check to see if dimensions are correct.
@@ -414,7 +417,7 @@ class Test_discretization_simple(unittest.TestCase):
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
 
-        if os.path.exists(os.path.join(local_path, 'testfile.mat')):
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
             os.remove(os.path.join(local_path, 'testfile.mat'))
 
     def Test_copy_discretization(self):

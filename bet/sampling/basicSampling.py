@@ -66,7 +66,7 @@ class sampler(object):
         self.num_samples = num_samples
         #: callable function that runs the model at a given set of input and
         #: returns output
-        # parameter samples and returns data
+        #: parameter samples and returns data 
 
         self.lb_model = lb_model
 
@@ -92,7 +92,7 @@ class sampler(object):
         """
         mdict['num_samples'] = self.num_samples
 
-    def random_samples_set(self, sample_type, input_sample_set,
+    def random_sample_set(self, sample_type, input_sample_set,
             num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
@@ -129,25 +129,24 @@ class sampler(object):
             num_samples = self.num_samples
 
         if input_sample_set.get_domain() is None:
-            input_left = np.repeat(np.zeros([1, dim]), num_samples, 0)
-            input_right = np.repeat(np.ones([1, dim]), num_samples, 0)
-            input_values = (input_right-input_left)
-        else:
-            input_left = np.repeat([input_sample_set.get_domain()[:, 0]], num_samples, 0)
-            input_right = np.repeat([input_sample_set.get_domain()[:, 1]], num_samples, 0)
-            input_values = (input_right - input_left)
+            # create the domain
+            input_domain = np.array([[0., 1.]]*dim)
+            input_sample_set.set_domain(input_domain)
+        # update the bounds based on the number of samples
+        input_sample_set.update_bounds(num_samples)
+        input_values = np.copy(input_sample_set._width)
          
         if sample_type == "lhs":
             input_values = input_values * lhs(dim,
                     num_samples, criterion)
         elif sample_type == "random" or "r":
-            input_values = input_values * np.random.random(input_left.shape) 
-        input_values = input_values + input_left
+            input_values = input_values * np.random.random(input_values.shape) 
+        input_values = input_values + input_sample_set._left
         input_sample_set.set_values(input_values)
 
         return input_sample_set
 
-    def random_samples_domain(self, sample_type, input_domain,
+    def random_sample_set_domain(self, sample_type, input_domain,
                            num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
@@ -181,10 +180,10 @@ class sampler(object):
         input_sample_set = sample.sample_set(input_domain.shape[0])
         input_sample_set.set_domain(input_domain)
 
-        return self.random_samples_set(sample_type, input_sample_set,
+        return self.random_sample_set(sample_type, input_sample_set,
                                        num_samples, criterion, parallel)
 
-    def random_samples_dimension(self, sample_type, input_dim,
+    def random_sample_set_dimension(self, sample_type, input_dim,
                               num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
@@ -216,7 +215,7 @@ class sampler(object):
         # Create N samples
         input_sample_set = sample.sample_set(input_dim)
 
-        return self.random_samples_set(sample_type, input_sample_set,
+        return self.random_sample_set(sample_type, input_sample_set,
                                        num_samples, criterion, parallel)
 
     def compute_QoI_and_create_discretization(self, input_sample_set, savefile=None, parallel=False):
@@ -259,7 +258,7 @@ class sampler(object):
             local_output_values = self.lb_model(\
                     input_sample_set.get_values_local())
             # figure out the dimension of the output
-            if len(output_values.shape) == 0:
+            if len(local_output_values.shape) == 0:
                 output_dim = 1
             else:
                 output_dim = output_values.shape[1]
@@ -293,12 +292,12 @@ class sampler(object):
         :param string sample_type: type sampling random (or r),
             latin hypercube(lhs), regular grid (rg), or space-filling
             curve(TBD)
-        :param input_obj: Either a sample set object for an input space,
-        an array of min and max bounds for the input values with
-        ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
-        or the dimension of an input space
+        :param input_obj: Either a :class:`bet.sample.sample_set` object for an
+            input space, an array of min and max bounds for the input values
+            with ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
+            or the dimension of an input space
         :type input_obj: :class: `~bet.sample.sample_set`,
-        :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
+            :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
         :param string savefile: filename to save discretization
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see
@@ -315,13 +314,13 @@ class sampler(object):
             num_samples = self.num_samples
 
         if isinstance(input_obj, sample.sample_set):
-            input_sample_set = self.random_samples_set(sample_type, input_obj,
+            input_sample_set = self.random_sample_set(sample_type, input_obj,
                                            num_samples, criterion, parallel)
         elif isinstance(input_obj, np.ndarray):
-            input_sample_set = self.random_samples_domain(sample_type, input_obj,
+            input_sample_set = self.random_sample_set_domain(sample_type, input_obj,
                                            num_samples, criterion, parallel)
         else:
-            input_sample_set = self.random_samples_dimension(sample_type, input_obj,
+            input_sample_set = self.random_sample_set_dimension(sample_type, input_obj,
                                            num_samples, criterion, parallel)
 
         return self.compute_QoI_and_create_discretization(input_sample_set, savefile, parallel)

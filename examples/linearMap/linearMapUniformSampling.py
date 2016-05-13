@@ -69,7 +69,7 @@ if random_sample == False:
 else:
     # Use uniform i.i.d. random samples from the domain
     sampler = bsam.sampler(None, n_samples)
-    input_samples = sampler.random_samples('random', input_samples)
+    input_samples = sampler.random_sample_set('random', input_samples)
 
 # QoI map
 Q_map = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]])

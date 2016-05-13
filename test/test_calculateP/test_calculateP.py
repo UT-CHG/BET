@@ -117,6 +117,49 @@ class TestEstimateVolume(unittest.TestCase):
         nptest.assert_array_equal(self.lam_vol_local,
                 self.lam_vol[self.local_index])
 
+class TestExactVolume1D(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.exact_volume_1D`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        num_samples = 10
+        self.lam_domain = np.array([[.0, .1]])
+        edges = np.linspace(self.lam_domain[:, 0], self.lam_domain[:, 1],
+                num_samples+1)
+        self.samples = (edges[1:]+edges[:-1])*.5
+        np.random.shuffle(self.samples)
+        self.volume_exact = 1./self.samples.shape[0]
+        self.volume_exact = self.volume_exact * np.ones((num_samples,))
+        self.lam_vol, self.lam_vol_local, self.local_index = calcP.\
+                exact_volume_1D(self.samples, self.lam_domain)
+        
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.samples), ))
+        nptest.assert_array_equal(self.lam_vol_local.shape,
+                (len(np.array_split(self.samples, comm.size)[comm.rank]),))
+        nptest.assert_array_equal(self.lam_vol_local.shape,
+                len(self.local_index))
+
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
+        print self.local_index
+        nptest.assert_array_almost_equal(self.lam_vol_local,
+                self.lam_vol[self.local_index])
+
+
 class prob:
     def test_prob_sum_to_1(self):
         """

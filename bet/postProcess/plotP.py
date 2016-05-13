@@ -305,7 +305,7 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
     for i in index:    
         nx = len(bins[i])-1
         dx = bins[i][1] - bins[i][0]
-        augx = math.ceil(3*sigma[i]/dx)
+        augx = int(math.ceil(3*sigma[i]/dx))
         x_kernel = np.linspace(-nx*dx/2, nx*dx/2, nx)
         kernel = np.exp(-(x_kernel/sigma[i])**2)
         aug_kernel = np.zeros((nx+2*augx,))
@@ -349,8 +349,8 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
         dx = bins[i][1] - bins[i][0]
         dy = bins[j][1] - bins[j][0]
 
-        augx = math.ceil(3*sigma[i]/dx)
-        augy = math.ceil(3*sigma[j]/dy)
+        augx = int(math.ceil(3*sigma[i]/dx))
+        augy = int(math.ceil(3*sigma[j]/dy))
 
         x_kernel = np.linspace(-nx*dx/2, nx*dx/2, nx)
         y_kernel = np.linspace(-ny*dy/2, ny*dy/2, ny)

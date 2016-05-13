@@ -108,8 +108,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
         # compare the data
         nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
-        
-    comm.Barrier()
+    #comm.Barrier()
 
 def verify_create_random_discretization(model, sampler, sample_type, input_domain,
         num_samples, savefile, parallel):
@@ -175,7 +174,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
         # compare the data
         nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
-    comm.Barrier()
+    #comm.Barrier()
 
     # reset the random seed
     np.random.seed(1)
@@ -241,7 +240,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
                               my_discretization._output_sample_set._values)
 
 
-def verify_random_samples_domain(sampler, sample_type, input_domain,
+def verify_random_sample_set_domain(sampler, sample_type, input_domain,
                                  num_samples, parallel):
     np.random.seed(1)
     # recreate the samples
@@ -268,7 +267,7 @@ def verify_random_samples_domain(sampler, sample_type, input_domain,
 
     # create the sample set from the domain
     print sample_type
-    my_sample_set = sampler.random_samples_domain(sample_type, input_domain,
+    my_sample_set = sampler.random_sample_set_domain(sample_type, input_domain,
                                             num_samples=num_samples,
                                             parallel=parallel)
 
@@ -280,7 +279,7 @@ def verify_random_samples_domain(sampler, sample_type, input_domain,
     nptest.assert_array_equal(input_sample_set._values,
                               my_sample_set._values)
 
-def verify_random_samples_dimension(sampler, sample_type, input_dim,
+def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
                                      num_samples, parallel):
 
     np.random.seed(1)
@@ -308,7 +307,7 @@ def verify_random_samples_dimension(sampler, sample_type, input_dim,
     np.random.seed(1)
 
     # create the sample set from the domain
-    my_sample_set = sampler.random_samples_dimension(sample_type, input_dim,
+    my_sample_set = sampler.random_sample_set_dimension(sample_type, input_dim,
                                                   num_samples=num_samples,
                                                   parallel=parallel)
 
@@ -320,7 +319,7 @@ def verify_random_samples_dimension(sampler, sample_type, input_dim,
     nptest.assert_array_equal(input_sample_set._values,
                               my_sample_set._values)
 
-def verify_random_samples_set(sampler, sample_type, input_sample_set,
+def verify_random_sample_set(sampler, sample_type, input_sample_set,
                                      num_samples, parallel):
     test_sample_set = input_sample_set
     np.random.seed(1)
@@ -349,7 +348,7 @@ def verify_random_samples_set(sampler, sample_type, input_sample_set,
 
     # create the sample set from the domain
     print sample_type
-    my_sample_set = sampler.random_samples_set(sample_type, input_sample_set,
+    my_sample_set = sampler.random_sample_set(sample_type, input_sample_set,
                                                   num_samples=num_samples,
                                                   parallel=parallel)
 
@@ -472,9 +471,9 @@ class Test_basic_sampler(unittest.TestCase):
                 verify_compute_QoI_and_create_discretization(model, sampler,
                     input_sample_set, savefile, parallel)
    
-    def test_random_samples_set(self):
+    def test_random_sample_set(self):
         """
-        Test :meth:`bet.sampling.basicSampling.sampler.random_samples_set`
+        Test :meth:`bet.sampling.basicSampling.sampler.random_sample_set`
         for six different sample sets
         """
         input_sample_set_list = [self.input_sample_set1,
@@ -490,13 +489,13 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     for parallel in [False, True]:
-                        verify_random_samples_set(sampler, sample_type,
+                        verify_random_sample_set(sampler, sample_type,
                                 input_sample_set, num_samples,
                                 parallel)
 
-    def test_random_samples_domain(self):
+    def test_random_sample_set_domain(self):
         """
-        Test :meth:`bet.sampling.basicSampling.sampler.random_samples_domain`
+        Test :meth:`bet.sampling.basicSampling.sampler.random_sample_set_domain`
         for five different input domains.
         """
         input_domain_list = [self.input_domain1, self.input_domain1,
@@ -508,13 +507,13 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     for parallel in [False, True]:
-                        verify_random_samples_domain(sampler, sample_type,
+                        verify_random_sample_set_domain(sampler, sample_type,
                                               input_domain, num_samples,
                                               parallel)
 
-    def test_random_samples_dim(self):
+    def test_random_sample_set_dim(self):
         """
-        Test :meth:`bet.sampling.basicSampling.sampler.random_samples_dim`
+        Test :meth:`bet.sampling.basicSampling.sampler.random_sample_set_dim`
         for three different input dimensions.
         """
         input_dim_list = [self.input_dim1, self.input_dim2, self.input_dim3]
@@ -525,7 +524,7 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     for parallel in [False, True]:
-                        verify_random_samples_dimension(sampler, sample_type,
+                        verify_random_sample_set_dimension(sampler, sample_type,
                                                      input_dim, num_samples,
                                                      parallel)
 
