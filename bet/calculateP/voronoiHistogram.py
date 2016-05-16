@@ -255,7 +255,7 @@ def simple_fun_uniform(points, volumes, rect_domain):
     rho_D_M = np.zeros(volumes.shape)
     # normalize on Lambda not D
     rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside]) 
-    s_set = samp.voronoi_sample_set(dim = points.shape[1])
+    s_set = samp.voronoi_sample_set(dim=points.shape[1])
     s_set.set_values(points)
     s_set.set_probabilities(rho_D_M)
     return s_set

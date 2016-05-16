@@ -33,43 +33,43 @@ class Test_sample_set(unittest.TestCase):
         """
         self.sam_set.set_domain(self.domain)
         nptest.assert_array_equal(self.sam_set.get_domain(), self.domain)
-    def test_save_load(self):
-        """
-        Check save_sample_set and load_sample_set.
-        """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
-        self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
-        self.sam_set.set_volumes(vol)
-        ee = np.ones((self.num, self.dim))
-        self.sam_set.set_error_estimates(ee)
-        jac = np.ones((self.num, 3, self.dim))
-        self.sam_set.set_jacobians(jac)
-        self.sam_set.global_to_local()
-        self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
+    # def test_save_load(self):
+    #     """
+    #     Check save_sample_set and load_sample_set.
+    #     """
+    #     prob = 1.0/float(self.num)*np.ones((self.num,))
+    #     self.sam_set.set_probabilities(prob)
+    #     vol = 1.0/float(self.num)*np.ones((self.num,))
+    #     self.sam_set.set_volumes(vol)
+    #     ee = np.ones((self.num, self.dim))
+    #     self.sam_set.set_error_estimates(ee)
+    #     jac = np.ones((self.num, 3, self.dim))
+    #     self.sam_set.set_jacobians(jac)
+    #     self.sam_set.global_to_local()
+    #     self.sam_set.set_domain(self.domain)
+    #     self.sam_set.update_bounds()
+    #     self.sam_set.update_bounds_local()
 
-        sample.save_sample_set(self.sam_set, os.path.join(local_path, 
-            'testfile.mat'), "TEST")
+    #     sample.save_sample_set(self.sam_set, os.path.join(local_path, 
+    #         'testfile.mat'), "TEST")
 
-        loaded_set = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
-        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'))
+    #     loaded_set = sample.load_sample_set(os.path.join(local_path, 
+    #         'testfile.mat'), "TEST")
+    #     loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
+    #         'testfile.mat'))
 
-        assert loaded_set_none is None
+    #     assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
-                all_ndarray_names:
-            curr_attr = getattr(loaded_set, attrname)
-            print attrname
-            if curr_attr is not None:
-                nptest.assert_array_equal(getattr(self.sam_set, attrname),
-                        curr_attr)
+    #     for attrname in sample.sample_set.vector_names+sample.sample_set.\
+    #             all_ndarray_names:
+    #         curr_attr = getattr(loaded_set, attrname)
+    #         print attrname
+    #         if curr_attr is not None:
+    #             nptest.assert_array_equal(getattr(self.sam_set, attrname),
+    #                     curr_attr)
 
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
+    #     if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+    #         os.remove(os.path.join(local_path, 'testfile.mat'))
 
     def test_copy(self):
         """
@@ -378,6 +378,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_ii_ptr(globalize=False)
         self.disc._emulated_input_sample_set.local_to_global()
         self.disc.get_emulated_ii_ptr()
+
         
     def Test_set_emulated_oo_ptr(self):
         """
@@ -393,34 +394,34 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_oo_ptr(globalize=False)
         self.disc.get_emulated_oo_ptr()
 
-    def Test_save_load_discretization(self):
-        """
-        Test saving and loading of discretization
-        """
-        sample.save_discretization(self.disc, os.path.join(local_path, 
-            'testfile.mat'), "TEST")
+    # def Test_save_load_discretization(self):
+    #     """
+    #     Test saving and loading of discretization
+    #     """
+    #     sample.save_discretization(self.disc, os.path.join(local_path, 
+    #         'testfile.mat'), "TEST")
 
-        loaded_disc = sample.load_discretization(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
+    #     loaded_disc = sample.load_discretization(os.path.join(local_path, 
+    #         'testfile.mat'), "TEST")
 
-        for attrname in sample.discretization.vector_names:
-            curr_attr = getattr(loaded_disc, attrname)
-            if curr_attr is not None:
-                nptest.assert_array_equal(curr_attr, getattr(self.disc,
-                    attrname))
+    #     for attrname in sample.discretization.vector_names:
+    #         curr_attr = getattr(loaded_disc, attrname)
+    #         if curr_attr is not None:
+    #             nptest.assert_array_equal(curr_attr, getattr(self.disc,
+    #                 attrname))
 
-        for attrname in sample.discretization.sample_set_names:
-            curr_set = getattr(loaded_disc, attrname)
-            if curr_set is not None:
-                for set_attrname in sample.sample_set.vector_names+\
-                        sample.sample_set.all_ndarray_names:
-                    curr_attr = getattr(curr_set, set_attrname)
-                    if curr_attr is not None:
-                        nptest.assert_array_equal(curr_attr, getattr(\
-                                curr_set, set_attrname))
+    #     for attrname in sample.discretization.sample_set_names:
+    #         curr_set = getattr(loaded_disc, attrname)
+    #         if curr_set is not None:
+    #             for set_attrname in sample.sample_set.vector_names+\
+    #                     sample.sample_set.all_ndarray_names:
+    #                 curr_attr = getattr(curr_set, set_attrname)
+    #                 if curr_attr is not None:
+    #                     nptest.assert_array_equal(curr_attr, getattr(\
+    #                             curr_set, set_attrname))
 
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
+    #     if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+    #         os.remove(os.path.join(local_path, 'testfile.mat'))
 
     def Test_copy_discretization(self):
         """
@@ -471,9 +472,6 @@ class TestEstimateVolume(unittest.TestCase):
             d1_arrays.append(np.linspace(l, r, num_samples_dim))
 
         self.num_l_emulate = 1000001
-
-        #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
-        #        self.num_l_emulate)
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
