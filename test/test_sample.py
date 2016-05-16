@@ -337,16 +337,15 @@ class Test_discretization_simple(unittest.TestCase):
         values1 = np.ones((self.num, self.dim1))
         values2 = np.ones((self.num, self.dim2))
         values3 = np.ones((self.num, self.dim2))
-        self.input = sample.sample_set(dim=self.dim1)
-        self.output = sample.sample_set(dim=self.dim2)
+        self.input_set = sample.sample_set(dim=self.dim1)
+        self.output_set = sample.sample_set(dim=self.dim2)
         self.output_probability_set = sample.sample_set(dim=self.dim2)
-        self.input.set_values(values1)
-        self.output.set_values(values2)
+        self.input_set.set_values(values1)
+        self.output_set.set_values(values2)
         self.output_probability_set.set_values(values3)
-        self.disc = sample.discretization(input_sample_set=self.input,
-                                          output_sample_set=self.output,
-                                          output_probability_set=\
-                                                  self.output_probability_set)
+        self.disc = sample.discretization(input_sample_set=self.input_set,
+                                          output_sample_set=self.output_set,
+                                          output_probability_set=self.output_probability_set)
         
     def Test_check_nums(self):
         """
@@ -377,6 +376,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_ii_ptr(globalize=True)
         self.disc.get_emulated_ii_ptr()
         self.disc.set_emulated_ii_ptr(globalize=False)
+        self.disc._emulated_input_sample_set.local_to_global()
         self.disc.get_emulated_ii_ptr()
         
     def Test_set_emulated_oo_ptr(self):
@@ -384,7 +384,7 @@ class Test_discretization_simple(unittest.TestCase):
         Test setting emulated oo ptr
         """
         #TODO be careful if we change Kdtree
-        values = np.ones((10, self.dim2))
+        values = np.ones((3, self.dim2))
         self.emulated = sample.sample_set(dim=self.dim2)
         self.emulated.set_values(values)
         self.disc._emulated_output_sample_set = self.emulated
@@ -444,3 +444,90 @@ class Test_discretization_simple(unittest.TestCase):
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
 
+class TestEstimateVolume(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_volulme`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 3))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.num_l_emulate = 1000001
+
+        #self.lambda_emulate = calcP.emulate_iid_lebesgue(self.lam_domain,
+        #        self.num_l_emulate)
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        print util.meshgrid_ndim(d1_arrays).shape
+        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        self.s_set.estimate_volume(n_mc_points= 1001)
+        self.lam_vol = self.s_set._volumes
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        print self.lam_vol.shape, self.s_set._values.shape
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
+       
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+       
+class TestExactVolume1D(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.exact_volume_1D`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+        """
+        num_samples = 10
+        self.lam_domain = np.array([[.0, .1]])
+        edges = np.linspace(self.lam_domain[:, 0], self.lam_domain[:, 1],
+                num_samples+1)
+        self.samples = (edges[1:]+edges[:-1])*.5
+        np.random.shuffle(self.samples)
+        self.volume_exact = 1./self.samples.shape[0]
+        self.volume_exact = self.volume_exact * np.ones((num_samples,))
+        s_set = sample.voronoi_sample_set(dim = 1)
+        s_set.set_domain(self.lam_domain)
+        s_set.set_values(self.samples)
+        s_set.exact_volume_1D()
+        self.lam_vol = s_set.get_volumes()
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.samples), ))
+ 
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)

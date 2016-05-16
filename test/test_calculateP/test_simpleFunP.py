@@ -241,7 +241,7 @@ class normal_normal(prob):
             std = 1.0
         else:
             std = np.ones(self.Q_ref.shape)
-        self.data_prob = sFun.normal_normal(self.Q_ref, M=67, std=std, num_d_emulate=1E3)
+        self.data_prob = sFun.normal_normal(None, self.Q_ref, M=67, std=std, num_d_emulate=1E3)
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
          

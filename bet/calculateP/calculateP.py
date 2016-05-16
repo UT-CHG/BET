@@ -52,8 +52,7 @@ def prob_emulated(discretization, globalize=True):
 
     :param discretization: An object containing the discretization information.
     :type class:`bet.sample.discretization`
-    :param globalize: Makes local variables global.
-    :type bool
+    :param bool globalize: Makes local variables global.
 
     """
 
@@ -93,8 +92,7 @@ def prob(discretization):
 
     :param discretization: An object containing the discretization information.
     :type class:`bet.sample.discretization`
-    :param globalize: Makes local variables global.
-    :type bool
+    :param bool globalize: Makes local variables global.
 
     """
 
@@ -117,7 +115,9 @@ def prob(discretization):
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:            
                 P_local[Itemp] = discretization._output_probability_set._probabilities[i]*discretization._input_sample_set._volumes_local[Itemp]/Itemp_sum
-        discretization._input_sample_set._probabilities= util.get_global_values(P_local)
+        
+    discretization._input_sample_set._probabilities = util.get_global_values(P_local)
+    discretization._input_sample_set._probabilities_local = P_local
 
 
 def prob_mc(discretization): 
@@ -156,71 +156,7 @@ def prob_mc(discretization):
 
     return prob(discretization)
 
-def exact_volume_1D(samples, input_domain, distribution='uniform', a=None,
-        b=None): 
-    r"""
 
-    Exactly calculates the volume fraction of the Voronoice cells associated
-    with ``samples``. Specifically we are calculating 
-    :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
-    
-    :param samples: The samples in parameter space for which the model was run.
-    :type samples: :class:`~numpy.ndarray` of shape (num_samples, ndim)
-    :param input_domain: The limits of the domain :math:`\mathcal{D}`.
-    :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
-    :param string distribution: Probability distribution (uniform, normal,
-        truncnorm, beta)
-    :param float a: mean or alpha (normal/truncnorm, beta)
-    :param float b: covariance or beta (normal/truncnorm, beta)
-
-    :rtype: tuple
-    :returns: (lam_vol, lam_vol_local, local_index) where ``lam_vol`` is the
-        global array of volume fractions, ``lam_vol_local`` is the local array
-        of volume fractions, and ``local_index`` a list of the global indices
-        for local arrays on this particular processor ``lam_vol_local =
-        lam_vol[local_index]``
-    
-    """
-
-    if len(samples.shape) == 1:
-        samples = np.expand_dims(samples, axis=1)
-
-    #if sample_obj.get_dim() != 1:
-    if samples.shape[1] != 1:
-        raise dim_not_matching("Only applicable for 1D domains.")
-
-    # sort the samples
-    sort_ind = np.squeeze(np.argsort(samples, 0))
-    sorted_samples = samples[sort_ind]
-    domain_width = input_domain[:, 1] - input_domain[:, 0]
-
-    # determine the mid_points which are the edges of the associated voronoi
-    # cells and bound the cells by the domain
-    edges = np.concatenate(([input_domain[:, 0]], (sorted_samples[:-1, :] +\
-        sorted_samples[1:, :])*.5, [input_domain[:, 1]]))
-    if distribution == 'normal':
-        edges = scipy.stats.norm.cdf(edges, loc=a, scale=np.sqrt(b))
-    elif distribution == 'truncnorm':
-        l = (input_domain[:, 0] - a) / np.sqrt(b)
-        r = (input_domain[:, 1] - a) / np.sqrt(b)
-        edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a, scale=np.sqrt(b))
-    elif distribution == 'beta':
-
-        edges = scipy.stats.beta.cdf(edges, a=a, b=b,
-                loc=input_domain[:, 0], scale=domain_width)
-    # calculate difference between right and left of each cell and renormalize
-    sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
-    lam_vol = np.zeros(sorted_lam_vol.shape)
-    lam_vol[sort_ind] = sorted_lam_vol
-    if distribution == 'uniform':
-        lam_vol = lam_vol/domain_width
-    # Set up local arrays for parallelism
-    local_index = np.array_split(np.arange(samples.shape[0]),
-            comm.size)[comm.rank]
-    local_index = np.array(local_index, dtype='int64')
-    lam_vol_local = lam_vol[local_index]
-
-    return (lam_vol, lam_vol_local, local_index)
     
 
     

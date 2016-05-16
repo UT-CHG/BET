@@ -12,6 +12,7 @@ import os, warnings
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
+import scipy.stats
 from bet.Comm import comm, MPI
 import bet.util as util
 
@@ -169,9 +170,9 @@ class sample_set_base(object):
         self._local_index = None
         #: :class:`scipy.spatial.KDTree`
         self._kdtree = None
-        #: Values defining kd tree, :class;`numpy.ndarray` of shape (num, dim)
+        #: Values defining kd tree, :class:`numpy.ndarray` of shape (num, dim)
         self._kdtree_values = None
-        #: Local values defining kd tree, :class;`numpy.ndarray` of shape (num, dim)
+        #: Local values defining kd tree, :class:`numpy.ndarray` of shape (num, dim)
         self._kdtree_values_local = None
         #: Local pointwise left (local_num, dim)
         self._left_local = None
@@ -537,7 +538,7 @@ class sample_set_base(object):
         """
         pass
 
-    def estimate_volume_mc(self, n_mc_points=int(1E4)):
+    def estimate_volume(self, n_mc_points=int(1E4)):
         """
         Calculate the volume faction of cells approximately using Monte
         Carlo integration. 
@@ -560,8 +561,9 @@ class sample_set_base(object):
         vol = cvol
         vol = vol/float(n_mc_points)
         self._volumes = vol
+        self.global_to_local()
         
-    def estimate_volume_uniform(self):
+    def estimate_volume_mc(self):
         """
         Give all cells the same volume fraction based on the Monte Carlo assumption.
         """
@@ -743,6 +745,50 @@ class voronoi_sample_set(sample_set_base):
         #TODO add exception if dimensions of x are wrong
         (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
         return (dist, ptr)
+
+    def exact_volume_1D(self, distribution='uniform', a=None, b=None):
+        r"""
+        
+        Exactly calculates the volume fraction of the Voronoic cells.
+        Specifically we are calculating 
+        :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
+        
+        :param string distribution: Probability distribution (uniform, normal,
+        truncnorm, beta)
+        :param float a: mean or alpha (normal/truncnorm, beta)
+        :param float b: covariance or beta (normal/truncnorm, beta)
+        """
+        self.check_num()
+        if self._dim != 1:
+            raise dim_not_matching("Only applicable for 1D domains.")
+
+        # sort the samples
+        sort_ind = np.squeeze(np.argsort(self._values, 0))
+        sorted_samples = self._values[sort_ind]
+        domain_width = self._domain[:, 1] - self._domain[:, 0]
+
+        # determine the mid_points which are the edges of the associated voronoi
+        # cells and bound the cells by the domain
+        edges = np.concatenate(([self._domain[:, 0]], (sorted_samples[:-1, :] +\
+        sorted_samples[1:, :])*.5, [self._domain[:, 1]]))
+        if distribution == 'normal':
+            edges = scipy.stats.norm.cdf(edges, loc=a, scale=np.sqrt(b))
+        elif distribution == 'truncnorm':
+            l = (input_domain[:, 0] - a) / np.sqrt(b)
+            r = (input_domain[:, 1] - a) / np.sqrt(b)
+            edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a, scale=np.sqrt(b))
+        elif distribution == 'beta':
+
+            edges = scipy.stats.beta.cdf(edges, a=a, b=b,
+                                         loc=self._domain[:, 0], scale=domain_width)
+        # calculate difference between right and left of each cell and renormalize
+        sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
+        lam_vol = np.zeros(sorted_lam_vol.shape)
+        lam_vol[sort_ind] = sorted_lam_vol
+        if distribution == 'uniform':
+            lam_vol = lam_vol/domain_width
+        self._volumes = lam_vol
+        self.global_to_local()
 
 class sample_set(voronoi_sample_set):
     """
