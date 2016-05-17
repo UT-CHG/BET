@@ -18,7 +18,7 @@ def lb_model(input_data, nprocs=2):
     sio.savemat(io_file_name, io_mdat)
 
     # run the model
-    subprocess.call(['mpirun', '-np', nprocs, 'python', 'parallel_model.py',
+    subprocess.call(['mpirun', '-np', str(nprocs), 'python', 'parallel_model.py',
         io_file_name])
 
     # read the output from file

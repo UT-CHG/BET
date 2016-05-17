@@ -422,7 +422,7 @@ class Test_discretization_simple(unittest.TestCase):
                     if curr_attr is not None:
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
-
+        comm.barrier()
         if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
             os.remove(os.path.join(local_path, 'testfile.mat'))
 

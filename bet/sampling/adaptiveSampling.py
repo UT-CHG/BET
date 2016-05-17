@@ -16,7 +16,7 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
-import math, os, glob
+import math, os, glob, logging
 from bet.Comm import comm 
 import bet.sample as sample
 
@@ -274,7 +274,7 @@ class sampler(bsam.sampler):
         min_ratio = t_set.min_ratio
 
         if not hot_start:
-            print "COLD START"
+            logging.info("COLD START")
             step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
            
             # Initiative first batch of N samples (maybe taken from latin
@@ -302,14 +302,14 @@ class sampler(bsam.sampler):
             # LOAD FILES
             if hot_start == 1: # HOT START FROM PARTIAL RUN
                 if comm.rank == 0:
-                    print "HOT START from partial run"
+                    logging.info("HOT START from partial run")
                 # Find and open save files
                 save_dir = os.path.dirname(savefile)
                 base_name = os.path.dirname(savefile)
                 mdat_files = glob.glob(os.path.join(save_dir,
                         "proc*_{}".format(base_name)))
                 if len(mdat_files) == 0:
-                    print "HOT START using serial file"
+                    logging.info("HOT START using serial file")
                     mdat = sio.loadmat(savefile)
                     disc = sample.load_discretization(savefile)
                     kern_old = np.squeeze(mdat['kern_old'])
@@ -317,7 +317,8 @@ class sampler(bsam.sampler):
                     chain_length = disc.check_nums()/self.num_chains
                     if all_step_ratios.shape == (self.num_chains,
                                                         chain_length):
-                        print "Serial file, from completed run updating hot_start"
+                        msg = "Serial file, from completed"
+                        msg += " run updating hot_start"
                         hot_start = 2
                     # reshape if parallel
                     if comm.size > 1:
@@ -330,7 +331,7 @@ class sampler(bsam.sampler):
                         all_step_ratios = np.reshape(all_step_ratios,
                                  (self.num_chains, -1), 'F')
                 elif hot_start == 1 and len(mdat_files) == comm.size:
-                    print "HOT START using parallel files (same nproc)"
+                    logging.info("HOT START using parallel files (same nproc)")
                     # if the number of processors is the same then set mdat to
                     # be the one with the matching processor number (doesn't
                     # really matter)
@@ -339,7 +340,7 @@ class sampler(bsam.sampler):
                     kern_old = np.squeeze(mdat['kern_old'])
                     all_step_ratios = np.squeeze(mdat['step_ratios'])
                 elif hot_start == 1 and len(mdat_files) != comm.size:
-                    print "HOT START using parallel files (diff nproc)"
+                    logging.info("HOT START using parallel files (diff nproc)")
                     # Determine how many processors the previous data used
                     # otherwise gather the data from mdat and then scatter
                     # among the processors and update mdat
@@ -386,7 +387,7 @@ class sampler(bsam.sampler):
                     kern_old = np.concatenate(kern_old)
             if hot_start == 2: # HOT START FROM COMPLETED RUN:
                 if comm.rank == 0:
-                    print "HOT START from completed run"
+                    logging.info("HOT START from completed run")
                 mdat = sio.loadmat(savefile)
                 disc = sample.load_discretization(savefile)
                 kern_old = np.squeeze(mdat['kern_old'])
@@ -429,7 +430,8 @@ class sampler(bsam.sampler):
                     get_values_local()[-self.num_chains_pproc:, :])
 
             # Determine how many batches have been run
-            start_ind = disc._input_sample_set.get_values_local().shape[0]/self.num_chains_pproc
+            start_ind = disc._input_sample_set.get_values_local().\
+                    shape[0]/self.num_chains_pproc
         
         mdat = dict()
         self.update_mdict(mdat)
@@ -457,8 +459,8 @@ class sampler(bsam.sampler):
             if self.chain_length < 4:
                 pass
             elif comm.rank == 0 and (batch+1)%(self.chain_length/4) == 0:
-                print "Current chain length: "+\
-                            str(batch+1)+"/"+str(self.chain_length)
+                logging.info("Current chain length: "+\
+                            str(batch+1)+"/"+str(self.chain_length))
             disc._input_sample_set.append_values_local(input_new.\
                     get_values_local())
             disc._output_sample_set.append_values_local(output_new_values)

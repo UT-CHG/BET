@@ -8,7 +8,7 @@ This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.dim_not_matching`
 """
 
-import os, warnings
+import os, logging
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -82,7 +82,7 @@ def load_sample_set(file_name, sample_set_name=None):
     if sample_set_name+"_dim" in mdat.keys():
         loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
-        warnings.warn("No sample_set named {} with _dim in file".\
+        logging.info("No sample_set named {} with _dim in file".\
                 format(sample_set_name))
         return None
 
@@ -109,17 +109,18 @@ class sample_set_base(object):
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
-    vector_names = [ '_probabilities', '_probabilities_local', '_volumes',
+    vector_names = ['_probabilities', '_probabilities_local', '_volumes',
             '_volumes_local', '_local_index', '_dim']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
-                   '_error_estimates', '_right', '_left', '_width', '_kdtree_values'] 
+                   '_error_estimates', '_right', '_left', '_width',
+                   '_kdtree_values'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
                          '_values', '_values_local', '_left', '_left_local', 
-                         '_right','_right_local', '_width', '_width_local', 
+                         '_right', '_right_local', '_width', '_width_local', 
                          '_domain', '_kdtree_values'] 
 
 
@@ -171,7 +172,8 @@ class sample_set_base(object):
         self._kdtree = None
         #: Values defining kd tree, :class:`numpy.ndarray` of shape (num, dim)
         self._kdtree_values = None
-        #: Local values defining kd tree, :class:`numpy.ndarray` of shape (num, dim)
+        #: Local values defining kd tree, :class:`numpy.ndarray` of 
+        #: shape (num, dim)
         self._kdtree_values_local = None
         #: Local pointwise left (local_num, dim)
         self._left_local = None
@@ -288,7 +290,7 @@ class sample_set_base(object):
         """
         mins = np.min(self._values, axis=0)
         maxes = np.max(self._values, axis=0)
-        self._bounding_box = np.vstack((mins,maxes)).transpose()
+        self._bounding_box = np.vstack((mins, maxes)).transpose()
         pass
 
     def get_bounding_box(self):
@@ -489,34 +491,99 @@ class sample_set_base(object):
         return self._kdtree
         
     def get_values_local(self):
+        """
+        Returns sample local values.
+
+        :rtype: :class:`numpy.ndarray`
+        :returns: sample local values
+
+        """
         return self._values_local
 
     def set_volumes_local(self, volumes_local):
+        """
+        Sets local sample cell volumes.
+
+        :type volumes_local: :class:`numpy.ndarray` of shape (num,)
+        :param volumes_local: local sample cell volumes
+
+        """
         self._volumes_local = volumes_local
         pass
 
     def get_volumes_local(self):
+        """
+        Returns sample local volumes.
+
+        :rtype: :class:`numpy.ndarray`
+        :returns: sample local volumes
+
+        """
         return self._volumes_local
 
     def set_probabilities_local(self, probabilities_local):
+        """
+        Set sample local probabilities.
+
+        :type probabilities_local: :class:`numpy.ndarray` of shape (num,)
+        :param probabilities_local: local sample probabilities
+
+        """
         self._probabilities_local = probabilities_local
         pass
 
     def get_probabilities_local(self):
+        """
+        Returns sample local probablities.
+
+        :rtype: :class:`numpy.ndarray`
+        :returns: sample local probablities
+
+        """
+
         return self._probabilities_local
 
     def set_jacobians_local(self, jacobians_local):
+        """
+        Returns local sample jacobians.
+
+        :type jacobians_local: :class:`numpy.ndarray` of shape (num, other_dim,
+            dim) 
+        :param jacobians_local: local sample jacobians
+
+        """
         self._jacobians_local = jacobians_local
         pass
 
     def get_jacobians_local(self):
+        """
+        Returns local sample jacobians.
+
+        :rtype: :class:`numpy.ndarray` of shape (num, other_dim, dim)
+        :returns: local sample jacobians
+
+        """
         return self._jacobians_local
 
     def set_error_estimates_local(self, error_estimates_local):
+        """
+        Returns local sample error estimates.
+
+        :type error_estimates_local: :class:`numpy.ndarray` of shape (num,)
+        :param error_estimates_local: local sample error estimates
+
+        """
         self._error_estimates_local = error_estimates_local
         pass
 
     def get_error_estimates_local(self):
+        """
+        Returns sample error_estimates_local.
+
+        :rtype: :class:`numpy.ndarray` of shape (num,)
+        :returns: sample error_estimates_local
+
+        """
         return self._error_estimates_local
 
     def local_to_global(self):
@@ -542,19 +609,18 @@ class sample_set_base(object):
         Calculate the volume faction of cells approximately using Monte
         Carlo integration. 
 
-        :parm n_mc_points: If estimate is True, number of MC points to use
-        :type n_mc_points: int
+        :param int n_mc_points: If estimate is True, number of MC points to use
         """
-        num=self.check_num()
+        num = self.check_num()
         n_mc_points_local = (n_mc_points/comm.size) + \
                             (comm.rank < n_mc_points%comm.size)
-        width = self._domain[:,1] - self._domain[:,0]
+        width = self._domain[:, 1] - self._domain[:, 0]
         mc_points = width*np.random.random((n_mc_points_local,
-                                            self._domain.shape[0]))+self._domain[:, 0]
+            self._domain.shape[0])) + self._domain[:, 0]
         (_, emulate_ptr) = self.query(mc_points)
         vol = np.zeros((num,))
         for i in range(num):
-            vol[i] = np.sum(np.equal(emulate_ptr,i))
+            vol[i] = np.sum(np.equal(emulate_ptr, i))
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
         vol = cvol
@@ -564,11 +630,13 @@ class sample_set_base(object):
         
     def estimate_volume_mc(self):
         """
-        Give all cells the same volume fraction based on the Monte Carlo assumption.
+        Give all cells the same volume fraction based on the Monte Carlo
+        assumption.  
         """
         num = self.check_num()
         self._volumes = 1.0/float(num)*np.ones((num,))
         self.global_to_local()
+
     def global_to_local(self):
         """
         Makes local arrays from available global ones.
@@ -580,7 +648,7 @@ class sample_set_base(object):
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(self, array_name + "_local",
-                        current_array[self._local_index])
+                        np.array_split(current_array, comm.size)[comm.rank])
 
     def copy(self):
         """
@@ -773,14 +841,15 @@ class voronoi_sample_set(sample_set_base):
         if distribution == 'normal':
             edges = scipy.stats.norm.cdf(edges, loc=a, scale=np.sqrt(b))
         elif distribution == 'truncnorm':
-            l = (input_domain[:, 0] - a) / np.sqrt(b)
-            r = (input_domain[:, 1] - a) / np.sqrt(b)
-            edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a, scale=np.sqrt(b))
+            l = (self._domain[:, 0] - a) / np.sqrt(b)
+            r = (self._domain[:, 1] - a) / np.sqrt(b)
+            edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a,
+                    scale=np.sqrt(b)) 
         elif distribution == 'beta':
-
-            edges = scipy.stats.beta.cdf(edges, a=a, b=b,
-                                         loc=self._domain[:, 0], scale=domain_width)
-        # calculate difference between right and left of each cell and renormalize
+            edges = scipy.stats.beta.cdf(edges, a=a, b=b, 
+                    loc=self._domain[:, 0], scale=domain_width)
+        # calculate difference between right and left of each cell and
+        # renormalize
         sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
         lam_vol = np.zeros(sorted_lam_vol.shape)
         lam_vol[sort_ind] = sorted_lam_vol
@@ -842,7 +911,7 @@ class discretization(object):
         if output_sample_set is not None:
             self.check_nums()
         else:
-            warnings.warn("No output_sample_set")
+            logging.info("No output_sample_set")
         
     def check_nums(self):
         """
@@ -875,7 +944,8 @@ class discretization(object):
             self._output_sample_set.global_to_local()
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
-        (_, self._io_ptr_local) =  self._output_probability_set.query(self._output_sample_set._values_local)
+        (_, self._io_ptr_local) = self._output_probability_set.query(\
+                self._output_sample_set._values_local)
                                                             
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
@@ -916,7 +986,8 @@ class discretization(object):
             self._emulated_input_sample_set.global_to_local()
         if self._input_sample_set._kdtree is None:
             self._input_sample_set.set_kdtree()
-        (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(self._emulated_input_sample_set._values_local)
+        (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
+                self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
                     (self._emulated_ii_ptr_local)
@@ -957,7 +1028,8 @@ class discretization(object):
             self._emulated_output_sample_set.global_to_local()
         if self._output_probability_set._kdtree is None:
             self._output_probability_set.set_kdtree()
-        (_, self._emulated_oo_ptr_local) =  self._output_probability_set.query(self._emulated_output_sample_set._values_local)
+        (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
+                self._emulated_output_sample_set._values_local)
                                                                 
         if globalize:
             self._emulated_oo_ptr = util.get_global_values\

@@ -4,6 +4,7 @@
 This module contains functions choosing optimal QoIs to use in the stochastic
 inverse problem.
 """
+import logging
 import numpy as np
 from itertools import combinations
 from bet.Comm import comm
@@ -90,7 +91,9 @@ def calculate_avg_skewness(input_set, qoi_set=None):
     else:
         G = input_set._jacobians[:, qoi_set, :]
     if G.shape[1] > G.shape[2]:
-        raise ValueError("Skewness is not defined for more outputs than inputs.  Try adding a qoi_set to evaluate the skewness of.")
+        msg = "Skewness is not defined for more outputs than inputs."
+        msg += " Try adding a qoi_set to evaluate the skewness of."
+        raise ValueError(msg)
 
     num_centers = G.shape[0]
     output_dim = G.shape[1]
@@ -121,19 +124,20 @@ def calculate_avg_skewness(input_set, qoi_set=None):
     skewgi = np.zeros([num_centers, output_dim])
 
     # The local skewness is calculated for nonzero giperp
-    skewgi[normgiperp!=0] = normgi[normgiperp!=0] / normgiperp[normgiperp!=0]
+    skewgi[normgiperp != 0] = normgi[normgiperp != 0] / \
+            normgiperp[normgiperp != 0]
 
     # If giperp is the zero vector, it is not GD from the rest of the gradient
     # vectors, so the skewness is infinity.
-    skewgi[normgiperp==0] = np.inf
+    skewgi[normgiperp == 0] = np.inf
 
     # If the norm of giperp is infinity, then the rest of the vector were not GD
     # to begin with, so skewness is infinity.
-    skewgi[normgiperp==np.inf] = np.inf
+    skewgi[normgiperp == np.inf] = np.inf
 
     # The local skewness is the max skewness of each vector relative the rest
     skewG = np.max(skewgi, axis=1)
-    skewG[np.isnan(skewG)]=np.inf
+    skewG[np.isnan(skewG)] = np.inf
 
     # We may have values equal to infinity, so we consider the harmonic mean.
     hmean_skewG = stats.hmean(skewG)
@@ -164,7 +168,9 @@ def calculate_avg_condnum(input_set, qoi_set=None):
     else:
         G = input_set._jacobians[:, qoi_set, :]
     if G.shape[1] > G.shape[2]:
-        raise ValueError("Condition number is not defined for more outputs than inputs.  Try adding a qoi_set to evaluate the condition number of.")
+        msg = "Condition number is not defined for more outputs than inputs."  
+        msg += " Try adding a qoi_set to evaluate the condition number of."
+        raise ValueError(msg)
 
     # Calculate the singular values of the matrix formed by the gradient
     # vectors of each QoI map.  This gives a set of singular values for each
@@ -217,8 +223,8 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
     """
 
     (measure_skewness_indices_mat, _) = chooseOptQoIs_verbose(input_set,
-        qoiIndices, num_qois_return, num_optsets_return, inner_prod_tol, measure,
-        remove_zeros)
+        qoiIndices, num_qois_return, num_optsets_return, inner_prod_tol,
+        measure, remove_zeros)
 
     return measure_skewness_indices_mat
 
@@ -278,7 +284,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     if comm.rank == 0:
         qoi_combs = np.array(list(combinations(list(qoiIndices),
                         num_qois_return)))
-        print 'Possible sets of QoIs : ', qoi_combs.shape[0]
+        logging.info('Possible sets of QoIs : {}'.format(qoi_combs.shape[0]))
         qoi_combs = np.array_split(qoi_combs, comm.size)
     else:
         qoi_combs = None
@@ -302,8 +308,8 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
                 qoi_combs[qoi_set])
 
         if current_measskew < measure_skewness_indices_mat[-1, 0]:
-            measure_skewness_indices_mat[-1, :] = np.append(np.array([current_measskew]),
-                qoi_combs[qoi_set])
+            measure_skewness_indices_mat[-1, :] = np.append(np.array(\
+                    [current_measskew]), qoi_combs[qoi_set])
             order = measure_skewness_indices_mat[:, 0].argsort()
             measure_skewness_indices_mat = measure_skewness_indices_mat[order]
 
@@ -314,24 +320,27 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     comm.Barrier()
 
     # Gather the best sets and condition numbers from each processor
-    measure_skewness_indices_mat = np.array(comm.gather(measure_skewness_indices_mat, root=0))
+    measure_skewness_indices_mat = np.array(comm.gather(\
+            measure_skewness_indices_mat, root=0))
     optsingvals_tensor = np.array(comm.gather(optsingvals_tensor, root=0))
 
     # Find the num_optsets_return smallest condition numbers from all processors
     if comm.rank == 0:
-        measure_skewness_indices_mat = measure_skewness_indices_mat.reshape(num_optsets_return * \
-            comm.size, num_qois_return + 1)
+        measure_skewness_indices_mat = measure_skewness_indices_mat.reshape(\
+                num_optsets_return * comm.size, num_qois_return + 1)
         optsingvals_tensor = optsingvals_tensor.reshape(num_centers,
             num_qois_return, num_optsets_return * comm.size)
         order = measure_skewness_indices_mat[:, 0].argsort()
 
         measure_skewness_indices_mat = measure_skewness_indices_mat[order]
-        measure_skewness_indices_mat = measure_skewness_indices_mat[:num_optsets_return, :]
+        measure_skewness_indices_mat = measure_skewness_indices_mat[\
+                :num_optsets_return, :]
 
         optsingvals_tensor = optsingvals_tensor[:, :, order]
         optsingvals_tensor = optsingvals_tensor[:, :, :num_optsets_return]
 
-    measure_skewness_indices_mat = comm.bcast(measure_skewness_indices_mat, root=0)
+    measure_skewness_indices_mat = comm.bcast(measure_skewness_indices_mat, 
+            root=0)
     optsingvals_tensor = comm.bcast(optsingvals_tensor, root=0)
 
     return (measure_skewness_indices_mat, optsingvals_tensor)
@@ -388,10 +397,10 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     G = G/np.tile(norm_G, (input_dim, 1, 1)).transpose(1, 2, 0)
 
     if comm.rank == 0:
-        print '*** find_unique_vecs ***'
-        print 'num_zerovec : ', len(indz), 'of (', G.shape[1],\
-            ') original QoIs'
-        print 'Possible QoIs : ', len(qoiIndices) - len(indz)
+        logging.info('*** find_unique_vecs ***')
+        logging.info('num_zerovec : {} of ({}) original QoIs'.\
+                format(len(indz), G.shape[1]))
+        logging.info('Possible QoIs : {}'.format(len(qoiIndices)-len(indz)))
     qoiIndices = list(set(qoiIndices) - set(indz))
 
     # Find all num_qois choose 2 pairs of QoIs
@@ -415,7 +424,7 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
 
     unique_vecs = np.array(list(set(qoiIndices) - set(repeat_vec)))
     if comm.rank == 0:
-        print 'Unique QoIs : ', unique_vecs.shape[0]
+        logging.info('Unique QoIs : {}'.format(unique_vecs.shape[0]))
 
     return unique_vecs
 
@@ -454,7 +463,6 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
     if input_set._jacobians is None:
         raise ValueError("You must have jacobians to use this method.")
 
-    G = input_set._jacobians
     num_centers = input_set._jacobians.shape[0]
     num_qois_return = good_sets_prev.shape[1] + 1
     comm.Barrier()
@@ -545,10 +553,10 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
             good_sets_new = np.append(good_sets_new, each[1:], axis=0)
         good_sets = good_sets_new
 
-        print 'Possible sets of QoIs of size %i : '%good_sets.shape[1],\
-            np.sum(count_qois)
-        print 'Good sets of QoIs of size %i : '%good_sets.shape[1],\
-            good_sets.shape[0] - 1
+        logging.info('Possible sets of QoIs of size {} : {}'.format(\
+                good_sets.shape[1], np.sum(count_qois)))
+        logging.info('Good sets of QoIs of size {} : {}'.format(\
+                good_sets.shape[1], good_sets.shape[0] - 1))
 
     comm.Barrier()
     best_sets = comm.bcast(best_sets, root=0)
@@ -560,11 +568,11 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
         num_optsets_return=None, inner_prod_tol=None, measskew_tol=None,
         measure=False, remove_zeros=True):
     r"""
-    Given gradient vectors at some points (centers) in the input space, a
-    large set of QoIs to choose from, and the number of desired QoIs to return,
-    this method returns the set of optimal QoIs of size 2, 3, ... max_qois_return
-    to use in the inverse problem by choosing the sets with the smallest average
-    measure(skewness).
+    Given gradient vectors at some points (centers) in the input space, a large
+    set of QoIs to choose from, and the number of desired QoIs to return, this
+    method returns the set of optimal QoIs of size 2, 3, ...  max_qois_return
+    to use in the inverse problem by choosing the sets with the smallest
+    average measure(skewness).
     
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
@@ -587,9 +595,10 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
         :math:`\Lambda`.
     
     :rtype: tuple
-    :returns: (measure_skewness_indices_mat, optsingvals) where measure_skewness_indices_mat has
-        shape (num_optsets_return, num_qois_return+1) and optsingvals
-        has shape (num_centers, num_qois_return, num_optsets_return)
+    :returns: (measure_skewness_indices_mat, optsingvals) where
+        measure_skewness_indices_mat has shape (num_optsets_return,
+        num_qois_return+1) and optsingvals has shape (num_centers,
+        num_qois_return, num_optsets_return)
     
     """
     (best_sets, _) = chooseOptQoIs_large_verbose(input_set, qoiIndices,
@@ -631,11 +640,11 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
         :math:`\Lambda`.
     
     :rtype: tuple
-    :returns: (measure_skewness_indices_mat, optsingvals) where measure_skewness_indices_mat has
-        shape (num_optsets_return, num_qois_return+1) and optsingvals is a list
-        where each element has shape (num_centers, num_qois_return,
-        num_optsets_return).  num_qois_return will change for each element of
-        the list.
+    :returns: (measure_skewness_indices_mat, optsingvals) where
+        measure_skewness_indices_mat has shape (num_optsets_return,
+        num_qois_return+1) and optsingvals is a list where each element has
+        shape (num_centers, num_qois_return, num_optsets_return).
+        num_qois_return will change for each element of the list.
     
     """
     input_dim = input_set._dim
@@ -656,7 +665,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     unique_indices = find_unique_vecs(input_set, inner_prod_tol, qoiIndices,
         remove_zeros)
     if comm.rank == 0:
-        print 'Unique Indices are : ', unique_indices
+        logging.info('Unique Indices are : {}'.format(unique_indices))
 
     good_sets_curr = util.fix_dimensions_vector_2darray(unique_indices)
     best_sets = []
@@ -670,6 +679,6 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
         best_sets.append(best_sets_curr)
         optsingvals_list.append(optsingvals_tensor_curr)
         if comm.rank == 0:
-            print best_sets_curr
+            logging.info(best_sets_curr)
 
     return (best_sets, optsingvals_list)
