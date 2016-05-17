@@ -1,4 +1,5 @@
 import numpy as np
+import time
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoI
 import bet.calculateP.simpleFunP as simpleFunP
@@ -15,9 +16,9 @@ from pylab import *
 Lambda_dim = 2
 Data_dim = 3
 num_samples = 1E5
-num_anchors = 1
+num_anchors = 10
 bin_ratio = 0.25
-
+time_0 = time.clock()
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
 
 # define samples in parameter space, random anchor points
@@ -157,6 +158,7 @@ percentile = 1.0
 print '\n'
 if comm.rank == 0:
     print (num_high_samples, np.sum(lam_vol_high), sum(P))
+    print time.clock() - time_0
 
 
 # weights distributed as proportion of total weight in cell multiplied by the

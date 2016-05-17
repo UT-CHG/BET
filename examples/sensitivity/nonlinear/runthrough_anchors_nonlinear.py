@@ -16,7 +16,7 @@ Lambda_dim = 2
 Data_dim = 5
 num_samples = 1E5
 num_anchors = 1
-bin_ratio = 0.05
+bin_ratio = 0.10
 ref_N = 5
 np.random.seed(0)
 ref_lambda = np.linspace(0+1.0/ref_N,1-1.0/ref_N,num=ref_N)
