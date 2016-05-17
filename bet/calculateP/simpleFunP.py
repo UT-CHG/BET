@@ -190,9 +190,9 @@ def normal_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     covariance = std**2
 
     d_distr_samples = np.zeros((M, len(Q_ref)))
-    logging.info("d_distr_samples.shape", d_distr_samples.shape)
-    logging.info("Q_ref.shape", Q_ref.shape)
-    logging.info("std.shape", std.shape)
+    logging.info("d_distr_samples.shape {}".format(d_distr_samples.shape))
+    logging.info("Q_ref.shape {}".format(Q_ref.shape))
+    logging.info("std.shape {}".format(std.shape))
 
     if comm.rank == 0:
         for i in range(len(Q_ref)):

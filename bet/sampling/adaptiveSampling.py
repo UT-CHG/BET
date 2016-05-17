@@ -460,9 +460,9 @@ class sampler(bsam.sampler):
                 pass
             elif comm.rank == 0 and (batch+1)%(self.chain_length/4) == 0:
                 logging.info("Current chain length: "+\
-                            str(batch+1)+"/"+str(self.chain_length)
+                            str(batch+1)+"/"+str(self.chain_length))
             disc._input_sample_set.append_values_local(input_new.\
-                    get_values_local()))
+                    get_values_local())
             disc._output_sample_set.append_values_local(output_new_values)
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios

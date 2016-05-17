@@ -4,6 +4,7 @@
 This module contains functions choosing optimal QoIs to use in the stochastic
 inverse problem.
 """
+import logging
 import numpy as np
 from itertools import combinations
 from bet.Comm import comm
@@ -283,7 +284,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     if comm.rank == 0:
         qoi_combs = np.array(list(combinations(list(qoiIndices),
                         num_qois_return)))
-        logging.info('Possible sets of QoIs : ', qoi_combs.shape[0])
+        logging.info('Possible sets of QoIs : {}'.format(qoi_combs.shape[0]))
         qoi_combs = np.array_split(qoi_combs, comm.size)
     else:
         qoi_combs = None
@@ -397,9 +398,9 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
 
     if comm.rank == 0:
         logging.info('*** find_unique_vecs ***')
-        logging.info('num_zerovec : ', len(indz), 'of (', G.shape[1],\
-            ') original QoIs')
-        logging.info('Possible QoIs : ', len(qoiIndices) - len(indz))
+        logging.info('num_zerovec : {} of ({}) original QoIs'.\
+                format(len(indz), G.shape[1]))
+        logging.info('Possible QoIs : {}'.format(len(qoiIndices)-len(indz)))
     qoiIndices = list(set(qoiIndices) - set(indz))
 
     # Find all num_qois choose 2 pairs of QoIs
@@ -423,7 +424,7 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
 
     unique_vecs = np.array(list(set(qoiIndices) - set(repeat_vec)))
     if comm.rank == 0:
-        logging.info('Unique QoIs : ', unique_vecs.shape[0])
+        logging.info('Unique QoIs : {}'.format(unique_vecs.shape[0]))
 
     return unique_vecs
 
@@ -552,10 +553,10 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
             good_sets_new = np.append(good_sets_new, each[1:], axis=0)
         good_sets = good_sets_new
 
-        logging.info('Possible sets of QoIs of size %i : '%good_sets.shape[1],\
-            np.sum(count_qois))
-        logging.info('Good sets of QoIs of size %i : '%good_sets.shape[1],\
-            good_sets.shape[0] - 1)
+        logging.info('Possible sets of QoIs of size {} : {}'.format(\
+                good_sets.shape[1], np.sum(count_qois)))
+        logging.info('Good sets of QoIs of size {} : {}'.format(\
+                good_sets.shape[1], good_sets.shape[0] - 1))
 
     comm.Barrier()
     best_sets = comm.bcast(best_sets, root=0)
@@ -664,7 +665,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     unique_indices = find_unique_vecs(input_set, inner_prod_tol, qoiIndices,
         remove_zeros)
     if comm.rank == 0:
-        logging.info('Unique Indices are : ', unique_indices)
+        logging.info('Unique Indices are : {}'.format(unique_indices))
 
     good_sets_curr = util.fix_dimensions_vector_2darray(unique_indices)
     best_sets = []

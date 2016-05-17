@@ -648,7 +648,7 @@ class sample_set_base(object):
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(self, array_name + "_local",
-                        np.arraysplit(current_array, comm.size)[comm.rank])
+                        np.array_split(current_array, comm.size)[comm.rank])
 
     def copy(self):
         """

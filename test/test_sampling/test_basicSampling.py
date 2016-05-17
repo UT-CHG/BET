@@ -242,7 +242,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
 
 
 def verify_random_sample_set_domain(sampler, sample_type, input_domain,
-                                 num_samples, parallel):
+                                 num_samples):
     np.random.seed(1)
     # recreate the samples
     if num_samples is None:
@@ -269,8 +269,7 @@ def verify_random_sample_set_domain(sampler, sample_type, input_domain,
     # create the sample set from the domain
     print sample_type
     my_sample_set = sampler.random_sample_set_domain(sample_type, input_domain,
-                                            num_samples=num_samples,
-                                            parallel=parallel)
+                                            num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
     assert np.all(my_sample_set._values <= input_right)
@@ -281,7 +280,7 @@ def verify_random_sample_set_domain(sampler, sample_type, input_domain,
                               my_sample_set._values)
 
 def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
-                                     num_samples, parallel):
+                                     num_samples):
 
     np.random.seed(1)
     # recreate the samples
@@ -309,8 +308,7 @@ def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
 
     # create the sample set from the domain
     my_sample_set = sampler.random_sample_set_dimension(sample_type, input_dim,
-                                                  num_samples=num_samples,
-                                                  parallel=parallel)
+                                                  num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
     assert np.all(my_sample_set._values <= input_right)
@@ -321,7 +319,7 @@ def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
                               my_sample_set._values)
 
 def verify_random_sample_set(sampler, sample_type, input_sample_set,
-                                     num_samples, parallel):
+                                     num_samples):
     test_sample_set = input_sample_set
     np.random.seed(1)
     # recreate the samples
@@ -350,8 +348,7 @@ def verify_random_sample_set(sampler, sample_type, input_sample_set,
     # create the sample set from the domain
     print sample_type
     my_sample_set = sampler.random_sample_set(sample_type, input_sample_set,
-                                                  num_samples=num_samples,
-                                                  parallel=parallel)
+                                                  num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
     assert np.all(my_sample_set._values <= input_right)
@@ -477,10 +474,8 @@ class Test_basic_sampler(unittest.TestCase):
         for sampler, input_sample_set in test_list:
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
-                    for parallel in [False, True]:
-                        verify_random_sample_set(sampler, sample_type,
-                                input_sample_set, num_samples,
-                                parallel)
+                    verify_random_sample_set(sampler, sample_type,
+                            input_sample_set, num_samples)
 
     def test_random_sample_set_domain(self):
         """
@@ -495,10 +490,8 @@ class Test_basic_sampler(unittest.TestCase):
         for sampler, input_domain in test_list:
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
-                    for parallel in [False, True]:
-                        verify_random_sample_set_domain(sampler, sample_type,
-                                              input_domain, num_samples,
-                                              parallel)
+                    verify_random_sample_set_domain(sampler, sample_type,
+                            input_domain, num_samples)
 
     def test_random_sample_set_dim(self):
         """
@@ -512,10 +505,9 @@ class Test_basic_sampler(unittest.TestCase):
         for sampler, input_dim in test_list:
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
-                    for parallel in [False, True]:
-                        verify_random_sample_set_dimension(sampler, sample_type,
-                                                     input_dim, num_samples,
-                                                     parallel)
+                    verify_random_sample_set_dimension(sampler, sample_type,
+                            input_dim, num_samples)
+
     def test_create_random_discretization(self):
         """
         Test :meth:`bet.sampling.basicSampling.sampler.create_random_discretization`
@@ -531,6 +523,6 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     for parallel in [False, True]:
-                        verify_create_random_discretization(model, sampler, sample_type,
-                                              input_domain, num_samples, savefile,
-                                              parallel)
+                        verify_create_random_discretization(model, sampler,
+                                sample_type, input_domain, num_samples,
+                                savefile, parallel)
