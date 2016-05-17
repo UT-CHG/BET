@@ -91,23 +91,12 @@ for k in range(num_anchors):
 print  '\n'
 # print best_sets
 
-
-
-##### NOT WHAT WE'LL DO
-# define a quantity of interest map of Lambda_dim where we run nearest neighbor
-# on the point against anchor points, then access the best QoI for that anchor point,
-# use it to access the appropriate quantity of interest component maps.
-
-# map parameter space under this new map.
-# solve inverse problem with this piecwise-defined quantity of interest map.
-
-####
-
 # have a dictionary object or something comparable track all nonempty choices of
 # sets of QoI maps, list of indices into samples.
 
 # feed each along with the set of QoIs into the inverse problem.
 # solve inverse problem.
+
 P = np.zeros(num_samples)
 lam_vol = np.zeros(num_samples)
 total = []
