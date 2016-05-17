@@ -57,6 +57,7 @@ def randQ(x): # QoI map using quintic functions for Lambda_dim = 2, Data_dim arb
 
 data = Q(samples)
 # print data[0:10]
+
 # perform nearest neighbor searches to set of K anchor points
 tree = spatial.KDTree(anchors)
 [_, near_anchor] = tree.query(samples)
@@ -65,15 +66,14 @@ if sum( [ len( samples[part_inds[i]] ) for i in range(num_anchors) ] ) != num_sa
     sys.exit("Something went wrong with nearest neighbor search. Some samples missed.")
 
 # compute possible sets of quantities of interest
-# combs = int(comb(Data_dim, Lambda_dim))
-# combs_array = np.array(list(combinations(range(Data_dim),2)))
+combs = int(comb(Data_dim, Lambda_dim))
+combs_array = np.array(list(combinations(range(Data_dim),2)))
 
 # feed each list of indices into samples and data, perform chooseQoIs
 best_sets = []
 
 for k in range(num_anchors):
     samples_k = np.array(anchors[k],ndmin=2)
-    # samples_k =  np.array(anchors[k:k+1], ndmin =2)
     data_k = Q(samples_k)
 
     # Calculate the gradient vectors at some anchor points.
@@ -84,10 +84,10 @@ for k in range(num_anchors):
                                         centers = samples_k, \
                                         normalize=True)
     print '\n Partition %d  - Anchor =\n\t'%(k+1), anchors[k,:], '\n'
-    best_set = cQoI.chooseOptQoIs_large(grad_tensor = G, \
+    best_set_for_anchor = cQoI.chooseOptQoIs_large(grad_tensor = G, \
                                         num_optsets_return = 1, \
                                         volume = False )[Lambda_dim-2][0][1:]
-    best_sets.append( [int(best_set[i]) for i in range(Lambda_dim) ] )
+    best_sets.append( [int(best_set_for_anchor[i]) for i in range(Lambda_dim) ] )
     # for each anchor point, record best_sets (accessing [0] for the best one).
 print  '\n'
 print best_sets
@@ -102,7 +102,17 @@ P = np.zeros(num_samples)
 lam_vol = np.zeros(num_samples)
 total = []
 ref_lambda  = [0.5, 0.5]
-for k in range(num_anchors):
+
+# anchors_for_best_set = [np.where((best_sets == combs_array[i]).all(axis=1))[0] for i in range(combs)]
+# unique_part_inds = []
+# for idx_array in anchors_for_best_set:
+#     temp_index_list = np.array([])
+#     for idx in idx_array:
+#         temp_index_list = np.concatenate((temp_index_list, part_inds[idx]))
+#     unique_part_inds.append(temp_index_list)
+# for k in range(num_anchors):
+#
+# for k in range
     QoI_indices = best_sets[k]
     temp_samples = samples[ part_inds[k] ]
     temp_data = data[:, QoI_indices]
