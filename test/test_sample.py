@@ -33,6 +33,7 @@ class Test_sample_set(unittest.TestCase):
         """
         self.sam_set.set_domain(self.domain)
         nptest.assert_array_equal(self.sam_set.get_domain(), self.domain)
+    #TODO: LG Fix
     # def test_save_load(self):
     #     """
     #     Check save_sample_set and load_sample_set.
@@ -394,6 +395,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_oo_ptr(globalize=False)
         self.disc.get_emulated_oo_ptr()
 
+    # TODO: LG Fix
     # def Test_save_load_discretization(self):
     #     """
     #     Test saving and loading of discretization
