@@ -871,43 +871,45 @@ class transition_set(object):
     def test_init(self):
         """
         Tests the initialization of
-        :class:`bet.sampling.adaptiveSamplinng.transition_set`
+        :class:`bet.sampling.adaptiveSampling.transition_set`
         """
         assert self.t_set.init_ratio == .5
         assert self.t_set.min_ratio == .5**5
         assert self.t_set.max_ratio == 1.0
         
     #TODO: LG Fix
-    # def test_step(self):
-    #     """
-    #     Tests the method
-    #     :meth:`bet.sampling.adaptiveSampling.transition_set.step`
-    #     """
-    #     # define step_ratio from output_set
-    #     local_num = self.output_set._values_local.shape[0] 
-    #     step_ratio = 0.5*np.ones(local_num,)
-    #     step_ratio[local_num/2:] = .1
-    #     step_size = np.repeat([step_ratio], self.output_set.get_dim(),
-    #             0).transpose()*self.output_set._width_local
-    #     # take a step
-    #     samples_new = self.t_set.step(step_ratio, self.output_set)
+    def test_step(self):
+        """
+        Tests the method
+        :meth:`bet.sampling.adaptiveSampling.transition_set.step`
+        """
+        # define step_ratio from output_set
+        local_num = self.output_set._values_local.shape[0] 
+        step_ratio = 0.5*np.ones(local_num,)
+        step_ratio[local_num/2:] = .1
+        step_size = np.repeat([step_ratio], self.output_set.get_dim(),
+                0).transpose()*self.output_set._width_local
+        # take a step
+        samples_new = self.t_set.step(step_ratio, self.output_set)
 
-    #     # make sure the proposed steps are inside the domain
-    #     # check dimensions of samples
-    #     assert samples_new.shape() == self.output_set.shape()
+        # make sure the proposed steps are inside the domain
+        # check dimensions of samples
+        assert samples_new.shape() == self.output_set.shape()
 
-    #     # are the samples in bounds?
-    #     assert np.all(samples_new.get_values_local() <=\
-    #             self.output_set._right_local)
-    #     assert np.all(samples_new.get_values_local() >=\
-    #             self.output_set._left_local)
+        # are the samples in bounds?
+        assert np.all(samples_new.get_values_local() <=\
+                self.output_set._right_local)
+        assert np.all(samples_new.get_values_local() >=\
+                self.output_set._left_local)
 
-    #     # make sure the proposed steps are inside the box defined around their
-    #     # generating old samples
-    #     assert np.all(samples_new.get_values() <= self.output_set.get_values()\
-    #             +0.5*step_size)
-    #     assert np.all(samples_new.get_values() >= self.output_set.get_values()\
-    #             -0.5*step_size)
+        # make sure the proposed steps are inside the box defined around their
+        # generating old samples
+        assert np.all(samples_new.get_values_local() <=
+                self.output_set.get_values_local()\
+                +0.5*step_size)
+        assert np.all(samples_new.get_values_local() >=
+                self.output_set.get_values_local()\
+                -0.5*step_size)
 
 
 class test_transition_set_1D(transition_set, output_1D):
