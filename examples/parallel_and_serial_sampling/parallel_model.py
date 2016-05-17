@@ -20,7 +20,8 @@ def my_model(io_file_name):
     # model is y = x[:, 0:dim/2 ] + x[:, dim/2:]
     output_local = sum(np.split(input_local, 2, 1))
     # save output to file
-    io_mat['output'] = util.get_global_values(output_local)
+    io_mdat['output'] = util.get_global_values(output_local)
+    comm.barrier()
     if comm.rank == 0:
         sio.savemat(io_file_name, io_mdat)
 
@@ -28,7 +29,7 @@ def usage():
     print "usage: [io_file]"
 
 if __name__ == "__main__":
-    if len(sys.argv) == 3:
+    if len(sys.argv) == 2:
         my_model(sys.argv[1])
     else:
         usage()
