@@ -114,12 +114,10 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool parallel: Flag for parallel implementation.  Default value
-            is ``False``.  
         
-        :rtype: :class:`~bet.sample.discretization`
-        :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples`` 
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: :class:`~bet.sample.sample_Set` object which contains
+            input ``num_samples`` 
 
         """
         # Create N samples
@@ -147,7 +145,7 @@ class sampler(object):
         return input_sample_set
 
     def random_sample_set_domain(self, sample_type, input_domain,
-            num_samples=None, criterion='center', parallel=False):
+            num_samples=None, criterion='center'):
         """
         Sampling algorithm with three basic options
 
@@ -168,8 +166,6 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool parallel: Flag for parallel implementation.  Default value
-            is ``False``.
 
         :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
@@ -181,10 +177,10 @@ class sampler(object):
         input_sample_set.set_domain(input_domain)
 
         return self.random_sample_set(sample_type, input_sample_set,
-                                       num_samples, criterion, parallel)
+                                       num_samples, criterion)
 
     def random_sample_set_dimension(self, sample_type, input_dim,
-            num_samples=None, criterion='center', parallel=False):
+            num_samples=None, criterion='center'):
         """
         Sampling algorithm with three basic options
 
@@ -204,8 +200,6 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool parallel: Flag for parallel implementation.  Default value
-            is ``False``.
 
         :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
@@ -216,7 +210,7 @@ class sampler(object):
         input_sample_set = sample.sample_set(input_dim)
 
         return self.random_sample_set(sample_type, input_sample_set,
-                                       num_samples, criterion, parallel)
+                                       num_samples, criterion)
 
     def compute_QoI_and_create_discretization(self, input_sample_set,
             savefile=None, parallel=False): 
@@ -317,13 +311,13 @@ class sampler(object):
 
         if isinstance(input_obj, sample.sample_set):
             input_sample_set = self.random_sample_set(sample_type, input_obj,
-                    num_samples, criterion, parallel)
+                    num_samples, criterion)
         elif isinstance(input_obj, np.ndarray):
             input_sample_set = self.random_sample_set_domain(sample_type,
-                    input_obj, num_samples, criterion, parallel)
+                    input_obj, num_samples, criterion)
         else:
             input_sample_set = self.random_sample_set_dimension(sample_type,
-                    input_obj, num_samples, criterion, parallel)
+                    input_obj, num_samples, criterion)
 
         return self.compute_QoI_and_create_discretization(input_sample_set, 
                 savefile, parallel)
