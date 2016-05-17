@@ -99,16 +99,17 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     assert my_num == sampler.num_samples
     
     # did the file get correctly saved?
+    comm.barrier()
     if comm.rank == 0:
+        print "ONE"
         saved_disc = bet.sample.load_discretization(savefile)
-        
         # compare the samples
         nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
             saved_disc._input_sample_set.get_values())
         # compare the data
         nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
            saved_disc._output_sample_set.get_values())
-    #comm.Barrier()
+    comm.Barrier()
 
 def verify_create_random_discretization(model, sampler, sample_type, input_domain,
         num_samples, savefile, parallel):
@@ -413,23 +414,11 @@ class Test_basic_sampler(unittest.TestCase):
         """
         Clean up extra files
         """
+        comm.barrier()
         if comm.rank == 0:
             for f in self.savefiles:
                 if os.path.exists(f+".mat"):
                     os.remove(f+".mat")
-        if comm.size > 1:
-            for f in self.savefiles:
-                proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "proc{}{}.mat".format(comm.rank, os.path.basename(f)))
-                print proc_savefile
-                if os.path.exists(proc_savefile):
-                    os.remove(proc_savefile)
-                proc_savefile = os.path.join(local_path, os.path.dirname(f),
-                        "p{}proc{}{}.mat".format(comm.rank, comm.rank,
-                            os.path.basename(f)))
-                if os.path.exists(proc_savefile):
-                    os.remove(proc_savefile)
-                print proc_savefile
 
     def test_init(self):
         """
@@ -447,30 +436,29 @@ class Test_basic_sampler(unittest.TestCase):
         self.samplers[0].update_mdict(mdict)
         assert self.samplers[0].num_samples == mdict["num_samples"]
     
-    #TODO: LG Fix
-    # def test_compute_QoI_and_create_discretization(self):
-    #     """
-    #     Test :meth:`bet.sampling.basicSampling.sampler.user_samples`
-    #     for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
-    #     """
-    #     # create a list of different sets of samples
-    #     list_of_samples = [np.ones((4, )), np.ones((4, 1)), np.ones((4, 3)),
-    #             np.ones((4, 3)), np.ones((4, 10))]
-    #     list_of_dims = [1, 1, 3, 3, 10]
+    def test_compute_QoI_and_create_discretization(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.user_samples`
+        for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
+        """
+        # create a list of different sets of samples
+        list_of_samples = [np.ones((4, )), np.ones((4, 1)), np.ones((4, 3)),
+                np.ones((4, 3)), np.ones((4, 10))]
+        list_of_dims = [1, 1, 3, 3, 10]
         
-    #     list_of_sample_sets = [None]*len(list_of_samples)
+        list_of_sample_sets = [None]*len(list_of_samples)
 
-    #     for i, array in enumerate(list_of_samples):
-    #         list_of_sample_sets[i] = sample_set(list_of_dims[i])
-    #         list_of_sample_sets[i].set_values(array)
+        for i, array in enumerate(list_of_samples):
+            list_of_sample_sets[i] = sample_set(list_of_dims[i])
+            list_of_sample_sets[i].set_values(array)
 
-    #     test_list = zip(self.models, self.samplers, list_of_sample_sets, 
-    #             self.savefiles)
-        
-    #     for model, sampler, input_sample_set, savefile in test_list: 
-    #         for parallel in [False, True]:
-    #             verify_compute_QoI_and_create_discretization(model, sampler,
-    #                 input_sample_set, savefile, parallel)
+        test_list = zip(self.models, self.samplers, list_of_sample_sets, 
+                self.savefiles)
+
+        for model, sampler, input_sample_set, savefile in test_list: 
+            for parallel in [False, True]:
+                verify_compute_QoI_and_create_discretization(model, sampler,
+                    input_sample_set, savefile, parallel)
    
     def test_random_sample_set(self):
         """
@@ -528,22 +516,21 @@ class Test_basic_sampler(unittest.TestCase):
                         verify_random_sample_set_dimension(sampler, sample_type,
                                                      input_dim, num_samples,
                                                      parallel)
-    # TODO: LG Fix
-    # def test_create_random_discretization(self):
-    #     """
-    #     Test :meth:`bet.sampling.basicSampling.sampler.create_random_discretization`
-    #     for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
-    #     """
-    #     input_domain_list = [self.input_domain1, self.input_domain1,
-    #                          self.input_domain3, self.input_domain3, self.input_domain10]
+    def test_create_random_discretization(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.create_random_discretization`
+        for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
+        """
+        input_domain_list = [self.input_domain1, self.input_domain1,
+                             self.input_domain3, self.input_domain3, self.input_domain10]
 
-    #     test_list = zip(self.models, self.samplers, input_domain_list,
-    #                     self.savefiles)
+        test_list = zip(self.models, self.samplers, input_domain_list,
+                        self.savefiles)
 
-    #     for model, sampler, input_domain, savefile in test_list:
-    #         for sample_type in ["random", "r", "lhs"]:
-    #             for num_samples in [None, 25]:
-    #                 for parallel in [False, True]:
-    #                     verify_create_random_discretization(model, sampler, sample_type,
-    #                                           input_domain, num_samples, savefile,
-    #                                           parallel)
+        for model, sampler, input_domain, savefile in test_list:
+            for sample_type in ["random", "r", "lhs"]:
+                for num_samples in [None, 25]:
+                    for parallel in [False, True]:
+                        verify_create_random_discretization(model, sampler, sample_type,
+                                              input_domain, num_samples, savefile,
+                                              parallel)

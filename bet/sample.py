@@ -95,7 +95,6 @@ def load_sample_set(file_name, sample_set_name=None):
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     
-    comm.barrier()
     # localize arrays if necessary
     if sample_set_name+"_values_local" in mdat.keys():
         loaded_set.global_to_local()
