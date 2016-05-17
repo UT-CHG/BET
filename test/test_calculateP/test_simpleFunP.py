@@ -19,6 +19,7 @@ import os, bet, unittest, collections
 import bet.calculateP.simpleFunP as sFun
 import numpy as np
 import numpy.testing as nptest
+import bet.sample as samp
 
 local_path = os.path.join(os.path.dirname(bet.__file__),
 '../test/test_calulateP')
@@ -44,7 +45,7 @@ class prob(object):
         """
         assert self.rho_D_M.shape[0] == self.d_distr_samples.shape[0]
         assert self.mdim == self.d_distr_samples.shape[1]
-        assert (self.d_Tree.n, self.d_Tree.m) == self.d_distr_samples.shape
+        #assert (self.d_Tree.n, self.d_Tree.m) == self.d_distr_samples.shape
 
 
 class prob_uniform(prob):
@@ -83,7 +84,8 @@ class data_01D(object):
         """
         Set up data.
         """
-        self.data = np.random.random((100,))*10.0
+        self.data = samp.sample_set(1)
+        self.data.set_values(np.random.random((100,))*10.0)
         self.Q_ref = 5.0
         self.data_domain = np.array([0.0, 10.0])
         self.mdim = 1
@@ -97,7 +99,8 @@ class data_1D(object):
         """
         Set up data.
         """
-        self.data = np.random.random((100, 1))*10.0
+        self.data = samp.sample_set(1)
+        self.data.set_values(np.random.random((100,1))*10.0)
         self.Q_ref = np.array([5.0])
         self.data_domain = np.expand_dims(np.array([0.0, 10.0]), axis=0)
         self.mdim = 1
@@ -111,7 +114,8 @@ class data_2D(object):
         """
         Set up data.
         """
-        self.data = np.random.random((100, 2))*10.0
+        self.data = samp.sample_set(2)
+        self.data.set_values(np.random.random((100,2))*10.0)
         self.Q_ref = np.array([5.0, 5.0])
         self.data_domain = np.array([[0.0, 10.0], [0.0, 10.0]])
         self.mdim = 2
@@ -125,7 +129,8 @@ class data_3D(object):
         """
         Set up data.
         """
-        self.data = np.random.random((100, 3))*10.0
+        self.data = samp.sample_set(3)
+        self.data.set_values(np.random.random((100,3))*10.0)
         self.Q_ref = np.array([5.0, 5.0, 5.0])
         self.data_domain = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
         self.mdim = 3
@@ -138,8 +143,9 @@ class unif_unif(prob_uniform):
         """
         Set up problem.
         """
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.unif_unif(self.data, 
-                self.Q_ref, M=67, bin_ratio=0.1, num_d_emulate=1E3)
+        self.data_prob = sFun.unif_unif(self.data, self.Q_ref, M=67, bin_ratio=0.1, num_d_emulate=1E3)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
 
         if type(self.Q_ref) != np.array:
             self.Q_ref = np.array([self.Q_ref])
@@ -235,8 +241,9 @@ class normal_normal(prob):
             std = 1.0
         else:
             std = np.ones(self.Q_ref.shape)
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.normal_normal(self.Q_ref, 
-		M=67, std=std, num_d_emulate=1E3)
+        self.data_prob = sFun.normal_normal(None, self.Q_ref, M=67, std=std, num_d_emulate=1E3)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
          
     def test_M(self):
         """
@@ -357,9 +364,10 @@ class uniform_hyperrectangle_user_int(uniform_hyperrectangle_int):
         self.rect_domain[:, 0] = Q_ref - .5*r_width
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle_user(self.data, 
-                self.rect_domain.transpose(), self.center_pts_per_edge)
-
+        self.data_prob = sFun.uniform_hyperrectangle_user(self.data, self.rect_domain.transpose(), self.center_pts_per_edge)
+        self.rho_D_M = self.data_prob._probabilities
+        self.d_distr_samples = self.data_prob._values
+        
 class uniform_hyperrectangle_user_list(uniform_hyperrectangle_list):
     """
     Set up :met:`bet.calculateP.simpleFunP.uniform_hyperrectangle_user` with an
@@ -386,8 +394,9 @@ class uniform_hyperrectangle_user_list(uniform_hyperrectangle_list):
         self.rect_domain[:, 0] = Q_ref - .5*r_width
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle_user(self.data, 
-                self.rect_domain.transpose(), self.center_pts_per_edge)
+        self.data_prob = sFun.uniform_hyperrectangle_user(self.data, self.rect_domain.transpose(), self.center_pts_per_edge)
+        self.rho_D_M = self.data_prob._probabilities
+        self.d_distr_samples = self.data_prob._values
 
 
 class test_uniform_hyperrectangle_user_int_01D(data_01D, uniform_hyperrectangle_user_int):
@@ -511,8 +520,9 @@ class uniform_hyperrectangle_size_int(uniform_hyperrectangle_int):
         self.rect_domain[:, 0] = Q_ref - .5*r_width
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle_binsize(self.data, 
-                self.Q_ref, binsize, self.center_pts_per_edge)
+        self.data_prob = sFun.uniform_hyperrectangle_binsize(self.data, self.Q_ref,binsize, self.center_pts_per_edge)
+        self.rho_D_M = self.data_prob._probabilities
+        self.d_distr_samples = self.data_prob._values
 
 class uniform_hyperrectangle_size_list(uniform_hyperrectangle_list):
     """
@@ -541,8 +551,9 @@ class uniform_hyperrectangle_size_list(uniform_hyperrectangle_list):
         self.rect_domain[:, 0] = Q_ref - .5*r_width
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle_binsize(self.data, 
-                self.Q_ref, binsize, self.center_pts_per_edge)
+        self.data_prob = sFun.uniform_hyperrectangle_binsize(self.data, self.Q_ref,binsize, self.center_pts_per_edge)
+        self.rho_D_M = self.data_prob._probabilities
+        self.d_distr_samples = self.data_prob._values
 
 
 class test_uniform_hyperrectangle_size_int_01D(data_01D, uniform_hyperrectangle_size_int):
@@ -665,8 +676,9 @@ class uniform_hyperrectangle_ratio_int(uniform_hyperrectangle_int):
         self.rect_domain[:, 0] = Q_ref - .5*r_width
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle(self.data, 
-                self.Q_ref, binratio, self.center_pts_per_edge)
+        self.data_prob = sFun.uniform_hyperrectangle(self.data, self.Q_ref, binratio, self.center_pts_per_edge)
+        self.rho_D_M = self.data_prob._probabilities
+        self.d_distr_samples = self.data_prob._values
 
 class uniform_hyperrectangle_ratio_list(uniform_hyperrectangle_list):
     """
@@ -695,8 +707,9 @@ class uniform_hyperrectangle_ratio_list(uniform_hyperrectangle_list):
         self.rect_domain[:, 0] = Q_ref - .5*r_width
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_hyperrectangle(self.data, 
-                self.Q_ref, binratio, self.center_pts_per_edge)
+        self.data_prob = sFun.uniform_hyperrectangle(self.data, self.Q_ref, binratio, self.center_pts_per_edge)
+        self.rho_D_M = self.data_prob._probabilities
+        self.d_distr_samples = self.data_prob._values
 
 
 class test_uniform_hyperrectangle_ratio_int_01D(data_01D, uniform_hyperrectangle_ratio_int):
@@ -800,7 +813,10 @@ class uniform_data(prob_uniform):
         """
         Set up problem.
         """
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = sFun.uniform_data(self.data)
+        self.data_prob = sFun.uniform_data(self.data)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
+        self.data = self.data._values
 
         if type(self.Q_ref) != np.array:
             self.Q_ref = np.array([self.Q_ref])

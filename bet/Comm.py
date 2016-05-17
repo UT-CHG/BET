@@ -148,6 +148,11 @@ class comm_for_no_mpi4py(object):
         """
         pass
 
+    def barrier(self):
+        """
+        Does nothing in serial.
+        """
+        pass
 
 class MPI_for_no_mpi4py(object):
 

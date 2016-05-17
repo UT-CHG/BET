@@ -1,8 +1,9 @@
 # Copyright (C) 2014-2015 The BET Development Team
 
 """
-This module provides methods for creating simple funciton approximations to be
-used by :mod:`~bet.calculateP.calculateP`.
+This module provides methods for creating simple function approximations to be
+used by :mod:`~bet.calculateP.calculateP`. These simple function approximations
+are returned as `bet.sample.sample_set` objects.
 """
 from bet.Comm import comm, MPI 
 import numpy as np
@@ -10,8 +11,16 @@ import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
 import collections
 import bet.util as util
+import bet.sample as samp
 
-def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
+class wrong_argument_type(Exception):
+    """
+    Exception for when the argument for data_set is not one of the acceptible
+    types.
+    """
+    
+
+def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
@@ -41,20 +50,30 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :type bin_ratio: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
-    :param data: Array containing QoI data where the QoI is mdim
-        diminsional
-    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
-        the :class:`~scipy.spatial.KDTree` for d_distr_samples
-    
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
     """
-    data = util.fix_dimensions_data(data)
-    bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio
+    if isinstance(data_set, samp.sample_set_base):
+        num = data_set.check_num()
+        dim = data_set._dim
+        values = data_set._values
+    elif isinstance(data_set, samp.discretization):
+        num = data_set.check_nums()
+        dim = data_set._output_sample_set._dim
+        values =  data_set._output_sample_set._values
+    elif isinstance(data_set, np.ndarray):
+        num = data_set.shape[0]
+        dim = data_set.shape[1]
+        values = data_set
+    else:
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+
+    bin_size = (np.max(values, 0) - np.min(values, 0))*bin_ratio
 
 
     r'''
@@ -78,13 +97,19 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :math:`\rho_{\mathcal{D}}` then each of the M bins would have positive
     probability. This would in turn imply that the support of
     :math:`\rho_{\Lambda}` is all of :math:`\Lambda`.
-    '''
+    '''    
+
     if comm.rank == 0:
         d_distr_samples = 1.5*bin_size*(np.random.random((M,
-            data.shape[1]))-0.5)+Q_ref 
+                                                          dim))-0.5)+Q_ref 
     else:
-        d_distr_samples = np.empty((M, data.shape[1]))
+        d_distr_samples = np.empty((M, dim))
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
+    
+    # Initialize sample set object
+    s_set = samp.voronoi_sample_set(dim)
+    s_set.set_values(d_distr_samples)
+    s_set.set_kdtree()
 
     r'''
     Compute probabilities in the M bins used to define
@@ -96,11 +121,11 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     # Generate the samples from :math:`\rho_{\mathcal{D}}`
     num_d_emulate = int(num_d_emulate/comm.size)+1
     d_distr_emulate = bin_size*(np.random.random((num_d_emulate,
-        data.shape[1]))-0.5) + Q_ref
+                                                  dim))-0.5) + Q_ref
 
     # Bin these samples using nearest neighbor searches
-    d_Tree = spatial.KDTree(d_distr_samples)
-    (_, k) = d_Tree.query(d_distr_emulate)
+    (_, k) = s_set.query(d_distr_emulate)
+
     count_neighbors = np.zeros((M,), dtype=np.int)
     for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
@@ -113,6 +138,7 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors.astype(np.float64) / \
             float(num_d_emulate*comm.size)
+    s_set.set_probabilities(rho_D_M)
 
     '''
     NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
@@ -121,15 +147,19 @@ def unif_unif(data, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     can then be stored and accessed later by the algorithm using a completely
     different set of parameter samples and model solves.
     '''
-    return (rho_D_M, d_distr_samples, d_Tree)
+    if isinstance(data_set, samp.discretization):
+        data_set._output_probability_set = s_set
+    return s_set
 
-def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
+def normal_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
     density centered at Q_ref with standard deviation std using M bins sampled
     from the given normal distribution.
  
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param int M: Defines number M samples in D used to define
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
@@ -141,10 +171,8 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M``  is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
-        the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defining simple function approximation
 
     """
     import scipy.stats as stats
@@ -168,6 +196,11 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M) 
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
+    # Initialize sample set object
+    s_set = samp.voronoi_sample_set(len(Q_ref))
+    s_set.set_values(d_distr_samples)
+    s_set.set_kdtree()
+
  
     r'''Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling
     from rho_D First generate samples of rho_D - I sometimes call this
@@ -182,8 +215,7 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
 
-    d_Tree = spatial.KDTree(d_distr_samples)
-    (_, k) = d_Tree.query(d_distr_emulate)
+    (_, k) = s_set.query(d_distr_emulate)
     count_neighbors = np.zeros((M,), dtype=np.int)
     volumes = np.zeros((M,))
     for i in range(M):
@@ -202,13 +234,16 @@ def normal_normal(Q_ref, M, std, num_d_emulate=1E6):
     volumes = cvolumes
     rho_D_M = count_neighbors.astype(np.float64)*volumes 
     rho_D_M = rho_D_M/np.sum(rho_D_M)
+    s_set.set_probabilities(rho_D_M)
+    s_set.set_volumes(volumes)
     
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
     # above, while informed by the sampling of the map Q, do not require
     # solving the model EVER! This can be done "offline" so to speak.
-    return (rho_D_M, d_distr_samples, d_Tree)
-
-def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
+    if isinstance(data_set, samp.discretization):
+        data_set._output_sample_set = s_set
+    return s_set
+def unif_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
@@ -216,6 +251,8 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     from a uniform distribution with a size 4 standard deviations in each
     direction.
 
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param int M: Defines number M samples in D used to define
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
@@ -227,13 +264,11 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     :param std: The standard deviation of each QoI
     :type std: :class:`~numpy.ndarray` of size (mdim,)
     
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree` is
-        the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
 
     """
-    r'''Create M smaples defining M bins in D used to define
+    r'''Create M samples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
 
@@ -244,6 +279,10 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
             len(Q_ref)))-0.5)+Q_ref
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
+    # Initialize sample set object
+    s_set = samp.voronoi_sample_set(len(Q_ref))
+    s_set.set_values(d_distr_samples)
+    s_set.set_kdtree()
  
     r'''Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling
     from rho_D First generate samples of rho_D - I sometimes call this
@@ -258,8 +297,7 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
     if len(d_distr_samples.shape) == 1:
         d_distr_samples = np.expand_dims(d_distr_samples, axis=1)
 
-    d_Tree = spatial.KDTree(d_distr_samples)
-    (_, k) = d_Tree.query(d_distr_emulate)
+    (_, k) = s_set.query(d_distr_emulate)
     count_neighbors = np.zeros((M,), dtype=np.int)
     #volumes = np.zeros((M,))
     for i in range(M):
@@ -273,15 +311,17 @@ def unif_normal(Q_ref, M, std, num_d_emulate=1E6):
             op=MPI.SUM) 
     count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors.astype(np.float64)/float(comm.size*num_d_emulate)
-    
+    s_set.set_probabilities(rho_D_M)
     # NOTE: The computation of q_distr_prob, q_distr_emulate, q_distr_samples
     # above, while informed by the sampling of the map Q, do not require
     # solving the model EVER! This can be done "offline" so to speak.
-    return (rho_D_M, d_distr_samples, d_Tree)
+    if isinstance(data_set, samp.discretization):
+        data_set._output_probability_set = s_set
+    return s_set
 
-def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
+def uniform_hyperrectangle_user(data_set, domain, center_pts_per_edge=1):
     r"""
-    Creates a simple funciton appoximation of :math:`\rho_{\mathcal{D},M}`
+    Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
     hyperrectangular domain specified by domain.
 
@@ -290,30 +330,43 @@ def uniform_hyperrectangle_user(data, domain, center_pts_per_edge=1):
     :math:`M=3^{m}` where m is the dimension of the data space or rather
     ``len(d_distr_samples) == 3**mdim``.
 
-    :param data: Array containing QoI data where the QoI is mdim diminsional
-    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param domain: The domain overwhich :math:`\rho_\mathcal{D}` is
         uniform.
     :type domain: :class:`numpy.ndarray` of shape (2, mdim)
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
-        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
     
     """
     # make sure the shape of the data and the domain are correct
-    data = util.fix_dimensions_data(data)
+    if isinstance(data_set, samp.sample_set_base):
+        num = data_set.check_num()
+        dim = data_set._dim
+        values = data_set._values
+    elif isinstance(data_set, samp.discretization):
+        num = data_set.check_nums()
+        dim = data_set._output_sample_set._dim
+        values =  data_set._output_sample_set._values
+    elif isinstance(data_set, np.ndarray):
+        num = data_set.shape[0]
+        dim = data_set.shape[1]
+        values = data_set
+    else:
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+
+    data = values 
     domain = util.fix_dimensions_data(domain, data.shape[1])
     domain_center = np.mean(domain, 0)
     domain_lengths = np.max(domain, 0) - np.min(domain, 0)
  
-    return uniform_hyperrectangle_binsize(data, domain_center, domain_lengths,
+    return uniform_hyperrectangle_binsize(data_set, domain_center, domain_lengths,
             center_pts_per_edge)
 
-def uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
+def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
         center_pts_per_edge=1): 
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
@@ -329,33 +382,46 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
     :type bin_size: double or list() 
     :param int num_d_emulate: Number of samples used to emulate using an MC 
         assumption 
-    :param data: Array containing QoI data where the QoI is mdim diminsional 
-    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim) 
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(\lambda_{reference})` 
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,) 
     :param list() center_pts_per_edge: number of center points per edge
         and additional two points will be added to create the bounding layer
 
-    :rtype: tuple 
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where
-        ``rho_D_M`` is (M,) and ``d_distr_samples`` are (M, mdim)
-        :class:`~numpy.ndarray` and `d_Tree` is the :class:`~scipy.spatial.KDTree`
-        for d_distr_samples
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
 
     """
-    data = util.fix_dimensions_data(data)
+
+    if isinstance(data_set, samp.sample_set_base):
+        num = data_set.check_num()
+        dim = data_set._dim
+        values = data_set._values
+    elif isinstance(data_set, samp.discretization):
+        num = data_set.check_nums()
+        dim = data_set._output_sample_set._dim
+        values =  data_set._output_sample_set._values
+    elif isinstance(data_set, np.ndarray):
+        num = data_set.shape[0]
+        dim = data_set.shape[1]
+        values = data_set
+    else:
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+    
+    data = values
 
     if not isinstance(center_pts_per_edge, collections.Iterable):
-        center_pts_per_edge = np.ones((data.shape[1],)) * center_pts_per_edge
+        center_pts_per_edge = np.ones((dim,)) * center_pts_per_edge
     else:
-        if not len(center_pts_per_edge) == data.shape[1]:
-            center_pts_per_edge = np.ones((data.shape[1],))
+        if not len(center_pts_per_edge) == dim: 
+            center_pts_per_edge = np.ones((dim,))
             print 'Warning: center_pts_per_edge dimension mismatch.'
             print 'Using 1 in each dimension.'
     if np.any(np.less(center_pts_per_edge, 0)):
         print 'Warning: center_pts_per_edge must be greater than 0'
     if not isinstance(bin_size, collections.Iterable):
-        bin_size = bin_size*np.ones((data.shape[1],))
+        bin_size = bin_size*np.ones((dim,))
     if np.any(np.less(bin_size, 0)):
         print 'Warning: center_pts_per_edge must be greater than 0'
 
@@ -365,9 +431,13 @@ def uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
             (center_pts_per_edge, Q_ref, bin_size, sur_domain)
     edges = vHist.edges_regular(center_pts_per_edge, rect_domain, sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
-    return vHist.simple_fun_uniform(points, volumes, rect_domain)
+    s_set =  vHist.simple_fun_uniform(points, volumes, rect_domain)
 
-def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
+    if isinstance(data_set, samp.discretization):
+        data_set._output_probability_set = s_set
+    return s_set
+
+def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -378,34 +448,46 @@ def uniform_hyperrectangle(data, Q_ref, bin_ratio, center_pts_per_edge=1):
     to represent it exactly with ``M = 3^mdim`` or rather
     ``len(d_distr_samples) == 3^mdim``.
 
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
     :type bin_ratio: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
-    :param data: Array containing QoI data where the QoI is mdim diminsional
-    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
-        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
 
     """
-    data = util.fix_dimensions_data(data)
+    if isinstance(data_set, samp.sample_set_base):
+        num = data_set.check_num()
+        dim = data_set._dim
+        values = data_set._values
+    elif isinstance(data_set, samp.discretization):
+        num = data_set.check_nums()
+        dim = data_set._output_sample_set._dim
+        values =  data_set._output_sample_set._values
+    elif isinstance(data_set, np.ndarray):
+        num = data_set.shape[0]
+        dim = data_set.shape[1]
+        values = data_set
+    else:
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+    data = values
 
     if not isinstance(bin_ratio, collections.Iterable):
-        bin_ratio = bin_ratio*np.ones((data.shape[1], ))
+        bin_ratio = bin_ratio*np.ones((dim, ))
 
     bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio 
-    return uniform_hyperrectangle_binsize(data, Q_ref, bin_size,
+    return uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
             center_pts_per_edge)
 
-def uniform_data(data):
+def uniform_data(data_set):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
@@ -414,19 +496,36 @@ def uniform_data(data):
     same probability, so ``M = len(data)`` or rather ``len(d_distr_samples) ==
     len(data)``. The purpose of this method is to approximate uniform
     distributions over irregularly shaped domains.
-    
-    :param data: Array containing QoI data where the QoI is mdim diminsional
-    :type data: :class:`~numpy.ndarray` of size (num_samples, mdim)
+ 
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
-    :rtype: tuple
-    :returns: (rho_D_M, d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and
-        ``d_distr_samples`` are (M, mdim) :class:`~numpy.ndarray` and `d_Tree`
-        is the :class:`~scipy.spatial.KDTree` for d_distr_samples
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
     """
-    data = util.fix_dimensions_data(data)
+    if isinstance(data_set, samp.sample_set_base):
+        num = data_set.check_num()
+        dim = data_set._dim
+        values = data_set._values
+        s_set = data_set.copy()
+    elif isinstance(data_set, samp.discretization):
+        num = data_set.check_nums()
+        dim = data_set._output_sample_set._dim
+        values =  data_set._output_sample_set._values
+        s_set = data_set._output_sample_set.copy()
+    elif isinstance(data_set, np.ndarray):
+        num = data_set.shape[0]
+        dim = data_set.shape[1]
+        values = data_set
+        s_set = samp.sample_set(dim = dim)
+        s_set.set_values(values)
+    else:
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")    
+    
+    s_set.set_probabilities(np.ones((num,), dtype=np.float)/num)
 
-    d_distr_prob = np.ones((data.shape[0],), dtype=np.float)/data.shape[0]
-    d_Tree = spatial.KDTree(data)
-    return (d_distr_prob, data, d_Tree)
+    if isinstance(data_set, samp.discretization):
+        data_set._output_sample_set = s_set
+    return s_set

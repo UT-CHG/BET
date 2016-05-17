@@ -10,6 +10,7 @@ volumes of these cells.
 import numpy as np
 from scipy import spatial
 import bet.util as util
+import bet.sample as samp
 
 def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
         sur_domain): 
@@ -242,10 +243,8 @@ def simple_fun_uniform(points, volumes, rect_domain):
         hyperrectangle of uniform probability
     :type rect_domain: :class:`numpy.ndarray` of shape (mdim, 2)
 
-    :rtype: tuple
-    :returns: (rho_D_M, points, d_Tree) where ``rho_D_M`` and
-        ``points`` are (mdim, M) :class:`~numpy.ndarray` and
-        `d_Tree` is the :class:`~scipy.spatial.KDTree` for points
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
 
     """
     util.fix_dimensions_data(points)
@@ -256,6 +255,8 @@ def simple_fun_uniform(points, volumes, rect_domain):
     rho_D_M = np.zeros(volumes.shape)
     # normalize on Lambda not D
     rho_D_M[inside] = volumes[inside]/np.sum(volumes[inside]) 
-    d_Tree = spatial.KDTree(points)
-    return (rho_D_M, points, d_Tree)
+    s_set = samp.voronoi_sample_set(dim=points.shape[1])
+    s_set.set_values(points)
+    s_set.set_probabilities(rho_D_M)
+    return s_set
 
