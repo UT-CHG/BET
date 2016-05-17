@@ -33,44 +33,45 @@ class Test_sample_set(unittest.TestCase):
         """
         self.sam_set.set_domain(self.domain)
         nptest.assert_array_equal(self.sam_set.get_domain(), self.domain)
-    #TODO: LG Fix
-    # def test_save_load(self):
-    #     """
-    #     Check save_sample_set and load_sample_set.
-    #     """
-    #     prob = 1.0/float(self.num)*np.ones((self.num,))
-    #     self.sam_set.set_probabilities(prob)
-    #     vol = 1.0/float(self.num)*np.ones((self.num,))
-    #     self.sam_set.set_volumes(vol)
-    #     ee = np.ones((self.num, self.dim))
-    #     self.sam_set.set_error_estimates(ee)
-    #     jac = np.ones((self.num, 3, self.dim))
-    #     self.sam_set.set_jacobians(jac)
-    #     self.sam_set.global_to_local()
-    #     self.sam_set.set_domain(self.domain)
-    #     self.sam_set.update_bounds()
-    #     self.sam_set.update_bounds_local()
+    def test_save_load(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
 
-    #     sample.save_sample_set(self.sam_set, os.path.join(local_path, 
-    #         'testfile.mat'), "TEST")
+        if comm.rank == 0:
+            sample.save_sample_set(self.sam_set, os.path.join(local_path,
+                'testfile.mat'), "TEST")
+        comm.barrier()
 
-    #     loaded_set = sample.load_sample_set(os.path.join(local_path, 
-    #         'testfile.mat'), "TEST")
-    #     loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
-    #         'testfile.mat'))
+        loaded_set = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'), "TEST")
+        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'))
 
-    #     assert loaded_set_none is None
+        assert loaded_set_none is None
 
-    #     for attrname in sample.sample_set.vector_names+sample.sample_set.\
-    #             all_ndarray_names:
-    #         curr_attr = getattr(loaded_set, attrname)
-    #         print attrname
-    #         if curr_attr is not None:
-    #             nptest.assert_array_equal(getattr(self.sam_set, attrname),
-    #                     curr_attr)
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
 
-    #     if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-    #         os.remove(os.path.join(local_path, 'testfile.mat'))
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+            os.remove(os.path.join(local_path, 'testfile.mat'))
 
     def test_copy(self):
         """
