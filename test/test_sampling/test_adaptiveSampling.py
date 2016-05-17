@@ -126,6 +126,7 @@ def verify_samples(QoI_range, sampler, input_domain,
                 sampler.lb_model)
         (my_discretization, all_step_ratios) = sampler1.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
+        comm.barrier()
         # hot start 
         (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type,
@@ -249,194 +250,194 @@ class Test_adaptive_sampler(unittest.TestCase):
         nptest.assert_array_equal(self.samplers[0].sample_batch_no,
                 np.repeat(range(self.samplers[0].num_chains),
                     self.samplers[0].chain_length, 0))
-    #TODO: LG Fix
-    # def test_run_gen(self):
-    #     """
-    #     Run :meth:`bet.sampling.adaptiveSampling.sampler.run_gen` and verify
-    #     that the output has the correct dimensions.
-    #     """
-    #     # sampler.run_gen(kern_list, rho_D, maximum, input_domain,
-    #     # t_set, savefile, initial_sample_type)
-    #     # returns list where each member is a tuple (discretization,
-    #     # all_step_ratios, num_high_prob_samples,
-    #     # sorted_indices_of_num_high_prob_samples, average_step_ratio)
-    #         # create indicator function
-    #     inputs = self.test_list[3]
-    #     _, QoI_range, sampler, input_domain, savefile = inputs
+    def test_run_gen(self):
+        """
+        Run :meth:`bet.sampling.adaptiveSampling.sampler.run_gen` and verify
+        that the output has the correct dimensions.
+        """
+        # sampler.run_gen(kern_list, rho_D, maximum, input_domain,
+        # t_set, savefile, initial_sample_type)
+        # returns list where each member is a tuple (discretization,
+        # all_step_ratios, num_high_prob_samples,
+        # sorted_indices_of_num_high_prob_samples, average_step_ratio) create
+        # indicator function
+        inputs = self.test_list[3]
+        _, QoI_range, sampler, input_domain, savefile = inputs
         
-    #     Q_ref = QoI_range*0.5
-    #     bin_size = 0.15*QoI_range
-    #     maximum = 1/np.product(bin_size)
-    #     def ifun(outputs):
-    #         """
-    #         Indicator function
-    #         """
-    #         inside = np.logical_and(np.all(np.greater_equal(outputs,
-    #             Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-    #                 Q_ref+.5*bin_size), axis=1)) 
-    #         max_values = np.repeat(maximum, outputs.shape[0], 0)
-    #         return inside.astype('float64')*max_values
+        Q_ref = QoI_range*0.5
+        bin_size = 0.15*QoI_range
+        maximum = 1/np.product(bin_size)
+        def ifun(outputs):
+            """
+            Indicator function
+            """
+            inside = np.logical_and(np.all(np.greater_equal(outputs,
+                Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
+                    Q_ref+.5*bin_size), axis=1)) 
+            max_values = np.repeat(maximum, outputs.shape[0], 0)
+            return inside.astype('float64')*max_values
 
-    #     # create rhoD_kernel
-    #     kernel_rD = asam.rhoD_kernel(maximum, ifun)
-    #     kern_list = [kernel_rD]*2
+        # create rhoD_kernel
+        kernel_rD = asam.rhoD_kernel(maximum, ifun)
+        kern_list = [kernel_rD]*2
 
-    #     # create t_set
-    #     t_set = asam.transition_set(.5, .5**5, 1.0) 
+        # create t_set
+        t_set = asam.transition_set(.5, .5**5, 1.0) 
 
-    #     # run run_gen
-    #     output = sampler.run_gen(kern_list, ifun, maximum, input_domain, t_set,
-    #             savefile)
+        # run run_gen
+        output = sampler.run_gen(kern_list, ifun, maximum, input_domain, t_set,
+                savefile)
 
-    #     results, r_step_size, results_rD, sort_ind, mean_ss = output
+        results, r_step_size, results_rD, sort_ind, mean_ss = output
 
-    #     for out in output:
-    #         assert len(out) == 2
+        for out in output:
+            assert len(out) == 2
 
-    #     for my_disc in results:
-    #         assert my_disc.check_nums
-    #         assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
-    #         assert my_disc._output_sample_set.get_dim() == len(QoI_range)
-    #     for step_sizes in r_step_size:
-    #         assert step_sizes.shape == (sampler.num_chains,
-    #                 sampler.chain_length) 
-    #     for num_hps in results_rD:
-    #         assert isinstance(num_hps, int)
-    #     for inds in sort_ind:
-    #         assert np.issubdtype(type(inds), int)
-    #     for asr in mean_ss:
-    #         assert asr > t_set.min_ratio
-    #         assert asr < t_set.max_ratio
+        for my_disc in results:
+            assert my_disc.check_nums
+            assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
+            assert my_disc._output_sample_set.get_dim() == len(QoI_range)
+        for step_sizes in r_step_size:
+            assert step_sizes.shape == (sampler.num_chains,
+                    sampler.chain_length) 
+        for num_hps in results_rD:
+            assert isinstance(num_hps, int)
+        for inds in sort_ind:
+            assert np.issubdtype(type(inds), int)
+        for asr in mean_ss:
+            assert asr > t_set.min_ratio
+            assert asr < t_set.max_ratio
     
-    # def test_run_tk(self):
-    #     """
-    #     Run :meth:`bet.sampling.adaptiveSampling.sampler.run_tk` and verify
-    #     that the output has the correct dimensions.
-    #     """
-    #     # sampler.run_tk(init_ratio, min_raio, max_ratio, rho_D, maximum,
-    #     # input_domain, kernel, savefile, intial_sample_type)
-    #     # returns list where each member is a tuple (discretization,
-    #     # all_step_ra)tios, num_high_prob_samples,
-    #     # sorted_indices_of_num_high_prob_samples, average_step_ratio)
-    #     inputs = self.test_list[3]
-    #     _, QoI_range, sampler, input_domain, savefile = inputs
+    def test_run_tk(self):
+        """
+        Run :meth:`bet.sampling.adaptiveSampling.sampler.run_tk` and verify
+        that the output has the correct dimensions.
+        """
+        # sampler.run_tk(init_ratio, min_raio, max_ratio, rho_D, maximum,
+        # input_domain, kernel, savefile, intial_sample_type)
+        # returns list where each member is a tuple (discretization,
+        # all_step_ra)tios, num_high_prob_samples,
+        # sorted_indices_of_num_high_prob_samples, average_step_ratio)
+        inputs = self.test_list[3]
+        _, QoI_range, sampler, input_domain, savefile = inputs
         
-    #     Q_ref = QoI_range*0.5
-    #     bin_size = 0.15*QoI_range
-    #     maximum = 1/np.product(bin_size)
-    #     def ifun(outputs):
-    #         """
-    #         Indicator function
-    #         """
-    #         inside = np.logical_and(np.all(np.greater_equal(outputs,
-    #             Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-    #                 Q_ref+.5*bin_size), axis=1)) 
-    #         max_values = np.repeat(maximum, outputs.shape[0], 0)
-    #         return inside.astype('float64')*max_values
+        Q_ref = QoI_range*0.5
+        bin_size = 0.15*QoI_range
+        maximum = 1/np.product(bin_size)
+        def ifun(outputs):
+            """
+            Indicator function
+            """
+            inside = np.logical_and(np.all(np.greater_equal(outputs,
+                Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
+                    Q_ref+.5*bin_size), axis=1)) 
+            max_values = np.repeat(maximum, outputs.shape[0], 0)
+            return inside.astype('float64')*max_values
 
-    #     # create rhoD_kernel
-    #     kernel_rD = asam.rhoD_kernel(maximum, ifun)
+        # create rhoD_kernel
+        kernel_rD = asam.rhoD_kernel(maximum, ifun)
 
-    #     # create t_set
-    #     init_ratio = [1.0, .5, .25]
-    #     min_ratio = [.5**2, .5**5, .5**7]
-    #     max_ratio = [1.0, .75, .5]
+        # create t_set
+        init_ratio = [1.0, .5, .25]
+        min_ratio = [.5**2, .5**5, .5**7]
+        max_ratio = [1.0, .75, .5]
 
-    #     # run run_gen
-    #     output = sampler.run_tk(init_ratio, min_ratio, max_ratio, ifun,
-    #             maximum, input_domain, kernel_rD, savefile)
+        # run run_gen
+        output = sampler.run_tk(init_ratio, min_ratio, max_ratio, ifun,
+                maximum, input_domain, kernel_rD, savefile)
         
-    #     results, r_step_size, results_rD, sort_ind, mean_ss = output
+        results, r_step_size, results_rD, sort_ind, mean_ss = output
 
-    #     for out in output:
-    #         assert len(out) == 3
+        for out in output:
+            assert len(out) == 3
 
-    #     for my_disc in results:
-    #         assert my_disc.check_nums
-    #         assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
-    #         assert my_disc._output_sample_set.get_dim() == len(QoI_range)
-    #     for step_sizes in r_step_size:
-    #         assert step_sizes.shape == (sampler.num_chains,
-    #                 sampler.chain_length)         
-    #     for num_hps in results_rD:
-    #         assert isinstance(num_hps, int)
-    #     for inds in sort_ind:
-    #         assert np.issubdtype(type(inds), int)
-    #     for asr, mir, mar in zip(mean_ss, min_ratio, max_ratio):
-    #         assert asr > mir
-    #         assert asr < mar
+        for my_disc in results:
+            assert my_disc.check_nums
+            assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
+            assert my_disc._output_sample_set.get_dim() == len(QoI_range)
+        for step_sizes in r_step_size:
+            assert step_sizes.shape == (sampler.num_chains,
+                    sampler.chain_length)         
+        for num_hps in results_rD:
+            assert isinstance(num_hps, int)
+        for inds in sort_ind:
+            assert np.issubdtype(type(inds), int)
+        for asr, mir, mar in zip(mean_ss, min_ratio, max_ratio):
+            assert asr > mir
+            assert asr < mar
 
-    # def test_run_inc_dec(self):
-    #     """
-    #     Run :meth:`bet.sampling.adaptiveSampling.sampler.run_inc_dec` and verify
-    #     that the output has the correct dimensions.
-    #     """
-    #     # sampler.run_inc_dec(increase, decrease, tolerance, rho_D, maximum,
-    #     # input_domain, t_set, savefile, initial_sample_type)
-    #     # returns list where each member is a tuple (discretization,
-    #     # all_step_ratios, num_high_prob_samples,
-    #     # sorted_indices_of_num_high_prob_samples, average_step_ratio)
-    #     inputs = self.test_list[3]
-    #     _, QoI_range, sampler, input_domain, savefile = inputs
-        
-    #     Q_ref = QoI_range*0.5
-    #     bin_size = 0.15*QoI_range
-    #     maximum = 1/np.product(bin_size)
-    #     def ifun(outputs):
-    #         """
-    #         Indicator function
-    #         """
-    #         inside = np.logical_and(np.all(np.greater_equal(outputs,
-    #             Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-    #                 Q_ref+.5*bin_size), axis=1)) 
-    #         max_values = np.repeat(maximum, outputs.shape[0], 0)
-    #         return inside.astype('float64')*max_values
+    def test_run_inc_dec(self):
+        """
+        Run :meth:`bet.sampling.adaptiveSampling.sampler.run_inc_dec` and verify
+        that the output has the correct dimensions.
+        """
+        # sampler.run_inc_dec(increase, decrease, tolerance, rho_D, maximum,
+        # input_domain, t_set, savefile, initial_sample_type)
+        # returns list where each member is a tuple (discretization,
+        # all_step_ratios, num_high_prob_samples,
+        # sorted_indices_of_num_high_prob_samples, average_step_ratio)
+        inputs = self.test_list[3]
+        _, QoI_range, sampler, input_domain, savefile = inputs
+      
+        Q_ref = QoI_range*0.5
+        bin_size = 0.15*QoI_range
+        maximum = 1/np.product(bin_size)
+        def ifun(outputs):
+            """
+            Indicator function
+            """
+            inside = np.logical_and(np.all(np.greater_equal(outputs,
+                Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
+                    Q_ref+.5*bin_size), axis=1)) 
+            max_values = np.repeat(maximum, outputs.shape[0], 0)
+            return inside.astype('float64')*max_values
 
-    #     # create rhoD_kernel
-    #     increase = [2.0, 3.0, 5.0]
-    #     decrease = [.7, .5, .2]
-    #     tolerance = [1e-3, 1e-4, 1e-7]
+        # create rhoD_kernel
+        increase = [2.0, 3.0, 5.0]
+        decrease = [.7, .5, .2]
+        tolerance = [1e-3, 1e-4, 1e-7]
 
-    #     # create t_set
-    #     t_set = asam.transition_set(.5, .5**5, 1.0) 
+        # create t_set
+        t_set = asam.transition_set(.5, .5**5, 1.0) 
 
-    #     # run run_gen
-    #     output = sampler.run_inc_dec(increase, decrease, tolerance, ifun,
-    #             maximum, input_domain, t_set, savefile)
+        # run run_gen
+        output = sampler.run_inc_dec(increase, decrease, tolerance, ifun,
+                maximum, input_domain, t_set, savefile)
 
-    #     results, r_step_size, results_rD, sort_ind, mean_ss = output
+        results, r_step_size, results_rD, sort_ind, mean_ss = output
 
-    #     for out in output:
-    #         assert len(out) == 3
+        for out in output:
+            assert len(out) == 3
 
-    #     for my_disc in results:
-    #         assert my_disc.check_nums
-    #         assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
-    #         assert my_disc._output_sample_set.get_dim() == len(QoI_range)
-    #     for step_sizes in r_step_size:
-    #         assert step_sizes.shape == (sampler.num_chains,
-    #                 sampler.chain_length) 
-    #     for num_hps in results_rD:
-    #         assert isinstance(num_hps, int)
-    #     for inds in sort_ind:
-    #         assert np.issubdtype(type(inds), int)
-    #     for asr in mean_ss:
-    #         assert asr > t_set.min_ratio
-    #         assert asr < t_set.max_ratio
+        for my_disc in results:
+            assert my_disc.check_nums
+            assert my_disc._input_sample_set.get_dim() == input_domain.shape[0]
+            assert my_disc._output_sample_set.get_dim() == len(QoI_range)
+        for step_sizes in r_step_size:
+            assert step_sizes.shape == (sampler.num_chains,
+                    sampler.chain_length) 
+        for num_hps in results_rD:
+            assert isinstance(num_hps, int)
+        for inds in sort_ind:
+            assert np.issubdtype(type(inds), int)
+        for asr in mean_ss:
+            assert asr > t_set.min_ratio
+            assert asr < t_set.max_ratio
 
-    # def test_generalized_chains(self):
-    #     """
-    #     Test :met:`bet.sampling.adaptiveSampling.sampler.generalized_chains`
-    #     for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
-    #     """
-    #     # create a transition set
-    #     t_set = asam.transition_set(.5, .5**5, 1.0) 
+    #TODO: LG Fix
+    def test_generalized_chains(self):
+        """
+        Test :met:`bet.sampling.adaptiveSampling.sampler.generalized_chains`
+        for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
+        """
+        # create a transition set
+        t_set = asam.transition_set(.5, .5**5, 1.0) 
 
-    #     for _, QoI_range, sampler, input_domain, savefile in self.test_list:
-    #         for initial_sample_type in ["random", "r", "lhs"]:
-    #             for hot_start in range(3):
-    #                 verify_samples(QoI_range, sampler, input_domain,
-    #                         t_set, savefile, initial_sample_type, hot_start)
+        for _, QoI_range, sampler, input_domain, savefile in self.test_list:
+            for initial_sample_type in ["random", "r", "lhs"]:
+                for hot_start in range(3):
+                    verify_samples(QoI_range, sampler, input_domain,
+                            t_set, savefile, initial_sample_type, hot_start)
 
 class test_kernels(unittest.TestCase):
     """
@@ -877,7 +878,6 @@ class transition_set(object):
         assert self.t_set.min_ratio == .5**5
         assert self.t_set.max_ratio == 1.0
         
-    #TODO: LG Fix
     def test_step(self):
         """
         Tests the method

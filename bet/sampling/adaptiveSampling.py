@@ -318,10 +318,10 @@ class sampler(bsam.sampler):
                     # reshape if parallel
                     if comm.size > 1:
                         temp_input = np.reshape(disc._input_sample_set.\
-                                get_values_local(), (self.num_chains,
+                                get_values(), (self.num_chains,
                                     chain_length, -1), 'F')
                         temp_output = np.reshape(disc._output_sample_set.\
-                                get_values_local(), (self.num_chains,
+                                get_values(), (self.num_chains,
                                     chain_length, -1), 'F')
                         all_step_ratios = np.reshape(all_step_ratios,
                                  (self.num_chains, -1), 'F')
@@ -487,7 +487,8 @@ class sampler(bsam.sampler):
         mdat['step_ratios'] = all_step_ratios
         mdat['kern_old'] = util.get_global_values(kern_old,
                 shape=(self.num_chains,))
-        super(sampler, self).save(mdat, savefile, disc)
+        if comm.rank == 0:
+            super(sampler, self).save(mdat, savefile, disc)
 
         return (disc, all_step_ratios)
         
