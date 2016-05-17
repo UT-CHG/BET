@@ -8,7 +8,6 @@ volumes of these cells.
 """
 
 import numpy as np
-from scipy import spatial
 import bet.util as util
 import bet.sample as samp
 

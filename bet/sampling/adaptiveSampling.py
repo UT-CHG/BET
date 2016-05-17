@@ -317,7 +317,8 @@ class sampler(bsam.sampler):
                     chain_length = disc.check_nums()/self.num_chains
                     if all_step_ratios.shape == (self.num_chains,
                                                         chain_length):
-                        print "Serial file, from completed run updating hot_start"
+                        msg = "Serial file, from completed"
+                        msg += " run updating hot_start"
                         hot_start = 2
                     # reshape if parallel
                     if comm.size > 1:
@@ -429,7 +430,8 @@ class sampler(bsam.sampler):
                     get_values_local()[-self.num_chains_pproc:, :])
 
             # Determine how many batches have been run
-            start_ind = disc._input_sample_set.get_values_local().shape[0]/self.num_chains_pproc
+            start_ind = disc._input_sample_set.get_values_local().\
+                    shape[0]/self.num_chains_pproc
         
         mdat = dict()
         self.update_mdict(mdat)

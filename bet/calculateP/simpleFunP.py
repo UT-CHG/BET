@@ -7,7 +7,6 @@ are returned as `bet.sample.sample_set` objects.
 """
 from bet.Comm import comm, MPI 
 import numpy as np
-import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
 import collections
 import bet.util as util
@@ -51,7 +50,8 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     
@@ -59,19 +59,21 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     :returns: sample_set object defininng simple function approximation
     """
     if isinstance(data_set, samp.sample_set_base):
-        num = data_set.check_num()
+        data_set.check_num()
         dim = data_set._dim
         values = data_set._values
     elif isinstance(data_set, samp.discretization):
-        num = data_set.check_nums()
+        data_set.check_nums()
         dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
-        num = data_set.shape[0]
+        data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
 
     bin_size = (np.max(values, 0) - np.min(values, 0))*bin_ratio
 
@@ -159,7 +161,8 @@ def normal_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     from the given normal distribution.
  
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param int M: Defines number M samples in D used to define
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
@@ -252,7 +255,8 @@ def unif_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     direction.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param int M: Defines number M samples in D used to define
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
@@ -331,7 +335,8 @@ def uniform_hyperrectangle_user(data_set, domain, center_pts_per_edge=1):
     ``len(d_distr_samples) == 3**mdim``.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param domain: The domain overwhich :math:`\rho_\mathcal{D}` is
         uniform.
     :type domain: :class:`numpy.ndarray` of shape (2, mdim)
@@ -344,27 +349,26 @@ def uniform_hyperrectangle_user(data_set, domain, center_pts_per_edge=1):
     """
     # make sure the shape of the data and the domain are correct
     if isinstance(data_set, samp.sample_set_base):
-        num = data_set.check_num()
-        dim = data_set._dim
+        data_set.check_num()
         values = data_set._values
     elif isinstance(data_set, samp.discretization):
-        num = data_set.check_nums()
-        dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        data_set.check_nums()
+        values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
-        num = data_set.shape[0]
-        dim = data_set.shape[1]
+        data_set.shape[0]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
 
     data = values 
     domain = util.fix_dimensions_data(domain, data.shape[1])
     domain_center = np.mean(domain, 0)
     domain_lengths = np.max(domain, 0) - np.min(domain, 0)
  
-    return uniform_hyperrectangle_binsize(data_set, domain_center, domain_lengths,
-            center_pts_per_edge)
+    return uniform_hyperrectangle_binsize(data_set, domain_center,
+            domain_lengths, center_pts_per_edge)
 
 def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
         center_pts_per_edge=1): 
@@ -383,7 +387,8 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
     :param int num_d_emulate: Number of samples used to emulate using an MC 
         assumption 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(\lambda_{reference})` 
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,) 
     :param list() center_pts_per_edge: number of center points per edge
@@ -395,20 +400,21 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
     """
 
     if isinstance(data_set, samp.sample_set_base):
-        num = data_set.check_num()
+        data_set.check_num()
         dim = data_set._dim
         values = data_set._values
     elif isinstance(data_set, samp.discretization):
-        num = data_set.check_nums()
+        data_set.check_nums()
         dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
-        num = data_set.shape[0]
+        data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
-    
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)    
     data = values
 
     if not isinstance(center_pts_per_edge, collections.Iterable):
@@ -431,7 +437,7 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
             (center_pts_per_edge, Q_ref, bin_size, sur_domain)
     edges = vHist.edges_regular(center_pts_per_edge, rect_domain, sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
-    s_set =  vHist.simple_fun_uniform(points, volumes, rect_domain)
+    s_set = vHist.simple_fun_uniform(points, volumes, rect_domain)
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
@@ -449,7 +455,8 @@ def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
     ``len(d_distr_samples) == 3^mdim``.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param bin_ratio: The ratio used to determine the width of the
         uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
     :type bin_ratio: double or list()
@@ -471,13 +478,15 @@ def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
     elif isinstance(data_set, samp.discretization):
         num = data_set.check_nums()
         dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
         num = data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
     data = values
 
     if not isinstance(bin_ratio, collections.Iterable):
@@ -498,7 +507,8 @@ def uniform_data(data_set):
     distributions over irregularly shaped domains.
  
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
@@ -513,16 +523,18 @@ def uniform_data(data_set):
     elif isinstance(data_set, samp.discretization):
         num = data_set.check_nums()
         dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        values = data_set._output_sample_set._values
         s_set = data_set._output_sample_set.copy()
     elif isinstance(data_set, np.ndarray):
         num = data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
-        s_set = samp.sample_set(dim = dim)
+        s_set = samp.sample_set(dim=dim)
         s_set.set_values(values)
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")    
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
     
     s_set.set_probabilities(np.ones((num,), dtype=np.float)/num)
 

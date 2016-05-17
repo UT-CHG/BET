@@ -93,7 +93,7 @@ class sampler(object):
         mdict['num_samples'] = self.num_samples
 
     def random_sample_set(self, sample_type, input_sample_set,
-            num_samples=None, criterion='center', parallel=False):
+            num_samples=None, criterion='center'):
         """
         Sampling algorithm with three basic options
 
@@ -147,7 +147,7 @@ class sampler(object):
         return input_sample_set
 
     def random_sample_set_domain(self, sample_type, input_domain,
-                           num_samples=None, criterion='center', parallel=False):
+            num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
 
@@ -184,7 +184,7 @@ class sampler(object):
                                        num_samples, criterion, parallel)
 
     def random_sample_set_dimension(self, sample_type, input_dim,
-                              num_samples=None, criterion='center', parallel=False):
+            num_samples=None, criterion='center', parallel=False):
         """
         Sampling algorithm with three basic options
 
@@ -218,7 +218,8 @@ class sampler(object):
         return self.random_sample_set(sample_type, input_sample_set,
                                        num_samples, criterion, parallel)
 
-    def compute_QoI_and_create_discretization(self, input_sample_set, savefile=None, parallel=False):
+    def compute_QoI_and_create_discretization(self, input_sample_set,
+            savefile=None, parallel=False): 
         """
         Samples the model at ``input_sample_set`` and saves the results.
 
@@ -279,8 +280,9 @@ class sampler(object):
         return discretization
 
 
-    def create_random_discretization(self, sample_type, input_obj, savefile = None,
-                       num_samples=None, criterion='center', parallel=False):
+    def create_random_discretization(self, sample_type, input_obj,
+            savefile=None, num_samples=None, criterion='center',
+            parallel=False):
         """
         Sampling algorithm with three basic options
             * ``random`` (or ``r``) generates ``num_samples`` samples in
@@ -315,12 +317,13 @@ class sampler(object):
 
         if isinstance(input_obj, sample.sample_set):
             input_sample_set = self.random_sample_set(sample_type, input_obj,
-                                           num_samples, criterion, parallel)
+                    num_samples, criterion, parallel)
         elif isinstance(input_obj, np.ndarray):
-            input_sample_set = self.random_sample_set_domain(sample_type, input_obj,
-                                           num_samples, criterion, parallel)
+            input_sample_set = self.random_sample_set_domain(sample_type,
+                    input_obj, num_samples, criterion, parallel)
         else:
-            input_sample_set = self.random_sample_set_dimension(sample_type, input_obj,
-                                           num_samples, criterion, parallel)
+            input_sample_set = self.random_sample_set_dimension(sample_type,
+                    input_obj, num_samples, criterion, parallel)
 
-        return self.compute_QoI_and_create_discretization(input_sample_set, savefile, parallel)
+        return self.compute_QoI_and_create_discretization(input_sample_set, 
+                savefile, parallel)

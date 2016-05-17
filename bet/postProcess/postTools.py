@@ -27,11 +27,13 @@ def sort_by_rho(sample_set):
     are also sorted.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` or
+        :class:`~bet.sample.discretization` 
     :param indices: sorting indices
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: (sample_set_out, indicices)
@@ -92,13 +94,15 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
     :param percentile: ratio of highest probability samples to select
     :type percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param bool descending: Flag order of sorting
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, data)
@@ -177,12 +181,14 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, indices)
@@ -201,12 +207,14 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, indices)
