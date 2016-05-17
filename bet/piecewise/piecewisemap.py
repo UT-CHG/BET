@@ -9,9 +9,10 @@ import bet.Comm as comm
 import itertools
 from scipy.special import comb
 import scipy.spatial as spatial
-import matplotlib.pyplot as plt
 from itertools import combinations
 from pylab import *
+
+import plot_piecewise
 
 Lambda_dim = 2
 Data_dim = 3
