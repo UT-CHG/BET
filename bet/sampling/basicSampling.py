@@ -258,10 +258,10 @@ class sampler(object):
             local_output_values = self.lb_model(\
                     input_sample_set.get_values_local())
             # figure out the dimension of the output
-            if len(local_output_values.shape) == 0:
+            if len(local_output_values.shape) <= 1:
                 output_dim = 1
             else:
-                output_dim = output_values.shape[1]
+                output_dim = local_output_values.shape[1]
             output_sample_set = sample.sample_set(output_dim)
             output_sample_set.set_values_local(local_output_values)
             input_sample_set.local_to_global()
@@ -275,7 +275,7 @@ class sampler(object):
 
         if comm.rank == 0 and savefile is not None:
             self.save(mdat, savefile, discretization)
-        
+        comm.barrier()
         return discretization
 
 
