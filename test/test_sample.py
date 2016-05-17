@@ -396,35 +396,35 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_oo_ptr(globalize=False)
         self.disc.get_emulated_oo_ptr()
 
-    # TODO: LG Fix
-    # def Test_save_load_discretization(self):
-    #     """
-    #     Test saving and loading of discretization
-    #     """
-    #     sample.save_discretization(self.disc, os.path.join(local_path, 
-    #         'testfile.mat'), "TEST")
+    def Test_save_load_discretization(self):
+        """
+        Test saving and loading of discretization
+        """
+        if comm.rank == 0:
+            sample.save_discretization(self.disc, os.path.join(local_path, 
+                'testfile.mat'), "TEST")
+        comm.barrier()
+        loaded_disc = sample.load_discretization(os.path.join(local_path, 
+            'testfile.mat'), "TEST")
 
-    #     loaded_disc = sample.load_discretization(os.path.join(local_path, 
-    #         'testfile.mat'), "TEST")
+        for attrname in sample.discretization.vector_names:
+            curr_attr = getattr(loaded_disc, attrname)
+            if curr_attr is not None:
+                nptest.assert_array_equal(curr_attr, getattr(self.disc,
+                    attrname))
 
-    #     for attrname in sample.discretization.vector_names:
-    #         curr_attr = getattr(loaded_disc, attrname)
-    #         if curr_attr is not None:
-    #             nptest.assert_array_equal(curr_attr, getattr(self.disc,
-    #                 attrname))
+        for attrname in sample.discretization.sample_set_names:
+            curr_set = getattr(loaded_disc, attrname)
+            if curr_set is not None:
+                for set_attrname in sample.sample_set.vector_names+\
+                        sample.sample_set.all_ndarray_names:
+                    curr_attr = getattr(curr_set, set_attrname)
+                    if curr_attr is not None:
+                        nptest.assert_array_equal(curr_attr, getattr(\
+                                curr_set, set_attrname))
 
-    #     for attrname in sample.discretization.sample_set_names:
-    #         curr_set = getattr(loaded_disc, attrname)
-    #         if curr_set is not None:
-    #             for set_attrname in sample.sample_set.vector_names+\
-    #                     sample.sample_set.all_ndarray_names:
-    #                 curr_attr = getattr(curr_set, set_attrname)
-    #                 if curr_attr is not None:
-    #                     nptest.assert_array_equal(curr_attr, getattr(\
-    #                             curr_set, set_attrname))
-
-    #     if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-    #         os.remove(os.path.join(local_path, 'testfile.mat'))
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+            os.remove(os.path.join(local_path, 'testfile.mat'))
 
     def Test_copy_discretization(self):
         """
