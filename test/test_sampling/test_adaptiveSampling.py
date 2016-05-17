@@ -154,6 +154,7 @@ def verify_samples(QoI_range, sampler, input_domain,
     assert np.all(all_step_ratios <= t_set.max_ratio)
     
     # did the savefiles get created? (proper number, contain proper keys)
+    comm.barrier()
     mdat = dict()
     if comm.rank == 0:
         mdat = sio.loadmat(savefile)
@@ -229,6 +230,7 @@ class Test_adaptive_sampler(unittest.TestCase):
 
 
     def tearDown(self):
+        comm.barrier()
         for f in self.savefiles:
             if comm.rank == 0 and os.path.exists(f+".mat"):
                 os.remove(f+".mat")
@@ -424,7 +426,6 @@ class Test_adaptive_sampler(unittest.TestCase):
             assert asr > t_set.min_ratio
             assert asr < t_set.max_ratio
 
-    #TODO: LG Fix
     def test_generalized_chains(self):
         """
         Test :met:`bet.sampling.adaptiveSampling.sampler.generalized_chains`

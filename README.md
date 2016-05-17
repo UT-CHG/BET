@@ -20,6 +20,17 @@ You will need to run sphinx-apidoc AND reinstall BET anytime a new module or met
 
 Useful scripts are contained in ``examples/``
 
+Tests
+-----
+
+To run tests in serial call::
+
+    nosetests tests
+
+To run tests in parallel call::
+
+    mpirun -np NPROC nosetets tests
+
 Dependencies
 ------------
 

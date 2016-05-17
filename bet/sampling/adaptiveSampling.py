@@ -229,6 +229,10 @@ class sampler(bsam.sampler):
             hot_start=0): 
         """
         Basic adaptive sampling algorithm using generalized chains.
+
+        .. todo::
+
+            Test HOTSTART from parallel files using different and same num proc
        
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -331,7 +335,7 @@ class sampler(bsam.sampler):
                     # be the one with the matching processor number (doesn't
                     # really matter)
                     mdat = sio.loadmat(mdat_files[comm.rank])
-                    disc = sample.load_discretization(savefile)
+                    disc = sample.load_discretization(mdat_files[comm.rank])
                     kern_old = np.squeeze(mdat['kern_old'])
                     all_step_ratios = np.squeeze(mdat['step_ratios'])
                 elif hot_start == 1 and len(mdat_files) != comm.size:
@@ -388,7 +392,6 @@ class sampler(bsam.sampler):
                 kern_old = np.squeeze(mdat['kern_old'])
                 all_step_ratios = np.squeeze(mdat['step_ratios'])
                 chain_length = disc.check_nums()/self.num_chains
-                #mdat_files = []
                 # reshape if parallel
                 if comm.size > 1:
                     temp_input = np.reshape(disc._input_sample_set.\
@@ -397,7 +400,6 @@ class sampler(bsam.sampler):
                     temp_output = np.reshape(disc._output_sample_set.\
                                 get_values(), (self.num_chains, chain_length,
                                     -1), 'F')
-
                     all_step_ratios = np.reshape(all_step_ratios,
                             (self.num_chains, chain_length), 'F')
             # SPLIT DATA IF NECESSARY
@@ -427,7 +429,7 @@ class sampler(bsam.sampler):
                     get_values_local()[-self.num_chains_pproc:, :])
 
             # Determine how many batches have been run
-            start_ind = disc.check_nums()/self.num_chains_pproc
+            start_ind = disc._input_sample_set.get_values_local().shape[0]/self.num_chains_pproc
         
         mdat = dict()
         self.update_mdict(mdat)
