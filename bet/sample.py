@@ -8,7 +8,7 @@ This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.dim_not_matching`
 """
 
-import os, warnings
+import os, logging
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -82,7 +82,7 @@ def load_sample_set(file_name, sample_set_name=None):
     if sample_set_name+"_dim" in mdat.keys():
         loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
-        warnings.warn("No sample_set named {} with _dim in file".\
+        logging.info("No sample_set named {} with _dim in file".\
                 format(sample_set_name))
         return None
 
@@ -911,7 +911,7 @@ class discretization(object):
         if output_sample_set is not None:
             self.check_nums()
         else:
-            warnings.warn("No output_sample_set")
+            logging.info("No output_sample_set")
         
     def check_nums(self):
         """

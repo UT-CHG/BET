@@ -7,6 +7,7 @@ regular (hyperrectangle) multidimensional voronoi cells and for determining the
 volumes of these cells.
 """
 
+import logging
 import numpy as np
 import bet.util as util
 import bet.sample as samp
@@ -50,7 +51,7 @@ def center_and_layer1_points_binsize(center_pts_per_edge, center, r_size,
     if np.any(np.greater(r_size, rect_width)):
         msg = "The hyperrectangle defined by this size extends outside the "
         msg += "original domain."
-        print msg
+        logging.warning(msg)
     
     # determine the locations of the points for the 1st bounding layer
     layer1_left = rect_domain[:, 0]-rect_width/(2*center_pts_per_edge)
@@ -101,7 +102,7 @@ def center_and_layer1_points(center_pts_per_edge, center, r_ratio, sur_domain):
     if np.all(np.greater(r_ratio, 1)):
         msg = "The hyperrectangle defined by this ratio is larger than the"
         msg += " original domain."
-        print msg
+        logging.warning(msg)
 
     # determine r_size from the width of the surrounding domain
     r_size = r_ratio*(sur_domain[:, 1]-sur_domain[:, 0])
@@ -141,11 +142,11 @@ def edges_regular(center_pts_per_edge, rect_domain, sur_domain):
     if np.any(np.greater_equal(sur_domain[:, 0], rect_domain[:, 0])):
         msg = "The hyperrectangle defined by this size is larger than the"
         msg += " original domain."
-        print msg
+        logging.warning(msg)
     elif np.any(np.less_equal(sur_domain[:, 1], rect_domain[:, 1])):
         msg = "The hyperrectangle defined by this size is larger than the"
         msg += " original domain."
-        print msg
+        logging.warning(msg)
     
     rect_edges = list()
     rect_and_sur_edges = list()

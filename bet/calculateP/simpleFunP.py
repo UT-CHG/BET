@@ -8,7 +8,7 @@ are returned as `bet.sample.sample_set` objects.
 from bet.Comm import comm, MPI 
 import numpy as np
 import bet.calculateP.voronoiHistogram as vHist
-import collections
+import collections, logging
 import bet.util as util
 import bet.sample as samp
 
@@ -190,9 +190,9 @@ def normal_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     covariance = std**2
 
     d_distr_samples = np.zeros((M, len(Q_ref)))
-    print "d_distr_samples.shape", d_distr_samples.shape
-    print "Q_ref.shape", Q_ref.shape
-    print "std.shape", std.shape
+    logging.info("d_distr_samples.shape", d_distr_samples.shape)
+    logging.info("Q_ref.shape", Q_ref.shape)
+    logging.info("std.shape", std.shape)
 
     if comm.rank == 0:
         for i in range(len(Q_ref)):
@@ -422,14 +422,15 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
     else:
         if not len(center_pts_per_edge) == dim: 
             center_pts_per_edge = np.ones((dim,))
-            print 'Warning: center_pts_per_edge dimension mismatch.'
-            print 'Using 1 in each dimension.'
+            msg = 'center_pts_per_edge dimension mismatch.'
+            msg += 'Using 1 in each dimension.'
+            logging.warning(msg)
     if np.any(np.less(center_pts_per_edge, 0)):
-        print 'Warning: center_pts_per_edge must be greater than 0'
+        logging.warning('center_pts_per_edge must be greater than 0')
     if not isinstance(bin_size, collections.Iterable):
         bin_size = bin_size*np.ones((dim,))
     if np.any(np.less(bin_size, 0)):
-        print 'Warning: center_pts_per_edge must be greater than 0'
+        logging.warning('center_pts_per_edge must be greater than 0')
 
     sur_domain = np.array([np.min(data, 0), np.max(data, 0)]).transpose()
 

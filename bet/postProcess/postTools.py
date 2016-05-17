@@ -7,6 +7,7 @@ from bet.Comm import comm
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
+import logging
 
 class dim_not_matching(Exception):
     """
@@ -380,9 +381,9 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
     if column_headings == None:
         column_headings = "Run parameters"
-    print "Sample Set No., Quality, "+ str(column_headings)
+    logging.info("Sample Set No., Quality, "+ str(column_headings))
     for i in reversed(sort_ind):
-        print i, sample_quality[i], np.round(run_param[i], 3)
+        logging.info(i, sample_quality[i], np.round(run_param[i], 3))
 
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
@@ -411,7 +412,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     else:
         rD = rho_D(data[sample_nos, :])
     adjusted_total_prob = int(sum(rD)/maximum)
-    print "Samples in box "+str(adjusted_total_prob)
+    logging.info("Samples in box "+str(adjusted_total_prob))
     return adjusted_total_prob
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):

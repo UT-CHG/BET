@@ -16,7 +16,7 @@ import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
-import math, os, glob
+import math, os, glob, logging
 from bet.Comm import comm 
 import bet.sample as sample
 
@@ -274,7 +274,7 @@ class sampler(bsam.sampler):
         min_ratio = t_set.min_ratio
 
         if not hot_start:
-            print "COLD START"
+            logging.info("COLD START")
             step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
            
             # Initiative first batch of N samples (maybe taken from latin
@@ -302,14 +302,14 @@ class sampler(bsam.sampler):
             # LOAD FILES
             if hot_start == 1: # HOT START FROM PARTIAL RUN
                 if comm.rank == 0:
-                    print "HOT START from partial run"
+                    logging.info("HOT START from partial run")
                 # Find and open save files
                 save_dir = os.path.dirname(savefile)
                 base_name = os.path.dirname(savefile)
                 mdat_files = glob.glob(os.path.join(save_dir,
                         "proc*_{}".format(base_name)))
                 if len(mdat_files) == 0:
-                    print "HOT START using serial file"
+                    logging.info("HOT START using serial file")
                     mdat = sio.loadmat(savefile)
                     disc = sample.load_discretization(savefile)
                     kern_old = np.squeeze(mdat['kern_old'])
@@ -331,7 +331,7 @@ class sampler(bsam.sampler):
                         all_step_ratios = np.reshape(all_step_ratios,
                                  (self.num_chains, -1), 'F')
                 elif hot_start == 1 and len(mdat_files) == comm.size:
-                    print "HOT START using parallel files (same nproc)"
+                    logging.info("HOT START using parallel files (same nproc)")
                     # if the number of processors is the same then set mdat to
                     # be the one with the matching processor number (doesn't
                     # really matter)
@@ -340,7 +340,7 @@ class sampler(bsam.sampler):
                     kern_old = np.squeeze(mdat['kern_old'])
                     all_step_ratios = np.squeeze(mdat['step_ratios'])
                 elif hot_start == 1 and len(mdat_files) != comm.size:
-                    print "HOT START using parallel files (diff nproc)"
+                    logging.info("HOT START using parallel files (diff nproc)")
                     # Determine how many processors the previous data used
                     # otherwise gather the data from mdat and then scatter
                     # among the processors and update mdat
@@ -387,7 +387,7 @@ class sampler(bsam.sampler):
                     kern_old = np.concatenate(kern_old)
             if hot_start == 2: # HOT START FROM COMPLETED RUN:
                 if comm.rank == 0:
-                    print "HOT START from completed run"
+                    logging.info("HOT START from completed run")
                 mdat = sio.loadmat(savefile)
                 disc = sample.load_discretization(savefile)
                 kern_old = np.squeeze(mdat['kern_old'])
@@ -459,10 +459,10 @@ class sampler(bsam.sampler):
             if self.chain_length < 4:
                 pass
             elif comm.rank == 0 and (batch+1)%(self.chain_length/4) == 0:
-                print "Current chain length: "+\
+                logging.info("Current chain length: "+\
                             str(batch+1)+"/"+str(self.chain_length)
             disc._input_sample_set.append_values_local(input_new.\
-                    get_values_local())
+                    get_values_local()))
             disc._output_sample_set.append_values_local(output_new_values)
             all_step_ratios = np.concatenate((all_step_ratios, step_ratio))
             mdat['step_ratios'] = all_step_ratios
