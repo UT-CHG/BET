@@ -20,7 +20,7 @@ class wrong_argument_type(Exception):
     """
     
 
-def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
+def uniform_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref, rect_scale=0.2, M=50, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
@@ -45,9 +45,9 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
         relatively small number here like 50.
-    :param bin_ratio: The ratio used to determine the width of the
-        uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
-    :type bin_ratio: double or list()
+    :param rect_scale: The scale used to determine the support of the
+        uniform distribution as ``rect_size = (data_max-data_min)*rect_scale``
+    :type rect_scale: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param data_set: Sample set that the probability measure is defined for.
@@ -71,9 +71,10 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
+                                  "bet.sample.discretization or np.ndarray")
 
-    bin_size = (np.max(values, 0) - np.min(values, 0))*bin_ratio
+    rect_size = (np.max(values, 0) - np.min(values, 0))*rect_scale
 
 
     r'''
@@ -100,7 +101,7 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     '''    
 
     if comm.rank == 0:
-        d_distr_samples = 1.5*bin_size*(np.random.random((M,
+        d_distr_samples = 1.5*rect_size*(np.random.random((M,
                                                           dim))-0.5)+Q_ref 
     else:
         d_distr_samples = np.empty((M, dim))
@@ -120,7 +121,7 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
     '''
     # Generate the samples from :math:`\rho_{\mathcal{D}}`
     num_d_emulate = int(num_d_emulate/comm.size)+1
-    d_distr_emulate = bin_size*(np.random.random((num_d_emulate,
+    d_distr_emulate = rect_size*(np.random.random((num_d_emulate,
                                                   dim))-0.5) + Q_ref
 
     # Bin these samples using nearest neighbor searches
@@ -151,7 +152,7 @@ def unif_unif(data_set, Q_ref, M=50, bin_ratio=0.2, num_d_emulate=1E6):
         data_set._output_probability_set = s_set
     return s_set
 
-def normal_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
+def normal_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
@@ -243,7 +244,8 @@ def normal_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
     if isinstance(data_set, samp.discretization):
         data_set._output_sample_set = s_set
     return s_set
-def unif_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
+
+def uniform_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
@@ -319,7 +321,7 @@ def unif_normal(data_set, Q_ref, M, std, num_d_emulate=1E6):
         data_set._output_probability_set = s_set
     return s_set
 
-def uniform_hyperrectangle_user(data_set, domain, center_pts_per_edge=1):
+def regular_partition_uniform_distribution_rectangle_domain(data_set, rect_domain, center_pts_per_edge=1):
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
@@ -332,9 +334,9 @@ def uniform_hyperrectangle_user(data_set, domain, center_pts_per_edge=1):
 
     :param data_set: Sample set that the probability measure is defined for.
     :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
-    :param domain: The domain overwhich :math:`\rho_\mathcal{D}` is
+    :param rect_domain: The domain overwhich :math:`\rho_\mathcal{D}` is
         uniform.
-    :type domain: :class:`numpy.ndarray` of shape (2, mdim)
+    :type rect_domain: :class:`numpy.ndarray` of shape (2, mdim)
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
@@ -356,17 +358,18 @@ def uniform_hyperrectangle_user(data_set, domain, center_pts_per_edge=1):
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
+                                  "bet.sample.discretization or np.ndarray")
 
     data = values 
-    domain = util.fix_dimensions_data(domain, data.shape[1])
-    domain_center = np.mean(domain, 0)
-    domain_lengths = np.max(domain, 0) - np.min(domain, 0)
+    rect_domain = util.fix_dimensions_data(rect_domain, data.shape[1])
+    domain_center = np.mean(rect_domain, 0)
+    domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
  
-    return uniform_hyperrectangle_binsize(data_set, domain_center, domain_lengths,
+    return regular_partition_uniform_distribution_rectangle_size(data_set, domain_center, domain_lengths,
             center_pts_per_edge)
 
-def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
+def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_size,
         center_pts_per_edge=1): 
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
@@ -377,9 +380,9 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
     to represent it exactly with ``M = 3^mdim`` or rather
     ``len(d_distr_samples) == 3^mdim``.
 
-    :param bin_size: The size used to determine the width of the uniform
+    :param rect_size: The size used to determine the width of the uniform
         distribution 
-    :type bin_size: double or list() 
+    :type rect_size: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC 
         assumption 
     :param data_set: Sample set that the probability measure is defined for.
@@ -407,7 +410,8 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
+                                  "bet.sample.discretization or np.ndarray")
     
     data = values
 
@@ -420,15 +424,15 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
             print 'Using 1 in each dimension.'
     if np.any(np.less(center_pts_per_edge, 0)):
         print 'Warning: center_pts_per_edge must be greater than 0'
-    if not isinstance(bin_size, collections.Iterable):
-        bin_size = bin_size*np.ones((dim,))
-    if np.any(np.less(bin_size, 0)):
+    if not isinstance(rect_size, collections.Iterable):
+        rect_size = rect_size*np.ones((dim,))
+    if np.any(np.less(rect_size, 0)):
         print 'Warning: center_pts_per_edge must be greater than 0'
 
     sur_domain = np.array([np.min(data, 0), np.max(data, 0)]).transpose()
 
     points, _, rect_domain = vHist.center_and_layer1_points_binsize\
-            (center_pts_per_edge, Q_ref, bin_size, sur_domain)
+            (center_pts_per_edge, Q_ref, rect_size, sur_domain)
     edges = vHist.edges_regular(center_pts_per_edge, rect_domain, sur_domain) 
     _, volumes, _ = vHist.histogramdd_volumes(edges, points)
     s_set =  vHist.simple_fun_uniform(points, volumes, rect_domain)
@@ -437,11 +441,11 @@ def uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
         data_set._output_probability_set = s_set
     return s_set
 
-def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
+def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref, rect_scale, center_pts_per_edge=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
-    centered at Q_ref with bin_ratio of the width
+    centered at Q_ref with rect_scale of the width
     of D.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
@@ -450,9 +454,9 @@ def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
 
     :param data_set: Sample set that the probability measure is defined for.
     :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
-    :param bin_ratio: The ratio used to determine the width of the
-        uniform distributiion as ``bin_size = (data_max-data_min)*bin_ratio``
-    :type bin_ratio: double or list()
+    :param rect_scale: The scale used to determine the width of the
+        uniform distributiion as ``rect_size = (data_max-data_min)*rect_scale``
+    :type rect_scale: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param Q_ref: :math:`Q(\lambda_{reference})`
@@ -477,17 +481,18 @@ def uniform_hyperrectangle(data_set, Q_ref, bin_ratio, center_pts_per_edge=1):
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
+                                  "bet.sample.discretization or np.ndarray")
     data = values
 
-    if not isinstance(bin_ratio, collections.Iterable):
-        bin_ratio = bin_ratio*np.ones((dim, ))
+    if not isinstance(rect_scale, collections.Iterable):
+        rect_scale = rect_scale*np.ones((dim, ))
 
-    bin_size = (np.max(data, 0) - np.min(data, 0))*bin_ratio 
-    return uniform_hyperrectangle_binsize(data_set, Q_ref, bin_size,
+    rect_size = (np.max(data, 0) - np.min(data, 0))*rect_scale
+    return regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_size,
             center_pts_per_edge)
 
-def uniform_data(data_set):
+def uniform_partition_uniform_distribution_data_samples(data_set):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
@@ -522,7 +527,8 @@ def uniform_data(data_set):
         s_set = samp.sample_set(dim = dim)
         s_set.set_values(values)
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, bet.sample.discretization or np.ndarray")    
+        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
+                                  "bet.sample.discretization or np.ndarray")
     
     s_set.set_probabilities(np.ones((num,), dtype=np.float)/num)
 
