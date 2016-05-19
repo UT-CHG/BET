@@ -16,7 +16,7 @@ from pylab import *
 Lambda_dim = 2
 Data_dim = 3
 num_samples = 1E5
-num_anchors = 1
+num_anchors = 10
 bin_ratio = 0.25
 time_0 = time.clock()
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
