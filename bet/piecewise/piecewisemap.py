@@ -89,7 +89,7 @@ for k in range(num_anchors):
     best_sets.append( [int(best_set[i]) for i in range(Lambda_dim) ] )
     # for each anchor point, record best_sets (accessing [0] for the best one).
 print  '\n'
-# print best_sets
+print best_sets
 
 # have a dictionary object or something comparable track all nonempty choices of
 # sets of QoI maps, list of indices into samples.
