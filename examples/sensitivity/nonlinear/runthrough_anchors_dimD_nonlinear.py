@@ -76,7 +76,6 @@ for Data_dim in [3, 5, 7, 9]:
 
             # feed each list of indices into samples and data, perform chooseQoIs
             best_sets = []
-
             for k in range(num_anchors):
                 samples_k = np.array(anchors[k],ndmin=2)
                 # samples_k =  np.array(anchors[k:k+1], ndmin =2)
@@ -119,7 +118,7 @@ for Data_dim in [3, 5, 7, 9]:
                     QoI_indices = best_sets[k]
                     temp_samples = samples[ unique_part_inds[k] ]
                     temp_data = data[:, QoI_indices]
-                    Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
+                    Q_ref = Q(np.array([lambda_test]))[0][QoI_indices]
 
                     # Find the simple function approximation to data space density
                     (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
