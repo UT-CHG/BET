@@ -18,6 +18,8 @@ Data_dim = 3
 num_samples = 1E5
 num_anchors = 10
 bin_ratio = 0.25
+ref_lambda  = [0.5, 0.5]
+
 time_0 = time.clock()
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
 
@@ -100,7 +102,6 @@ print best_sets
 P = np.zeros(num_samples)
 lam_vol = np.zeros(num_samples)
 total = []
-ref_lambda  = [0.25, 0.25]
 for k in range(num_anchors):
     QoI_indices = best_sets[k]
     temp_samples = samples[ part_inds[k] ]
