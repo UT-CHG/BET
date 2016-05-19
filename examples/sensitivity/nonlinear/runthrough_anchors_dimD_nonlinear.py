@@ -89,10 +89,10 @@ for Data_dim in [3, 5, 7, 9]:
                                                     centers = samples_k, \
                                                     normalize=True)
                 print '\n Partition %d  - Anchor =\n\t'%(k+1), anchors[k,:], '\n'
-                best_set = cQoI.chooseOptQoIs_large(grad_tensor = G, \
+                best_set_for_anchor = cQoI.chooseOptQoIs_large(grad_tensor = G, \
                                                     num_optsets_return = 1, \
                                                     volume = False )[Lambda_dim-2][0][1:]
-                best_sets.append( [int(best_set[i]) for i in range(Lambda_dim) ] )
+                best_sets.append( [int(best_set_for_anchor[i]) for i in range(Lambda_dim) ] )
                 # for each anchor point, record best_sets (accessing [0] for the best one).
             print  '\n'
             print best_sets

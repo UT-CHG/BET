@@ -17,7 +17,7 @@ from pylab import *
 Lambda_dim = 2
 Data_dim = 3
 num_samples = 1E5
-num_anchors = 10
+num_anchors = 1
 bin_ratio = 0.25
 time_0 = time.clock()
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
@@ -109,32 +109,35 @@ for idx_array in anchors_for_best_set: # indices of anchors associated with each
     temp_index_list = np.array([], dtype=int8)
     for idx in idx_array:
         temp_index_list = np.concatenate([temp_index_list, part_inds[idx][0]])
-    if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
+    # if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
+    unique_part_inds.append(temp_index_list)
 
+# figure out what happens if we have empty entries in best sets, make sure ordering is correct.
 
 
 for k in range(len(unique_part_inds)): # run through unique
-    QoI_indices = best_sets[k]
-    temp_samples = samples[ unique_part_inds[k] ]
-    temp_data = data[:, QoI_indices]
-    Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
+    if len(unique_part_inds[k])>0:
+        QoI_indices = best_sets[k]
+        temp_samples = samples[ unique_part_inds[k] ]
+        temp_data = data[:, QoI_indices]
+        Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
 
-    # Find the simple function approximation to data space density
-    (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
-                                            data = temp_data, \
-                                            Q_ref = Q_ref, \
-                                            bin_ratio = bin_ratio, \
-                                            center_pts_per_edge = 1)
+        # Find the simple function approximation to data space density
+        (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
+                                                data = temp_data, \
+                                                Q_ref = Q_ref, \
+                                                bin_ratio = bin_ratio, \
+                                                center_pts_per_edge = 1)
 
-    # Calculate probablities making the Monte Carlo assumption
-    (temp_P,  temp_lam_vol, io_ptr) = calculateP.prob(samples = temp_samples, \
-                                            data = temp_data, \
-                                            rho_D_M = d_distr_prob, \
-                                            d_distr_samples = d_distr_samples)
+        # Calculate probablities making the Monte Carlo assumption
+        (temp_P,  temp_lam_vol, io_ptr) = calculateP.prob(samples = temp_samples, \
+                                                data = temp_data, \
+                                                rho_D_M = d_distr_prob, \
+                                                d_distr_samples = d_distr_samples)
 
-    P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
-    lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
-    total.append( len(temp_P[temp_P>0]) )
+        P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
+        lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
+        total.append( len(temp_P[temp_P>0]) )
 P = P/sum(total)
 lam_vol = lam_vol/sum(total)
 ptol = 1E-4
