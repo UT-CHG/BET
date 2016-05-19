@@ -17,7 +17,7 @@ from pylab import *
 Lambda_dim = 2
 Data_dim = 3
 num_samples = 1E5
-num_anchors = 1
+num_anchors = 10
 bin_ratio = 0.25
 time_0 = time.clock()
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
@@ -117,7 +117,7 @@ for idx_array in anchors_for_best_set: # indices of anchors associated with each
 
 for k in range(len(unique_part_inds)): # run through unique
     if len(unique_part_inds[k])>0:
-        QoI_indices = best_sets[k]
+        QoI_indices = combs_array[k]
         temp_samples = samples[ unique_part_inds[k] ]
         temp_data = data[:, QoI_indices]
         Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
