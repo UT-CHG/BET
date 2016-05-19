@@ -100,7 +100,7 @@ print best_sets
 P = np.zeros(num_samples)
 lam_vol = np.zeros(num_samples)
 total = []
-ref_lambda  = [0.5, 0.5]
+ref_lambda  = [0.25, 0.25]
 for k in range(num_anchors):
     QoI_indices = best_sets[k]
     temp_samples = samples[ part_inds[k] ]
