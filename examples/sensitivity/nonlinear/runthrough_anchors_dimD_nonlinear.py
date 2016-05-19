@@ -133,7 +133,6 @@ for Data_dim in [3, 5, 7, 9]:
                                                             rho_D_M = d_distr_prob, \
                                                             d_distr_samples = d_distr_samples)
 
-                    # Version 2. Both should work identically. One might be faster.
                     P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
                     lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
                     total.append( len(temp_P[temp_P>0]) )
