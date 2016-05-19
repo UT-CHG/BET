@@ -49,7 +49,7 @@ def randQ(x): # QoI map using quintic functions for Lambda_dim = 2, Data_dim arb
 for Data_dim in [3, 5, 7, 9]:
     # num_grad_centers = 100 # at how many points  do we compute gradient information?
     print '\n \t\t\t Data Dimension = %d\n\n\n\n'%Data_dim
-    for rand_int in rand_int_list[0:1]:
+    for rand_int in rand_int_list:
         print '\n \t random integer: %d \n'%rand_int
         highest_prob = []
 
@@ -71,8 +71,8 @@ for Data_dim in [3, 5, 7, 9]:
                 sys.exit("Something went wrong with nearest neighbor search. Some samples missed.")
 
             # compute possible sets of quantities of interest
-            # combs = int(comb(Data_dim, Lambda_dim))
-            # combs_array = np.array(list(combinations(range(Data_dim),2)))
+            combs = int(comb(Data_dim, Lambda_dim))
+            combs_array = np.array(list(combinations(range(Data_dim),2)))
 
             # feed each list of indices into samples and data, perform chooseQoIs
             best_sets = []
