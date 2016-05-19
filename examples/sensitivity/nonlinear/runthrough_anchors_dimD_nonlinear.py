@@ -1,4 +1,4 @@
-import numpy as np
+
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoI
 import bet.calculateP.simpleFunP as simpleFunP
@@ -49,11 +49,11 @@ def randQ(x): # QoI map using quintic functions for Lambda_dim = 2, Data_dim arb
 for Data_dim in [3, 5, 7, 9]:
     # num_grad_centers = 100 # at how many points  do we compute gradient information?
     print '\n \t\t\t Data Dimension = %d\n\n\n\n'%Data_dim
-    for rand_int in rand_int_list:
+    for rand_int in rand_int_list[0:1]:
         print '\n \t random integer: %d \n'%rand_int
         highest_prob = []
 
-        for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
+        for num_anchors in [1, 50, 100, 1000]: # range(5,101,5):
             # define samples in parameter space, random anchor points
             np.random.seed(0)
             samples = np.random.random([num_samples, Lambda_dim])

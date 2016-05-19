@@ -12,7 +12,7 @@ import scipy.spatial as spatial
 from itertools import combinations
 from pylab import *
 
-import plot_piecewise
+# import plot_piecewise
 
 Lambda_dim = 2
 Data_dim = 3
@@ -103,18 +103,19 @@ lam_vol = np.zeros(num_samples)
 total = []
 ref_lambda  = [0.5, 0.5]
 
-# anchors_for_best_set = [np.where((best_sets == combs_array[i]).all(axis=1))[0] for i in range(combs)]
-# unique_part_inds = []
-# for idx_array in anchors_for_best_set:
-#     temp_index_list = np.array([])
-#     for idx in idx_array:
-#         temp_index_list = np.concatenate((temp_index_list, part_inds[idx]))
-#     unique_part_inds.append(temp_index_list)
-# for k in range(num_anchors):
-#
-# for k in range
+anchors_for_best_set = [np.where((best_sets == combs_array[i]).all(axis=1))[0] for i in range(combs)]
+unique_part_inds = []
+for idx_array in anchors_for_best_set: # indices of anchors associated with each best set (some may be empty)
+    temp_index_list = np.array([], dtype=int8)
+    for idx in idx_array:
+        temp_index_list = np.concatenate([temp_index_list, part_inds[idx][0]])
+    if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
+
+
+
+for k in range(len(unique_part_inds)): # run through unique
     QoI_indices = best_sets[k]
-    temp_samples = samples[ part_inds[k] ]
+    temp_samples = samples[ unique_part_inds[k] ]
     temp_data = data[:, QoI_indices]
     Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
 
@@ -130,10 +131,10 @@ ref_lambda  = [0.5, 0.5]
                                             data = temp_data, \
                                             rho_D_M = d_distr_prob, \
                                             d_distr_samples = d_distr_samples)
-    # P[ part_inds[k] ] = temp_P*len( samples[ part_inds[k] ] )
-    # lam_vol[ part_inds[k] ] = temp_lam_vol*len( samples[ part_inds[k] ] )
-    P[ part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
-    lam_vol[ part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
+
+    # Version 2. Both should work identically. One might be faster.
+    P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
+    lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
     total.append( len(temp_P[temp_P>0]) )
 P = P/sum(total)
 lam_vol = lam_vol/sum(total)
