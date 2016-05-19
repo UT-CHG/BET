@@ -96,13 +96,18 @@ for Data_dim in [3, 5, 7, 9]:
                 best_sets.append( [int(best_set[i]) for i in range(Lambda_dim) ] )
                 # for each anchor point, record best_sets (accessing [0] for the best one).
             print  '\n'
-            # print best_sets
+            print best_sets
 
-            # have a dictionary object or something comparable track all nonempty choices of
-            # sets of QoI maps, list of indices into samples.
+            # identify number of unique partitions, store indices into each.
+            anchors_for_best_set = [np.where((best_sets == combs_array[i]).all(axis=1))[0] for i in range(combs)]
+            unique_part_inds = []
+            for idx_array in anchors_for_best_set: # indices of anchors associated with each best set (some may be empty)
+                temp_index_list = np.array([], dtype=int8)
+                for idx in idx_array:
+                    temp_index_list = np.concatenate([temp_index_list, part_inds[idx][0]])
+                if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
 
-                # feed each along with the set of QoIs into the inverse problem.
-                # solve inverse problem for a given reference lambda.
+
             lambda_info = []
             for lambda_test in [[x_ref, y_ref] for x_ref in ref_lambda for y_ref in ref_lambda]:
                 P = np.zeros(num_samples)
@@ -110,11 +115,11 @@ for Data_dim in [3, 5, 7, 9]:
                 total = []
                 print '\t Lambda_ref = (%0.2f, %0.2f)'%(lambda_test[0], lambda_test[1])
 
-                for k in range(num_anchors):
+                for k in range(len(unique_part_inds)): # run through unique
                     QoI_indices = best_sets[k]
-                    temp_samples = samples[ part_inds[k] ]
+                    temp_samples = samples[ unique_part_inds[k] ]
                     temp_data = data[:, QoI_indices]
-                    Q_ref = randQ(np.array([lambda_test]))[0][QoI_indices]
+                    Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
 
                     # Find the simple function approximation to data space density
                     (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
@@ -128,10 +133,10 @@ for Data_dim in [3, 5, 7, 9]:
                                                             data = temp_data, \
                                                             rho_D_M = d_distr_prob, \
                                                             d_distr_samples = d_distr_samples)
-                    # P[ part_inds[k] ] = temp_P*len( samples[ part_inds[k] ] )
-                    # lam_vol[ part_inds[k] ] = temp_lam_vol*len( samples[ part_inds[k] ] )
-                    P[ part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
-                    lam_vol[ part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
+
+                    # Version 2. Both should work identically. One might be faster.
+                    P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
+                    lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
                     total.append( len(temp_P[temp_P>0]) )
                 P = P/sum(total)
                 lam_vol = lam_vol/sum(total)
