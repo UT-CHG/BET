@@ -101,7 +101,7 @@ print best_sets
 P = np.zeros(num_samples)
 lam_vol = np.zeros(num_samples)
 total = []
-ref_lambda  = [0.5, 0.5]
+ref_lambda  = [0.25, 0.25]
 
 anchors_for_best_set = [np.where((best_sets == combs_array[i]).all(axis=1))[0] for i in range(combs)]
 unique_part_inds = []
