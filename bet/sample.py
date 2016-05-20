@@ -15,6 +15,7 @@ import scipy.io as sio
 import scipy.stats
 from bet.Comm import comm, MPI
 import bet.util as util
+import bet.sampling.LpGeneralizedSamples as lp
 
 class length_not_matching(Exception):
     """
@@ -809,6 +810,8 @@ class voronoi_sample_set(sample_set_base):
             self.set_kdtree()
         else:
             self.check_num()
+
+
         #TODO add exception if dimensions of x are wrong
         (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
         return (dist, ptr)
@@ -857,6 +860,124 @@ class voronoi_sample_set(sample_set_base):
             lam_vol = lam_vol/domain_width
         self._volumes = lam_vol
         self.global_to_local()
+
+    def estimate_local_volume(self, num_l_emulate_local=100,
+            max_num_l_emulate=1e3): 
+        r"""
+
+        Exactly calculates the volume fraction of the Voronoice cells associated
+        with ``samples``. Specifically we are calculating 
+        :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`. Here
+        all of the samples are drawn from the generalized Lp uniform distribution.
+
+        .. note ::
+
+            Estimated radii of the Voronoi cell associated with each sample.
+            WARNING: The ``input_domain`` MUST be scaled to the unit square.
+
+        Volume of the L-p ball is obtained from  Wang, X.. (2005). Volumes of
+        Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
+        `DOI 10.2307/30044198 <http://doi.org/10.2307/30044198>`_
+        
+        :param int num_l_emulate_local: The number of emulated samples.
+        :param int max_num_l_emulate: Maximum number of local emulated samples
+        
+        """
+        self.check_num()
+        # normalize the samples
+        samples = np.copy(self.get_values())
+        self.update_bounds()
+        samples = samples - self._left
+        samples = samples/self._width
+
+        kdtree = spatial.KDTree(samples)
+
+        # for each sample determine the appropriate radius of the Lp ball (this
+        # should be the distance to the farthest neighboring Voronoi cell)
+        # calculating this exactly is hard so we will estimate it as follows
+        # TODO it is unclear whether to use min, mean, or the first n nearest
+        # samples
+        sample_radii = None
+        if hasattr(self, '_radii'):
+            sample_radii = np.copy(getattr(self, '_radii'))
+
+        if sample_radii is None:
+            # Calculate the pairwise distances
+            if not np.isinf(self.p_norm):
+                pairwise_distance = spatial.distance.pdist(samples,
+                        p=self.p_norm)
+            else:
+                pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
+            pairwise_distance = spatial.distance.squareform(pairwise_distance)
+            pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
+            # Calculate mean, std of pairwise distances
+            sample_radii = np.std(pairwise_distance_ma, 0)*3
+        elif np.sum(sample_radii <=0) > 0:
+            # Calculate the pairwise distances
+            if not np.isinf(self.p_norm):
+                pairwise_distance = spatial.distance.pdist(samples,
+                        p=self.p_norm)
+            else:
+                pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
+            pairwise_distance = spatial.distance.squareform(pairwise_distance)
+            pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
+            # Calculate mean, std of pairwise distances
+            # TODO this may be too large/small
+            # Estimate radius as 2.*STD of the pairwise distance
+            sample_radii[sample_radii <= 0] = np.std(pairwise_distance_ma, 0)*2.
+
+        # determine the volume of the Lp ball
+        if not np.isinf(self.p_norm):
+            sample_Lp_ball_vol = sample_radii**self._dim * \
+                    scipy.special.gamma(1+1./self.p_norm) / \
+                    scipy.special.gamma(1+float(self._dim)/self.p_norm)
+        else:
+            sample_Lp_ball_vol = (2.0*sample_radii)**self._dim
+
+        # Set up local arrays for parallelism
+        self.global_to_local()
+        lam_vol_local = np.zeros(self._local_index.shape)
+
+        # parallize 
+        for i, iglobal in enumerate(self._local_index):
+            samples_in_cell = 0
+            total_samples = 10
+            while samples_in_cell < num_l_emulate_local and \
+                    total_samples < max_num_l_emulate:
+                total_samples = total_samples*10
+                # Sample within an Lp ball until num_l_emulate_local samples are
+                # present in the Voronoi cell
+                local_lambda_emulate = lp.Lp_generalized_uniform(self._dim,
+                        total_samples, self.p_norm, scale=sample_radii[iglobal],
+                        loc=samples[iglobal])
+
+                # determine the number of samples in the Voronoi cell (intersected
+                # with the input_domain)
+                if self._domain is not None:
+                    inside = np.all(np.logical_and(local_lambda_emulate >= 0.0,
+                            local_lambda_emulate <= 1.0), 1)
+                    local_lambda_emulate = local_lambda_emulate[inside]
+
+                (_, emulate_ptr) = kdtree.query(local_lambda_emulate,
+                        p=self.p_norm,
+                        distance_upper_bound=sample_radii[iglobal])
+
+                samples_in_cell = np.sum(np.equal(emulate_ptr, iglobal))
+
+            # the volume for the Voronoi cell corresponding to this sample is the
+            # the volume of the Lp ball times the ratio
+            # "num_samples_in_cell/num_total_local_emulated_samples" 
+            lam_vol_local[i] = sample_Lp_ball_vol[iglobal]*float(samples_in_cell)\
+                    /float(total_samples)
+
+        self.set_volumes_local(lam_vol_local)
+        self.local_to_global()
+
+        # normalize by the volume of the input_domain
+        domain_vol = np.sum(self.get_volumes())
+        self.set_volumes(self._volumes / domain_vol)
+        self.set_volumes_local(self._volumes_local / domain_vol)
+
 
 class sample_set(voronoi_sample_set):
     """
