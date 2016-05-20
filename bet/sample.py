@@ -898,8 +898,8 @@ class voronoi_sample_set(sample_set_base):
         # TODO it is unclear whether to use min, mean, or the first n nearest
         # samples
         sample_radii = None
-        if hasattr(self, '_radii'):
-            sample_radii = np.copy(getattr(self, '_radii'))
+        if hasattr(self, '_normalized_radii'):
+            sample_radii = np.copy(getattr(self, '_normalized_radii'))
 
         if sample_radii is None:
             # Calculate the pairwise distances
