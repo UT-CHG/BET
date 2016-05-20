@@ -15,6 +15,8 @@ import scipy.io as sio
 from pyDOE import lhs
 from bet.Comm import comm
 import bet.sample as sample
+import bet.util as util
+import collections
 
 def loadmat(save_file, disc_name=None, model=None):
     """
@@ -218,7 +220,106 @@ class sampler(object):
         return self.random_sample_set(sample_type, input_sample_set,
                                        num_samples, criterion, parallel)
 
-    def compute_QoI_and_create_discretization(self, input_sample_set, savefile=None, parallel=False):
+    def regular_sample_set(self, input_sample_set, num_samples_per_dim=1):
+        """
+        Sampling algorithm for generating a regular grid of samples taken
+        on the domain present with input_sample_set (a default unit hypercube
+        is used if no domain has been specified)
+
+        :param input_sample_set: samples to evaluate the model at
+        :type input_sample_set: :class:`~bet.sample.sample_set` with
+            num_smaples
+        :param num_samples_per_dim: number of samples per dimension
+        :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+            (input_sample_set._dim,)
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output of ``num_samples``
+        """
+
+        # Create N samples
+        dim = input_sample_set.get_dim()
+
+        if not isinstance(num_samples_per_dim, collections.Iterable):
+            num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
+        if np.any(np.less(num_samples_per_dim, 0)):
+            print 'Warning: num_smaples_per_dim must be greater than 0'
+
+        self.num_samples = np.product(num_samples_per_dim)
+
+        if input_sample_set.get_domain() is None:
+            # create the domain
+            input_domain = np.array([[0., 1.]] * dim)
+            input_sample_set.set_domain(input_domain)
+        else:
+            input_domain = input_sample_set.get_domain()
+        # update the bounds based on the number of samples
+        input_sample_set.update_bounds(self.num_samples)
+        input_values = np.copy(input_sample_set._width)
+
+        vec_samples_dimension = np.empty((dim), dtype=object)
+        for i in np.arange(0, dim):
+            vec_samples_dimension[i] = list(np.linspace(
+                input_domain[i,0], input_domain[i,1],
+                num_samples_per_dim[i]+2))[1:num_samples_per_dim[i]+1]
+
+        arrays_samples_dimension = np.meshgrid(
+            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+
+        for i in np.arange(0, dim):
+            input_values[:,i:i+1] = np.vstack(arrays_samples_dimension[i].flat[:])
+
+        input_sample_set.set_values(input_values)
+
+        return input_sample_set
+
+    def regular_sample_set_domain(self, input_domain, num_samples_per_dim=1):
+        """
+        Sampling algorithm for generating a regular grid of samples taken
+        on the domain present with input_sample_set (a default unit hypercube
+        is used if no domain has been specified)
+
+        :param input_domain: min and max bounds for the input values,
+            ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``
+        :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
+        :param num_samples_per_dim: number of samples per dimension
+        :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+            (input_sample_set._dim,)
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output of ``num_samples``
+
+        """
+        # Create N samples
+        input_sample_set = sample.sample_set(input_domain.shape[0])
+        input_sample_set.set_domain(input_domain)
+
+        return self.regular_sample_set(input_sample_set, num_samples_per_dim)
+
+    def regular_sample_set_dimension(self, input_dim, num_samples_per_dimension):
+        """
+        Sampling algorithm for generating a regular grid of samples taken
+        on a unit hypercube of dimension input_dim
+
+        :param int input_dim: the dimension of the input space
+        :param num_samples_per_dim: number of samples per dimension
+        :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+            (input_sample_set._dim,)
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output of ``num_samples``
+
+        """
+        # Create N samples
+        input_sample_set = sample.sample_set(input_dim)
+
+        return self.regular_sample_set(input_sample_set, num_samples_per_dimension)
+
+    def compute_QoI_and_create_discretization(self, input_sample_set, savefile=None,
+                                              parallel=False):
         """
         Samples the model at ``input_sample_set`` and saves the results.
 

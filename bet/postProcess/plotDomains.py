@@ -264,7 +264,7 @@ def show_data(sample_obj, rho_D=None, Q_ref=None, sample_nos=None,
     the other markers.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.sample_set`
+    :type sample_obj: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
@@ -280,7 +280,9 @@ def show_data(sample_obj, rho_D=None, Q_ref=None, sample_nos=None,
         pairwise or tripletwise data sample scatter plots in 2 or 3
         dimensions
 
-    """  
+    """
+    if isinstance(sample_obj, sample.discretization):
+        sample_obj = sample_obj._output_sample_set
     # If there is density function given determine the pointwise probability
     # values of each sample based on the value in the data space. Otherwise,
     # color the samples in numerical order.
@@ -522,7 +524,6 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True,
         interactive=False):
     r"""
-
     Creates two-dimensional projections of scatter plots of samples.
     
     :param sample_obj: Object containing the samples to plot
@@ -555,10 +556,9 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True
             xlabel = r'$\lambda_{'+str(showdim+1)+r'}$'
             ylabel = r'$\lambda_{'+str(i+1)+r'}$'
 
-            filenames = [img_folder+'domain_l'+str(showdim+1)+'_l'+\
-                    str(i+1)+'.eps', img_folder+'l'+str(showdim+1)+\
-                    '_l'+str(i+1)+'_domain_L_cs.eps']
-            filename = filenames[0]
+            filename = [img_folder+'domain_l'+str(showdim+1)+'_l'+\
+                    str(i+1)+'.eps']
+
             plt.scatter(sample_obj.get_values()[:, 0], sample_obj.get_values()[:, 1])
             if save:
                 plt.autoscale(tight=True)
@@ -576,10 +576,9 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True
             xlabel = r'$\lambda_{'+str(x+1)+r'}$'
             ylabel = r'$\lambda_{'+str(y+1)+r'}$'
 
-            filenames = [img_folder+'domain_l'+str(x+1)+'_l'+\
-                    str(y+1)+'.eps', img_folder+'l'+str(x+1)+\
-                    '_l'+str(y+1)+'_domain_L_cs.eps']
-            filename = filenames[0]
+            filename = [img_folder+'domain_l'+str(x+1)+'_l'+\
+                    str(y+1)+'.eps']
+
             plt.scatter(sample_obj.get_values()[:, x], sample_obj.get_values()[:, y])
             if save:
                 plt.autoscale(tight=True)
@@ -641,7 +640,7 @@ def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
             sample_obj_temp = sample.sample_set(2)
             sample_obj_temp.set_values(sample_obj.get_values()[:, [showdim, i]])
 
-            if p_ref:
+            if p_ref is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None,
                         color=color, p_ref=p_ref[[showdim, i]], save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
@@ -664,7 +663,7 @@ def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
             sample_obj_temp = sample.sample_set(2)
             sample_obj_temp.set_values(sample_obj.get_values()[:, [x, y]])
 
-            if p_ref:
+            if p_ref is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                        p_ref=p_ref[[x, y]], save=True, interactive=False,
                        xlabel=xlabel, ylabel=ylabel, filename=myfilename)
