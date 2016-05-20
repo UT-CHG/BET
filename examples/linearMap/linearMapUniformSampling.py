@@ -76,7 +76,7 @@ See what happens if the MC assumption is not assumed to be true, and
 if different numbers of points are used to estimate the volumes of
 the Voronoi cells.
 '''
-MC_assumption = False
+MC_assumption = True
 # Estimate volumes of Voronoi cells associated with the parameter samples
 if MC_assumption is False:
     input_samples.estimate_volume(n_mc_points=1E5)
