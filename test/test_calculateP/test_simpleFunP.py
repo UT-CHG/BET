@@ -917,3 +917,221 @@ class test_uniform_partition_uniform_distribution_data_samples_3D(data_3D,
         super(test_uniform_partition_uniform_distribution_data_samples_3D, self).setUp()
 
 
+class uniform_partition_uniform_distribution_rectangle_size(prob_uniform):
+    """
+    Set up :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size` on data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        self.data_prob = sFun.uniform_partition_uniform_distribution_rectangle_size(
+            self.data, self.Q_ref, rect_size=1.0, M=67, num_d_emulate=1E3)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
+
+        if type(self.Q_ref) != np.array:
+            self.Q_ref = np.array([self.Q_ref])
+        if len(self.data_domain.shape) == 1:
+            self.data_domain = np.expand_dims(self.data_domain, axis=0)
+
+        self.rect_domain = np.zeros((self.data_domain.shape[0], 2))
+
+        binsize = 1.0
+        r_width = binsize * np.ones(self.data_domain[:, 1].shape)
+
+        self.rect_domain[:, 0] = self.Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = self.Q_ref + .5 * r_width
+
+    def test_M(self):
+        """
+        Test that the right number of d_distr_samples are used to create
+        rho_D_M.
+        """
+        assert len(self.rho_D_M) == 67
+
+    def test_domain(self):
+        """
+        Test that the probabilities within the prescribed domain are non-zero
+        and that the probabilities outside of the prescribed domain are zero.
+        """
+        # d_distr_samples are (mdim, M)
+        # rect_domain is (mdim, 2)
+        inside = np.logical_and(np.all(np.greater_equal(self.d_distr_samples,
+                                                        self.rect_domain[:, 0]), axis=1),
+                                np.all(np.less_equal(self.d_distr_samples,
+                                                     self.rect_domain[:, 1]), axis=1))
+        msg = "Due to the inherent randomness of this method, this may fail."
+        print msg
+        print np.sum(self.rho_D_M[inside] >= 0.0)
+        assert np.sum(self.rho_D_M[inside] >= 0.0) < 100
+        print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
+        assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0) < 100
+
+
+class test_uniform_partition_uniform_distribution_rectangle_size_01D(data_01D,
+                                            uniform_partition_uniform_distribution_rectangle_size):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size` on 01D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_size_01D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_size_01D, self).setUp()
+
+
+class test_uniform_partition_uniform_distribution_rectangle_size_1D(data_1D,
+                                            uniform_partition_uniform_distribution_rectangle_size):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size` on 1D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_size_1D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_size_1D, self).setUp()
+
+
+class test_uniform_partition_uniform_distribution_rectangle_size_2D(data_2D,
+                                            uniform_partition_uniform_distribution_rectangle_size):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size` on 2D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_size_2D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_size_2D, self).setUp()
+
+
+class test_uniform_partition_uniform_distribution_rectangle_size_3D(data_3D,
+                                            uniform_partition_uniform_distribution_rectangle_size):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size` on 3D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_size_3D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_size_3D, self).setUp()
+
+
+class uniform_partition_uniform_distribution_rectangle_domain(prob_uniform):
+    """
+    Set up :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain` on data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        if type(self.Q_ref) != np.array:
+            Q_ref = np.array([self.Q_ref])
+        else:
+            Q_ref = self.Q_ref
+        if len(self.data_domain.shape) == 1:
+            data_domain = np.expand_dims(self.data_domain, axis=0)
+        else:
+            data_domain = self.data_domain
+
+        self.rect_domain = np.zeros((data_domain.shape[0], 2))
+        r_width = 0.1 * data_domain[:, 1]
+
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
+
+        self.data_prob = sFun.uniform_partition_uniform_distribution_rectangle_domain(
+            self.data, self.rect_domain.transpose(), M=67, num_d_emulate=1E3)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
+
+    def test_M(self):
+        """
+        Test that the right number of d_distr_samples are used to create
+        rho_D_M.
+        """
+        assert len(self.rho_D_M) == 67
+
+    def test_domain(self):
+        """
+        Test that the probabilities within the prescribed domain are non-zero
+        and that the probabilities outside of the prescribed domain are zero.
+        """
+        # d_distr_samples are (mdim, M)
+        # rect_domain is (mdim, 2)
+        inside = np.logical_and(np.all(np.greater_equal(self.d_distr_samples,
+                                                        self.rect_domain[:, 0]), axis=1),
+                                np.all(np.less_equal(self.d_distr_samples,
+                                                     self.rect_domain[:, 1]), axis=1))
+        msg = "Due to the inherent randomness of this method, this may fail."
+        print msg
+        print np.sum(self.rho_D_M[inside] >= 0.0)
+        assert np.sum(self.rho_D_M[inside] >= 0.0) < 100
+        print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
+        assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0) < 100
+
+
+class test_uniform_partition_uniform_distribution_rectangle_domain_01D(data_01D,
+                                                uniform_partition_uniform_distribution_rectangle_domain):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain` on 01D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_01D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_01D, self).setUp()
+
+
+class test_uniform_partition_uniform_distribution_rectangle_domain_1D(data_1D,
+                                                uniform_partition_uniform_distribution_rectangle_domain):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain` on 1D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_1D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_1D, self).setUp()
+
+
+class test_uniform_partition_uniform_distribution_rectangle_domain_2D(data_2D,
+                                                uniform_partition_uniform_distribution_rectangle_domain):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain` on 2D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_2D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_2D, self).setUp()
+
+
+class test_uniform_partition_uniform_distribution_rectangle_domain_3D(data_3D,
+                                                uniform_partition_uniform_distribution_rectangle_domain):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain` on 3D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_3D, self).createData()
+        super(test_uniform_partition_uniform_distribution_rectangle_domain_3D, self).setUp()

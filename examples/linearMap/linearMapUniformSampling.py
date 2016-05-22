@@ -8,7 +8,8 @@ linear 3-to-2 map. We refer to the map as the QoI map,
 or just a QoI. We refer to the range of the QoI map as
 the data space.
 The 3-D input space is discretized with i.i.d. uniform
-random samples. We refer to the input space as the
+random samples or a regular grid of samples.
+We refer to the input space as the
 parameter space, and use parameter to refer to a particular
 point (e.g., a particular random sample) in this space.
 A reference parameter is used to define a reference QoI datum
