@@ -110,8 +110,8 @@ for idx_array in anchors_for_best_set: # indices of anchors associated with each
     temp_index_list = np.array([], dtype=int8)
     for idx in idx_array:
         temp_index_list = np.concatenate([temp_index_list, part_inds[idx][0]])
-    # if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
-    unique_part_inds.append(temp_index_list)
+    if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
+    # unique_part_inds.append(temp_index_list)
 
 # figure out what happens if we have empty entries in best sets, make sure ordering is correct.
 
@@ -121,6 +121,7 @@ for k in range(len(unique_part_inds)): # run through unique
         QoI_indices = combs_array[k]
         temp_samples = samples[ unique_part_inds[k] ]
         temp_data = data[:, QoI_indices]
+        temp_data = temp_data[unique_part_inds[k], :]
         Q_ref = Q(np.array([ref_lambda]))[0][QoI_indices]
 
         # Find the simple function approximation to data space density

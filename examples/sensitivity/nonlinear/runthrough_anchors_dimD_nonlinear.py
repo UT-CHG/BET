@@ -118,6 +118,7 @@ for Data_dim in [3, 5, 7, 9]:
                     QoI_indices = combs_array[k]
                     temp_samples = samples[ unique_part_inds[k] ]
                     temp_data = data[:, QoI_indices]
+                    temp_data = temp_data[unique_part_inds[k], :]
                     Q_ref = randQ(np.array([lambda_test]))[0][QoI_indices]
 
                     # Find the simple function approximation to data space density
