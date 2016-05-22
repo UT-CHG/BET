@@ -1,4 +1,4 @@
-import numpy as np
+
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cQoI
 import bet.calculateP.simpleFunP as simpleFunP
@@ -53,7 +53,7 @@ for Data_dim in [3, 5, 7, 9]:
         print '\n \t random integer: %d \n'%rand_int
         highest_prob = []
 
-        for num_anchors in [1, 2, 5, 10, 25, 50, 75, 100]: # range(5,101,5):
+        for num_anchors in [1, 50, 100, 1000]: # range(5,101,5):
             # define samples in parameter space, random anchor points
             np.random.seed(0)
             samples = np.random.random([num_samples, Lambda_dim])
@@ -71,12 +71,11 @@ for Data_dim in [3, 5, 7, 9]:
                 sys.exit("Something went wrong with nearest neighbor search. Some samples missed.")
 
             # compute possible sets of quantities of interest
-            # combs = int(comb(Data_dim, Lambda_dim))
-            # combs_array = np.array(list(combinations(range(Data_dim),2)))
+            combs = int(comb(Data_dim, Lambda_dim))
+            combs_array = np.array(list(combinations(range(Data_dim),2)))
 
             # feed each list of indices into samples and data, perform chooseQoIs
             best_sets = []
-
             for k in range(num_anchors):
                 samples_k = np.array(anchors[k],ndmin=2)
                 # samples_k =  np.array(anchors[k:k+1], ndmin =2)
@@ -90,19 +89,24 @@ for Data_dim in [3, 5, 7, 9]:
                                                     centers = samples_k, \
                                                     normalize=True)
                 print '\n Partition %d  - Anchor =\n\t'%(k+1), anchors[k,:], '\n'
-                best_set = cQoI.chooseOptQoIs_large(grad_tensor = G, \
+                best_set_for_anchor = cQoI.chooseOptQoIs_large(grad_tensor = G, \
                                                     num_optsets_return = 1, \
                                                     volume = False )[Lambda_dim-2][0][1:]
-                best_sets.append( [int(best_set[i]) for i in range(Lambda_dim) ] )
+                best_sets.append( [int(best_set_for_anchor[i]) for i in range(Lambda_dim) ] )
                 # for each anchor point, record best_sets (accessing [0] for the best one).
             print  '\n'
-            # print best_sets
+            print best_sets
 
-            # have a dictionary object or something comparable track all nonempty choices of
-            # sets of QoI maps, list of indices into samples.
+            # identify number of unique partitions, store indices into each.
+            anchors_for_best_set = [np.where((best_sets == combs_array[i]).all(axis=1))[0] for i in range(combs)]
+            unique_part_inds = []
+            for idx_array in anchors_for_best_set: # indices of anchors associated with each best set (some may be empty)
+                temp_index_list = np.array([], dtype=int8)
+                for idx in idx_array:
+                    temp_index_list = np.concatenate([temp_index_list, part_inds[idx][0]])
+                if temp_index_list.shape[0] > 0: unique_part_inds.append(temp_index_list)
 
-                # feed each along with the set of QoIs into the inverse problem.
-                # solve inverse problem for a given reference lambda.
+
             lambda_info = []
             for lambda_test in [[x_ref, y_ref] for x_ref in ref_lambda for y_ref in ref_lambda]:
                 P = np.zeros(num_samples)
@@ -110,10 +114,11 @@ for Data_dim in [3, 5, 7, 9]:
                 total = []
                 print '\t Lambda_ref = (%0.2f, %0.2f)'%(lambda_test[0], lambda_test[1])
 
-                for k in range(num_anchors):
-                    QoI_indices = best_sets[k]
-                    temp_samples = samples[ part_inds[k] ]
+                for k in range(len(unique_part_inds)): # run through unique
+                    QoI_indices = combs_array[k]
+                    temp_samples = samples[ unique_part_inds[k] ]
                     temp_data = data[:, QoI_indices]
+                    temp_data = temp_data[unique_part_inds[k], :]
                     Q_ref = randQ(np.array([lambda_test]))[0][QoI_indices]
 
                     # Find the simple function approximation to data space density
@@ -128,10 +133,9 @@ for Data_dim in [3, 5, 7, 9]:
                                                             data = temp_data, \
                                                             rho_D_M = d_distr_prob, \
                                                             d_distr_samples = d_distr_samples)
-                    # P[ part_inds[k] ] = temp_P*len( samples[ part_inds[k] ] )
-                    # lam_vol[ part_inds[k] ] = temp_lam_vol*len( samples[ part_inds[k] ] )
-                    P[ part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
-                    lam_vol[ part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
+
+                    P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
+                    lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_lam_vol[temp_lam_vol>0])
                     total.append( len(temp_P[temp_P>0]) )
                 P = P/sum(total)
                 lam_vol = lam_vol/sum(total)

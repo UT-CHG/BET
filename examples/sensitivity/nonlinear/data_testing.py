@@ -9,10 +9,10 @@ np.random.seed(0)
 # rand_int_list += [int(np.round(np.random.random(1) * i)) for i in range(5,1005,100)]
 print rand_int_list, '\n'
 # selection = range(8) # num_anchors 1, 2, 5, 10, 25, 50, 75, 100 (0 ... 7)
-selection = range(0,5)
+selection = range(4)
 for Data_dim in [3, 5, 7, 9]:
     highest_prob = []
-    for rand_int in rand_int_list:
+    for rand_int in rand_int_list[0:1]:
         highest_prob.append(np.load('prob_reduction_results_seed%d_dimD%d.npy'%(rand_int, Data_dim)))
     highest_prob = np.array(highest_prob)
     for i in range(len(highest_prob)):
