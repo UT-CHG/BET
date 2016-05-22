@@ -137,7 +137,7 @@ for k in range(len(unique_part_inds)): # run through unique
                                                 d_distr_samples = d_distr_samples)
 
         P[ unique_part_inds[k] ] = temp_P*len(temp_P[temp_P>0])
-        lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_P[temp_P>0])
+        lam_vol[ unique_part_inds[k] ] = temp_lam_vol*len(temp_lam_vol[temp_lam_vol>0])
         total.append( len(temp_P[temp_P>0]) )
 P = P/sum(total)
 lam_vol = lam_vol/sum(total)
