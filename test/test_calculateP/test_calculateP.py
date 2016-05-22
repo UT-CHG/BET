@@ -21,6 +21,7 @@ import bet.util as util
 from bet.Comm import comm 
 
 data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
+
 class TestEmulateIIDLebesgue(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.emulate_iid_lebesgue`.
@@ -144,7 +145,8 @@ class TestProbMethod_3to2(unittest.TestCase):
         self.inputs.set_values(np.loadtxt(data_path + "/3to2_samples.txt.gz"))
         self.outputs.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))
         Q_ref = np.array([0.422, 0.9385])
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
 
         self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
@@ -208,7 +210,8 @@ class TestProbMethod_3to1(unittest.TestCase):
         self.inputs.set_values(np.loadtxt(data_path + "/3to2_samples.txt.gz"))
         self.outputs.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz")[:,0])
         Q_ref = np.array([0.422])
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
 
         self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
@@ -281,7 +284,8 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.outputs.set_values(np.dot(self.inputs._values, rnd.rand(10, 4)))
         Q_ref = np.mean(self.outputs._values, axis=0)
         self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
                                         output_probability_set=self.output_prob,
@@ -353,7 +357,8 @@ class TestProbMethod_1to1(unittest.TestCase):
         self.inputs_emulated = calcP.emulate_iid_lebesgue(self.lam_domain,
                                                          self.num_l_emulate,
                                                          globalize = True) 
-        self.output_prob = simpleFunP.uniform_hyperrectangle(self.outputs, Q_ref = Q_ref, bin_ratio=0.2, center_pts_per_edge=1)
+        self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
                                         output_probability_set=self.output_prob,
