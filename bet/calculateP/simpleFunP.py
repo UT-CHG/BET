@@ -45,8 +45,8 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
         relatively small number here like 50.
-    :param rect_size: The scale used to determine the support of the
-        uniform distribution as ``rect_size = (data_max-data_min)*rect_scale``
+    :param rect_size: Determines the size of the support of the
+        uniform distribution on a generalized rectangle
     :type rect_size: double or list()
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption
@@ -248,7 +248,8 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
 
@@ -279,9 +280,8 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
 
 
-    return uniform_partition_uniform_distribution_rectangle_size(data_set, domain_center,
-                                                                 domain_lengths, M,
-                                                                 num_d_emulate)
+    return uniform_partition_uniform_distribution_rectangle_size(data_set,
+                        domain_center, domain_lengths, M, num_d_emulate)
 
 
 def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_size,
@@ -408,9 +408,10 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
  
     return regular_partition_uniform_distribution_rectangle_size(data_set, domain_center,
-                                                                 domain_lengths, center_pts_per_edge)
+                                                    domain_lengths, center_pts_per_edge)
 
-def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref, rect_scale, center_pts_per_edge=1):
+def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
+                                                            rect_scale, center_pts_per_edge=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -422,7 +423,8 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref, rec
     ``len(d_distr_samples) == 3^mdim``.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param rect_scale: The scale used to determine the width of the
         uniform distributiion as ``rect_size = (data_max-data_min)*rect_scale``
     :type rect_scale: double or list()
@@ -460,8 +462,8 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref, rec
         rect_scale = rect_scale*np.ones((dim, ))
 
     rect_size = (np.max(data, 0) - np.min(data, 0))*rect_scale
-    return regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_size,
-            center_pts_per_edge)
+    return regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
+            rect_size, center_pts_per_edge)
 
 def uniform_partition_uniform_distribution_data_samples(data_set):
     r"""
@@ -613,7 +615,8 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate
     direction.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param int M: Defines number M samples in D used to define
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a
@@ -757,14 +760,16 @@ def user_discretization_user_distribution(data_set, data_discretization_set,
 
     my_discretization.set_emulated_oo_ptr()
 
-    my_discretization._output_probability_set.set_probabilities(np.zeros((num_samples_discretize_D,)))
+    my_discretization._output_probability_set.set_probabilities(
+        np.zeros((num_samples_discretize_D,)))
 
     for i in range(num_samples_discretize_D):
         Itemp = np.equal(my_discretization.get_emulated_oo_ptr(), i)
         Itemp_sum = float(np.sum(Itemp))
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         if Itemp_sum > 0:
-            my_discretization._output_probability_set._probabilities[i] = Itemp_sum / num_iid_samples
+            my_discretization._output_probability_set._probabilities[i] = \
+                Itemp_sum / num_iid_samples
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = my_discretization._output_probability_set
