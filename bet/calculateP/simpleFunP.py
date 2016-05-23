@@ -360,7 +360,8 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
     return s_set
 
 
-def regular_partition_uniform_distribution_rectangle_domain(data_set, rect_domain, center_pts_per_edge=1):
+def regular_partition_uniform_distribution_rectangle_domain(data_set,
+                                            rect_domain, center_pts_per_edge=1):
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
@@ -407,11 +408,11 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     domain_center = np.mean(rect_domain, 0)
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
  
-    return regular_partition_uniform_distribution_rectangle_size(data_set, domain_center,
-                                                    domain_lengths, center_pts_per_edge)
+    return regular_partition_uniform_distribution_rectangle_size(data_set,
+                            domain_center, domain_lengths, center_pts_per_edge)
 
 def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
-                                                            rect_scale, center_pts_per_edge=1):
+                                            rect_scale, center_pts_per_edge=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
