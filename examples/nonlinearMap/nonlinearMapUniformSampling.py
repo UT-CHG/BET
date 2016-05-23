@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 r"""
 This example generates samples on a 2D grid and evaluates
