@@ -76,8 +76,6 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
         msg += "bet.sample.discretization or np.ndarray"
         raise wrong_argument_type(msg)
 
-    bin_size = (np.max(values, 0) - np.min(values, 0))*bin_ratio
-
     if not isinstance(rect_size, collections.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less(rect_size, 0)):
