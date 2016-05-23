@@ -6,11 +6,11 @@ This module provides methods for calulating the probability measure
 
 * :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
     the probability for a set of emulation points.
-* :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the probability based on pre-defined volumes.
+* :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the 
+    probability based on pre-defined volumes.
 """
 from bet.Comm import comm, MPI 
 import numpy as np
-import scipy.spatial as spatial
 import bet.util as util
 import bet.sample as samp
 
@@ -50,6 +50,10 @@ def prob_emulated(discretization, globalize=True):
     ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
     This is added to the emulated input sample set object.
 
+    .. todo::
+        
+        @smattis the way this is written globalize does nothing
+
     :param discretization: An object containing the discretization information.
     :type class:`bet.sample.discretization`
     :param bool globalize: Makes local variables global.
@@ -59,7 +63,7 @@ def prob_emulated(discretization, globalize=True):
     # Check dimensions
     discretization.check_nums()
     op_num = discretization._output_probability_set.check_num()
-    emi_num = discretization._emulated_input_sample_set.check_num()
+    discretization._emulated_input_sample_set.check_num()
 
     # Check for necessary properties
     if discretization._io_ptr_local is None:
@@ -68,20 +72,21 @@ def prob_emulated(discretization, globalize=True):
         discretization.set_emulated_ii_ptr(globalize=False)
 
     # Calculate Probabilties
-    P = np.zeros((discretization._emulated_input_sample_set._values_local.shape[0],))
-    d_distr_emu_ptr = discretization._io_ptr[discretization._emulated_ii_ptr_local]
+    P = np.zeros((discretization._emulated_input_sample_set.\
+            _values_local.shape[0],))
+    d_distr_emu_ptr = discretization._io_ptr[discretization.\
+            _emulated_ii_ptr_local]
     for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(d_distr_emu_ptr, i)
             Itemp_sum = np.sum(Itemp)
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:
-                P[Itemp] = discretization._output_probability_set._probabilities[i]/Itemp_sum
+                P[Itemp] = discretization._output_probability_set.\
+                        _probabilities[i]/Itemp_sum
     
     discretization._emulated_input_sample_set._probabilities_local = P
-    
     pass
-
 
 def prob(discretization): 
     r"""
@@ -106,19 +111,22 @@ def prob(discretization):
 
     # Calculate Probabilities
     if discretization._input_sample_set._values_local is None:
-            discretization._input_sample_set.global_to_local()
+        discretization._input_sample_set.global_to_local()
     P_local = np.zeros((len(discretization._io_ptr_local),))
     for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(discretization._io_ptr_local, i)
-            Itemp_sum = np.sum(discretization._input_sample_set._volumes_local[Itemp])
+            Itemp_sum = np.sum(discretization._input_sample_set.\
+                    _volumes_local[Itemp])
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:            
-                P_local[Itemp] = discretization._output_probability_set._probabilities[i]*discretization._input_sample_set._volumes_local[Itemp]/Itemp_sum
+                P_local[Itemp] = discretization._output_probability_set.\
+                        _probabilities[i]*discretization._input_sample_set.\
+                        _volumes_local[Itemp]/Itemp_sum
         
-    discretization._input_sample_set._probabilities = util.get_global_values(P_local)
+    discretization._input_sample_set._probabilities = util.\
+            get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
-
 
 def prob_mc(discretization): 
     r"""
@@ -136,17 +144,18 @@ def prob_mc(discretization):
 
     # Check Dimensions
     num = discretization.check_nums()
-    op_num = discretization._output_probability_set.check_num()
+    discretization._output_probability_set.check_num()
     if discretization._output_probability_set._values_local is None:
         discretization._output_probability_set.global_to_local()
     if discretization._emulated_input_sample_set._values_local is None:
         discretization._emulated_input_sample_set.global_to_local()
 
     # Calculate Volumes
-    (_, emulate_ptr) = discretization._input_sample_set.query(discretization._emulated_input_sample_set._values_local)
+    (_, emulate_ptr) = discretization._input_sample_set.query(discretization.\
+            _emulated_input_sample_set._values_local)
     vol = np.zeros((num,))
     for i in range(num):
-        vol[i] = np.sum(np.equal(emulate_ptr,i))
+        vol[i] = np.sum(np.equal(emulate_ptr, i))
     cvol = np.copy(vol)
     comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
     vol = cvol

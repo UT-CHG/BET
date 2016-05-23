@@ -45,11 +45,11 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y',
                filename='scatter2d'):
     r"""
-    Creates a two-dimensional scatter plot of the samples within the sample object
-    colored by ``color`` (usually an array of pointwise probability density values).
-    A reference sample (``p_ref``) can be chosen by the user.
-    This reference sample will be plotted as a mauve circle twice the size of the
-    other markers.
+    Creates a two-dimensional scatter plot of the samples within the sample
+    object colored by ``color`` (usually an array of pointwise probability
+    density values).  A reference sample (``p_ref``) can be chosen by the user.
+    This reference sample will be plotted as a mauve circle twice the size of
+    the other markers.
 
     :param sample_obj: contains samples to create scatter plot
     :type sample_obj: :class:`~bet.sample.sample_set`
@@ -112,11 +112,11 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
                interactive=False, xlabel='x', ylabel='y', zlabel='z',
                filename="scatter3d"):
     r"""
-    Creates a three-dimensional scatter plot of samples within the sample object
-    colored by ``color`` (usually an array of pointwise probability density values).
-    A reference sample (``p_ref``) can be chosen by the user.
-    This reference sample will be plotted as a mauve circle twice the size of the
-    other markers.
+    Creates a three-dimensional scatter plot of samples within the sample
+    object colored by ``color`` (usually an array of pointwise probability
+    density values). A reference sample (``p_ref``) can be chosen by the user.
+    This reference sample will be plotted as a mauve circle twice the size of
+    the other markers.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.sample_set`
@@ -183,14 +183,15 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
 def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
                save=True, interactive=False, lnums=None, showdim=None):
     r"""
-    Create scatter plots of samples within the sample object
-    colored by ``color`` (usually an array of pointwise probability density values).
-    A reference sample (``p_ref``) can be chosen by the user.
-    This reference sample will be plotted as a mauve circle twice the size of the
-    other markers.
+    Create scatter plots of samples within the sample object colored by
+    ``color`` (usually an array of pointwise probability density values).  A
+    reference sample (``p_ref``) can be chosen by the user.  This reference
+    sample will be plotted as a mauve circle twice the size of the other
+    markers.
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set`
+    :type sample_disc: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density function on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
@@ -361,7 +362,8 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     :math:`Q_{ref}`.
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set`
+    :type sample_disc: :class:`~bet.sample.discretization` or 
+        :class:`~bet.sample.sample_set`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
@@ -427,6 +429,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
                                     ref_markers, ref_colors, xlabel=xlabel,
                                     ylabel=ylabel, triangles=triangles, save=True,
                                     interactive=False, filenames=filenames)
+
             else:
                 show_data_domain_2D(sample_disc_temp, None,
                                     ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
@@ -468,7 +471,8 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set`
+    :type sample_disc: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, 2)
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
@@ -531,8 +535,8 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
         plt.close()
 
 
-def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True,
-                        interactive=False):
+def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all',
+                        save=True, interactive=False):
     r"""
 
     Creates two-dimensional projections of scatter plots of samples.
@@ -571,7 +575,8 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True
                          str(i + 1) + '.eps', img_folder + 'l' + str(showdim + 1) + \
                          '_l' + str(i + 1) + '_domain_L_cs.eps']
             filename = filenames[0]
-            plt.scatter(sample_obj.get_values()[:, 0], sample_obj.get_values()[:, 1])
+            plt.scatter(sample_obj.get_values()[:, 0],
+                    sample_obj.get_values()[:, 1]) 
             if save:
                 plt.autoscale(tight=True)
                 plt.xlabel(xlabel)
@@ -592,7 +597,8 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all', save=True
                          str(y + 1) + '.eps', img_folder + 'l' + str(x + 1) + \
                          '_l' + str(y + 1) + '_domain_L_cs.eps']
             filename = filenames[0]
-            plt.scatter(sample_obj.get_values()[:, x], sample_obj.get_values()[:, y])
+            plt.scatter(sample_obj.get_values()[:, x],
+                    sample_obj.get_values()[:, y]) 
             if save:
                 plt.autoscale(tight=True)
                 plt.xlabel(xlabel)

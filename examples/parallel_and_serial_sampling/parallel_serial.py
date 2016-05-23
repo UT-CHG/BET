@@ -8,6 +8,7 @@
 import os, subprocess
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
+from bet.Comm import comm
 
 def lb_model(input_data):
     io_file_name = "io_file_"+str(comm.rank)

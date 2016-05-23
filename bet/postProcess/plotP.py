@@ -32,7 +32,8 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     that the probabilities to be plotted are from the input space.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
     :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
@@ -40,7 +41,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_obj._input_sample_set
+        sample_obj = sample_set._input_sample_set
     elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
@@ -77,7 +78,8 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     that the probabilities to be plotted are from the input space.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
     :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
@@ -85,7 +87,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_obj._input_sample_set
+        sample_obj = sample_set._input_sample_set
     elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
@@ -110,8 +112,9 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     marginals = {}
     for i in range(sample_obj.get_dim()):
         for j in range(i+1, sample_obj.get_dim()):
-            (marg, _) = np.histogramdd(sample_obj.get_values()[:, [i, j]], bins=[bins[i],
-                                       bins[j]], weights=sample_obj.get_probabilities())
+            (marg, _) = np.histogramdd(sample_obj.get_values()[:, [i, j]],
+                    bins=[bins[i], bins[j]],
+                    weights=sample_obj.get_probabilities())
             marg = np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
             comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],
@@ -136,7 +139,8 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
         calculating marginals
     :type bins: :class:`~numpy.ndarray` of shape (nbins+1,)
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :param filename: Prefix for output files.
     :type filename: str
     :param lam_ref: True parameters.
@@ -148,7 +152,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_obj._input_sample_set
+        sample_obj = sample_set._input_sample_set
     elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
@@ -174,7 +178,8 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
                 label1 = lambda_label[i]
             ax.set_xlabel(label1) 
             ax.set_ylabel(r'$\rho$')
-            fig.savefig(filename + "_1D_" + str(i) + file_extension, transparent=True)
+            fig.savefig(filename + "_1D_" + str(i) + file_extension,
+                    transparent=True) 
             if interactive:
                 plt.show()
             else:
@@ -197,7 +202,8 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     :param bins: Endpoints of bins used in calculating marginals
     :type bins: :class:`~numpy.ndarray` of shape (nbins+1,2)
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :param filename: Prefix for output files.
     :type filename: str
     :param lam_ref: True parameters.
@@ -209,7 +215,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_obj._input_sample_set
+        sample_obj = sample_set._input_sample_set
     elif isinstance(sample_set, sample.sample_set):
         sample_obj = sample_set
     else:
@@ -248,8 +254,8 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
             fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
-            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) + file_extension,
-                        transparent=True)
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) +\
+                    file_extension, transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -272,7 +278,8 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
-                fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) + file_extension, transparent=True)
+                fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) + \
+                        file_extension, transparent=True)
 
                 if interactive:
                     plt.show()

@@ -422,7 +422,7 @@ class Test_discretization_simple(unittest.TestCase):
                     if curr_attr is not None:
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
-
+        comm.barrier()
         if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
             os.remove(os.path.join(local_path, 'testfile.mat'))
 
@@ -462,7 +462,7 @@ class TestEstimateVolume(unittest.TestCase):
         lam_right = np.array([1.0, 4.0, .5])
         lam_width = lam_right-lam_left
 
-        self.lam_domain = np.zeros((3, 3))
+        self.lam_domain = np.zeros((3, 2))
         self.lam_domain[:, 0] = lam_left
         self.lam_domain[:, 1] = lam_right
 
@@ -496,7 +496,56 @@ class TestEstimateVolume(unittest.TestCase):
         """
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
-       
+      
+class TestEstimateLocalVolume(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_local_volulme`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        self.s_set.estimate_local_volume()
+        self.lam_vol = self.s_set._volumes
+
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
+
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 2)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+
+
 class TestExactVolume1D(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.exact_volume_1D`.
@@ -532,3 +581,4 @@ class TestExactVolume1D(unittest.TestCase):
         samples.
         """
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)

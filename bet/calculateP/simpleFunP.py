@@ -7,9 +7,8 @@ are returned as `bet.sample.sample_set` objects.
 """
 from bet.Comm import comm, MPI 
 import numpy as np
-import scipy.spatial as spatial
 import bet.calculateP.voronoiHistogram as vHist
-import collections
+import collections, logging
 import bet.util as util
 import bet.sample as samp
 
@@ -52,7 +51,8 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
 
@@ -60,20 +60,23 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
     :returns: sample_set object defininng simple function approximation
     """
     if isinstance(data_set, samp.sample_set_base):
-        num = data_set.check_num()
+        data_set.check_num()
         dim = data_set._dim
         values = data_set._values
     elif isinstance(data_set, samp.discretization):
-        num = data_set.check_nums()
+        data_set.check_nums()
         dim = data_set._output_sample_set._dim
         values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
-        num = data_set.shape[0]
+        data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
+
+    bin_size = (np.max(values, 0) - np.min(values, 0))*bin_ratio
 
     if not isinstance(rect_size, collections.Iterable):
         rect_size = rect_size * np.ones((dim,))
@@ -172,7 +175,7 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     searches to bin these samples in the M implicitly defined bins. 
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
-    
+
     Note that all computations in the measure-theoretic framework that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
@@ -187,13 +190,15 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     
     :rtype: :class:`~bet.sample.voronoi_sample_set`
     :returns: sample_set object defininng simple function approximation
     """
+
     if isinstance(data_set, samp.sample_set_base):
         num = data_set.check_num()
         dim = data_set._dim
@@ -207,8 +212,9 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
 
     rect_size = (np.max(values, 0) - np.min(values, 0))*rect_scale
 
@@ -248,31 +254,32 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
 
+
     :rtype: :class:`~bet.sample.voronoi_sample_set`
     :returns: sample_set object defininng simple function approximation
     """
 
     # make sure the shape of the data and the domain are correct
     if isinstance(data_set, samp.sample_set_base):
-        num = data_set.check_num()
-        dim = data_set._dim
+        data_set.check_num()
         values = data_set._values
     elif isinstance(data_set, samp.discretization):
         num = data_set.check_nums()
         dim = data_set._output_sample_set._dim
         values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
-        num = data_set.shape[0]
-        dim = data_set.shape[1]
+        data_set.shape[0]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
 
     data = values
     rect_domain = util.fix_dimensions_data(rect_domain, data.shape[1])
     domain_center = np.mean(rect_domain, 0)
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
+
 
     return uniform_partition_uniform_distribution_rectangle_size(data_set, domain_center,
                                                                  domain_lengths, M,
@@ -296,7 +303,8 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
     :param list() center_pts_per_edge: number of center points per edge
@@ -308,20 +316,21 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
     """
 
     if isinstance(data_set, samp.sample_set_base):
-        num = data_set.check_num()
+        data_set.check_num()
         dim = data_set._dim
         values = data_set._values
     elif isinstance(data_set, samp.discretization):
-        num = data_set.check_nums()
+        data_set.check_nums()
         dim = data_set._output_sample_set._dim
         values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
-        num = data_set.shape[0]
+        data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
 
     data = values
 
@@ -330,8 +339,9 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
     else:
         if not len(center_pts_per_edge) == dim:
             center_pts_per_edge = np.ones((dim,))
-            print 'Warning: center_pts_per_edge dimension mismatch.'
-            print 'Using 1 in each dimension.'
+            msg = 'center_pts_per_edge dimension mismatch.'
+            msg += 'Using 1 in each dimension.'
+            logging.warning(msg)
     if np.any(np.less(center_pts_per_edge, 0)):
         print 'Warning: center_pts_per_edge must be greater than 0'
     if not isinstance(rect_size, collections.Iterable):
@@ -389,8 +399,9 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
 
     data = values 
     rect_domain = util.fix_dimensions_data(rect_domain, data.shape[1])
@@ -434,14 +445,16 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref, rec
     elif isinstance(data_set, samp.discretization):
         num = data_set.check_nums()
         dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        values = data_set._output_sample_set._values
     elif isinstance(data_set, np.ndarray):
         num = data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
+
     data = values
 
     if not isinstance(rect_scale, collections.Iterable):
@@ -462,7 +475,8 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
     distributions over irregularly shaped domains.
  
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` 
+        or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param list() center_pts_per_edge: number of center points per edge and
         additional two points will be added to create the bounding layer
 
@@ -477,17 +491,18 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
     elif isinstance(data_set, samp.discretization):
         num = data_set.check_nums()
         dim = data_set._output_sample_set._dim
-        values =  data_set._output_sample_set._values
+        values = data_set._output_sample_set._values
         s_set = data_set._output_sample_set.copy()
     elif isinstance(data_set, np.ndarray):
         num = data_set.shape[0]
         dim = data_set.shape[1]
         values = data_set
-        s_set = samp.sample_set(dim = dim)
+        s_set = samp.sample_set(dim=dim)
         s_set.set_values(values)
     else:
-        raise wrong_argument_type("The first argument must be of type bet.sample.sample_set, "
-                                  "bet.sample.discretization or np.ndarray")
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
     
     s_set.set_probabilities(np.ones((num,), dtype=np.float)/num)
 
@@ -504,7 +519,8 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate=
     from the given normal distribution.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param int M: Defines number M samples in D used to define
         :math:`\rho_{\mathcal{D},M}` The choice of M is something of an "art" -
         play around with it and you can get reasonable results with a

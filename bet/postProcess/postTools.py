@@ -7,6 +7,7 @@ from bet.Comm import comm
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
+import logging
 
 class dim_not_matching(Exception):
     """
@@ -27,11 +28,13 @@ def sort_by_rho(sample_set):
     are also sorted.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` or
+        :class:`~bet.sample.discretization` 
     :param indices: sorting indices
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: (sample_set_out, indicices)
@@ -92,13 +95,15 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
     :param percentile: ratio of highest probability samples to select
     :type percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param bool descending: Flag order of sorting
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` or 
+        :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, data)
@@ -177,12 +182,14 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, indices)
@@ -201,12 +208,14 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :type sample_set_out: :class:`~bet.sample.sample_set` 
+        or :class:`~bet.sample.discretization`
 
     :rtype: tuple
     :returns: ( num_samples, sample_set_out, indices)
@@ -372,9 +381,9 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
     if column_headings == None:
         column_headings = "Run parameters"
-    print "Sample Set No., Quality, "+ str(column_headings)
+    logging.info("Sample Set No., Quality, "+ str(column_headings))
     for i in reversed(sort_ind):
-        print i, sample_quality[i], np.round(run_param[i], 3)
+        logging.info(i, sample_quality[i], np.round(run_param[i], 3))
 
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
@@ -403,7 +412,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     else:
         rD = rho_D(data[sample_nos, :])
     adjusted_total_prob = int(sum(rD)/maximum)
-    print "Samples in box "+str(adjusted_total_prob)
+    logging.info("Samples in box "+str(adjusted_total_prob))
     return adjusted_total_prob
 
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
