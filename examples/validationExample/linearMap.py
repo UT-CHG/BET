@@ -97,7 +97,7 @@ Try setting this to 2, 5, 10, 50, and 100. Can you explain what you
 are seeing? To see an exaggerated effect, try using random sampling
 above with n_samples set to 1E2.
 '''
-num_samples_discretize_D = 5
+num_samples_discretize_D = 1
 num_iid_samples = 1E5
 
 SimpleFunction_set = samp.sample_set(2)
@@ -114,19 +114,10 @@ Monte_Carlo_discretization = sampler.create_random_discretization('random',
                                                             Monte_Carlo_set,
                                                             num_samples=num_iid_samples)
 
-my_discretization._output_probability_set = SimpleFunction_discretization._output_sample_set
-my_discretization._emulated_output_sample_set = Monte_Carlo_discretization._output_sample_set
-
-my_discretization.set_emulated_oo_ptr()
-
-my_discretization._output_probability_set.set_probabilities(np.zeros((num_samples_discretize_D,)))
-
-for i in range(num_samples_discretize_D):
-    Itemp = np.equal(my_discretization.get_emulated_oo_ptr(), i)
-    Itemp_sum = float(np.sum(Itemp))
-    Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
-    if Itemp_sum > 0:
-        my_discretization._output_probability_set._probabilities[i] = Itemp_sum / num_iid_samples
+# Compute the simple function approximation to the distribution on the data space
+simpleFunP.user_discretization_user_distribution(my_discretization,
+                                                 SimpleFunction_discretization,
+                                                 Monte_Carlo_discretization)
 
 # Calculate probabilities
 calculateP.prob(my_discretization)

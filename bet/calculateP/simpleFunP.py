@@ -372,7 +372,8 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     ``len(d_distr_samples) == 3**mdim``.
 
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param rect_domain: The domain overwhich :math:`\rho_\mathcal{D}` is
         uniform.
     :type rect_domain: :class:`numpy.ndarray` of shape (2, mdim)
@@ -505,7 +506,7 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
     s_set.set_probabilities(np.ones((num,), dtype=np.float)/num)
 
     if isinstance(data_set, samp.discretization):
-        data_set._output_sample_set = s_set
+        data_set._output_probability_set = s_set
     return s_set
 
 
@@ -599,7 +600,7 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate=
     # above, while informed by the sampling of the map Q, do not require
     # solving the model EVER! This can be done "offline" so to speak.
     if isinstance(data_set, samp.discretization):
-        data_set._output_sample_set = s_set
+        data_set._output_probability_set = s_set
     return s_set
 
 
@@ -677,4 +678,94 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate
     # solving the model EVER! This can be done "offline" so to speak.
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+    return s_set
+
+def user_discretization_user_distribution(data_set, data_discretization_set,
+                                          data_distribution_set):
+    r"""
+    Creates a user defined simple function approximation of a user
+    defined distribution. The simple function discretization is
+    specified in the data_discretization_set, and the set of i.i.d.
+    samples from the distribution is specified in the
+    data_distribution_set.
+
+    :param data_set:
+    :param data_discretization_set:
+    :param data_distribution_set:
+    :return:
+    """
+    if isinstance(data_set, samp.sample_set_base):
+        s_set = data_set.copy()
+        dim = s_set._dim
+    elif isinstance(data_set, samp.discretization):
+        s_set = data_set._output_sample_set.copy()
+        dim = s_set._dim
+    elif isinstance(data_set, np.ndarray):
+        dim = data_set.shape[1]
+        values = data_set
+        s_set = samp.sample_set(dim=dim)
+        s_set.set_values(values)
+    else:
+        msg = "The first argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
+
+    if isinstance(data_discretization_set, samp.sample_set_base):
+        num_samples_discretize_D = data_discretization_set.check_num()
+        simpleFun_set = data_discretization_set.copy()
+        dim_simpleFun = simpleFun_set._dim
+    elif isinstance(data_discretization_set, samp.discretization):
+        num_samples_discretize_D = data_discretization_set.check_nums()
+        simpleFun_set = data_discretization_set._output_sample_set.copy()
+        dim_simpleFun = simpleFun_set._dim
+    elif isinstance(data_discretization_set, np.ndarray):
+        num_samples_discretize_D = data_discretization_set.shape[0]
+        dim_simpleFun = data_discretization_set.shape[1]
+        simpleFun_set = samp.sample_set(dim=dim_simpleFun)
+        simpleFun_set.set_values(values)
+    else:
+        msg = "The second argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
+
+    if isinstance(data_distribution_set, samp.sample_set_base):
+        MonteCarlo_set = data_distribution_set.copy()
+        dim_MonteCarlo = MonteCarlo_set._dim
+        num_iid_samples = data_distribution_set.check_num()
+    elif isinstance(data_distribution_set, samp.discretization):
+        MonteCarlo_set = data_distribution_set._output_sample_set.copy()
+        dim_MonteCarlo = MonteCarlo_set._dim
+        num_iid_samples = data_distribution_set.check_nums()
+    elif isinstance(data_distribution_set, np.ndarray):
+        num_iid_samples = data_distribution_set.shape[0]
+        dim_MonteCarlo = data_distribution_set.shape[1]
+        MonteCarlo_set = samp.sample_set(dim=dim_MonteCarlo)
+        MonteCarlo_set.set_values(values)
+    else:
+        msg = "The second argument must be of type bet.sample.sample_set, "
+        msg += "bet.sample.discretization or np.ndarray"
+        raise wrong_argument_type(msg)
+
+    if np.not_equal(dim_MonteCarlo, dim) or np.not_equal(dim_simpleFun, dim):
+        msg = "The argument types have conflicting dimensions"
+        raise wrong_argument_type(msg)
+
+    my_discretization = samp.discretization(input_sample_set=s_set,
+                                            output_sample_set=s_set,
+                                            emulated_output_sample_set=MonteCarlo_set,
+                                            output_probability_set=simpleFun_set)
+
+    my_discretization.set_emulated_oo_ptr()
+
+    my_discretization._output_probability_set.set_probabilities(np.zeros((num_samples_discretize_D,)))
+
+    for i in range(num_samples_discretize_D):
+        Itemp = np.equal(my_discretization.get_emulated_oo_ptr(), i)
+        Itemp_sum = float(np.sum(Itemp))
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
+        if Itemp_sum > 0:
+            my_discretization._output_probability_set._probabilities[i] = Itemp_sum / num_iid_samples
+
+    if isinstance(data_set, samp.discretization):
+        data_set._output_probability_set = my_discretization._output_probability_set
     return s_set
