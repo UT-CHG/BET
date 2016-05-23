@@ -865,15 +865,22 @@ class voronoi_sample_set(sample_set_base):
             max_num_l_emulate=1e3): 
         r"""
 
-        Exactly calculates the volume fraction of the Voronoice cells associated
-        with ``samples``. Specifically we are calculating 
-        :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`. Here
-        all of the samples are drawn from the generalized Lp uniform distribution.
+        Estimates the volume fraction of the Voronoice cells associated
+        with ``samples``. Specifically we are calculating
+        :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
+        Here all of the samples are drawn from the generalized Lp uniform
+        distribution.
 
         .. note ::
 
-            Estimated radii of the Voronoi cell associated with each sample.
-            WARNING: The ``input_domain`` MUST be scaled to the unit square.
+            If this :class:`~bet.sample.voronoi_sample_set` has exact/estimated
+            radii of the Voronoi cell associated with each sample for a domain
+            normalized to the unit hypercube (``_normalized_radii``).
+
+        .. todo ::
+
+            When we move away from domains defined on hypercubes this will need
+            to be updated to use whatever ``_in_domain`` method exists.
 
         Volume of the L-p ball is obtained from  Wang, X.. (2005). Volumes of
         Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
