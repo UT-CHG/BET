@@ -25,15 +25,15 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
-    a generalized rectangle centered at Q_ref.
-    The support of this density is defined by rect_size, which determines
+    a generalized rectangle centered at ``Q_ref``.
+    The support of this density is defined by ``rect_size``, which determines
     the size of the generalized rectangle.
-    The simple function approximation is then defined by determining M
+    The simple function approximation is then defined by determining ``M``
     Voronoi cells (i.e., "bins") partitioning :math:`\mathcal{D}`. These
-    bins are only implicitly defined by M samples in :math:`\mathcal{D}`.
+    bins are only implicitly defined by ``M`` samples in :math:`\mathcal{D}`.
     Finally, the probabilities of each of these bins is computed by
     sampling from :math:`\rho{\mathcal{D}}` and using nearest neighbor
-    searches to bin these samples in the M implicitly defined bins.
+    searches to bin these samples in the ``M`` implicitly defined bins.
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -161,16 +161,16 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
-    a generalized rectangle centered at Q_ref.
-    The support of this density is defined by rect_scale, which determines
+    a generalized rectangle centered at ``Q_ref``.
+    The support of this density is defined by ``rect_scale``, which determines
     the size of the generalized rectangle by scaling the circumscribing 
     generalized rectangle of :math:`\mathcal{D}`.
-    The simple function approximation is then defined by determining M 
+    The simple function approximation is then defined by determining ``M ``
     Voronoi cells (i.e., "bins") partitioning :math:`\mathcal{D}`. These
-    bins are only implicitly defined by M samples in :math:`\mathcal{D}`.
+    bins are only implicitly defined by ``M`` samples in :math:`\mathcal{D}`.
     Finally, the probabilities of each of these bins is computed by 
     sampling from :math:`\rho{\mathcal{D}}` and using nearest neighbor 
-    searches to bin these samples in the M implicitly defined bins. 
+    searches to bin these samples in the ``M`` implicitly defined bins.
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -225,13 +225,13 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
-    a generalized rectangle defined by rect_domain.
-    The simple function approximation is then defined by determining M
+    a generalized rectangle defined by ``rect_domain``.
+    The simple function approximation is then defined by determining ``M``
     Voronoi cells (i.e., "bins") partitioning :math:`\mathcal{D}`. These
-    bins are only implicitly defined by M samples in :math:`\mathcal{D}`.
+    bins are only implicitly defined by ``M ``samples in :math:`\mathcal{D}`.
     Finally, the probabilities of each of these bins is computed by
     sampling from :math:`\rho{\mathcal{D}}` and using nearest neighbor
-    searches to bin these samples in the M implicitly defined bins.
+    searches to bin these samples in the ``M`` implicitly defined bins.
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -289,7 +289,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
-    centered at Q_ref with rect_size of the width of a hyperrectangle.
+    centered at ``Q_ref`` with ``rect_size`` of the width of a hyperrectangle.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
     to represent it exactly with ``M = 3^mdim`` or rather
@@ -365,7 +365,7 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
-    hyperrectangular domain specified by domain.
+    hyperrectangular domain specified by ``rect_domain``.
 
     Since :math:`\rho_\mathcal{D}` is a uniform distribution on a
     hyperrectangle we should we able to represent it exactly with
@@ -416,7 +416,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
-    centered at Q_ref with rect_scale of the width
+    centered at ``Q_ref`` with ``rect_scale`` of the width
     of D.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we should be able
@@ -517,8 +517,8 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate=
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
-    density centered at Q_ref with standard deviation std using M bins sampled
-    from the given normal distribution.
+    density centered at ``Q_ref`` with standard deviation ``std`` using
+    ``M`` bins sampled from the given normal distribution.
 
     :param data_set: Sample set that the probability measure is defined for.
     :type data_set: :class:`~bet.sample.discretization` or
@@ -611,9 +611,9 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
-    density centered at Q_ref with standard deviation std using M bins sampled
-    from a uniform distribution with a size 4 standard deviations in each
-    direction.
+    density centered at ``Q_ref`` with standard deviation ``std`` using
+    ``M`` bins sampled from a uniform distribution with a size 4 standard
+    deviations in each direction.
 
     :param data_set: Sample set that the probability measure is defined for.
     :type data_set: :class:`~bet.sample.discretization` or
@@ -689,14 +689,26 @@ def user_discretization_user_distribution(data_set, data_discretization_set,
     r"""
     Creates a user defined simple function approximation of a user
     defined distribution. The simple function discretization is
-    specified in the data_discretization_set, and the set of i.i.d.
+    specified in the ``data_discretization_set``, and the set of i.i.d.
     samples from the distribution is specified in the
-    data_distribution_set.
+    ``data_distribution_set``.
 
-    :param data_set:
-    :param data_discretization_set:
-    :param data_distribution_set:
-    :return:
+    :param data_set: Sample set that the probability measure is defined for.
+    :type data_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :param data_discretization_set: Sample set defining the discretization
+        of the data space into Voronoi cells for which a simple function
+        is defined upon.
+    :type data_discretization_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+    :param data_distribution_set: Sample set containing the i.i.d. samples
+        from the distribution on the data space that are binned within the
+        Voronoi cells implicitly defined by the data_discretization_set.
+    :type data_distribution_set: :class:`~bet.sample.discretization` or
+        :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
+
+    :rtype: :class:`~bet.sample.voronoi_sample_set`
+    :returns: sample_set object defininng simple function approximation
     """
     if isinstance(data_set, samp.sample_set_base):
         s_set = data_set.copy()
@@ -774,4 +786,4 @@ def user_discretization_user_distribution(data_set, data_discretization_set,
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = my_discretization._output_probability_set
-    return s_set
+    return my_discretization._output_probability_set
