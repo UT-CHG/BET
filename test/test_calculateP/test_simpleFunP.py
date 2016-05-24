@@ -304,6 +304,83 @@ class test_normal_partition_normal_distribution_3D(data_3D, normal_partition_nor
         super(test_normal_partition_normal_distribution_3D, self).setUp()
 
 
+class uniform_partition_normal_distribution(prob):
+    """
+    Set up :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        if type(self.Q_ref) != np.array and type(self.Q_ref) != np.ndarray:
+            std = 1.0
+        else:
+            std = np.ones(self.Q_ref.shape)
+        self.data_prob = sFun.uniform_partition_normal_distribution(None, self.Q_ref, std=std, M=67, num_d_emulate=1E3)
+        self.d_distr_samples = self.data_prob.get_values()
+        self.rho_D_M = self.data_prob.get_probabilities()
+
+    def test_M(self):
+        """
+        Test that the right number of d_distr_samples are used to create
+        rho_D_M.
+        """
+        assert len(self.rho_D_M) == 67
+
+
+class test_uniform_partition_normal_distribution_01D(data_01D, uniform_partition_normal_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 01D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_normal_distribution_01D, self).createData()
+        super(test_uniform_partition_normal_distribution_01D, self).setUp()
+
+
+class test_uniform_partition_normal_distribution_1D(data_1D, uniform_partition_normal_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 1D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_normal_distribution_1D, self).createData()
+        super(test_uniform_partition_normal_distribution_1D, self).setUp()
+
+
+class test_uniform_partition_normal_distribution_2D(data_2D, uniform_partition_normal_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 2D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_normal_distribution_2D, self).createData()
+        super(test_uniform_partition_normal_distribution_2D, self).setUp()
+
+
+class test_uniform_partition_normal_distribution_3D(data_3D, uniform_partition_normal_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 3D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_uniform_partition_normal_distribution_3D, self).createData()
+        super(test_uniform_partition_normal_distribution_3D, self).setUp()
+
+
 class uniform_hyperrectangle_base(prob_uniform):
     """
     Provides set up and a test to check the number of ``d_distr_samples`` for
@@ -1135,3 +1212,74 @@ class test_uniform_partition_uniform_distribution_rectangle_domain_3D(data_3D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_domain_3D, self).createData()
         super(test_uniform_partition_uniform_distribution_rectangle_domain_3D, self).setUp()
+
+
+class user_partition_user_distribution(prob):
+    """
+    Set up :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        self.data_prob = sFun.user_partition_user_distribution(self.data,
+                                                               self.data,
+                                                               self.data)
+        self.rho_D_M = self.data_prob.get_probabilities()
+        self.d_distr_samples = self.data_prob.get_values()
+
+class test_user_partition_user_distribution_01D(data_01D,
+                                                user_partition_user_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 01D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_user_partition_user_distribution_01D, self).createData()
+        super(test_user_partition_user_distribution_01D, self).setUp()
+
+
+class test_user_partition_user_distribution_1D(data_1D,
+                                               user_partition_user_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 1D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_user_partition_user_distribution_1D, self).createData()
+        super(test_user_partition_user_distribution_1D, self).setUp()
+
+
+class test_user_partition_user_distribution_2D(data_2D,
+                                               user_partition_user_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 2D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_user_partition_user_distribution_2D, self).createData()
+        super(test_user_partition_user_distribution_2D, self).setUp()
+
+
+class test_user_partition_user_distribution_3D(data_3D,
+                                               user_partition_user_distribution):
+    """
+    Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 3D data domain.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(test_user_partition_user_distribution_3D, self).createData()
+        super(test_user_partition_user_distribution_3D, self).setUp()

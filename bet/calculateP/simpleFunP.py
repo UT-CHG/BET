@@ -636,6 +636,10 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate
     r'''Create M samples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
+    if not isinstance(Q_ref, collections.Iterable):
+        Q_ref = np.array([Q_ref])
+    if not isinstance(std, collections.Iterable):
+        std = np.array([std])
 
     bin_size = 4.0 * std
     d_distr_samples = np.zeros((M, len(Q_ref)))
@@ -684,22 +688,22 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate
         data_set._output_probability_set = s_set
     return s_set
 
-def user_discretization_user_distribution(data_set, data_discretization_set,
+def user_partition_user_distribution(data_set, data_partition_set,
                                           data_distribution_set):
     r"""
     Creates a user defined simple function approximation of a user
     defined distribution. The simple function discretization is
-    specified in the ``data_discretization_set``, and the set of i.i.d.
+    specified in the ``data_partition_set``, and the set of i.i.d.
     samples from the distribution is specified in the
     ``data_distribution_set``.
 
     :param data_set: Sample set that the probability measure is defined for.
     :type data_set: :class:`~bet.sample.discretization` or
         :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
-    :param data_discretization_set: Sample set defining the discretization
+    :param data_partition_set: Sample set defining the discretization
         of the data space into Voronoi cells for which a simple function
         is defined upon.
-    :type data_discretization_set: :class:`~bet.sample.discretization` or
+    :type data_partition_set: :class:`~bet.sample.discretization` or
         :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param data_distribution_set: Sample set containing the i.i.d. samples
         from the distribution on the data space that are binned within the
@@ -726,17 +730,17 @@ def user_discretization_user_distribution(data_set, data_discretization_set,
         msg += "bet.sample.discretization or np.ndarray"
         raise wrong_argument_type(msg)
 
-    if isinstance(data_discretization_set, samp.sample_set_base):
-        num_samples_discretize_D = data_discretization_set.check_num()
-        simpleFun_set = data_discretization_set.copy()
+    if isinstance(data_partition_set, samp.sample_set_base):
+        num_samples_discretize_D = data_partition_set.check_num()
+        simpleFun_set = data_partition_set.copy()
         dim_simpleFun = simpleFun_set._dim
-    elif isinstance(data_discretization_set, samp.discretization):
-        num_samples_discretize_D = data_discretization_set.check_nums()
-        simpleFun_set = data_discretization_set._output_sample_set.copy()
+    elif isinstance(data_partition_set, samp.discretization):
+        num_samples_discretize_D = data_partition_set.check_nums()
+        simpleFun_set = data_partition_set._output_sample_set.copy()
         dim_simpleFun = simpleFun_set._dim
-    elif isinstance(data_discretization_set, np.ndarray):
-        num_samples_discretize_D = data_discretization_set.shape[0]
-        dim_simpleFun = data_discretization_set.shape[1]
+    elif isinstance(data_partition_set, np.ndarray):
+        num_samples_discretize_D = data_partition_set.shape[0]
+        dim_simpleFun = data_partition_set.shape[1]
         simpleFun_set = samp.sample_set(dim=dim_simpleFun)
         simpleFun_set.set_values(values)
     else:

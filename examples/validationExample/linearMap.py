@@ -100,14 +100,14 @@ above with n_samples set to 1E2.
 num_samples_discretize_D = 1
 num_iid_samples = 1E5
 
-SimpleFunction_set = samp.sample_set(2)
+Partition_set = samp.sample_set(2)
 Monte_Carlo_set = samp.sample_set(2)
 
-SimpleFunction_set.set_domain(np.repeat([[0.0, 1.0]], 2, axis=0))
+Partition_set.set_domain(np.repeat([[0.0, 1.0]], 2, axis=0))
 Monte_Carlo_set.set_domain(np.repeat([[0.0, 1.0]], 2, axis=0))
 
-SimpleFunction_discretization = sampler.create_random_discretization('random',
-                                                            SimpleFunction_set,
+Partition_discretization = sampler.create_random_discretization('random',
+                                                            Partition_set,
                                                             num_samples=num_samples_discretize_D)
 
 Monte_Carlo_discretization = sampler.create_random_discretization('random',
@@ -115,9 +115,9 @@ Monte_Carlo_discretization = sampler.create_random_discretization('random',
                                                             num_samples=num_iid_samples)
 
 # Compute the simple function approximation to the distribution on the data space
-simpleFunP.user_discretization_user_distribution(my_discretization,
-                                                 SimpleFunction_discretization,
-                                                 Monte_Carlo_discretization)
+simpleFunP.user_partition_user_distribution(my_discretization,
+                                            Partition_discretization,
+                                            Monte_Carlo_discretization)
 
 # Calculate probabilities
 calculateP.prob(my_discretization)
