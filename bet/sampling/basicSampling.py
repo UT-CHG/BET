@@ -169,9 +169,9 @@ class sampler(object):
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
 
-        :rtype: :class:`~bet.sample.discretization`
-        :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples``
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: :class:`~bet.sample.sample_Set` object which contains
+            input ``num_samples``
 
         """
         # Create N samples
@@ -203,9 +203,9 @@ class sampler(object):
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
 
-        :rtype: :class:`~bet.sample.discretization`
-        :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples``
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: :class:`~bet.sample.sample_Set` object which contains
+            input ``num_samples``
 
         """
         # Create N samples
@@ -227,9 +227,9 @@ class sampler(object):
         :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
             (input_sample_set._dim,)
 
-        :rtype: :class:`~bet.sample.discretization`
-        :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples``
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: :class:`~bet.sample.sample_Set` object which contains
+            input ``num_samples``
         """
 
         # Create N samples
@@ -237,7 +237,7 @@ class sampler(object):
 
         if not isinstance(num_samples_per_dim, collections.Iterable):
             num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
-        if np.any(np.less(num_samples_per_dim, 0)):
+        if np.any(np.less_equal(num_samples_per_dim, 0)):
             print 'Warning: num_smaples_per_dim must be greater than 0'
 
         self.num_samples = np.product(num_samples_per_dim)
@@ -258,11 +258,17 @@ class sampler(object):
                 input_domain[i,0], input_domain[i,1],
                 num_samples_per_dim[i]+2))[1:num_samples_per_dim[i]+1]
 
-        arrays_samples_dimension = np.meshgrid(
-            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+        if np.equal(dim, 1):
+            arrays_samples_dimension = np.array([vec_samples_dimension])
+        else:
+            arrays_samples_dimension = np.meshgrid(
+                *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
-        for i in np.arange(0, dim):
-            input_values[:,i:i+1] = np.vstack(arrays_samples_dimension[i].flat[:])
+        if np.equal(dim, 1):
+            input_values = arrays_samples_dimension.transpose()
+        else:
+            for i in np.arange(0, dim):
+                input_values[:,i:i+1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
         input_sample_set.set_values(input_values)
 
@@ -281,9 +287,9 @@ class sampler(object):
         :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
             (input_sample_set._dim,)
 
-        :rtype: :class:`~bet.sample.discretization`
-        :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples``
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: :class:`~bet.sample.sample_Set` object which contains
+            input ``num_samples``
 
         """
         # Create N samples
@@ -292,7 +298,7 @@ class sampler(object):
 
         return self.regular_sample_set(input_sample_set, num_samples_per_dim)
 
-    def regular_sample_set_dimension(self, input_dim, num_samples_per_dimension):
+    def regular_sample_set_dimension(self, input_dim, num_samples_per_dim=1):
         """
         Sampling algorithm for generating a regular grid of samples taken
         on a unit hypercube of dimension input_dim
@@ -302,15 +308,15 @@ class sampler(object):
         :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
             (input_sample_set._dim,)
 
-        :rtype: :class:`~bet.sample.discretization`
-        :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples``
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: :class:`~bet.sample.sample_Set` object which contains
+            input ``num_samples``
 
         """
         # Create N samples
         input_sample_set = sample.sample_set(input_dim)
 
-        return self.regular_sample_set(input_sample_set, num_samples_per_dimension)
+        return self.regular_sample_set(input_sample_set, num_samples_per_dim)
 
     def compute_QoI_and_create_discretization(self, input_sample_set,
             savefile=None, parallel=False):

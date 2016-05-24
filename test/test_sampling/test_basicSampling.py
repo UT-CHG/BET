@@ -15,6 +15,7 @@ from bet.Comm import comm
 import bet.sample
 from bet.sample import sample_set
 from bet.sample import discretization as disc 
+import collections
 
 local_path = os.path.join(".")
 
@@ -358,6 +359,158 @@ def verify_random_sample_set(sampler, sample_type, input_sample_set,
     nptest.assert_array_equal(test_sample_set._values,
                               my_sample_set._values)
 
+def verify_regular_sample_set(sampler, input_sample_set,
+                                 num_samples_per_dim):
+
+    test_sample_set = input_sample_set
+    dim = input_sample_set.get_dim()
+    # recreate the samples
+    if num_samples_per_dim is None:
+        num_samples_per_dim = 5
+
+    if not isinstance(num_samples_per_dim, collections.Iterable):
+        num_samples_per_dim = num_samples_per_dim * np.ones((dim,), dtype='int')
+
+    sampler.num_samples = np.product(num_samples_per_dim)
+
+    test_domain = test_sample_set.get_domain()
+    if test_domain is None:
+        test_domain = np.repeat([[0, 1]], test_sample_set.get_dim(), axis=0)
+
+    test_values = np.zeros((sampler.num_samples, test_sample_set.get_dim()))
+
+    vec_samples_dimension = np.empty((dim), dtype=object)
+    for i in np.arange(0, dim):
+        vec_samples_dimension[i] = list(np.linspace(
+            test_domain[i, 0], test_domain[i, 1],
+            num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
+
+    if np.equal(dim, 1):
+        arrays_samples_dimension = np.array([vec_samples_dimension])
+    else:
+        arrays_samples_dimension = np.meshgrid(
+            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+
+    if np.equal(dim, 1):
+        test_values = arrays_samples_dimension.transpose()
+    else:
+        for i in np.arange(0, dim):
+            test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+
+    test_sample_set.set_values(test_values)
+
+    # create the sample set from sampler
+    my_sample_set = sampler.regular_sample_set(input_sample_set,
+                                    num_samples_per_dim=num_samples_per_dim)
+
+    # compare the samples
+    nptest.assert_array_equal(test_sample_set._values,
+                              my_sample_set._values)
+
+def verify_regular_sample_set_domain(sampler, input_domain,
+                                  num_samples_per_dim):
+
+    input_sample_set = sample_set(input_domain.shape[0])
+    input_sample_set.set_domain(input_domain)
+
+    test_sample_set = input_sample_set
+    dim = input_sample_set.get_dim()
+    # recreate the samples
+    if num_samples_per_dim is None:
+        num_samples_per_dim = 5
+
+    if not isinstance(num_samples_per_dim, collections.Iterable):
+        num_samples_per_dim = num_samples_per_dim * np.ones((dim,), dtype='int')
+
+    sampler.num_samples = np.product(num_samples_per_dim)
+
+    test_domain = test_sample_set.get_domain()
+    if test_domain is None:
+        test_domain = np.repeat([[0, 1]], test_sample_set.get_dim(), axis=0)
+
+    test_values = np.zeros((sampler.num_samples, test_sample_set.get_dim()))
+
+    vec_samples_dimension = np.empty((dim), dtype=object)
+    for i in np.arange(0, dim):
+        vec_samples_dimension[i] = list(np.linspace(
+            test_domain[i, 0], test_domain[i, 1],
+            num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
+
+    if np.equal(dim, 1):
+        arrays_samples_dimension = np.array([vec_samples_dimension])
+    else:
+        arrays_samples_dimension = np.meshgrid(
+            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+
+    if np.equal(dim, 1):
+        test_values = arrays_samples_dimension.transpose()
+    else:
+        for i in np.arange(0, dim):
+            test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+
+    test_sample_set.set_values(test_values)
+
+    # create the sample set from sampler
+    my_sample_set = sampler.regular_sample_set_domain(input_domain,
+                                               num_samples_per_dim=num_samples_per_dim)
+
+    # compare the samples
+    nptest.assert_array_equal(test_sample_set._values,
+                              my_sample_set._values)
+
+def verify_regular_sample_set_dimension(sampler, input_dim,
+                                         num_samples_per_dim):
+
+    input_domain = np.repeat([[0, 1]], input_dim, axis=0)
+    input_sample_set = sample_set(input_dim)
+    input_sample_set.set_domain(input_domain)
+
+    test_sample_set = input_sample_set
+    dim = input_dim
+    # recreate the samples
+    if num_samples_per_dim is None:
+        num_samples_per_dim = 5
+
+    if not isinstance(num_samples_per_dim, collections.Iterable):
+        num_samples_per_dim = num_samples_per_dim * np.ones((dim,), dtype='int')
+
+    sampler.num_samples = np.product(num_samples_per_dim)
+
+    test_domain = test_sample_set.get_domain()
+    if test_domain is None:
+        test_domain = np.repeat([[0, 1]], test_sample_set.get_dim(), axis=0)
+
+    test_values = np.zeros((sampler.num_samples, test_sample_set.get_dim()))
+
+    vec_samples_dimension = np.empty((dim), dtype=object)
+    for i in np.arange(0, dim):
+        vec_samples_dimension[i] = list(np.linspace(
+            test_domain[i, 0], test_domain[i, 1],
+            num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
+
+    if np.equal(dim, 1):
+        arrays_samples_dimension = np.array([vec_samples_dimension])
+    else:
+        arrays_samples_dimension = np.meshgrid(
+            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+
+    if np.equal(dim, 1):
+        test_values = arrays_samples_dimension.transpose()
+    else:
+        for i in np.arange(0, dim):
+            test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+
+    test_sample_set.set_values(test_values)
+
+    # create the sample set from sampler
+    my_sample_set = sampler.regular_sample_set_dimension(input_dim,
+                                            num_samples_per_dim=num_samples_per_dim)
+
+    # compare the samples
+    nptest.assert_array_equal(test_sample_set._values,
+                              my_sample_set._values)
+
+
 class Test_basic_sampler(unittest.TestCase):
     """
     Test :class:`bet.sampling.basicSampling.sampler`.
@@ -507,6 +660,50 @@ class Test_basic_sampler(unittest.TestCase):
                 for num_samples in [None, 25]:
                     verify_random_sample_set_dimension(sampler, sample_type,
                             input_dim, num_samples)
+
+    def test_regular_sample_set(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.regular_sample_set`
+        for six different sample sets
+        """
+        input_sample_set_list = [self.input_sample_set1,
+                                 self.input_sample_set2,
+                                 self.input_sample_set4,
+                                 self.input_sample_set5]
+
+        test_list = zip(self.samplers, input_sample_set_list)
+
+        for sampler, input_sample_set in test_list:
+            for num_samples_per_dim in [None, 10]:
+                verify_regular_sample_set(sampler, input_sample_set, num_samples_per_dim)
+
+    def test_regular_sample_set_domain(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.regular_sample_set_domain`
+        for six different sample sets
+        """
+        input_domain_list= [self.input_domain1,
+                            self.input_domain3]
+
+        test_list = zip(self.samplers, input_domain_list)
+
+        for sampler, input_domain in test_list:
+            for num_samples_per_dim in [None, 10]:
+                verify_regular_sample_set_domain(sampler, input_domain, num_samples_per_dim)
+
+    def test_regular_sample_set_dimension(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.regular_sample_set_dimension`
+        for six different sample sets
+        """
+        input_dimension_list = [self.input_dim1,
+                             self.input_dim2]
+
+        test_list = zip(self.samplers, input_dimension_list)
+
+        for sampler, input_dim in test_list:
+            for num_samples_per_dim in [None, 10]:
+                verify_regular_sample_set_dimension(sampler, input_dim, num_samples_per_dim)
 
     def test_create_random_discretization(self):
         """
