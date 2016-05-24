@@ -78,8 +78,9 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set, Q_ref,
 
     if not isinstance(rect_size, collections.Iterable):
         rect_size = rect_size * np.ones((dim,))
-    if np.any(np.less(rect_size, 0)):
-        print 'Warning: rect_size must be greater than 0'
+    if np.any(np.less_equal(rect_size, 0)):
+        msg = 'rect_size must be greater than 0'
+        raise wrong_argument_type(msg)
 
     r'''
     Create M samples defining M Voronoi cells (i.e., "bins") in D used to
@@ -340,12 +341,14 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
             msg = 'center_pts_per_edge dimension mismatch.'
             msg += 'Using 1 in each dimension.'
             logging.warning(msg)
-    if np.any(np.less(center_pts_per_edge, 0)):
-        print 'Warning: center_pts_per_edge must be greater than 0'
+    if np.any(np.less_equal(center_pts_per_edge, 0)):
+        msg = 'center_pts_per_edge must be greater than 0'
+        raise wrong_argument_type(msg)
     if not isinstance(rect_size, collections.Iterable):
         rect_size = rect_size * np.ones((dim,))
-    if np.any(np.less(rect_size, 0)):
-        print 'Warning: rect_size must be greater than 0'
+    if np.any(np.less_equal(rect_size, 0)):
+        msg = 'rect_size must be greater than 0'
+        raise wrong_argument_type(msg)
 
     sur_domain = np.array([np.min(data, 0), np.max(data, 0)]).transpose()
 
