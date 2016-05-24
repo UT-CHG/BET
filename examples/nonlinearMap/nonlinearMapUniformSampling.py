@@ -152,7 +152,7 @@ marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.5)
 
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename = "nomlinearMap",
-                             file_extension = ".eps", plot_surface=False)
+                             lam_ref = param_ref, file_extension = ".eps", plot_surface=False)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
@@ -161,7 +161,7 @@ plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename = "nomli
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.5)
 # plot 2d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "nonlinearMap",
-                             file_extension = ".eps")
+                             lam_ref = param_ref, file_extension = ".eps")
 
 
 
