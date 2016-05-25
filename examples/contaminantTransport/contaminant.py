@@ -26,92 +26,103 @@ import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.postProcess.postTools as postTools
-
+import bet.sample as samp
 
 # Labels and descriptions of the uncertain parameters
 labels = ['Source $y$ coordinate [L]', 'Source $x$ coordinate [L]', 'Dispersivity x [L]', 'Flow Angle [degrees]', 'Contaminant flux [M/T]']
 
 # Load data from files
-lam_domain = np.loadtxt("files/lam_domain.txt.gz") #parameter domain
-ref_lam = np.loadtxt("files/lam_ref.txt.gz") #reference parameter set
-Q_ref = np.loadtxt("files/Q_ref.txt.gz") #reference QoI set
-samples = np.loadtxt("files/samples.txt.gz") # uniform samples in parameter domain
-dataf = np.loadtxt("files/data.txt.gz") # data from model
+# First obtain info on the parameter domain
+parameter_domain = np.loadtxt("files/lam_domain.txt.gz") #parameter domain
+parameter_dim = parameter_domain.shape[0]
+# Create input sample set
+input_samples = samp.sample_set(parameter_dim)
+input_samples.set_domain(parameter_domain)
+input_samples.set_values(np.loadtxt("files/samples.txt.gz"))
+input_samples.estimate_volume_mc() # Use standard MC estimate of volumes
+# Choose which QoI to use and create output sample set
+QoI_indices_observe = np.array([0,1,2,3])
+output_samples = samp.sample_set(QoI_indices_observe.size)
+output_samples.set_values(np.loadtxt("files/data.txt.gz")[:,QoI_indices_observe])
 
-QoI_indices=[0,1,2,3] # Indices for output data with which you want to invert
-bin_ratio = 0.25 #ratio of length of data region to invert
+# Create discretization object
+my_discretization = samp.discretization(input_sample_set=input_samples,
+                                        output_sample_set=output_samples)
 
-data = dataf[:,QoI_indices]
-Q_ref=Q_ref[QoI_indices]
-
-dmax = data.max(axis=0)
-dmin = data.min(axis=0)
-dscale = bin_ratio*(dmax-dmin)
-Qmax = Q_ref + 0.5*dscale
-Qmin = Q_ref -0.5*dscale
-def rho_D(x):
-  return np.all(np.logical_and(np.greater(x,Qmin), np.less(x,Qmax)),axis=1)
+# Load the reference parameter and QoI values
+param_ref = np.loadtxt("files/lam_ref.txt.gz") #reference parameter set
+Q_ref = np.loadtxt("files/Q_ref.txt.gz")[QoI_indices_observe] #reference QoI set
 
 # Plot the data domain
-plotD.show_data(data, Q_ref = Q_ref, rho_D=rho_D, showdim=2)
+plotD.show_data(my_discretization, Q_ref = Q_ref, showdim=2)
 
 # Whether or not to use deterministic description of simple function approximation of
 # ouput probability
 deterministic_discretize_D = True
 if deterministic_discretize_D == True:
-  (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(data=data,
-                                                                              Q_ref=Q_ref, 
-                                                                              bin_ratio=bin_ratio, 
-                                                                              center_pts_per_edge = 1)
+  simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(data_set=my_discretization,
+                                                                     Q_ref=Q_ref,
+                                                                     rect_scale=0.25,
+                                                                     center_pts_per_edge = 1)
 else:
-  (d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.unif_unif(data=data,
-                                                                 Q_ref=Q_ref, 
-                                                                 M=50, 
-                                                                 bin_ratio=bin_ratio, 
-                                                                 num_d_emulate=1E5)
+  simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(data_set=my_discretization,
+                                                                     Q_ref=Q_ref,
+                                                                     rect_scale=0.25,
+                                                                     M=50,
+                                                                     num_d_emulate=1E5)
   
 # calculate probablities making Monte Carlo assumption
-(P,  lam_vol, io_ptr) = calculateP.prob(samples=samples,
-                                        data=data,
-                                        rho_D_M=d_distr_prob,
-                                        d_distr_samples=d_distr_samples)
+calculateP.prob(my_discretization)
 
 # calculate 2D marginal probabilities
-(bins, marginals2D) = plotP.calculate_2D_marginal_probs(P_samples = P, samples = samples, lam_domain = lam_domain, nbins = 10)
+(bins, marginals2D) = plotP.calculate_2D_marginal_probs(my_discretization, nbins = 10)
 
 # smooth 2D marginal probabilites for plotting (optional)
-marginals2D = plotP.smooth_marginals_2D(marginals2D,bins, sigma=1.0)
+marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=1.0)
 
 # plot 2D marginal probabilities
-plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain, filename = "contaminant_map",
+plotP.plot_2D_marginal_probs(marginals2D, bins, my_discretization, filename = "contaminant_map",
                              plot_surface=False,
-                             lam_ref = ref_lam,
+                             lam_ref = param_ref,
                              lambda_label=labels,
                              interactive=False)
 
 # calculate 1d marginal probs
-(bins, marginals1D) = plotP.calculate_1D_marginal_probs(P_samples = P, samples = samples, lam_domain = lam_domain, nbins = 20)
+(bins, marginals1D) = plotP.calculate_1D_marginal_probs(my_discretization, nbins = 20)
 
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=1.0)
 
 # plot 1d marginal probs
-plotP.plot_1D_marginal_probs(marginals1D, bins, lam_domain, filename = "contaminant_map", interactive=False, lam_ref=ref_lam, lambda_label=labels)
+plotP.plot_1D_marginal_probs(marginals1D, bins, my_discretization,
+                             filename = "contaminant_map",
+                             interactive=False,
+                             lam_ref=param_ref,
+                             lambda_label=labels)
 
 percentile = 1.0
 # Sort samples by highest probability density and sample highest percentile percent samples
-(num_samples, P_high, samples_high, lam_vol_high, data_high)= postTools.sample_highest_prob(top_percentile=percentile, P_samples=P, samples=samples, lam_vol=lam_vol,data = data,sort=True)
+(num_samples, my_discretization_highP, indices)= postTools.sample_highest_prob(
+    percentile, my_discretization, sort=True)
 
 # print the number of samples that make up the  highest percentile percent samples and
 # ratio of the volume of the parameter domain they take up
-print (num_samples, np.sum(lam_vol_high))
+print (num_samples, np.sum(my_discretization_highP._input_sample_set.get_volumes()))
 
-# Propogate the probability measure through a different QoI map
-(_, P_pred, _, _ , data_pred)= postTools.sample_highest_prob(top_percentile=percentile, P_samples=P, samples=samples, lam_vol=lam_vol,data = dataf[:,7],sort=True)
+# Choose unused QoI as prediction QoI and propagate measure onto predicted QoI data space
+QoI_indices_predict = np.array([7])
+output_samples_predict = samp.sample_set(QoI_indices_predict.size)
+output_samples_predict.set_values(np.loadtxt("files/data.txt.gz")[:,QoI_indices_predict])
+output_samples_predict.set_probabilities(input_samples.get_probabilities())
+
+# Determine range of predictions and store as domain for plotting purposes
+output_samples_predict.set_domain(output_samples_predict.get_bounding_box())
 
 # Plot 1D pdf of predicted QoI
 # calculate 1d marginal probs
-(bins_pred, marginals1D_pred) = plotP.calculate_1D_marginal_probs(P_samples = P_pred, samples = data_pred, lam_domain = np.array([[np.min(data_pred),np.max(data_pred)]]), nbins = 20)
+(bins_pred, marginals1D_pred) = plotP.calculate_1D_marginal_probs(output_samples_predict,
+                                                                  nbins = 20)
 
 # plot 1d pdf 
-plotP.plot_1D_marginal_probs(marginals1D_pred, bins_pred, lam_domain= np.array([[np.min(data_pred),np.max(data_pred)]]), filename = "contaminant_prediction", interactive=False)
+plotP.plot_1D_marginal_probs(marginals1D_pred, bins_pred, output_samples_predict,
+                             filename = "contaminant_prediction", interactive=False)

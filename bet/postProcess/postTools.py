@@ -72,7 +72,7 @@ def sort_by_rho(sample_set):
         sample_set_out._input_sample_set.set_values(samples)
         sample_set_out._input_sample_set.set_probabilities(P_samples)
         sample_set_out._input_sample_set.set_volumes(lam_vol)
-        sample_set_out._output_sample_set.set_data(data)
+        sample_set_out._output_sample_set.set_values(data)
     else:
         sample_set_out = sample.sample_set(sample_set.get_dim())
         sample_set_out.set_values(samples)
@@ -161,7 +161,7 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
         sample_set_out._input_sample_set.set_values(samples)
         sample_set_out._input_sample_set.set_probabilities(P_samples)
         sample_set_out._input_sample_set.set_volumes(lam_vol)
-        sample_set_out._output_sample_set.set_data(data)
+        sample_set_out._output_sample_set.set_values(data)
     else:
         sample_set_out = sample.sample_set(sample_set.get_dim())
         sample_set_out.set_values(samples)
