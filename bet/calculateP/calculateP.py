@@ -159,7 +159,10 @@ def prob_mc(discretization):
     cvol = np.copy(vol)
     comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
     vol = cvol
-    vol = vol/float(discretization._emulated_input_sample_set._values.shape[0])
+    num_l_emulate = discretization._emulated_input_sample_set.\
+            _values_local.shape[0]
+    num_l_emulate = comm.allreduce(num_l_emulate, op=MPI.SUM)
+    vol = vol/float(num_l_emulate)
     discretization._input_sample_set._volumes = vol
     discretization._input_sample_set.global_to_local()
 
