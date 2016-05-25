@@ -146,6 +146,7 @@ the structure of a high dimensional non-parametric probability measure.
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
                                                         nbins = [10, 10, 10])
+
 # smooth 2d marginals probs (optional)
 marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.2)
 

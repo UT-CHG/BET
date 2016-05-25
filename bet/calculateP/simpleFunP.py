@@ -734,36 +734,34 @@ def user_partition_user_distribution(data_set, data_partition_set,
         raise wrong_argument_type(msg)
 
     if isinstance(data_partition_set, samp.sample_set_base):
-        num_samples_discretize_D = data_partition_set.check_num()
-        simpleFun_set = data_partition_set.copy()
-        dim_simpleFun = simpleFun_set._dim
+        M = data_partition_set.check_num()
+        d_distr_samples = data_partition_set._values
+        dim_simpleFun = d_distr_samples.shape[1]
     elif isinstance(data_partition_set, samp.discretization):
-        num_samples_discretize_D = data_partition_set.check_nums()
-        simpleFun_set = data_partition_set._output_sample_set.copy()
-        dim_simpleFun = simpleFun_set._dim
+        M = data_partition_set.check_nums()
+        d_distr_samples = data_partition_set._output_sample_set._values
+        dim_simpleFun = d_distr_samples.shape[1]
     elif isinstance(data_partition_set, np.ndarray):
-        num_samples_discretize_D = data_partition_set.shape[0]
+        M = data_partition_set.shape[0]
         dim_simpleFun = data_partition_set.shape[1]
-        simpleFun_set = samp.sample_set(dim=dim_simpleFun)
-        simpleFun_set.set_values(values)
+        d_distr_samples = data_partition_set
     else:
         msg = "The second argument must be of type bet.sample.sample_set, "
         msg += "bet.sample.discretization or np.ndarray"
         raise wrong_argument_type(msg)
 
     if isinstance(data_distribution_set, samp.sample_set_base):
-        MonteCarlo_set = data_distribution_set.copy()
-        dim_MonteCarlo = MonteCarlo_set._dim
-        num_iid_samples = data_distribution_set.check_num()
+        d_distr_emulate = data_distribution_set._values
+        dim_MonteCarlo = d_distr_emulate.shape[1]
+        num_d_emulate = data_distribution_set.check_num()
     elif isinstance(data_distribution_set, samp.discretization):
-        MonteCarlo_set = data_distribution_set._output_sample_set.copy()
-        dim_MonteCarlo = MonteCarlo_set._dim
-        num_iid_samples = data_distribution_set.check_nums()
+        d_distr_emulate = data_distribution_set._output_sample_set._values
+        dim_MonteCarlo = d_distr_emulate.shape[1]
+        num_d_emulate = data_distribution_set.check_nums()
     elif isinstance(data_distribution_set, np.ndarray):
-        num_iid_samples = data_distribution_set.shape[0]
+        num_d_emulate = data_distribution_set.shape[0]
         dim_MonteCarlo = data_distribution_set.shape[1]
-        MonteCarlo_set = samp.sample_set(dim=dim_MonteCarlo)
-        MonteCarlo_set.set_values(values)
+        d_distr_emulate = data_distribution_set
     else:
         msg = "The second argument must be of type bet.sample.sample_set, "
         msg += "bet.sample.discretization or np.ndarray"
@@ -773,24 +771,26 @@ def user_partition_user_distribution(data_set, data_partition_set,
         msg = "The argument types have conflicting dimensions"
         raise wrong_argument_type(msg)
 
-    my_discretization = samp.discretization(input_sample_set=s_set,
-                                            output_sample_set=s_set,
-                                            emulated_output_sample_set=MonteCarlo_set,
-                                            output_probability_set=simpleFun_set)
+    # Initialize sample set object
+    s_set = samp.sample_set(dim)
+    s_set.set_values(d_distr_samples)
+    s_set.set_kdtree()
 
-    my_discretization.set_emulated_oo_ptr()
+    (_, k) = s_set.query(d_distr_emulate)
 
-    my_discretization._output_probability_set.set_probabilities(
-        np.zeros((num_samples_discretize_D,)))
+    count_neighbors = np.zeros((M,), dtype=np.int)
+    for i in range(M):
+        count_neighbors[i] = np.sum(np.equal(k, i))
 
-    for i in range(num_samples_discretize_D):
-        Itemp = np.equal(my_discretization.get_emulated_oo_ptr(), i)
-        Itemp_sum = float(np.sum(Itemp))
-        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
-        if Itemp_sum > 0:
-            my_discretization._output_probability_set._probabilities[i] = \
-                Itemp_sum / num_iid_samples
+    # Use the binning to define :math:`\rho_{\mathcal{D},M}`
+    ccount_neighbors = np.copy(count_neighbors)
+    comm.Allreduce([count_neighbors, MPI.INT], [ccount_neighbors, MPI.INT],
+                   op=MPI.SUM)
+    count_neighbors = ccount_neighbors
+    rho_D_M = count_neighbors.astype(np.float64) / \
+              float(num_d_emulate * comm.size)
+    s_set.set_probabilities(rho_D_M)
 
     if isinstance(data_set, samp.discretization):
-        data_set._output_probability_set = my_discretization._output_probability_set
-    return my_discretization._output_probability_set
+        data_set._output_probability_set = s_set
+    return s_set
