@@ -29,8 +29,8 @@ def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
     :returns: a set of samples for emulation
 
     """
-    num_l_emulate = (num_l_emulate/comm.size) + \
-            (comm.rank < num_l_emulate%comm.size)
+    num_l_emulate = int((num_l_emulate/comm.size) + \
+            (comm.rank < num_l_emulate%comm.size))
     lam_width = domain[:, 1] - domain[:, 0]
     lambda_emulate = lam_width*np.random.random((num_l_emulate,
         domain.shape[0]))+domain[:, 0]

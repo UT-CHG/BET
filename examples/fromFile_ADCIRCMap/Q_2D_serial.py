@@ -50,23 +50,20 @@ def postprocess(station_nums, ref_num):
     # Calculate P on lambda emulate
     print "Calculating prob_emulated"
     calcP.prob_emulated(my_disc)
-    if comm.rank == 0:
-        sample.save_discretization(my_disc, filename, "prob_emulated_solution")
+    sample.save_discretization(my_disc, filename, "prob_emulated_solution")
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
     input_sample_set.estimate_volume_mc()
     print "Calculating prob"
     calcP.prob(my_disc)
-    if comm.rank == 0:
-        sample.save_discretization(my_disc, filename, "prob_solution")
+    sample.save_discretization(my_disc, filename, "prob_solution")
 
     # Calculate P on the actual samples estimating voronoi cell volume with MC
     # integration
     calcP.prob_mc(my_disc)
     print "Calculating prob_mc"
-    if comm.rank == 0:
-        sample.save_discretization(my_disc, filename, "prob_mc_solution")
+    sample.save_discretization(my_disc, filename, "prob_mc_solution")
 
 # Post-process and save P and emulated points
 ref_nums = [6, 11, 15] # 7, 12, 16
