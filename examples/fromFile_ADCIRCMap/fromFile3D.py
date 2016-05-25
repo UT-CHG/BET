@@ -18,8 +18,6 @@ xmax = 1580
 ymax = 1500
 wall_height = -2.5
 
-param_min = param_domain[:, 0]
-param_max = param_domain[:, 1]
 
 # Select only the stations I care about this will lead to better
 # sampling
@@ -29,7 +27,7 @@ station_nums = [0, 4, 1] # 1, 5, 2
 transition_set = asam.transition_set(.5, .5**5, 0.5)
 
 # Read in Q_ref and Q to create the appropriate rho_D 
-mdat = sio.loadmat('Q_3D')
+mdat = sio.loadmat('../matfiles/Q_3D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']
@@ -67,7 +65,7 @@ sampler = asam.sampler(num_samples, chain_length, model)
 
 # Get samples
 inital_sample_type = "lhs"
-(samples, data, all_step_ratios) = sampler.generalized_chains(param_min, param_max,
+(my_disc, all_step_ratios) = sampler.generalized_chains(param_domain,
         transition_set, kernel_rD, sample_save_file, inital_sample_type)
 
 # Read in points_ref and plot results

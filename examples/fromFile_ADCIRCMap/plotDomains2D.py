@@ -6,17 +6,16 @@
 import numpy as np
 import bet.postProcess.plotDomains as pDom
 import scipy.io as sio
+import bet.sample as sample
 
 # Set minima and maxima
 lam_domain = np.array([[.07, .15], [.1, .2]])
-param_min = lam_domain[:, 0]
-param_max = lam_domain[:, 1]
 
 # Select only the stations I care about this will lead to better sampling
 station_nums = [0, 5] # 1, 6
 
 # Read in Q_ref and Q to create the appropriate rho_D 
-mdat = sio.loadmat('Q_2D')
+mdat = sio.loadmat('../matfiles/Q_2D.mat')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']
@@ -39,15 +38,24 @@ def rho_D(outputs):
 p_ref = mdat['points_true']
 p_ref = p_ref[5:7, 15]
 
+# Create input, output, and discretization from data read from file
+points = mdat['points']
+input_sample_set = sample.sample_set(points.shape[0])
+input_sample_set.set_values(points.transpose())
+input_sample_set.set_domain(lam_domain)
+output_sample_set = sample.sample_set(Q.shape[1])
+output_sample_set.set_values(Q)
+my_disc = sample.discretization(input_sample_set, output_sample_set)
+
 # Show the samples in the parameter space
-pDom.show_param(samples=points.transpose(), data=Q, rho_D=rho_D, p_ref=p_ref)
+pDom.show_param(my_disc, rho_D=rho_D, p_ref=p_ref)
 # Show the corresponding samples in the data space
-pDom.show_data(data=Q, rho_D=rho_D, Q_ref=Q_ref)
+pDom.show_data(output_sample_set, rho_D=rho_D, Q_ref=Q_ref)
 # Show the data domain that corresponds with the convex hull of samples in the
 # parameter space
-pDom.show_data_domain_2D(samples=points.transpose(), data=Q, Q_ref=Q_ref)
+pDom.show_data_domain_2D(my_disc, Q_ref=Q_ref)
 
 # Show multiple data domains that correspond with the convex hull of samples in
 # the parameter space
-pDom.show_data_domain_multi(samples=points.transpose(), data=mdat['Q'],
-        Q_ref=mdat['Q_true'][15], Q_nums=[1,2,5], showdim='all')
+pDom.show_data_domain_multi(my_disc, Q_ref=mdat['Q_true'][15], Q_nums=[1,2,5],
+        showdim='all')

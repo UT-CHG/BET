@@ -4,16 +4,21 @@ import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
 import numpy as np
 import scipy.io as sio
+import bet.sample as sample
 
 # Import "Truth"
-mdat = sio.loadmat('Q_2D')
+mdat = sio.loadmat('../matfiles/Q_2D')
 Q = mdat['Q']
 Q_ref = mdat['Q_true']
 
 # Import Data
-samples = mdat['points'].transpose()
+points = mdat['points']
 lam_domain = np.array([[0.07, .15], [0.1, 0.2]])
 
+# Create input, output, and discretization from data read from file
+input_sample_set = sample.sample_set(points.shape[0])
+input_sample_set.set_values(points.transpose())
+input_sample_set.set_domain(lam_domain)
 print "Finished loading data"
 
 def postprocess(station_nums, ref_num):
@@ -24,55 +29,44 @@ def postprocess(station_nums, ref_num):
     filename += '_ref_'+str(ref_num+1)
 
     data = Q[:, station_nums]
+    output_sample_set = sample.sample_set(data.shape[1])
+    output_sample_set.set_values(data)
     q_ref = Q_ref[ref_num, station_nums]
 
     # Create Simple function approximation
     # Save points used to parition D for simple function approximation and the
     # approximation itself (this can be used to make close comparisions...)
-    (rho_D_M, d_distr_samples, d_Tree) = sfun.uniform_hyperrectangle(data,
-            q_ref, bin_ratio=0.15,
+    output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
+            output_sample_set, q_ref, rect_scale=0.15,
             center_pts_per_edge=np.ones((data.shape[1],)))
 
     num_l_emulate = 1e6
-    lambda_emulate = calcP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
+    set_emulated = calcP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
+    my_disc = sample.discretization(input_sample_set, output_sample_set,
+            output_probability_set, emulated_input_sample_set=set_emulated)
+
     print "Finished emulating lambda samples"
 
-    mdict = dict()
-    mdict['rho_D_M'] = rho_D_M
-    mdict['d_distr_samples'] = d_distr_samples 
-    mdict['num_l_emulate'] = num_l_emulate
-    mdict['lambda_emulate'] = lambda_emulate
-
     # Calculate P on lambda emulate
-    (P0, lem0, io_ptr0, emulate_ptr0) = calcP.prob_emulated(samples, data,
-            rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
     print "Calculating prob_emulated"
-    mdict['P0'] = P0
-    mdict['lem0'] = lem0
-    mdict['io_ptr0'] = io_ptr0
-    mdict['emulate_ptr0'] = emulate_ptr0
+    calcP.prob_emulated(my_disc)
+    if comm.rank == 0:
+        sample.save_discretization(my_disc, filename, "prob_emulated_solution")
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
-    (P1, lam_vol1, io_ptr1) = calcP.prob(samples, data,
-            rho_D_M, d_distr_samples, d_Tree)
+    input_sample_set.estimate_volume_mc()
     print "Calculating prob"
-    mdict['P1'] = P1
-    mdict['lam_vol1'] = lam_vol1
-    mdict['lem1'] = samples
-    mdict['io_ptr1'] = io_ptr1
+    calcP.prob(my_disc)
+    if comm.rank == 0:
+        sample.save_discretization(my_disc, filename, "prob_solution")
 
     # Calculate P on the actual samples estimating voronoi cell volume with MC
     # integration
-    (P3, lam_vol3, lambda_emulate3, io_ptr3, emulate_ptr3) = calcP.prob_mc(samples,
-            data, rho_D_M, d_distr_samples, lambda_emulate, d_Tree)
+    calcP.prob_mc(my_disc)
     print "Calculating prob_mc"
-    mdict['P3'] = P3
-    mdict['lam_vol3'] = lam_vol3
-    mdict['io_ptr3'] = io_ptr3
-    mdict['emulate_ptr3'] = emulate_ptr3
-    # Export P 
-    sio.savemat(filename, mdict, do_compression=True)
+    if comm.rank == 0:
+        sample.save_discretization(my_disc, filename, "prob_mc_solution")
 
 # Post-process and save P and emulated points
 ref_nums = [6, 11, 15] # 7, 12, 16
