@@ -60,7 +60,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
         raise bad_object("Improper sample object")
 
     # Check for local probabilities
-    if sample_obj.probabilities_local is None:
+    if sample_obj._probabilities_local is None:
         if sample_obj.probabilities is None:
             raise missing_attribute("Missing probabilities")
         else:
@@ -121,7 +121,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
         raise bad_object("Improper sample object")
 
     # Check for local probabilities
-    if sample_obj.probabilities_local is None:
+    if sample_obj._probabilities_local is None:
         if sample_obj.probabilities is None:
             raise missing_attribute("Missing probabilities")
         else:

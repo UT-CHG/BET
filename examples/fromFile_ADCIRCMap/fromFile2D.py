@@ -58,7 +58,7 @@ sampler = asam.sampler(num_samples, chain_length, model)
 
 # Get samples
 inital_sample_type = "lhs"
-(my_disc, data, all_step_ratios) = sampler.generalized_chains(lam_domain,
+(my_disc,  all_step_ratios) = sampler.generalized_chains(lam_domain,
         transition_set, kernel_rD, sample_save_file, inital_sample_type)
 
 # Read in points_ref and plot results
