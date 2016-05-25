@@ -29,8 +29,8 @@ def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
     :returns: a set of samples for emulation
 
     """
-    num_l_emulate = (num_l_emulate/comm.size) + \
-            (comm.rank < num_l_emulate%comm.size)
+    num_l_emulate = int((num_l_emulate/comm.size) + \
+            (comm.rank < num_l_emulate%comm.size))
     lam_width = domain[:, 1] - domain[:, 0]
     lambda_emulate = lam_width*np.random.random((num_l_emulate,
         domain.shape[0]))+domain[:, 0]
@@ -49,10 +49,6 @@ def prob_emulated(discretization, globalize=True):
     probability assoicated with a set of voronoi cells defined by
     ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
     This is added to the emulated input sample set object.
-
-    .. todo::
-        
-        @smattis the way this is written globalize does nothing
 
     :param discretization: An object containing the discretization information.
     :type class:`bet.sample.discretization`
@@ -86,6 +82,8 @@ def prob_emulated(discretization, globalize=True):
                         _probabilities[i]/Itemp_sum
     
     discretization._emulated_input_sample_set._probabilities_local = P
+    if globalize:
+        discretization._emulated_input_sample_set.local_to_global()
     pass
 
 def prob(discretization): 
@@ -159,7 +157,10 @@ def prob_mc(discretization):
     cvol = np.copy(vol)
     comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
     vol = cvol
-    vol = vol/float(discretization._emulated_input_sample_set._values.shape[0])
+    num_l_emulate = discretization._emulated_input_sample_set.\
+            _values_local.shape[0]
+    num_l_emulate = comm.allreduce(num_l_emulate, op=MPI.SUM)
+    vol = vol/float(num_l_emulate)
     discretization._input_sample_set._volumes = vol
     discretization._input_sample_set.global_to_local()
 

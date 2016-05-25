@@ -415,7 +415,7 @@ class sampler(object):
         if num_samples is None:
             num_samples = self.num_samples
 
-        if isinstance(input_obj, sample.sample_set):
+        if isinstance(input_obj, sample.sample_set_base):
             input_sample_set = self.random_sample_set(sample_type, input_obj,
                     num_samples, criterion)
         elif isinstance(input_obj, np.ndarray):

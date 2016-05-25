@@ -29,21 +29,22 @@ class Test_calc_marg_1D(unittest.TestCase):
         """
         Set up problem.
         """
-        input_samples = sample.sample_set(1)
-        input_samples.set_domain(np.array([[0.0, 1.0]]))
+        emulated_input_samples = sample.sample_set(1)
+        emulated_input_samples.set_domain(np.array([[0.0, 1.0]]))
 
         num_samples=1000
 
-        input_samples.set_values(np.linspace(input_samples.get_domain()[0][0],
-                                             input_samples.get_domain()[0][1],
+        emulated_input_samples.set_values_local(np.linspace(emulated_input_samples.get_domain()[0][0],
+                                             emulated_input_samples.get_domain()[0][1],
                                              num_samples+1))
 
-        input_samples.set_probabilities(1.0/float(comm.size)*(1.0/float(input_samples.get_values().shape[0]))
-                                        *np.ones((input_samples.get_values().shape[0],)))
+        emulated_input_samples.set_probabilities_local(1.0/float(comm.size)*(1.0/float(\
+                emulated_input_samples.get_values_local().shape[0]))\
+                *np.ones((emulated_input_samples.get_values_local().shape[0],)))
 
-        input_samples.check_num()
+        emulated_input_samples.check_num()
 
-        self.samples = input_samples
+        self.samples = emulated_input_samples
 
     def test_1_bin(self):
         """
@@ -67,23 +68,28 @@ class Test_calc_marg_1D(unittest.TestCase):
 
 class Test_calc_marg_2D(unittest.TestCase):
     """
-    Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  :meth:`bet.postProcess.plotP.calculate_2D_marginal_probs` for a 2D
+    Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and
+    :meth:`bet.postProcess.plotP.calculate_2D_marginal_probs` for a 2D
     parameter space.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        input_samples = sample.sample_set(2)
-        input_samples.set_domain(np.array([[0.0,1.0],[0.0,1.0]]))
+        emulated_input_samples = sample.sample_set(2)
+        emulated_input_samples.set_domain(np.array([[0.0,1.0],[0.0,1.0]]))
 
-        input_samples.set_values(util.meshgrid_ndim((np.linspace(input_samples.get_domain()[0][0], input_samples.get_domain()[0][1], 10),
-                                                     np.linspace(input_samples.get_domain()[1][0], input_samples.get_domain()[1][1], 10))))
+        emulated_input_samples.set_values_local(util.meshgrid_ndim((np.linspace(emulated_input_samples.get_domain()[0][0],
+            emulated_input_samples.get_domain()[0][1], 10),
+            np.linspace(emulated_input_samples.get_domain()[1][0],
+                emulated_input_samples.get_domain()[1][1], 10))))
 
-        input_samples.set_probabilities(1.0/float(comm.size)*(1.0/float(input_samples.get_values().shape[0]))*np.ones((input_samples.get_values().shape[0],)))
-        input_samples.check_num()
+        emulated_input_samples.set_probabilities_local(1.0/float(comm.size)*\
+                (1.0/float(emulated_input_samples.get_values_local().shape[0]))*\
+                np.ones((emulated_input_samples.get_values_local().shape[0],)))
+        emulated_input_samples.check_num()
 
-        self.samples = input_samples
+        self.samples = emulated_input_samples
 
     def test_1_bin_1D(self):
         """ 

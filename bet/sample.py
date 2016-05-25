@@ -610,6 +610,13 @@ class sample_set_base(object):
         Calculate the volume faction of cells approximately using Monte
         Carlo integration. 
 
+        .. todo::
+
+           This currently presumes a uniform Lesbegue measure on the
+           ``domain``. Currently the way this is written
+           ``emulated_input_sample_set`` is NOT used to calculate the volume.
+           This should at least be an option. 
+
         :param int n_mc_points: If estimate is True, number of MC points to use
         """
         num = self.check_num()

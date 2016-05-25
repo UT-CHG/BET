@@ -52,7 +52,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     the other markers.
 
     :param sample_obj: contains samples to create scatter plot
-    :type sample_obj: :class:`~bet.sample.sample_set`
+    :type sample_obj: :class:`~bet.sample.sample_set_base`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
     :type color: :class:`numpy.ndarray`
@@ -65,7 +65,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-    if not isinstance(sample_obj, sample.sample_set):
+    if not isinstance(sample_obj, sample.sample_set_base):
         raise bad_object("Improper sample object")
     # check dimension of data to plot
     if sample_obj.get_dim() != 2:
@@ -119,7 +119,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     the other markers.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.sample_set`
+    :type sample_obj: :class:`~bet.sample.sample_set_base`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
     :type color: :class:`numpy.ndarray`
@@ -133,7 +133,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     :param string filename: filename to save the figure as
 
     """
-    if not isinstance(sample_obj, sample.sample_set):
+    if not isinstance(sample_obj, sample.sample_set_base):
         raise bad_object("Improper sample object")
     # check dimension of data to plot
     if sample_obj.get_dim() != 3:
@@ -191,7 +191,7 @@ def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
 
     :param sample_disc: Object containing the samples to plot
     :type sample_disc: :class:`~bet.sample.discretization` 
-        or :class:`~bet.sample.sample_set`
+        or :class:`~bet.sample.sample_set_base`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density function on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
@@ -217,7 +217,7 @@ def show_param(sample_disc, rho_D=None, p_ref=None, sample_nos=None,
     else:
         if isinstance(sample_disc, sample.discretization):
             sample_obj = sample_disc._input_sample_set
-        elif isinstance(sample_disc, sample.sample_set):
+        elif isinstance(sample_disc, sample.sample_set_base):
             sample_obj = sample_disc
         else:
             raise bad_object("Improper sample object")
@@ -271,7 +271,7 @@ def show_data(sample_obj, rho_D=None, Q_ref=None, sample_nos=None,
     the other markers.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.sample_set`
+    :type sample_obj: :class:`~bet.sample.sample_set_base`
     :param list sample_nos: sample numbers to plot
     :param rho_D: probability density on D
     :type rho_D: callable function that takes a :class:`np.array` and returns a
@@ -363,7 +363,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
 
     :param sample_disc: Object containing the samples to plot
     :type sample_disc: :class:`~bet.sample.discretization` or 
-        :class:`~bet.sample.sample_set`
+        :class:`~bet.sample.sample_set_base`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
@@ -472,7 +472,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
     :param sample_disc: Object containing the samples to plot
     :type sample_disc: :class:`~bet.sample.discretization` 
-        or :class:`~bet.sample.sample_set`
+        or :class:`~bet.sample.sample_set_base`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, 2)
     :param list ref_markers: list of marker types for :math:`Q_{ref}`
@@ -542,7 +542,7 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all',
     Creates two-dimensional projections of scatter plots of samples.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.sample_set`
+    :type sample_obj: :class:`~bet.sample.sample_set_base`
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param string img_folder: folder to save the plots to
@@ -551,7 +551,7 @@ def scatter_param_multi(sample_obj, img_folder='figs/', showdim='all',
     :type showdim: int or string
 
     """
-    if not isinstance(sample_obj, sample.sample_set):
+    if not isinstance(sample_obj, sample.sample_set_base):
         raise bad_object("Improper sample object")
 
     # If no specific coordinate number of choice is given set to be the first
@@ -622,7 +622,7 @@ def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
     markers.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.sample_set`
+    :type sample_obj: :class:`~bet.sample.sample_set_base`
     :param color: values to color the ``samples`` by
     :type color: :class:`numpy.ndarray`
     :param string filename: filename to save the figure as
@@ -635,7 +635,7 @@ def scatter2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
     :type showdim: int or string
 
     """
-    if not isinstance(sample_obj, sample.sample_set):
+    if not isinstance(sample_obj, sample.sample_set_base):
         raise bad_object("Improper sample object")
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
