@@ -57,5 +57,5 @@ pDom.show_data_domain_2D(my_disc, Q_ref=Q_ref)
 
 # Show multiple data domains that correspond with the convex hull of samples in
 # the parameter space
-pDom.show_data_domain_multi(my_disc, Q_ref=mdat['Q_true'][15], Q_nums=[1,2,5],
+pDom.show_data_domain_multi(my_disc, Q_ref=mdat['Q_true'][15], 
         showdim='all')
