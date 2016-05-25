@@ -23,13 +23,23 @@ class bad_object(Exception):
     Exception for when the wrong type of object is used.
     """
 
+class missing_attribute(Exception):
+    """
+    Exception for missing attribute.
+    """
+
 def calculate_1D_marginal_probs(sample_set, nbins=20):
         
     r"""
     This calculates every single marginal of the probability measure
     described by the probabilities within the sample_set object.
     If the sample_set object is a discretization object, we assume
-    that the probabilities to be plotted are from the input space.
+    that the probabilities to be plotted are from the input space on the
+    emulated samples
+    (``discretization._emulated_input_sample_set._probabilties_local``).
+
+    This assumes that the user has already run
+    :meth:`~bet.calculateP.calculateP.prob_emulated`.
 
     :param sample_set: Object containing samples and probabilities
     :type sample_set: :class:`~bet.sample.sample_set_base` or 
@@ -41,11 +51,20 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._input_sample_set
+        sample_obj = sample_set._emulated_input_sample_set
+        if sample_obj is None:
+            raise missing_attribute("Missing emulated_input_sample_set")
     elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
+
+    # Check for local probabilities
+    if sample_obj.probabilities_local is None:
+        if sample_obj.probabilities is None:
+            raise missing_attribute("Missing probabilities")
+        else:
+            sample_obj.global_to_local()
 
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
@@ -61,8 +80,8 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     # Calculate marginals
     marginals = {}
     for i in range(sample_obj.get_dim()):
-        [marg, _] = np.histogram(sample_obj.get_values()[:, i], bins=bins[i],
-                                 weights=sample_obj.get_probabilities())
+        [marg, _] = np.histogram(sample_obj.get_values_local()[:, i], bins=bins[i],
+                                 weights=sample_obj.get_probabilities_local())
         marg_temp = np.copy(marg)
         comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
         marginals[i] = marg_temp
@@ -75,7 +94,13 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     This calculates every pair of marginals (or joint in 2d case) of
     input probability measure defined on a rectangular grid.
     If the sample_set object is a discretization object, we assume
-    that the probabilities to be plotted are from the input space.
+    that the probabilities to be plotted are from the input space on the
+    emulated samples
+    (``discretization._emulated_input_sample_set._probabilties_local``).
+
+    This assumes that the user has already run
+    :meth:`~bet.calculateP.calculateP.prob_emulated`.
+
 
     :param sample_set: Object containing samples and probabilities
     :type sample_set: :class:`~bet.sample.sample_set_base` 
@@ -87,11 +112,20 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._input_sample_set
+        sample_obj = sample_set._emulated_input_sample_set
+        if sample_obj is None:
+            raise missing_attribute("Missing emulated_input_sample_set")
     elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
+
+    # Check for local probabilities
+    if sample_obj.probabilities_local is None:
+        if sample_obj.probabilities is None:
+            raise missing_attribute("Missing probabilities")
+        else:
+            sample_obj.global_to_local()
 
     if sample_obj.get_dim() < 2:
         raise dim_not_matching("Incompatible dimensions of sample set"
@@ -112,9 +146,9 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     marginals = {}
     for i in range(sample_obj.get_dim()):
         for j in range(i+1, sample_obj.get_dim()):
-            (marg, _) = np.histogramdd(sample_obj.get_values()[:, [i, j]],
+            (marg, _) = np.histogramdd(sample_obj.get_values_local()[:, [i, j]],
                     bins=[bins[i], bins[j]],
-                    weights=sample_obj.get_probabilities())
+                    weights=sample_obj.get_probabilities_local())
             marg = np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
             comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],

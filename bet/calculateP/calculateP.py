@@ -50,10 +50,6 @@ def prob_emulated(discretization, globalize=True):
     ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
     This is added to the emulated input sample set object.
 
-    .. todo::
-        
-        @smattis the way this is written globalize does nothing
-
     :param discretization: An object containing the discretization information.
     :type class:`bet.sample.discretization`
     :param bool globalize: Makes local variables global.
@@ -86,6 +82,8 @@ def prob_emulated(discretization, globalize=True):
                         _probabilities[i]/Itemp_sum
     
     discretization._emulated_input_sample_set._probabilities_local = P
+    if globalize:
+        discretization._emulated_input_sample_set.local_to_global()
     pass
 
 def prob(discretization): 
