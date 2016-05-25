@@ -28,7 +28,7 @@ def sort_by_rho(sample_set):
     are also sorted.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or
+    :type sample_set: :class:`~bet.sample.sample_set_base` or
         :class:`~bet.sample.discretization` 
     :param indices: sorting indices
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
@@ -45,7 +45,7 @@ def sort_by_rho(sample_set):
         P_samples = sample_set._input_sample_set.get_probabilities()
         lam_vol = sample_set._input_sample_set.get_volumes()
         data = sample_set._output_sample_set.get_values()
-    elif isinstance(sample_set, sample.sample_set):
+    elif isinstance(sample_set, sample.sample_set_base):
         samples = sample_set.get_values()
         P_samples = sample_set.get_probabilities()
         lam_vol = sample_set.get_volumes()
@@ -95,7 +95,7 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
     :param percentile: ratio of highest probability samples to select
     :type percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or 
+    :type sample_set: :class:`~bet.sample.sample_set_base` or 
         :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
@@ -114,7 +114,7 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
         P_samples = sample_set._input_sample_set.get_probabilities()
         lam_vol = sample_set._input_sample_set.get_volumes()
         data = sample_set._output_sample_set.get_values()
-    elif isinstance(sample_set, sample.sample_set):
+    elif isinstance(sample_set, sample.sample_set_base):
         samples = sample_set.get_values()
         P_samples = sample_set.get_probabilities()
         lam_vol = sample_set.get_volumes()
@@ -129,7 +129,7 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
             P_samples = sample_set._input_sample_set.get_probabilities()
             lam_vol = sample_set._input_sample_set.get_volumes()
             data = sample_set._output_sample_set.get_values()
-        elif isinstance(sample_set, sample.sample_set):
+        elif isinstance(sample_set, sample.sample_set_base):
             samples = sample_set.get_values()
             P_samples = sample_set.get_probabilities()
             lam_vol = sample_set.get_volumes()
@@ -182,7 +182,7 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` 
+    :type sample_set: :class:`~bet.sample.sample_set_base` 
         or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
@@ -208,7 +208,7 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` 
+    :type sample_set: :class:`~bet.sample.sample_set_base` 
         or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``

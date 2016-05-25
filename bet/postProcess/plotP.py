@@ -32,7 +32,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     that the probabilities to be plotted are from the input space.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` or 
+    :type sample_set: :class:`~bet.sample.sample_set_base` or 
         :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
     :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
@@ -42,7 +42,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     """
     if isinstance(sample_set, sample.discretization):
         sample_obj = sample_set._input_sample_set
-    elif isinstance(sample_set, sample.sample_set):
+    elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
@@ -78,7 +78,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     that the probabilities to be plotted are from the input space.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` 
+    :type sample_set: :class:`~bet.sample.sample_set_base` 
         or :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
     :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
@@ -88,7 +88,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     """
     if isinstance(sample_set, sample.discretization):
         sample_obj = sample_set._input_sample_set
-    elif isinstance(sample_set, sample.sample_set):
+    elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
@@ -139,7 +139,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
         calculating marginals
     :type bins: :class:`~numpy.ndarray` of shape (nbins+1,)
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` 
+    :type sample_set: :class:`~bet.sample.sample_set_base` 
         or :class:`~bet.sample.discretization`
     :param filename: Prefix for output files.
     :type filename: str
@@ -153,7 +153,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     """
     if isinstance(sample_set, sample.discretization):
         sample_obj = sample_set._input_sample_set
-    elif isinstance(sample_set, sample.sample_set):
+    elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
@@ -202,7 +202,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     :param bins: Endpoints of bins used in calculating marginals
     :type bins: :class:`~numpy.ndarray` of shape (nbins+1,2)
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set` 
+    :type sample_set: :class:`~bet.sample.sample_set_base` 
         or :class:`~bet.sample.discretization`
     :param filename: Prefix for output files.
     :type filename: str
@@ -216,7 +216,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     """
     if isinstance(sample_set, sample.discretization):
         sample_obj = sample_set._input_sample_set
-    elif isinstance(sample_set, sample.sample_set):
+    elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
