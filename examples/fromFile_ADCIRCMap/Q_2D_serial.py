@@ -40,7 +40,7 @@ def postprocess(station_nums, ref_num):
             output_sample_set, q_ref, rect_scale=0.15,
             center_pts_per_edge=np.ones((data.shape[1],)))
 
-    num_l_emulate = 1e6
+    num_l_emulate = 1e4
     set_emulated = calcP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
     my_disc = sample.discretization(input_sample_set, output_sample_set,
             output_probability_set, emulated_input_sample_set=set_emulated)
