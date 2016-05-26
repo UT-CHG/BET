@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 This module provides a workaround for people without mpi4py installed
@@ -18,7 +18,9 @@ class comm_for_no_mpi4py(object):
         """
         Initialization
         """
+        #: size, 1
         self.size = 1
+        #: rank, 0
         self.rank = 0
         pass
 
@@ -146,6 +148,11 @@ class comm_for_no_mpi4py(object):
         """
         pass
 
+    def barrier(self):
+        """
+        Does nothing in serial.
+        """
+        pass
 
 class MPI_for_no_mpi4py(object):
 
@@ -158,9 +165,13 @@ class MPI_for_no_mpi4py(object):
         """
         Initialization
         """
+        #: fake sum 
         self.SUM = None
+        #: float type
         self.DOUBLE = float
+        #: int type
         self.INT = int
+        #: bool type
         self.BOOL = bool
 
 try:

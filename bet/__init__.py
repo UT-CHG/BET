@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 Butler, Estep, Tavener Method
@@ -23,7 +23,10 @@ sensitivity :mod:`~bet.sensitivity` provides tools for approximating
 postProcess :mod:`~bet.postProcess` provides plotting tools and tools to sort
     samples by probabilities.
 
+sample :mod:`~bet.sample` provides data structures to store sets of samples and
+    their associated arrays.
+
 """
 
 __all__ = ['sampling', 'calculateP', 'postProcess', 'sensitivity', 'util', 
-    'Comm']
+    'Comm', 'sample']
