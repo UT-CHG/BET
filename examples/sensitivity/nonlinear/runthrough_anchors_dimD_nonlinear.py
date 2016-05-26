@@ -16,7 +16,7 @@ Lambda_dim = 2
 Data_dim = 5
 num_samples = 1E5
 num_anchors = 1
-bin_ratio = 0.10
+bin_ratio = 0.25
 ref_N = 5
 np.random.seed(0)
 ref_lambda = np.linspace(0+1.0/ref_N,1-1.0/ref_N,num=ref_N)
@@ -53,7 +53,7 @@ for Data_dim in [3, 5, 7, 9]:
         print '\n \t random integer: %d \n'%rand_int
         highest_prob = []
 
-        for num_anchors in [1, 50, 100, 1000]: # range(5,101,5):
+        for num_anchors in range(1,5,1)+range(5,25,5)+range(25,250,25)+range(250,500,50)+range(500,1001,100): # range(5,101,5):
             # define samples in parameter space, random anchor points
             np.random.seed(0)
             samples = np.random.random([num_samples, Lambda_dim])

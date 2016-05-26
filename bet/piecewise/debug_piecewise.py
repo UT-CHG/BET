@@ -16,12 +16,14 @@ import bet.postProcess.plotP as plotP
 # import plot_piecewise
 
 Lambda_dim = 2
-Data_dim = 3
+Data_dim = 4
 num_samples = 1E5
-num_anchors = 1
+num_anchors = 1000
+# for num_anchors in [1,5,10,25,50, 100, 150, 200, 250]:
+
 bin_ratio = 0.25
-ref_lambda  = [0.25, 0.35]
-percentile = 5.0
+ref_lambda  = [0.5, 0.5]
+percentile = 1.0
 
 time_0 = time.clock()
 # num_grad_centers = 100 # at how many points  do we compute gradient information?
@@ -41,7 +43,7 @@ coeffs = [[0.19, -0.25, 0.09, -0.86, -0.07, 0.29], \
 # coeffs = [[0, 0, 0, 1, 0, 0], \
 #     [0, 0, 0, 0, 1, 0], \
 #     [0, 0, 0, 0, 0, 0]]
-def Q(x): # example case for Lambda_dim = 2, Data_dim = 3
+def fixQ(x): # example case for Lambda_dim = 2, Data_dim = 3
     q = np.zeros([x.shape[0], Data_dim])
     for i in range(Data_dim):
         q[:, i] = coeffs[i][0] * x[:, 0]**5 + coeffs[i][1] * x[:, 1]**3 + \
@@ -50,7 +52,7 @@ def Q(x): # example case for Lambda_dim = 2, Data_dim = 3
     np.random.seed(None)
     return q
 
-def randQ(x): # QoI map using quintic functions for Lambda_dim = 2, Data_dim arbitrary
+def Q(x): # QoI map using quintic functions for Lambda_dim = 2, Data_dim arbitrary
     np.random.seed(rand_int)
     q = np.zeros([x.shape[0], Data_dim])
     for i in range(Data_dim):
@@ -178,7 +180,7 @@ newPinds = np.where(P>0)
 # marginals2D = plotP.smooth_marginals_2D(marginals2D,bins, sigma=0.1)
 
 # plot 2d marginals probs
-plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain=np.array([ [0.0,1.0], [0.0,1.0] ]), filename = "linearMapNew",
+plotP.plot_2D_marginal_probs(marginals2D, bins, lam_domain=np.array([ [0.0,1.0], [0.0,1.0] ]), filename = "NL%dD_%dA"%(Data_dim, num_anchors),
                              plot_surface=False)
 
 #

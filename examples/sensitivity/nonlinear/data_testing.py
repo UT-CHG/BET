@@ -1,5 +1,8 @@
 import numpy as np
+import matplotlib
+# matplotlib.use('GTK')
 import matplotlib.pyplot as plt
+
 # Data_dim = 3
 # rand_int = 124
 
@@ -8,11 +11,12 @@ rand_int_list = [int(np.round(np.random.random(1) * i)) for i in range(0,1000,10
 np.random.seed(0)
 # rand_int_list += [int(np.round(np.random.random(1) * i)) for i in range(5,1005,100)]
 print rand_int_list, '\n'
+num_anchors = range(1,5,1)+range(5,25,5)#+range(25,250,25)+range(250,500,50)+range(500,1001,100)
 # selection = range(8) # num_anchors 1, 2, 5, 10, 25, 50, 75, 100 (0 ... 7)
-selection = range(4)
+selection = range(len(num_anchors))
 for Data_dim in [3, 5, 7, 9]:
     highest_prob = []
-    for rand_int in rand_int_list[0:1]:
+    for rand_int in rand_int_list:
         highest_prob.append(np.load('prob_reduction_results_seed%d_dimD%d.npy'%(rand_int, Data_dim)))
     highest_prob = np.array(highest_prob)
     for i in range(len(highest_prob)):
@@ -21,5 +25,7 @@ for Data_dim in [3, 5, 7, 9]:
     plt.ylabel('Number of Samples with P>0 \n (Out of 100,000)')
     plt.xlabel('Number of Anchor Points')
     plt.title('%d Random Maps with %d Random Seeds'%(Data_dim, len(highest_prob)))
-    plt.axis([0, highest_prob[i][max(selection),0], 2E3, 2E4])
-    plt.show()
+    # plt.axis([0, highest_prob[i][max(selection),0], 0, 1.5E4])
+
+    print highest_prob[i][max(selection),0]
+    plt.savefig('plot%d.png'%Data_dim)
