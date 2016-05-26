@@ -396,6 +396,71 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_oo_ptr(globalize=False)
         self.disc.get_emulated_oo_ptr()
 
+    def Test_set_input_sample_set(self):
+        """
+        Test setting input sample set
+        """
+        self.test_set = sample.sample_set(dim=self.dim1)
+        self.disc.set_input_sample_set(test_set)
+
+    def Test_get_input_sample_set(self):
+        """
+        Test getting input sample set
+        """
+        self.disc.get_input_sample_set(test_set)
+
+    def Test_set_emulated_input_sample_set(self):
+        """
+        Test setting emulated input sample set
+        """
+        self.test_set = sample.sample_set(dim=self.dim1)
+        self.disc.set_emulated_input_sample_set(test_set)
+
+    def Test_get_emulated_input_sample_set(self):
+        """
+        Test getting emulated input sample set
+        """
+        self.disc.get_emulated_input_sample_set(test_set)
+
+    def Test_set_output_sample_set(self):
+        """
+        Test setting output sample set
+        """
+        self.test_set = sample.sample_set(dim=self.dim2)
+        self.disc.set_output_sample_set(test_set)
+
+    def Test_get_output_sample_set(self):
+        """
+        Test getting output sample set
+        """
+        self.disc.get_output_sample_set(test_set)
+
+    def Test_set_output_probability_sample_set(self):
+        """
+        Test setting output probability sample set
+        """
+        self.test_set = sample.sample_set(dim=self.dim2)
+        self.disc.set_output_probability_sample_set(test_set)
+
+    def Test_get_output_probability_sample_set(self):
+        """
+        Test getting output probability sample set
+        """
+        self.disc.get_output_probability_sample_set(test_set)
+
+    def Test_set_emulated_output_sample_set(self):
+        """
+        Test setting emulated output sample set
+        """
+        self.test_set = sample.sample_set(dim=self.dim2)
+        self.disc.set_emulated_output_sample_set(test_set)
+
+    def Test_get_emulated_output_sample_set(self):
+        """
+        Test getting emulated output sample set
+        """
+        self.disc.get_emulated_output_sample_set(test_set)
+
     def Test_save_load_discretization(self):
         """
         Test saving and loading of discretization

@@ -1282,7 +1282,18 @@ class discretization(object):
 
         """
         if isinstance(output_probability_set, sample_set_base):
-            self._output_probability_set = output_probability_set
+            output_dims = []
+            output_dims.append(output_probability_set.get_dim())
+            if hasattr(self, "_output_sample_set"):
+                output_dims.append(self._output_sample_set.get_dim())
+            if hasattr(self, "_emulated_output_sample_set"):
+                output_dims.append(self._emulated_output_sample_set.get_dim())
+            if output_dims = 1:
+                self._output_probability_set = output_probability_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._output_probability_set = output_probability_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
 
@@ -1307,9 +1318,31 @@ class discretization(object):
 
         """
         if isinstance(emulated_output_sample_set, sample_set_base):
-            self._emulated_output_sample_set = emulated_output_sample_set
+            output_dims = []
+            output_dims.append(emulated_output_probability_set.get_dim())
+            if hasattr(self, "_output_sample_set"):
+                output_dims.append(self._output_sample_set.get_dim())
+            if hasattr(self, "_output_probablity_set"):
+                output_dims.append(self._output_probability_set.get_dim())
+            if output_dims = 1:
+                self._emulated_output_probability_set = emulated_output_probability_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._emulated_output_probability_set = emulated_output_probability_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_emulated_input_sample_set(self):
+        """
+
+        Returns a reference to the emulated_input sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: emulated_input sample set
+
+        """
+        return self._emulated_input_sample_set
 
     def set_emulated_input_sample_set(self, emulated_input_sample_set):
         """
@@ -1321,6 +1354,15 @@ class discretization(object):
 
         """
         if isinstance(emulated_input_sample_set, sample_set_base):
-            self._emulated_input_sample_set = emulated_input_sample_set
+            input_dims = []
+            input_dims.append(emulated_input_probability_set.get_dim())
+            if hasattr(self, "_input_sample_set"):
+                if self._input_sample_set.get_dim() == \
+                        emupated_input_sample_set.get_dim():
+                    self._emulated_input_probability_set = emulated_input_probability_set
+                else:
+                    raise dim_not_matching("dimension of values incorrect")
+            else:
+                self._emulated_input_probability_set = emulated_input_probability_set
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
