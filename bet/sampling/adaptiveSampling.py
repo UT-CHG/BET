@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 # -*- coding: utf-8 -*-
 # Lindley Graham 3/10/2014

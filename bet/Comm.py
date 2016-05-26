@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 This module provides a workaround for people without mpi4py installed
