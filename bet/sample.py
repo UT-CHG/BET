@@ -1210,3 +1210,117 @@ class discretization(object):
             if current_array is not None:
                 setattr(my_copy, array_name, np.copy(current_array))
         return my_copy
+
+    def get_input_sample_set(self):
+        """
+
+        Returns a reference to the input sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: input sample set
+
+        """
+        return self._input_sample_set
+
+    def set_input_sample_set(self, input_sample_set):
+        """
+
+        Sets the input sample set for this discretization.
+
+        :param input_sample_set: input sample set.
+        :type input_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(input_sample_set, sample_set_base):
+            self._input_sample_set = input_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_sample_set(self):
+        """
+
+        Returns a reference to the output sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output sample set
+
+        """
+        return self._output_sample_set
+
+    def set_output_sample_set(self, output_sample_set):
+        """
+
+        Sets the output sample set for this discretization.
+
+        :param output_sample_set: output sample set.
+        :type output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_sample_set, sample_set_base):
+            self._output_sample_set = output_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_probability_set(self):
+        """
+
+        Returns a reference to the output probability sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output probability sample set
+
+        """
+        return self._output_probability_set
+
+    def set_output_probability_set(self, output_probability_set):
+        """
+
+        Sets the output probability sample set for this discretization.
+
+        :param output_probability_set: output probability sample set.
+        :type output_probability_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_probability_set, sample_set_base):
+            self._output_probability_set = output_probability_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_emulated_output_sample_set(self):
+        """
+
+        Returns a reference to the emulated_output sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: emulated_output sample set
+
+        """
+        return self._emulated_output_sample_set
+
+    def set_emulated_output_sample_set(self, emulated_output_sample_set):
+        """
+
+        Sets the emulated_output sample set for this discretization.
+
+        :param emulated_output_sample_set: emupated output sample set.
+        :type emulated_output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(emulated_output_sample_set, sample_set_base):
+            self._emulated_output_sample_set = emulated_output_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def set_emulated_input_sample_set(self, emulated_input_sample_set):
+        """
+
+        Sets the emulated_input sample set for this discretization.
+
+        :param emulated_input_sample_set: emupated input sample set.
+        :type emulated_input_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(emulated_input_sample_set, sample_set_base):
+            self._emulated_input_sample_set = emulated_input_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
