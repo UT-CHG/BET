@@ -1174,7 +1174,7 @@ class discretization(object):
         """
         
         Returns the pointer from ``self._emulated_output_sample_set`` to
-        ``self._output_probabilityset``
+        ``self._output_probability_set``
 
         .. seealso::
             
@@ -1284,11 +1284,11 @@ class discretization(object):
         if isinstance(output_probability_set, sample_set_base):
             output_dims = []
             output_dims.append(output_probability_set.get_dim())
-            if hasattr(self, "_output_sample_set"):
+            if self._output_sample_set is not None:
                 output_dims.append(self._output_sample_set.get_dim())
-            if hasattr(self, "_emulated_output_sample_set"):
+            if self._emulated_output_sample_set is not None:
                 output_dims.append(self._emulated_output_sample_set.get_dim())
-            if output_dims = 1:
+            if len(output_dims) == 1:
                 self._output_probability_set = output_probability_set
             elif np.all(np.array(output_dims) == output_dims[0]):
                 self._output_probability_set = output_probability_set
@@ -1319,15 +1319,15 @@ class discretization(object):
         """
         if isinstance(emulated_output_sample_set, sample_set_base):
             output_dims = []
-            output_dims.append(emulated_output_probability_set.get_dim())
-            if hasattr(self, "_output_sample_set"):
+            output_dims.append(emulated_output_sample_set.get_dim())
+            if self._output_sample_set is not None:
                 output_dims.append(self._output_sample_set.get_dim())
-            if hasattr(self, "_output_probablity_set"):
+            if self._output_probability_set is not None:
                 output_dims.append(self._output_probability_set.get_dim())
-            if output_dims = 1:
-                self._emulated_output_probability_set = emulated_output_probability_set
+            if len(output_dims) == 1:
+                self._emulated_output_sample_set = emulated_output_sample_set
             elif np.all(np.array(output_dims) == output_dims[0]):
-                self._emulated_output_probability_set = emulated_output_probability_set
+                self._emulated_output_sample_set = emulated_output_sample_set
             else:
                 raise dim_not_matching("dimension of values incorrect")
         else:
@@ -1354,15 +1354,13 @@ class discretization(object):
 
         """
         if isinstance(emulated_input_sample_set, sample_set_base):
-            input_dims = []
-            input_dims.append(emulated_input_probability_set.get_dim())
-            if hasattr(self, "_input_sample_set"):
+            if self._input_sample_set is not None:
                 if self._input_sample_set.get_dim() == \
-                        emupated_input_sample_set.get_dim():
-                    self._emulated_input_probability_set = emulated_input_probability_set
+                        emulated_input_sample_set.get_dim():
+                    self._emulated_input_sample_set = emulated_input_sample_set
                 else:
                     raise dim_not_matching("dimension of values incorrect")
             else:
-                self._emulated_input_probability_set = emulated_input_probability_set
+                self._emulated_input_sample_set = emulated_input_sample_set
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
