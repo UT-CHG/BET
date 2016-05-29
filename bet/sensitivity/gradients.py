@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 This module contains functions for approximating jacobians of QoI maps.
@@ -265,7 +265,8 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 
     return rbfdxi
 
-def calculate_gradients_rbf(input_set, output_set, input_set_centers=None, num_neighbors=None, RBF=None, ep=None, normalize=True):
+def calculate_gradients_rbf(input_set, output_set, input_set_centers=None,
+        num_neighbors=None, RBF=None, ep=None, normalize=True): 
     r"""
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map using a radial basis function
@@ -274,8 +275,8 @@ def calculate_gradients_rbf(input_set, output_set, input_set_centers=None, num_n
     :param input_set: The input sample set.  Make sure the attribute _values is
         not None.
     :type input_set: :class:`~bet.sample.sample_set`
-    :param output_set: The output sample set.  Make sure the attribute _values is
-        not None.
+    :param output_set: The output sample set.  Make sure the attribute _values
+        is not None.
     :type output_set: :class:`~bet.sample.sample_set`
     :param input_set_centers: The input centers sample set.  Make sure the
         attribute _values is not None.
@@ -373,8 +374,8 @@ def calculate_gradients_ffd(input_set, output_set, normalize=True):
     :param input_set: The input sample set.  Make sure the attribute _values is
         not None.
     :type input_set: :class:`~bet.sample.sample_set`
-    :param output_set: The output sample set.  Make sure the attribute _values is
-        not None.
+    :param output_set: The output sample set.  Make sure the attribute _values
+        is not None.
     :type output_set: :class:`~bet.sample.sample_set`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
@@ -435,8 +436,8 @@ def calculate_gradients_cfd(input_set, output_set, normalize=True):
     :param input_set: The input sample set.  Make sure the attribute _values is
         not None.
     :type input_set: :class:`~bet.sample.sample_set`
-    :param output_set: The output sample set.  Make sure the attribute _values is
-        not None.
+    :param output_set: The output sample set.  Make sure the attribute _values
+        is not None.
     :type output_set: :class:`~bet.sample.sample_set`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector

@@ -573,7 +573,8 @@ class simple_fun_uniform(prob_uniform):
         volume = 1.0/(H*(2.0**self.mdim))
         volumes = volume.ravel()
         output = vHist.simple_fun_uniform(points, volumes, self.rect_domain)
-        self.rho_D_M, self.d_distr_samples, self.d_Tree = output
+        self.rho_D_M = output._probabilities
+        self.d_distr_samples =  output._values
 
 class test_sfu_1D(domain_1D, simple_fun_uniform):
     """

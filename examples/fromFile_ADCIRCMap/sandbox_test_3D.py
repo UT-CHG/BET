@@ -21,8 +21,6 @@ xmax = 1580
 ymax = 1500
 wall_height = -2.5
 
-param_min = param_domain[:, 0]
-param_max = param_domain[:, 1]
 
 # Select only the stations I care about this will lead to better sampling
 station_nums = [0, 4, 1] # 1, 5, 2
@@ -31,7 +29,7 @@ station_nums = [0, 4, 1] # 1, 5, 2
 transition_set = asam.transition_set(.5, .5**5, 0.5)
 
 # Read in Q_ref and Q to create the appropriate rho_D 
-mdat = sio.loadmat('Q_3D')
+mdat = sio.loadmat('../matfiles/Q_3D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']
@@ -73,24 +71,24 @@ inital_sample_type = "lhs"
 
 # Get samples
 # Run with varying kernels
-gen_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
-        param_max, transition_set, sample_save_file)
-#run_reseed_results = sampler.run_gen(heur_list, rho_D, maximum, param_min,
-#        param_max, t_kernel, sample_save_file, reseed=3)
+gen_results = sampler.run_gen(heur_list, rho_D, maximum, param_domain,
+        transition_set, sample_save_file) 
+#run_reseed_results = sampler.run_gen(heur_list, rho_D, maximum, param_domain,
+#        t_kernel, sample_save_file, reseed=3)
 
 # Run with varying transition sets bounds
 init_ratio = [0.1, 0.25, 0.5]
 min_ratio = [2e-3, 2e-5, 2e-8]
 max_ratio = [.5, .75, 1.0]
 tk_results = sampler.run_tk(init_ratio, min_ratio, max_ratio, rho_D,
-        maximum, param_min, param_max, kernel_rD, sample_save_file)
+        maximum, param_domain, kernel_rD, sample_save_file)
 
 # Run with varying increase/decrease ratios and tolerances for a rhoD_kernel
 increase = [1.0, 2.0, 4.0]
 decrease = [0.5, 0.5e2, 0.5e3]
 tolerance = [1e-4, 1e-6, 1e-8]
 incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
-        maximum, param_min, param_max, transition_set, sample_save_file)
+        maximum, param_domain, transition_set, sample_save_file)
 
 # Compare the quality of several sets of samples
 result_list = [gen_results, tk_results, incdec_results]

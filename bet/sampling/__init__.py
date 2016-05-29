@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 This subpackage contains
@@ -11,4 +11,4 @@ This subpackage contains
 * :class:`bet.sampling.adaptiveSampling` inherits from
     :class:`~bet.sampling.basicSampling` adaptively generates samples.
 """
-__all__ = ['basicSampling', 'adaptiveSampling']
+__all__ = ['basicSampling', 'adaptiveSampling', 'LpGeneralizedSamples']

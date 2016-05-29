@@ -3,26 +3,19 @@
 # Copyright (C) 2014-2016 The BET Development Team
 
 r"""
-This example generates samples on a 2D grid and evaluates
-a nonlinear map to a 1d or 2d space. The maps are defined
-as quantities of interest (QoI) defined as spatial 
-observations of the solution to the elliptic PDE .. math::
-  :nowrap:
-  
-  \begin{cases}
-    -\nabla \cdot (A(\lambda)\cdot\nabla u) &= f(x,y;\lambda), \ (x,y)\in\Omega, \\
-    u|_{\partial \Omega} &= 0,
-  \end{cases}
+An installation of FEniCS using the same python as used for
+installing BET is required to run this example.
 
-where :math:`A(\lambda)=\text{diag}(1/\lambda_1,1/\lambda_2)`,
-:math: `f(x,y;\lambda) = \pi^2 \sin(\pi x\lambda_1)\sin(\pi y \lambda_2)`,
-and :math:`\Omega=[0,1]\times[0,1]`.
+This example generates samples for a KL expansion associated with
+a covariance defined by ``cov`` in myModel.py that on an L-shaped
+mesh defining the permeability field for a Poisson equation.
 
-Probabilities
-in the parameter space are calculated using emulated points.
-1D and 2D marginals are calculated, smoothed, and plotted.
+The quantities of interest (QoI) are defined as two spatial
+averages of the solution to the PDE.
+
+The user defines the dimension of the parameter space (corresponding
+to the number of KL terms) and the number of samples in this space.
 """
-
 
 import numpy as np
 import bet.calculateP as calculateP
@@ -35,13 +28,16 @@ import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 from myModel import my_model
 
-
-# Initialize 3-dimensional input parameter sample set object
+# Initialize input parameter sample set object
+num_KL_terms = 2
 input_samples = samp.sample_set(2)
 
 # Set parameter domain
-input_samples.set_domain(np.array([[3.0, 6.0],
-                                   [1.0, 5.0]]))
+KL_term_min = -3.0
+KL_term_max = 3.0
+input_samples.set_domain(np.repeat([[KL_term_min, KL_term_max]],
+                                   num_KL_terms,
+                                   axis=0))
 
 # Define the sampler that will be used to create the discretization
 # object, which is the fundamental object used by BET to compute
@@ -87,7 +83,7 @@ else:
 
 # Create the discretization object using the input samples
 my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
-                                               savefile = 'NonlinearExample.txt.gz')
+                                                                  savefile='FEniCS_Example.txt.gz')
 
 '''
 Suggested changes for user:
@@ -95,21 +91,20 @@ Suggested changes for user:
 Try different reference parameters.
 '''
 # Define the reference parameter
-param_ref = np.array([5.5, 4.5])
-#param_ref = np.array([4.5, 3.0])
-#param_ref = np.array([3.5, 1.5])
+#param_ref = np.zeros((1,num_KL_terms))
+param_ref = np.ones((1,num_KL_terms))
 
 # Compute the reference QoI
-Q_ref =  my_model(param_ref)
+Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D(input_samples, p_ref = param_ref, filename = 'nonlinearMapParameterSamples.eps')
+plotD.scatter_2D(input_samples, p_ref=param_ref[0,:], filename='FEniCS_ParameterSamples.eps')
 if Q_ref.size == 2:
-    plotD.show_data(my_discretization, Q_ref = Q_ref)
+    plotD.show_data(my_discretization, Q_ref=Q_ref[0,:])
 
 '''
 Suggested changes for user:
-    
+
 Try different ways of discretizing the probability measure on D defined
 as a uniform probability measure on a rectangle or interval depending
 on choice of QoI_num in myModel.py.
@@ -117,11 +112,11 @@ on choice of QoI_num in myModel.py.
 randomDataDiscretization = False
 if randomDataDiscretization is False:
     simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-        data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
-        center_pts_per_edge = 3)
+        data_set=my_discretization, Q_ref=Q_ref[0,:], rect_scale=0.1,
+        center_pts_per_edge=3)
 else:
     simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(
-        data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
+        data_set=my_discretization, Q_ref=Q_ref[0,:], rect_scale=0.1,
         M=50, num_d_emulate=1E5)
 
 # calculate probablities
@@ -146,22 +141,23 @@ the structure of a high dimensional non-parametric probability measure.
 '''
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
-                                                        nbins = [20, 20])
+                                                        nbins=20)
 # smooth 2d marginals probs (optional)
 marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.5)
 
 # plot 2d marginals probs
-plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename = "nomlinearMap",
-                             lam_ref = param_ref, file_extension = ".eps", plot_surface=False)
+plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename="FEniCS",
+                             lam_ref=param_ref[0,:], file_extension=".eps",
+                             plot_surface=False)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
-                                                        nbins = [20, 20])
+                                                        nbins=20)
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.5)
 # plot 2d marginal probs
-plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "nonlinearMap",
-                             lam_ref = param_ref, file_extension = ".eps")
+plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename="FEniCS",
+                             lam_ref=param_ref[0,:], file_extension=".eps")
 
 
 

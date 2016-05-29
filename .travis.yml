@@ -5,22 +5,27 @@ python:
     #- "3.2"
     #- "3.3"
     #- "3.4"
-# command to install dependencies
-before_install:
-    - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev python-dev python-numpy python-scipy python-matplotlib python-nose python-pip
-    - pip install pyDOE mpi4py
 
-# install package:
-    - python setup.py install
-# script to run before running tests
-before_script:
-    - mkdir -p shippable/testresults
-# command to run tests
+before_install:
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+  - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda update --yes conda
+
+install:
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose
+  - pip install pyDOE mpi4py
+  - python setup.py install
+
 script:
-    - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_serial.xml
-    - mpirun -n 2 nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_mpi4py_parallel.xml
-    - pip uninstall -y mpi4py
-    - nosetests --with-xunit --xunit-file=shippable/testresults/nosetests_nompi4py.xml
+  - nosetests
+  - mpirun -n 2 nosetests
+  - pip uninstall -y mpi4py
+  - nosetests
+
 # notification settings
 notifications:
     email:
@@ -34,4 +39,4 @@ notifications:
 branches:
     only:
         - master
-
+        - v2_master
