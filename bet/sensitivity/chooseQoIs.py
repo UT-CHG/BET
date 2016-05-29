@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2015 The BET Development Team
 
 """
-This module contains functions choosing optimal QoIs to use in the stochastic
+This module contains functions for choosing optimal sets of QoIs to use in the stochastic
 inverse problem.
 """
 import numpy as np
@@ -13,7 +13,7 @@ from scipy import stats
 def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     r"""
     If you are using ``bin_ratio`` to define the hyperrectangle in the output
-    space you must must give this method gradient vectors normalized with
+    space you must give this method gradient vectors normalized with
     respect to the 1-norm.  If you are using ``bin_size`` to define the
     hyperrectangle in the output space you must give this method the original
     gradient vectors. If you also give a ``bin_measure``, this method will
@@ -21,11 +21,11 @@ def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     solution.
     Given gradient vectors at some points (centers) in the input space and
     given a specific set of QoIs, calculate the expected measure of the
-    inverse image of a box in the data space using loca linear approximations
+    inverse image of a box in the data space using local linear approximations
     of the map Q.
     
     :param input_set: The input sample set.  Make sure the attribute _jacobians
-        is not None.
+        is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
     :param float bin_measure: The measure of the output_dim hyperrectangle to
@@ -57,7 +57,7 @@ def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     # center.
     singvals = np.linalg.svd(G, compute_uv=False)
 
-    # Find the average produt of the singular values over each center, then use
+    # Find the average product of the singular values over each center, then use
     # this to compute the average measure of the inverse solution.
     avg_prod_singvals = np.mean(np.prod(singvals, axis=1))
     if avg_prod_singvals == 0:
