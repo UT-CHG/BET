@@ -13,7 +13,7 @@ of the inverse image.
 """
 
 import bet.sensitivity.gradients as grad
-import bet.sensitivity.chooseQoIs as cQoIs
+import bet.sensitivity.chooseQoIs as cqoi
 import bet.Comm as comm
 import scipy.io as sio
 import numpy as np
@@ -51,7 +51,7 @@ indexstop = 20
 qoiIndices = range(indexstart, indexstop)
 
 # Compute the skewness for each of the possible sets of QoI (20 choose 2 = 190)
-skewness_indices_mat = cQoIs.chooseOptQoIs(input_samples, qoiIndices,
+skewness_indices_mat = cqoi.chooseOptQoIs(input_samples, qoiIndices,
     num_optsets_return=190, measure=False)
 
 qoi1 = skewness_indices_mat[0, 1]
@@ -65,4 +65,4 @@ corresponding sets of QoIs are in the following columns.'
 # Choose a specific set of QoIs to check the skewness of
 index1 = 0
 index2 = 4
-(scpecific_skewness, _) = cQoIs.calculate_avg_skewness(input_samples, qoi_set=[index1, index2])
+(scpecific_skewness, _) = cqoi.calculate_avg_skewness(input_samples, qoi_set=[index1, index2])

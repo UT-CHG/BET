@@ -18,7 +18,7 @@ independent of the range of data maesured for each QoI (bin_size).
 
 import numpy as np
 import bet.sensitivity.gradients as grad
-import bet.sensitivity.chooseQoIs as cQoI
+import bet.sensitivity.chooseQoIs as cqoi
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.postTools as postTools
@@ -66,7 +66,7 @@ input_samples._jacobians = grad.calculate_gradients_rbf(input_samples,
 # matrices.  Each matrix has 10 rows, the first column representing the
 # expected inverse volume ratio, and the rest of the columns the corresponding
 # QoI indices.
-best_sets = cQoI.chooseOptQoIs_large(input_samples, max_qois_return=5,
+best_sets = cqoi.chooseOptQoIs_large(input_samples, max_qois_return=5,
     num_optsets_return=2, inner_prod_tol=0.9, measskew_tol=1E2, measure=True)
 
 '''

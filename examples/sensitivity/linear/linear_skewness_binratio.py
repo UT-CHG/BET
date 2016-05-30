@@ -16,7 +16,7 @@ relative to the range of data measured in each QoI (bin_ratio).
 
 import numpy as np
 import bet.sensitivity.gradients as grad
-import bet.sensitivity.chooseQoIs as cQoI
+import bet.sensitivity.chooseQoIs as cqoi
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.postTools as postTools
@@ -64,7 +64,7 @@ input_samples._jacobians = grad.calculate_gradients_rbf(input_samples,
 # matrices.  Each matrix has 10 rows, the first column representing the
 # average skewness of the Jacobian of Q, and the rest of the columns
 # the corresponding QoI indices.
-best_sets = cQoI.chooseOptQoIs_large(input_samples, measure=False)
+best_sets = cqoi.chooseOptQoIs_large(input_samples, measure=False)
 
 ###############################################################################
 
