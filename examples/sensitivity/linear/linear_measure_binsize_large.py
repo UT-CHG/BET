@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 This example generates uniform random samples in the unit hypercube and
@@ -35,20 +35,28 @@ num_centers = 10
 np.random.seed(0)
 Q = np.random.random([output_dim, input_dim])
 
-# Choose random samples in parameter space to solve the model
-input_set = sample.sample_set(input_dim)
-input_set_centers = sample.sample_set(input_dim)
-output_set = sample.sample_set(output_dim)
+# Initialize some sample objects we will need
+input_samples = sample.sample_set(input_dim)
+input_samples_centers = sample.sample_set(input_dim)
+output_samples = sample.sample_set(output_dim)
 
-input_set._values = np.random.random([num_samples, input_dim])
-input_set_centers._values = input_set._values[:num_centers]
-output_set._values = Q.dot(input_set._values.transpose()).transpose()
+# Choose random samples in parameter space to solve the model
+input_samples._values = np.random.uniform(0, 1, [num_samples, input_dim])
+
+# Make the MC assumption and compute the volumes of each voronoi cell
+input_samples.estimate_volume_mc()
+
+# We will approximate the jacobian at each of the centers
+input_samples_centers._values = input_samples._values[:num_centers]
+
+# Compute the output values with the map Q
+output_samples._values = Q.dot(input_samples._values.transpose()).transpose()
 
 # Calculate the gradient vectors at some subset of the samples.  Here the
 # *normalize* argument is set to *False* because we are using bin_size to
 # determine the uncertainty in our data.
-input_set._jacobians = grad.calculate_gradients_rbf(input_set, output_set,
-    input_set_centers, normalize=False)
+input_samples._jacobians = grad.calculate_gradients_rbf(input_samples,
+    output_samples, input_samples_centers, normalize=False)
 
 # With these gradient vectors, we are now ready to choose an optimal set of
 # QoIs to use in the inverse problem, based on minimizing the support of the
@@ -58,8 +66,8 @@ input_set._jacobians = grad.calculate_gradients_rbf(input_set, output_set,
 # matrices.  Each matrix has 10 rows, the first column representing the
 # expected inverse volume ratio, and the rest of the columns the corresponding
 # QoI indices.
-best_sets = cQoI.chooseOptQoIs_large(input_set, max_qois_return=5,
-    num_optsets_return=2, inner_prod_tol=0.9, cond_tol=1E2, volume=True)
+best_sets = cQoI.chooseOptQoIs_large(input_samples, max_qois_return=5,
+    num_optsets_return=2, inner_prod_tol=0.9, measskew_tol=1E2, measure=True)
 
 '''
 We see here the expected volume ratios are small.  This number represents the
@@ -85,30 +93,42 @@ QoI_indices = [0, 7] # choose up to input_dim
 #QoI_indices = [0, 7, 34, 39, 90]
 #QoI_indices = [0, 1, 2, 3, 4]
 
-# Restrict the data to have just QoI_indices
-output_set._values = output_set._values[:, QoI_indices]
+# Choose some QoI indices to solve the ivnerse problem with
+output_samples._values = output_samples._values[:, QoI_indices]
+output_samples._dim = output_samples._values.shape[1]
+
+# Set the jacobians to None
+input_samples._jacobians = None
+
+# Define the reference point in the output space to correspond to the center of
+# the input space.
 Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(input_dim))
-# bin_size defines the uncertainty in our data
-bin_size = 0.25
+
+# bin_ratio defines the uncertainty in our data
+bin_ratio = 0.25
+
+# Create discretization object
+my_discretization = sample.discretization(input_sample_set=input_samples,
+                                        output_sample_set=output_samples)
+
 
 # Find the simple function approximation
-(d_distr_prob, d_distr_samples, d_Tree) =\
-    simpleFunP.uniform_hyperrectangle_binsize(data=output_set._values, Q_ref=Q_ref,
-    bin_size=bin_size, center_pts_per_edge = 1)
+simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+    data_set=my_discretization, Q_ref=Q_ref, rect_scale=bin_ratio,
+    center_pts_per_edge = 1)
 
 # Calculate probablities making the Monte Carlo assumption
-(P,  lam_vol, io_ptr) = calculateP.prob(samples=input_set._values,
-    data=output_set._values, rho_D_M=d_distr_prob, d_distr_samples=d_distr_samples)
+calculateP.prob(my_discretization)
 
 percentile = 1.0
 # Sort samples by highest probability density and find how many samples lie in
 # the support of the inverse solution.  With the Monte Carlo assumption, this
 # also tells us the approximate volume of this support.
-(num_samples, P_high, samples_high, lam_vol_high, data_high, sort) =\
-    postTools.sample_highest_prob(top_percentile=percentile, P_samples=P,
-    samples=input_set._values, lam_vol=lam_vol,data=output_set._values,sort=True)
+(num_samples, _, indices_in_inverse) =\
+    postTools.sample_highest_prob(top_percentile=percentile,
+    sample_set=input_samples,sort=True)
 
 # Print the number of samples that make up the highest percentile percent
 # samples and ratio of the volume of the parameter domain they take up
 if comm.rank == 0:
-    print (num_samples, np.sum(lam_vol_high))
+    print (num_samples, np.sum(input_samples._volumes[indices_in_inverse]))
