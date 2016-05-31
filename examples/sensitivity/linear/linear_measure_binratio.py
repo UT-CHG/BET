@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2016 The BET Development Team
 
 """
 This example generates uniform random samples in the unit hypercube and
@@ -11,14 +11,14 @@ Every real world problem requires special attention regarding how we choose
 some of the more common scenarios using easy to understand linear maps.
 
 In this *measure_binratio* example we choose *optimal QoIs* to be the set of
-QoIs of size input_dim that produces the smallest measure of the support of the
-inverse solution, assuming we define the uncertainty in our data relative to
-the range of data measured in each QoI (bin_ratio).
+QoIs of size input_dim that produces the smallest support of the inverse
+solution, assuming we define the uncertainty in our data relative to the range
+of data measured in each QoI (bin_ratio).
 """
 
 import numpy as np
 import bet.sensitivity.gradients as grad
-import bet.sensitivity.chooseQoIs as cQoI
+import bet.sensitivity.chooseQoIs as cqoi
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.postTools as postTools
@@ -35,30 +35,38 @@ num_centers = 10
 np.random.seed(0)
 Q = np.random.random([output_dim, input_dim])
 
-# Choose random samples in parameter space to solve the model
-input_set = sample.sample_set(input_dim)
-input_set_centers = sample.sample_set(input_dim)
-output_set = sample.sample_set(output_dim)
+# Initialize some sample objects we will need
+input_samples = sample.sample_set(input_dim)
+input_samples_centers = sample.sample_set(input_dim)
+output_samples = sample.sample_set(output_dim)
 
-input_set._values = np.random.random([num_samples, input_dim])
-input_set_centers._values = input_set._values[:num_centers]
-output_set._values = Q.dot(input_set._values.transpose()).transpose()
+# Choose random samples in parameter space to solve the model
+input_samples.set_values(np.random.uniform(0, 1, [num_samples, input_dim]))
+
+# Make the MC assumption and compute the volumes of each voronoi cell
+input_samples.estimate_volume_mc()
+
+# We will approximate the jacobian at each of the centers
+input_samples_centers.set_values(input_samples.get_values()[:num_centers])
+
+# Compute the output values with the map Q
+output_samples.set_values(Q.dot(input_samples.get_values().transpose()).transpose())
 
 # Calculate the gradient vectors at some subset of the samples.  Here the
 # *normalize* argument is set to *True* because we are using *bin_ratio* to
 # determine the uncertainty in our data.
-input_set._jacobians = grad.calculate_gradients_rbf(input_set, output_set,
-    input_set_centers, normalize=True)
+input_samples.set_jacobians(grad.calculate_gradients_rbf(input_samples,
+    output_samples, input_samples_centers, normalize=True))
 
 # With these gradient vectors, we are now ready to choose an optimal set of
-# QoIs to use in the inverse problem, based on minimizing the mesure of the
-# inverse solution.  The most robust method for this is
+# QoIs to use in the inverse problem, based on minimizing the support of the
+# inverse solution (measure).  The most robust method for this is
 # :meth:~bet.sensitivity.chooseQoIs.chooseOptQoIs_large which returns the
 # best set of 2, 3, 4 ... until input_dim.  This method returns a list of
 # matrices.  Each matrix has 10 rows, the first column representing the
 # expected inverse measure ratio, and the rest of the columns the corresponding
 # QoI indices.
-best_sets = cQoI.chooseOptQoIs_large(input_set, measure=True)
+best_sets = cqoi.chooseOptQoIs_large(input_samples, measure=True)
 
 ###############################################################################
 
@@ -86,30 +94,42 @@ the actual support of the inverse solution may extend out of this space.  The
 expected measure ratio is computed assuming an unbounded parameter space.
 '''
 
-# Restrict the data to have just QoI_indices
-output_set._values = output_set._values[:, QoI_indices]
+# Choose some QoI indices to solve the ivnerse problem with
+output_samples._dim = len(QoI_indices)
+output_samples.set_values(output_samples.get_values()[:, QoI_indices])
+
+# Set the jacobians to None
+input_samples.set_jacobians(None)
+
+# Define the reference point in the output space to correspond to the center of
+# the input space.
 Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(input_dim))
 
 # bin_ratio defines the uncertainty in our data
 bin_ratio = 0.25
 
+# Create discretization object
+my_discretization = sample.discretization(input_sample_set=input_samples,
+                                        output_sample_set=output_samples)
+
+
 # Find the simple function approximation
-(d_distr_prob, d_distr_samples, d_Tree) = simpleFunP.uniform_hyperrectangle(\
-    data=output_set._values, Q_ref=Q_ref, bin_ratio=bin_ratio, center_pts_per_edge = 1)
+simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+    data_set=my_discretization, Q_ref=Q_ref, rect_scale=bin_ratio,
+    center_pts_per_edge = 1)
 
 # Calculate probablities making the Monte Carlo assumption
-(P,  lam_vol, io_ptr) = calculateP.prob(samples=input_set._values,
-    data=output_set._values,rho_D_M=d_distr_prob, d_distr_samples=d_distr_samples)
+calculateP.prob(my_discretization)
 
 percentile = 1.0
 # Sort samples by highest probability density and find how many samples lie in
 # the support of the inverse solution.  With the Monte Carlo assumption, this
-# also tells us the approximate measure of this support.
-(num_samples, P_high, samples_high, lam_vol_high, data_high, sort) =\
-    postTools.sample_highest_prob(top_percentile=percentile, P_samples=P,
-    samples=input_set._values, lam_vol=lam_vol,data=output_set._values,sort=True)
+# also tells us the approximate volume of this support.
+(num_samples, _, indices_in_inverse) =\
+    postTools.sample_highest_prob(top_percentile=percentile,
+    sample_set=input_samples,sort=True)
 
 # Print the number of samples that make up the highest percentile percent
-# samples and ratio of the measure of the parameter domain they take up
+# samples and ratio of the volume of the parameter domain they take up
 if comm.rank == 0:
-    print (num_samples, np.sum(lam_vol_high))
+    print (num_samples, np.sum(input_samples.get_volumes()[indices_in_inverse]))
