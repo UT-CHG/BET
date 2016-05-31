@@ -19,7 +19,7 @@ def sample_linf_ball(input_set, num_close, rvec):
     intersection.
 
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of points in each cluster
     :param rvec: Each side of the box will have length 2*rvec[i]
@@ -65,7 +65,7 @@ def sample_l1_ball(input_set, num_close, rvec):
     centers accordingly.*
     
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of samples in each l1 ball
     :param rvec: The radius of the l1 ball, along each axis
@@ -135,7 +135,7 @@ def pick_ffd_points(input_set, rvec):
     around the second center and so on.
     
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (input_dim,)
@@ -172,7 +172,7 @@ def pick_cfd_points(input_set, rvec):
     the cluster around the second center and so on.
     
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param rvec: The radius of the stencil, along each axis
     :type rvec: :class:`np.ndarray` of shape (input_dim,)
@@ -273,16 +273,16 @@ def calculate_gradients_rbf(input_set, output_set, input_set_centers=None,
     interpolation method.
     
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param output_set: The output sample set.  Make sure the attribute _values
-        is not None.
+        is not None
     :type output_set: :class:`~bet.sample.sample_set`
     :param input_set_centers: The input centers sample set.  Make sure the
-        attribute _values is not None.
+        attribute _values is not None
     :type input_set_centers: :class:`~bet.sample.sample_set`
     :param int num_neighbors: Number of nearest neighbors to use in gradient
-        approximation. Default value is input_dim + 2.
+        approximation. Default value is input_dim + 2
     :param string RBF: Choice of radial basis function. Default is Gaussian
     :param float ep: Choice of shape parameter for radial basis function.
         Default value is 1.0
@@ -372,10 +372,10 @@ def calculate_gradients_ffd(input_set, output_set, normalize=True):
     FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.
     
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param output_set: The output sample set.  Make sure the attribute _values
-        is not None.
+        is not None
     :type output_set: :class:`~bet.sample.sample_set`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
@@ -434,10 +434,10 @@ def calculate_gradients_cfd(input_set, output_set, normalize=True):
     CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
     
     :param input_set: The input sample set.  Make sure the attribute _values is
-        not None.
+        not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param output_set: The output sample set.  Make sure the attribute _values
-        is not None.
+        is not None
     :type output_set: :class:`~bet.sample.sample_set`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
