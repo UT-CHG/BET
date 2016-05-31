@@ -8,7 +8,7 @@ optimal set of 2 (3, 4, ... input_dim) QoIs to use in the inverse problem.
 Every real world problem requires special attention regarding how we choose
 *optimal QoIs*.  This set of examples (examples/sensitivity/linear) covers
 some of the more common scenarios using easy to understand linear maps.
-In this *skweness_binratio* example we choose *optimal QoIs* to be the set of
+In this *skewness_binratio* example we choose *optimal QoIs* to be the set of
 QoIs of size input_dim that has optimal skewness properties which will yield an
 inverse solution that can be approximated well.  The uncertainty in our data is
 relative to the range of data measured in each QoI (bin_ratio).
