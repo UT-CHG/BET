@@ -319,7 +319,7 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
     # input_dim + 2
     if num_centers is None:
         num_centers = num_model_samples / (input_dim + 2)
-    centers = samples[:num_centers]
+    centers = samples[:num_centers, :]
 
     rbf_tensor = np.zeros([num_centers, num_model_samples, input_dim])
     gradient_tensor = np.zeros([num_centers, output_dim, input_dim])
