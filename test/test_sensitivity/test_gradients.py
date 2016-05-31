@@ -75,7 +75,7 @@ class GradientsMethods:
         """
         Test :meth:`bet.sensitivity.gradients.sample_l1_ball`.
         """
-        self.cluster_set = grad.sample_l1_ball(self.cluster_set_centers,
+        self.cluster_set = grad.sample_l1_ball(self.input_set_centers,
                 self.num_close, self.rvec)
 
         # Test that the samples are within max(rvec) of center (l1 dist)
@@ -170,26 +170,25 @@ class GradientsMethods:
                 self.num_close, self.rvec)
         num_centers = self.input_set_centers.check_num()
         self.output_set.set_values(self.cluster_set._values.dot(self.coeffs))
-        self.cluster_disc = sample.sample_set.discretization(self.cluster_set,
+        self.cluster_disc = sample.discretization(self.cluster_set,
                 self.output_set)
 
-        self.center_disc = grad.calculate_gradients_rbf(\
-                self.cluster_disc, num_centers)
+        self.center_disc = grad.calculate_gradients_rbf(self.cluster_disc,
+                num_centers)
 
         # Test the method returns the correct size tensor
-        self.assertEqual(self.center_disc.input_sample_set._jacobians.shape, 
-                (self.num_centers, self.output_dim, self.input_dim))
+        self.jacobians = self.center_disc._input_sample_set._jacobians
+        self.assertEqual(self.jacobians.shape, (self.num_centers,
+            self.output_dim, self.input_dim))
 
         # Test that each vector is normalized or a zero vector
-        normG = np.linalg.norm(self.center_disc.input_sample_set._jacobians,
-                ord=1, axis=2)
+        normG = np.linalg.norm(self.jacobians, ord=1, axis=2)
 
         # If its a zero vectors, make it the unit vector in input_dim
-        self.center_disc.input_sample_set._jacobians[normG==0] = 1.0/self.input_dim
-        nptest.assert_array_almost_equal(np.linalg.norm(
-            self.center_disc.input_sample_set._jacobians, ord=1, axis=2),
-            np.ones((self.center_disc.input_sample_set._jacobians.shape[0],
-            self.center_disc.input_sample_set._jacobians.shape[1])))
+        self.jacobians[normG==0] = 1.0/self.input_dim
+        nptest.assert_array_almost_equal(np.linalg.norm(self.jacobians, ord=1,
+            axis=2), np.ones((self.jacobians.shape[0],
+                self.jacobians.shape[1])))
 
     def test_calculate_gradients_ffd(self):
         """
@@ -200,25 +199,24 @@ class GradientsMethods:
             self.rvec)
         num_centers = self.input_set_centers.check_num()
         self.output_set.set_values(self.cluster_set._values.dot(self.coeffs))
-        self.cluster_disc = sample.sample_set.discretization(self.cluster_set,
+        self.cluster_disc = sample.discretization(self.cluster_set,
                 self.output_set)
 
         self.center_disc = grad.calculate_gradients_ffd(self.cluster_disc)
+        self.jacobians = self.center_disc._input_sample_set._jacobians
 
         # Test the method returns the correct size tensor
-        self.assertEqual(self.center_disc.input_sample_set._jacobians.shape, 
+        self.assertEqual(self.jacobians.shape, 
                 (self.num_centers, self.output_dim, self.input_dim))
 
         # Test that each vector is normalized or a zero vector
-        normG = np.linalg.norm(self.center_disc.input_sample_set._jacobians,
-                ord=1, axis=2)
+        normG = np.linalg.norm(self.jacobians, ord=1, axis=2)
 
         # If its a zero vectors, make it the unit vector in input_dim
-        self.center_disc.input_sample_set._jacobians[normG==0] = 1.0/self.input_dim
-        nptest.assert_array_almost_equal(np.linalg.norm(
-            self.center_disc.input_sample_set._jacobians, ord=1, axis=2),
-            np.ones((self.center_disc.input_sample_set._jacobians.shape[0],
-            self.center_disc.input_sample_set._jacobians.shape[1])))
+        self.jacobians[normG==0] = 1.0/self.input_dim
+        nptest.assert_array_almost_equal(np.linalg.norm(self.jacobians, ord=1,
+            axis=2), np.ones((self.jacobians.shape[0],
+                self.jacobians.shape[1])))
 
     def test_calculate_gradients_cfd(self):
         """
@@ -229,25 +227,25 @@ class GradientsMethods:
             self.rvec)
         num_centers = self.input_set_centers.check_num()
         self.output_set.set_values(self.cluster_set._values.dot(self.coeffs))
-        self.cluster_disc = sample.sample_set.discretization(self.cluster_set,
+        self.cluster_disc = sample.discretization(self.cluster_set,
                 self.output_set)
 
         self.center_disc = grad.calculate_gradients_cfd(self.cluster_disc)
+        self.jacobians = self.center_disc._input_sample_set._jacobians
 
         # Test the method returns the correct size tensor
-        self.assertEqual(self.center_disc.input_sample_set._jacobians.shape, 
+        self.assertEqual(self.jacobians.shape, 
                 (self.num_centers, self.output_dim, self.input_dim))
 
         # Test that each vector is normalized or a zero vector
-        normG = np.linalg.norm(self.center_disc.input_sample_set._jacobians,
+        normG = np.linalg.norm(self.jacobians,
                 ord=1, axis=2)
 
         # If its a zero vectors, make it the unit vector in input_dim
-        self.center_disc.input_sample_set._jacobians[normG==0] = 1.0/self.input_dim
-        nptest.assert_array_almost_equal(np.linalg.norm(
-            self.center_disc.input_sample_set._jacobians, ord=1, axis=2),
-            np.ones((self.center_disc.input_sample_set._jacobians.shape[0],
-            self.center_disc.input_sample_set._jacobians.shape[1])))
+        self.jacobians[normG==0] = 1.0/self.input_dim
+        nptest.assert_array_almost_equal(np.linalg.norm(self.jacobians, ord=1,
+            axis=2), np.ones((self.jacobians.shape[0],
+                self.jacobians.shape[1])))
 
 # Test the accuracy of the gradient approximation methods
 class GradientsAccuracy:
@@ -259,31 +257,34 @@ class GradientsAccuracy:
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_rbf`.
         """
-        self.center_disc_rbf = grad.calculate_gradients_rbf(\
+        self.center_disc = grad.calculate_gradients_rbf(\
             self.cluster_disc_rbf, normalize=False)
+        self.jacobians = self.center_disc._input_sample_set._jacobians
 
-        nptest.assert_array_almost_equal(self.center_disc_rbf.input_sample_set.\
-                _jacobians - self.G_exact, 0, decimal = 2)
+        nptest.assert_array_almost_equal(self.jacobians - self.G_exact, 0,
+                decimal = 2)
 
     def test_calculate_gradients_ffd_accuracy(self):
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_ffd`.
         """
-        self.center_disc_ffd = grad.calculate_gradients_ffd(\
+        self.center_disc = grad.calculate_gradients_ffd(\
             self.cluster_disc_ffd, normalize=False)
+        self.jacobians = self.center_disc._input_sample_set._jacobians
 
-        nptest.assert_array_almost_equal(self.center_disc_ffd.input_sample_set.\
-                _jacobians - self.G_exact, 0, decimal = 2)
+        nptest.assert_array_almost_equal(self.jacobians - self.G_exact, 0,
+                decimal = 2)
 
     def test_calculate_gradients_cfd_accuracy(self):
         """
         Test :meth:`bet.sensitivity.gradients.calculate_gradients_cfd`.
         """
-        self.center_disc_cfd = grad.calculate_gradients_cfd(\
+        self.center_disc = grad.calculate_gradients_cfd(\
             self.cluster_disc_cfd, normalize=False)
+        self.jacobians = self.center_disc._input_sample_set._jacobians
 
-        nptest.assert_array_almost_equal(self.center_disc_cfd.input_sample_set.\
-                _jacobians - self.G_exact, 0, decimal = 2)
+        nptest.assert_array_almost_equal(self.jacobians - self.G_exact, 0,
+                decimal = 2)
 
 
 # Test cases
@@ -570,9 +571,9 @@ class test_2to2_100centers_unitbox(GradientsAccuracy, unittest.TestCase):
         self.output_set_rbf.set_values(f(self.input_set_rbf.get_values()))
         self.output_set_ffd.set_values(f(self.input_set_ffd.get_values()))
         self.output_set_cfd.set_values(f(self.input_set_cfd.get_values()))
-        self.cluster_disc_rfb(self.input_set_rbf, self.output_set_rbf)
-        self.cluster_disc_rfb(self.input_set_ffd, self.output_set_ffd)
-        self.cluster_disc_rfb(self.input_set_cfd, self.output_set_cfd)
+        self.cluster_disc_rbf = sample.discretization(self.input_set_rbf, self.output_set_rbf)
+        self.cluster_disc_ffd = sample.discretization(self.input_set_ffd, self.output_set_ffd)
+        self.cluster_disc_cfd = sample.discretization(self.input_set_cfd, self.output_set_cfd)
 
         self.G_exact = np.zeros([self.num_centers, self.output_dim,
             self.input_dim])
