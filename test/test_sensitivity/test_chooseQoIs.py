@@ -232,7 +232,7 @@ class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
             self.num_centers = 10
             self.centers = np.random.random((self.num_centers, self.input_dim))
             self.input_set_centers._values = self.centers
-            self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.input_dim + 1, self.radius)
+            self.input_set = grad.sample_l1_ball(self.input_set_centers, self.input_dim + 1, self.radius)
             
             self.output_dim = 20
             self.output_set = sample.sample_set(self.output_dim)
@@ -240,9 +240,11 @@ class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
                 self.output_dim-self.input_dim))
             self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
-            self.output_set._values = self.input_set._values.dot(self.coeffs)
-            self.input_set._jacobians = grad.calculate_gradients_rbf(\
-                self.input_set, self.output_set, self.input_set_centers)
+            self.output_set.set_values(self.input_set._values.dot(self.coeffs))
+            self.my_disc = sample.discretization(self.input_set,
+                    self.output_set)
+            self.jacobians = grad.calculate_gradients_rbf(\
+                self.my_disc, self.input_set_centers)
 
             self.inner_prod_tol = 1.0
             self.measskew_tol = 100.0
@@ -259,7 +261,8 @@ class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.num_centers = 100
             self.centers = np.random.random((self.num_centers, self.input_dim))
             self.input_set_centers._values = self.centers
-            self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.input_dim + 1, self.radius)
+            self.input_set = grad.sample_l1_ball(self.input_set_centers,
+                    self.input_dim + 1, self.radius)
             
             self.output_dim = 20
             self.output_set = sample.sample_set(self.output_dim)
@@ -267,9 +270,11 @@ class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
                 self.output_dim-self.input_dim))
             self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
-            self.output_set._values = self.input_set._values.dot(self.coeffs)
+            self.output_set.set_values(self.input_set._values.dot(self.coeffs))
+            self.my_disc = sample.discretization(self.input_set,
+                    self.output_set)
             self.input_set._jacobians = grad.calculate_gradients_rbf(\
-                self.input_set, self.output_set, self.input_set_centers)
+                self.my_disc, self.num_centers)
 
             self.inner_prod_tol = 0.9
             self.measskew_tol = 20.0
@@ -286,7 +291,8 @@ class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
             self.num_centers = 15
             self.centers = np.random.random((self.num_centers, self.input_dim))
             self.input_set_centers._values = self.centers
-            self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.input_dim + 1, self.radius)
+            self.input_set = grad.sample_l1_ball(self.input_set_centers,
+                    self.input_dim + 1, self.radius)
             
             self.output_dim = 15
             self.output_set = sample.sample_set(self.output_dim)
@@ -294,9 +300,11 @@ class test_9to15_choose9(ChooseQoIsMethods, unittest.TestCase):
                 self.output_dim - self.input_dim))
             self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
-            self.output_set._values = self.input_set._values.dot(self.coeffs)
+            self.output_set.set_values(self.input_set._values.dot(self.coeffs))
+            self.my_disc = sample.discretization(self.input_set,
+                    self.output_set)
             self.input_set._jacobians = grad.calculate_gradients_rbf(\
-                self.input_set, self.output_set, self.input_set_centers)
+                self.my_disc, self.num_centers)
 
             self.inner_prod_tol = 0.8
             self.measskew_tol = 100.0
@@ -313,7 +321,8 @@ class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
             self.num_centers = 11
             self.centers = np.random.random((self.num_centers, self.input_dim))
             self.input_set_centers._values = self.centers
-            self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.input_dim + 1, self.radius)
+            self.input_set = grad.sample_l1_ball(self.input_set_centers,
+                    self.input_dim + 1, self.radius)
             
             self.output_dim = 15
             self.output_set = sample.sample_set(self.output_dim)
@@ -321,9 +330,11 @@ class test_9to15_choose4(ChooseQoIsMethods, unittest.TestCase):
                 self.input_dim))
             self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
-            self.output_set._values = self.input_set._values.dot(self.coeffs)
+            self.output_set.set_values(self.input_set._values.dot(self.coeffs))
+            self.my_disc = sample.discretization(self.input_set,
+                    self.output_set)
             self.input_set._jacobians = grad.calculate_gradients_rbf(\
-                self.input_set, self.output_set, self.input_set_centers)
+                self.my_disc, self.num_centers)
 
             self.inner_prod_tol = 0.9
             self.measskew_tol = 50.0
@@ -340,7 +351,8 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
             self.num_centers = 10
             self.centers = np.random.random((self.num_centers, self.input_dim))
             self.input_set_centers._values = self.centers
-            self.input_set._values = grad.sample_l1_ball(self.input_set_centers, self.input_dim + 1, self.radius)
+            self.input_set = grad.sample_l1_ball(self.input_set_centers,
+                    self.input_dim + 1, self.radius)
             
             self.output_dim = 28
             self.output_set = sample.sample_set(self.output_dim)
@@ -349,9 +361,12 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
                 self.output_dim - 3 * self.input_dim)), axis=1)
             self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
-            self.output_set._values = self.input_set._values.dot(self.coeffs)
+            self.output_set.set_values(self.input_set._values.dot(self.coeffs))
+            self.my_disc = sample.discretization(self.input_set,
+                    self.output_set)
             self.input_set._jacobians = grad.calculate_gradients_rbf(\
-                self.input_set, self.output_set, self.input_set_centers)
+                self.my_disc, self.num_centers)
+
 
             self.inner_prod_tol = 0.9
             self.measskew_tol = np.inf
