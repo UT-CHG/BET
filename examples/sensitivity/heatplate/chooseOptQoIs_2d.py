@@ -29,18 +29,18 @@ input_samples = sample.sample_set(2)
 output_samples = sample.sample_set(1000)
 
 # Set the samples from the imported file
-input_samples._values = matfile['samples']
+input_samples.set_values(matfile['samples'])
 
 # Make the MC assumption and compute the volumes of each voronoi cell
 input_samples.estimate_volume_mc()
 
 # Set the data fromthe imported file
-output_samples._values = matfile['data']
+output_samples.set_values(matfile['data'])
 
 # Calculate the gradient vectors at each of the 16 centers for each of the
 # QoI maps
-input_samples._jacobians = grad.calculate_gradients_rbf(input_samples,
-    output_samples, normalize=False)
+input_samples.set_jacobians(grad.calculate_gradients_rbf(input_samples,
+    output_samples, normalize=False))
 #G = grad.calculate_gradients_ffd(input_samples, output_sample)
 #G = grad.calculate_gradients_cfd(input_samples, output_sample)
 

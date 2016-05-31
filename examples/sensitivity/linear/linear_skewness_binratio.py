@@ -39,22 +39,22 @@ input_samples_centers = sample.sample_set(input_dim)
 output_samples = sample.sample_set(output_dim)
 
 # Choose random samples in parameter space to solve the model
-input_samples._values = np.random.uniform(0, 1, [num_samples, input_dim])
+input_samples.set_values(np.random.uniform(0, 1, [num_samples, input_dim]))
 
 # Make the MC assumption and compute the volumes of each voronoi cell
 input_samples.estimate_volume_mc()
 
 # We will approximate the jacobian at each of the centers
-input_samples_centers._values = input_samples._values[:num_centers]
+input_samples_centers.set_values(input_samples.get_values()[:num_centers])
 
 # Compute the output values with the map Q
-output_samples._values = Q.dot(input_samples._values.transpose()).transpose()
+output_samples.set_values(Q.dot(input_samples.get_values().transpose()).transpose())
 
 # Calculate the gradient vectors at some subset of the samples.  Here the
 # *normalize* argument is set to *True* because we are using bin_ratio to
 # determine the uncertainty in our data.
-input_samples._jacobians = grad.calculate_gradients_rbf(input_samples,
-    output_samples, input_samples_centers, normalize=True)
+input_samples.set_jacobians(grad.calculate_gradients_rbf(input_samples,
+    output_samples, input_samples_centers, normalize=True))
 
 # With these gradient vectors, we are now ready to choose an optimal set of
 # QoIs to use in the inverse problem, based on optimal skewness properites of
@@ -82,11 +82,12 @@ QoI_indices = [3, 4] # choose up to input_dim
 #QoI_indices = [2, 3, 5, 6, 9]
 
 # Choose some QoI indices to solve the ivnerse problem with
-output_samples._values = output_samples._values[:, QoI_indices]
-output_samples._dim = output_samples._values.shape[1]
+output_samples._dim = len(QoI_indices)
+output_samples.set_values(output_samples.get_values()[:, QoI_indices])
+
 
 # Set the jacobians to None
-input_samples._jacobians = None
+input_samples.set_jacobians(None)
 
 # Define the reference point in the output space to correspond to the center of
 # the input space.
@@ -119,5 +120,5 @@ percentile = 1.0
 # Print the number of samples that make up the highest percentile percent
 # samples and ratio of the volume of the parameter domain they take up
 if comm.rank == 0:
-    print (num_samples, np.sum(input_samples._volumes[indices_in_inverse]))
+    print (num_samples, np.sum(input_samples.get_volumes()[indices_in_inverse]))
 
