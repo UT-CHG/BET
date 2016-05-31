@@ -596,12 +596,14 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
-    def query(self, x):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :param int k: number of nearest neighbors to return
+
         """
         pass
 
@@ -803,12 +805,13 @@ class voronoi_sample_set(sample_set_base):
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
 
-    def query(self, x):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :param int k: number of nearest neighbors to return
 
         :rtype: tuple
         :returns: (dist, ptr)
@@ -820,7 +823,7 @@ class voronoi_sample_set(sample_set_base):
 
 
         #TODO add exception if dimensions of x are wrong
-        (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
+        (dist, ptr) = self._kdtree.query(x, p=self.p_norm, k=k)
         return (dist, ptr)
 
     def exact_volume_1D(self, distribution='uniform', a=None, b=None):
