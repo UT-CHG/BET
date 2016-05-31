@@ -19,12 +19,6 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
     in the input space, do this for each point in centers.  If this box extends
     outside of the domain of the input space, we sample the intersection.
 
-    .. todo::
-
-        Add ability to sample only the intersectionand then replace the other
-        :meth:`bet.gradients.sample_l1_ball` and
-        :meth:`bet.gradients.sample_linifity_ball` methods accordingly.
-
     :param input_set: The input sample set.  Make sure the attribute
     ``_values`` is not ``None``
     :type input_set: :class:`~bet.sample.sample_set`
