@@ -37,12 +37,12 @@ class GradientsMethods:
             np.max(self.rvec))
 
         # Check that the samples are in lam_domain
-        for Ldim in range(self.cluster_set._dim):
-            nptest.assert_array_less(self.cluster_set._domain[Ldim, 0],
-                self.cluster_set._values[:, Ldim])
-            nptest.assert_array_less(self.cluster_set._values[:, Ldim],
-                self.cluster_set._domain[Ldim, 1]) 
-
+        self.cluster_set.update_bounds()
+        left = np.all(np.greater_equal(self.cluster_set._values,
+            self.cluster_set._left))
+        right = np.all(np.less_equal(self.cluster_set._values,
+            self.cluster_set._right))
+        assert np.all(np.logical_and(left, right))
 
     def test_sample_linf_ball(self):
         """
@@ -64,11 +64,12 @@ class GradientsMethods:
             np.max(self.rvec))
 
         # Check that the samples are in lam_domain
-        for Ldim in range(self.cluster_set._dim):
-            nptest.assert_array_less(self.cluster_set._domain[Ldim, 0],
-                self.cluster_set._values[:, Ldim])
-            nptest.assert_array_less(self.cluster_set._values[:, Ldim],
-                self.cluster_set._domain[Ldim, 1])
+        self.cluster_set.update_bounds()
+        left = np.all(np.greater_equal(self.cluster_set._values,
+            self.cluster_set._left))
+        right = np.all(np.less_equal(self.cluster_set._values,
+            self.cluster_set._right))
+        assert np.all(np.logical_and(left, right))
 
 
     def test_sample_l1_ball(self):
@@ -261,8 +262,8 @@ class GradientsAccuracy:
             self.cluster_disc_rbf, normalize=False)
         self.jacobians = self.center_disc._input_sample_set._jacobians
 
-        nptest.assert_array_almost_equal(self.jacobians - self.G_exact, 0,
-                decimal = 2)
+        nptest.assert_allclose(self.jacobians - self.G_exact, 0,
+                atol=2)
 
     def test_calculate_gradients_ffd_accuracy(self):
         """
@@ -272,8 +273,8 @@ class GradientsAccuracy:
             self.cluster_disc_ffd, normalize=False)
         self.jacobians = self.center_disc._input_sample_set._jacobians
 
-        nptest.assert_array_almost_equal(self.jacobians - self.G_exact, 0,
-                decimal = 2)
+        nptest.assert_allclose(self.jacobians - self.G_exact, 0,
+                atol=2)
 
     def test_calculate_gradients_cfd_accuracy(self):
         """
@@ -283,8 +284,8 @@ class GradientsAccuracy:
             self.cluster_disc_cfd, normalize=False)
         self.jacobians = self.center_disc._input_sample_set._jacobians
 
-        nptest.assert_array_almost_equal(self.jacobians - self.G_exact, 0,
-                decimal = 2)
+        nptest.assert_allclose(self.jacobians - self.G_exact, 0,
+                atol=2)
 
 
 # Test cases

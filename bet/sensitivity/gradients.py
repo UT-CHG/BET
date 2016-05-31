@@ -68,6 +68,7 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
                     axis=1)
                 inside = np.logical_and(left, right)
                 in_bounds = np.sum(inside)
+                new_cluster = new_cluster[inside, :]
                 # increase inflate
                 inflate *= 10.0
             else:
@@ -76,6 +77,7 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
         if in_bounds > num_close:
             new_cluster = new_cluster[:num_close,:]
         cluster_set.append_values(new_cluster)
+
     # reset bounds
     cluster_set._left = None
     cluster_set._right= None
