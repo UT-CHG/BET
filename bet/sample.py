@@ -596,12 +596,14 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
-    def query(self, x):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :param int k: number of nearest neighbors to return
+
         """
         pass
 
@@ -803,12 +805,13 @@ class voronoi_sample_set(sample_set_base):
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
 
-    def query(self, x):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :param int k: number of nearest neighbors to return
 
         :rtype: tuple
         :returns: (dist, ptr)
@@ -820,7 +823,7 @@ class voronoi_sample_set(sample_set_base):
 
 
         #TODO add exception if dimensions of x are wrong
-        (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
+        (dist, ptr) = self._kdtree.query(x, p=self.p_norm, k=k)
         return (dist, ptr)
 
     def exact_volume_1D(self, distribution='uniform', a=None, b=None):
@@ -1174,7 +1177,7 @@ class discretization(object):
         """
         
         Returns the pointer from ``self._emulated_output_sample_set`` to
-        ``self._output_probabilityset``
+        ``self._output_probability_set``
 
         .. seealso::
             
@@ -1210,3 +1213,157 @@ class discretization(object):
             if current_array is not None:
                 setattr(my_copy, array_name, np.copy(current_array))
         return my_copy
+
+    def get_input_sample_set(self):
+        """
+
+        Returns a reference to the input sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: input sample set
+
+        """
+        return self._input_sample_set
+
+    def set_input_sample_set(self, input_sample_set):
+        """
+
+        Sets the input sample set for this discretization.
+
+        :param input_sample_set: input sample set.
+        :type input_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(input_sample_set, sample_set_base):
+            self._input_sample_set = input_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_sample_set(self):
+        """
+
+        Returns a reference to the output sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output sample set
+
+        """
+        return self._output_sample_set
+
+    def set_output_sample_set(self, output_sample_set):
+        """
+
+        Sets the output sample set for this discretization.
+
+        :param output_sample_set: output sample set.
+        :type output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_sample_set, sample_set_base):
+            self._output_sample_set = output_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_probability_set(self):
+        """
+
+        Returns a reference to the output probability sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output probability sample set
+
+        """
+        return self._output_probability_set
+
+    def set_output_probability_set(self, output_probability_set):
+        """
+
+        Sets the output probability sample set for this discretization.
+
+        :param output_probability_set: output probability sample set.
+        :type output_probability_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_probability_set, sample_set_base):
+            output_dims = []
+            output_dims.append(output_probability_set.get_dim())
+            if self._output_sample_set is not None:
+                output_dims.append(self._output_sample_set.get_dim())
+            if self._emulated_output_sample_set is not None:
+                output_dims.append(self._emulated_output_sample_set.get_dim())
+            if len(output_dims) == 1:
+                self._output_probability_set = output_probability_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._output_probability_set = output_probability_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_emulated_output_sample_set(self):
+        """
+
+        Returns a reference to the emulated_output sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: emulated_output sample set
+
+        """
+        return self._emulated_output_sample_set
+
+    def set_emulated_output_sample_set(self, emulated_output_sample_set):
+        """
+
+        Sets the emulated_output sample set for this discretization.
+
+        :param emulated_output_sample_set: emupated output sample set.
+        :type emulated_output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(emulated_output_sample_set, sample_set_base):
+            output_dims = []
+            output_dims.append(emulated_output_sample_set.get_dim())
+            if self._output_sample_set is not None:
+                output_dims.append(self._output_sample_set.get_dim())
+            if self._output_probability_set is not None:
+                output_dims.append(self._output_probability_set.get_dim())
+            if len(output_dims) == 1:
+                self._emulated_output_sample_set = emulated_output_sample_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._emulated_output_sample_set = emulated_output_sample_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_emulated_input_sample_set(self):
+        """
+
+        Returns a reference to the emulated_input sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: emulated_input sample set
+
+        """
+        return self._emulated_input_sample_set
+
+    def set_emulated_input_sample_set(self, emulated_input_sample_set):
+        """
+
+        Sets the emulated_input sample set for this discretization.
+
+        :param emulated_input_sample_set: emupated input sample set.
+        :type emulated_input_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(emulated_input_sample_set, sample_set_base):
+            if self._input_sample_set is not None:
+                if self._input_sample_set.get_dim() == \
+                        emulated_input_sample_set.get_dim():
+                    self._emulated_input_sample_set = emulated_input_sample_set
+                else:
+                    raise dim_not_matching("dimension of values incorrect")
+            else:
+                self._emulated_input_sample_set = emulated_input_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
