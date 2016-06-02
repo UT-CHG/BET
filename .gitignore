@@ -2,4 +2,8 @@ bin/
 doc/_build
 hershel_bin
 gh-pages/
-
+bet/piecewise/*.eps
+examples/sensitivity/nonlinear/*.png
+bet/.DS_Store
+bet/piecewise/*.pyc
+bet/piecewise/.DS_Store

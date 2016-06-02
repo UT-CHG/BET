@@ -1,15 +1,15 @@
 # Copyright (C) 2014-2016 The BET Development Team
 
-r""" 
+r"""
 This module provides methods for calulating the probability measure
 :math:`P_{\Lambda}`.
 
 * :mod:`~bet.calculateP.prob_emulated` provides a skeleton class and calculates
     the probability for a set of emulation points.
-* :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the 
+* :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the
     probability based on pre-defined volumes.
 """
-from bet.Comm import comm, MPI 
+from bet.Comm import comm, MPI
 import numpy as np
 import bet.util as util
 import bet.sample as samp
@@ -17,11 +17,11 @@ import bet.sample as samp
 def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
     """
     Parition the parameter space using emulated samples into many voronoi
-    cells. These samples are iid so that we can apply the standard MC                                       
+    cells. These samples are iid so that we can apply the standard MC
     assumuption/approximation
 
     :param domain: The domain for each parameter for the model.
-    :type domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
+    :type domain: :class:`~numpy.ndarray` of shape (ndim, 2)
     :param num_l_emulate: The number of emulated samples.
     :type num_l_emulate: int
 
@@ -42,7 +42,7 @@ def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
         set_emulated.local_to_global()
     return set_emulated
 
-def prob_emulated(discretization, globalize=True): 
+def prob_emulated(discretization, globalize=True):
     r"""
 
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
@@ -80,17 +80,17 @@ def prob_emulated(discretization, globalize=True):
             if Itemp_sum > 0:
                 P[Itemp] = discretization._output_probability_set.\
                         _probabilities[i]/Itemp_sum
-    
+
     discretization._emulated_input_sample_set._probabilities_local = P
     if globalize:
         discretization._emulated_input_sample_set.local_to_global()
     pass
 
-def prob(discretization): 
+def prob(discretization):
     r"""
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability assoicated with a set of  cells defined by the model
-    solves at :math:`(\lambda_{samples})` where the volumes of these 
+    solves at :math:`(\lambda_{samples})` where the volumes of these
     cells are provided.
 
     :param discretization: An object containing the discretization information.
@@ -117,16 +117,16 @@ def prob(discretization):
             Itemp_sum = np.sum(discretization._input_sample_set.\
                     _volumes_local[Itemp])
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
-            if Itemp_sum > 0:            
+            if Itemp_sum > 0:
                 P_local[Itemp] = discretization._output_probability_set.\
                         _probabilities[i]*discretization._input_sample_set.\
                         _volumes_local[Itemp]/Itemp_sum
-        
+
     discretization._input_sample_set._probabilities = util.\
             get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
 
-def prob_mc(discretization): 
+def prob_mc(discretization):
     r"""
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability associated with a set of  cells defined by the model
@@ -165,8 +165,3 @@ def prob_mc(discretization):
     discretization._input_sample_set.global_to_local()
 
     return prob(discretization)
-
-
-    
-
-    

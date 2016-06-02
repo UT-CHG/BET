@@ -23,18 +23,18 @@ def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     given a specific set of QoIs, calculate the expected measure of the
     inverse image of a box in the data space using local linear approximations
     of the map Q.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
     :param float bin_measure: The measure of the output_dim hyperrectangle to
         invert into the input space
-    
+
     :rtype: tuple
     :returns: (avg_measure, singvals) where avg_measure is a float and singvals
         has shape (num_centers, output_dim)
-    
+
     """
 
     if input_set._jacobians is None:
@@ -153,11 +153,11 @@ def calculate_avg_condnum(input_set, qoi_set=None):
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
-    
+
     :rtype: tuple
     :returns: (condnum, singvals) where condnum is a float and singvals
         has shape (num_centers, output_dim)
-    
+
     """
 
     if input_set._jacobians is None:
@@ -167,7 +167,7 @@ def calculate_avg_condnum(input_set, qoi_set=None):
     else:
         G = input_set._jacobians[:, qoi_set, :]
     if G.shape[1] > G.shape[2]:
-        msg = "Condition number is not defined for more outputs than inputs."  
+        msg = "Condition number is not defined for more outputs than inputs."
         msg += " Try adding a qoi_set to evaluate the condition number of."
         raise ValueError(msg)
 
@@ -200,7 +200,7 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
@@ -215,10 +215,10 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
         to determine optimal QoIs, else use ``calculate_avg_skewness``
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient
-    
+
     :rtype: `np.ndarray` of shape (num_optsets_returned, num_qois_returned + 1)
     :returns: measure_skewness_indices_mat
-    
+
     """
 
     (measure_skewness_indices_mat, _) = chooseOptQoIs_verbose(input_set,
@@ -241,7 +241,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
@@ -256,10 +256,10 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
         to determine optimal QoIs, else use ``calculate_avg_skewness``
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient
-    
+
     :rtype: `np.ndarray` of shape (num_optsets_returned, num_qois_returned + 1)
     :returns: measure_skewness_indices_mat
-    
+
     """
 
     G = input_set._jacobians
@@ -338,7 +338,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
         optsingvals_tensor = optsingvals_tensor[:, :, order]
         optsingvals_tensor = optsingvals_tensor[:, :, :num_optsets_return]
 
-    measure_skewness_indices_mat = comm.bcast(measure_skewness_indices_mat, 
+    measure_skewness_indices_mat = comm.bcast(measure_skewness_indices_mat,
             root=0)
     optsingvals_tensor = comm.bcast(optsingvals_tensor, root=0)
 
@@ -352,7 +352,7 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     one from any pair of QoIs that have an average inner product greater than
     some tolerance, i.e., an average angle between the two vectors smaller than
     some tolerance.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
@@ -363,10 +363,10 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`
-    
+
     :rtype: `np.ndarray` of shape (num_unique_vecs, 1)
     :returns: unique_vecs
-    
+
     """
 
     if input_set._jacobians is None:
@@ -433,17 +433,17 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
 
     .. todo::  Use the idea we only know vectors are with 10% accuracy to guide
         inner_prod tol and skewness_tol.
-    
+
     Given gradient vectors at each center in the parameter space and given
     good sets of size (n - 1), return good sets of size n.  That is, return
     sets of size n that have average measure(skewness) less than some tolerance.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
     :param good_sets_prev: Good sets of QoIs of size n - 1.
     :type good_sets_prev: :class:`np.ndarray` of size (num_good_sets_prev, n -
-        1) 
+        1)
     :param unique_indices: Unique QoIs to consider.
     :type unique_indices: :class:`np.ndarray` of size (num_unique_qois, 1)
     :param int num_optsets_return: Number of best sets to return
@@ -451,12 +451,12 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
         measure(skewness) number greater than this.
     :param boolean measure: If measure is True, use ``calculate_avg_measure``
         to determine optimal QoIs, else use ``calculate_avg_skewness``
-    
+
     :rtype: tuple
     :returns: (good_sets, best_sets, optsingvals_tensor) where good sets has
         size (num_good_sets, n), best sets has size (num_optsets_return,
         n + 1) and optsingvals_tensor has size (num_centers, n, input_dim)
-    
+
     """
 
     if input_set._jacobians is None:
@@ -572,7 +572,7 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
     method returns the set of optimal QoIs of size 2, 3, ...  max_qois_return
     to use in the inverse problem by choosing the sets with the smallest
     average measure(skewness).
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
@@ -592,13 +592,13 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
-    
+
     :rtype: tuple
     :returns: (measure_skewness_indices_mat, optsingvals) where
         measure_skewness_indices_mat has shape (num_optsets_return,
         num_qois_return+1) and optsingvals has shape (num_centers,
         num_qois_return, num_optsets_return)
-    
+
     """
     (best_sets, _) = chooseOptQoIs_large_verbose(input_set, qoiIndices,
         max_qois_return, num_optsets_return, inner_prod_tol, measskew_tol, measure,
@@ -617,7 +617,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     skewness.  Also a tensor that represents the singular values of the
     matrices formed by the gradient vectors of the optimal QoIs at each center
     is returned.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
@@ -627,7 +627,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     :param int max_qois_return: Maximum number of desired QoIs to use in the
         inverse problem.  Default is input_dim.
     :param int num_optsets_return: Number of best sets to return.  Default is
-        10.  
+        10.
     :param float inner_prod_tol: Throw out one vectors from each pair of
         QoIs that has average inner product greater than this.  Default is 0.9.
     :param float measskew_tol: Throw out all sets of QoIs with average
@@ -637,14 +637,14 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
-    
+
     :rtype: tuple
     :returns: (measure_skewness_indices_mat, optsingvals) where
         measure_skewness_indices_mat has shape (num_optsets_return,
         num_qois_return+1) and optsingvals is a list where each element has
         shape (num_centers, num_qois_return, num_optsets_return).
         num_qois_return will change for each element of the list.
-    
+
     """
     input_dim = input_set._dim
     if input_set._jacobians is None:
