@@ -10,13 +10,12 @@ Each sample consists for a paramter coordinate, data coordinate pairing. We
 assume the measure on both spaces in Lebesgue.
 """
 
+import collections
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
 from bet.Comm import comm
 import bet.sample as sample
-import bet.util as util
-import collections
 
 def loadmat(save_file, disc_name=None, model=None):
     """
@@ -147,7 +146,7 @@ class sampler(object):
         if globalize is True:
             input_sample_set.set_values(input_values)
         elif globalize is False and \
-                (sample_type == "random" or sample_type = 'r'):
+                (sample_type == "random" or sample_type == 'r'):
             input_sample_set.set_values_local(input_values)
         else:
             input_sample_set.set_values(input_values)
@@ -156,7 +155,7 @@ class sampler(object):
         return input_sample_set
 
     def random_sample_set_domain(self, sample_type, input_domain,
-            num_samples=None, criterion='center'):
+            num_samples=None, criterion='center', globalize=True):
         """
         Sampling algorithm with three basic options
 
@@ -177,6 +176,8 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool globalize: Makes local variables global. Only applies if
+            ``parallel==True``.
 
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_Set` object which contains
@@ -188,10 +189,10 @@ class sampler(object):
         input_sample_set.set_domain(input_domain)
 
         return self.random_sample_set(sample_type, input_sample_set,
-                                       num_samples, criterion)
+                                       num_samples, criterion, globalize)
 
     def random_sample_set_dimension(self, sample_type, input_dim,
-            num_samples=None, criterion='center'):
+            num_samples=None, criterion='center', globalize=True):
         """
         Sampling algorithm with three basic options
 
@@ -211,6 +212,8 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool globalize: Makes local variables global. Only applies if
+            ``parallel==True``.
 
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_Set` object which contains
@@ -221,7 +224,7 @@ class sampler(object):
         input_sample_set = sample.sample_set(input_dim)
 
         return self.random_sample_set(sample_type, input_sample_set,
-                                       num_samples, criterion)
+                                       num_samples, criterion, globalize)
 
     def regular_sample_set(self, input_sample_set, num_samples_per_dim=1):
         """
@@ -264,20 +267,22 @@ class sampler(object):
         vec_samples_dimension = np.empty((dim), dtype=object)
         for i in np.arange(0, dim):
             vec_samples_dimension[i] = list(np.linspace(
-                input_domain[i,0], input_domain[i,1],
+                input_domain[i, 0], input_domain[i, 1],
                 num_samples_per_dim[i]+2))[1:num_samples_per_dim[i]+1]
 
         if np.equal(dim, 1):
             arrays_samples_dimension = np.array([vec_samples_dimension])
         else:
             arrays_samples_dimension = np.meshgrid(
-                *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+                *[vec_samples_dimension[i] for i in np.arange(0, dim)],
+                indexing='ij')
 
         if np.equal(dim, 1):
             input_values = arrays_samples_dimension.transpose()
         else:
             for i in np.arange(0, dim):
-                input_values[:,i:i+1] = np.vstack(arrays_samples_dimension[i].flat[:])
+                input_values[:, i:i+1] = np.vstack(arrays_samples_dimension[i]\
+                        .flat[:])
 
         input_sample_set.set_values(input_values)
 
