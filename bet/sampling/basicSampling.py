@@ -371,7 +371,7 @@ class sampler(object):
             output_sample_set = sample.sample_set(output_dim)
             output_sample_set.set_values(output_values)
         elif parallel:
-            if input_sample_set.values_local is None: 
+            if input_sample_set._values_local is None: 
                 input_sample_set.global_to_local()
             local_output_values = self.lb_model(\
                     input_sample_set.get_values_local())
