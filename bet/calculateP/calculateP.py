@@ -9,10 +9,9 @@ This module provides methods for calulating the probability measure
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the 
     probability based on pre-defined volumes.
 """
-from bet.Comm import comm, MPI 
 import numpy as np
+from bet.Comm import comm, MPI 
 import bet.util as util
-import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 
 def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
@@ -31,7 +30,7 @@ def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
 
     """
     sampler = bsam.sampler(None)
-    return sampler.random_sample_set_domain('r', domain, num_l_emulated,
+    return sampler.random_sample_set_domain('r', domain, num_l_emulate,
             globalize=globalize)
 
 def prob_emulated(discretization, globalize=True): 
