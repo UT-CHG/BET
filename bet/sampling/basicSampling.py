@@ -95,7 +95,7 @@ class sampler(object):
         mdict['num_samples'] = self.num_samples
 
     def random_sample_set(self, sample_type, input_sample_set,
-            num_samples=None, criterion='center'):
+            num_samples=None, criterion='center', globalize=True):
         """
         Sampling algorithm with three basic options
 
@@ -116,9 +116,11 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+        :param bool globalize: Makes local variables global. Only applies if
+            ``parallel==True``.
         
         :rtype: :class:`~bet.sample.sample_set`
-        :returns: :class:`~bet.sample.sample_Set` object which contains
+        :returns: :class:`~bet.sample.sample_set` object which contains
             input ``num_samples`` 
 
         """
@@ -142,7 +144,14 @@ class sampler(object):
         elif sample_type == "random" or "r":
             input_values = input_values * np.random.random(input_values.shape) 
         input_values = input_values + input_sample_set._left
-        input_sample_set.set_values(input_values)
+        if globalize is True:
+            input_sample_set.set_values(input_values)
+        elif globalize is False and \
+                (sample_type == "random" or sample_type = 'r'):
+            input_sample_set.set_values_local(input_values)
+        else:
+            input_sample_set.set_values(input_values)
+            input_sample_set.global_to_local()
 
         return input_sample_set
 
@@ -319,7 +328,7 @@ class sampler(object):
         return self.regular_sample_set(input_sample_set, num_samples_per_dim)
 
     def compute_QoI_and_create_discretization(self, input_sample_set,
-            savefile=None, parallel=False):
+            savefile=None, parallel=False, globalize=True):
         """
         Samples the model at ``input_sample_set`` and saves the results.
 
@@ -333,6 +342,8 @@ class sampler(object):
         :param string savefile: filename to save samples and data
         :param bool parallel: Flag for parallel implementation. Default value
             is ``False``.  
+        :param bool globalize: Makes local variables global. Only applies if
+            ``parallel==True``.
         
         :rtype: :class:`~bet.sample.discretization` 
         :returns: :class:`~bet.sample.discretization` object which contains
@@ -355,7 +366,8 @@ class sampler(object):
             output_sample_set = sample.sample_set(output_dim)
             output_sample_set.set_values(output_values)
         elif parallel:
-            input_sample_set.global_to_local()
+            if input_sample_set.values_local is None: 
+                input_sample_set.global_to_local()
             local_output_values = self.lb_model(\
                     input_sample_set.get_values_local())
             # figure out the dimension of the output
@@ -365,8 +377,9 @@ class sampler(object):
                 output_dim = local_output_values.shape[1]
             output_sample_set = sample.sample_set(output_dim)
             output_sample_set.set_values_local(local_output_values)
-            input_sample_set.local_to_global()
-            output_sample_set.local_to_global()
+            if globalize:
+                input_sample_set.local_to_global()
+                output_sample_set.local_to_global()
         
         discretization = sample.discretization(input_sample_set,
                 output_sample_set)
@@ -382,7 +395,7 @@ class sampler(object):
 
     def create_random_discretization(self, sample_type, input_obj,
             savefile=None, num_samples=None, criterion='center',
-            parallel=False):
+            parallel=False, globalize=True):
         """
         Sampling algorithm with three basic options
             * ``random`` (or ``r``) generates ``num_samples`` samples in
@@ -406,6 +419,8 @@ class sampler(object):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :param bool parallel: Flag for parallel implementation.  Default value
             is ``False``.
+        :param bool globalize: Makes local variables global. Only applies if
+            ``parallel==True``.
 
         :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
@@ -417,13 +432,13 @@ class sampler(object):
 
         if isinstance(input_obj, sample.sample_set_base):
             input_sample_set = self.random_sample_set(sample_type, input_obj,
-                    num_samples, criterion)
+                    num_samples, criterion, globalize)
         elif isinstance(input_obj, np.ndarray):
             input_sample_set = self.random_sample_set_domain(sample_type,
-                    input_obj, num_samples, criterion)
+                    input_obj, num_samples, criterion, globalize)
         else:
             input_sample_set = self.random_sample_set_dimension(sample_type,
-                    input_obj, num_samples, criterion)
+                    input_obj, num_samples, criterion, globalize)
 
         return self.compute_QoI_and_create_discretization(input_sample_set, 
-                savefile, parallel)
+                savefile, parallel, globalize)
