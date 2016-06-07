@@ -14,25 +14,6 @@ from bet.Comm import comm, MPI
 import bet.util as util
 import bet.sampling.basicSampling as bsam
 
-def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
-    """
-    Parition the parameter space using emulated samples into many voronoi
-    cells. These samples are iid so that we can apply the standard MC
-    assumuption/approximation.
-
-    :param domain: The domain for each parameter for the model.
-    :type domain: :class:`~numpy.ndarray` of shape (ndim, 2)  
-    :param num_l_emulate: The number of emulated samples.
-    :type num_l_emulate: int
-
-    :rtype: :class:`~bet.sample.voronoi_sample_set`
-    :returns: a set of samples for emulation
-
-    """
-    sampler = bsam.sampler(None)
-    return sampler.random_sample_set_domain('r', domain, num_l_emulate,
-            globalize=globalize)
-
 def prob_emulated(discretization, globalize=True): 
     r"""
 

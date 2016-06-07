@@ -41,6 +41,242 @@ def loadmat(save_file, disc_name=None, model=None):
     loaded_sampler = sampler(model, num_samples)    
     return (loaded_sampler, discretization)
 
+def random_sample_set(sample_type, input_sample_set,
+        num_samples, criterion='center', globalize=True):
+    """
+    Sampling algorithm with three basic options
+
+        * ``random`` (or ``r``) generates ``num_samples`` samples in
+            ``lam_domain`` assuming a Lebesgue measure.
+        * ``lhs`` generates a latin hyper cube of samples.
+
+    Note: This function is designed only for generalized rectangles and
+    assumes a Lebesgue measure on the parameter space.
+   
+    :param string sample_type: type sampling random (or r),
+        latin hypercube(lhs), regular grid (rg), or space-filling
+        curve(TBD)
+    :param input_sample_set: samples to evaluate the model at
+    :type input_sample_set: :class:`~bet.sample.sample_set` with
+        num_smaples
+    :param string savefile: filename to save discretization
+    :param int num_samples: N, number of samples 
+    :param string criterion: latin hypercube criterion see 
+        `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+    :param bool globalize: Makes local variables global. Only applies if
+        ``parallel==True``.
+    
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: :class:`~bet.sample.sample_set` object which contains
+        input ``num_samples`` 
+
+    """
+    # Create N samples
+    dim = input_sample_set.get_dim()
+
+    if input_sample_set.get_domain() is None:
+        # create the domain
+        input_domain = np.array([[0., 1.]]*dim)
+        input_sample_set.set_domain(input_domain)
+    # update the bounds based on the number of samples
+    input_sample_set.update_bounds(num_samples)
+    input_values = np.copy(input_sample_set._width)
+     
+    if sample_type == "lhs":
+        input_values = input_values * lhs(dim,
+                num_samples, criterion)
+    elif sample_type == "random" or "r":
+        input_values = input_values * np.random.random(input_values.shape) 
+    input_values = input_values + input_sample_set._left
+    if globalize is True:
+        input_sample_set.set_values(input_values)
+    elif globalize is False and \
+            (sample_type == "random" or sample_type == 'r'):
+        input_sample_set.set_values_local(input_values)
+    else:
+        input_sample_set.set_values(input_values)
+        input_sample_set.global_to_local()
+
+    return input_sample_set
+
+def random_sample_set_domain(sample_type, input_domain,
+        num_samples, criterion='center', globalize=True):
+    """
+    Sampling algorithm with three basic options
+
+        * ``random`` (or ``r``) generates ``num_samples`` samples in
+            ``lam_domain`` assuming a Lebesgue measure.
+        * ``lhs`` generates a latin hyper cube of samples.
+
+    Note: This function is designed only for generalized rectangles and
+    assumes a Lebesgue measure on the parameter space.
+
+    :param string sample_type: type sampling random (or r),
+        latin hypercube(lhs), regular grid (rg), or space-filling
+        curve(TBD)
+    :param input_domain: min and max bounds for the input values,
+        ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``
+    :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
+    :param string savefile: filename to save discretization
+    :param int num_samples: N, number of samples 
+    :param string criterion: latin hypercube criterion see
+        `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+    :param bool globalize: Makes local variables global. Only applies if
+        ``parallel==True``.
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: :class:`~bet.sample.sample_Set` object which contains
+        input ``num_samples``
+
+    """
+    # Create N samples
+    input_sample_set = sample.sample_set(input_domain.shape[0])
+    input_sample_set.set_domain(input_domain)
+
+    return random_sample_set(sample_type, input_sample_set,
+                                   num_samples, criterion, globalize)
+
+def random_sample_set_dimension(sample_type, input_dim,
+        num_samples, criterion='center', globalize=True):
+    """
+    Sampling algorithm with three basic options
+
+        * ``random`` (or ``r``) generates ``num_samples`` samples in
+            ``lam_domain`` assuming a Lebesgue measure.
+        * ``lhs`` generates a latin hyper cube of samples.
+
+    Note: A default input space of a hypercube is created and the
+    Lebesgue measure is assumed on a space of dimension specified
+    by ``input_dim``
+
+    :param string sample_type: type sampling random (or r),
+        latin hypercube(lhs), regular grid (rg), or space-filling
+        curve(TBD)
+    :param int input_dim: the dimension of the input space
+    :param string savefile: filename to save discretization
+    :param int num_samples: N, number of samples 
+    :param string criterion: latin hypercube criterion see
+        `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
+    :param bool globalize: Makes local variables global. Only applies if
+        ``parallel==True``.
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: :class:`~bet.sample.sample_Set` object which contains
+        input ``num_samples``
+
+    """
+    # Create N samples
+    input_sample_set = sample.sample_set(input_dim)
+
+    return random_sample_set(sample_type, input_sample_set,
+                                   num_samples, criterion, globalize)
+
+def regular_sample_set(input_sample_set, num_samples_per_dim=1):
+    """
+    Sampling algorithm for generating a regular grid of samples taken
+    on the domain present with input_sample_set (a default unit hypercube
+    is used if no domain has been specified)
+
+    :param input_sample_set: samples to evaluate the model at
+    :type input_sample_set: :class:`~bet.sample.sample_set` with
+        num_smaples
+    :param num_samples_per_dim: number of samples per dimension
+    :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+        (input_sample_set._dim,)
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: :class:`~bet.sample.sample_Set` object which contains
+        input ``num_samples``
+    """
+
+    # Create N samples
+    dim = input_sample_set.get_dim()
+
+    if not isinstance(num_samples_per_dim, collections.Iterable):
+        num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
+    if np.any(np.less_equal(num_samples_per_dim, 0)):
+        print 'Warning: num_smaples_per_dim must be greater than 0'
+
+    num_samples = np.product(num_samples_per_dim)
+
+    if input_sample_set.get_domain() is None:
+        # create the domain
+        input_domain = np.array([[0., 1.]] * dim)
+        input_sample_set.set_domain(input_domain)
+    else:
+        input_domain = input_sample_set.get_domain()
+    # update the bounds based on the number of samples
+    input_sample_set.update_bounds(num_samples)
+    input_values = np.copy(input_sample_set._width)
+
+    vec_samples_dimension = np.empty((dim), dtype=object)
+    for i in np.arange(0, dim):
+        vec_samples_dimension[i] = list(np.linspace(
+            input_domain[i, 0], input_domain[i, 1],
+            num_samples_per_dim[i]+2))[1:num_samples_per_dim[i]+1]
+
+    if np.equal(dim, 1):
+        arrays_samples_dimension = np.array([vec_samples_dimension])
+    else:
+        arrays_samples_dimension = np.meshgrid(
+            *[vec_samples_dimension[i] for i in np.arange(0, dim)],
+            indexing='ij')
+
+    if np.equal(dim, 1):
+        input_values = arrays_samples_dimension.transpose()
+    else:
+        for i in np.arange(0, dim):
+            input_values[:, i:i+1] = np.vstack(arrays_samples_dimension[i]\
+                    .flat[:])
+
+    input_sample_set.set_values(input_values)
+
+    return input_sample_set
+
+def regular_sample_set_domain(input_domain, num_samples_per_dim=1):
+    """
+    Sampling algorithm for generating a regular grid of samples taken
+    on the domain present with input_sample_set (a default unit hypercube
+    is used if no domain has been specified)
+
+    :param input_domain: min and max bounds for the input values,
+        ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``
+    :type input_domain: :class:`numpy.ndarray` of shape (ndim, 2)
+    :param num_samples_per_dim: number of samples per dimension
+    :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+        (input_sample_set._dim,)
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: :class:`~bet.sample.sample_Set` object which contains
+        input ``num_samples``
+
+    """
+    # Create N samples
+    input_sample_set = sample.sample_set(input_domain.shape[0])
+    input_sample_set.set_domain(input_domain)
+
+    return regular_sample_set(input_sample_set, num_samples_per_dim)
+
+def regular_sample_set_dimension(input_dim, num_samples_per_dim=1):
+    """
+    Sampling algorithm for generating a regular grid of samples taken
+    on a unit hypercube of dimension input_dim
+
+    :param int input_dim: the dimension of the input space
+    :param num_samples_per_dim: number of samples per dimension
+    :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+        (input_sample_set._dim,)
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: :class:`~bet.sample.sample_Set` object which contains
+        input ``num_samples``
+
+    """
+    # Create N samples
+    input_sample_set = sample.sample_set(input_dim)
+
+    return regular_sample_set(input_sample_set, num_samples_per_dim)
+
 class sampler(object):
     """
     This class provides methods for adaptive sampling of parameter space to
@@ -60,7 +296,7 @@ class sampler(object):
         :param lb_model: Interface to physics-based model takes an input of
             shape (N, ndim) and returns an output of shape (N, mdim)
         :type lb_model: callable function
-        :param int num_samples: N, number of samples (optional)
+        :param int num_samples: N, number of samples ()
         """
         #: int, total number of samples OR list of number of samples per
         #: dimension such that total number of samples is prob(num_samples)
@@ -123,36 +359,11 @@ class sampler(object):
             input ``num_samples`` 
 
         """
-        # Create N samples
-        dim = input_sample_set.get_dim()
-
         if num_samples is None:
             num_samples = self.num_samples
-
-        if input_sample_set.get_domain() is None:
-            # create the domain
-            input_domain = np.array([[0., 1.]]*dim)
-            input_sample_set.set_domain(input_domain)
-        # update the bounds based on the number of samples
-        input_sample_set.update_bounds(num_samples)
-        input_values = np.copy(input_sample_set._width)
-         
-        if sample_type == "lhs":
-            input_values = input_values * lhs(dim,
-                    num_samples, criterion)
-        elif sample_type == "random" or "r":
-            input_values = input_values * np.random.random(input_values.shape) 
-        input_values = input_values + input_sample_set._left
-        if globalize is True:
-            input_sample_set.set_values(input_values)
-        elif globalize is False and \
-                (sample_type == "random" or sample_type == 'r'):
-            input_sample_set.set_values_local(input_values)
-        else:
-            input_sample_set.set_values(input_values)
-            input_sample_set.global_to_local()
-
-        return input_sample_set
+        
+        return random_sample_set(sample_type, input_sample_set, num_samples,
+                criterion, globalize)
 
     def random_sample_set_domain(self, sample_type, input_domain,
             num_samples=None, criterion='center', globalize=True):
@@ -184,12 +395,10 @@ class sampler(object):
             input ``num_samples``
 
         """
-        # Create N samples
-        input_sample_set = sample.sample_set(input_domain.shape[0])
-        input_sample_set.set_domain(input_domain)
-
-        return self.random_sample_set(sample_type, input_sample_set,
-                                       num_samples, criterion, globalize)
+        if num_samples is None:
+            num_samples = self.num_samples
+        return random_sample_set_domain(sample_type, input_domain, num_samples,
+                criterion, globalize)
 
     def random_sample_set_dimension(self, sample_type, input_dim,
             num_samples=None, criterion='center', globalize=True):
@@ -220,11 +429,10 @@ class sampler(object):
             input ``num_samples``
 
         """
-        # Create N samples
-        input_sample_set = sample.sample_set(input_dim)
-
-        return self.random_sample_set(sample_type, input_sample_set,
-                                       num_samples, criterion, globalize)
+        if num_samples is None:
+            num_samples = self.num_samples
+        return random_sample_set_dimension(sample_type, input_dim, num_samples,
+                criterion, globalize)
 
     def regular_sample_set(self, input_sample_set, num_samples_per_dim=1):
         """
@@ -243,51 +451,9 @@ class sampler(object):
         :returns: :class:`~bet.sample.sample_Set` object which contains
             input ``num_samples``
         """
-
-        # Create N samples
-        dim = input_sample_set.get_dim()
-
-        if not isinstance(num_samples_per_dim, collections.Iterable):
-            num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
-        if np.any(np.less_equal(num_samples_per_dim, 0)):
-            print 'Warning: num_smaples_per_dim must be greater than 0'
-
         self.num_samples = np.product(num_samples_per_dim)
-
-        if input_sample_set.get_domain() is None:
-            # create the domain
-            input_domain = np.array([[0., 1.]] * dim)
-            input_sample_set.set_domain(input_domain)
-        else:
-            input_domain = input_sample_set.get_domain()
-        # update the bounds based on the number of samples
-        input_sample_set.update_bounds(self.num_samples)
-        input_values = np.copy(input_sample_set._width)
-
-        vec_samples_dimension = np.empty((dim), dtype=object)
-        for i in np.arange(0, dim):
-            vec_samples_dimension[i] = list(np.linspace(
-                input_domain[i, 0], input_domain[i, 1],
-                num_samples_per_dim[i]+2))[1:num_samples_per_dim[i]+1]
-
-        if np.equal(dim, 1):
-            arrays_samples_dimension = np.array([vec_samples_dimension])
-        else:
-            arrays_samples_dimension = np.meshgrid(
-                *[vec_samples_dimension[i] for i in np.arange(0, dim)],
-                indexing='ij')
-
-        if np.equal(dim, 1):
-            input_values = arrays_samples_dimension.transpose()
-        else:
-            for i in np.arange(0, dim):
-                input_values[:, i:i+1] = np.vstack(arrays_samples_dimension[i]\
-                        .flat[:])
-
-        input_sample_set.set_values(input_values)
-
-        return input_sample_set
-
+        return regular_sample_set(input_sample_set, num_samples_per_dim)
+        
     def regular_sample_set_domain(self, input_domain, num_samples_per_dim=1):
         """
         Sampling algorithm for generating a regular grid of samples taken
@@ -306,11 +472,8 @@ class sampler(object):
             input ``num_samples``
 
         """
-        # Create N samples
-        input_sample_set = sample.sample_set(input_domain.shape[0])
-        input_sample_set.set_domain(input_domain)
-
-        return self.regular_sample_set(input_sample_set, num_samples_per_dim)
+        self.num_samples = np.product(num_samples_per_dim)
+        return regular_sample_set_domain(input_domain, num_samples_per_dim)
 
     def regular_sample_set_dimension(self, input_dim, num_samples_per_dim=1):
         """
@@ -327,10 +490,8 @@ class sampler(object):
             input ``num_samples``
 
         """
-        # Create N samples
-        input_sample_set = sample.sample_set(input_dim)
-
-        return self.regular_sample_set(input_sample_set, num_samples_per_dim)
+        self.num_samples = np.product(num_samples_per_dim)
+        return regular_sample_set_dimension(input_dim, num_samples_per_dim)
 
     def compute_QoI_and_create_discretization(self, input_sample_set,
             savefile=None, parallel=False, globalize=True):

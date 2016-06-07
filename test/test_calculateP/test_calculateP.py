@@ -14,6 +14,7 @@ import unittest
 import bet
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as simpleFunP
+import bet.sampling.basicSampling as bsam
 import bet.sample as samp
 import numpy as np
 import numpy.testing as nptest
@@ -21,50 +22,6 @@ import bet.util as util
 from bet.Comm import comm 
 
 data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
-
-class TestEmulateIIDLebesgue(unittest.TestCase):
-    """
-    Test :meth:`bet.calculateP.calculateP.emulate_iid_lebesgue`.
-    """
-    
-    def setUp(self):
-        """
-        Test dimension, number of samples, and that all the samples are within
-        lambda_domain.
-
-        """
-        self.dim = 3
-        self.num_l_emulate = 1000001
-        lam_left = np.array([0.0, .25, .4])
-        lam_right = np.array([1.0, 4.0, .5])
-
-        lam_domain = np.zeros((self.dim, 2))
-        lam_domain[:, 0] = lam_left
-        lam_domain[:, 1] = lam_right
-        
-        self.s_set_emulated = calcP.emulate_iid_lebesgue(lam_domain,
-                                                         self.num_l_emulate,
-                                                         globalize=True)
- 
-    def test_dimension(self):
-        """
-        Check the dimension.
-        """
-        self.s_set_emulated.local_to_global()
-        self.assertEqual(self.s_set_emulated._values.shape, (self.num_l_emulate, self.dim))
-
-    def test_bounds(self):
-        """
-        Check that the samples are all within the correct bounds
-        """
-        self.assertGreaterEqual(np.min(self.s_set_emulated._values[:, 0]), 0.0)
-        self.assertGreaterEqual(np.min(self.s_set_emulated._values[:, 1]), 0.25)
-        self.assertGreaterEqual(np.min(self.s_set_emulated._values[:, 2]), 0.4)
-        self.assertLessEqual(np.max(self.s_set_emulated._values[:, 0]), 1.0)
-        self.assertLessEqual(np.max(self.s_set_emulated._values[:, 1]), 4.0)
-        self.assertLessEqual(np.max(self.s_set_emulated._values[:, 2]), 0.5)
-
-
 
 class prob:
     def test_prob_sum_to_1(self):
@@ -153,7 +110,8 @@ class TestProbMethod_3to2(unittest.TestCase):
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
+        self.inputs_emulated = bsam.random_sample_set_domain('r',
+                self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
                                         output_probability_set=self.output_prob,
@@ -218,7 +176,8 @@ class TestProbMethod_3to1(unittest.TestCase):
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
+        self.inputs_emulated = bsam.random_sample_set_domain('r',
+                self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
                                         output_probability_set=self.output_prob,
@@ -280,10 +239,12 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.lam_domain[:, 0] = 0.0
         self.lam_domain[:, 1] = 1.0
         self.inputs.set_domain(self.lam_domain)
-        self.inputs = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=101, globalize=True)
+        self.inputs = bsam.random_sample_set_domain('r',
+                self.inputs.get_domain(), num_samples=101, globalize=True)
         self.outputs.set_values(np.dot(self.inputs._values, rnd.rand(10, 4)))
         Q_ref = np.mean(self.outputs._values, axis=0)
-        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
+        self.inputs_emulated = bsam.random_sample_set_domain('r',
+                self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
@@ -351,12 +312,13 @@ class TestProbMethod_1to1(unittest.TestCase):
         self.inputs.set_domain(self.lam_domain)
         self.inputs.set_values(rnd.rand(100,))
         self.num_l_emulate = 1001
-        self.inputs = calcP.emulate_iid_lebesgue(self.inputs.get_domain(), num_l_emulate=1001, globalize=True)
+        self.inputs = bsam.random_sample_set_domain('r',
+                self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.outputs.set_values(2.0*self.inputs._values)
         Q_ref = np.mean(self.outputs._values, axis=0)
-        self.inputs_emulated = calcP.emulate_iid_lebesgue(self.lam_domain,
-                                                         self.num_l_emulate,
-                                                         globalize = True) 
+        self.inputs_emulated = bsam.random_sample_set_domain('r',
+                self.inputs.get_domain(), num_samples=self.num_l_emulate,
+                globalize=True) 
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
