@@ -41,7 +41,7 @@ def postprocess(station_nums, ref_num):
             center_pts_per_edge=np.ones((data.shape[1],)))
 
     num_l_emulate = 1e4
-    set_emulated = bsam.random_sample_set_domain('r', lam_domain, num_l_emulate)
+    set_emulated = bsam.random_sample_set('r', lam_domain, num_l_emulate)
     my_disc = sample.discretization(input_sample_set, output_sample_set,
             output_probability_set, emulated_input_sample_set=set_emulated)
 

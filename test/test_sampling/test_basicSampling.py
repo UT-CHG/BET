@@ -269,7 +269,7 @@ def verify_random_sample_set_domain(sampler, sample_type, input_domain,
 
     # create the sample set from the domain
     print sample_type
-    my_sample_set = sampler.random_sample_set_domain(sample_type, input_domain,
+    my_sample_set = sampler.random_sample_set(sample_type, input_domain,
                                             num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
@@ -308,7 +308,7 @@ def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
     np.random.seed(1)
 
     # create the sample set from the domain
-    my_sample_set = sampler.random_sample_set_dimension(sample_type, input_dim,
+    my_sample_set = sampler.random_sample_set(sample_type, input_dim,
                                                   num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
@@ -632,7 +632,7 @@ class Test_basic_sampler(unittest.TestCase):
 
     def test_random_sample_set_domain(self):
         """
-        Test :meth:`bet.sampling.basicSampling.sampler.random_sample_set_domain`
+        Test :meth:`bet.sampling.basicSampling.sampler.random_sample_set`
         for five different input domains.
         """
         input_domain_list = [self.input_domain1, self.input_domain1,

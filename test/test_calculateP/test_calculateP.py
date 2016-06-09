@@ -110,7 +110,7 @@ class TestProbMethod_3to2(unittest.TestCase):
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.inputs_emulated = bsam.random_sample_set_domain('r',
+        self.inputs_emulated = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
@@ -176,7 +176,7 @@ class TestProbMethod_3to1(unittest.TestCase):
                                         [0.0, 1.0]]))
         import numpy.random as rnd
         rnd.seed(1)
-        self.inputs_emulated = bsam.random_sample_set_domain('r',
+        self.inputs_emulated = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
@@ -239,11 +239,11 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.lam_domain[:, 0] = 0.0
         self.lam_domain[:, 1] = 1.0
         self.inputs.set_domain(self.lam_domain)
-        self.inputs = bsam.random_sample_set_domain('r',
+        self.inputs = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=101, globalize=True)
         self.outputs.set_values(np.dot(self.inputs._values, rnd.rand(10, 4)))
         Q_ref = np.mean(self.outputs._values, axis=0)
-        self.inputs_emulated = bsam.random_sample_set_domain('r',
+        self.inputs_emulated = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
@@ -312,11 +312,11 @@ class TestProbMethod_1to1(unittest.TestCase):
         self.inputs.set_domain(self.lam_domain)
         self.inputs.set_values(rnd.rand(100,))
         self.num_l_emulate = 1001
-        self.inputs = bsam.random_sample_set_domain('r',
+        self.inputs = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.outputs.set_values(2.0*self.inputs._values)
         Q_ref = np.mean(self.outputs._values, axis=0)
-        self.inputs_emulated = bsam.random_sample_set_domain('r',
+        self.inputs_emulated = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=self.num_l_emulate,
                 globalize=True) 
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
