@@ -271,13 +271,13 @@ class sampler(object):
         if num_samples is None:
             num_samples = self.num_samples
         
-        return random_sample_set(sample_type, input_sample_set, num_samples,
+        return random_sample_set(sample_type, input_obj, num_samples,
                 criterion, globalize)
 
     def regular_sample_set(self, input_obj, num_samples_per_dim=1):
         """
         Sampling algorithm for generating a regular grid of samples taken
-        on the domain present with input_sample_set (a default unit hypercube
+        on the domain present with` input_obj` (a default unit hypercube
         is used if no domain has been specified)
 
         :param input_obj: :class:`~bet.sample.sample_set` object containing
@@ -287,7 +287,7 @@ class sampler(object):
             :class:`numpy.ndarray` of shape (dim, 2) or ``int``
         :param num_samples_per_dim: number of samples per dimension
         :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
-            (input_sample_set._dim,)
+            (dim,)
 
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_Set` object which contains
