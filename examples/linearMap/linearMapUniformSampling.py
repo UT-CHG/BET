@@ -103,8 +103,8 @@ param_ref = np.array([0.5, 0.5, 0.5])
 Q_ref =  my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter2D_multi(input_samples, p_ref = param_ref, showdim = 'all', filename = 'linearMapParameterSamples')
-plotD.show_data(my_discretization, Q_ref = Q_ref)
+plotD.scatter_2D_multi(input_samples, ref_sample= param_ref, showdim = 'all', filename = 'linearMapParameterSamples')
+plotD.scatter_rhoD(my_discretization, ref_sample = Q_ref, io_flag='output')
 
 '''
 Suggested changes for user:

@@ -41,13 +41,13 @@ class bad_object(Exception):
     """
 
 
-def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
+def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=True,
                interactive=False, xlabel='x', ylabel='y',
                filename='scatter2d', file_extension="png"):
     r"""
     Creates a two-dimensional scatter plot of the samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
-    density values).  A reference sample (``p_ref``) can be chosen by the user.
+    density values).  A reference sample (``ref_sample``) can be chosen by the user.
     This reference sample will be plotted as a mauve circle twice the size of
     the other markers.
 
@@ -56,8 +56,8 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
     :type color: :class:`numpy.ndarray`
-    :param p_ref: reference parameter value
-    :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
+    :param ref_sample: reference parameter value
+    :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
@@ -95,8 +95,8 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     cbar = plt.colorbar()
     cbar.set_label(r'$\rho_\mathcal{D}(q)$')
     # if there is a reference value plot it with a notiable marker
-    if p_ref is not None:
-        plt.scatter(p_ref[0], p_ref[1], c='m', s=2 * markersize)
+    if ref_sample is not None:
+        plt.scatter(ref_sample[0], ref_sample[1], c='m', s=2 * markersize)
     if save:
         plt.autoscale(tight=True)
         plt.xlabel(xlabel)
@@ -109,13 +109,13 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
         plt.close()
 
 
-def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
+def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=True,
                interactive=False, xlabel='x', ylabel='y', zlabel='z',
                filename="scatter3d", file_extension="png"):
     r"""
     Creates a three-dimensional scatter plot of samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
-    density values). A reference sample (``p_ref``) can be chosen by the user.
+    density values). A reference sample (``ref_sample``) can be chosen by the user.
     This reference sample will be plotted as a mauve circle twice the size of
     the other markers.
 
@@ -124,8 +124,8 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
     :type color: :class:`numpy.ndarray`
-    :param p_ref: reference parameter value
-    :type p_ref: :class:`numpy.ndarray` of shape (ndim,)
+    :param ref_sample: reference parameter value
+    :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
@@ -167,8 +167,8 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
     cbar = fig.colorbar(p)
     cbar.set_label(r'$\rho_\mathcal{D}(q)$')
     # if there is a reference value plot it with a notiable marker
-    if p_ref is not None:
-        ax.scatter(p_ref[0], p_ref[1], p_ref[2], c='m', s=2 * markersize)
+    if ref_sample is not None:
+        ax.scatter(ref_sample[0], ref_sample[1], ref_sample[2], c='m', s=2 * markersize)
     ax.autoscale(tight=True)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
@@ -180,7 +180,6 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, p_ref=None, save=True,
         plt.show()
     else:
         plt.close()
-
 
 def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         rho_D=None, dim_nums=None, label_char=None, showdim=None, save=True,
@@ -220,16 +219,20 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     # values of each sample based on the value in the data space. Otherwise,
     # color the samples in numerical order.
     if isinstance(sample_obj, sample.discretization):
+        if rho_D is not None:
+            rD = rho_D(sample_obj._output_sample_set.get_values())
         if io_flag == 'input':
             sample_obj = sample_obj._input_sample_set
         else:
             sample_obj = sample_obj._output_sample_set
-        if rho_D is not None:
-            rD = rho_D(sample_obj._output_sample_set.get_values())
-        else:
-            rD = np.ones(sample_obj.get_values().shape[0])
+    elif isinstance(sample_obj, sample.sample_set_base):
+        if io_flag == 'output':
+            rD = rho_D(sample_obj.get_values())
     else:
         raise bad_object("Improper sample object")
+    
+    if rho_D is None:
+        rD = np.ones(sample_obj.get_values().shape[0])
 
     if label_char is not None:
         if io_flag == 'input':
@@ -290,8 +293,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     :math:`Q_{ref}`.
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` or 
-        :class:`~bet.sample.sample_set_base`
+    :type sample_disc: :class:`~bet.sample.discretization` 
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
@@ -465,13 +467,13 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     else:
         plt.close()
 
-def scatter_2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
+def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/',
                     filename="scatter2Dm", label_char=r'$\lambda',
                     showdim=None, file_extension="png"):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
-    reference sample (``p_ref``) can be chosen by the user. This reference
+    reference sample (``ref_sample``) can be chosen by the user. This reference
     sample will be plotted as a mauve circle twice the size of the other
     markers.
 
@@ -515,14 +517,14 @@ def scatter_2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
             sample_obj_temp = sample.sample_set(2)
             sample_obj_temp.set_values(sample_obj.get_values()[:, [showdim, i]])
 
-            if p_ref is not None:
+            if ref_sample is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None,
-                           color=color, p_ref=p_ref[[showdim, i]], save=True,
+                           color=color, ref_sample=ref_sample[[showdim, i]], save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
                            filename=myfilename)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None,
-                           color=color, p_ref=None, save=True,
+                           color=color, ref_sample=None, save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
                            filename=myfilename)
 
@@ -538,11 +540,11 @@ def scatter_2D_multi(sample_obj, color=None, p_ref=None, img_folder='figs/',
             sample_obj_temp = sample.sample_set(2)
             sample_obj_temp.set_values(sample_obj.get_values()[:, [x, y]])
 
-            if p_ref is not None:
+            if ref_sample is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
-                           p_ref=p_ref[[x, y]], save=True, interactive=False,
+                           ref_sample=ref_sample[[x, y]], save=True, interactive=False,
                            xlabel=xlabel, ylabel=ylabel, filename=myfilename)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
-                           p_ref=None, save=True, interactive=False,
+                           ref_sample=None, save=True, interactive=False,
                            xlabel=xlabel, ylabel=ylabel, filename=myfilename)
