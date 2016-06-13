@@ -185,7 +185,7 @@ class test_plotDomains(unittest.TestCase):
 
     def test_show_param(self):
         """
-        Test :meth:`bet.postProcess.plotDomains.show_param`
+        Test :meth:`bet.postProcess.plotDomains.scatter_rhoD`
         """
         sample_nos = [None, 25]
         samples = [self.disc._input_sample_set.get_values(),
@@ -207,7 +207,7 @@ class test_plotDomains(unittest.TestCase):
     def check_show_param(self, samples, sample_nos, p_ref, save, lnums,
             showdim):
         """
-        Check to see that the :meth:`bet.postTools.plotDomains.show_param` ran
+        Check to see that the :meth:`bet.postTools.plotDomains.scatter_rhoD` ran
         without generating an error.
         """
         try:
@@ -215,9 +215,8 @@ class test_plotDomains(unittest.TestCase):
             input_sample_set_temp.set_values(samples)
             disc_obj_temp = sample.discretization(input_sample_set_temp,
                                                   self.disc._output_sample_set)
-            plotDomains.show_param(disc_obj_temp,
-                                   self.rho_D, p_ref, sample_nos, save,
-                                   False, lnums, showdim)
+            plotDomains.scatter_rhoD(disc_obj_temp, p_ref, sample_nos, 'input',
+                    self.rho_D, lnums, None, showdim, save, False)
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False
@@ -226,7 +225,7 @@ class test_plotDomains(unittest.TestCase):
 
     def test_show_data(self):
         """
-        Test :meth:`bet.postProcess.plotDomains.show_data`
+        Test :meth:`bet.postProcess.plotDomains.scatter_rhoD`
         """
         sample_nos = [None, 25]
         data_sets = [self.disc._output_sample_set.get_values(),
@@ -245,20 +244,21 @@ class test_plotDomains(unittest.TestCase):
 
     def check_show_data(self, data, sample_nos, q_ref, save, qnums, showdim):
         """
-        Check to see that the :meth:`bet.postTools.plotDomains.show_data` ran
+        Check to see that the :meth:`bet.postTools.plotDomains.scatter_rhoD` ran
         without generating an error.
         """
         try:
             if data.shape[1] == 4:
                 data_obj_temp = sample.sample_set(4)
                 data_obj_temp.set_values(data)
-                plotDomains.show_data(data_obj_temp, self.rho_D, q_ref,
-                    sample_nos, save, False, qnums, showdim) 
+                plotDomains.scatter_rhoD(data_obj_temp, q_ref, sample_nos,
+                        'output', self.rho_D, qnums, None, showdim, save,
+                        False) 
             else:
                 data_obj_temp = sample.sample_set(data.shape[1])
                 data_obj_temp.set_values(data)
-                plotDomains.show_data(data_obj_temp, None, q_ref,
-                    sample_nos, save, False, qnums, showdim) 
+                plotDomains.scatter_rhoD(data_obj_temp, q_ref, sample_nos,
+                        None, qnums, None, showdim, save, False) 
             go = True
         except (RuntimeError, TypeError, NameError):
             print "ERROR"
@@ -344,27 +344,9 @@ class test_plotDomains(unittest.TestCase):
             go = False
         nptest.assert_equal(go, True)      
 
-    def test_scatter_param_multi(self):
+    def test_scatter_2D_multi(self):
         """
-        Test :meth:`bet.postTools.plotDomains.show_data_domain_multi`
-        """
-        if not os.path.exists('figs/'):
-            os.mkdir('figs/')
-
-        try:
-            input_sample_set_temp = sample.sample_set(3)
-            input_sample_set_temp.set_values(self.disc._input_sample_set.get_values()[:, [0,1,2]])
-
-            plotDomains.scatter_param_multi(input_sample_set_temp)
-            go = True
-        except (RuntimeError, TypeError, NameError):
-            go = False
-
-        nptest.assert_equal(go, True)
-        
-    def test_scatter2D_multi(self):
-        """
-        Test :meth:`bet.postTools.plotDomins.scatter2D_multi`
+        Test :meth:`bet.postTools.plotDomins.scatter_2D_multi`
         """
         if not os.path.exists('figs/'):
             os.mkdir('figs/')
@@ -372,7 +354,7 @@ class test_plotDomains(unittest.TestCase):
             input_sample_set_temp = sample.sample_set(3)
             input_sample_set_temp.set_values(self.disc._input_sample_set.get_values()[:, [0,1,2]])
 
-            plotDomains.scatter2D_multi(input_sample_set_temp)
+            plotDomains.scatter_2D_multi(input_sample_set_temp)
             go = True
         except (RuntimeError, TypeError, NameError):
             go = False
