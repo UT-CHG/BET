@@ -258,7 +258,7 @@ class test_plotDomains(unittest.TestCase):
                 data_obj_temp = sample.sample_set(data.shape[1])
                 data_obj_temp.set_values(data)
                 plotDomains.scatter_rhoD(data_obj_temp, q_ref, sample_nos,
-                        None, qnums, None, showdim, save, False) 
+                        None, None, qnums, None, showdim, save, False) 
             go = True
         except (RuntimeError, TypeError, NameError):
             print "ERROR"

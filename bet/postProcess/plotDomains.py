@@ -218,6 +218,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     # If there is density function given determine the pointwise probability
     # values of each sample based on the value in the data space. Otherwise,
     # color the samples in numerical order.
+    rD = None
     if isinstance(sample_obj, sample.discretization):
         if rho_D is not None:
             rD = rho_D(sample_obj._output_sample_set.get_values())
@@ -231,7 +232,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     else:
         raise bad_object("Improper sample object")
     
-    if rho_D is None:
+    if rD is None:
         rD = np.ones(sample_obj.get_values().shape[0])
 
     if label_char is not None:
@@ -241,9 +242,9 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         elif io_flag == 'output':
             label_char = r'$q_'
             prefix = 'output_'
-        else:
-            label_char = r'$x_'
-            prefix = 'rhoD_'
+    else:
+        label_char = r'$x_'
+        prefix = 'rhoD_'
 
     # If no specific coordinate numbers are given for the parameter coordinates
     # (e.g. i, where \lambda_i is a coordinate in the parameter space), then
@@ -251,6 +252,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     if dim_nums is None:
         dim_nums = 1 + np.array(range(sample_obj.get_values().shape[1]))
     # Create the labels based on the user selected parameter coordinates
+    print label_char, dim_nums
     xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
     ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
     savename = prefix+'samples_cs.eps'
