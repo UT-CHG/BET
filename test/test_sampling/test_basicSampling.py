@@ -451,7 +451,7 @@ def verify_regular_sample_set_domain(sampler, input_domain,
     test_sample_set.set_values(test_values)
 
     # create the sample set from sampler
-    my_sample_set = sampler.regular_sample_set_domain(input_domain,
+    my_sample_set = sampler.regular_sample_set(input_domain,
                                                num_samples_per_dim=num_samples_per_dim)
 
     # compare the samples
@@ -503,7 +503,7 @@ def verify_regular_sample_set_dimension(sampler, input_dim,
     test_sample_set.set_values(test_values)
 
     # create the sample set from sampler
-    my_sample_set = sampler.regular_sample_set_dimension(input_dim,
+    my_sample_set = sampler.regular_sample_set(input_dim,
                                             num_samples_per_dim=num_samples_per_dim)
 
     # compare the samples
