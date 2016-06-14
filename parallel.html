@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Parallel &mdash; BET 1.0.2 documentation</title>
+  <title>Parallel &mdash; BET 2.0.0-beta documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="BET 1.0.2 documentation" href="index.html"/>
+    <link rel="top" title="BET 2.0.0-beta documentation" href="index.html"/>
         <link rel="next" title="Some References and Examples" href="examples/examples_overview.html"/>
         <link rel="prev" title="Overview" href="overview.html"/> 
 
@@ -180,9 +180,9 @@ global values on all processors.</p>
 parallel execution. Only local arrays are returned for <code class="docutils literal"><span class="pre">P</span></code>, use
 <a class="reference internal" href="bet.html#bet.util.get_global_values" title="bet.util.get_global_values"><code class="xref py py-meth docutils literal"><span class="pre">get_global_values()</span></code></a> to globalize local arrays.</p>
 <p>In the module <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> the methods
-<a class="reference internal" href="bet.calculateP.html#bet.calculateP.simpleFunP.unif_unif" title="bet.calculateP.simpleFunP.unif_unif"><code class="xref py py-meth docutils literal"><span class="pre">unif_unif()</span></code></a>,
-<a class="reference internal" href="bet.calculateP.html#bet.calculateP.simpleFunP.normal_normal" title="bet.calculateP.simpleFunP.normal_normal"><code class="xref py py-meth docutils literal"><span class="pre">normal_normal()</span></code></a>, and
-<a class="reference internal" href="bet.calculateP.html#bet.calculateP.simpleFunP.unif_normal" title="bet.calculateP.simpleFunP.unif_normal"><code class="xref py py-meth docutils literal"><span class="pre">unif_normal()</span></code></a> benefit from parallel
+<code class="xref py py-meth docutils literal"><span class="pre">unif_unif()</span></code>,
+<code class="xref py py-meth docutils literal"><span class="pre">normal_normal()</span></code>, and
+<code class="xref py py-meth docutils literal"><span class="pre">unif_normal()</span></code> benefit from parallel
 execution.</p>
 </div>
 <div class="section" id="sampling">
@@ -193,7 +193,7 @@ model simulatenously. If your model is serial then you might benefit from
 parallel execution of scripts that use
 <a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.basicSampling.sampler</span></code></a> or
 <a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.  The method
-<a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler.user_samples" title="bet.sampling.basicSampling.sampler.user_samples"><code class="xref py py-meth docutils literal"><span class="pre">user_samples()</span></code></a> has a parallel option
+<code class="xref py py-meth docutils literal"><span class="pre">user_samples()</span></code> has a parallel option
 (must be specified in the method call) which will partition the samples over
 several processors and return a globalized set of results.  The method
 <a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="bet.sampling.adaptiveSampling.sampler.generalized_chains"><code class="xref py py-meth docutils literal"><span class="pre">generalized_chains()</span></code></a> divides up
@@ -240,7 +240,7 @@ save and collect probabitlies on separate processors as appropriately named file
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Dec 03, 2015.
+      Last updated on Jun 14, 2016.
     </p>
   </div>
 
@@ -261,7 +261,7 @@ save and collect probabitlies on separate processors as appropriately named file
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'1.0.2',
+            VERSION:'2.0.0-beta',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

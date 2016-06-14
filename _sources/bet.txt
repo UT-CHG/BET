@@ -22,6 +22,14 @@ bet.Comm module
     :undoc-members:
     :show-inheritance:
 
+bet.sample module
+-----------------
+
+.. automodule:: bet.sample
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bet.util module
 ---------------
 

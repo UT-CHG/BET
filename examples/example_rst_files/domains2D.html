@@ -7,7 +7,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Generalized Chains with a 2,2-dimensional data,parameter space &mdash; BET 1.0.2 documentation</title>
+  <title>Example: Generalized Chains with a 2,2-dimensional data,parameter space &mdash; BET 2.0.0-beta documentation</title>
   
 
   
@@ -30,7 +30,7 @@
   
 
   
-    <link rel="top" title="BET 1.0.2 documentation" href="../../index.html"/>
+    <link rel="top" title="BET 2.0.0-beta documentation" href="../../index.html"/>
         <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
         <link rel="next" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space" href="domains3D.html"/>
         <link rel="prev" title="Example: Concentration of Contaminant in Wells Based on Transport Parameters" href="contaminantTransport.html"/> 
@@ -153,7 +153,7 @@ samples on a regular grid for a 2-dimensional parameter space.</p>
 </pre></div>
 </div>
 <p>In this example we form a linear interpolant to the QoI map <span class="math">\(Q(\lambda) =
-(q_1(\lambda), q_6(\lambda))\)</span> using data read from a <code class="docutils literal"><span class="pre">.mat</span></code> <a class="reference download internal" href="../../_downloads/Q_2D1.mat"><code class="xref download docutils literal"><span class="pre">file</span></code></a>:</p>
+(q_1(\lambda), q_6(\lambda))\)</span> using data read from a <code class="docutils literal"><span class="pre">.mat</span></code> <code class="xref download docutils literal"><span class="pre">file</span></code>:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 1, 6</span>
 <span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_2D&#39;</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q&#39;</span><span class="p">]</span>
@@ -190,7 +190,7 @@ through the use of some kernel. In this instance we choose our kernel
 </div>
 <p>Given a (M, mdim) data vector
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><code class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></code></a> expects that <code class="docutils literal"><span class="pre">rho_D</span></code>
-will return a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.10)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (M,).</p>
+will return a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (M,).</p>
 <p>Next we designate some refernce point in the parameter space:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="n">p_ref</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;points_true&#39;</span><span class="p">]</span>
 <span class="n">p_ref</span> <span class="o">=</span> <span class="n">p_ref</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
@@ -236,7 +236,7 @@ the convex hull of samples in the parameter space:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Dec 03, 2015.
+      Last updated on Jun 14, 2016.
     </p>
   </div>
 
@@ -257,7 +257,7 @@ the convex hull of samples in the parameter space:</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'1.0.2',
+            VERSION:'2.0.0-beta',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
