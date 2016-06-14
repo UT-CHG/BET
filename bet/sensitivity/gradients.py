@@ -20,13 +20,13 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
     outside of the domain of the input space, we sample the intersection.
 
     :param input_set: The input sample set.  Make sure the attribute
-    ``_values`` is not ``None``
+        ``_values`` is not ``None``
     :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of points in each cluster
     :param radii_vec: Each side of the box will have length ``2*radii_vec[i]``
     :type radii_vec: :class:`numpy.ndarray` of shape (``input_dim``,)
-    :param float p_num: 0 < p <= infinity, p for the lp norm where infinity is
-        `numpy.inf`
+    :param float p_num: :math:`0 < p \leq \infty`, p for the lp norm where infinity is
+        ``numpy.inf``
     
     :rtype: :class:`~bet.sample.sample_set`
     :returns: Centers and clusters of samples near each center (values are 
@@ -87,7 +87,7 @@ def sample_linf_ball(input_set, num_close, radii_vec):
     intersection.
 
     :param input_set: The input sample set.  Make sure the attribute
-    ``_values`` is not ``None``
+        ``_values`` is not ``None``
     :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of points in each cluster
     :param radii_vec: Each side of the box will have length ``2*radii_vec[i]``
@@ -109,7 +109,7 @@ def sample_l1_ball(input_set, num_close, radii_vec):
     intersection.
 
     :param input_set: The input sample set.  Make sure the attribute
-    ``_values`` is not ``None``
+        ``_values`` is not ``None``
     :type input_set: :class:`~bet.sample.sample_set`
     :param int num_close: Number of points in each cluster
     :param radii_vec: Each side of the box will have length ``2*radii_vec[i]``

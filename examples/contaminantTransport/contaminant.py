@@ -54,7 +54,7 @@ param_ref = np.loadtxt("files/lam_ref.txt.gz") #reference parameter set
 Q_ref = np.loadtxt("files/Q_ref.txt.gz")[QoI_indices_observe] #reference QoI set
 
 # Plot the data domain
-plotD.show_data(my_discretization, Q_ref = Q_ref, showdim=2)
+plotD.scatter_rhoD(my_discretization, ref_sample=Q_ref, io_flag='output', showdim=2)
 
 # Whether or not to use deterministic description of simple function approximation of
 # ouput probability

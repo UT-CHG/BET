@@ -183,6 +183,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     :type interactive: bool
     :param lambda_label: Label for each parameter for plots.
     :type lambda_label: list of length nbins of strings or None
+    :param string file_extension: file extenstion
 
     """
     if isinstance(sample_set, sample.discretization):
@@ -246,6 +247,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     :type interactive: bool
     :param lambda_label: Label for each parameter for plots.
     :type lambda_label: list of length nbins of strings or None
+    :param string file_extension: file extenstion
 
     """
     if isinstance(sample_set, sample.discretization):

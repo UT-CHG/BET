@@ -14,16 +14,16 @@ Adapted from natter.LpSphericallySymmetric.py https://github.com/fabiansinz/natt
 import numpy as np
 
 def Lp_generalized_normal(dim, num, p=2, scale=1.0, loc=None):
-    """
+    r"""
     
     Generate samples from an Lp generalized normal distribution.
 
-    :param float p: 0 < p <= infinity, p for the lp norm where infinitiy is
-        `numpy.inf`
+    :param float p: :math:`0 < p \leq \infty`, p for the lp norm where
+        infinity is ``numpy.inf``
     :param int dim: Dimension of the space
     :param int num: Number of samples to generate
     :param scale: Radius to scale the samples by
-    :type scale: float, int, or :class:`numpy.ndarray` 
+    :type scale: ``float``, ``int``, or :class:`numpy.ndarray` 
     :param loc: Location of the center of the samples
     :type loc: :class:`numpy.ndarray` of shape (dim,)
 
@@ -39,16 +39,16 @@ def Lp_generalized_normal(dim, num, p=2, scale=1.0, loc=None):
     return samples
 
 def Lp_generalized_uniform(dim, num, p=2, scale=1.0, loc=None):
-    """
+    r"""
     
     Generate samples from an Lp generalized uniform distribution.
 
-    :param float p: 0 < p <= infinity, p for the lp norm where infinitiy is
-        `numpy.inf`
+    :param float p: :math:`0 < p \leq \infty`, p for the lp norm where
+        infinity is ``numpy.inf``
     :param int dim: Dimension of the space
     :param int num: Number of samples to generate
     :param scale: Radius to scale the samples by
-    :type scale: float, int, or :class:`numpy.ndarray`
+    :type scale: ``float``, ``int``, or :class:`numpy.ndarray`
     :param loc: Location of the center of the samples
     :type loc: :class:`numpy.ndarray` of shape (dim,)
 
@@ -70,18 +70,18 @@ def Lp_generalized_uniform(dim, num, p=2, scale=1.0, loc=None):
     return samples
     
 def Lp_generalized_beta(dim, num, p=2, d=2, scale=1.0, loc=None):
-    """
+    r"""
     
     Generate samples from an Lp generalized beta distribution. When p=d then
     this is simly the Lp generalized uniform distribution.
 
-    :param float p: 0 < p <= infinity, p for the lp norm where infinitiy is
-        `numpy.inf`
+    :param float p: :math:`0 < p \leq \infty`, p for the lp norm where
+        infinity is ``numpy.inf``    
     :param float d: shape parameter
     :param int dim: Dimension of the space
     :param int num: Number of samples to generate
     :param scale: Radius to scale the samples by
-    :type scale: float, int, or :class:`numpy.ndarray`
+    :type scale: ``float``, ``int``, or :class:`numpy.ndarray`
     :param loc: Location of the center of the samples
     :type loc: :class:`numpy.ndarray` of shape (dim,)
 
