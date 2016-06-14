@@ -114,21 +114,22 @@ def random_sample_set(sample_type, input_obj, num_samples,
 def regular_sample_set(input_obj, num_samples_per_dim=1):
     """
     Sampling algorithm for generating a regular grid of samples taken
-    on the domain present with input_sample_set (a default unit hypercube
+    on the domain present with ``input_obj`` (a default unit hypercube
     is used if no domain has been specified)
-
+    
     :param input_obj: :class:`~bet.sample.sample_set` object containing
-        the dimension/domain to sample from, domain to sample from, or the
-        dimension
-    :type input_obj: :class:`~bet.sample.sample_set` or
-        :class:`numpy.ndarray` of shape (dim, 2) or ``int``
+        the dimension or domain to sample from, the domain to sample from, or
+        the dimension
+    :type input_obj: :class:`~bet.sample.sample_set` or :class:`numpy.ndarray`
+        of shape (dim, 2) or ``int`` 
     :param num_samples_per_dim: number of samples per dimension
-    :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
-        (input_sample_set._dim,)
+    :type num_samples_per_dim: :class:`~numpy.ndarray` of dimension
+        ``(input_sample_set._dim,)``
 
     :rtype: :class:`~bet.sample.sample_set`
-    :returns: :class:`~bet.sample.sample_Set` object which contains
+    :returns: :class:`~bet.sample.sample_set` object which contains
         input ``num_samples``
+
     """
     # check to see what the input object is
     if isinstance(input_obj, sample.sample_set):
@@ -217,7 +218,7 @@ class sampler(object):
     def save(self, mdict, save_file, discretization=None):
         """
         Save matrices to a ``*.mat`` file for use by ``MATLAB BET`` code and
-        :meth:`~bet.sampling.loadmat`
+        :meth:`~bet.basicSampling.loadmat`
 
         :param dict mdict: dictonary of sampling data and sampler parameters
         :param string save_file: file name
@@ -277,21 +278,22 @@ class sampler(object):
     def regular_sample_set(self, input_obj, num_samples_per_dim=1):
         """
         Sampling algorithm for generating a regular grid of samples taken
-        on the domain present with` input_obj` (a default unit hypercube
+        on the domain present with ``input_obj`` (a default unit hypercube
         is used if no domain has been specified)
 
         :param input_obj: :class:`~bet.sample.sample_set` object containing
-            the dimension/domain to sample from, domain to sample from, or the
-            dimension
+            the dimension or domain to sample from, the domain to sample from,
+            or the dimension
         :type input_obj: :class:`~bet.sample.sample_set` or
             :class:`numpy.ndarray` of shape (dim, 2) or ``int``
         :param num_samples_per_dim: number of samples per dimension
-        :type num_samples_per_dim: :class: `~numpy.ndarray` of dimension
+        :type num_samples_per_dim: :class:`~numpy.ndarray` of dimension
             (dim,)
 
         :rtype: :class:`~bet.sample.sample_set`
-        :returns: :class:`~bet.sample.sample_Set` object which contains
+        :returns: :class:`~bet.sample.sample_set` object which contains
             input ``num_samples``
+        
         """
         self.num_samples = np.product(num_samples_per_dim)
         return regular_sample_set(input_obj, num_samples_per_dim)
@@ -367,11 +369,16 @@ class sampler(object):
             parallel=False, globalize=True):
         """
         Sampling algorithm with three basic options
+
             * ``random`` (or ``r``) generates ``num_samples`` samples in
                 ``lam_domain`` assuming a Lebesgue measure.
             * ``lhs`` generates a latin hyper cube of samples.
-        Note: This function is designed only for generalized rectangles and
-        assumes a Lebesgue measure on the parameter space.
+
+        .. note:: 
+        
+            This function is designed only for generalized rectangles and
+            assumes a Lebesgue measure on the parameter space.
+
 
         :param string sample_type: type sampling random (or r),
             latin hypercube(lhs), regular grid (rg), or space-filling
@@ -380,7 +387,7 @@ class sampler(object):
             input space, an array of min and max bounds for the input values
             with ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
             or the dimension of an input space
-        :type input_obj: :class: `~bet.sample.sample_set`,
+        :type input_obj: :class:`~bet.sample.sample_set`,
             :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
         :param string savefile: filename to save discretization
         :param int num_samples: N, number of samples (optional)
@@ -394,6 +401,7 @@ class sampler(object):
         :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
             input and output sample sets with ``num_samples`` total samples
+
         """
         # Create N samples
         if num_samples is None:
