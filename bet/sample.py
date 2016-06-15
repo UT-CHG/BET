@@ -638,6 +638,37 @@ class sample_set_base(object):
         self._volumes = vol
         self.global_to_local()
         
+    def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration. 
+
+        .. todo::
+
+           This currently presumes a uniform Lesbegue measure on the
+           ``domain``. Currently the way this is written
+           ``emulated_input_sample_set`` is NOT used to calculate the volume.
+           This should at least be an option. 
+
+        :param int n_mc_points: If estimate is True, number of MC points to use
+        """
+        num = self.check_num()
+        n_mc_points_local = (n_mc_points/comm.size) + \
+                            (comm.rank < n_mc_points%comm.size)
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
+            self._domain.shape[0])) + self._domain[:, 0]
+        (_, emulate_ptr) = self.query(mc_points)
+        vol = np.zeros((num,))
+        for i in range(num):
+            vol[i] = np.sum(np.equal(emulate_ptr, i))
+        cvol = np.copy(vol)
+        comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
+        vol = cvol
+        vol = vol/float(n_mc_points)
+        self._volumes = vol
+        self.global_to_local()
+
     def estimate_volume_mc(self):
         """
         Give all cells the same volume fraction based on the Monte Carlo
@@ -886,7 +917,11 @@ class voronoi_sample_set(sample_set_base):
 
             If this :class:`~bet.sample.voronoi_sample_set` has exact/estimated
             radii of the Voronoi cell associated with each sample for a domain
-            normalized to the unit hypercube (``_normalized_radii``).
+            normalized to the unit hypercube (``_normalized_radii``). Note that
+            these are not centroidal Voronoi tesselations meaning that the
+            centroid is NOT the generator of the Voronoi cell. What we desire
+            for the radius is actually 
+            :math:`sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda, \lambda^{(i)})`.
 
         .. todo ::
 
