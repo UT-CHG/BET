@@ -9,38 +9,10 @@ This module provides methods for calulating the probability measure
 * :mod:`~bet.calculateP.calculateP.prob_samples_mc` estimates the
     probability based on pre-defined volumes.
 """
-from bet.Comm import comm, MPI
 import numpy as np
+from bet.Comm import comm, MPI
 import bet.util as util
-import bet.sample as samp
-
-def emulate_iid_lebesgue(domain, num_l_emulate, globalize=False):
-    """
-    Parition the parameter space using emulated samples into many voronoi
-    cells. These samples are iid so that we can apply the standard MC
-    assumuption/approximation
-
-    :param domain: The domain for each parameter for the model.
-    :type domain: :class:`~numpy.ndarray` of shape (ndim, 2)
-    :param num_l_emulate: The number of emulated samples.
-    :type num_l_emulate: int
-
-    :rtype: :class:`~bet.sample.voronoi_sample_set`
-    :returns: a set of samples for emulation
-
-    """
-    num_l_emulate = int((num_l_emulate/comm.size) + \
-            (comm.rank < num_l_emulate%comm.size))
-    lam_width = domain[:, 1] - domain[:, 0]
-    lambda_emulate = lam_width*np.random.random((num_l_emulate,
-        domain.shape[0]))+domain[:, 0]
-
-    set_emulated = samp.voronoi_sample_set(dim=domain.shape[0])
-    set_emulated._domain = domain
-    set_emulated._values_local = lambda_emulate
-    if globalize:
-        set_emulated.local_to_global()
-    return set_emulated
+import bet.sampling.basicSampling as bsam
 
 def prob_emulated(discretization, globalize=True):
     r"""
@@ -51,7 +23,7 @@ def prob_emulated(discretization, globalize=True):
     This is added to the emulated input sample set object.
 
     :param discretization: An object containing the discretization information.
-    :type class:`bet.sample.discretization`
+    :type discretization: class:`bet.sample.discretization`
     :param bool globalize: Makes local variables global.
 
     """
@@ -94,7 +66,7 @@ def prob(discretization):
     cells are provided.
 
     :param discretization: An object containing the discretization information.
-    :type class:`bet.sample.discretization`
+    :type discretization: class:`bet.sample.discretization`
     :param bool globalize: Makes local variables global.
 
     """
@@ -128,15 +100,15 @@ def prob(discretization):
 
 def prob_mc(discretization):
     r"""
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability associated with a set of  cells defined by the model
     solves at :math:`(\lambda_{samples})` where the volumes are calculated
     with the given emulated input points.
 
     :param discretization: An object containing the discretization information.
-    :type class:`bet.sample.discretization`
+    :type discretization: class:`bet.sample.discretization`
     :param globalize: Makes local variables global.
-    :type bool
 
     """
 

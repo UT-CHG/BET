@@ -601,7 +601,7 @@ class sample_set_base(object):
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
-        :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
         :param int k: number of nearest neighbors to return
 
         """
@@ -810,7 +810,7 @@ class voronoi_sample_set(sample_set_base):
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
-        :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
         :param int k: number of nearest neighbors to return
 
         :rtype: tuple
@@ -834,9 +834,10 @@ class voronoi_sample_set(sample_set_base):
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
         
         :param string distribution: Probability distribution (uniform, normal,
-        truncnorm, beta)
+            truncnorm, beta)
         :param float a: mean or alpha (normal/truncnorm, beta)
         :param float b: covariance or beta (normal/truncnorm, beta)
+        
         """
         self.check_num()
         if self._dim != 1:

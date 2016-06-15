@@ -98,9 +98,10 @@ param_ref = np.ones((1,num_KL_terms))
 Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D(input_samples, p_ref=param_ref[0,:], filename='FEniCS_ParameterSamples.eps')
+plotD.scatter_2D(input_samples, ref_sample=param_ref[0,:], filename='FEniCS_ParameterSamples.eps')
 if Q_ref.size == 2:
-    plotD.show_data(my_discretization, Q_ref=Q_ref[0,:])
+    plotD.scatter_rhoD(my_discretization, ref_sample=Q_ref[0,:],
+            io_flag='output')
 
 '''
 Suggested changes for user:

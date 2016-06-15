@@ -35,7 +35,6 @@ Q = np.random.random([output_dim, input_dim])
 
 # Initialize some sample objects we will need
 input_samples = sample.sample_set(input_dim)
-input_samples_centers = sample.sample_set(input_dim)
 output_samples = sample.sample_set(output_dim)
 
 # Choose random samples in parameter space to solve the model
@@ -44,17 +43,18 @@ input_samples.set_values(np.random.uniform(0, 1, [num_samples, input_dim]))
 # Make the MC assumption and compute the volumes of each voronoi cell
 input_samples.estimate_volume_mc()
 
-# We will approximate the jacobian at each of the centers
-input_samples_centers.set_values(input_samples.get_values()[:num_centers])
 
 # Compute the output values with the map Q
-output_samples.set_values(Q.dot(input_samples.get_values().transpose()).transpose())
+output_samples.set_values(Q.dot(input_samples.get_values().transpose()).\
+        transpose())
 
 # Calculate the gradient vectors at some subset of the samples.  Here the
 # *normalize* argument is set to *True* because we are using bin_ratio to
 # determine the uncertainty in our data.
-input_samples.set_jacobians(grad.calculate_gradients_rbf(input_samples,
-    output_samples, input_samples_centers, normalize=True))
+cluster_discretization = sample.discretization(input_samples, output_samples)
+# We will approximate the jacobian at each of the centers
+center_discretization = grad.calculate_gradients_rbf(cluster_discretization,
+    num_centers, normalize=True)
 
 # With these gradient vectors, we are now ready to choose an optimal set of
 # QoIs to use in the inverse problem, based on optimal skewness properites of
@@ -64,7 +64,8 @@ input_samples.set_jacobians(grad.calculate_gradients_rbf(input_samples,
 # matrices.  Each matrix has 10 rows, the first column representing the
 # average skewness of the Jacobian of Q, and the rest of the columns
 # the corresponding QoI indices.
-best_sets = cqoi.chooseOptQoIs_large(input_samples, measure=False)
+input_samples_center = center_discretization.get_input_sample_set()
+best_sets = cqoi.chooseOptQoIs_large(input_samples_center, measure=False)
 
 ###############################################################################
 
@@ -87,8 +88,6 @@ output_samples._dim = len(QoI_indices)
 output_samples.set_values(output_samples.get_values()[:, QoI_indices])
 
 
-# Set the jacobians to None
-input_samples.set_jacobians(None)
 
 # Define the reference point in the output space to correspond to the center of
 # the input space.
@@ -105,7 +104,7 @@ my_discretization = sample.discretization(input_sample_set=input_samples,
 # Find the simple function approximation
 simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
     data_set=my_discretization, Q_ref=Q_ref, rect_scale=bin_ratio,
-    center_pts_per_edge = 1)
+    center_pts_per_edge=1)
 
 # Calculate probablities making the Monte Carlo assumption
 calculateP.prob(my_discretization)
@@ -116,7 +115,7 @@ percentile = 1.0
 # also tells us the approximate volume of this support.
 (num_samples, _, indices_in_inverse) =\
     postTools.sample_highest_prob(top_percentile=percentile,
-    sample_set=input_samples,sort=True)
+    sample_set=input_samples, sort=True)
 
 
 # Print the number of samples that make up the highest percentile percent

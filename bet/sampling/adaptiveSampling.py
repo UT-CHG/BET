@@ -234,13 +234,14 @@ class sampler(bsam.sampler):
 
             Test HOTSTART from parallel files using different and same num proc
        
+
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
         :param input_obj: Either a :class:`bet.sample.sample_set` object for an
             input space, an array of min and max bounds for the input values
             with ``min = input_domain[:, 0]`` and ``max = input_domain[:, 1]``,
             or the dimension of an input space
-        :type input_obj: :class: `~bet.sample.sample_set`,
+        :type input_obj: :class:`~bet.sample.sample_set`,
             :class:`numpy.ndarray` of shape (ndim, 2), or :class: `int`
         :param t_set: method for creating new parameter steps using
             given a step size based on the paramter domain size
@@ -258,11 +259,10 @@ class sampler(bsam.sampler):
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         
         :rtype: tuple
-        :returns: (``discretization``,
-            ``all_step_ratios``) where ``discretization`` is a
-            :class:`~bet.sample.discretization` object containing
-            ``num_samples``  and  ``all_step_ratios`` is np.ndarray of shape
-            (num_chains, chain_length)
+        :returns: (``discretization``, ``all_step_ratios``) where
+            ``discretization`` is a :class:`~bet.sample.discretization` object
+            containing ``num_samples``  and  ``all_step_ratios`` is np.ndarray
+            of shape ``(num_chains, chain_length)``
         
         """
         if comm.size > 1:
