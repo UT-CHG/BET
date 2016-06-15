@@ -49,11 +49,11 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         mdat = dict()
     if sample_set_name is None:
         sample_set_name = 'default'
-    for attrname in sample_set.vector_names:
+    for attrname in sample_set_base.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
-    for attrname in sample_set.all_ndarray_names:
+    for attrname in sample_set_base.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
@@ -87,12 +87,12 @@ def load_sample_set(file_name, sample_set_name=None):
                 format(sample_set_name))
         return None
 
-    for attrname in sample_set.vector_names:
+    for attrname in sample_set_base.vector_names:
         if attrname is not '_dim':
             if sample_set_name+attrname in mdat.keys():
                 setattr(loaded_set, attrname,
                     np.squeeze(mdat[sample_set_name+attrname]))
-    for attrname in sample_set.all_ndarray_names:
+    for attrname in sample_set_base.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     
@@ -259,7 +259,7 @@ class sample_set_base(object):
 
         """
         num = None
-        for array_name in sample_set.array_names:
+        for array_name in self.array_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 if num is None:
@@ -591,7 +591,7 @@ class sample_set_base(object):
         """
         Makes global arrays from available local ones.
         """
-        for array_name in sample_set.array_names:
+        for array_name in self.array_names:
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local is not None:
                 setattr(self, array_name,
@@ -654,7 +654,7 @@ class sample_set_base(object):
         num = self.check_num()
         global_index = np.arange(num, dtype=np.int)
         self._local_index = np.array_split(global_index, comm.size)[comm.rank]
-        for array_name in sample_set.array_names:
+        for array_name in self.array_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(self, array_name + "_local",
@@ -669,12 +669,12 @@ class sample_set_base(object):
 
         """
         my_copy = sample_set(self.get_dim())
-        for array_name in sample_set.all_ndarray_names:
+        for array_name in self.all_ndarray_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(my_copy, array_name,
                         np.copy(current_array))
-        for vector_name in sample_set.vector_names:
+        for vector_name in self.vector_names:
             if vector_name is not "_dim":
                 current_vector = getattr(self, vector_name)
                 if current_vector is not None:
@@ -1001,7 +1001,40 @@ class sample_set(voronoi_sample_set):
     """
     Set Voronoi cells as the default for now.
     """
-                
+
+class rectangle_sample_set(sample_set_base):
+    def __init__(self, maxes, mins):
+        if len(maxes) != len(mins):
+            raise length_not_matching("Different number of maxes and mins")
+        dim = len(maxes[0])
+        for i in range(len(maxes)):
+            if (len(maxes[i]) != dim) or (len(mins[i]) != dim):
+                raise length_not_matching("Rectangle " + `i` + " has the wrong number of entries.")
+        sample_set_base.__init__(self, dim)
+        values = np.zeros((len(maxes), dim))
+        self._right = ((len(maxes), dim))
+        self._left = ((len(mins), dim))
+        for i in range(len(maxes)):
+            values[i,:] = 0.5*(np.array(maxes[i]) + np.array(mins[i]))
+            self._right[i,:] = maxes[i]
+        self._width = self._right - self._left
+        self.set_values(values)
+        self._volumes = np.prod(self._width, axis=1)
+        
+    def query(self, x, k=1):
+        num = self.check_num()
+        dist = np.inf * np.ones((x.shape[0], k))
+        pt = np.nan * np.ones((x.shape[0], k))
+        for i in range(num):
+            in_r = np.all(np.less_equal(x, self._right[i,:]), axis=1)
+            in_l = np.all(np.greater_equal(x, self._left[i,:]), axis=1)
+            in_rec = np.logical_and(in_r, in_l)
+            for j in range(k):
+                in_rec_now = np.logical_and(np.isnan(pt[:,j]), in_rec)
+                pt[:,j][in_rec_now]  = i
+                dist[:,j][in_rec_now] = 0.0
+
+        return (dist, pt)
 class discretization(object):
     """
     A data structure to store all of the :class:`~bet.sample.sample_set`
@@ -1081,9 +1114,7 @@ class discretization(object):
         """
         if self._output_sample_set._values_local is None:
             self._output_sample_set.global_to_local()
-        if self._output_probability_set._kdtree is None:
-            self._output_probability_set.set_kdtree()
-        (_, self._io_ptr_local) = self._output_probability_set.query(\
+            (_, self._io_ptr_local) = self._output_probability_set.query(\
                 self._output_sample_set._values_local)
                                                             
         if globalize:
@@ -1123,9 +1154,7 @@ class discretization(object):
         """
         if self._emulated_input_sample_set._values_local is None:
             self._emulated_input_sample_set.global_to_local()
-        if self._input_sample_set._kdtree is None:
-            self._input_sample_set.set_kdtree()
-        (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
+            (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
                 self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
@@ -1165,9 +1194,7 @@ class discretization(object):
         """
         if self._emulated_output_sample_set._values_local is None:
             self._emulated_output_sample_set.global_to_local()
-        if self._output_probability_set._kdtree is None:
-            self._output_probability_set.set_kdtree()
-        (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
+            (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
                 self._emulated_output_sample_set._values_local)
                                                                 
         if globalize:
