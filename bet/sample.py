@@ -1048,17 +1048,10 @@ class voronoi_sample_set(sample_set_base):
             sample_radii = np.copy(getattr(self, '_normalized_radii'))
 
         if sample_radii is None:
-            # Calculate the pairwise distances
-            if not np.isinf(self.p_norm):
-                pairwise_distance = spatial.distance.pdist(samples,
-                        p=self.p_norm)
-            else:
-                pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
-            pairwise_distance = spatial.distance.squareform(pairwise_distance)
-            pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
-            # Calculate mean, std of pairwise distances
-            sample_radii = np.std(pairwise_distance_ma*.5, 0)*3
-        elif np.sum(sample_radii <=0) > 0:
+            num_mc_points = np.max([1e4, samples.shape[0]*20])
+            self.estimate_radii(n_mc_points=int(num_mc_points)) 
+            sample_radii = 1.5*np.copy(self._normalized_radii)
+        if np.sum(sample_radii <=0) > 0:
             # Calculate the pairwise distances
             if not np.isinf(self.p_norm):
                 pairwise_distance = spatial.distance.pdist(samples,
