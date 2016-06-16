@@ -925,10 +925,10 @@ class voronoi_sample_set(sample_set_base):
         rad = crad
 
         if normalize:
-            self._radii = rad
-        else:
             self._normalized_radii = rad
-
+        else:
+            self._radii = rad
+        
         self.global_to_local()
 
     def estimate_radii_and_volume(self, n_mc_points=int(1E4), normalize=True):
@@ -985,9 +985,9 @@ class voronoi_sample_set(sample_set_base):
         rad = crad
 
         if normalize:
-            self._radii = rad
-        else:
             self._normalized_radii = rad
+        else:
+            self._radii = rad
 
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
@@ -997,7 +997,7 @@ class voronoi_sample_set(sample_set_base):
         self.global_to_local()
 
     def estimate_local_volume(self, num_l_emulate_local=100,
-            max_num_l_emulate=1e3): 
+            max_num_l_emulate=1e4): 
         r"""
 
         Estimates the volume fraction of the Voronoice cells associated
