@@ -16,6 +16,7 @@ import scipy.stats
 from bet.Comm import comm, MPI
 import bet.util as util
 import bet.sampling.LpGeneralizedSamples as lp
+import numpy.linalg as linalg
 
 class length_not_matching(Exception):
     """
@@ -1003,7 +1004,27 @@ class sample_set(voronoi_sample_set):
     """
 
 class rectangle_sample_set(sample_set_base):
+    r"""
+    A data structure containing arrays specific to a set of samples defining
+    a hyperrectangle discretization.
+
+    A series of n hyperrectangles :math:`A_i \subset \Lambda` with 
+    :math:`A_i \cap A_j = \emptyset` 
+    for :math:`i \neq j`. The last entry represents the remainder 
+    :math:`\Lambda \setminus ( \cup_{i-1}^n A_i)`.
+    
+    """
     def __init__(self, maxes, mins):
+        """
+
+        Initialization
+
+        :param maxes: array or list of maxes for hyperrectangles
+        :type maxes: interable with components of length dim
+        :param mins: array or list of mins for hyperrectangles
+        :type mins: interable with components of length dim
+
+        """
         if len(maxes) != len(mins):
             raise length_not_matching("Different number of maxes and mins")
         dim = len(maxes[0])
@@ -1011,30 +1032,159 @@ class rectangle_sample_set(sample_set_base):
             if (len(maxes[i]) != dim) or (len(mins[i]) != dim):
                 raise length_not_matching("Rectangle " + `i` + " has the wrong number of entries.")
         sample_set_base.__init__(self, dim)
-        values = np.zeros((len(maxes), dim))
-        self._right = ((len(maxes), dim))
-        self._left = ((len(mins), dim))
+        values = np.zeros((len(maxes)+1, dim))
+        self._right = np.zeros((len(maxes)+1, dim))
+        self._left = np.zeros((len(mins)+1, dim))
         for i in range(len(maxes)):
             values[i,:] = 0.5*(np.array(maxes[i]) + np.array(mins[i]))
             self._right[i,:] = maxes[i]
+            self._left[i,:] = mins[i]
+        values[-1,:] = np.inf
+        self._right[-1,:] = np.inf
+        self._left[-1,:] = -np.inf
         self._width = self._right - self._left
         self.set_values(values)
-        self._volumes = np.prod(self._width, axis=1)
         
     def query(self, x, k=1):
+        """
+        Identify which value points x are associated with for discretization.
+        :param x: points for query
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
+        :param int k: number of nearest neighbors to return
+        :rtype: tuple
+        :returns: (dist, ptr)
+        """
         num = self.check_num()
-        dist = np.inf * np.ones((x.shape[0], k))
-        pt = np.nan * np.ones((x.shape[0], k))
-        for i in range(num):
+        dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
+        pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
+        for i in range(num - 1):
             in_r = np.all(np.less_equal(x, self._right[i,:]), axis=1)
             in_l = np.all(np.greater_equal(x, self._left[i,:]), axis=1)
             in_rec = np.logical_and(in_r, in_l)
             for j in range(k):
-                in_rec_now = np.logical_and(np.isnan(pt[:,j]), in_rec)
+                if j == 0:
+                    in_rec_now = np.logical_and(np.equal(pt[:,j],num-1), in_rec)
+                else:
+                    in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
                 pt[:,j][in_rec_now]  = i
                 dist[:,j][in_rec_now] = 0.0
-
+        
         return (dist, pt)
+
+    def exact_volume_lebesgue(self):
+        r"""
+        
+        Exactly calculates the Lebesgue volume fraction of the cells.
+        """
+        num = self.check_num()
+        self._volumes = np.zeros((num, ))
+        domain_width = self._domain[:, 1] - self._domain[:, 0]
+        self._volumes[0:-1] = np.prod(self._width[0:-1]/domain_width, axis=1)
+        self._volumes[-1] = 1.0 - np.sum(self._volumes[0:-1])
+
+class ball_sample_set(sample_set_base):
+    r"""
+    A data structure containing arrays specific to a set of samples defining
+    discretization containing a number of balls.
+
+    A series of n balls :math:`A_i \subset \Lambda` with 
+    :math:`A_i \cap A_j = \emptyset` 
+    for :math:`i \neq j`. The last entry represents the remainder 
+    :math:`\Lambda \setminus ( \cup_{i-1}^n A_i)`.
+    
+    """
+    def __init__(self, centers, radii, p_norm=2):
+        """
+        Initialize.
+        
+        :param centers: centers of balls
+        :type centers: interable of shape (num-1, dim)
+        :param radii: radii of balls
+        :type raii: iterable of length num-1
+        :param p_norm: p-norm to define balls
+        """
+        self.p_norm = p_norm
+        if len(centers) != len(radii):
+            raise length_not_matching("Different number of centers and radii.")
+        dim = len(centers[0])
+        for i in range(len(centers)):
+            if (len(centers[i]) != dim):
+                raise length_not_matching("Center " + `i` + " has the wrong number of entries.")
+        sample_set_base.__init__(self, dim)
+        values = np.zeros((len(centers)+1, dim))
+        values[0:-1,:] = centers
+        values[-1,:] = np.inf
+        self.set_values(values)
+        self._width = np.zeros((len(centers)+1,))
+        self._width[0:-1] = radii
+        self._width[-1] = np.inf
+        
+    def query(self, x, k=1):
+        """
+        Identify which value points x are associated with for discretization.
+        :param x: points for query
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
+        :param int k: number of nearest neighbors to return
+        :rtype: tuple
+        :returns: (dist, ptr)
+        """
+        num = self.check_num()
+        dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
+        pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
+        for i in range(num - 1):
+            in_rec = np.less_equal(linalg.norm(x-self._values[i,:], self.p_norm, axis=1), self._width[i])
+            for j in range(k):
+                if j == 0:
+                    in_rec_now = np.logical_and(np.equal(pt[:,j],num-1), in_rec)
+                else:
+                    in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
+                pt[:,j][in_rec_now]  = i
+                dist[:,j][in_rec_now] = 0.0
+        
+        return (dist, pt)
+
+    def exact_volume_p(self, p_norm=None):
+        """
+        Calculate the exact volume fraction given some p-norm.
+        
+        #: p-norm to use for balls
+        
+        """
+        if p_norm is None:
+            p_norm = self.p_norm
+        num = self.check_num()
+        self._volumes = np.zeros((num, ))
+        domain_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
+        self._volumes[0:-1] = ((2.0*scipy.special.gamma(1.0/float(p_norm) + 1.0)*self._width[0:-1])**self._dim)/scipy.special.gamma(float(self._dim)/float(p_norm) + 1.0)
+        self._volumes[0:-1] *= 1.0/domain_vol
+        self._volumes[-1] = 1.0 - np.sum(self._volumes[0:-1])
+
+class cartesian_sample_set(rectangle_sample_set):
+    """
+    Defines a hyperrectangle discretization based on a Cartesian grid.
+
+    """
+    def __init__(self, xi):
+        """
+        Initialize.
+
+        #x1, x2,..., xn : array_like
+        1-D arrays representing the coordinates of a grid
+        """
+        xmin = []
+        xmax = []
+        for xv in xi:
+            xmin.append(xv[0:-1])
+            xmax.append(xv[1::])
+        maxes = np.vstack(np.array(np.meshgrid(*xmax)).T)
+        mins = np.vstack(np.array(np.meshgrid(*xmin)).T)
+        shp = np.array(maxes.shape)
+        pd = np.product(shp[0:-1])
+        maxes = maxes.reshape((pd,shp[-1]))
+        mins = mins.reshape((pd, shp[-1]))
+                          
+        rectangle_sample_set.__init__(self, maxes, mins)
+        
 class discretization(object):
     """
     A data structure to store all of the :class:`~bet.sample.sample_set`
