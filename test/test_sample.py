@@ -684,7 +684,7 @@ class TestEstimateRadii(unittest.TestCase):
         self.s_set.estimate_radii(normalize=False)
         self.s_set.estimate_radii()
         self.rad = self.s_set._radii
-        self.norm_rad = self.s_set._normalize_radii
+        self.norm_rad = self.s_set._normalized_radii
 
     def test_dimension(self):
         """
@@ -698,8 +698,8 @@ class TestEstimateRadii(unittest.TestCase):
         Check that the volumes are within a tolerance for a regular grid of
         samples.
         """
-        nptest.assert_array_almost_equal(self.rad, self.rad_exact, 2)
-        nptest.assert_array_almost_equal(self.norm_rad, self.rad_exact, 2)
+        nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
 
 class TestEstimateRadiiAndVolume(unittest.TestCase):
     """
@@ -737,8 +737,9 @@ class TestEstimateRadiiAndVolume(unittest.TestCase):
         
         self.s_set.estimate_radii_and_volume(normalize=False)
         self.s_set.estimate_radii_and_volume()
+        self.lam_vol = self.s_set._volumes
         self.rad = self.s_set._radii
-        self.norm_rad = self.s_set._normalize_radii
+        self.norm_rad = self.s_set._normalized_radii
 
     def test_dimension(self):
         """
@@ -753,7 +754,7 @@ class TestEstimateRadiiAndVolume(unittest.TestCase):
         Check that the volumes are within a tolerance for a regular grid of
         samples.
         """
-        nptest.assert_array_almost_equal(self.rad, self.rad_exact, 2)
-        nptest.assert_array_almost_equal(self.norm_rad, self.rad_exact, 2)
+        nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)

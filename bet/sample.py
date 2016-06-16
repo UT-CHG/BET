@@ -899,18 +899,25 @@ class voronoi_sample_set(sample_set_base):
             self.update_bounds()
             samples = samples - self._left
             samples = samples/self._width
-            mc_points = np.random.random((n_mc_points_local,
-                self._dim))
-        else:
-            width = self._domain[:, 1] - self._domain[:, 0]
-            mc_points = width*np.random.random((n_mc_points_local,
+
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
                 self._domain.shape[0])) + self._domain[:, 0]
 
         (_, emulate_ptr) = self.query(mc_points)
 
+        if normalize:
+            self.update_bounds(n_mc_points_local)
+            mc_points = mc_points - self._left
+            mc_points = mc_points/self._width
+            self._left = None
+            self._right = None
+            self._width = None
+
         rad = np.zeros((num,))
+
         for i in range(num):
-            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),
+            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
                 :] - samples[i, :], ord=self.p_norm, axis=1))
 
         crad = np.copy(rad)
@@ -951,20 +958,26 @@ class voronoi_sample_set(sample_set_base):
             self.update_bounds()
             samples = samples - self._left
             samples = samples/self._width
-            mc_points = np.random.random((n_mc_points_local,
-                self._dim))
-        else:
-            width = self._domain[:, 1] - self._domain[:, 0]
-            mc_points = width*np.random.random((n_mc_points_local,
+        
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
                 self._domain.shape[0])) + self._domain[:, 0]
 
         (_, emulate_ptr) = self.query(mc_points)
+
+        if normalize:
+            self.update_bounds(n_mc_points_local)
+            mc_points = mc_points - self._left
+            mc_points = mc_points/self._width
+            self._left = None
+            self._right = None
+            self._width = None
 
         vol = np.zeros((num,))
         rad = np.zeros((num,))
         for i in range(num):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
-            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),
+            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
                 :] - samples[i, :], ord=self.p_norm, axis=1))
 
         crad = np.copy(rad)
