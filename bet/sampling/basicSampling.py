@@ -17,6 +17,12 @@ from pyDOE import lhs
 from bet.Comm import comm
 import bet.sample as sample
 
+class bad_object(Exception):
+    """
+    Exception for when the wrong type of object is used.
+    """
+
+
 def loadmat(save_file, disc_name=None, model=None):
     """
     Loads data from ``save_file`` into a
@@ -82,6 +88,8 @@ def random_sample_set(sample_type, input_obj, num_samples,
     elif isinstance(input_obj, np.ndarray):
         input_sample_set = sample.sample_set(input_obj.shape[0])
         input_sample_set.set_domain(input_obj)
+    else:
+        raise bad_object("Improper sample object")
 
     # Create N samples
     dim = input_sample_set.get_dim()
@@ -139,6 +147,8 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     elif isinstance(input_obj, np.ndarray):
         input_sample_set = sample.sample_set(input_obj.shape[0])
         input_sample_set.set_domain(input_obj)
+    else:
+        raise bad_object("Improper sample object")
 
     # Create N samples
     dim = input_sample_set.get_dim()
