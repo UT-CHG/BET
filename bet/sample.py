@@ -59,7 +59,6 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
     mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
-    mdat[sample_set_name + '_p_norm'] = save_set._p_norm
     if comm.rank == 0:
         sio.savemat(file_name, mdat)
 
@@ -116,7 +115,7 @@ class sample_set_base(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-            '_volumes_local', '_local_index', '_dim']
+                    '_volumes_local', '_local_index', '_dim', '_p_norm']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
