@@ -637,7 +637,7 @@ class sample_set_base(object):
         vol = vol/float(n_mc_points)
         self._volumes = vol
         self.global_to_local()
-        
+
     def estimate_volume_mc(self):
         """
         Give all cells the same volume fraction based on the Monte Carlo
@@ -872,8 +872,132 @@ class voronoi_sample_set(sample_set_base):
         self._volumes = lam_vol
         self.global_to_local()
 
-    def estimate_local_volume(self, num_l_emulate_local=100,
-            max_num_l_emulate=1e3): 
+    def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
+        """
+        Calculate the radii of cells approximately using Monte
+        Carlo integration. 
+
+        .. todo::
+
+           This currently presumes a uniform Lesbegue measure on the
+           ``domain``. Currently the way this is written
+           ``emulated_input_sample_set`` is NOT used to calculate the volume.
+           This should at least be an option. 
+
+        :param int n_mc_points: If estimate is True, number of MC points to use
+        :param bool normalize: estimate normalized radius
+
+        """
+        num = self.check_num()
+
+        samples = np.copy(self.get_values())
+        n_mc_points_local = (n_mc_points/comm.size) + \
+                            (comm.rank < n_mc_points%comm.size)
+
+        # normalize the samples
+        if normalize:
+            self.update_bounds()
+            samples = samples - self._left
+            samples = samples/self._width
+
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
+                self._domain.shape[0])) + self._domain[:, 0]
+
+        (_, emulate_ptr) = self.query(mc_points)
+
+        if normalize:
+            self.update_bounds(n_mc_points_local)
+            mc_points = mc_points - self._left
+            mc_points = mc_points/self._width
+            self._left = None
+            self._right = None
+            self._width = None
+
+        rad = np.zeros((num,))
+
+        for i in range(num):
+            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
+                :] - samples[i, :], ord=self.p_norm, axis=1))
+
+        crad = np.copy(rad)
+        comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
+        rad = crad
+
+        if normalize:
+            self._normalized_radii = rad
+        else:
+            self._radii = rad
+        
+        self.global_to_local()
+
+    def estimate_radii_and_volume(self, n_mc_points=int(1E4), normalize=True):
+        """
+        Calculate the radii and volume faction of cells approximately using Monte
+        Carlo integration. 
+
+        .. todo::
+
+           This currently presumes a uniform Lesbegue measure on the
+           ``domain``. Currently the way this is written
+           ``emulated_input_sample_set`` is NOT used to calculate the volume.
+           This should at least be an option. 
+
+        :param int n_mc_points: If estimate is True, number of MC points to use
+        :param bool normalize: estimate normalized radius
+
+        """
+        num = self.check_num()
+
+        samples = np.copy(self.get_values())
+        n_mc_points_local = (n_mc_points/comm.size) + \
+                            (comm.rank < n_mc_points%comm.size)
+
+        # normalize the samples
+        if normalize:
+            self.update_bounds()
+            samples = samples - self._left
+            samples = samples/self._width
+        
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
+                self._domain.shape[0])) + self._domain[:, 0]
+
+        (_, emulate_ptr) = self.query(mc_points)
+
+        if normalize:
+            self.update_bounds(n_mc_points_local)
+            mc_points = mc_points - self._left
+            mc_points = mc_points/self._width
+            self._left = None
+            self._right = None
+            self._width = None
+
+        vol = np.zeros((num,))
+        rad = np.zeros((num,))
+        for i in range(num):
+            vol[i] = np.sum(np.equal(emulate_ptr, i))
+            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
+                :] - samples[i, :], ord=self.p_norm, axis=1))
+
+        crad = np.copy(rad)
+        comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
+        rad = crad
+
+        if normalize:
+            self._normalized_radii = rad
+        else:
+            self._radii = rad
+
+        cvol = np.copy(vol)
+        comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
+        vol = cvol
+        vol = vol/float(n_mc_points)
+        self._volumes = vol
+        self.global_to_local()
+
+    def estimate_local_volume(self, num_l_emulate_local=500,
+            max_num_l_emulate=1e4): 
         r"""
 
         Estimates the volume fraction of the Voronoice cells associated
@@ -886,7 +1010,11 @@ class voronoi_sample_set(sample_set_base):
 
             If this :class:`~bet.sample.voronoi_sample_set` has exact/estimated
             radii of the Voronoi cell associated with each sample for a domain
-            normalized to the unit hypercube (``_normalized_radii``).
+            normalized to the unit hypercube (``_normalized_radii``). Note that
+            these are not centroidal Voronoi tesselations meaning that the
+            centroid is NOT the generator of the Voronoi cell. What we desire
+            for the radius is actually 
+            :math:`sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda, \lambda^{(i)})`.
 
         .. todo ::
 
@@ -920,6 +1048,10 @@ class voronoi_sample_set(sample_set_base):
             sample_radii = np.copy(getattr(self, '_normalized_radii'))
 
         if sample_radii is None:
+            num_mc_points = np.max([1e4, samples.shape[0]*20])
+            self.estimate_radii(n_mc_points=int(num_mc_points)) 
+            sample_radii = 1.5*np.copy(self._normalized_radii)
+        if np.sum(sample_radii <=0) > 0:
             # Calculate the pairwise distances
             if not np.isinf(self.p_norm):
                 pairwise_distance = spatial.distance.pdist(samples,
@@ -928,21 +1060,11 @@ class voronoi_sample_set(sample_set_base):
                 pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
             pairwise_distance = spatial.distance.squareform(pairwise_distance)
             pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
-            # Calculate mean, std of pairwise distances
-            sample_radii = np.std(pairwise_distance_ma, 0)*3
-        elif np.sum(sample_radii <=0) > 0:
-            # Calculate the pairwise distances
-            if not np.isinf(self.p_norm):
-                pairwise_distance = spatial.distance.pdist(samples,
-                        p=self.p_norm)
-            else:
-                pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
-            pairwise_distance = spatial.distance.squareform(pairwise_distance)
-            pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
+            prob_est_radii = np.std(pairwise_distance_ma*.5, 0)*2.
             # Calculate mean, std of pairwise distances
             # TODO this may be too large/small
             # Estimate radius as 2.*STD of the pairwise distance
-            sample_radii[sample_radii <= 0] = np.std(pairwise_distance_ma, 0)*2.
+            sample_radii[sample_radii <= 0] = prob-est_radii[sample_radii <= 0] 
 
         # determine the volume of the Lp ball
         if not np.isinf(self.p_norm):
