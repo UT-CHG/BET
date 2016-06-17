@@ -168,5 +168,30 @@ def prob_mc(discretization):
 
 
     
-
+def prob_from_sample_set(set_old, set_new, emulate_set):
+    dim_old = set_old.check_num()
+    dim_new = set_new.check_num()
+    emulate_set.check_num()
+    if (set_old._dim != set_new._dim) or (set_old._dim != emulate_set._dim):
+        raise samp.dim_not_matching("Dimensions of sets are not equal.")
+    if emulate_set._values_local is None:
+        emulate_set.global_to_local()
+    (_, ptr1) = set_old.query(emulate_set._values_local)
+    (_, ptr2) = set_new.query(emulate_set._values_local)
+    prob_new = np.zeros((dim_new,))
+    prob_em = np.zeros((len(ptr1), ))
+    for i in range(dim_old):
+        if set_old._probabilities[i] > 0.0:
+            Itemp = np.equal(ptr1, i)
+            Itemp_sum = np.sum(Itemp)
+            Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
+            if Itemp_sum > 0:
+                prob_em[Itemp] += set_old._probabilities[i]/float(Itemp_sum)
+    for i in range(dim_new):
+        Itemp = np.equal(ptr2, i)
+        Itemp_sum = np.sum(prob_em[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
+        prob_new[i] = Itemp_sum
     
+    set_new.set_probabilities(prob_new)
+    return np.sum(prob_new)
