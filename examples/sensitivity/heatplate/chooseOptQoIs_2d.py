@@ -12,11 +12,10 @@ The optimal set of QoI is defined as the set that minimizes the average skewness
 of the inverse image.
 """
 
+import scipy.io as sio
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cqoi
 import bet.Comm as comm
-import scipy.io as sio
-import numpy as np
 import bet.sample as sample
 
 # Import the data from the FEniCS simulation (RBF or FFD or CFD clusters)
@@ -39,10 +38,11 @@ output_samples.set_values(matfile['data'])
 
 # Calculate the gradient vectors at each of the 16 centers for each of the
 # QoI maps
-input_samples.set_jacobians(grad.calculate_gradients_rbf(input_samples,
-    output_samples, normalize=False))
-#G = grad.calculate_gradients_ffd(input_samples, output_sample)
-#G = grad.calculate_gradients_cfd(input_samples, output_sample)
+cluster_discretization = sample.discretization(input_samples, output_samples)
+center_discretization = grad.calculate_gradients_rbf(cluster_discretization,
+        normalize=False) 
+#center_discretization = grad.calculate_gradients_ffd(cluster_discretization)
+#center_discretization = grad.calculate_gradients_cfd(cluster_discretization)
 
 # With a set of QoIs to consider, we check all possible combinations
 # of the QoIs and choose the best sets.
@@ -51,13 +51,14 @@ indexstop = 20
 qoiIndices = range(indexstart, indexstop)
 
 # Compute the skewness for each of the possible sets of QoI (20 choose 2 = 190)
-skewness_indices_mat = cqoi.chooseOptQoIs(input_samples, qoiIndices,
+input_samples_centers = center_discretization.get_input_sample_set()
+skewness_indices_mat = cqoi.chooseOptQoIs(input_samples_centers, qoiIndices,
     num_optsets_return=190, measure=False)
 
 qoi1 = skewness_indices_mat[0, 1]
 qoi2 = skewness_indices_mat[0, 2]
 
-if comm.rank==0:
+if comm.rank == 0:
     print 'The 10 smallest condition numbers are in the first column, the \
 corresponding sets of QoIs are in the following columns.'
     print skewness_indices_mat[:10, :]
@@ -65,4 +66,5 @@ corresponding sets of QoIs are in the following columns.'
 # Choose a specific set of QoIs to check the skewness of
 index1 = 0
 index2 = 4
-(scpecific_skewness, _) = cqoi.calculate_avg_skewness(input_samples, qoi_set=[index1, index2])
+(scpecific_skewness, _) = cqoi.calculate_avg_skewness(input_samples_centers, 
+        qoi_set=[index1, index2])

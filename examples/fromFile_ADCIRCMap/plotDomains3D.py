@@ -44,8 +44,8 @@ def rho_D(outputs):
     return inside.astype('float64')*max_values
 
 # Read in points_ref and plot results
-p_ref = mdat['points_true']
-p_ref = p_ref[:, 14]
+ref_sample = mdat['points_true']
+ref_sample = ref_sample[:, 14]
 
 
 # Create input, output, and discretization from data read from file
@@ -57,9 +57,9 @@ output_sample_set.set_values(Q)
 my_disc = sample.discretization(input_sample_set, output_sample_set)
 
 # Show the samples in the parameter space
-pDom.show_param(my_disc, rho_D=rho_D, p_ref=p_ref)
+pDom.scatter_rhoD(my_disc, rho_D=rho_D, ref_sample=ref_sample, io_flag='input')
 # Show the corresponding samples in the data space
-pDom.show_data(output_sample_set, rho_D=rho_D, Q_ref=Q_ref)
+pDom.scatter_rhoD(output_sample_set, rho_D=rho_D, ref_sample=Q_ref, io_flag='output')
 
 # Show multiple data domains that correspond with the convex hull of samples in
 # the parameter space

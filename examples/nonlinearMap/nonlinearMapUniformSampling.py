@@ -103,9 +103,9 @@ param_ref = np.array([5.5, 4.5])
 Q_ref =  my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D(input_samples, p_ref = param_ref, filename = 'nonlinearMapParameterSamples.eps')
+plotD.scatter_2D(input_samples, ref_sample = param_ref, filename = 'nonlinearMapParameterSamples.eps')
 if Q_ref.size == 2:
-    plotD.show_data(my_discretization, Q_ref = Q_ref)
+    plotD.scatter_rhoD(my_discretization, ref_sample = Q_ref)
 
 '''
 Suggested changes for user:

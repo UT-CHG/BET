@@ -396,6 +396,71 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_oo_ptr(globalize=False)
         self.disc.get_emulated_oo_ptr()
 
+    def Test_set_input_sample_set(self):
+        """
+        Test setting input sample set
+        """
+        test_set = sample.sample_set(dim=self.dim1)
+        self.disc.set_input_sample_set(test_set)
+
+    def Test_get_input_sample_set(self):
+        """
+        Test getting input sample set
+        """
+        self.disc.get_input_sample_set()
+
+    def Test_set_emulated_input_sample_set(self):
+        """
+        Test setting emulated input sample set
+        """
+        test_set = sample.sample_set(dim=self.dim1)
+        self.disc.set_emulated_input_sample_set(test_set)
+
+    def Test_get_emulated_input_sample_set(self):
+        """
+        Test getting emulated input sample set
+        """
+        self.disc.get_emulated_input_sample_set()
+
+    def Test_set_output_sample_set(self):
+        """
+        Test setting output sample set
+        """
+        test_set = sample.sample_set(dim=self.dim2)
+        self.disc.set_output_sample_set(test_set)
+
+    def Test_get_output_sample_set(self):
+        """
+        Test getting output sample set
+        """
+        self.disc.get_output_sample_set()
+
+    def Test_set_output_probability_set(self):
+        """
+        Test setting output probability sample set
+        """
+        test_set = sample.sample_set(dim=self.dim2)
+        self.disc.set_output_probability_set(test_set)
+
+    def Test_get_output_probability_set(self):
+        """
+        Test getting output probability sample set
+        """
+        self.disc.get_output_probability_set()
+
+    def Test_set_emulated_output_sample_set(self):
+        """
+        Test setting emulated output sample set
+        """
+        test_set = sample.sample_set(dim=self.dim2)
+        self.disc.set_emulated_output_sample_set(test_set)
+
+    def Test_get_emulated_output_sample_set(self):
+        """
+        Test getting emulated output sample set
+        """
+        self.disc.get_emulated_output_sample_set()
+
     def Test_save_load_discretization(self):
         """
         Test saving and loading of discretization
@@ -581,4 +646,115 @@ class TestExactVolume1D(unittest.TestCase):
         samples.
         """
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+
+class TestEstimateRadii(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_radii`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        lam_left = np.array([0.0, 0.5, 0.5])
+        lam_right = np.array([1.0, 1.5, 1.5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        
+        self.radii_exact = np.sqrt(3*.25**2)
+        
+        self.s_set.estimate_radii(normalize=False)
+        self.s_set.estimate_radii()
+        self.rad = self.s_set._radii
+        self.norm_rad = self.s_set._normalized_radii
+
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.rad.shape, (len(self.s_set._values), ))
+        nptest.assert_array_equal(self.norm_rad.shape, (len(self.s_set._values), ))
+
+    def test_radii(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
+
+class TestEstimateRadiiAndVolume(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_radii_and_volume`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        lam_left = np.array([0.0, 0.5, 0.5])
+        lam_right = np.array([1.0, 1.5, 1.5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        
+        self.radii_exact = np.sqrt(3*.25**2)
+        
+        self.s_set.estimate_radii_and_volume(normalize=False)
+        self.s_set.estimate_radii_and_volume()
+        self.lam_vol = self.s_set._volumes
+        self.rad = self.s_set._radii
+        self.norm_rad = self.s_set._normalized_radii
+
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.rad.shape, (len(self.s_set._values), ))
+        nptest.assert_array_equal(self.norm_rad.shape, (len(self.s_set._values), ))
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
+
+    def test_radii(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
