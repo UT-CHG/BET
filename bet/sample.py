@@ -996,7 +996,7 @@ class voronoi_sample_set(sample_set_base):
         self._volumes = vol
         self.global_to_local()
 
-    def estimate_local_volume(self, num_l_emulate_local=100,
+    def estimate_local_volume(self, num_l_emulate_local=500,
             max_num_l_emulate=1e4): 
         r"""
 
