@@ -1060,10 +1060,11 @@ class voronoi_sample_set(sample_set_base):
                 pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
             pairwise_distance = spatial.distance.squareform(pairwise_distance)
             pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
+            prob_est_radii = np.std(pairwise_distance_ma*.5, 0)*2.
             # Calculate mean, std of pairwise distances
             # TODO this may be too large/small
             # Estimate radius as 2.*STD of the pairwise distance
-            sample_radii[sample_radii <= 0] = np.std(pairwise_distance_ma*.5, 0)*2.
+            sample_radii[sample_radii <= 0] = prob-est_radii[sample_radii <= 0] 
 
         # determine the volume of the Lp ball
         if not np.isinf(self.p_norm):
