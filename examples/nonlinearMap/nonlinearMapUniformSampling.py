@@ -5,10 +5,10 @@
 r"""
 This example generates samples on a 2D grid and evaluates
 a nonlinear map to a 1d or 2d space. The maps are defined
-as quantities of interest (QoI) defined as spatial 
+as quantities of interest (QoI) defined as spatial
 observations of the solution to the elliptic PDE .. math::
   :nowrap:
-  
+
   \begin{cases}
     -\nabla \cdot (A(\lambda)\cdot\nabla u) &= f(x,y;\lambda), \ (x,y)\in\Omega, \\
     u|_{\partial \Omega} &= 0,
@@ -63,9 +63,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    sampler.random_sample_set('random', input_samples, num_samples=1E4)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E4)
 else:
-    sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
 
 '''
 Suggested changes for user:
@@ -109,7 +109,7 @@ if Q_ref.size == 2:
 
 '''
 Suggested changes for user:
-    
+
 Try different ways of discretizing the probability measure on D defined
 as a uniform probability measure on a rectangle or interval depending
 on choice of QoI_num in myModel.py.
@@ -162,6 +162,3 @@ marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.5)
 # plot 2d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "nonlinearMap",
                              lam_ref = param_ref, file_extension = ".eps")
-
-
-

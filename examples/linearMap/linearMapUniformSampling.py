@@ -62,9 +62,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    sampler.random_sample_set('random', input_samples, num_samples=1E3)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
 else:
-    sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
 
 '''
 Suggested changes for user:
@@ -162,7 +162,3 @@ marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.2)
 # plot 2d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "linearMap",
                              lam_ref=param_ref, file_extension = ".eps")
-
-
-
-
