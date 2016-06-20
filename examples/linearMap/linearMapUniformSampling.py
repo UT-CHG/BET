@@ -62,9 +62,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    sampler.random_sample_set('random', input_samples, num_samples=1E3)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
 else:
-    sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
 
 '''
 Suggested changes for user:
