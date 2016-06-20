@@ -75,6 +75,7 @@ best_sets = cqoi.chooseOptQoIs_large(input_samples_center, measure=False)
 # the parameter space.  We choose the set of QoIs to consider.
 
 QoI_indices = [3, 4] # choose up to input_dim
+
 #QoI_indices = [3, 6]
 #QoI_indices = [0, 3]
 #QoI_indices = [3, 5, 6, 8, 9]
@@ -116,8 +117,8 @@ percentile = 1.0
     postTools.sample_highest_prob(top_percentile=percentile,
     sample_set=input_samples, sort=True)
 
+
 # Print the number of samples that make up the highest percentile percent
 # samples and ratio of the volume of the parameter domain they take up
 if comm.rank == 0:
     print (num_samples, np.sum(input_samples.get_volumes()[indices_in_inverse]))
-
