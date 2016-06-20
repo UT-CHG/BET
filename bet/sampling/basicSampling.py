@@ -32,7 +32,7 @@ def loadmat(save_file, disc_name=None, model=None):
     :param string disc_name: name of :class:`~bet.sample.discretization` in
         file
     :param model: runs the model at a given set of parameter samples and
-        returns data 
+        returns data
     :type model: callable
 
     :rtype: tuple
@@ -44,7 +44,7 @@ def loadmat(save_file, disc_name=None, model=None):
     num_samples = mdat['num_samples']
     # load the discretization
     discretization = sample.load_discretization(save_file, disc_name)
-    loaded_sampler = sampler(model, num_samples)    
+    loaded_sampler = sampler(model, num_samples)
     return (loaded_sampler, discretization)
 
 def random_sample_set(sample_type, input_obj, num_samples,
@@ -58,7 +58,7 @@ def random_sample_set(sample_type, input_obj, num_samples,
 
     Note: This function is designed only for generalized rectangles and
     assumes a Lebesgue measure on the parameter space.
-   
+
     :param string sample_type: type sampling random (or r),
         latin hypercube(lhs), regular grid (rg), or space-filling
         curve(TBD)
@@ -68,15 +68,15 @@ def random_sample_set(sample_type, input_obj, num_samples,
     :type input_obj: :class:`~bet.sample.sample_set` or
         :class:`numpy.ndarray` of shape (dim, 2) or ``int``
     :param string savefile: filename to save discretization
-    :param int num_samples: N, number of samples 
-    :param string criterion: latin hypercube criterion see 
+    :param int num_samples: N, number of samples
+    :param string criterion: latin hypercube criterion see
         `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
     :param bool globalize: Makes local variables global. Only applies if
         ``parallel==True``.
-    
+
     :rtype: :class:`~bet.sample.sample_set`
     :returns: :class:`~bet.sample.sample_set` object which contains
-        input ``num_samples`` 
+        input ``num_samples``
 
     """
 
@@ -101,12 +101,12 @@ def random_sample_set(sample_type, input_obj, num_samples,
     # update the bounds based on the number of samples
     input_sample_set.update_bounds(num_samples)
     input_values = np.copy(input_sample_set._width)
-     
+
     if sample_type == "lhs":
         input_values = input_values * lhs(dim,
                 num_samples, criterion)
     elif sample_type == "random" or "r":
-        input_values = input_values * np.random.random(input_values.shape) 
+        input_values = input_values * np.random.random(input_values.shape)
     input_values = input_values + input_sample_set._left
     if globalize is True:
         input_sample_set.set_values(input_values)
@@ -124,12 +124,12 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     Sampling algorithm for generating a regular grid of samples taken
     on the domain present with ``input_obj`` (a default unit hypercube
     is used if no domain has been specified)
-    
+
     :param input_obj: :class:`~bet.sample.sample_set` object containing
         the dimension or domain to sample from, the domain to sample from, or
         the dimension
     :type input_obj: :class:`~bet.sample.sample_set` or :class:`numpy.ndarray`
-        of shape (dim, 2) or ``int`` 
+        of shape (dim, 2) or ``int``
     :param num_samples_per_dim: number of samples per dimension
     :type num_samples_per_dim: :class:`~numpy.ndarray` of dimension
         ``(input_sample_set._dim,)``
@@ -198,7 +198,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
 class sampler(object):
     """
     This class provides methods for adaptive sampling of parameter space to
-    provide samples to be used by algorithms to solve inverse problems. 
+    provide samples to be used by algorithms to solve inverse problems.
 
     num_samples
         total number of samples OR list of number of samples per dimension such
@@ -210,7 +210,7 @@ class sampler(object):
     def __init__(self, lb_model, num_samples=None):
         """
         Initialization
-        
+
         :param lb_model: Interface to physics-based model takes an input of
             shape (N, ndim) and returns an output of shape (N, mdim)
         :type lb_model: callable function
@@ -221,7 +221,7 @@ class sampler(object):
         self.num_samples = num_samples
         #: callable function that runs the model at a given set of input and
         #: returns output
-        #: parameter samples and returns data 
+        #: parameter samples and returns data
 
         self.lb_model = lb_model
 
@@ -258,7 +258,7 @@ class sampler(object):
 
         Note: This function is designed only for generalized rectangles and
         assumes a Lebesgue measure on the parameter space.
-       
+
         :param string sample_type: type sampling random (or r),
             latin hypercube(lhs), regular grid (rg), or space-filling
             curve(TBD)
@@ -269,19 +269,19 @@ class sampler(object):
             :class:`numpy.ndarray` of shape (dim, 2) or ``int``
         :param string savefile: filename to save discretization
         :param int num_samples: N, number of samples (optional)
-        :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
         :param bool globalize: Makes local variables global. Only applies if
             ``parallel==True``.
-        
+
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_set` object which contains
-            input ``num_samples`` 
+            input ``num_samples``
 
         """
         if num_samples is None:
             num_samples = self.num_samples
-        
+
         return random_sample_set(sample_type, input_obj, num_samples,
                 criterion, globalize)
 
@@ -303,11 +303,11 @@ class sampler(object):
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_set` object which contains
             input ``num_samples``
-        
+
         """
         self.num_samples = np.product(num_samples_per_dim)
         return regular_sample_set(input_obj, num_samples_per_dim)
-        
+
     def compute_QoI_and_create_discretization(self, input_sample_set,
             savefile=None, parallel=False, globalize=True):
         """
@@ -322,16 +322,16 @@ class sampler(object):
             num_smaples
         :param string savefile: filename to save samples and data
         :param bool parallel: Flag for parallel implementation. Default value
-            is ``False``.  
+            is ``False``.
         :param bool globalize: Makes local variables global. Only applies if
             ``parallel==True``.
-        
-        :rtype: :class:`~bet.sample.discretization` 
+
+        :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples`` 
+            input and output of ``num_samples``
 
         """
-        
+
         # Update the number of samples
         self.num_samples = input_sample_set.check_num()
 
@@ -347,7 +347,7 @@ class sampler(object):
             output_sample_set = sample.sample_set(output_dim)
             output_sample_set.set_values(output_values)
         elif parallel:
-            if input_sample_set._values_local is None: 
+            if input_sample_set._values_local is None:
                 input_sample_set.global_to_local()
             local_output_values = self.lb_model(\
                     input_sample_set.get_values_local())
@@ -361,7 +361,7 @@ class sampler(object):
             if globalize:
                 input_sample_set.local_to_global()
                 output_sample_set.local_to_global()
-        
+
         discretization = sample.discretization(input_sample_set,
                 output_sample_set)
 
@@ -384,8 +384,8 @@ class sampler(object):
                 ``lam_domain`` assuming a Lebesgue measure.
             * ``lhs`` generates a latin hyper cube of samples.
 
-        .. note:: 
-        
+        .. note::
+
             This function is designed only for generalized rectangles and
             assumes a Lebesgue measure on the parameter space.
 
@@ -420,5 +420,5 @@ class sampler(object):
         input_sample_set = self.random_sample_set(sample_type, input_obj,
                 num_samples, criterion, globalize)
 
-        return self.compute_QoI_and_create_discretization(input_sample_set, 
+        return self.compute_QoI_and_create_discretization(input_sample_set,
                 savefile, parallel, globalize)
