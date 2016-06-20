@@ -162,7 +162,3 @@ marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.2)
 # plot 2d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "linearMap",
                              lam_ref=param_ref, file_extension = ".eps")
-
-
-
-
