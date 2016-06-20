@@ -62,9 +62,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    sampler.random_sample_set('random', input_samples, num_samples=1E3)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
 else:
-    sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
 
 '''
 Suggested changes for user:
@@ -103,8 +103,8 @@ param_ref = np.array([0.5, 0.5, 0.5])
 Q_ref =  my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter2D_multi(input_samples, p_ref = param_ref, showdim = 'all', filename = 'linearMapParameterSamples')
-plotD.show_data(my_discretization, Q_ref = Q_ref)
+plotD.scatter_2D_multi(input_samples, ref_sample= param_ref, showdim = 'all', filename = 'linearMapParameterSamples')
+plotD.scatter_rhoD(my_discretization, ref_sample = Q_ref, io_flag='output')
 
 '''
 Suggested changes for user:
@@ -162,7 +162,3 @@ marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.2)
 # plot 2d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "linearMap",
                              lam_ref=param_ref, file_extension = ".eps")
-
-
-
-

@@ -167,6 +167,7 @@ class MPI_for_no_mpi4py(object):
         """
         #: fake sum 
         self.SUM = None
+        self.MAX = None
         #: float type
         self.DOUBLE = float
         #: int type

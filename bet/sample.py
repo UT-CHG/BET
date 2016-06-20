@@ -596,12 +596,14 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
-    def query(self, x):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
-        :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
+        :param int k: number of nearest neighbors to return
+
         """
         pass
 
@@ -635,7 +637,7 @@ class sample_set_base(object):
         vol = vol/float(n_mc_points)
         self._volumes = vol
         self.global_to_local()
-        
+
     def estimate_volume_mc(self):
         """
         Give all cells the same volume fraction based on the Monte Carlo
@@ -803,12 +805,13 @@ class voronoi_sample_set(sample_set_base):
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
 
-    def query(self, x):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
         :param x: points for query
-        :type x: :class:`numpy.ndarray` of shape (*, dim)
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
+        :param int k: number of nearest neighbors to return
 
         :rtype: tuple
         :returns: (dist, ptr)
@@ -820,7 +823,7 @@ class voronoi_sample_set(sample_set_base):
 
 
         #TODO add exception if dimensions of x are wrong
-        (dist, ptr) = self._kdtree.query(x, p=self.p_norm)
+        (dist, ptr) = self._kdtree.query(x, p=self.p_norm, k=k)
         return (dist, ptr)
 
     def exact_volume_1D(self, distribution='uniform', a=None, b=None):
@@ -831,9 +834,10 @@ class voronoi_sample_set(sample_set_base):
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
         
         :param string distribution: Probability distribution (uniform, normal,
-        truncnorm, beta)
+            truncnorm, beta)
         :param float a: mean or alpha (normal/truncnorm, beta)
         :param float b: covariance or beta (normal/truncnorm, beta)
+        
         """
         self.check_num()
         if self._dim != 1:
@@ -868,8 +872,132 @@ class voronoi_sample_set(sample_set_base):
         self._volumes = lam_vol
         self.global_to_local()
 
-    def estimate_local_volume(self, num_l_emulate_local=100,
-            max_num_l_emulate=1e3): 
+    def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
+        """
+        Calculate the radii of cells approximately using Monte
+        Carlo integration. 
+
+        .. todo::
+
+           This currently presumes a uniform Lesbegue measure on the
+           ``domain``. Currently the way this is written
+           ``emulated_input_sample_set`` is NOT used to calculate the volume.
+           This should at least be an option. 
+
+        :param int n_mc_points: If estimate is True, number of MC points to use
+        :param bool normalize: estimate normalized radius
+
+        """
+        num = self.check_num()
+
+        samples = np.copy(self.get_values())
+        n_mc_points_local = (n_mc_points/comm.size) + \
+                            (comm.rank < n_mc_points%comm.size)
+
+        # normalize the samples
+        if normalize:
+            self.update_bounds()
+            samples = samples - self._left
+            samples = samples/self._width
+
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
+                self._domain.shape[0])) + self._domain[:, 0]
+
+        (_, emulate_ptr) = self.query(mc_points)
+
+        if normalize:
+            self.update_bounds(n_mc_points_local)
+            mc_points = mc_points - self._left
+            mc_points = mc_points/self._width
+            self._left = None
+            self._right = None
+            self._width = None
+
+        rad = np.zeros((num,))
+
+        for i in range(num):
+            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
+                :] - samples[i, :], ord=self.p_norm, axis=1))
+
+        crad = np.copy(rad)
+        comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
+        rad = crad
+
+        if normalize:
+            self._normalized_radii = rad
+        else:
+            self._radii = rad
+        
+        self.global_to_local()
+
+    def estimate_radii_and_volume(self, n_mc_points=int(1E4), normalize=True):
+        """
+        Calculate the radii and volume faction of cells approximately using Monte
+        Carlo integration. 
+
+        .. todo::
+
+           This currently presumes a uniform Lesbegue measure on the
+           ``domain``. Currently the way this is written
+           ``emulated_input_sample_set`` is NOT used to calculate the volume.
+           This should at least be an option. 
+
+        :param int n_mc_points: If estimate is True, number of MC points to use
+        :param bool normalize: estimate normalized radius
+
+        """
+        num = self.check_num()
+
+        samples = np.copy(self.get_values())
+        n_mc_points_local = (n_mc_points/comm.size) + \
+                            (comm.rank < n_mc_points%comm.size)
+
+        # normalize the samples
+        if normalize:
+            self.update_bounds()
+            samples = samples - self._left
+            samples = samples/self._width
+        
+        width = self._domain[:, 1] - self._domain[:, 0]
+        mc_points = width*np.random.random((n_mc_points_local,
+                self._domain.shape[0])) + self._domain[:, 0]
+
+        (_, emulate_ptr) = self.query(mc_points)
+
+        if normalize:
+            self.update_bounds(n_mc_points_local)
+            mc_points = mc_points - self._left
+            mc_points = mc_points/self._width
+            self._left = None
+            self._right = None
+            self._width = None
+
+        vol = np.zeros((num,))
+        rad = np.zeros((num,))
+        for i in range(num):
+            vol[i] = np.sum(np.equal(emulate_ptr, i))
+            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
+                :] - samples[i, :], ord=self.p_norm, axis=1))
+
+        crad = np.copy(rad)
+        comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
+        rad = crad
+
+        if normalize:
+            self._normalized_radii = rad
+        else:
+            self._radii = rad
+
+        cvol = np.copy(vol)
+        comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
+        vol = cvol
+        vol = vol/float(n_mc_points)
+        self._volumes = vol
+        self.global_to_local()
+
+    def estimate_local_volume(self, num_l_emulate_local=500,
+            max_num_l_emulate=1e4): 
         r"""
 
         Estimates the volume fraction of the Voronoice cells associated
@@ -882,7 +1010,11 @@ class voronoi_sample_set(sample_set_base):
 
             If this :class:`~bet.sample.voronoi_sample_set` has exact/estimated
             radii of the Voronoi cell associated with each sample for a domain
-            normalized to the unit hypercube (``_normalized_radii``).
+            normalized to the unit hypercube (``_normalized_radii``). Note that
+            these are not centroidal Voronoi tesselations meaning that the
+            centroid is NOT the generator of the Voronoi cell. What we desire
+            for the radius is actually 
+            :math:`sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda, \lambda^{(i)})`.
 
         .. todo ::
 
@@ -916,6 +1048,10 @@ class voronoi_sample_set(sample_set_base):
             sample_radii = np.copy(getattr(self, '_normalized_radii'))
 
         if sample_radii is None:
+            num_mc_points = np.max([1e4, samples.shape[0]*20])
+            self.estimate_radii(n_mc_points=int(num_mc_points)) 
+            sample_radii = 1.5*np.copy(self._normalized_radii)
+        if np.sum(sample_radii <=0) > 0:
             # Calculate the pairwise distances
             if not np.isinf(self.p_norm):
                 pairwise_distance = spatial.distance.pdist(samples,
@@ -924,21 +1060,11 @@ class voronoi_sample_set(sample_set_base):
                 pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
             pairwise_distance = spatial.distance.squareform(pairwise_distance)
             pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
-            # Calculate mean, std of pairwise distances
-            sample_radii = np.std(pairwise_distance_ma, 0)*3
-        elif np.sum(sample_radii <=0) > 0:
-            # Calculate the pairwise distances
-            if not np.isinf(self.p_norm):
-                pairwise_distance = spatial.distance.pdist(samples,
-                        p=self.p_norm)
-            else:
-                pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
-            pairwise_distance = spatial.distance.squareform(pairwise_distance)
-            pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance, 0.)
+            prob_est_radii = np.std(pairwise_distance_ma*.5, 0)*2.
             # Calculate mean, std of pairwise distances
             # TODO this may be too large/small
             # Estimate radius as 2.*STD of the pairwise distance
-            sample_radii[sample_radii <= 0] = np.std(pairwise_distance_ma, 0)*2.
+            sample_radii[sample_radii <= 0] = prob-est_radii[sample_radii <= 0] 
 
         # determine the volume of the Lp ball
         if not np.isinf(self.p_norm):
@@ -1174,7 +1300,7 @@ class discretization(object):
         """
         
         Returns the pointer from ``self._emulated_output_sample_set`` to
-        ``self._output_probabilityset``
+        ``self._output_probability_set``
 
         .. seealso::
             
@@ -1210,3 +1336,157 @@ class discretization(object):
             if current_array is not None:
                 setattr(my_copy, array_name, np.copy(current_array))
         return my_copy
+
+    def get_input_sample_set(self):
+        """
+
+        Returns a reference to the input sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: input sample set
+
+        """
+        return self._input_sample_set
+
+    def set_input_sample_set(self, input_sample_set):
+        """
+
+        Sets the input sample set for this discretization.
+
+        :param input_sample_set: input sample set.
+        :type input_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(input_sample_set, sample_set_base):
+            self._input_sample_set = input_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_sample_set(self):
+        """
+
+        Returns a reference to the output sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output sample set
+
+        """
+        return self._output_sample_set
+
+    def set_output_sample_set(self, output_sample_set):
+        """
+
+        Sets the output sample set for this discretization.
+
+        :param output_sample_set: output sample set.
+        :type output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_sample_set, sample_set_base):
+            self._output_sample_set = output_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_probability_set(self):
+        """
+
+        Returns a reference to the output probability sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output probability sample set
+
+        """
+        return self._output_probability_set
+
+    def set_output_probability_set(self, output_probability_set):
+        """
+
+        Sets the output probability sample set for this discretization.
+
+        :param output_probability_set: output probability sample set.
+        :type output_probability_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_probability_set, sample_set_base):
+            output_dims = []
+            output_dims.append(output_probability_set.get_dim())
+            if self._output_sample_set is not None:
+                output_dims.append(self._output_sample_set.get_dim())
+            if self._emulated_output_sample_set is not None:
+                output_dims.append(self._emulated_output_sample_set.get_dim())
+            if len(output_dims) == 1:
+                self._output_probability_set = output_probability_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._output_probability_set = output_probability_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_emulated_output_sample_set(self):
+        """
+
+        Returns a reference to the emulated_output sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: emulated_output sample set
+
+        """
+        return self._emulated_output_sample_set
+
+    def set_emulated_output_sample_set(self, emulated_output_sample_set):
+        """
+
+        Sets the emulated_output sample set for this discretization.
+
+        :param emulated_output_sample_set: emupated output sample set.
+        :type emulated_output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(emulated_output_sample_set, sample_set_base):
+            output_dims = []
+            output_dims.append(emulated_output_sample_set.get_dim())
+            if self._output_sample_set is not None:
+                output_dims.append(self._output_sample_set.get_dim())
+            if self._output_probability_set is not None:
+                output_dims.append(self._output_probability_set.get_dim())
+            if len(output_dims) == 1:
+                self._emulated_output_sample_set = emulated_output_sample_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._emulated_output_sample_set = emulated_output_sample_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_emulated_input_sample_set(self):
+        """
+
+        Returns a reference to the emulated_input sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: emulated_input sample set
+
+        """
+        return self._emulated_input_sample_set
+
+    def set_emulated_input_sample_set(self, emulated_input_sample_set):
+        """
+
+        Sets the emulated_input sample set for this discretization.
+
+        :param emulated_input_sample_set: emupated input sample set.
+        :type emulated_input_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(emulated_input_sample_set, sample_set_base):
+            if self._input_sample_set is not None:
+                if self._input_sample_set.get_dim() == \
+                        emulated_input_sample_set.get_dim():
+                    self._emulated_input_sample_set = emulated_input_sample_set
+                else:
+                    raise dim_not_matching("dimension of values incorrect")
+            else:
+                self._emulated_input_sample_set = emulated_input_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
