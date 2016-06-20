@@ -647,3 +647,114 @@ class TestExactVolume1D(unittest.TestCase):
         """
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+
+class TestEstimateRadii(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_radii`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        lam_left = np.array([0.0, 0.5, 0.5])
+        lam_right = np.array([1.0, 1.5, 1.5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        
+        self.radii_exact = np.sqrt(3*.25**2)
+        
+        self.s_set.estimate_radii(normalize=False)
+        self.s_set.estimate_radii()
+        self.rad = self.s_set._radii
+        self.norm_rad = self.s_set._normalized_radii
+
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.rad.shape, (len(self.s_set._values), ))
+        nptest.assert_array_equal(self.norm_rad.shape, (len(self.s_set._values), ))
+
+    def test_radii(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
+
+class TestEstimateRadiiAndVolume(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_radii_and_volume`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+
+        """
+        lam_left = np.array([0.0, 0.5, 0.5])
+        lam_right = np.array([1.0, 1.5, 1.5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        
+        self.radii_exact = np.sqrt(3*.25**2)
+        
+        self.s_set.estimate_radii_and_volume(normalize=False)
+        self.s_set.estimate_radii_and_volume()
+        self.lam_vol = self.s_set._volumes
+        self.rad = self.s_set._radii
+        self.norm_rad = self.s_set._normalized_radii
+
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        nptest.assert_array_equal(self.rad.shape, (len(self.s_set._values), ))
+        nptest.assert_array_equal(self.norm_rad.shape, (len(self.s_set._values), ))
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
+
+    def test_radii(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)

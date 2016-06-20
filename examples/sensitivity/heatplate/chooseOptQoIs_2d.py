@@ -66,5 +66,5 @@ corresponding sets of QoIs are in the following columns.'
 # Choose a specific set of QoIs to check the skewness of
 index1 = 0
 index2 = 4
-(scpecific_skewness, _) = cqoi.calculate_avg_skewness(input_samples, 
+(scpecific_skewness, _) = cqoi.calculate_avg_skewness(input_samples_centers, 
         qoi_set=[index1, index2])
