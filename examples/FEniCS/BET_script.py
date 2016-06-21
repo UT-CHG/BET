@@ -18,7 +18,6 @@ to the number of KL terms) and the number of samples in this space.
 """
 
 import numpy as np
-import bet.calculateP as calculateP
 import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
@@ -59,9 +58,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    sampler.random_sample_set('random', input_samples, num_samples=1E4)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E4)
 else:
-    sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
 
 '''
 Suggested changes for user:

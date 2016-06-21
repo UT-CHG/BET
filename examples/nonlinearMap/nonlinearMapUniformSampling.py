@@ -25,7 +25,6 @@ in the parameter space are calculated using emulated points.
 
 
 import numpy as np
-import bet.calculateP as calculateP
 import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
