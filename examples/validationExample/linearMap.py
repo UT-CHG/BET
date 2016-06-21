@@ -10,7 +10,6 @@ used to define the output probability measure.
 
 from bet.Comm import comm, MPI
 import numpy as np
-import bet.calculateP as calculateP
 import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
@@ -47,9 +46,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    sampler.random_sample_set('random', input_samples, num_samples=1E3)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
 else:
-    sampler.regular_sample_set(input_samples, num_samples_per_dim=[30, 30])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[30, 30])
 
 '''
 Suggested changes for user:
