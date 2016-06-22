@@ -101,8 +101,8 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
         plt.autoscale(tight=True)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
-        plt.savefig(filename, bbox_inches='tight', transparent=True,
-                    pad_inches=0, format=file_extension)
+        plt.savefig(filename+'.'+file_extension, bbox_inches='tight', transparent=True,
+                    pad_inches=0)
     if interactive:
         plt.show()
     else:
@@ -174,8 +174,8 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     if save:
-        plt.savefig(filename, bbox_inches='tight', transparent=True,
-                    pad_inches=0, format=file_extension)
+        plt.savefig(filename+'.'+file_extension, bbox_inches='tight', transparent=True,
+                    pad_inches=0)
     if interactive:
         plt.show()
     else:
@@ -255,7 +255,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     print label_char, dim_nums
     xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
     ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
-    savename = prefix+'samples_cs.eps'
+    savename = prefix+'samples_cs'
     # Plot 2 or 3 dimensional scatter plots of the samples colored by rD.
     if sample_obj.get_dim() == 2:
         scatter_2D(sample_obj, sample_nos, rD, ref_sample, save,
@@ -269,7 +269,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         for x, y in combinations(dim_nums, 2):
             xlabel = label_char+r'{' + str(x) + '}$'
             ylabel = label_char+r'{' + str(y) + '}$'
-            savename = prefix+'samples_x' + str(x) + 'x' + str(y) + '_cs.eps'
+            savename = prefix+'samples_x' + str(x) + 'x' + str(y) + '_cs'
             temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1]])
             scatter_2D(temp_obj, sample_nos, rD, ref_sample, save,
                        interactive, xlabel, ylabel, savename)
@@ -280,10 +280,11 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
             ylabel = label_char+r'{' + str(y) + '}$'
             zlabel = label_char+r'{' + str(z) + '}$'
             savename = prefix+'samples_x' + str(x) + 'x' + str(y) + 'x' + str(z) + \
-                       '_cs.eps'
+                       '_cs'
             temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1, z - 1]])
             scatter_3D(temp_obj, sample_nos, rD, ref_sample, save,
-                       interactive, xlabel, ylabel, zlabel, savename)
+                       interactive, xlabel, ylabel, zlabel, savename,
+                       file_extension)
 
 def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
                            img_folder='figs/', ref_markers=None,
@@ -350,8 +351,8 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
             ylabel = r'$q_{' + str(i + 1) + r'}$'
 
             filenames = [img_folder + 'domain_q' + str(showdim + 1) + '_q' + \
-                         str(i + 1) + '.eps', img_folder + 'q' + str(showdim + 1) + \
-                         '_q' + str(i + 1) + '_domain_Q_cs.eps']
+                         str(i + 1), img_folder + 'q' + str(showdim + 1) + \
+                         '_q' + str(i + 1) + '_domain_Q_cs']
 
             data_obj_temp = sample.sample_set(2)
             data_obj_temp.set_values(data_obj.get_values()[:, [showdim, i]])
@@ -374,8 +375,9 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
             xlabel = r'$q_{' + str(x + 1) + r'}$'
             ylabel = r'$q_{' + str(y + 1) + r'}$'
 
-            filenames = [img_folder + 'domain_q' + str(x + 1) + '_q' + str(y + 1) + '.eps',
-                         img_folder + 'q' + str(x + 1) + '_q' + str(y + 1) + '_domain_Q_cs.eps']
+            filenames = [img_folder + 'domain_q' + str(x + 1) + '_q' + str(y + 1),
+                         img_folder + 'q' + str(x + 1) + '_q' + str(y + 1) + \
+                                 '_domain_Q_cs']
 
             data_obj_temp = sample.sample_set(2)
             data_obj_temp.set_values(data_obj.get_values()[:, [x, y]])
@@ -385,12 +387,13 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
                 show_data_domain_2D(sample_disc_temp, Q_ref[:, [x, y]],
                                     ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
                                     triangles=triangles, save=True, interactive=False,
-                                    filenames=filenames)
+                                    filenames=filenames,
+                                    file_extension=file_extension)
             else:
                 show_data_domain_2D(sample_disc_temp, None,
                                     ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
                                     triangles=triangles, save=True, interactive=False,
-                                    filenames=filenames)
+                                    filenames=filenames, file_extension=file_extension)
 
 
 def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
@@ -441,7 +444,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
         triangles = triangulation.triangles
     # Set default file names
     if filenames == None:
-        filenames = ['domain_q1_q2_cs.eps', 'q1_q2_domain_Q_cs.eps']
+        filenames = ['domain_q1_q2_cs', 'q1_q2_domain_Q_cs']
 
     # Make sure the shape of Q_ref is correct
     if Q_ref is not None:
@@ -454,16 +457,16 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig(filenames[0], bbox_inches='tight', transparent=True,
-                pad_inches=.2, format=file_extension)
+    plt.savefig(filenames[0]+'.'+file_extension, bbox_inches='tight', transparent=True,
+                pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
         for i in xrange(Q_ref.shape[0]):
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
     if save:
-        plt.savefig(filenames[1], bbox_inches='tight', transparent=True,
-                    pad_inches=.2, format=file_extension)
+        plt.savefig(filenames[1]+'.'+file_extension, bbox_inches='tight', transparent=True,
+                    pad_inches=.2)
     if interactive:
         plt.show()
     else:
@@ -513,7 +516,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/'
             xlabel = label_char + r'_{' + str(showdim + 1) + r'}$'
             ylabel = label_char + r'_{' + str(i + 1) + r'}$'
 
-            postfix = '_d' + str(showdim + 1) + '_d' + str(i + 1) + '.eps'
+            postfix = '_d' + str(showdim + 1) + '_d' + str(i + 1)
             myfilename = os.path.join(img_folder, filename + postfix)
 
             sample_obj_temp = sample.sample_set(2)
@@ -523,12 +526,12 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/'
                 scatter_2D(sample_obj_temp, sample_nos=None,
                            color=color, ref_sample=ref_sample[[showdim, i]], save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
-                           filename=myfilename)
+                           filename=myfilename, file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None,
                            color=color, ref_sample=None, save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
-                           filename=myfilename)
+                           filename=myfilename, file_extension=file_extension)
 
     # Create plots of all of the possible pairwise combinations of parameters
     elif showdim == 'all' or showdim == 'ALL':
@@ -536,7 +539,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/'
             xlabel = label_char + r'_{' + str(x + 1) + r'}$'
             ylabel = label_char + r'_{' + str(y + 1) + r'}$'
 
-            postfix = '_d' + str(x + 1) + '_d' + str(y + 1) + '.eps'
+            postfix = '_d' + str(x + 1) + '_d' + str(y + 1)
             myfilename = os.path.join(img_folder, filename + postfix)
 
             sample_obj_temp = sample.sample_set(2)
@@ -545,8 +548,10 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/'
             if ref_sample is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                            ref_sample=ref_sample[[x, y]], save=True, interactive=False,
-                           xlabel=xlabel, ylabel=ylabel, filename=myfilename)
+                           xlabel=xlabel, ylabel=ylabel, filename=myfilename,
+                           file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                            ref_sample=None, save=True, interactive=False,
-                           xlabel=xlabel, ylabel=ylabel, filename=myfilename)
+                           xlabel=xlabel, ylabel=ylabel, filename=myfilename,
+                           file_extension=file_extension)
