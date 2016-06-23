@@ -38,22 +38,16 @@ input_samples.set_domain(np.repeat([[KL_term_min, KL_term_max]],
                                    num_KL_terms,
                                    axis=0))
 
-# Compute and save the KL expansion
+# Compute and save the KL expansion -- can comment out after running once
 computeSaveKL(num_KL_terms)
 
-# Define the sampler that will be used to create the discretization
-# object, which is the fundamental object used by BET to compute
-# solutions to the stochastic inverse problem
+# Interface BET to the model.
 sampler = bsam.sampler(my_model)
 
 '''
 Suggested changes for user:
 
 Try with and without random sampling.
-
-If using random sampling, try num_samples = 1E3 and 1E4.
-What happens when num_samples = 1E2?
-Try using 'lhs' instead of 'random' in the random_sample_set.
 
 If using regular sampling, try different numbers of samples
 per dimension.
@@ -66,15 +60,9 @@ else:
     input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
 
 '''
-Suggested changes for user:
-
 A standard Monte Carlo (MC) assumption is that every Voronoi cell
 has the same volume. If a regular grid of samples was used, then
 the standard MC assumption is true.
-
-See what happens if the MC assumption is not assumed to be true, and
-if different numbers of points are used to estimate the volumes of
-the Voronoi cells.
 '''
 MC_assumption = True
 # Estimate volumes of Voronoi cells associated with the parameter samples
@@ -129,20 +117,6 @@ calculateP.prob(my_discretization)
 ########################################
 # Post-process the results
 ########################################
-'''
-Suggested changes for user:
-
-At this point, the only thing that should change in the plotP.* inputs
-should be either the nbins values or sigma (which influences the kernel
-density estimation with smaller values implying a density estimate that
-looks more like a histogram and larger values smoothing out the values
-more).
-
-There are ways to determine "optimal" smoothing parameters (e.g., see CV, GCV,
-and other similar methods), but we have not incorporated these into the code
-as lower-dimensional marginal plots generally have limited value in understanding
-the structure of a high dimensional non-parametric probability measure.
-'''
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
                                                         nbins=20)

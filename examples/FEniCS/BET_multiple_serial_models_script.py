@@ -71,15 +71,9 @@ else:
     input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
 
 '''
-Suggested changes for user:
-
 A standard Monte Carlo (MC) assumption is that every Voronoi cell
 has the same volume. If a regular grid of samples was used, then
 the standard MC assumption is true.
-
-See what happens if the MC assumption is not assumed to be true, and
-if different numbers of points are used to estimate the volumes of
-the Voronoi cells.
 '''
 MC_assumption = True
 # Estimate volumes of Voronoi cells associated with the parameter samples

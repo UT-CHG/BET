@@ -44,7 +44,9 @@ input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
 
 # Define the sampler that will be used to create the discretization
 # object, which is the fundamental object used by BET to compute
-# solutions to the stochastic inverse problem
+# solutions to the stochastic inverse problem.
+# The sampler and my_model is the interface of BET to the model,
+# and it allows BET to create input/output samples of the model.
 sampler = bsam.sampler(my_model)
 
 '''

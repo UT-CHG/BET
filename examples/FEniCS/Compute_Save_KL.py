@@ -26,10 +26,6 @@ def computeSaveKL(numKL):
     # Step 1: Set up the Mesh and Function Space
 
     mesh = Mesh("Lshaped.xml")
-    #mesh = RectangleMesh(0,0,10,10,20,20)
-
-    # Plot the mesh for visual check
-    #plot(mesh,interactive=True)
 
     # initialize the mesh to generate connectivity
     mesh.init()
