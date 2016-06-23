@@ -612,13 +612,6 @@ class sample_set_base(object):
         Calculate the volume faction of cells approximately using Monte
         Carlo integration. 
 
-        .. todo::
-
-           This currently presumes a uniform Lesbegue measure on the
-           ``domain``. Currently the way this is written
-           ``emulated_input_sample_set`` is NOT used to calculate the volume.
-           This should at least be an option. 
-
         :param int n_mc_points: If estimate is True, number of MC points to use
         """
         num = self.check_num()
@@ -635,6 +628,35 @@ class sample_set_base(object):
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
         vol = cvol
         vol = vol/float(n_mc_points)
+        self._volumes = vol
+        self.global_to_local()
+
+    def estimate_volume_emulated(self, emulated_sample_set):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration. 
+
+        :param emulated_sample_set: The set of samples used to approximate the
+            volume measure.
+        :type emulated_sample_set: :class:`bet.sample_set_base`
+
+        """
+        num = self.check_num()
+
+        if emulated_sample_set._values_local is None:
+            emulated_sample_set.global_to_local()
+
+        (_, emulate_ptr) = self.query(emulated_sample_set._values_local)
+
+        vol = np.zeros((num,))
+        for i in range(num):
+            vol[i] = np.sum(np.equal(emulate_ptr, i))
+        cvol = np.copy(vol)
+        comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
+        num_emulate = emulated_sample_Set._values_local.shape[0]
+        num_emulate = comm.allreduce(num_emulate, op=MPI.SUM)
+        vol = cvol
+        vol = vol/float(num_emulate)
         self._volumes = vol
         self.global_to_local()
 
@@ -1490,3 +1512,23 @@ class discretization(object):
                 self._emulated_input_sample_set = emulated_input_sample_set
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def estimate_input_volume_emulated(self):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration.
+        """
+        if self._emulated_input_sample_set is None:
+            raise AttributeError("Required: _emulated_input_sample_set")
+        else:
+            self._input_sample_set.estimate_volume_emulated(self._emulated_input_sample_set)
+
+    def estimate_output_volume_emulated(self):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration.
+        """
+        if self._emulated_output_sample_set is None:
+            raise AttributeError("Required: _emulated_output_sample_set")
+        else:
+            self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)
