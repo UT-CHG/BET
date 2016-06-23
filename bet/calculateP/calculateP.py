@@ -14,7 +14,7 @@ from bet.Comm import comm, MPI
 import bet.util as util
 import bet.sampling.basicSampling as bsam
 
-def prob_emulated(discretization, globalize=True): 
+def prob_on_emulated_samples(discretization, globalize=True): 
     r"""
 
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
@@ -98,7 +98,7 @@ def prob(discretization):
             get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
 
-def prob_mc(discretization): 
+def prob_with_emulated_volumes(discretization): 
     r"""
     
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
