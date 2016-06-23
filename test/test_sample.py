@@ -536,15 +536,15 @@ class Test_discretization_simple(unittest.TestCase):
             d1_arrays.append(np.linspace(l, r, num_samples_dim))
 
         s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
-        s_set.set_domain(self.lam_domain)
+        s_set.set_domain(lam_domain)
         s_set.set_values(util.meshgrid_ndim(d1_arrays))
 
         volume_exact = 1.0/s_set._values.shape[0]
 
-        emulated_samples = self.s_set.copy()
-        emulated_samples.update_bounds_local()
+        emulated_samples = s_set.copy()
+        emulated_samples.update_bounds_local(1001)
         emulated_samples.set_values_local(emulated_samples._width_local\
-                *np.random.random((1001, emulated_sample.get_dim())) +
+                *np.random.random((1001, emulated_samples.get_dim())) +
                 emulated_samples._left_local)
 
         self.disc.set_input_sample_set(s_set)
@@ -584,15 +584,15 @@ class Test_discretization_simple(unittest.TestCase):
             d1_arrays.append(np.linspace(l, r, num_samples_dim))
 
         s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
-        s_set.set_domain(self.lam_domain)
+        s_set.set_domain(lam_domain)
         s_set.set_values(util.meshgrid_ndim(d1_arrays))
 
         volume_exact = 1.0/s_set._values.shape[0]
 
-        emulated_samples = self.s_set.copy()
-        emulated_samples.update_bounds_local()
+        emulated_samples = s_set.copy()
+        emulated_samples.update_bounds_local(1001)
         emulated_samples.set_values_local(emulated_samples._width_local\
-                *np.random.random((1001, emulated_sample.get_dim())) +
+                *np.random.random((1001, emulated_samples.get_dim())) +
                 emulated_samples._left_local)
 
         self.disc.set_output_sample_set(s_set)
@@ -690,11 +690,11 @@ class TestEstimateVolumeEmulated(unittest.TestCase):
         print util.meshgrid_ndim(d1_arrays).shape
         self.volume_exact = 1.0/self.s_set._values.shape[0]
         emulated_samples = self.s_set.copy()
-        emulated_samples.update_bounds_local()
+        emulated_samples.update_bounds_local(1001)
         emulated_samples.set_values_local(emulated_samples._width_local\
-                *np.random.random((1001, emulated_sample.get_dim())) +
+                *np.random.random((1001, emulated_samples.get_dim())) +
                 emulated_samples._left_local)
-        self.s_set.estimate_volume(emulated_samples)
+        self.s_set.estimate_volume_emulated(emulated_samples)
         self.lam_vol = self.s_set._volumes
     def test_dimension(self):
         """

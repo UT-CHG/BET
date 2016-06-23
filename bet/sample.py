@@ -653,7 +653,7 @@ class sample_set_base(object):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
-        num_emulate = emulated_sample_Set._values_local.shape[0]
+        num_emulate = emulated_sample_set._values_local.shape[0]
         num_emulate = comm.allreduce(num_emulate, op=MPI.SUM)
         vol = cvol
         vol = vol/float(num_emulate)
@@ -823,7 +823,7 @@ class voronoi_sample_set(sample_set_base):
 
     """
     def __init__(self, dim, p_norm=2):
-        sample_set_base.__init__(self, dim)
+        super(voronoi_sample_set, self).__init__(dim)
         #: p-norm to use for nearest neighbor search
         self.p_norm = p_norm
 

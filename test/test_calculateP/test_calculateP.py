@@ -141,7 +141,7 @@ class Test_prob_on_emulated_samples_3to2(TestProbMethod_3to2, prob_on_emulated_s
         """
         super(Test_prob_on_emulated_samples_3to2, self).setUp()
         calcP.prob_on_emulated_samples(self.disc)
-        self.P_emulate_ref = np.loadtxt(data_path+"/3to2_prob_on_emulated_samples.txt.gz")
+        self.P_emulate_ref = np.loadtxt(data_path+"/3to2_prob_emulated.txt.gz")
         #self.P_emulate = util.get_global_values(self.P_emulate)
         
 
@@ -155,7 +155,7 @@ class Test_prob_with_emulated_volumes_3to2(TestProbMethod_3to2, prob_with_emulat
         """
         super(Test_prob_with_emulated_volumes_3to2, self).setUp()
         calcP.prob_with_emulated_volumes(self.disc)
-        self.P_ref = np.loadtxt(data_path + "/3to2_prob_with_emulated_volumes.txt.gz")
+        self.P_ref = np.loadtxt(data_path + "/3to2_prob_mc.txt.gz")
  
 
 class TestProbMethod_3to1(unittest.TestCase):
@@ -207,7 +207,7 @@ class Test_prob_on_emulated_samples_3to1(TestProbMethod_3to1, prob_on_emulated_s
         """
         super(Test_prob_on_emulated_samples_3to1, self).setUp()
         calcP.prob_on_emulated_samples(self.disc)
-        self.P_emulate_ref = np.loadtxt(data_path+"/3to1_prob_on_emulated_samples.txt.gz")
+        self.P_emulate_ref = np.loadtxt(data_path+"/3to1_prob_emulated.txt.gz")
 
 
 class Test_prob_with_emulated_volumes_3to1(TestProbMethod_3to1, prob_with_emulated_volumes):
@@ -220,7 +220,7 @@ class Test_prob_with_emulated_volumes_3to1(TestProbMethod_3to1, prob_with_emulat
         """
         super(Test_prob_with_emulated_volumes_3to1, self).setUp()
         calcP.prob_with_emulated_volumes(self.disc)
-        self.P_ref = np.loadtxt(data_path + "/3to1_prob_with_emulated_volumes.txt.gz")
+        self.P_ref = np.loadtxt(data_path + "/3to1_prob_mc.txt.gz")
 
   
 class TestProbMethod_10to4(unittest.TestCase):
