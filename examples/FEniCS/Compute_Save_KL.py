@@ -19,7 +19,7 @@ def computeSaveKL(numKL):
     Then, we define the covariance kernel which requires correlation lengths
     and a standard deviation.
 
-    We then compute the truncated KL expansion.
+    We then compute and save the terms in a truncated KL expansion.
     +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
     '''
 
@@ -64,7 +64,6 @@ def computeSaveKL(numKL):
     Lmesh.projectCovToMesh(numKL,cov)
 
     # Get the eigenfunctions and eigenvalues
-    eigen_func = Lmesh.eigen_funcs
     eigen_val = Lmesh.eigen_vals
 
     eigen_func_mat = np.zeros((numKL, Lmesh.eigen_funcs[0].vector().array().size))

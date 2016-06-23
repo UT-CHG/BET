@@ -3,12 +3,21 @@
 # Copyright (C) 2014-2016 The BET Development Team
 
 r"""
-An installation of FEniCS using the same python as used for
-installing BET is required to run this example.
+This example requires the following external packages not shipped
+with BET:
+
+  (1)  An installation of FEniCS that can be run using the same
+  python as used for installing BET. See http://fenicsproject.org/
+  for more information.
+
+  (2) A copy of Launcher. See https://github.com/TACC/launcher for
+  more information. The user needs to set certain environment
+  variables inside of lbModel.py for this to run. See lbModel.py
+  for more information.
 
 This example generates samples for a KL expansion associated with
-a covariance defined by ``cov`` in myModel.py that on an L-shaped
-mesh defining the permeability field for a Poisson equation.
+a covariance defined by ``cov`` in myModel.py on an L-shaped mesh
+that defines the permeability field for a Poisson equation.
 
 The quantities of interest (QoI) are defined as two spatial
 averages of the solution to the PDE.
@@ -24,6 +33,7 @@ import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
+from lbModel import lb_model
 from myModel import my_model
 from Compute_Save_KL import computeSaveKL
 
@@ -38,22 +48,17 @@ input_samples.set_domain(np.repeat([[KL_term_min, KL_term_max]],
                                    num_KL_terms,
                                    axis=0))
 
-# Compute and save the KL expansion
+# Compute and save the KL expansion -- can comment out after running once.
 computeSaveKL(num_KL_terms)
 
-# Define the sampler that will be used to create the discretization
-# object, which is the fundamental object used by BET to compute
-# solutions to the stochastic inverse problem
-sampler = bsam.sampler(my_model)
+# Allow BET to sample the model. Here, we interface to lb_model which
+# uses Launcher to create parallel runs of the serial model.
+sampler = bsam.sampler(lb_model)
 
 '''
 Suggested changes for user:
 
 Try with and without random sampling.
-
-If using random sampling, try num_samples = 1E3 and 1E4.
-What happens when num_samples = 1E2?
-Try using 'lhs' instead of 'random' in the random_sample_set.
 
 If using regular sampling, try different numbers of samples
 per dimension.
@@ -101,7 +106,8 @@ Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
 plotD.scatter_2D(input_samples, ref_sample=param_ref[0,:],
-                 filename='FEniCS_ParameterSamples.eps', file_extension="eps")
+                 filename='FEniCS_ParameterSamples.eps',
+                 file_extension="eps")
 if Q_ref.size == 2:
     plotD.show_data_domain_2D(my_discretization, Q_ref=Q_ref[0,:],
             file_extension="eps")
@@ -129,20 +135,6 @@ calculateP.prob(my_discretization)
 ########################################
 # Post-process the results
 ########################################
-'''
-Suggested changes for user:
-
-At this point, the only thing that should change in the plotP.* inputs
-should be either the nbins values or sigma (which influences the kernel
-density estimation with smaller values implying a density estimate that
-looks more like a histogram and larger values smoothing out the values
-more).
-
-There are ways to determine "optimal" smoothing parameters (e.g., see CV, GCV,
-and other similar methods), but we have not incorporated these into the code
-as lower-dimensional marginal plots generally have limited value in understanding
-the structure of a high dimensional non-parametric probability measure.
-'''
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
                                                         nbins=20)

@@ -8,21 +8,22 @@ from projectKL import projectKL
 from poissonRandField import solvePoissonRandomField
 import scipy.io as sio
 import sys
+import ast
 
-
-def my_model(parameter_samples):
+def my_model(parameter_sample):
     KL_mdat = sio.loadmat("KL_expansion")
     KL_eigen_funcs = KL_mdat['KL_eigen_funcs']
     KL_eigen_vals = KL_mdat['KL_eigen_vals']
 
-    # number of parameter samples
-    numSamples = parameter_samples.shape[0]
-
+    param_sample_num = parameter_sample[0]
     # the samples are the coefficients of the KL expansion typically denoted by xi_k
-    xi_k = parameter_samples[1:-1]
+    xi_k = np.array(parameter_sample[1:])
+    xi_k = xi_k.astype(float)
 
     # number of KL expansion terms.
-    numKL = parameter_samples.shape[1]-1
+    numKL = np.size(parameter_sample[1:])
+    print 'hi'
+    print xi_k
 
     '''
     ++++++++++++++++ Steps in Computing the Numerical KL Expansion ++++++++++
@@ -111,40 +112,32 @@ def my_model(parameter_samples):
     Chi_1 = CharFunc([0.75, 1.25, 7.75, 8.25])
     Chi_2 = CharFunc([7.75, 8.25, 0.75, 1.25])
 
-    QoI_samples = np.zeros([numSamples,2])
-
-    QoI_deriv_1 = np.zeros([numSamples,numKL])
-    QoI_deriv_2 = np.zeros([numSamples,numKL])
+    QoI_samples = np.zeros([1,2])
 
     # For each sample solve the PDE
     f = Constant(-1.0) # forcing of Poisson
 
-    for i in range(0, numSamples):
+    # create a temp array to store logPerm as sum of KL expansions
+    # logPerm is log permeability
+    logPerm = np.zeros((mesh.num_vertices()), dtype=float)
+    for kl in range(0, numKL):
+        logPerm += xi_k[kl] * \
+                   np.sqrt(KL_eigen_vals[0,kl]) * KL_eigen_funcs[kl,:]
 
-        print "Sample point number: %g" % i
+    # permiability is the exponential of log permeability logPerm
+    perm_k_array = 0.1 + np.exp(logPerm)
 
-        # create a temp array to store logPerm as sum of KL expansions
-        # logPerm is log permeability
-        logPerm = np.zeros((mesh.num_vertices()), dtype=float)
-        for kl in range(0, numKL):
-            logPerm += xi_k[i, kl] * \
-                       sqrt(eigen_val[kl]) * eigen_func[kl,:]
+    ## use dof_to_vertex map to map values to the function space
+    perm_k.vector()[:] = perm_k_array
 
-        # permiability is the exponential of log permeability logPerm
-        perm_k_array = 0.1 + np.exp(logPerm)
-        # print "Mean value of the random field is: %g" % perm_k_array.mean()
+    # solve Poisson with this random field using FEM
+    u = solvePoissonRandomField(perm_k, mesh, 1, f, bcs)
 
-        ## use dof_to_vertex map to map values to the function space
-        perm_k.vector()[:] = perm_k_array
+    # Compute QoI
+    QoI_samples[0, 0] = assemble(u * Chi_1 * dx)
+    QoI_samples[0, 1] = assemble(u * Chi_2 * dx)
 
-        # solve Poisson with this random field using FEM
-        u = solvePoissonRandomField(perm_k, mesh, 1, f, bcs)
-
-        # Compute QoI
-        QoI_samples[i, 0] = assemble(u * Chi_1 * dx)
-        QoI_samples[i, 1] = assemble(u * Chi_2 * dx)
-
-    io_file_name = 'QoI_sample' + `i`
+    io_file_name = 'QoI_sample' + param_sample_num
     io_mdat = dict()
     io_mdat['output'] = QoI_samples
     sio.savemat(io_file_name, io_mdat)
@@ -155,9 +148,6 @@ def usage():
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        f = open('testing', 'w')
-        f.write('Hi Steve')
-        f.close()
-        my_model(sys.np.argv[1:-1])
+        my_model(sys.argv[1:])
     else:
         usage()
