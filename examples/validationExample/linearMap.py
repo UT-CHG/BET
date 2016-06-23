@@ -8,17 +8,13 @@ recreate a probability measure on the input parameter space
 used to define the output probability measure. 
 """
 
-from bet.Comm import comm, MPI
 import numpy as np
-import bet.calculateP as calculateP
-import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
-import scipy.spatial as spatial
 from myModel import my_model
 
 # Initialize 3-dimensional input parameter sample set object

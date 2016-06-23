@@ -1051,7 +1051,7 @@ class voronoi_sample_set(sample_set_base):
             num_mc_points = np.max([1e4, samples.shape[0]*20])
             self.estimate_radii(n_mc_points=int(num_mc_points)) 
             sample_radii = 1.5*np.copy(self._normalized_radii)
-        if np.sum(sample_radii <=0) > 0:
+        if np.sum(sample_radii <= 0) > 0:
             # Calculate the pairwise distances
             if not np.isinf(self.p_norm):
                 pairwise_distance = spatial.distance.pdist(samples,
@@ -1064,7 +1064,7 @@ class voronoi_sample_set(sample_set_base):
             # Calculate mean, std of pairwise distances
             # TODO this may be too large/small
             # Estimate radius as 2.*STD of the pairwise distance
-            sample_radii[sample_radii <= 0] = prob-est_radii[sample_radii <= 0] 
+            sample_radii[sample_radii <= 0] = prob_est_radii[sample_radii <= 0] 
 
         # determine the volume of the Lp ball
         if not np.isinf(self.p_norm):

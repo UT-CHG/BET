@@ -26,8 +26,6 @@ the random discretizations.
 """
 
 import numpy as np
-import bet.calculateP as calculateP
-import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
