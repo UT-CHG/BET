@@ -634,7 +634,12 @@ class sample_set_base(object):
     def estimate_volume_emulated(self, emulated_sample_set):
         """
         Calculate the volume faction of cells approximately using Monte
-        Carlo integration. 
+        Carlo integration.
+
+        .. note ::
+
+            This could be re-written to just use an ``emulated_ii_ptr`` instead
+            of an ``emulated_sample_set``.
 
         :param emulated_sample_set: The set of samples used to approximate the
             volume measure.
@@ -1517,6 +1522,12 @@ class discretization(object):
         """
         Calculate the volume faction of cells approximately using Monte
         Carlo integration.
+
+        .. note ::
+
+            This could be re-written to just use ``emulated_ii_ptr`` instead
+            of ``_emulated_input_sample_set``.
+
         """
         if self._emulated_input_sample_set is None:
             raise AttributeError("Required: _emulated_input_sample_set")
@@ -1527,6 +1538,13 @@ class discretization(object):
         """
         Calculate the volume faction of cells approximately using Monte
         Carlo integration.
+
+        .. note ::
+
+            This could be re-written to just use ``emulated_oo_ptr`` instead
+            of ``_emulated_output_sample_set``.
+
+
         """
         if self._emulated_output_sample_set is None:
             raise AttributeError("Required: _emulated_output_sample_set")
