@@ -104,7 +104,7 @@ Q_ref =  my_model(param_ref)
 
 # Create some plots of input and output discretizations
 plotD.scatter_2D_multi(input_samples, ref_sample= param_ref, showdim = 'all', filename = 'linearMapParameterSamples')
-plotD.scatter_rhoD(my_discretization, ref_sample = Q_ref, io_flag='output')
+plotD.show_data_domain_2D(my_discretization, Q_ref = Q_ref, file_extension='eps')
 
 '''
 Suggested changes for user:

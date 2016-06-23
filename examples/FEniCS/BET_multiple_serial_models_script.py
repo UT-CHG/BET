@@ -66,9 +66,9 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E4)
+    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E2)
 else:
-    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
+    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[10, 10])
 
 '''
 A standard Monte Carlo (MC) assumption is that every Voronoi cell
