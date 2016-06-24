@@ -58,7 +58,6 @@ the stochastic inverse problem using some default options::
 
     calculateP.prob(my_discretization)
 
-===========================
 Step (0): Setting up the environment
 ===========================
 Import the necessary modules::
@@ -71,7 +70,7 @@ Import the necessary modules::
     import bet.sample as samp
     import bet.sampling.basicSampling as bsam
 
-===========================
+
 Step (1): Define interface to the model
 ===========================
 Import the Python script interface to the (simple Python) `model
@@ -90,7 +89,7 @@ and it allows BET to create input/output samples of the model::
 
     sampler = bsam.sampler(my_model)
 
-===========================
+
 Step (2): Describe and sample the input space
 ===========================
 Initialize the (3-dimensional) input parameter sample set object
@@ -133,7 +132,7 @@ the Voronoi cells::
     else:
         input_samples.estimate_volume_mc()
 
-===========================
+
 Step (3): Generate QoI samples
 ===========================
 
@@ -156,7 +155,7 @@ different distributions defined on the data space) without ever
 having to re-solve the model (so long as we are happy with the resolution
 provided by the current discretization of the parameter and data spaces).
 
-===========================
+
 Step (4): Describe the data distribution
 ===========================
 This problem is nominally a "parameter identification under uncertainty"
@@ -197,7 +196,7 @@ size is determined by scaling the circumscribing box of the data space::
             M=50, num_d_emulate=1E5)
 
 
-===========================
+
 Step (5): Solve the stochastic inverse problem
 ===========================
 Calculate probablities on the parameter space (which are stored within
@@ -206,7 +205,7 @@ the discretization object)::
     calculateP.prob(my_discretization)
 
 
-===========================
+
 Step (6) [Optional]: Post-processing
 ===========================
 There are ways to determine "optimal" smoothing parameters (e.g., see CV, GCV,
@@ -224,7 +223,7 @@ more).
 In general, the user will have to tune these for any given problem especially
 when looking at marginals of higher-dimensional problems with parameter ranges
 that have disparate scales (assuming the parameters were not first normalized
-as part of a "un-dimensionalization" of the space, which is highly encouraged).::
+as part of a "un-dimensionalization" of the space, which is highly encouraged)::
 
     (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
                                                             nbins = [10, 10, 10])

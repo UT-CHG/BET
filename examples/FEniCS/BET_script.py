@@ -3,12 +3,17 @@
 # Copyright (C) 2014-2016 The BET Development Team
 
 r"""
-An installation of FEniCS using the same python as used for
-installing BET is required to run this example.
+This example requires the following external packages not shipped
+with BET:
+
+  (1)  An installation of FEniCS that can be run using the same
+  python as used for installing BET. See http://fenicsproject.org/
+  for more information.
 
 This example generates samples for a KL expansion associated with
-a covariance defined by ``cov`` in myModel.py that on an L-shaped
-mesh defining the permeability field for a Poisson equation.
+a covariance defined by ``cov`` in computeSaveKL.py on an L-shaped mesh
+that defines the permeability field for a Poisson equation solved in
+myModel.py.
 
 The quantities of interest (QoI) are defined as two spatial
 averages of the solution to the PDE.
@@ -27,9 +32,17 @@ import bet.sampling.basicSampling as bsam
 from myModel import my_model
 from Compute_Save_KL import computeSaveKL
 
-# Initialize input parameter sample set object
+
+# Interface BET to the model.
+sampler = bsam.sampler(my_model)
+
+# Define the number of KL terms to use to represent permeability field
 num_KL_terms = 2
-input_samples = samp.sample_set(2)
+# Compute and save the KL expansion -- can comment out after running once
+computeSaveKL(num_KL_terms)
+
+# Initialize input parameter sample set object
+input_samples = samp.sample_set(num_KL_terms)
 
 # Set parameter domain
 KL_term_min = -3.0
@@ -38,11 +51,7 @@ input_samples.set_domain(np.repeat([[KL_term_min, KL_term_max]],
                                    num_KL_terms,
                                    axis=0))
 
-# Compute and save the KL expansion -- can comment out after running once
-computeSaveKL(num_KL_terms)
 
-# Interface BET to the model.
-sampler = bsam.sampler(my_model)
 
 '''
 Suggested changes for user:
@@ -50,7 +59,7 @@ Suggested changes for user:
 Try with and without random sampling.
 
 If using regular sampling, try different numbers of samples
-per dimension.
+per dimension (be careful if the dimension is not 2).
 '''
 # Generate samples on the parameter space
 randomSampling = False
