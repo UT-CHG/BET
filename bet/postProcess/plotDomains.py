@@ -53,8 +53,8 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
 
     .. note::
 
-        Do not specify the file extension in the file name.
-
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: contains samples to create scatter plot
     :type sample_obj: :class:`~bet.sample.sample_set_base`
@@ -106,7 +106,11 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
         plt.autoscale(tight=True)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
-        plt.savefig(filename+file_extension, bbox_inches='tight', transparent=True,
+        if "." not in filename:
+            full_filename = filename+file_extension
+        else:
+            full_filename = filename
+        plt.savefig(full_filename, bbox_inches='tight', transparent=True,
                     pad_inches=0)
     if interactive:
         plt.show()
@@ -125,8 +129,8 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None, save
 
     .. note::
 
-        Do not specify the file extension in the file name.
-
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._input_sample_set``) to create
         scatter plot 
@@ -163,8 +167,8 @@ def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None, sav
 
     .. note::
 
-        Do not specify the file extension in the file name.
-
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
         scatter plot 
@@ -202,7 +206,8 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
 
     .. note::
 
-        Do not specify the file extension in the file name.
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.sample_set_base`
@@ -259,7 +264,11 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     if save:
-        plt.savefig(filename+file_extension, bbox_inches='tight', transparent=True,
+        if "." not in filename:
+            full_filename = filename+file_extension
+        else:
+            full_filename = filename
+        plt.savefig(full_filename, bbox_inches='tight', transparent=True,
                     pad_inches=0)
     if interactive:
         plt.show()
@@ -278,7 +287,8 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None, save
 
     .. note::
 
-        Do not specify the file extension in the file name.
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
         scatter plot
@@ -315,7 +325,8 @@ def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None, sav
 
     .. note::
 
-        Do not specify the file extension in the file name.
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
         scatter plot
@@ -352,7 +363,8 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
 
     .. note::
 
-        Do not specify the file extension in the file name.
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.discretization` 
@@ -457,11 +469,6 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     the first two coordinates (parameters) of the generating samples where
     :math:`Q={q_1, q_i}` for ``i=Q_nums``, with a marker for various
     :math:`Q_{ref}`.
-
-    .. note::
-
-        Do not specify the file extension in the file name.
-
 
     :param sample_disc: Object containing the samples to plot
     :type sample_disc: :class:`~bet.sample.discretization` 
@@ -576,7 +583,8 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
     .. note::
 
-        Do not specify the file extension in the file name.
+        Do not specify the file extension in BOTH ``filenames`` and
+        ``file_extension``.
 
 
     :param sample_disc: Object containing the samples to plot
@@ -629,7 +637,20 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig(filenames[0]+file_extension, bbox_inches='tight', transparent=True,
+
+    
+    if "." not in filenames[0]:
+        full_filenames0 = filenames[0]+file_extension
+    else:
+        full_filenames0 = filenames[0]
+
+    if "." not in filenames[1]:
+        full_filenames1 = filenames[1]+file_extension
+    else:
+        full_filenames1 = filenames[1]
+
+
+    plt.savefig(full_filenames0, bbox_inches='tight', transparent=True,
                 pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
@@ -637,7 +658,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
     if save:
-        plt.savefig(filenames[1]+file_extension, bbox_inches='tight', transparent=True,
+        plt.savefig(full_filenames1, bbox_inches='tight', transparent=True,
                     pad_inches=.2)
     if interactive:
         plt.show()
@@ -656,8 +677,8 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/'
 
     .. note::
 
-        Do not specify the file extension in the file name.
-
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.sample_set_base`
