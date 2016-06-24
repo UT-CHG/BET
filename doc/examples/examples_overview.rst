@@ -36,6 +36,16 @@ Non-Linear Map Example
 
 See :ref:`nonlinearMap` for an example using a nonlinear map.
 
+FEniCS Example (serial BET and serial model)
+=======================================
+
+See :ref:`FEniCS` for an example using the `FEniCS package
+<http://fenicsproject.org/>`_ that can be run with serial BET.
+
+See :ref:`FEniCS_multiple_serial` for an example that can be run with
+serial BET and uses `Launcher <https://github.com/TACC/launcher>`_ to
+launch multiple serial runs of the model.
+
 ADCIRC Based Examples
 ==============================================
 
