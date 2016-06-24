@@ -114,12 +114,13 @@ class sample_set_base(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-                    '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii']
+                    '_volumes_local', '_local_index', '_dim', '_p_norm',
+                    '_radii', '_normalized_radii']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values', '_radii'] 
+                   '_kdtree_values', '_radii', '_normalized_radii'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -198,6 +199,10 @@ class sample_set_base(object):
         self._radii = None
          #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
         self._radii_local = None
+        #: :class:`numpy.ndarray` of normalized sample radii of shape (num,)
+        self._normalized_radii = None
+         #: :class:`numpy.ndarray` of normalized sample radii of shape (local_num,)
+        self._normalized_radii_local = None
 
     def set_p_norm(self, p_norm):
         """
@@ -1043,8 +1048,8 @@ class voronoi_sample_set(sample_set_base):
         self._volumes = vol
         self.global_to_local()
 
-    def estimate_local_volume(self, num_l_emulate_local=500,
-            max_num_l_emulate=1e4): 
+    def estimate_local_volume(self, num_emulate_local=500,
+            max_num_emulate=int(1e4)): 
         r"""
 
         Estimates the volume fraction of the Voronoice cells associated
@@ -1072,8 +1077,8 @@ class voronoi_sample_set(sample_set_base):
         Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
         `DOI 10.2307/30044198 <http://doi.org/10.2307/30044198>`_
         
-        :param int num_l_emulate_local: The number of emulated samples.
-        :param int max_num_l_emulate: Maximum number of local emulated samples
+        :param int num_emulate_local: The number of emulated samples.
+        :param int max_num_emulate: Maximum number of local emulated samples
         
         """
         self.check_num()
@@ -1129,10 +1134,10 @@ class voronoi_sample_set(sample_set_base):
         for i, iglobal in enumerate(self._local_index):
             samples_in_cell = 0
             total_samples = 10
-            while samples_in_cell < num_l_emulate_local and \
-                    total_samples < max_num_l_emulate:
+            while samples_in_cell < num_emulate_local and \
+                    total_samples < max_num_emulate:
                 total_samples = total_samples*10
-                # Sample within an Lp ball until num_l_emulate_local samples are
+                # Sample within an Lp ball until num_emulate_local samples are
                 # present in the Voronoi cell
                 local_lambda_emulate = lp.Lp_generalized_uniform(self._dim,
                         total_samples, self._p_norm, scale=sample_radii[iglobal],
