@@ -1,4 +1,4 @@
-.. _fromFile3D:
+.. _fromFile3DExample:
 
 =======================================================================
 Example: Generalized Chains with a 3,3-dimensional data,parameter space

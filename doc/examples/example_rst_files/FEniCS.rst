@@ -1,8 +1,8 @@
-.. _fenics:
+.. _fenicsExample:
 
-===============
+===================
 Example: FEniCS
-===============
+===================
 
 We will walk through the following `example
 <https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/BET_script.py>`_.

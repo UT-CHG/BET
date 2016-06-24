@@ -37,9 +37,9 @@ Non-Linear Map Example
 See :ref:`nonlinearMap` for an example using a nonlinear map.
 
 FEniCS Example (serial BET and serial model)
-=======================================
+=============================================
 
-See :ref:`fenics` for an example using the `FEniCS package
+See :ref:`fenicsExample` for an example using the `FEniCS package
 <http://fenicsproject.org/>`_ that can be run with serial BET.
 
 See :ref:`fenicsMultipleSerial` for an example that can be run with
@@ -66,8 +66,8 @@ Adaptive Sampling Examples
 
 Adaptively samples a linear interpolant using data read from file:
 
-    * :ref:`fromFile2D`
-    * :ref:`fromFile3D`
+    * :ref:`fromFile2DExample`
+    * :ref:`fromFile3DExample`
 
 Visualization Examples
 ~~~~~~~~~~~~~~~~~~~~~~
