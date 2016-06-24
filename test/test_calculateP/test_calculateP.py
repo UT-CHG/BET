@@ -46,7 +46,7 @@ class prob:
         """
         self.assertEqual(np.sum(np.less(self.inputs._probabilities, 0)), 0)
 
-class prob_emulated:
+class prob_on_emulated_samples:
     def test_P_sum_to_1(self):
         """
         Test that prob. sums to 1.
@@ -68,7 +68,7 @@ class prob_emulated:
         self.assertEqual(np.sum(np.less(self.inputs_emulated._probabilities, 0)), 0)
 
 
-class prob_mc:
+class prob_with_emulated_volumes:
     def test_P_sum_to_1(self):
         """
         Test that probs sum to 1.
@@ -131,30 +131,30 @@ class Test_prob_3to2(TestProbMethod_3to2, prob):
         self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
 
 
-class Test_prob_emulated_3to2(TestProbMethod_3to2, prob_emulated):
+class Test_prob_on_emulated_samples_3to2(TestProbMethod_3to2, prob_on_emulated_samples):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 2 map.
+    Test :meth:`bet.calculateP.calculateP.prob_on_emulated_samples` on a 3 to 2 map.
     """
     def setUp(self):
         """
         Set up 3 to 2 map.
         """
-        super(Test_prob_emulated_3to2, self).setUp()
-        calcP.prob_emulated(self.disc)
+        super(Test_prob_on_emulated_samples_3to2, self).setUp()
+        calcP.prob_on_emulated_samples(self.disc)
         self.P_emulate_ref = np.loadtxt(data_path+"/3to2_prob_emulated.txt.gz")
         #self.P_emulate = util.get_global_values(self.P_emulate)
         
 
-class Test_prob_mc_3to2(TestProbMethod_3to2, prob_mc):
+class Test_prob_with_emulated_volumes_3to2(TestProbMethod_3to2, prob_with_emulated_volumes):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 2 map.
+    Test :meth:`bet.calculateP.calculateP.prob_with_emulated_volumes` on a 3 to 2 map.
     """
     def setUp(self):
         """
         Set up 3 to 2 problem.
         """
-        super(Test_prob_mc_3to2, self).setUp()
-        calcP.prob_mc(self.disc)
+        super(Test_prob_with_emulated_volumes_3to2, self).setUp()
+        calcP.prob_with_emulated_volumes(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to2_prob_mc.txt.gz")
  
 
@@ -197,29 +197,29 @@ class Test_prob_3to1(TestProbMethod_3to1, prob):
         self.P_ref = np.loadtxt(data_path + "/3to1_prob.txt.gz")
 
 
-class Test_prob_emulated_3to1(TestProbMethod_3to1, prob_emulated):
+class Test_prob_on_emulated_samples_3to1(TestProbMethod_3to1, prob_on_emulated_samples):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 3 to 1 map.
+    Test :meth:`bet.calculateP.calculateP.prob_on_emulated_samples` on a 3 to 1 map.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        super(Test_prob_emulated_3to1, self).setUp()
-        calcP.prob_emulated(self.disc)
+        super(Test_prob_on_emulated_samples_3to1, self).setUp()
+        calcP.prob_on_emulated_samples(self.disc)
         self.P_emulate_ref = np.loadtxt(data_path+"/3to1_prob_emulated.txt.gz")
 
 
-class Test_prob_mc_3to1(TestProbMethod_3to1, prob_mc):
+class Test_prob_with_emulated_volumes_3to1(TestProbMethod_3to1, prob_with_emulated_volumes):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 3 to 1 map.
+    Test :meth:`bet.calculateP.calculateP.prob_with_emulated_volumes` on a 3 to 1 map.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        super(Test_prob_mc_3to1, self).setUp()
-        calcP.prob_mc(self.disc)
+        super(Test_prob_with_emulated_volumes_3to1, self).setUp()
+        calcP.prob_with_emulated_volumes(self.disc)
         self.P_ref = np.loadtxt(data_path + "/3to1_prob_mc.txt.gz")
 
   
@@ -269,28 +269,28 @@ class Test_prob_10to4(TestProbMethod_10to4, prob):
         calcP.prob(self.disc)
 
 
-class Test_prob_emulated_10to4(TestProbMethod_10to4, prob_emulated):
+class Test_prob_on_emulated_samples_10to4(TestProbMethod_10to4, prob_on_emulated_samples):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 10 to 4 map.
+    Test :meth:`bet.calculateP.calculateP.prob_on_emulated_samples` on a 10 to 4 map.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        super(Test_prob_emulated_10to4, self).setUp()
+        super(Test_prob_on_emulated_samples_10to4, self).setUp()
 
-        calcP.prob_emulated(self.disc)
+        calcP.prob_on_emulated_samples(self.disc)
         
-class Test_prob_mc_10to4(TestProbMethod_10to4, prob_mc):
+class Test_prob_with_emulated_volumes_10to4(TestProbMethod_10to4, prob_with_emulated_volumes):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 10 to 4 map.
+    Test :meth:`bet.calculateP.calculateP.prob_with_emulated_volumes` on a 10 to 4 map.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        super(Test_prob_mc_10to4, self).setUp()
-        calcP.prob_mc(self.disc)
+        super(Test_prob_with_emulated_volumes_10to4, self).setUp()
+        calcP.prob_with_emulated_volumes(self.disc)
 
 
 class TestProbMethod_1to1(unittest.TestCase):
@@ -343,26 +343,26 @@ class Test_prob_1to1(TestProbMethod_1to1, prob):
         calcP.prob(self.disc)
 
 
-class Test_prob_emulated_1to1(TestProbMethod_1to1, prob_emulated):
+class Test_prob_on_emulated_samples_1to1(TestProbMethod_1to1, prob_on_emulated_samples):
     """
-    Test :meth:`bet.calculateP.calculateP.prob_emulated` on a 1 to 1 map.
-    """
-    def setUp(self):
-        """
-        Set up problem.
-        """
-        super(Test_prob_emulated_1to1, self).setUp()
-        calcP.prob_emulated(self.disc)
-
-
-class Test_prob_mc_1to1(TestProbMethod_1to1, prob_mc):
-    """
-    Test :meth:`bet.calculateP.calculateP.prob_mc` on a 1 to 1 map.
+    Test :meth:`bet.calculateP.calculateP.prob_on_emulated_samples` on a 1 to 1 map.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        super(Test_prob_mc_1to1, self).setUp()
-        calcP.prob_mc(self.disc)
+        super(Test_prob_on_emulated_samples_1to1, self).setUp()
+        calcP.prob_on_emulated_samples(self.disc)
+
+
+class Test_prob_with_emulated_volumes_1to1(TestProbMethod_1to1, prob_with_emulated_volumes):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob_with_emulated_volumes` on a 1 to 1 map.
+    """
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_with_emulated_volumes_1to1, self).setUp()
+        calcP.prob_with_emulated_volumes(self.disc)
 

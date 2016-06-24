@@ -114,12 +114,12 @@ class sample_set_base(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-                    '_volumes_local', '_local_index', '_dim', '_p_norm']
+                    '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values'] 
+                   '_kdtree_values', '_radii'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -194,6 +194,10 @@ class sample_set_base(object):
         self._width = None
         #: p-norm for discretization
         self._p_norm = 2.0
+        #: :class:`numpy.ndarray` of sample radii of shape (num,)
+        self._radii = None
+         #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
+        self._radii_local = None
 
     def set_p_norm(self, p_norm):
         """
@@ -632,13 +636,6 @@ class sample_set_base(object):
         Calculate the volume faction of cells approximately using Monte
         Carlo integration. 
 
-        .. todo::
-
-           This currently presumes a uniform Lesbegue measure on the
-           ``domain``. Currently the way this is written
-           ``emulated_input_sample_set`` is NOT used to calculate the volume.
-           This should at least be an option. 
-
         :param int n_mc_points: If estimate is True, number of MC points to use
         """
         num = self.check_num()
@@ -655,6 +652,40 @@ class sample_set_base(object):
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
         vol = cvol
         vol = vol/float(n_mc_points)
+        self._volumes = vol
+        self.global_to_local()
+
+    def estimate_volume_emulated(self, emulated_sample_set):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration.
+
+        .. note ::
+
+            This could be re-written to just use an ``emulated_ii_ptr`` instead
+            of an ``emulated_sample_set``.
+
+        :param emulated_sample_set: The set of samples used to approximate the
+            volume measure.
+        :type emulated_sample_set: :class:`bet.sample_set_base`
+
+        """
+        num = self.check_num()
+
+        if emulated_sample_set._values_local is None:
+            emulated_sample_set.global_to_local()
+
+        (_, emulate_ptr) = self.query(emulated_sample_set._values_local)
+
+        vol = np.zeros((num,))
+        for i in range(num):
+            vol[i] = np.sum(np.equal(emulate_ptr, i))
+        cvol = np.copy(vol)
+        comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
+        num_emulate = emulated_sample_set._values_local.shape[0]
+        num_emulate = comm.allreduce(num_emulate, op=MPI.SUM)
+        vol = cvol
+        vol = vol/float(num_emulate)
         self._volumes = vol
         self.global_to_local()
 
@@ -1067,7 +1098,7 @@ class voronoi_sample_set(sample_set_base):
             num_mc_points = np.max([1e4, samples.shape[0]*20])
             self.estimate_radii(n_mc_points=int(num_mc_points)) 
             sample_radii = 1.5*np.copy(self._normalized_radii)
-        if np.sum(sample_radii <=0) > 0:
+        if np.sum(sample_radii <= 0) > 0:
             # Calculate the pairwise distances
             if not np.isinf(self._p_norm):
                 pairwise_distance = spatial.distance.pdist(samples,
@@ -1080,7 +1111,7 @@ class voronoi_sample_set(sample_set_base):
             # Calculate mean, std of pairwise distances
             # TODO this may be too large/small
             # Estimate radius as 2.*STD of the pairwise distance
-            sample_radii[sample_radii <= 0] = prob-est_radii[sample_radii <= 0] 
+            sample_radii[sample_radii <= 0] = prob_est_radii[sample_radii <= 0] 
 
         # determine the volume of the Lp ball
         if not np.isinf(self._p_norm):
@@ -1182,7 +1213,7 @@ class rectangle_sample_set(sample_set_base):
         self._left[-1,:] = -np.inf
         self._width = self._right - self._left
         self.set_values(values)
-        logging.warning("If rectangles intersect on a set nonzero measure, calculated values with be wrong.")
+        logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
 
         
                     
@@ -1342,10 +1373,10 @@ class ball_sample_set(sample_set_base):
         values[0:-1,:] = centers
         values[-1,:] = np.nan
         self.set_values(values)
-        self._width = np.zeros((len(centers)+1,))
-        self._width[0:-1] = radii
-        self._width[-1] = np.inf
-        logging.warning("If balls intersect on a set nonzero measure, calculated values with be wrong.")
+        self._radii = np.zeros((len(centers)+1,))
+        self._radii[0:-1] = radii
+        self._radii[-1] = np.inf
+        logging.warning("If balls intersect on a set nonzero measure, calculated values will be wrong.")
 
     def append_values(self, values):
         """
@@ -1447,7 +1478,7 @@ class ball_sample_set(sample_set_base):
         dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
         pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
         for i in range(num - 1):
-            in_rec = np.less(linalg.norm(x-self._values[i,:], self._p_norm, axis=1), self._width[i])
+            in_rec = np.less(linalg.norm(x-self._values[i,:], self._p_norm, axis=1), self._radii[i])
             for j in range(k):
                 if j == 0:
                     in_rec_now = np.logical_and(np.equal(pt[:,j],num-1), in_rec)
@@ -1467,7 +1498,7 @@ class ball_sample_set(sample_set_base):
         num = self.check_num()
         self._volumes = np.zeros((num, ))
         domain_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
-        self._volumes[0:-1] = 2.0**self._dim * self._width[0:-1]**self._dim * \
+        self._volumes[0:-1] = 2.0**self._dim * self._radii[0:-1]**self._dim * \
                     scipy.special.gamma(1+1./self._p_norm)**self._dim / \
                     scipy.special.gamma(1+float(self._dim)/self._p_norm)
         self._volumes[0:-1] *= 1.0/domain_vol
@@ -1865,3 +1896,36 @@ class discretization(object):
                 self._emulated_input_sample_set = emulated_input_sample_set
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def estimate_input_volume_emulated(self):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration.
+
+        .. note ::
+
+            This could be re-written to just use ``emulated_ii_ptr`` instead
+            of ``_emulated_input_sample_set``.
+
+        """
+        if self._emulated_input_sample_set is None:
+            raise AttributeError("Required: _emulated_input_sample_set")
+        else:
+            self._input_sample_set.estimate_volume_emulated(self._emulated_input_sample_set)
+
+    def estimate_output_volume_emulated(self):
+        """
+        Calculate the volume faction of cells approximately using Monte
+        Carlo integration.
+
+        .. note ::
+
+            This could be re-written to just use ``emulated_oo_ptr`` instead
+            of ``_emulated_output_sample_set``.
+
+
+        """
+        if self._emulated_output_sample_set is None:
+            raise AttributeError("Required: _emulated_output_sample_set")
+        else:
+            self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)

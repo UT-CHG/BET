@@ -513,6 +513,103 @@ class Test_discretization_simple(unittest.TestCase):
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
 
+    def Test_estimate_input_volume_emulated(self):
+        """
+
+        Testing :meth:`bet.discretization.estimate_input_volume_emulated`
+
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        lam_domain = np.zeros((3, 2))
+        lam_domain[:, 0] = lam_left
+        lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        s_set.set_domain(lam_domain)
+        s_set.set_values(util.meshgrid_ndim(d1_arrays))
+
+        volume_exact = 1.0/s_set._values.shape[0]
+
+        emulated_samples = s_set.copy()
+        emulated_samples.update_bounds_local(1001)
+        emulated_samples.set_values_local(emulated_samples._width_local\
+                *np.random.random((1001, emulated_samples.get_dim())) +
+                emulated_samples._left_local)
+
+        self.disc.set_input_sample_set(s_set)
+        self.disc.set_emulated_input_sample_set(emulated_samples)
+        self.disc.estimate_input_volume_emulated()
+
+        lam_vol = self.disc._input_sample_set._volumes
+
+        # Check the dimension.
+        nptest.assert_array_equal(lam_vol.shape, (len(s_set._values), ))
+       
+        # Check that the volumes are within a tolerance for a regular grid of
+        # samples.
+        nptest.assert_array_almost_equal(lam_vol, volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(lam_vol), 1.0)
+
+    def Test_estimate_output_volume_emulated(self):
+        """
+
+        Testing :meth:`bet.discretization.estimate_output_volume_emulated`
+
+        """
+        lam_left = np.array([0.0])
+        lam_right = np.array([1.0])
+        lam_width = lam_right-lam_left
+
+        lam_domain = np.zeros((1, 2))
+        lam_domain[:, 0] = lam_left
+        lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        s_set.set_domain(lam_domain)
+        s_set.set_values(util.meshgrid_ndim(d1_arrays))
+
+        volume_exact = 1.0/s_set._values.shape[0]
+
+        emulated_samples = s_set.copy()
+        emulated_samples.update_bounds_local(1001)
+        emulated_samples.set_values_local(emulated_samples._width_local\
+                *np.random.random((1001, emulated_samples.get_dim())) +
+                emulated_samples._left_local)
+
+        self.disc.set_output_sample_set(s_set)
+        self.disc.set_emulated_output_sample_set(emulated_samples)
+        self.disc.estimate_output_volume_emulated()
+
+        lam_vol = self.disc._output_sample_set._volumes
+
+        # Check the dimension.
+        nptest.assert_array_equal(lam_vol.shape, (len(s_set._values), ))
+       
+        # Check that the volumes are within a tolerance for a regular grid of
+        # samples.
+        nptest.assert_array_almost_equal(lam_vol, volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(lam_vol), 1.0)
+
+
 class TestEstimateVolume(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.estimate_volulme`.
@@ -539,13 +636,65 @@ class TestEstimateVolume(unittest.TestCase):
         for l, r in zip(start, stop):
             d1_arrays.append(np.linspace(l, r, num_samples_dim))
 
-        self.num_l_emulate = 1000001
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
         print util.meshgrid_ndim(d1_arrays).shape
         self.volume_exact = 1.0/self.s_set._values.shape[0]
         self.s_set.estimate_volume(n_mc_points= 1001)
+        self.lam_vol = self.s_set._volumes
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        print self.lam_vol.shape, self.s_set._values.shape
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
+       
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+
+class TestEstimateVolumeEmulated(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_volulme_emulated`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        print util.meshgrid_ndim(d1_arrays).shape
+        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        emulated_samples = self.s_set.copy()
+        emulated_samples.update_bounds_local(1001)
+        emulated_samples.set_values_local(emulated_samples._width_local\
+                *np.random.random((1001, emulated_samples.get_dim())) +
+                emulated_samples._left_local)
+        self.s_set.estimate_volume_emulated(emulated_samples)
         self.lam_vol = self.s_set._volumes
     def test_dimension(self):
         """

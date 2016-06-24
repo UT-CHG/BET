@@ -14,7 +14,7 @@ from bet.Comm import comm, MPI
 import bet.util as util
 import bet.sampling.basicSampling as bsam
 
-def prob_emulated(discretization, globalize=True): 
+def prob_on_emulated_samples(discretization, globalize=True): 
     r"""
 
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
@@ -98,7 +98,7 @@ def prob(discretization):
             get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
 
-def prob_mc(discretization): 
+def prob_with_emulated_volumes(discretization): 
     r"""
     
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
@@ -117,25 +117,9 @@ def prob_mc(discretization):
     discretization._output_probability_set.check_num()
     if discretization._output_probability_set._values_local is None:
         discretization._output_probability_set.global_to_local()
-    if discretization._emulated_input_sample_set._values_local is None:
-        discretization._emulated_input_sample_set.global_to_local()
 
     # Calculate Volumes
-    (_, emulate_ptr) = discretization._input_sample_set.query(discretization.\
-            _emulated_input_sample_set._values_local)
-    vol = np.zeros((num,))
-    for i in range(num):
-        vol[i] = np.sum(np.equal(emulate_ptr, i))
-    cvol = np.copy(vol)
-    comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
-    vol = cvol
-    num_l_emulate = discretization._emulated_input_sample_set.\
-            _values_local.shape[0]
-    num_l_emulate = comm.allreduce(num_l_emulate, op=MPI.SUM)
-    vol = vol/float(num_l_emulate)
-    discretization._input_sample_set._volumes = vol
-    discretization._input_sample_set.global_to_local()
-
+    discretization.estimate_input_volume_emulated()
     return prob(discretization)
 
 
