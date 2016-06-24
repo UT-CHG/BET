@@ -89,7 +89,7 @@ Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
 plotD.scatter_2D(input_samples, ref_sample=param_ref[0,:],
-                 filename='FEniCS_ParameterSamples.eps', file_extension="eps")
+                 filename='FEniCS_ParameterSamples.eps')
 if Q_ref.size == 2:
     plotD.show_data_domain_2D(my_discretization, Q_ref=Q_ref[0,:],
             file_extension="eps")
