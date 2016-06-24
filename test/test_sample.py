@@ -843,7 +843,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
         """
         Check querying
         """
-        x = np.array([[0.2, 0.2], [0.6, 0.6], [0.99, 0.99]])
+        x = np.array([[0.2, 0.2], [0.61, 0.61], [0.99, 0.99]])
         (d, ptr) = self.sam_set.query(x)
         nptest.assert_array_equal(ptr, [[1], [0], [2]])
 

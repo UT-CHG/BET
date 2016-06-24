@@ -85,7 +85,6 @@ def load_sample_set(file_name, sample_set_name=None):
     if sample_set_name+"_dim" in mdat.keys():
         loaded_set = eval(mdat[sample_set_name + '_sample_set_type'][0])(
             np.squeeze(mdat[sample_set_name+"_dim"]))
-        loaded_set.set_p_norm(mdat[sample_set_name + '_p_norm'])
     else:
         logging.info("No sample_set named {} with _dim in file".\
                 format(sample_set_name))
@@ -1164,13 +1163,13 @@ class rectangle_sample_set(sample_set_base):
         :type mins: interable with components of length dim
 
         """
+        # Check dimensions
         if len(maxes) != len(mins):
             raise length_not_matching("Different number of maxes and mins")
-        #dim = len(maxes[0])
         for i in range(len(maxes)):
             if (len(maxes[i]) != self._dim) or (len(mins[i]) != self._dim):
                 raise length_not_matching("Rectangle " + `i` + " has the wrong number of entries.")
-        #sample_set_base.__init__(self, dim)
+                
         values = np.zeros((len(maxes)+1, self._dim))
         self._right = np.zeros((len(maxes)+1, self._dim))
         self._left = np.zeros((len(mins)+1, self._dim))
@@ -1183,22 +1182,112 @@ class rectangle_sample_set(sample_set_base):
         self._left[-1,:] = -np.inf
         self._width = self._right - self._left
         self.set_values(values)
+        logging.warning("If rectangles intersect on a set nonzero measure, calculated values with be wrong.")
+
+        
+                    
+    def update_bounds(self, num=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+
+    def update_bounds_local(self, num_local=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+    def append_values(self, values):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values: values to append
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_values_local(self, values_local):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values_local: values to append
+        :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_jacobians(self, new_jacobians):
+        """
+        Does nothing for this type of sample set. 
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_jacobians: New jacobians to append.
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+            dim)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_error_estimates(self, new_error_estimates):
+        """
+        Does nothing for this type of sample set.
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_error_estimates: New error_estimates to append.
+        :type new_error_estimates: :class:`numpy.ndarray` of shape (num,)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
         
     def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
+        Only returns the neighbors for which :math:`x_i \in A_k`. The distance
+        is set to 0 if it is in the rectangle and infinity if it is not.
+        It is only considered in or out.
+
+        .. seealso::
+
+        :meth:`scipy.spatial.KDTree.query`
+
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
         :param int k: number of nearest neighbors to return
         :rtype: tuple
         :returns: (dist, ptr)
+
         """
         num = self.check_num()
         dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
         pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
         for i in range(num - 1):
             in_r = np.all(np.less_equal(x, self._right[i,:]), axis=1)
-            in_l = np.all(np.greater_equal(x, self._left[i,:]), axis=1)
+            in_l = np.all(np.greater(x, self._left[i,:]), axis=1)
             in_rec = np.logical_and(in_r, in_l)
             for j in range(k):
                 if j == 0:
@@ -1214,6 +1303,7 @@ class rectangle_sample_set(sample_set_base):
         r"""
         
         Exactly calculates the Lebesgue volume fraction of the cells.
+
         """
         num = self.check_num()
         self._volumes = np.zeros((num, ))
@@ -1225,6 +1315,7 @@ class ball_sample_set(sample_set_base):
     r"""
     A data structure containing arrays specific to a set of samples defining
     discretization containing a number of balls.
+    Only returns the neighbors for which :math:`x_i \in A_k`.
 
     A series of n balls :math:`A_i \subset \Lambda` with 
     :math:`A_i \cap A_j = \emptyset` 
@@ -1239,17 +1330,14 @@ class ball_sample_set(sample_set_base):
         :param centers: centers of balls
         :type centers: interable of shape (num-1, dim)
         :param radii: radii of balls
-        :type raii: iterable of length num-1
+        :type radii: iterable of length num-1
         
         """
-        #self.p_norm = p_norm
         if len(centers) != len(radii):
             raise length_not_matching("Different number of centers and radii.")
-        #dim = len(centers[0])
         for i in range(len(centers)):
             if (len(centers[i]) != self._dim):
                 raise length_not_matching("Center " + `i` + " has the wrong number of entries.")
-        #sample_set_base.__init__(self, dim)
         values = np.zeros((len(centers)+1, self._dim))
         values[0:-1,:] = centers
         values[-1,:] = np.nan
@@ -1257,10 +1345,98 @@ class ball_sample_set(sample_set_base):
         self._width = np.zeros((len(centers)+1,))
         self._width[0:-1] = radii
         self._width[-1] = np.inf
+        logging.warning("If balls intersect on a set nonzero measure, calculated values with be wrong.")
+
+    def append_values(self, values):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values: values to append
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_values_local(self, values_local):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values_local: values to append
+        :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_jacobians(self, new_jacobians):
+        """
+        Does nothing for this type of sample set. 
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_jacobians: New jacobians to append.
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+            dim)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_error_estimates(self, new_error_estimates):
+        """
+        Does nothing for this type of sample set.
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_error_estimates: New error_estimates to append.
+        :type new_error_estimates: :class:`numpy.ndarray` of shape (num,)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def update_bounds(self, num=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+
+    def update_bounds_local(self, num_local=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
         
     def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
+        The distance is set to 0 if it is in the rectangle and infinity 
+        if it is not.
+        It is only considered in or out.
+
+        .. seealso::
+
+        :meth:`scipy.spatial.KDTree.query`
+
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
         :param int k: number of nearest neighbors to return
@@ -1271,7 +1447,7 @@ class ball_sample_set(sample_set_base):
         dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
         pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
         for i in range(num - 1):
-            in_rec = np.less_equal(linalg.norm(x-self._values[i,:], self._p_norm, axis=1), self._width[i])
+            in_rec = np.less(linalg.norm(x-self._values[i,:], self._p_norm, axis=1), self._width[i])
             for j in range(k):
                 if j == 0:
                     in_rec_now = np.logical_and(np.equal(pt[:,j],num-1), in_rec)
@@ -1288,12 +1464,9 @@ class ball_sample_set(sample_set_base):
         
          
         """
-        #if p_norm is None:
-        #    p_norm = self.p_norm
         num = self.check_num()
         self._volumes = np.zeros((num, ))
         domain_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
-        #self._volumes[0:-1] = ((2.0*scipy.special.gamma(1.0/float(self._p_norm) + 1.0)*self._width[0:-1])**self._dim)/scipy.special.gamma(float(self._dim)/float(self._p_norm) + 1.0)
         self._volumes[0:-1] = 2.0**self._dim * self._width[0:-1]**self._dim * \
                     scipy.special.gamma(1+1./self._p_norm)**self._dim / \
                     scipy.special.gamma(1+float(self._dim)/self._p_norm)
@@ -1303,6 +1476,10 @@ class ball_sample_set(sample_set_base):
 class cartesian_sample_set(rectangle_sample_set):
     """
     Defines a hyperrectangle discretization based on a Cartesian grid.
+
+        .. seealso::
+
+        :meth:`bet.sample.rectangle_sample_set`
 
     """
     def setup(self, xi):
@@ -1338,7 +1515,7 @@ class discretization(object):
     vector_names = ['_io_ptr', '_io_ptr_local', '_emulated_ii_ptr',
         '_emulated_ii_ptr_local', '_emulated_oo_ptr', '_emulated_oo_ptr_local']
     #: List of attribute names for attributes that are
-    #: :class:`sample.sample_set_base``
+    #: :class:`sample.sample_set_base`
     sample_set_names = ['_input_sample_set', '_output_sample_set',
         '_emulated_input_sample_set', '_emulated_output_sample_set',
         '_output_probability_set'] 
