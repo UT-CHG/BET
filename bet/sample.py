@@ -16,6 +16,7 @@ import scipy.stats
 from bet.Comm import comm, MPI
 import bet.util as util
 import bet.sampling.LpGeneralizedSamples as lp
+import numpy.linalg as linalg
 
 class length_not_matching(Exception):
     """
@@ -35,11 +36,11 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
     saved to a MATLAB-style file.
 
     :param save_set: sample set to save
-    :type save_set: :class:`bet.sample.sample_set`
+    :type save_set: :class:`bet.sample.sample_set_base`
     :param string file_name: Name of the ``.mat`` file, no extension is
         needed.
     :param string sample_set_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.sample_set` objects to a single
+        saving multiple :class`bet.sample.sample_set_base` objects to a single
         ``.mat`` file
 
     """
@@ -49,14 +50,15 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         mdat = dict()
     if sample_set_name is None:
         sample_set_name = 'default'
-    for attrname in sample_set.vector_names:
+    for attrname in sample_set_base.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
-    for attrname in sample_set.all_ndarray_names:
+    for attrname in sample_set_base.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
+    mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
     if comm.rank == 0:
         sio.savemat(file_name, mdat)
 
@@ -81,18 +83,19 @@ def load_sample_set(file_name, sample_set_name=None):
         sample_set_name = 'default'
     
     if sample_set_name+"_dim" in mdat.keys():
-        loaded_set = sample_set(np.squeeze(mdat[sample_set_name+"_dim"]))
+        loaded_set = eval(mdat[sample_set_name + '_sample_set_type'][0])(
+            np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
         logging.info("No sample_set named {} with _dim in file".\
                 format(sample_set_name))
         return None
 
-    for attrname in sample_set.vector_names:
+    for attrname in sample_set_base.vector_names:
         if attrname is not '_dim':
             if sample_set_name+attrname in mdat.keys():
                 setattr(loaded_set, attrname,
                     np.squeeze(mdat[sample_set_name+attrname]))
-    for attrname in sample_set.all_ndarray_names:
+    for attrname in sample_set_base.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     
@@ -111,12 +114,12 @@ class sample_set_base(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-            '_volumes_local', '_local_index', '_dim']
+                    '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values'] 
+                   '_kdtree_values', '_radii'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -189,7 +192,28 @@ class sample_set_base(object):
         self._right = None
         #: Pointwise width (num, dim)
         self._width = None
+        #: p-norm for discretization
+        self._p_norm = 2.0
+        #: :class:`numpy.ndarray` of sample radii of shape (num,)
+        self._radii = None
+         #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
+        self._radii_local = None
 
+    def set_p_norm(self, p_norm):
+        """
+        Sets p-norm for sample set.
+
+        :param float p_norm: p-norm to use
+
+        """
+        self._p_norm = p_norm
+
+    def get_p_norm(self):
+        """
+        Returns p-norm for sample set
+        """
+        return self._p_norm
+        
     def update_bounds(self, num=None):
         """
         Creates ``self._right``, ``self._left``, ``self._width``.
@@ -259,7 +283,7 @@ class sample_set_base(object):
 
         """
         num = None
-        for array_name in sample_set.array_names:
+        for array_name in self.array_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 if num is None:
@@ -591,7 +615,7 @@ class sample_set_base(object):
         """
         Makes global arrays from available local ones.
         """
-        for array_name in sample_set.array_names:
+        for array_name in self.array_names:
             current_array_local = getattr(self, array_name + "_local")
             if current_array_local is not None:
                 setattr(self, array_name,
@@ -681,7 +705,7 @@ class sample_set_base(object):
         num = self.check_num()
         global_index = np.arange(num, dtype=np.int)
         self._local_index = np.array_split(global_index, comm.size)[comm.rank]
-        for array_name in sample_set.array_names:
+        for array_name in self.array_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(self, array_name + "_local",
@@ -691,17 +715,17 @@ class sample_set_base(object):
         """
         Makes a copy using :meth:`numpy.copy`.
 
-        :rtype: :class:`~bet.sample.sample_set`
-        :returns: Copy of this :class:`~bet.sample.sample_set`
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: Copy of this :class:`~bet.sample.sample_set_base`
 
         """
-        my_copy = sample_set(self.get_dim())
-        for array_name in sample_set.all_ndarray_names:
+        my_copy = eval(self.__class__.__name__)(self.get_dim())
+        for array_name in self.all_ndarray_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(my_copy, array_name,
                         np.copy(current_array))
-        for vector_name in sample_set.vector_names:
+        for vector_name in self.vector_names:
             if vector_name is not "_dim":
                 current_vector = getattr(self, vector_name)
                 if current_vector is not None:
@@ -827,10 +851,6 @@ class voronoi_sample_set(sample_set_base):
     a Voronoi tesselation.
 
     """
-    def __init__(self, dim, p_norm=2):
-        super(voronoi_sample_set, self).__init__(dim)
-        #: p-norm to use for nearest neighbor search
-        self.p_norm = p_norm
 
     def query(self, x, k=1):
         """
@@ -850,7 +870,7 @@ class voronoi_sample_set(sample_set_base):
 
 
         #TODO add exception if dimensions of x are wrong
-        (dist, ptr) = self._kdtree.query(x, p=self.p_norm, k=k)
+        (dist, ptr) = self._kdtree.query(x, p=self._p_norm, k=k)
         return (dist, ptr)
 
     def exact_volume_1D(self, distribution='uniform', a=None, b=None):
@@ -945,7 +965,7 @@ class voronoi_sample_set(sample_set_base):
 
         for i in range(num):
             rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
-                :] - samples[i, :], ord=self.p_norm, axis=1))
+                :] - samples[i, :], ord=self._p_norm, axis=1))
 
         crad = np.copy(rad)
         comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
@@ -1005,7 +1025,7 @@ class voronoi_sample_set(sample_set_base):
         for i in range(num):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
             rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
-                :] - samples[i, :], ord=self.p_norm, axis=1))
+                :] - samples[i, :], ord=self._p_norm, axis=1))
 
         crad = np.copy(rad)
         comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
@@ -1080,9 +1100,9 @@ class voronoi_sample_set(sample_set_base):
             sample_radii = 1.5*np.copy(self._normalized_radii)
         if np.sum(sample_radii <= 0) > 0:
             # Calculate the pairwise distances
-            if not np.isinf(self.p_norm):
+            if not np.isinf(self._p_norm):
                 pairwise_distance = spatial.distance.pdist(samples,
-                        p=self.p_norm)
+                        p=self._p_norm)
             else:
                 pairwise_distance = spatial.distance.pdist(samples, p='chebyshev')
             pairwise_distance = spatial.distance.squareform(pairwise_distance)
@@ -1094,10 +1114,10 @@ class voronoi_sample_set(sample_set_base):
             sample_radii[sample_radii <= 0] = prob_est_radii[sample_radii <= 0] 
 
         # determine the volume of the Lp ball
-        if not np.isinf(self.p_norm):
+        if not np.isinf(self._p_norm):
             sample_Lp_ball_vol = sample_radii**self._dim * \
-                    scipy.special.gamma(1+1./self.p_norm) / \
-                    scipy.special.gamma(1+float(self._dim)/self.p_norm)
+                    scipy.special.gamma(1+1./self._p_norm) / \
+                    scipy.special.gamma(1+float(self._dim)/self._p_norm)
         else:
             sample_Lp_ball_vol = (2.0*sample_radii)**self._dim
 
@@ -1115,7 +1135,7 @@ class voronoi_sample_set(sample_set_base):
                 # Sample within an Lp ball until num_l_emulate_local samples are
                 # present in the Voronoi cell
                 local_lambda_emulate = lp.Lp_generalized_uniform(self._dim,
-                        total_samples, self.p_norm, scale=sample_radii[iglobal],
+                        total_samples, self._p_norm, scale=sample_radii[iglobal],
                         loc=samples[iglobal])
 
                 # determine the number of samples in the Voronoi cell (intersected
@@ -1126,7 +1146,7 @@ class voronoi_sample_set(sample_set_base):
                     local_lambda_emulate = local_lambda_emulate[inside]
 
                 (_, emulate_ptr) = kdtree.query(local_lambda_emulate,
-                        p=self.p_norm,
+                        p=self._p_norm,
                         distance_upper_bound=sample_radii[iglobal])
 
                 samples_in_cell = np.sum(np.equal(emulate_ptr, iglobal))
@@ -1150,10 +1170,375 @@ class sample_set(voronoi_sample_set):
     """
     Set Voronoi cells as the default for now.
     """
+
+class rectangle_sample_set(sample_set_base):
+    r"""
+    A data structure containing arrays specific to a set of samples defining
+    a hyperrectangle discretization.
+
+    A series of n hyperrectangles :math:`A_i \subset \Lambda` with 
+    :math:`A_i \cap A_j = \emptyset` 
+    for :math:`i \neq j`. The last entry represents the remainder 
+    :math:`\Lambda \setminus ( \cup_{i-1}^n A_i)`.
+    
+    """
+
+    def setup(self, maxes, mins):
+        """
+
+        Initialization
+
+        :param maxes: array or list of maxes for hyperrectangles
+        :type maxes: interable with components of length dim
+        :param mins: array or list of mins for hyperrectangles
+        :type mins: interable with components of length dim
+
+        """
+        # Check dimensions
+        if len(maxes) != len(mins):
+            raise length_not_matching("Different number of maxes and mins")
+        for i in range(len(maxes)):
+            if (len(maxes[i]) != self._dim) or (len(mins[i]) != self._dim):
+                raise length_not_matching("Rectangle " + `i` + " has the wrong number of entries.")
                 
+        values = np.zeros((len(maxes)+1, self._dim))
+        self._right = np.zeros((len(maxes)+1, self._dim))
+        self._left = np.zeros((len(mins)+1, self._dim))
+        for i in range(len(maxes)):
+            values[i,:] = 0.5*(np.array(maxes[i]) + np.array(mins[i]))
+            self._right[i,:] = maxes[i]
+            self._left[i,:] = mins[i]
+        values[-1,:] = np.inf
+        self._right[-1,:] = np.inf
+        self._left[-1,:] = -np.inf
+        self._width = self._right - self._left
+        self.set_values(values)
+        logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
+
+        
+                    
+    def update_bounds(self, num=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+
+    def update_bounds_local(self, num_local=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+    def append_values(self, values):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values: values to append
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_values_local(self, values_local):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values_local: values to append
+        :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_jacobians(self, new_jacobians):
+        """
+        Does nothing for this type of sample set. 
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_jacobians: New jacobians to append.
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+            dim)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_error_estimates(self, new_error_estimates):
+        """
+        Does nothing for this type of sample set.
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_error_estimates: New error_estimates to append.
+        :type new_error_estimates: :class:`numpy.ndarray` of shape (num,)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+        
+    def query(self, x, k=1):
+        """
+        Identify which value points x are associated with for discretization.
+        Only returns the neighbors for which :math:`x_i \in A_k`. The distance
+        is set to 0 if it is in the rectangle and infinity if it is not.
+        It is only considered in or out.
+
+        .. seealso::
+
+        :meth:`scipy.spatial.KDTree.query`
+
+        :param x: points for query
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
+        :param int k: number of nearest neighbors to return
+        :rtype: tuple
+        :returns: (dist, ptr)
+
+        """
+        num = self.check_num()
+        dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
+        pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
+        for i in range(num - 1):
+            in_r = np.all(np.less_equal(x, self._right[i,:]), axis=1)
+            in_l = np.all(np.greater(x, self._left[i,:]), axis=1)
+            in_rec = np.logical_and(in_r, in_l)
+            for j in range(k):
+                if j == 0:
+                    in_rec_now = np.logical_and(np.equal(pt[:,j],num-1), in_rec)
+                else:
+                    in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
+                pt[:,j][in_rec_now]  = i
+                dist[:,j][in_rec_now] = 0.0
+        
+        return (dist, pt)
+
+    def exact_volume_lebesgue(self):
+        r"""
+        
+        Exactly calculates the Lebesgue volume fraction of the cells.
+
+        """
+        num = self.check_num()
+        self._volumes = np.zeros((num, ))
+        domain_width = self._domain[:, 1] - self._domain[:, 0]
+        self._volumes[0:-1] = np.prod(self._width[0:-1]/domain_width, axis=1)
+        self._volumes[-1] = 1.0 - np.sum(self._volumes[0:-1])
+
+class ball_sample_set(sample_set_base):
+    r"""
+    A data structure containing arrays specific to a set of samples defining
+    discretization containing a number of balls.
+    Only returns the neighbors for which :math:`x_i \in A_k`.
+
+    A series of n balls :math:`A_i \subset \Lambda` with 
+    :math:`A_i \cap A_j = \emptyset` 
+    for :math:`i \neq j`. The last entry represents the remainder 
+    :math:`\Lambda \setminus ( \cup_{i-1}^n A_i)`.
+    
+    """
+    def setup(self, centers, radii):
+        """
+        Initialize.
+        
+        :param centers: centers of balls
+        :type centers: interable of shape (num-1, dim)
+        :param radii: radii of balls
+        :type radii: iterable of length num-1
+        
+        """
+        if len(centers) != len(radii):
+            raise length_not_matching("Different number of centers and radii.")
+        for i in range(len(centers)):
+            if (len(centers[i]) != self._dim):
+                raise length_not_matching("Center " + `i` + " has the wrong number of entries.")
+        values = np.zeros((len(centers)+1, self._dim))
+        values[0:-1,:] = centers
+        values[-1,:] = np.nan
+        self.set_values(values)
+        self._radii = np.zeros((len(centers)+1,))
+        self._radii[0:-1] = radii
+        self._radii[-1] = np.inf
+        logging.warning("If balls intersect on a set nonzero measure, calculated values will be wrong.")
+
+    def append_values(self, values):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values: values to append
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_values_local(self, values_local):
+        """
+        Does nothing for this type of sample_set.
+
+        .. seealso::
+
+            :meth:`numpy.concatenate`
+
+        :param values_local: values to append
+        :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_jacobians(self, new_jacobians):
+        """
+        Does nothing for this type of sample set. 
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_jacobians: New jacobians to append.
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+            dim)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def append_error_estimates(self, new_error_estimates):
+        """
+        Does nothing for this type of sample set.
+
+        .. note::
+
+            Remember to update the other member attribute arrays so that
+            :meth:`~sample.sample.check_num` does not fail.
+
+        :param new_error_estimates: New error_estimates to append.
+        :type new_error_estimates: :class:`numpy.ndarray` of shape (num,)
+
+        """
+        logging.warning("Values cannot be appended for this type of sample set.")
+        pass
+
+    def update_bounds(self, num=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+
+    def update_bounds_local(self, num_local=None):
+        """
+        Does nothing for this type of sample set.
+        
+        """
+        logging.warning("Bounds cannot be updated for this type of sample set.")
+
+        pass
+        
+    def query(self, x, k=1):
+        """
+        Identify which value points x are associated with for discretization.
+        The distance is set to 0 if it is in the rectangle and infinity 
+        if it is not.
+        It is only considered in or out.
+
+        .. seealso::
+
+        :meth:`scipy.spatial.KDTree.query`
+
+        :param x: points for query
+        :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
+        :param int k: number of nearest neighbors to return
+        :rtype: tuple
+        :returns: (dist, ptr)
+        """
+        num = self.check_num()
+        dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
+        pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
+        for i in range(num - 1):
+            in_rec = np.less(linalg.norm(x-self._values[i,:], self._p_norm, axis=1), self._radii[i])
+            for j in range(k):
+                if j == 0:
+                    in_rec_now = np.logical_and(np.equal(pt[:,j],num-1), in_rec)
+                else:
+                    in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
+                pt[:,j][in_rec_now]  = i
+                dist[:,j][in_rec_now] = 0.0
+        
+        return (dist, pt)
+
+    def exact_volume(self):
+        """
+        Calculate the exact volume fraction given the given p-norm.
+        
+         
+        """
+        num = self.check_num()
+        self._volumes = np.zeros((num, ))
+        domain_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
+        self._volumes[0:-1] = 2.0**self._dim * self._radii[0:-1]**self._dim * \
+                    scipy.special.gamma(1+1./self._p_norm)**self._dim / \
+                    scipy.special.gamma(1+float(self._dim)/self._p_norm)
+        self._volumes[0:-1] *= 1.0/domain_vol
+        self._volumes[-1] = 1.0 - np.sum(self._volumes[0:-1])
+
+class cartesian_sample_set(rectangle_sample_set):
+    """
+    Defines a hyperrectangle discretization based on a Cartesian grid.
+
+        .. seealso::
+
+        :meth:`bet.sample.rectangle_sample_set`
+
+    """
+    def setup(self, xi):
+        """
+        Initialize.
+
+        #x1, x2,..., xn : array_like
+        1-D arrays representing the coordinates of a grid
+        """
+        if len(xi) != self._dim:
+            raise dim_not_matching("dimension of values incorrect")
+        xmin = []
+        xmax = []
+        for xv in xi:
+            xmin.append(xv[0:-1])
+            xmax.append(xv[1::])
+        maxes = np.vstack(np.array(np.meshgrid(*xmax)).T)
+        mins = np.vstack(np.array(np.meshgrid(*xmin)).T)
+        shp = np.array(maxes.shape)
+        pd = np.product(shp[0:-1])
+        maxes = maxes.reshape((pd,shp[-1]))
+        mins = mins.reshape((pd, shp[-1]))
+                          
+        rectangle_sample_set.setup(self, maxes, mins)
+        
 class discretization(object):
     """
-    A data structure to store all of the :class:`~bet.sample.sample_set`
+    A data structure to store all of the :class:`~bet.sample.sample_set_base`
     objects and associated pointers to solve an stochastic inverse problem. 
     """
     #: List of attribute names for attributes which are vectors or 1D
@@ -1161,7 +1546,7 @@ class discretization(object):
     vector_names = ['_io_ptr', '_io_ptr_local', '_emulated_ii_ptr',
         '_emulated_ii_ptr_local', '_emulated_oo_ptr', '_emulated_oo_ptr_local']
     #: List of attribute names for attributes that are
-    #: :class:`sample.sample_set``
+    #: :class:`sample.sample_set_base`
     sample_set_names = ['_input_sample_set', '_output_sample_set',
         '_emulated_input_sample_set', '_emulated_output_sample_set',
         '_output_probability_set'] 
@@ -1171,15 +1556,15 @@ class discretization(object):
                  output_probability_set=None,
                  emulated_input_sample_set=None,
                  emulated_output_sample_set=None): 
-        #: Input sample set :class:`~bet.sample.sample_set`
+        #: Input sample set :class:`~bet.sample.sample_set_base`
         self._input_sample_set = input_sample_set
-        #: Output sample set :class:`~bet.sample.sample_set`
+        #: Output sample set :class:`~bet.sample.sample_set_base`
         self._output_sample_set = output_sample_set
-        #: Emulated Input sample set :class:`~bet.sample.sample_set`
+        #: Emulated Input sample set :class:`~bet.sample.sample_set_base`
         self._emulated_input_sample_set = emulated_input_sample_set
-        #: Emulated output sample set :class:`~bet.sample.sample_set`
+        #: Emulated output sample set :class:`~bet.sample.sample_set_base`
         self._emulated_output_sample_set = emulated_output_sample_set
-        #: Output probability set :class:`~bet.sample.sample_set`
+        #: Output probability set :class:`~bet.sample.sample_set_base`
         self._output_probability_set = output_probability_set
         #: Pointer from ``self._output_sample_set`` to 
         #: ``self._output_probability_set`` 
@@ -1230,9 +1615,7 @@ class discretization(object):
         """
         if self._output_sample_set._values_local is None:
             self._output_sample_set.global_to_local()
-        if self._output_probability_set._kdtree is None:
-            self._output_probability_set.set_kdtree()
-        (_, self._io_ptr_local) = self._output_probability_set.query(\
+            (_, self._io_ptr_local) = self._output_probability_set.query(\
                 self._output_sample_set._values_local)
                                                             
         if globalize:
@@ -1272,9 +1655,7 @@ class discretization(object):
         """
         if self._emulated_input_sample_set._values_local is None:
             self._emulated_input_sample_set.global_to_local()
-        if self._input_sample_set._kdtree is None:
-            self._input_sample_set.set_kdtree()
-        (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
+            (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
                 self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
@@ -1314,9 +1695,7 @@ class discretization(object):
         """
         if self._emulated_output_sample_set._values_local is None:
             self._emulated_output_sample_set.global_to_local()
-        if self._output_probability_set._kdtree is None:
-            self._output_probability_set.set_kdtree()
-        (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
+            (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
                 self._emulated_output_sample_set._values_local)
                                                                 
         if globalize:
