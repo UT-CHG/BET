@@ -513,6 +513,103 @@ class Test_discretization_simple(unittest.TestCase):
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
 
+    def Test_estimate_input_volume_emulated(self):
+        """
+
+        Testing :meth:`bet.discretization.estimate_input_volume_emulated`
+
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        lam_domain = np.zeros((3, 2))
+        lam_domain[:, 0] = lam_left
+        lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        s_set.set_domain(lam_domain)
+        s_set.set_values(util.meshgrid_ndim(d1_arrays))
+
+        volume_exact = 1.0/s_set._values.shape[0]
+
+        emulated_samples = s_set.copy()
+        emulated_samples.update_bounds_local(1001)
+        emulated_samples.set_values_local(emulated_samples._width_local\
+                *np.random.random((1001, emulated_samples.get_dim())) +
+                emulated_samples._left_local)
+
+        self.disc.set_input_sample_set(s_set)
+        self.disc.set_emulated_input_sample_set(emulated_samples)
+        self.disc.estimate_input_volume_emulated()
+
+        lam_vol = self.disc._input_sample_set._volumes
+
+        # Check the dimension.
+        nptest.assert_array_equal(lam_vol.shape, (len(s_set._values), ))
+       
+        # Check that the volumes are within a tolerance for a regular grid of
+        # samples.
+        nptest.assert_array_almost_equal(lam_vol, volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(lam_vol), 1.0)
+
+    def Test_estimate_output_volume_emulated(self):
+        """
+
+        Testing :meth:`bet.discretization.estimate_output_volume_emulated`
+
+        """
+        lam_left = np.array([0.0])
+        lam_right = np.array([1.0])
+        lam_width = lam_right-lam_left
+
+        lam_domain = np.zeros((1, 2))
+        lam_domain[:, 0] = lam_left
+        lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        s_set.set_domain(lam_domain)
+        s_set.set_values(util.meshgrid_ndim(d1_arrays))
+
+        volume_exact = 1.0/s_set._values.shape[0]
+
+        emulated_samples = s_set.copy()
+        emulated_samples.update_bounds_local(1001)
+        emulated_samples.set_values_local(emulated_samples._width_local\
+                *np.random.random((1001, emulated_samples.get_dim())) +
+                emulated_samples._left_local)
+
+        self.disc.set_output_sample_set(s_set)
+        self.disc.set_emulated_output_sample_set(emulated_samples)
+        self.disc.estimate_output_volume_emulated()
+
+        lam_vol = self.disc._output_sample_set._volumes
+
+        # Check the dimension.
+        nptest.assert_array_equal(lam_vol.shape, (len(s_set._values), ))
+       
+        # Check that the volumes are within a tolerance for a regular grid of
+        # samples.
+        nptest.assert_array_almost_equal(lam_vol, volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(lam_vol), 1.0)
+
+
 class TestEstimateVolume(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.estimate_volulme`.
@@ -539,13 +636,65 @@ class TestEstimateVolume(unittest.TestCase):
         for l, r in zip(start, stop):
             d1_arrays.append(np.linspace(l, r, num_samples_dim))
 
-        self.num_l_emulate = 1000001
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
         print util.meshgrid_ndim(d1_arrays).shape
         self.volume_exact = 1.0/self.s_set._values.shape[0]
         self.s_set.estimate_volume(n_mc_points= 1001)
+        self.lam_vol = self.s_set._volumes
+    def test_dimension(self):
+        """
+        Check the dimension.
+        """
+        print self.lam_vol.shape, self.s_set._values.shape
+        nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
+       
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
+        nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+
+class TestEstimateVolumeEmulated(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.estimate_volulme_emulated`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+        """
+        lam_left = np.array([0.0, .25, .4])
+        lam_right = np.array([1.0, 4.0, .5])
+        lam_width = lam_right-lam_left
+
+        self.lam_domain = np.zeros((3, 2))
+        self.lam_domain[:, 0] = lam_left
+        self.lam_domain[:, 1] = lam_right
+
+        num_samples_dim = 2
+        start = lam_left+lam_width/(2*num_samples_dim)
+        stop = lam_right-lam_width/(2*num_samples_dim)
+        d1_arrays = []
+        
+        for l, r in zip(start, stop):
+            d1_arrays.append(np.linspace(l, r, num_samples_dim))
+
+        self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
+        self.s_set.set_domain(self.lam_domain)
+        self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
+        print util.meshgrid_ndim(d1_arrays).shape
+        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        emulated_samples = self.s_set.copy()
+        emulated_samples.update_bounds_local(1001)
+        emulated_samples.set_values_local(emulated_samples._width_local\
+                *np.random.random((1001, emulated_samples.get_dim())) +
+                emulated_samples._left_local)
+        self.s_set.estimate_volume_emulated(emulated_samples)
         self.lam_vol = self.s_set._volumes
     def test_dimension(self):
         """
@@ -758,3 +907,292 @@ class TestEstimateRadiiAndVolume(unittest.TestCase):
         nptest.assert_array_almost_equal(self.norm_rad, self.radii_exact, 1)
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact, 1)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
+
+class Test_rectangle_sample_set(unittest.TestCase):
+    def setUp(self):
+        self.dim = 2
+        self.sam_set = sample.rectangle_sample_set(dim=self.dim)
+        maxes=[[0.9, 0.8],[0.5, 0.5]]
+        mins=[[0.6,0.6],[0.1,0.1]]
+        self.sam_set.setup(maxes, mins)
+        self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+        self.sam_set.set_domain(np.array([[0, 1],[0, 1]], dtype=np.float))
+        self.num = self.sam_set.check_num()
+
+    def test_save_load(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
+
+        if comm.rank == 0:
+            sample.save_sample_set(self.sam_set, os.path.join(local_path,
+                'testfile.mat'), "TEST")
+        comm.barrier()
+
+        loaded_set = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'), "TEST")
+        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'))
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+            os.remove(os.path.join(local_path, 'testfile.mat'))
+
+
+    def test_copy(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
+        self.sam_set.set_kdtree()
+
+        copied_set = self.sam_set.copy()
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(copied_set, attrname)
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        assert copied_set._kdtree is not None
+
+    def test_query(self):
+        """
+        Check querying
+        """
+        x = np.array([[0.2, 0.2], [0.61, 0.61], [0.99, 0.99]])
+        (d, ptr) = self.sam_set.query(x)
+        nptest.assert_array_equal(ptr, [[1], [0], [2]])
+
+    def test_volumes(self):
+        """
+        Check volume calculation
+        """
+        self.sam_set.exact_volume_lebesgue()
+        volumes = self.sam_set.get_volumes()
+        nptest.assert_array_almost_equal(volumes, [.06, .16, .78])
+        
+
+class Test_ball_sample_set(unittest.TestCase):
+    def setUp(self):
+        self.dim = 2
+        self.sam_set = sample.ball_sample_set(dim=self.dim)
+        centers = [[0.2, 0.2], [0.8, 0.8]]
+        radii = [0.1, 0.2]
+        self.sam_set.setup(centers, radii)
+        self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+        self.sam_set.set_domain(np.array([[0, 1],[0, 1]], dtype=np.float))
+        self.num = self.sam_set.check_num()
+
+    def test_save_load(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
+
+        if comm.rank == 0:
+            sample.save_sample_set(self.sam_set, os.path.join(local_path,
+                'testfile.mat'), "TEST")
+        comm.barrier()
+
+        loaded_set = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'), "TEST")
+        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'))
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+            os.remove(os.path.join(local_path, 'testfile.mat'))
+
+
+    def test_copy(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
+        self.sam_set.set_kdtree()
+
+        copied_set = self.sam_set.copy()
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(copied_set, attrname)
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        assert copied_set._kdtree is not None
+
+    def test_query(self):
+        """
+        Check querying
+        """
+        x = np.array([[0.21, 0.19], [0.55, 0.55], [0.83, 0.73]])
+        (d, ptr) = self.sam_set.query(x)
+        nptest.assert_array_equal(ptr, [[0], [2], [1]])
+
+    def test_volumes(self):
+        """
+        Check volume calculation
+        """
+        self.sam_set.exact_volume()
+        volumes = self.sam_set.get_volumes()
+        nptest.assert_array_almost_equal(volumes, [0.031415926535897934,
+                                                   0.12566370614359174,
+                                                   0.8429203673205103])
+class Test_cartesian_sample_set(unittest.TestCase):
+    def setUp(self):
+        self.dim = 2
+        self.sam_set = sample.cartesian_sample_set(dim=self.dim)
+        xi = [np.linspace(0, 1, 3), np.linspace(0,1,3)]
+        self.sam_set.setup(xi)
+        self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+        self.sam_set.set_domain(np.array([[0, 1],[0, 1]], dtype=np.float))
+        self.num = self.sam_set.check_num()
+
+    def test_save_load(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
+
+        if comm.rank == 0:
+            sample.save_sample_set(self.sam_set, os.path.join(local_path,
+                'testfile.mat'), "TEST")
+        comm.barrier()
+
+        loaded_set = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'), "TEST")
+        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
+            'testfile.mat'))
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
+            os.remove(os.path.join(local_path, 'testfile.mat'))
+
+
+    def test_copy(self):
+        """
+        Check save_sample_set and load_sample_set.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        vol = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_volumes(vol)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+        self.sam_set.global_to_local()
+        self.sam_set.set_domain(self.domain)
+        self.sam_set.update_bounds()
+        self.sam_set.update_bounds_local()
+        self.sam_set.set_kdtree()
+
+        copied_set = self.sam_set.copy()
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(copied_set, attrname)
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        assert copied_set._kdtree is not None
+
+    def test_query(self):
+        """
+        Check querying
+        """
+        x = np.array([[0.2, 0.2], [0.6, 0.6], [0.1, 0.9], [0.8, 0.2], [5.0, 5.0]])
+        (d, ptr) = self.sam_set.query(x)
+        nptest.assert_array_equal(ptr, [[0], [3], [1], [2], [4]])
+
+    def test_volumes(self):
+        """
+        Check volume calculation
+        """
+        self.sam_set.exact_volume_lebesgue()
+        volumes = self.sam_set.get_volumes()
+        nptest.assert_array_almost_equal(volumes, [.25, 0.25, 0.25, 0.25, 0.0])
