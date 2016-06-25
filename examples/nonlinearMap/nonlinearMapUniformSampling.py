@@ -31,15 +31,8 @@ import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
+
 from myModel import my_model
-
-
-# Initialize 3-dimensional input parameter sample set object
-input_samples = samp.sample_set(2)
-
-# Set parameter domain
-input_samples.set_domain(np.array([[3.0, 6.0],
-                                   [1.0, 5.0]]))
 
 # Define the sampler that will be used to create the discretization
 # object, which is the fundamental object used by BET to compute
@@ -47,6 +40,15 @@ input_samples.set_domain(np.array([[3.0, 6.0],
 # The sampler and my_model is the interface of BET to the model,
 # and it allows BET to create input/output samples of the model.
 sampler = bsam.sampler(my_model)
+
+# Initialize 2-dimensional input parameter sample set object
+input_samples = samp.sample_set(2)
+
+# Set parameter domain
+input_samples.set_domain(np.array([[3.0, 6.0],
+                                   [1.0, 5.0]]))
+
+
 
 '''
 Suggested changes for user:
