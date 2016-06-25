@@ -1,0 +1,298 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Some References and Examples &mdash; BET 2.0.0-beta documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 2.0.0-beta documentation" href="../index.html"/>
+        <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 1D data space" href="example_rst_files/Q_1D_serial.html"/>
+        <link rel="prev" title="Parallel" href="../parallel.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="../index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#adcirc-based-examples">ADCIRC Based Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#list-of-all-examples">List of all examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="../index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="../index.html">Docs</a> &raquo;</li>
+      
+    <li>Some References and Examples</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="../_sources/examples/examples_overview.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="some-references-and-examples">
+<span id="examples"></span><h1>Some References and Examples<a class="headerlink" href="#some-references-and-examples" title="Permalink to this headline">¶</a></h1>
+<p>For more information about the method and algorithm, see <a class="reference external" href="http://dx.doi.org/10.1137/130930406">A Measure-Theoretic
+Computational Method for Inverse Sensitivity Problems III: Multiple Quantities of Interest</a> for the formulation of the stochastic
+inverse problem in a measure theoretic framework along with proofs of existence
+and uniqueness of solutions, <a class="reference external" href="http://arxiv.org/abs/1407.3851">Solving Stochastic Inverse Problems using Sigma-Algebras on Contour Maps</a> for the convergence
+and error analysis of the non-intrusive algorithm, and
+<a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution of a stochastic inverse problem for the Manning’s n parameter field in
+hydrodynamic models</a> for a less technical description
+of the method for engineers as well as application to a physically relevant problem
+in coastal ocean modeling.</p>
+<p>All of the example listed here and more are located in the <code class="docutils literal"><span class="pre">BET/examples/</span></code>
+directory.</p>
+<div class="section" id="validation-example">
+<h2>Validation example<a class="headerlink" href="#validation-example" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="example_rst_files/validation.html#validation"><span>Example: Validation</span></a> for an example.</p>
+</div>
+<div class="section" id="linear-map-example">
+<h2>Linear Map Example<a class="headerlink" href="#linear-map-example" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="example_rst_files/linearMapUniformSampling.html#linearmap"><span>Example: Linear Map with Uniform Sampling</span></a> for an example using a linear map.</p>
+</div>
+<div class="section" id="non-linear-map-example">
+<h2>Non-Linear Map Example<a class="headerlink" href="#non-linear-map-example" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="example_rst_files/nonlinearMapUniformSampling.html#nonlinearmap"><span>Example: Nonlinear Map with Uniform Sampling</span></a> for an example using a nonlinear map.</p>
+</div>
+<div class="section" id="adcirc-based-examples">
+<h2>ADCIRC Based Examples<a class="headerlink" href="#adcirc-based-examples" title="Permalink to this headline">¶</a></h2>
+<p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/fromADCIRC_FileMap</span></code>.</p>
+<div class="section" id="idealized-inlet-physical-domain">
+<h3>Idealized Inlet Physical Domain<a class="headerlink" href="#idealized-inlet-physical-domain" title="Permalink to this headline">¶</a></h3>
+<p>For a description of the model, physical inlet domain, data space, and parameter
+space for the examples using the idealized inlet see <a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution
+of a stochastic inverse problem for the Manning’s n parameter field in
+hydrodynamic models</a>.</p>
+</div>
+<div class="section" id="adaptive-sampling-examples">
+<h3>Adaptive Sampling Examples<a class="headerlink" href="#adaptive-sampling-examples" title="Permalink to this headline">¶</a></h3>
+<p>Adaptively samples a linear interpolant using data read from file:</p>
+<blockquote>
+<div><ul class="simple">
+<li><span class="xref std std-ref">fromFile2D</span></li>
+<li><a class="reference internal" href="example_rst_files/fromfile3D.html#fromfile3d"><span>Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="visualization-examples">
+<h3>Visualization Examples<a class="headerlink" href="#visualization-examples" title="Permalink to this headline">¶</a></h3>
+<p>The module <a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-mod docutils literal"><span class="pre">plotDomains</span></code></a> provides several methods used to
+plot 2D domains and/or 2D slices and projections of higher dimensional domains.</p>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="example_rst_files/domains2D.html#domains2d"><span>Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
+<li><a class="reference internal" href="example_rst_files/domains3D.html#domains3d"><span>Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
+</ul>
+</div></blockquote>
+</div>
+<div class="section" id="examples-estimating">
+<h3>Examples Estimating <span class="math">\(P_\Lambda\)</span><a class="headerlink" href="#examples-estimating" title="Permalink to this headline">¶</a></h3>
+<blockquote>
+<div><ul class="simple">
+<li><a class="reference internal" href="example_rst_files/Q_1D_serial.html#q1d"><span>Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a></li>
+<li><a class="reference internal" href="example_rst_files/Q_2D.html#q2d"><span>Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a></li>
+<li><a class="reference internal" href="example_rst_files/Q_3D.html#q3d"><span>Example: Estimate the parameter space probabiliy density with  a 3D data space</span></a></li>
+</ul>
+</div></blockquote>
+</div>
+</div>
+<div class="section" id="contaminant-transport-example">
+<h2>Contaminant Transport Example:<a class="headerlink" href="#contaminant-transport-example" title="Permalink to this headline">¶</a></h2>
+<p>See <a class="reference internal" href="example_rst_files/contaminantTransport.html#contaminanttransport"><span>Example: Concentration of Contaminant in Wells Based on Transport Parameters</span></a> for an example.</p>
+</div>
+<div class="section" id="choosing-optimal-qois-examples">
+<h2>Choosing Optimal QoIs Examples:<a class="headerlink" href="#choosing-optimal-qois-examples" title="Permalink to this headline">¶</a></h2>
+<p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/sensitivity</span></code>.</p>
+</div>
+<div class="section" id="list-of-all-examples">
+<h2>List of all examples<a class="headerlink" href="#list-of-all-examples" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/Q_1D_serial.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/Q_3D.html">Example: Estimate the parameter space probabiliy density with  a 3D data space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/chooseOptQoIs_2d.html">Example: Heatplate Model with Clustered Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/fromfile2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/fromfile3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/linear_condnum_binratio.html">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/linear_volume_binsize_large.html">Example: Linear Map Choose QoIs (volume / bin_size / large)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/nonlinearMapUniformSampling.html">Example: Nonlinear Map with Uniform Sampling</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/validation.html">Example: Validation</a></li>
+</ul>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="example_rst_files/Q_1D_serial.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 1D data space">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="../parallel.html" class="btn btn-neutral" title="Parallel"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
+      Last updated on Jun 14, 2016.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'../',
+            VERSION:'2.0.0-beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="../_static/jquery.js"></script>
+      <script type="text/javascript" src="../_static/underscore.js"></script>
+      <script type="text/javascript" src="../_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

@@ -1,0 +1,383 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Overview &mdash; BET 2.0.0-beta documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 2.0.0-beta documentation" href="index.html"/>
+        <link rel="next" title="Parallel" href="parallel.html"/>
+        <link rel="prev" title="Welcome to BET’s documentation!" href="index.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Overview</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>The code currently resides at <a class="reference external" href="https://github.com/UT-CHG/BET">GitHub</a>.
+If you have a
+<a class="reference external" href="https://github.com/UT-CHG/BET/archive/master.zip">zip file</a> you can install
+BET using:</p>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py install
+</pre></div>
+</div>
+<p>from the package root directory. The BET package is currently NOT avaiable in
+the <a class="reference external" href="http://pypi.python.org/pypi/Sphinx">Python Package Index</a> this may
+change in the future. This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
+<p>If you have <a class="reference external" href="http://nose.readthedocs.org/en/latest/index.html">nose</a>
+installed you can run tests by typing:</p>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nosetests</span>
+</pre></div>
+</div>
+<p>in <code class="docutils literal"><span class="pre">BET</span></code> to run the serial tests or</p>
+<div class="highlight-python"><div class="highlight"><pre>mpirun -np NPROC nosetests
+</pre></div>
+</div>
+<p>to run the parallel tests.</p>
+</div>
+<div class="section" id="package-layout">
+<h2>Package Layout<a class="headerlink" href="#package-layout" title="Permalink to this headline">¶</a></h2>
+<p>The package layout is as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>bet/
+  calculateP/
+    calculateP
+    simpleFunP
+    voronoiHistogram
+    indicatorFunctions
+  sampling/
+    basicSampling
+    adaptiveSampling
+  postProcess/
+    plotP
+    plotDomains
+    postTools
+  sensitivity/
+    gradients
+    chooseQoIs
+</pre></div>
+</div>
+</div>
+<div class="section" id="code-overview">
+<h2>Code Overview<a class="headerlink" href="#code-overview" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-bet.calculateP">
+<span id="calculatep-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code> Package<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage provides classes and methods for calulating the
+probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides methods for approximating</dt>
+<dd><p class="first last">probability densities</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt>
+<dd><p class="first last">function approximations of probability densisties</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.voronoiHistogram" title="bet.calculateP.voronoiHistogram"><code class="xref py py-mod docutils literal"><span class="pre">voronoiHistogram</span></code></a> provides methods for creating the</dt>
+<dd><p class="first last">generating points for cells that define a regular grid for use by
+<code class="xref py py-meth docutils literal"><span class="pre">numpy.histogramdd()</span></code> and for determining their volumes, etc. This
+module is only for use by <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a>.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.indicatorFunctions" title="bet.calculateP.indicatorFunctions"><code class="xref py py-mod docutils literal"><span class="pre">indicatorFunctions</span></code></a> provides methods for creating</dt>
+<dd><p class="first last">indicator functions for use by various other classes.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="module-bet.sampling">
+<span id="sampling-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">sampling</span></code> Package<a class="headerlink" href="#module-bet.sampling" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage contains</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> a general class and associated set of</dt>
+<dd><p class="first last">methods that interogates a model through an interface.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> requests data(QoI) at a</dt>
+<dd><p class="first last">specified set of parameter samples.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.adaptiveSampling" title="bet.sampling.adaptiveSampling"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling</span></code></a> inherits from</dt>
+<dd><p class="first last"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> adaptively generates samples.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="module-bet.postProcess">
+<span id="postprocess-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">postProcess</span></code> Package<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage contains</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal"><span class="pre">plotP</span></code></a> plots <span class="math">\(P\)</span> and/or volumes (<span class="math">\(\mu\)</span>)</dt>
+<dd><p class="first last">of voronoi cells</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal"><span class="pre">plotDomains</span></code></a> plots the data domain</dt>
+<dd><p class="first last"><span class="math">\(\mathcal{D}\)</span> in 2D</p>
+</dd>
+</dl>
+</li>
+<li><p class="first"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</p>
+</li>
+</ul>
+</div>
+<div class="section" id="module-bet.sensitivity">
+<span id="sensitivity-package"></span><h3><code class="xref py py-mod docutils literal"><span class="pre">sensitivity</span></code> Package<a class="headerlink" href="#module-bet.sensitivity" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage provides methods for approximating gradients of
+QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal"><span class="pre">gradients</span></code></a> provides methods for approximating</dt>
+<dd><p class="first last">gradients of QoI maps.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal"><span class="pre">chooseQoIs</span></code></a> provides methods for choosing optimal</dt>
+<dd><p class="first last">QoIs to use in the inverse problem.</p>
+</dd>
+</dl>
+</li>
+</ul>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
+</div>
+</div>
+</div>
+<div class="section" id="internal-dependencies">
+<h2>Internal dependencies<a class="headerlink" href="#internal-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>Dependencies via <a class="reference external" href="https://docs.python.org/2.7/reference/simple_stmts.html#import" title="(in Python v2.7)"><code class="xref std std-keyword docutils literal"><span class="pre">import</span></code></a> statements:</p>
+<div class="highlight-python"><div class="highlight"><pre>bet
+  \-calculateP
+  | \-voronoiHistogram (bet.calculateP.simpleFunP)
+  \-sampling
+    \-basicSampling (bet.sampling.adaptiveSampling)
+</pre></div>
+</div>
+</div>
+<div class="section" id="external-dependencies">
+<h2>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h2>
+<p>This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
+<div class="highlight-python"><div class="highlight"><pre>matplotlib
+  \-cm (bet.postProcess.plotP)
+  \-pyplot (bet.postProcess.plotDomains,bet.postProcess.plotP)
+  \-ticker (bet.postProcess.plotP)
+  \-tri (bet.postProcess.plotDomains)
+mpi4py
+  \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
+mpl_toolkits
+  \-mplot3d (bet.postProcess.plotP)
+numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP,bet.sensitivity.gradients,bet.sensitivity.chooseQoIs)
+pyDOE (bet.sampling.basicSampling)
+scipy
+  \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
+  \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP,bet.sensitivity.gradients)
+  \-stats (bet.calculateP.simpleFunP)
+</pre></div>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="parallel.html" class="btn btn-neutral float-right" title="Parallel">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral" title="Welcome to BET’s documentation!"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
+      Last updated on Jun 14, 2016.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0-beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>

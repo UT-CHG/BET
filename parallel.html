@@ -1,0 +1,292 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Parallel &mdash; BET 2.0.0-beta documentation</title>
+  
+
+  
+  
+
+  
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
+
+  
+  
+    
+
+  
+
+  
+  
+    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  
+
+  
+
+  
+    <link rel="top" title="BET 2.0.0-beta documentation" href="index.html"/>
+        <link rel="next" title="Some References and Examples" href="examples/examples_overview.html"/>
+        <link rel="prev" title="Overview" href="overview.html"/> 
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+
+</head>
+
+<body class="wy-body-for-nav" role="document">
+
+  <div class="wy-grid-for-nav">
+
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> BET</a>
+        
+        
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+      </div>
+
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
+          
+          
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.html">bet package</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+          
+        
+      </div>
+      &nbsp;
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
+        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+        <a href="index.html">BET</a>
+      </nav>
+
+
+      
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="breadcrumbs navigation">
+  <ul class="wy-breadcrumbs">
+    <li><a href="index.html">Docs</a> &raquo;</li>
+      
+    <li>Parallel</li>
+      <li class="wy-breadcrumbs-aside">
+        
+          <a href="_sources/parallel.txt" rel="nofollow"> View page source</a>
+        
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document">
+            
+  <div class="section" id="parallel">
+<span id="id1"></span><h1>Parallel<a class="headerlink" href="#parallel" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>Running this code in parallel requires the installation of <a class="reference external" href="http://mpi4py.scipy.org/">MPI for Python</a> which requires that your system has mpi
+installed.</p>
+</div>
+<div class="section" id="running-in-parallel">
+<h2>Running in parallel<a class="headerlink" href="#running-in-parallel" title="Permalink to this headline">¶</a></h2>
+<p>Depending on what modules, methods, and/or functions from BET your script uses
+small or no changes will need to be made to run your script in parallel. To run
+your script in parallel you will have to use:</p>
+<div class="highlight-python"><div class="highlight"><pre>$ mpirun -np NUM_PROCS python YOUR_SCRIPT.py
+</pre></div>
+</div>
+<p>instead of</p>
+<div class="highlight-python"><div class="highlight"><pre>$ python YOUR_SCRIPT.py
+</pre></div>
+</div>
+<p>You might need to make sure your globalize your arrays or make sure to choose
+the <code class="docutils literal"><span class="pre">parallel</span></code> flag on some functions to ensure correct execution.</p>
+</div>
+<div class="section" id="parallel-enabled-modules">
+<h2>Parallel Enabled Modules<a class="headerlink" href="#parallel-enabled-modules" title="Permalink to this headline">¶</a></h2>
+<p>The modules that have parallel capabilities are as follows:</p>
+<div class="highlight-python"><div class="highlight"><pre>bet/
+  util
+  calculateP/
+    calculateP
+    simpleFunP
+  sampling/
+    basicSampling
+    adaptiveSampling
+  postProcess/
+    plotP
+    postTools
+  sensitivity/
+    chooseQoIs
+</pre></div>
+</div>
+<div class="section" id="util">
+<h3>util<a class="headerlink" href="#util" title="Permalink to this headline">¶</a></h3>
+<p>The module <a class="reference internal" href="bet.html#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides the method
+<a class="reference internal" href="bet.html#bet.util.get_global_values" title="bet.util.get_global_values"><code class="xref py py-meth docutils literal"><span class="pre">get_global_values()</span></code></a> to globalize local arrays into an array of
+global values on all processors.</p>
+</div>
+<div class="section" id="calculatep">
+<h3>calculateP<a class="headerlink" href="#calculatep" title="Permalink to this headline">¶</a></h3>
+<p>All methods in the module <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> benefit from
+parallel execution. Only local arrays are returned for <code class="docutils literal"><span class="pre">P</span></code>, use
+<a class="reference internal" href="bet.html#bet.util.get_global_values" title="bet.util.get_global_values"><code class="xref py py-meth docutils literal"><span class="pre">get_global_values()</span></code></a> to globalize local arrays.</p>
+<p>In the module <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> the methods
+<code class="xref py py-meth docutils literal"><span class="pre">unif_unif()</span></code>,
+<code class="xref py py-meth docutils literal"><span class="pre">normal_normal()</span></code>, and
+<code class="xref py py-meth docutils literal"><span class="pre">unif_normal()</span></code> benefit from parallel
+execution.</p>
+</div>
+<div class="section" id="sampling">
+<h3>sampling<a class="headerlink" href="#sampling" title="Permalink to this headline">¶</a></h3>
+<p>If you are using a model with parallel capabilities we recommend that you write
+your own python interface to handle running multiple parallel copies of your
+model simulatenously. If your model is serial then you might benefit from
+parallel execution of scripts that use
+<a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.basicSampling.sampler</span></code></a> or
+<a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.  The method
+<code class="xref py py-meth docutils literal"><span class="pre">user_samples()</span></code> has a parallel option
+(must be specified in the method call) which will partition the samples over
+several processors and return a globalized set of results.  The method
+<a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="bet.sampling.adaptiveSampling.sampler.generalized_chains"><code class="xref py py-meth docutils literal"><span class="pre">generalized_chains()</span></code></a> divides up
+the chains among the availiable processors and returns a globalized result.</p>
+</div>
+<div class="section" id="postprocess">
+<h3>postProcess<a class="headerlink" href="#postprocess" title="Permalink to this headline">¶</a></h3>
+<p>In <a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-mod docutils literal"><span class="pre">plotP</span></code></a> the methods
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.plotP.calculate_1D_marginal_probs" title="bet.postProcess.plotP.calculate_1D_marginal_probs"><code class="xref py py-meth docutils literal"><span class="pre">calculate_1D_marginal_probs()</span></code></a> and
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.plotP.calculate_2D_marginal_probs" title="bet.postProcess.plotP.calculate_2D_marginal_probs"><code class="xref py py-meth docutils literal"><span class="pre">calculate_2D_marginal_probs()</span></code></a> benefit from
+parallel execution. The methods <a class="reference internal" href="bet.postProcess.html#bet.postProcess.plotP.plot_1D_marginal_probs" title="bet.postProcess.plotP.plot_1D_marginal_probs"><code class="xref py py-meth docutils literal"><span class="pre">plot_1D_marginal_probs()</span></code></a> and
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.plotP.plot_2D_marginal_probs" title="bet.postProcess.plotP.plot_2D_marginal_probs"><code class="xref py py-meth docutils literal"><span class="pre">plot_2D_marginal_probs()</span></code></a> will only execute on the
+rank 0 processor.</p>
+<p>In <a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-mod docutils literal"><span class="pre">postTools</span></code></a> the methods
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.postTools.save_parallel_probs_csv" title="bet.postProcess.postTools.save_parallel_probs_csv"><code class="xref py py-meth docutils literal"><span class="pre">save_parallel_probs_csv()</span></code></a>,
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.postTools.collect_parallel_probs_csv" title="bet.postProcess.postTools.collect_parallel_probs_csv"><code class="xref py py-meth docutils literal"><span class="pre">collect_parallel_probs_csv()</span></code></a>,
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.postTools.save_parallel_probs_mat" title="bet.postProcess.postTools.save_parallel_probs_mat"><code class="xref py py-meth docutils literal"><span class="pre">save_parallel_probs_mat()</span></code></a>, and
+<a class="reference internal" href="bet.postProcess.html#bet.postProcess.postTools.collect_parallel_probs_mat" title="bet.postProcess.postTools.collect_parallel_probs_mat"><code class="xref py py-meth docutils literal"><span class="pre">collect_parallel_probs_mat()</span></code></a> provide tools to
+save and collect probabitlies on separate processors as appropriately named files.</p>
+</div>
+<div class="section" id="sensitivity">
+<h3>sensitivity<a class="headerlink" href="#sensitivity" title="Permalink to this headline">¶</a></h3>
+<p>All methods in the module <a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal"><span class="pre">chooseQoIs</span></code></a> benefit from parallel execution.</p>
+</div>
+</div>
+</div>
+
+
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="examples/examples_overview.html" class="btn btn-neutral float-right" title="Some References and Examples">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="overview.html" class="btn btn-neutral" title="Overview"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
+      Last updated on Jun 14, 2016.
+    </p>
+  </div>
+
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  
+
+    <script type="text/javascript">
+        var DOCUMENTATION_OPTIONS = {
+            URL_ROOT:'./',
+            VERSION:'2.0.0-beta',
+            COLLAPSE_INDEX:false,
+            FILE_SUFFIX:'.html',
+            HAS_SOURCE:  true
+        };
+    </script>
+      <script type="text/javascript" src="_static/jquery.js"></script>
+      <script type="text/javascript" src="_static/underscore.js"></script>
+      <script type="text/javascript" src="_static/doctools.js"></script>
+      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+
+  
+
+  
+  
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+  
+
+  
+  
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.StickyNav.enable();
+      });
+  </script>
+   
+
+</body>
+</html>
