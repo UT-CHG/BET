@@ -39,7 +39,7 @@ from myModel import my_model
 from Compute_Save_KL import computeSaveKL
 
 # Interface BET to the model.
-sampler = bsam.sampler(my_model)
+sampler = bsam.sampler(lb_model)
 
 # Define the number of KL terms to use to represent permeability field
 num_KL_terms = 2

@@ -1,20 +1,28 @@
-.. _fenicsExample:
+.. _fenicsMultipleSerialExample:
 
 ===================
-Example: FEniCS
+Example: Multiple Serial FEniCS
 ===================
 
 We will walk through the following `example
-<https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/BET_script.py>`_.
-This example will only run in serial using serial runs of a model
-(described below).
-If the user takes Steps (0)-(3) and runs them in a separate script,
-then the saved discretization object can be loaded into a different script
-containing Steps (4)-(5) (and optionally including Step (6)) to solve
-the stochastic inverse problem in parallel using BET.
-To see an example describing how to run multiple instances of the (serial)
-model with different parameters, see
-:ref:`fenicsMultipleSerialExample` for more information.
+<https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/BET_multiple_serial_models_script.py>`_.
+This example will run a serial version of BET and multiple (serial) runs
+of a model using different parameters.
+The purpose of this example is to porivde a template on how to make use of
+ `Launcher <https://github.com/TACC/launcher>`_
+(typically used on a cluster)
+to launch multiple
+instances of a serial code to more efficiently do parameter sweeps.
+If we have k processors and sample the model N=nk times, then the
+wall clock time spent solving the model goes from N to n (there is
+some additional overhead with the I/O).
+On a local machine with 2-8 processors, since this particular model is
+relatively cheap to evaluate, the overhead of the I/O makes this
+less efficient than the purely serial :ref:`fenicsExample`.
+If we used a more refined mesh and/or more computationally expensive
+model where the model solve time was significantly more than the
+reading/writing of files, then this approach is faster.
+
 This example requires the following external packages not shipped
 with BET:
 
@@ -22,13 +30,19 @@ with BET:
 that can be run using the same
 python as used for installing BET.
 
+* A copy of `Launcher <https://github.com/TACC/launcher>`_.
+  The user needs to set certain environment
+  variables inside of `lbModel.py
+   <https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/lbModel.py>`_
+   for this to run.
+
 This example generates samples for a KL expansion associated with
 a covariance defined by ``cov`` in `computeSaveKL.py
 <https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/computeSaveKL.py>`_
 on an L-shaped mesh
 that defines the permeability field for a Poisson equation solved in
-`myModel.py
-<https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel.py>`_.
+`myModel_serial.py
+<https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel_serial.py>`_.
 
 The quantities of interest (QoI) are defined as two spatial
 averages of the solution to the PDE.
@@ -51,7 +65,7 @@ post-processing, and commenting) required
 for solving
 the stochastic inverse problem using some default options::
 
-    sampler = bsam.sampler(my_model)
+    sampler = bsam.sampler(lb_model)
 
     num_KL_terms = 2
     computeSaveKL(num_KL_terms)
@@ -90,14 +104,14 @@ Import the necessary modules::
 
 Step (1): Define interface to the model
 ===========================
-Import the Python script interface to the `model
-<https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel.py>`_
-using FEniCS
+Import the Python script interface to the `load balancing model
+<https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/lbModel.py>`_
 that takes as input a numpy array of model input parameter samples,
-generated from the sampler (see below), evaluates the model to
-generate QoI samples, and returns the QoI samples::
+generated from the sampler (see below), creates the Launcher job file
+for running and evaluating multiple serial instances of the model to
+generate batches of QoI samples, and returns the QoI samples::
 
-    from myModel import my_model
+    from lbModel import lb_model
 
 Define the sampler that will be used to create the discretization
 object, which is the fundamental object used by BET to compute
@@ -105,7 +119,7 @@ solutions to the stochastic inverse problem.
 The sampler and my_model is the interface of BET to the model,
 and it allows BET to create input/output samples of the model::
 
-    sampler = bsam.sampler(my_model)
+    sampler = bsam.sampler(lb_model)
 
 
 Step (2): Describe and sample the input space

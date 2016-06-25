@@ -42,7 +42,7 @@ FEniCS Example (serial BET and serial model)
 See :ref:`fenicsExample` for an example using the `FEniCS package
 <http://fenicsproject.org/>`_ that can be run with serial BET.
 
-See :ref:`fenicsMultipleSerial` for an example that can be run with
+See :ref:`fenicsMultipleSerialExample` for an example that can be run with
 serial BET and uses `Launcher <https://github.com/TACC/launcher>`_ to
 launch multiple serial runs of the model in parallel.
 
