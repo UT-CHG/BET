@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Example: Linear Map Choose QoIs (condition number / bin_ratio) &mdash; BET 2.0.0-beta documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -36,7 +36,7 @@
         <link rel="prev" title="Example: Linear Map with Uniform Sampling" href="linearMapUniformSampling.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -46,11 +46,27 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-nav-search">
-        
-          <a href="../../index.html" class="fa fa-home"> BET</a>
-        
-        
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -58,48 +74,55 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-      </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        
           
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
-</ul>
-</li>
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#validation-example">Validation example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#linear-map-example">Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="FEniCS.html">Example: FEniCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="FEniCSMultipleSerial.html">Example: Multiple Serial FEniCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_1D_serial.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_3D.html">Example: Estimate the parameter space probabiliy density with  a 3D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chooseOptQoIs_2d.html">Example: Heatplate Model with Clustered Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_volume_binsize_large.html">Example: Linear Map Choose QoIs (volume / bin_size / large)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nonlinearMapUniformSampling.html">Example: Nonlinear Map with Uniform Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="validation.html">Example: Validation</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
 </ul>
 
+            
           
-        
+        </div>
       </div>
-      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -114,7 +137,13 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../../index.html">Docs</a> &raquo;</li>
       
@@ -123,13 +152,16 @@
     <li>Example: Linear Map Choose QoIs (condition number / bin_ratio)</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="../../_sources/examples/example_rst_files/linear_condnum_binratio.txt" rel="nofollow"> View page source</a>
+          
+            <a href="../../_sources/examples/example_rst_files/linear_condnum_binratio.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="example-linear-map-choose-qois-condition-number-bin-ratio">
 <span id="linear"></span><h1>Example: Linear Map Choose QoIs (condition number / bin_ratio)<a class="headerlink" href="#example-linear-map-choose-qois-condition-number-bin-ratio" title="Permalink to this headline">¶</a></h1>
@@ -145,37 +177,37 @@ of size Lambda_dim that has optimal skewness properties which will yield an
 inverse solution that can be approximated well.  The uncertainty in our data is
 relative to the range of data measured in each QoI (bin_ratio).</p>
 <p>Import the necessary modules:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">bet.sensitivity.gradients</span> <span class="kn">as</span> <span class="nn">grad</span>
-<span class="kn">import</span> <span class="nn">bet.sensitivity.chooseQoIs</span> <span class="kn">as</span> <span class="nn">cQoI</span>
-<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="kn">as</span> <span class="nn">simpleFunP</span>
-<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="kn">as</span> <span class="nn">calculateP</span>
-<span class="kn">import</span> <span class="nn">bet.postProcess.postTools</span> <span class="kn">as</span> <span class="nn">postTools</span>
-<span class="kn">import</span> <span class="nn">bet.Comm</span> <span class="kn">as</span> <span class="nn">comm</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">bet.sensitivity.gradients</span> <span class="k">as</span> <span class="nn">grad</span>
+<span class="kn">import</span> <span class="nn">bet.sensitivity.chooseQoIs</span> <span class="k">as</span> <span class="nn">cQoI</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">simpleFunP</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="k">as</span> <span class="nn">calculateP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.postTools</span> <span class="k">as</span> <span class="nn">postTools</span>
+<span class="kn">import</span> <span class="nn">bet.Comm</span> <span class="k">as</span> <span class="nn">comm</span>
 </pre></div>
 </div>
 <p>Let Lambda be a 5 dimensional hypercube:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Lambda_dim</span> <span class="o">=</span> <span class="mi">5</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Lambda_dim</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="n">Data_dim</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">num_samples</span> <span class="o">=</span> <span class="mf">1E5</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E5</span>
 <span class="n">num_centers</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
 </div>
 <p>Let the map Q be a random matrix of size (Data_dim, Lambda_dim):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">Data_dim</span><span class="p">,</span> <span class="n">Lambda_dim</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Choose random samples in parameter space to solve the model:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">Lambda_dim</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">samples</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">Lambda_dim</span><span class="p">])</span>
 <span class="n">data</span> <span class="o">=</span> <span class="n">Q</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span><span class="o">.</span><span class="n">transpose</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Calculate the gradient vectors at some subset of the samples.  Here the
 <em>normalize</em> argument is set to <em>True</em> because we are using <em>bin_ratio</em> to
 determine the uncertainty in our data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">G</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
-    <span class="n">centers</span><span class="o">=</span><span class="n">samples</span><span class="p">[:</span><span class="n">num_centers</span><span class="p">,</span> <span class="p">:],</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">G</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span>
+    <span class="n">centers</span><span class="o">=</span><span class="n">samples</span><span class="p">[:</span><span class="n">num_centers</span><span class="p">,</span> <span class="p">:],</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>With these gradient vectors, we are now ready to choose an optimal set of
@@ -186,57 +218,58 @@ best set of 2, 3, 4 ... until Lambda_dim.  This method returns a list of
 matrices.  Each matrix has 10 rows, the first column representing the
 condition number of the Jacobian of Q, and the rest of the columns the
 corresponding QoI indices:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">best_sets</span> <span class="o">=</span> <span class="n">cQoI</span><span class="o">.</span><span class="n">chooseOptQoIs_large</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">best_sets</span> <span class="o">=</span> <span class="n">cQoI</span><span class="o">.</span><span class="n">chooseOptQoIs_large</span><span class="p">(</span><span class="n">G</span><span class="p">,</span> <span class="n">volume</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>At this point we have determined the optimal set of QoIs to use in the inverse
 problem.  Now we compare the support of the inverse solution using
 different sets of these QoIs.  We set Q_ref to correspond to the center of
 the parameter space.  We choose the set of QoIs to consider:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">QoI_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QoI_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Restrict the data to have just QoI_indices:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">QoI_indices</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[:,</span> <span class="n">QoI_indices</span><span class="p">]</span>
 <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[</span><span class="n">QoI_indices</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="mf">0.5</span> <span class="o">*</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">Lambda_dim</span><span class="p">))</span>
 </pre></div>
 </div>
 <p>bin_ratio defines the uncertainty in our data:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.25</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.25</span>
 </pre></div>
 </div>
 <p>Find the simple function approximation:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">P</span><span class="p">,</span>  <span class="n">lam_vol</span><span class="p">,</span> <span class="n">io_ptr</span><span class="p">)</span> <span class="o">=</span> <span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">P</span><span class="p">,</span>  <span class="n">lam_vol</span><span class="p">,</span> <span class="n">io_ptr</span><span class="p">)</span> <span class="o">=</span> <span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
     <span class="n">rho_D_M</span><span class="o">=</span><span class="n">d_distr_prob</span><span class="p">,</span> <span class="n">d_distr_samples</span><span class="o">=</span><span class="n">d_distr_samples</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Sort samples by highest probability density and find how many samples lie in
 the support of the inverse solution.  With the Monte Carlo assumption, this
 also tells us the approximate volume of this support:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">percentile</span> <span class="o">=</span> <span class="mf">1.0</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">percentile</span> <span class="o">=</span> <span class="mf">1.0</span>
 <span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">P_high</span><span class="p">,</span> <span class="n">samples_high</span><span class="p">,</span> <span class="n">lam_vol_high</span><span class="p">,</span> <span class="n">data_high</span><span class="p">)</span> <span class="o">=</span>\
     <span class="n">postTools</span><span class="o">.</span><span class="n">sample_highest_prob</span><span class="p">(</span><span class="n">top_percentile</span><span class="o">=</span><span class="n">percentile</span><span class="p">,</span> <span class="n">P_samples</span><span class="o">=</span><span class="n">P</span><span class="p">,</span>
-    <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">lam_vol</span><span class="o">=</span><span class="n">lam_vol</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span><span class="n">sort</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span> <span class="n">lam_vol</span><span class="o">=</span><span class="n">lam_vol</span><span class="p">,</span><span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="p">,</span><span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Print the number of samples that make up the highest percentile percent
 samples and ratio of the volume of the parameter domain they take up</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="k">if</span> <span class="n">comm</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-    <span class="k">print</span> <span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lam_vol_high</span><span class="p">))</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">comm</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">lam_vol_high</span><span class="p">))</span>
 </pre></div>
 </div>
 </div>
 
 
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="linear_volume_binratio.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs (volume / bin_ratio)">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="linear_volume_binratio.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs (volume / bin_ratio)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="linearMapUniformSampling.html" class="btn btn-neutral" title="Example: Linear Map with Uniform Sampling"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="linearMapUniformSampling.html" class="btn btn-neutral" title="Example: Linear Map with Uniform Sampling" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -246,13 +279,14 @@ samples and ratio of the volume of the parameter domain they take up</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 14, 2016.
+      Last updated on Jun 25, 2016.
+
     </p>
   </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
 </footer>
+
         </div>
       </div>
 

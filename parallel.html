@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Parallel &mdash; BET 2.0.0-beta documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -35,7 +35,7 @@
         <link rel="prev" title="Overview" href="overview.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -45,11 +45,27 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-nav-search">
-        
-          <a href="index.html" class="fa fa-home"> BET</a>
-        
-        
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -57,48 +73,38 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-      </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        
           
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#package-layout">Package Layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#code-overview">Code Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#internal-dependencies">Internal dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="overview.html#external-dependencies">External dependencies</a></li>
-</ul>
-</li>
-<li class="toctree-l1 current"><a class="current reference internal" href="">Parallel</a><ul>
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Parallel</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-in-parallel">Running in parallel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#parallel-enabled-modules">Parallel Enabled Modules</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#util">util</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#calculatep">calculateP</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sampling">sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#postprocess">postProcess</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#sensitivity">sensitivity</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="bet.html">bet package</a></li>
-</ul>
-</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
 </ul>
 
+            
           
-        
+        </div>
       </div>
-      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -113,20 +119,29 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
     <li>Parallel</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="_sources/parallel.txt" rel="nofollow"> View page source</a>
+          
+            <a href="_sources/parallel.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="parallel">
 <span id="id1"></span><h1>Parallel<a class="headerlink" href="#parallel" title="Permalink to this headline">¶</a></h1>
@@ -140,11 +155,11 @@ installed.</p>
 <p>Depending on what modules, methods, and/or functions from BET your script uses
 small or no changes will need to be made to run your script in parallel. To run
 your script in parallel you will have to use:</p>
-<div class="highlight-python"><div class="highlight"><pre>$ mpirun -np NUM_PROCS python YOUR_SCRIPT.py
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ mpirun -np NUM_PROCS python YOUR_SCRIPT.py
 </pre></div>
 </div>
 <p>instead of</p>
-<div class="highlight-python"><div class="highlight"><pre>$ python YOUR_SCRIPT.py
+<div class="highlight-default"><div class="highlight"><pre><span></span>$ python YOUR_SCRIPT.py
 </pre></div>
 </div>
 <p>You might need to make sure your globalize your arrays or make sure to choose
@@ -153,19 +168,19 @@ the <code class="docutils literal"><span class="pre">parallel</span></code> flag
 <div class="section" id="parallel-enabled-modules">
 <h2>Parallel Enabled Modules<a class="headerlink" href="#parallel-enabled-modules" title="Permalink to this headline">¶</a></h2>
 <p>The modules that have parallel capabilities are as follows:</p>
-<div class="highlight-python"><div class="highlight"><pre>bet/
-  util
-  calculateP/
-    calculateP
-    simpleFunP
-  sampling/
-    basicSampling
-    adaptiveSampling
-  postProcess/
-    plotP
-    postTools
-  sensitivity/
-    chooseQoIs
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bet</span><span class="o">/</span>
+  <span class="n">util</span>
+  <span class="n">calculateP</span><span class="o">/</span>
+    <span class="n">calculateP</span>
+    <span class="n">simpleFunP</span>
+  <span class="n">sampling</span><span class="o">/</span>
+    <span class="n">basicSampling</span>
+    <span class="n">adaptiveSampling</span>
+  <span class="n">postProcess</span><span class="o">/</span>
+    <span class="n">plotP</span>
+    <span class="n">postTools</span>
+  <span class="n">sensitivity</span><span class="o">/</span>
+    <span class="n">chooseQoIs</span>
 </pre></div>
 </div>
 <div class="section" id="util">
@@ -222,15 +237,16 @@ save and collect probabitlies on separate processors as appropriately named file
 </div>
 
 
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="examples/examples_overview.html" class="btn btn-neutral float-right" title="Some References and Examples">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="examples/examples_overview.html" class="btn btn-neutral float-right" title="Some References and Examples" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="overview.html" class="btn btn-neutral" title="Overview"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="overview.html" class="btn btn-neutral" title="Overview" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -240,13 +256,14 @@ save and collect probabitlies on separate processors as appropriately named file
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 14, 2016.
+      Last updated on Jun 25, 2016.
+
     </p>
   </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
 </footer>
+
         </div>
       </div>
 
