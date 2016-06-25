@@ -24,8 +24,8 @@ or deterministically, and this discretized measure is then
 inverted by BET to determine a probability measure on the
 parameter space whose support contains the measurable sets
 of probable parameters.
-We use emulation to estimate the measures of sets defined by
-the random discretizations.
+We often use emulation to estimate the measures of sets when
+random sampling is used.
 1D and 2D marginals are calculated, smoothed, and plotted.
 
 The actual process is quite simple requiring a total of 5 steps
@@ -239,8 +239,4 @@ as part of a "un-dimensionalization" of the space, which is highly encouraged)::
 
     plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "linearMap",
                                  lam_ref=param_ref, file_extension = ".eps")
-
-
-
-
 
