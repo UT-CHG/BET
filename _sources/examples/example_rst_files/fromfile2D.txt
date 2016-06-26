@@ -1,4 +1,4 @@
-.. _fromFile2D:
+.. _fromFile2DExample:
 
 =======================================================================
 Example: Generalized Chains with a 2,2-dimensional data,parameter space
