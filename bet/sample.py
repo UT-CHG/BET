@@ -50,11 +50,11 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         mdat = dict()
     if sample_set_name is None:
         sample_set_name = 'default'
-    for attrname in sample_set_base.vector_names:
+    for attrname in save_set.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
-    for attrname in sample_set_base.all_ndarray_names:
+    for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
