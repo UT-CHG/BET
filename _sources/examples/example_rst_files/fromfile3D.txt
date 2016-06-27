@@ -16,7 +16,7 @@ Example: Batch Adaptive Sampling (3-to-3 example)
     for solving the stochastic inverse problem following the construction
     of the adaptive samples.
 
-We will walk through the following :ref:`example
+We will walk through the following `example
 <https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/fromFile3D.py>`_
 that uses a linear interpolant of a 3-dimensional QoI map used
 to define a 3-dimensional data space.
