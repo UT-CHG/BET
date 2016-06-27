@@ -10,6 +10,11 @@ with BET:
   python as used for installing BET. See http://fenicsproject.org/
   for more information.
 
+  (2) A copy of Launcher. See https://github.com/TACC/launcher for
+  more information. The user needs to set certain environment
+  variables inside of lbModel.py for this to run. See lbModel.py
+  for more information.
+
 This example generates samples for a KL expansion associated with
 a covariance defined by ``cov`` in computeSaveKL.py on an L-shaped mesh
 that defines the permeability field for a Poisson equation solved in
@@ -29,12 +34,12 @@ import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
+from lbModel import lb_model
 from myModel import my_model
 from Compute_Save_KL import computeSaveKL
 
-
 # Interface BET to the model.
-sampler = bsam.sampler(my_model)
+sampler = bsam.sampler(lb_model)
 
 # Define the number of KL terms to use to represent permeability field
 num_KL_terms = 2
@@ -51,15 +56,13 @@ input_samples.set_domain(np.repeat([[KL_term_min, KL_term_max]],
                                    num_KL_terms,
                                    axis=0))
 
-
-
 '''
 Suggested changes for user:
 
 Try with and without random sampling.
 
 If using regular sampling, try different numbers of samples
-per dimension (be careful if the dimension is not 2).
+per dimension (be careful in the dimension is not 2).
 '''
 # Generate samples on the parameter space
 randomSampling = False

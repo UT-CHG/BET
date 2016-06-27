@@ -25,27 +25,30 @@ in the parameter space are calculated using emulated points.
 
 
 import numpy as np
-import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
+
 from myModel import my_model
 
+# Define the sampler that will be used to create the discretization
+# object, which is the fundamental object used by BET to compute
+# solutions to the stochastic inverse problem.
+# The sampler and my_model is the interface of BET to the model,
+# and it allows BET to create input/output samples of the model.
+sampler = bsam.sampler(my_model)
 
-# Initialize 3-dimensional input parameter sample set object
+# Initialize 2-dimensional input parameter sample set object
 input_samples = samp.sample_set(2)
 
 # Set parameter domain
 input_samples.set_domain(np.array([[3.0, 6.0],
                                    [1.0, 5.0]]))
 
-# Define the sampler that will be used to create the discretization
-# object, which is the fundamental object used by BET to compute
-# solutions to the stochastic inverse problem
-sampler = bsam.sampler(my_model)
+
 
 '''
 Suggested changes for user:
@@ -102,9 +105,10 @@ param_ref = np.array([5.5, 4.5])
 Q_ref =  my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D(input_samples, ref_sample = param_ref, filename = 'nonlinearMapParameterSamples.eps')
+plotD.scatter_2D(input_samples, ref_sample = param_ref,
+                 filename = 'nonlinearMapParameterSamples.eps')
 if Q_ref.size == 2:
-    plotD.scatter_rhoD(my_discretization, ref_sample = Q_ref)
+    plotD.show_data_domain_2D(my_discretization, Q_ref = Q_ref, file_extension="eps")
 
 '''
 Suggested changes for user:

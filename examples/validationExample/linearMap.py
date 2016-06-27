@@ -8,28 +8,27 @@ recreate a probability measure on the input parameter space
 used to define the output probability measure. 
 """
 
-from bet.Comm import comm, MPI
 import numpy as np
-import bet.postProcess as postProcess
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
-import scipy.spatial as spatial
 from myModel import my_model
+
+# Define the sampler that will be used to create the discretization
+# object, which is the fundamental object used by BET to compute
+# solutions to the stochastic inverse problem.
+# The sampler and my_model is the interface of BET to the model,
+# and it allows BET to create input/output samples of the model.
+sampler = bsam.sampler(my_model)
 
 # Initialize 3-dimensional input parameter sample set object
 input_samples = samp.sample_set(2)
 
 # Set parameter domain
 input_samples.set_domain(np.repeat([[0.0, 1.0]], 2, axis=0))
-
-# Define the sampler that will be used to create the discretization
-# object, which is the fundamental object used by BET to compute
-# solutions to the stochastic inverse problem
-sampler = bsam.sampler(my_model)
 
 '''
 Suggested changes for user:
@@ -121,14 +120,13 @@ simpleFunP.user_partition_user_distribution(my_discretization,
 # Calculate probabilities
 calculateP.prob(my_discretization)
 
+########################################
+# Post-process the results (optional)
+########################################
 # Show some plots of the different sample sets
 plotD.scatter_2D(my_discretization._input_sample_set, filename = 'Parameter_Samples.eps')
 plotD.scatter_2D(my_discretization._output_sample_set, filename = 'QoI_Samples.eps')
 plotD.scatter_2D(my_discretization._output_probability_set, filename = 'Data_Space_Discretization.eps')
-
-########################################
-# Post-process the results
-########################################
 '''
 Suggested changes for user:
 
