@@ -59,9 +59,9 @@ my_disc = sample.discretization(input_sample_set, output_sample_set)
 # Show the samples in the parameter space
 pDom.scatter_rhoD(my_disc, rho_D=rho_D, ref_sample=ref_sample, io_flag='input')
 # Show the corresponding samples in the data space
-pDom.scatter_rhoD(output_sample_set, rho_D=rho_D, ref_sample=Q_ref, io_flag='output')
+pDom.scatter_rhoD(output_sample_set, rho_D=rho_D, ref_sample=Q_ref,
+                  io_flag='output')
 
 # Show multiple data domains that correspond with the convex hull of samples in
 # the parameter space
-pDom.show_data_domain_multi(my_disc, Q_ref=mdat['Q_true'][15],
-        showdim='all')       
+pDom.show_data_domain_multi(my_disc, Q_ref=Q_ref, showdim='all')

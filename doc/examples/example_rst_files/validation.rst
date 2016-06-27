@@ -56,7 +56,7 @@ the stochastic inverse problem using some default options::
     calculateP.prob(my_discretization)
 
 Step (0): Setting up the environment
-===========================
+====================================
 Import the necessary modules::
 
     import numpy as np
@@ -69,7 +69,7 @@ Import the necessary modules::
 
 
 Step (1): Define interface to the model
-===========================
+=======================================
 Import the Python script interface to the (simple Python) `model
 <https://github.com/UT-CHG/BET/blob/master/examples/validationExample/myModel.py>`_
 that takes as input a numpy array of model input parameter samples,
@@ -88,7 +88,7 @@ and it allows BET to create input/output samples of the model::
 
 
 Step (2): Describe and sample the input space
-===========================
+=============================================
 Initialize the (2-dimensional) input parameter sample set object
 and set the parameter domain to be a unit-square::
 
@@ -131,7 +131,7 @@ the Voronoi cells::
 
 
 Step (3): Generate QoI samples
-===========================
+==============================
 
 Create the discretization object holding all the input (parameter) samples
 and output (QoI) samples using the sampler::
@@ -153,7 +153,7 @@ provided by the current discretization of the parameter and data spaces).
 
 
 Step (4): Describe the data distribution
-===========================
+========================================
 This problem is nominally a "parameter distribution estimation"
 problem and not a "parameter identification under uncertainty" problem
 (e.g., see :ref:`linearMap` or almost any of the other examples).
@@ -206,7 +206,7 @@ above with ``n_samples`` set to 1E2::
 
 
 Step (5): Solve the stochastic inverse problem
-===========================
+==============================================
 Calculate probablities on the parameter space (which are stored within
 the discretization object)::
 
@@ -215,7 +215,7 @@ the discretization object)::
 
 
 Step (6) [Optional]: Post-processing
-===========================
+====================================
 Show some plots of the different sample sets::
 
     plotD.scatter_2D(my_discretization._input_sample_set, filename = 'Parameter_Samples.eps')
