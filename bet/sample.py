@@ -1096,9 +1096,9 @@ class voronoi_sample_set(sample_set_base):
         # TODO it is unclear whether to use min, mean, or the first n nearest
         # samples
         sample_radii = None
-        if hasattr(self, '_normalized_radii'):
-            sample_radii = np.copy(getattr(self, '_normalized_radii'))
-
+        if self._normalized_radii is not None:
+                sample_radii = np.copy(self._normalized_radii)
+    
         if sample_radii is None:
             num_mc_points = np.max([1e4, samples.shape[0]*20])
             self.estimate_radii(n_mc_points=int(num_mc_points)) 
@@ -1130,7 +1130,8 @@ class voronoi_sample_set(sample_set_base):
         self.global_to_local()
         lam_vol_local = np.zeros(self._local_index.shape)
 
-        # parallize 
+        # parallize
+
         for i, iglobal in enumerate(self._local_index):
             samples_in_cell = 0
             total_samples = 10
