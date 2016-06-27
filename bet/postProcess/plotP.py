@@ -61,7 +61,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 
     # Check for local probabilities
     if sample_obj._probabilities_local is None:
-        if sample_obj.probabilities is None:
+        if sample_obj._probabilities is None:
             raise missing_attribute("Missing probabilities")
         else:
             sample_obj.global_to_local()
@@ -122,7 +122,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
 
     # Check for local probabilities
     if sample_obj._probabilities_local is None:
-        if sample_obj.probabilities is None:
+        if sample_obj._probabilities is None:
             raise missing_attribute("Missing probabilities")
         else:
             sample_obj.global_to_local()
