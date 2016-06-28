@@ -88,11 +88,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#validation-example">Validation example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#linear-map-example">Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#non-linear-map-example">Non-Linear Map Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#adcirc-based-examples">ADCIRC Based Examples</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#idealized-inlet-physical-domain">Idealized Inlet Physical Domain</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#adaptive-sampling-examples">Adaptive Sampling Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#visualization-examples">Visualization Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#a-completely-serial-example">A completely serial example</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#using-launcher-to-run-multiple-serial-models">Using Launcher to run multiple serial models</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#batch-adaptive-sampling-examples">(Batch) Adaptive Sampling Examples</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
 </ul>
 </li>
@@ -108,8 +110,8 @@
 <li class="toctree-l3"><a class="reference internal" href="example_rst_files/contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
 <li class="toctree-l3"><a class="reference internal" href="example_rst_files/domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
 <li class="toctree-l3"><a class="reference internal" href="example_rst_files/domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="example_rst_files/fromfile2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="example_rst_files/fromfile3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_rst_files/fromfile2D.html">Example: Batch Adaptive Sampling (2-to-2 example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="example_rst_files/fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="example_rst_files/linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="example_rst_files/linear_condnum_binratio.html">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="example_rst_files/linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
@@ -193,44 +195,44 @@ directory.</p>
 </div>
 <div class="section" id="fenics-example-serial-bet-and-serial-model">
 <h2>FEniCS Example (serial BET and serial model)<a class="headerlink" href="#fenics-example-serial-bet-and-serial-model" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="a-completely-serial-example">
+<h3>A completely serial example<a class="headerlink" href="#a-completely-serial-example" title="Permalink to this headline">¶</a></h3>
 <p>See <a class="reference internal" href="example_rst_files/FEniCS.html#fenicsexample"><span class="std std-ref">Example: FEniCS</span></a> for an example using the <a class="reference external" href="http://fenicsproject.org/">FEniCS package</a> that can be run with serial BET.</p>
+</div>
+<div class="section" id="using-launcher-to-run-multiple-serial-models">
+<h3>Using Launcher to run multiple serial models<a class="headerlink" href="#using-launcher-to-run-multiple-serial-models" title="Permalink to this headline">¶</a></h3>
 <p>See <a class="reference internal" href="example_rst_files/FEniCSMultipleSerial.html#fenicsmultipleserialexample"><span class="std std-ref">Example: Multiple Serial FEniCS</span></a> for an example that can be run with
 serial BET and uses <a class="reference external" href="https://github.com/TACC/launcher">Launcher</a> to
 launch multiple serial runs of the model in parallel.</p>
 </div>
-<div class="section" id="adcirc-based-examples">
-<h2>ADCIRC Based Examples<a class="headerlink" href="#adcirc-based-examples" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">
+<h2>ADCIRC on an Idealized Inlet Examples and Adaptive Sampling<a class="headerlink" href="#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling" title="Permalink to this headline">¶</a></h2>
 <p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/fromADCIRC_FileMap</span></code>.</p>
-<div class="section" id="idealized-inlet-physical-domain">
-<h3>Idealized Inlet Physical Domain<a class="headerlink" href="#idealized-inlet-physical-domain" title="Permalink to this headline">¶</a></h3>
 <p>For a description of the model, physical inlet domain, data space, and parameter
 space for the examples using the idealized inlet see <a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution
 of a stochastic inverse problem for the Manning’s n parameter field in
 hydrodynamic models</a>.</p>
-</div>
-<div class="section" id="adaptive-sampling-examples">
-<h3>Adaptive Sampling Examples<a class="headerlink" href="#adaptive-sampling-examples" title="Permalink to this headline">¶</a></h3>
-<p>Adaptively samples a linear interpolant using data read from file:</p>
-<blockquote>
-<div><ul class="simple">
-<li><a class="reference internal" href="example_rst_files/fromfile2D.html#fromfile2dexample"><span class="std std-ref">Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
-<li><a class="reference internal" href="example_rst_files/fromfile3D.html#fromfile3dexample"><span class="std std-ref">Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
-</ul>
-</div></blockquote>
-</div>
-<div class="section" id="visualization-examples">
-<h3>Visualization Examples<a class="headerlink" href="#visualization-examples" title="Permalink to this headline">¶</a></h3>
-<p>The module <a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-mod docutils literal"><span class="pre">plotDomains</span></code></a> provides several methods used to
+<div class="section" id="batch-adaptive-sampling-examples">
+<h3>(Batch) Adaptive Sampling Examples<a class="headerlink" href="#batch-adaptive-sampling-examples" title="Permalink to this headline">¶</a></h3>
+<p>These illustrate how to perform a specific type of goal-oriented
+adaptive sampling on a linear interpolant
+created from data read from file.
+We also show how several methods within the module
+<a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-mod docutils literal"><span class="pre">plotDomains</span></code></a> can be used to
 plot 2D domains and/or 2D slices and projections of higher dimensional domains.</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="example_rst_files/domains2D.html#domains2d"><span class="std std-ref">Example: Generalized Chains with a 2,2-dimensional data,parameter space</span></a></li>
-<li><a class="reference internal" href="example_rst_files/domains3D.html#domains3d"><span class="std std-ref">Example: Generalized Chains with a 3,3-dimensional data,parameter space</span></a></li>
+<li><a class="reference internal" href="example_rst_files/fromfile2D.html#fromfile2dexample"><span class="std std-ref">Example: Batch Adaptive Sampling (2-to-2 example)</span></a></li>
+<li><a class="reference internal" href="example_rst_files/fromfile3D.html#fromfile3dexample"><span class="std std-ref">Example: Batch Adaptive Sampling (3-to-3 example)</span></a></li>
 </ul>
 </div></blockquote>
 </div>
 <div class="section" id="examples-estimating">
 <h3>Examples Estimating <span class="math">\(P_\Lambda\)</span><a class="headerlink" href="#examples-estimating" title="Permalink to this headline">¶</a></h3>
+<p>These illustrate how to actually take a discretization object
+(loaded from file) and solve the stochastic inverse problem
+using different QoI maps.</p>
 <blockquote>
 <div><ul class="simple">
 <li><a class="reference internal" href="example_rst_files/Q_1D_serial.html#q1d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a></li>
@@ -261,8 +263,8 @@ plot 2D domains and/or 2D slices and projections of higher dimensional domains.<
 <li class="toctree-l1"><a class="reference internal" href="example_rst_files/contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_rst_files/domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_rst_files/domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example_rst_files/fromfile2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
-<li class="toctree-l1"><a class="reference internal" href="example_rst_files/fromfile3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/fromfile2D.html">Example: Batch Adaptive Sampling (2-to-2 example)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="example_rst_files/fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_rst_files/linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_rst_files/linear_condnum_binratio.html">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
 <li class="toctree-l1"><a class="reference internal" href="example_rst_files/linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
@@ -294,7 +296,7 @@ plot 2D domains and/or 2D slices and projections of higher dimensional domains.<
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 25, 2016.
+      Last updated on Jun 27, 2016.
 
     </p>
   </div>

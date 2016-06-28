@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Linear Map with Uniform Sampling &mdash; BET 2.0.0-beta documentation</title>
+  <title>Example: Multiple Serial FEniCS &mdash; BET 2.0.0-beta documentation</title>
   
 
   
@@ -32,8 +32,8 @@
   
     <link rel="top" title="BET 2.0.0-beta documentation" href="../../index.html"/>
         <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Linear Map Choose QoIs (condition number / bin_ratio)" href="linear_condnum_binratio.html"/>
-        <link rel="prev" title="Example: Batch Adaptive Sampling (3-to-3 example)" href="fromfile3D.html"/> 
+        <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 1D data space" href="Q_1D_serial.html"/>
+        <link rel="prev" title="Example: FEniCS" href="FEniCS.html"/> 
 
   
   <script src="../../_static/js/modernizr.min.js"></script>
@@ -95,17 +95,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
 <li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a><ul class="current">
 <li class="toctree-l3"><a class="reference internal" href="FEniCS.html">Example: FEniCS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FEniCSMultipleSerial.html">Example: Multiple Serial FEniCS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Q_1D_serial.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Q_3D.html">Example: Estimate the parameter space probabiliy density with  a 3D data space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chooseOptQoIs_2d.html">Example: Heatplate Model with Clustered Sampling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fromfile2D.html">Example: Batch Adaptive Sampling (2-to-2 example)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Linear Map with Uniform Sampling</a><ul>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Multiple Serial FEniCS</a><ul>
 <li class="toctree-l4"><a class="reference internal" href="#step-0-setting-up-the-environment">Step (0): Setting up the environment</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-1-define-interface-to-the-model">Step (1): Define interface to the model</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-2-describe-and-sample-the-input-space">Step (2): Describe and sample the input space</a></li>
@@ -115,6 +105,16 @@
 <li class="toctree-l4"><a class="reference internal" href="#step-6-optional-post-processing">Step (6) [Optional]: Post-processing</a></li>
 </ul>
 </li>
+<li class="toctree-l3"><a class="reference internal" href="Q_1D_serial.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_3D.html">Example: Estimate the parameter space probabiliy density with  a 3D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chooseOptQoIs_2d.html">Example: Heatplate Model with Clustered Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile2D.html">Example: Batch Adaptive Sampling (2-to-2 example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
 <li class="toctree-l3"><a class="reference internal" href="linear_condnum_binratio.html">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
 <li class="toctree-l3"><a class="reference internal" href="linear_volume_binsize_large.html">Example: Linear Map Choose QoIs (volume / bin_size / large)</a></li>
@@ -158,11 +158,11 @@
       
           <li><a href="../examples_overview.html">Some References and Examples</a> &raquo;</li>
       
-    <li>Example: Linear Map with Uniform Sampling</li>
+    <li>Example: Multiple Serial FEniCS</li>
       <li class="wy-breadcrumbs-aside">
         
           
-            <a href="../../_sources/examples/example_rst_files/linearMapUniformSampling.txt" rel="nofollow"> View page source</a>
+            <a href="../../_sources/examples/example_rst_files/FEniCSMultipleSerial.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -172,31 +172,49 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="example-linear-map-with-uniform-sampling">
-<span id="linearmap"></span><h1>Example: Linear Map with Uniform Sampling<a class="headerlink" href="#example-linear-map-with-uniform-sampling" title="Permalink to this headline">¶</a></h1>
-<p>We will walk through the following <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/linearMap/linearMapUniformSampling.py">example</a>.
-This example solves a stochastic inverse problem for a
-linear 3-to-2 map. We refer to the map as the QoI map,
-or just a QoI. We refer to the range of the QoI map as
-the data space.
-The 3-D input space is discretized with i.i.d. uniform
-random samples or a regular grid of samples.
-We refer to the input space as the
-parameter space, and use parameter to refer to a particular
-point (e.g., a particular random sample) in this space.
-A reference parameter is used to define a reference QoI datum
-and a uniform probability measure is defined on a small box
-centered at this datum.
-The measure on the data space is discretized either randomly
-or deterministically, and this discretized measure is then
-inverted by BET to determine a probability measure on the
-parameter space whose support contains the measurable sets
-of probable parameters.
-We often use emulation to estimate the measures of sets when
-random sampling is used.
-1D and 2D marginals are calculated, smoothed, and plotted.</p>
-<p>The actual process is quite simple requiring a total of 5 steps
-to solve the stochastic inverse problem with BET excluding any
+  <div class="section" id="example-multiple-serial-fenics">
+<span id="fenicsmultipleserialexample"></span><h1>Example: Multiple Serial FEniCS<a class="headerlink" href="#example-multiple-serial-fenics" title="Permalink to this headline">¶</a></h1>
+<p>We will walk through the following <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/BET_multiple_serial_models_script.py">example</a>.
+This example will run a serial version of BET and multiple (serial) runs
+of a model using different parameters.
+The purpose of this example is to porivde a template on how to make use of</p>
+<blockquote>
+<div><a class="reference external" href="https://github.com/TACC/launcher">Launcher</a></div></blockquote>
+<p>(typically used on a cluster)
+to launch multiple
+instances of a serial code to more efficiently do parameter sweeps.
+If we have k processors and sample the model N=nk times, then the
+wall clock time spent solving the model goes from N to n (there is
+some additional overhead with the I/O).
+On a local machine with 2-8 processors, since this particular model is
+relatively cheap to evaluate, the overhead of the I/O makes this
+less efficient than the purely serial <a class="reference internal" href="FEniCS.html#fenicsexample"><span class="std std-ref">Example: FEniCS</span></a>.
+If we used a more refined mesh and/or more computationally expensive
+model where the model solve time was significantly more than the
+reading/writing of files, then this approach is faster.</p>
+<p>This example requires the following external packages not shipped
+with BET:</p>
+<ul class="simple">
+<li>An installation of <a class="reference external" href="http://fenicsproject.org/">FEniCS</a>
+that can be run using the same python as used for installing BET.</li>
+<li>A copy of <a class="reference external" href="https://github.com/TACC/launcher">Launcher</a>.
+The user needs to set certain environment
+variables inside of <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/lbModel.py">lbModel.py</a>
+for this to run.</li>
+</ul>
+<p>This example generates samples for a KL expansion associated with
+a covariance defined by <code class="docutils literal"><span class="pre">cov</span></code> in <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/computeSaveKL.py">computeSaveKL.py</a>
+on an L-shaped mesh
+that defines the permeability field for a Poisson equation solved in
+<a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel_serial.py">myModel_serial.py</a>.</p>
+<p>The quantities of interest (QoI) are defined as two spatial
+averages of the solution to the PDE.</p>
+<p>The user defines the dimension of the parameter space (corresponding
+to the number of KL terms) and the number of samples in this space.</p>
+<p>Even though we are coupling to the state-of-the-art FEniCS code for
+solving a PDE, we again see that the actual process for solving
+the stochastic inverse problem is quite simple requiring a total of
+5 steps with BET excluding any
 post-processing
 the user may want.
 In general the user will probably not write code with various
@@ -207,20 +225,26 @@ the &#8220;entire&#8221; code (omitting setting the environment,
 post-processing, and commenting) required
 for solving
 the stochastic inverse problem using some default options:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">lb_model</span><span class="p">)</span>
 
-<span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
-<span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">num_KL_terms</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">computeSaveKL</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+<span class="n">KL_term_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.0</span>
+<span class="n">KL_term_max</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="n">KL_term_min</span><span class="p">,</span> <span class="n">KL_term_max</span><span class="p">]],</span>
+                                   <span class="n">num_KL_terms</span><span class="p">,</span>
+                                   <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
 
 <span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">)</span>
 
-<span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
-<span class="n">Q_ref</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
+<span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">num_KL_terms</span><span class="p">))</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
 <span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
-    <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-    <span class="n">center_pts_per_edge</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+    <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">center_pts_per_edge</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
 
 <span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
 </pre></div>
@@ -240,11 +264,12 @@ the stochastic inverse problem using some default options:</p>
 </div>
 <div class="section" id="step-1-define-interface-to-the-model">
 <h2>Step (1): Define interface to the model<a class="headerlink" href="#step-1-define-interface-to-the-model" title="Permalink to this headline">¶</a></h2>
-<p>Import the Python script interface to the (simple Python) <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/linearMap/myModel.py">model</a>
+<p>Import the Python script interface to the <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/lbModel.py">load balancing model</a>
 that takes as input a numpy array of model input parameter samples,
-generated from the sampler (see below), evaluates the model to
-generate QoI samples, and returns the QoI samples:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myModel</span> <span class="k">import</span> <span class="n">my_model</span>
+generated from the sampler (see below), creates the Launcher job file
+for running and evaluating multiple serial instances of the model to
+generate batches of QoI samples, and returns the QoI samples:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">lbModel</span> <span class="k">import</span> <span class="n">lb_model</span>
 </pre></div>
 </div>
 <p>Define the sampler that will be used to create the discretization
@@ -252,32 +277,42 @@ object, which is the fundamental object used by BET to compute
 solutions to the stochastic inverse problem.
 The sampler and my_model is the interface of BET to the model,
 and it allows BET to create input/output samples of the model:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">lb_model</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="step-2-describe-and-sample-the-input-space">
 <h2>Step (2): Describe and sample the input space<a class="headerlink" href="#step-2-describe-and-sample-the-input-space" title="Permalink to this headline">¶</a></h2>
-<p>Initialize the (3-dimensional) input parameter sample set object
-and set the parameter domain to be a unit-cube:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<p>We compute and save the KL expansion once so that this part, which
+can be computationally expensive, can be done just once and then
+commented out for future runs of the code using the same set of KL
+coefficients defining the parameter space:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Compute_Save_KL</span> <span class="k">import</span> <span class="n">computeSaveKL</span>
+<span class="n">num_KL_terms</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">computeSaveKL</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We then initialize the parameter space and assume that any KL
+coefficient belongs to the interval [-3.0,3.0]:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+<span class="n">KL_term_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.0</span>
+<span class="n">KL_term_max</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="n">KL_term_min</span><span class="p">,</span> <span class="n">KL_term_max</span><span class="p">]],</span>
+                               <span class="n">num_KL_terms</span><span class="p">,</span>
+                               <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
 <div class="section" id="suggested-changes-for-user-1">
 <h3>Suggested changes for user (1)<a class="headerlink" href="#suggested-changes-for-user-1" title="Permalink to this headline">¶</a></h3>
 <p>Try with and without random sampling.</p>
-<p>If using random sampling, try <code class="docutils literal"><span class="pre">num_samples</span> <span class="pre">=</span> <span class="pre">1E3</span></code> and
-<code class="docutils literal"><span class="pre">num_samples</span> <span class="pre">=</span> <span class="pre">1E4</span></code>.
-See what happens when <code class="docutils literal"><span class="pre">num_samples</span> <span class="pre">=</span> <span class="pre">1E2</span></code>.
-Try using <code class="docutils literal"><span class="pre">'lhs'</span></code> instead of <code class="docutils literal"><span class="pre">'random'</span></code> in the random_sample_set.</p>
 <p>If using regular sampling, try different numbers of samples
-per dimension:</p>
+per dimension (note that if <code class="docutils literal"><span class="pre">num_KL_terms</span></code> is not equal to 2, then
+the user needs to be careful using regular sampling):</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">randomSampling</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">if</span> <span class="n">randomSampling</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="n">E3</span><span class="p">)</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="n">E2</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
-    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 </pre></div>
 </div>
 </div>
@@ -302,8 +337,8 @@ the Voronoi cells:</p>
 <h2>Step (3): Generate QoI samples<a class="headerlink" href="#step-3-generate-qoi-samples" title="Permalink to this headline">¶</a></h2>
 <p>Create the discretization object holding all the input (parameter) samples
 and output (QoI) samples using the sampler:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
-                                               <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;3to2_discretization.txt.gz&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span>
+                            <span class="n">input_samples</span><span class="p">,</span> <span class="n">savefile</span><span class="o">=</span><span class="s1">&#39;FEniCS_Example.txt.gz&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>At this point, all of the model information has been extracted for BET
@@ -329,24 +364,25 @@ define a distribution &#8220;around&#8221; this datum.</p>
 <h3>Suggested changes for user (3)<a class="headerlink" href="#suggested-changes-for-user-3" title="Permalink to this headline">¶</a></h3>
 <p>Try different reference parameters that produce different
 reference QoI data.:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
-<span class="n">Q_ref</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">num_KL_terms</span><span class="p">))</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Use the reference samples and discretization to generate plots (this
 is completely optional):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_2D_multi</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span> <span class="n">param_ref</span><span class="p">,</span> <span class="n">showdim</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
-                       <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;linearMap_ParameterSamples.eps&#39;</span><span class="p">)</span>
-<span class="n">plotD</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s1">&#39;eps&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_2D</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">param_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span>
+                 <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;FEniCS_ParameterSamples.eps&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">Q_ref</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">plotD</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span>
+            <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;eps&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="suggested-changes-for-user-4">
 <h3>Suggested changes for user (4)<a class="headerlink" href="#suggested-changes-for-user-4" title="Permalink to this headline">¶</a></h3>
-<p>Try different ways of discretizing the probability measure on the data
-space defined as a uniform
-probability measure on a rectangle centered at Q_ref whose
-size is determined by scaling the circumscribing box of the data space:</p>
+<p>Try different ways of discretizing the probability measure on D defined
+as a uniform probability measure on a rectangle or interval depending
+on choice of QoI_num in <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel.py">myModel.py</a>:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">randomDataDiscretization</span> <span class="o">=</span> <span class="kc">False</span>
 <span class="k">if</span> <span class="n">randomDataDiscretization</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
     <span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
@@ -370,34 +406,21 @@ the discretization object):</p>
 </div>
 <div class="section" id="step-6-optional-post-processing">
 <h2>Step (6) [Optional]: Post-processing<a class="headerlink" href="#step-6-optional-post-processing" title="Permalink to this headline">¶</a></h2>
-<p>There are ways to determine &#8220;optimal&#8221; smoothing parameters (e.g., see CV, GCV,
-and other similar methods), but we have not incorporated these into the code
-as lower-dimensional marginal plots generally have limited value in understanding
-the structure of a high dimensional non-parametric probability measure.</p>
-<p>The user may want to change <code class="docutils literal"><span class="pre">nbins</span></code> or <code class="docutils literal"><span class="pre">sigma</span></code> in the <code class="docutils literal"><span class="pre">plotP.*</span></code> inputs
-(which influences the
-kernel density estimation with smaller values of <code class="docutils literal"><span class="pre">sigma</span></code> implying a density
-estimate that
-looks more like a histogram and larger values smoothing out the values
-more).</p>
-<p>In general, the user will have to tune these for any given problem especially
-when looking at marginals of higher-dimensional problems with parameter ranges
-that have disparate scales (assuming the parameters were not first normalized
-as part of a &#8220;un-dimensionalization&#8221; of the space, which is highly encouraged):</p>
+<p>The user may want to play around with <code class="docutils literal"><span class="pre">nbins</span></code> and <code class="docutils literal"><span class="pre">sigma</span></code> if different
+input domains or different discretizations other than the defaults above
+are used:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
-                                                        <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-
-<span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-
-<span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;linearMap&quot;</span><span class="p">,</span>
-                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s2">&quot;.eps&quot;</span><span class="p">,</span> <span class="n">plot_surface</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+                                                        <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;FEniCS&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;.eps&quot;</span><span class="p">,</span>
+                             <span class="n">plot_surface</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
 <span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
-                                                        <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
-<span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
-
-<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;linearMap&quot;</span><span class="p">,</span>
-                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s2">&quot;.eps&quot;</span><span class="p">)</span>
+                                                        <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;FEniCS&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;.eps&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -410,10 +433,10 @@ as part of a &#8220;un-dimensionalization&#8221; of the space, which is highly e
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="linear_condnum_binratio.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs (condition number / bin_ratio)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Q_1D_serial.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 1D data space" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="fromfile3D.html" class="btn btn-neutral" title="Example: Batch Adaptive Sampling (3-to-3 example)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="FEniCS.html" class="btn btn-neutral" title="Example: FEniCS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
