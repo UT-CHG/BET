@@ -878,17 +878,12 @@ class voronoi_sample_set(sample_set_base):
         (dist, ptr) = self._kdtree.query(x, p=self._p_norm, k=k)
         return (dist, ptr)
 
-    def exact_volume_1D(self, distribution='uniform', a=None, b=None):
+    def exact_volume_1D(self):
         r"""
         
         Exactly calculates the volume fraction of the Voronoic cells.
         Specifically we are calculating 
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
-        
-        :param string distribution: Probability distribution (uniform, normal,
-            truncnorm, beta)
-        :param float a: mean or alpha (normal/truncnorm, beta)
-        :param float b: covariance or beta (normal/truncnorm, beta)
         
         """
         self.check_num()
@@ -904,23 +899,12 @@ class voronoi_sample_set(sample_set_base):
         # cells and bound the cells by the domain
         edges = np.concatenate(([self._domain[:, 0]], (sorted_samples[:-1, :] +\
         sorted_samples[1:, :])*.5, [self._domain[:, 1]]))
-        if distribution == 'normal':
-            edges = scipy.stats.norm.cdf(edges, loc=a, scale=np.sqrt(b))
-        elif distribution == 'truncnorm':
-            l = (self._domain[:, 0] - a) / np.sqrt(b)
-            r = (self._domain[:, 1] - a) / np.sqrt(b)
-            edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a,
-                    scale=np.sqrt(b)) 
-        elif distribution == 'beta':
-            edges = scipy.stats.beta.cdf(edges, a=a, b=b, 
-                    loc=self._domain[:, 0], scale=domain_width)
         # calculate difference between right and left of each cell and
         # renormalize
         sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
         lam_vol = np.zeros(sorted_lam_vol.shape)
         lam_vol[sort_ind] = sorted_lam_vol
-        if distribution == 'uniform':
-            lam_vol = lam_vol/domain_width
+        lam_vol = lam_vol/domain_width
         self._volumes = lam_vol
         self.global_to_local()
 
