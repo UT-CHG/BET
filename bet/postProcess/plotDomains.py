@@ -43,13 +43,18 @@ class bad_object(Exception):
 
 def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=True,
                interactive=False, xlabel='x', ylabel='y',
-               filename='scatter2d', file_extension="png"):
+               filename='scatter2d', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
     density values).  A reference sample (``ref_sample``) can be chosen by the user.
     This reference sample will be plotted as a mauve circle twice the size of
     the other markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: contains samples to create scatter plot
     :type sample_obj: :class:`~bet.sample.sample_set_base`
@@ -101,23 +106,108 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
         plt.autoscale(tight=True)
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
-        plt.savefig(filename+'.'+file_extension, bbox_inches='tight', transparent=True,
+        if "." not in filename:
+            full_filename = filename+file_extension
+        else:
+            full_filename = filename
+        plt.savefig(full_filename, bbox_inches='tight', transparent=True,
                     pad_inches=0)
     if interactive:
         plt.show()
     else:
         plt.close()
 
+def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None, save=True,
+               interactive=False, xlabel='x', ylabel='y',
+               filename='scatter2d_input', file_extension=".png"):
+    r"""
+    Creates a two-dimensional scatter plot of the input samples within the
+    discretization object colored by ``color`` (usually an array of pointwise
+    probability density values).  A reference sample (``ref_sample``) can be
+    chosen by the user.  This reference sample will be plotted as a mauve
+    circle twice the size of the other markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
+
+    :param my_disc: contains samples (`my_disc._input_sample_set``) to create
+        scatter plot 
+    :type my_disc: :class:`~bet.sample.discretization`
+    :param list sample_nos: indicies of the samples to plot
+    :param color: values to color the samples by
+    :type color: :class:`numpy.ndarray`
+    :param ref_sample: reference parameter value
+    :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string xlabel: x-axis label
+    :param string ylabel: y-axis label
+    :param string filename: filename to save the figure as
+    :param string file_extension: file extension
+
+    """
+    if not isinstance(my_disc, sample.discretization):
+        raise bad_object("Improper discretization object")
+
+    scatter_2D(my_disc.get_input_sample_set(), sample_nos, color, ref_sample, save,
+               interactive, xlabel, ylabel,
+               filename, file_extension)
+
+def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None, save=True,
+               interactive=False, xlabel='x', ylabel='y',
+               filename='scatter2d_input', file_extension=".png"):
+    r"""
+    Creates a two-dimensional scatter plot of the output samples within the
+    discretization object colored by ``color`` (usually an array of pointwise
+    probability density values).  A reference sample (``ref_sample``) can be
+    chosen by the user.  This reference sample will be plotted as a mauve
+    circle twice the size of the other markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
+
+    :param my_disc: contains samples (`my_disc._output_sample_set``) to create
+        scatter plot 
+    :type my_disc: :class:`~bet.sample.discretization`
+    :param list sample_nos: indicies of the samples to plot
+    :param color: values to color the samples by
+    :type color: :class:`numpy.ndarray`
+    :param ref_sample: reference parameter value
+    :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string xlabel: x-axis label
+    :param string ylabel: y-axis label
+    :param string filename: filename to save the figure as
+    :param string file_extension: file extension
+
+    """
+    if not isinstance(my_disc, sample.discretization):
+        raise bad_object("Improper discretization object")
+
+    scatter_2D(my_disc.get_output_sample_set(), sample_nos, color, ref_sample, save,
+               interactive, xlabel, ylabel,
+               filename, file_extension)
+
 
 def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=True,
                interactive=False, xlabel='x', ylabel='y', zlabel='z',
-               filename="scatter3d", file_extension="png"):
+               filename="scatter3d", file_extension=".png"):
     r"""
     Creates a three-dimensional scatter plot of samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
     density values). A reference sample (``ref_sample``) can be chosen by the user.
     This reference sample will be plotted as a mauve circle twice the size of
     the other markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.sample_set_base`
@@ -174,22 +264,107 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None, save=Tr
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     if save:
-        plt.savefig(filename+'.'+file_extension, bbox_inches='tight', transparent=True,
+        if "." not in filename:
+            full_filename = filename+file_extension
+        else:
+            full_filename = filename
+        plt.savefig(full_filename, bbox_inches='tight', transparent=True,
                     pad_inches=0)
     if interactive:
         plt.show()
     else:
         plt.close()
 
+def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None, save=True,
+               interactive=False, xlabel='x', ylabel='y', zlabel='z',
+               filename="scatter3d", file_extension=".png"):
+    r"""
+    Creates a three-dimensional scatter plot of input samples within the
+    discretization object colored by ``color`` (usually an array of pointwise
+    probability density values). A reference sample (``ref_sample``) can be
+    chosen by the user.  This reference sample will be plotted as a mauve
+    circle twice the size of the other markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
+
+    :param my_disc: contains samples (`my_disc._output_sample_set``) to create
+        scatter plot
+    :type my_disc: :class:`~bet.sample.discretization`
+    :param list sample_nos: indicies of the samples to plot
+    :param color: values to color the samples by
+    :type color: :class:`numpy.ndarray`
+    :param ref_sample: reference parameter value
+    :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string xlabel: x-axis label
+    :param string ylabel: y-axis label
+    :param string zlabel: z-axis label
+    :param string filename: filename to save the figure as
+    :param string file_extension: file extension
+
+    """
+    if not isinstance(sample_obj, sample.discretization):
+        raise bad_object("Improper discretization object")
+    scatter_3D_input(my_disc.get_input_sample_set(), sample_nos, color,
+            ref_sample, save, interactive, xlabel, ylabel, zlabel, filename,
+            file_extension)
+
+def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None, save=True,
+               interactive=False, xlabel='x', ylabel='y', zlabel='z',
+               filename="scatter3d", file_extension=".png"):
+    r"""
+    Creates a three-dimensional scatter plot of output samples within the
+    discretization object colored by ``color`` (usually an array of pointwise
+    probability density values). A reference sample (``ref_sample``) can be
+    chosen by the user.  This reference sample will be plotted as a mauve
+    circle twice the size of the other markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
+
+    :param my_disc: contains samples (`my_disc._output_sample_set``) to create
+        scatter plot
+    :type my_disc: :class:`~bet.sample.discretization`
+    :param list sample_nos: indicies of the samples to plot
+    :param color: values to color the samples by
+    :type color: :class:`numpy.ndarray`
+    :param ref_sample: reference parameter value
+    :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string xlabel: x-axis label
+    :param string ylabel: y-axis label
+    :param string zlabel: z-axis label
+    :param string filename: filename to save the figure as
+    :param string file_extension: file extension
+
+    """
+    if not isinstance(sample_obj, sample.discretization):
+        raise bad_object("Improper discretization object")
+    scatter_3D_output(my_disc.get_output_sample_set(), sample_nos, color,
+            ref_sample, save, interactive, xlabel, ylabel, zlabel, filename,
+            file_extension)
+
 def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         rho_D=None, dim_nums=None, label_char=None, showdim=None, save=True,
-        interactive=False, file_extension="png"):
+        interactive=False, file_extension=".png"):
     r"""
     Create scatter plots of samples within the sample object colored by
     ``color`` (usually an array of pointwise probability density values).  A
     reference sample (``ref_sample``) can be chosen by the user.  This reference
     sample will be plotted as a mauve circle twice the size of the other
     markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.discretization` 
@@ -288,7 +463,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
 
 def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
                            img_folder='figs/', ref_markers=None,
-                           ref_colors=None, showdim=None, file_extension="png"):
+                           ref_colors=None, showdim=None, file_extension=".png"):
     r"""
     Plots 2-D projections of the data domain D using a triangulation based on
     the first two coordinates (parameters) of the generating samples where
@@ -399,12 +574,17 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
 def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
                         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2$',
                         triangles=None, save=True, interactive=False,
-                        filenames=None, file_extension="png"):
+                        filenames=None, file_extension=".png"):
     r"""
     Plots 2-D a single data domain D using a triangulation based on the first
     two coordinates (parameters) of the generating samples where :math:`Q={q_1,
     q_i}` for ``i=Q_nums``, with a marker for various :math:`Q_{ref}`. Assumes
     that the first dimension of data is :math:`q_1`.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filenames`` and
+        ``file_extension``.
 
 
     :param sample_disc: Object containing the samples to plot
@@ -457,7 +637,20 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
-    plt.savefig(filenames[0]+'.'+file_extension, bbox_inches='tight', transparent=True,
+
+    
+    if "." not in filenames[0]:
+        full_filenames0 = filenames[0]+file_extension
+    else:
+        full_filenames0 = filenames[0]
+
+    if "." not in filenames[1]:
+        full_filenames1 = filenames[1]+file_extension
+    else:
+        full_filenames1 = filenames[1]
+
+
+    plt.savefig(full_filenames0, bbox_inches='tight', transparent=True,
                 pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
@@ -465,7 +658,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
     if save:
-        plt.savefig(filenames[1]+'.'+file_extension, bbox_inches='tight', transparent=True,
+        plt.savefig(full_filenames1, bbox_inches='tight', transparent=True,
                     pad_inches=.2)
     if interactive:
         plt.show()
@@ -474,13 +667,18 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
 def scatter_2D_multi(sample_obj, color=None, ref_sample=None, img_folder='figs/',
                     filename="scatter2Dm", label_char=r'$\lambda',
-                    showdim=None, file_extension="png"):
+                    showdim=None, file_extension=".png"):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
     reference sample (``ref_sample``) can be chosen by the user. This reference
     sample will be plotted as a mauve circle twice the size of the other
     markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
     :type sample_obj: :class:`~bet.sample.sample_set_base`
