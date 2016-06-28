@@ -5,19 +5,11 @@
 # import necessary modules
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
+import bet.postProcess.plotDomains as pDom
 import scipy.io as sio
 from scipy.interpolate import griddata
 
 sample_save_file = 'sandbox3d'
-
-# Set minima and maxima
-param_domain = np.array([[-900, 1500], [.07, .15], [.1, .2]])
-lam3 = 0.012
-xmin = 1420
-xmax = 1580
-ymax = 1500
-wall_height = -2.5
-
 
 # Select only the stations I care about this will lead to better
 # sampling
@@ -63,13 +55,26 @@ num_chains = 80
 num_samples = chain_length*num_chains
 sampler = asam.sampler(num_samples, chain_length, model)
 
+# Set minima and maxima
+lam_domain = np.array([[-900, 1500], [.07, .15], [.1, .2]])
+
 # Get samples
 inital_sample_type = "lhs"
-(my_disc, all_step_ratios) = sampler.generalized_chains(param_domain,
+(my_disc, all_step_ratios) = sampler.generalized_chains(lam_domain,
         transition_set, kernel_rD, sample_save_file, inital_sample_type)
 
 # Read in points_ref and plot results
-p_ref = mdat['points_true']
-p_ref = p_ref[:, 14]
+ref_sample = mdat['points_true']
+ref_sample = ref_sample[:, 14]
 
-        
+# Show the samples in the parameter space
+pDom.scatter_rhoD(my_disc, rho_D=rho_D, ref_sample=ref_sample, io_flag='input')
+# Show the corresponding samples in the data space
+pDom.scatter_rhoD(my_disc, rho_D=rho_D, ref_sample=Q_ref, io_flag='output')
+# Show the data domain that corresponds with the convex hull of samples in the
+# parameter space
+pDom.show_data_domain_2D(my_disc, Q_ref=Q_ref)
+
+# Show multiple data domains that correspond with the convex hull of samples in
+# the parameter space
+pDom.show_data_domain_multi(my_disc, Q_ref=Q_ref, showdim='all')

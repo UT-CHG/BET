@@ -39,21 +39,23 @@ See :ref:`nonlinearMap` for an example using a nonlinear map.
 FEniCS Example (serial BET and serial model)
 =============================================
 
+A completely serial example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 See :ref:`fenicsExample` for an example using the `FEniCS package
 <http://fenicsproject.org/>`_ that can be run with serial BET.
+
+Using Launcher to run multiple serial models
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 See :ref:`fenicsMultipleSerialExample` for an example that can be run with
 serial BET and uses `Launcher <https://github.com/TACC/launcher>`_ to
 launch multiple serial runs of the model in parallel.
 
-ADCIRC Based Examples
-==============================================
+ADCIRC on an Idealized Inlet Examples and Adaptive Sampling
+===========================================================
 
 The files for these examples can be found in ``examples/fromADCIRC_FileMap``.
-
-
-Idealized Inlet Physical Domain
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 For a description of the model, physical inlet domain, data space, and parameter
 space for the examples using the idealized inlet see `Definition and solution
@@ -61,25 +63,25 @@ of a stochastic inverse problem for the Manning’s n parameter field in
 hydrodynamic models <http://dx.doi.org/10.1016/j.advwatres.2015.01.011>`_.
 
 
-Adaptive Sampling Examples
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+(Batch) Adaptive Sampling Examples
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Adaptively samples a linear interpolant using data read from file:
+These illustrate how to perform a specific type of goal-oriented
+adaptive sampling on a linear interpolant
+created from data read from file.
+We also show how several methods within the module
+:mod:`~bet.postProcess.plotDomains` can be used to
+plot 2D domains and/or 2D slices and projections of higher dimensional domains.
 
     * :ref:`fromFile2DExample`
     * :ref:`fromFile3DExample`
 
-Visualization Examples
-~~~~~~~~~~~~~~~~~~~~~~
-
-The module :mod:`~bet.postProcess.plotDomains` provides several methods used to
-plot 2D domains and/or 2D slices and projections of higher dimensional domains.
-
-    * :ref:`domains2D`
-    * :ref:`domains3D`
-
 Examples Estimating :math:`P_\Lambda`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+These illustrate how to actually take a discretization object
+(loaded from file) and solve the stochastic inverse problem
+using different QoI maps.
 
     * :ref:`q1D`
     * :ref:`q2D`
