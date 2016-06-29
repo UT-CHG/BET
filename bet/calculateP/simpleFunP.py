@@ -287,7 +287,7 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set, rect_domai
                         domain_center, domain_lengths, M, num_d_emulate)
 
 
-def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_size, center_points_per_edge=1):
+def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_size, center_pts_per_edge=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -304,7 +304,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
         :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
-    :param center_points_per_edge: Does nothing. Is here for backward compatability.
+    :param center_pts_per_edge: Does nothing. Is here for backward compatability.
 
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
@@ -349,7 +349,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref, rect_
 
 def regular_partition_uniform_distribution_rectangle_domain(data_set,
                                                             rect_domain,
-                                                            center_points_per_edge=1):
+                                                            center_pts_per_edge=1):
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
@@ -364,7 +364,7 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
     :param rect_domain: The domain overwhich :math:`\rho_\mathcal{D}` is
         uniform.
     :type rect_domain: :class:`numpy.ndarray` of shape (2, mdim)
-    :param center_points_per_edge: Does nothing. Is here for backward compatability.
+    :param center_pts_per_edge: Does nothing. Is here for backward compatability.
     
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
@@ -397,7 +397,7 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
                             domain_center, domain_lengths)
 
 def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
-                                                            rect_scale, center_points_per_edge=1):
+                                                            rect_scale, center_pts_per_edge=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -415,7 +415,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     :type rect_scale: double or list()
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
-    :param center_points_per_edge: Does nothing. Is here for backward compatability.
+    :param center_pts_per_edge: Does nothing. Is here for backward compatability.
     
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
