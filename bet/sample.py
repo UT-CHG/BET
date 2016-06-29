@@ -50,11 +50,11 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         mdat = dict()
     if sample_set_name is None:
         sample_set_name = 'default'
-    for attrname in sample_set_base.vector_names:
+    for attrname in save_set.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
-    for attrname in sample_set_base.all_ndarray_names:
+    for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
@@ -114,12 +114,13 @@ class sample_set_base(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-                    '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii']
+                    '_volumes_local', '_local_index', '_dim', '_p_norm',
+                    '_radii', '_normalized_radii']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values', '_radii'] 
+                   '_kdtree_values', '_radii', '_normalized_radii'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -198,6 +199,10 @@ class sample_set_base(object):
         self._radii = None
          #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
         self._radii_local = None
+        #: :class:`numpy.ndarray` of normalized sample radii of shape (num,)
+        self._normalized_radii = None
+         #: :class:`numpy.ndarray` of normalized sample radii of shape (local_num,)
+        self._normalized_radii_local = None
 
     def set_p_norm(self, p_norm):
         """
@@ -873,17 +878,12 @@ class voronoi_sample_set(sample_set_base):
         (dist, ptr) = self._kdtree.query(x, p=self._p_norm, k=k)
         return (dist, ptr)
 
-    def exact_volume_1D(self, distribution='uniform', a=None, b=None):
+    def exact_volume_1D(self):
         r"""
         
         Exactly calculates the volume fraction of the Voronoic cells.
         Specifically we are calculating 
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
-        
-        :param string distribution: Probability distribution (uniform, normal,
-            truncnorm, beta)
-        :param float a: mean or alpha (normal/truncnorm, beta)
-        :param float b: covariance or beta (normal/truncnorm, beta)
         
         """
         self.check_num()
@@ -899,23 +899,12 @@ class voronoi_sample_set(sample_set_base):
         # cells and bound the cells by the domain
         edges = np.concatenate(([self._domain[:, 0]], (sorted_samples[:-1, :] +\
         sorted_samples[1:, :])*.5, [self._domain[:, 1]]))
-        if distribution == 'normal':
-            edges = scipy.stats.norm.cdf(edges, loc=a, scale=np.sqrt(b))
-        elif distribution == 'truncnorm':
-            l = (self._domain[:, 0] - a) / np.sqrt(b)
-            r = (self._domain[:, 1] - a) / np.sqrt(b)
-            edges = scipy.stats.truncnorm.cdf(edges, a=l, b=r, loc=a,
-                    scale=np.sqrt(b)) 
-        elif distribution == 'beta':
-            edges = scipy.stats.beta.cdf(edges, a=a, b=b, 
-                    loc=self._domain[:, 0], scale=domain_width)
         # calculate difference between right and left of each cell and
         # renormalize
         sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
         lam_vol = np.zeros(sorted_lam_vol.shape)
         lam_vol[sort_ind] = sorted_lam_vol
-        if distribution == 'uniform':
-            lam_vol = lam_vol/domain_width
+        lam_vol = lam_vol/domain_width
         self._volumes = lam_vol
         self.global_to_local()
 
@@ -1043,8 +1032,8 @@ class voronoi_sample_set(sample_set_base):
         self._volumes = vol
         self.global_to_local()
 
-    def estimate_local_volume(self, num_l_emulate_local=500,
-            max_num_l_emulate=1e4): 
+    def estimate_local_volume(self, num_emulate_local=500,
+            max_num_emulate=int(1e4)): 
         r"""
 
         Estimates the volume fraction of the Voronoice cells associated
@@ -1072,8 +1061,8 @@ class voronoi_sample_set(sample_set_base):
         Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
         `DOI 10.2307/30044198 <http://doi.org/10.2307/30044198>`_
         
-        :param int num_l_emulate_local: The number of emulated samples.
-        :param int max_num_l_emulate: Maximum number of local emulated samples
+        :param int num_emulate_local: The number of emulated samples.
+        :param int max_num_emulate: Maximum number of local emulated samples
         
         """
         self.check_num()
@@ -1091,9 +1080,9 @@ class voronoi_sample_set(sample_set_base):
         # TODO it is unclear whether to use min, mean, or the first n nearest
         # samples
         sample_radii = None
-        if hasattr(self, '_normalized_radii'):
-            sample_radii = np.copy(getattr(self, '_normalized_radii'))
-
+        if self._normalized_radii is not None:
+                sample_radii = np.copy(self._normalized_radii)
+    
         if sample_radii is None:
             num_mc_points = np.max([1e4, samples.shape[0]*20])
             self.estimate_radii(n_mc_points=int(num_mc_points)) 
@@ -1125,14 +1114,15 @@ class voronoi_sample_set(sample_set_base):
         self.global_to_local()
         lam_vol_local = np.zeros(self._local_index.shape)
 
-        # parallize 
+        # parallize
+
         for i, iglobal in enumerate(self._local_index):
             samples_in_cell = 0
             total_samples = 10
-            while samples_in_cell < num_l_emulate_local and \
-                    total_samples < max_num_l_emulate:
+            while samples_in_cell < num_emulate_local and \
+                    total_samples < max_num_emulate:
                 total_samples = total_samples*10
-                # Sample within an Lp ball until num_l_emulate_local samples are
+                # Sample within an Lp ball until num_emulate_local samples are
                 # present in the Voronoi cell
                 local_lambda_emulate = lp.Lp_generalized_uniform(self._dim,
                         total_samples, self._p_norm, scale=sample_radii[iglobal],
