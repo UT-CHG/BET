@@ -124,20 +124,44 @@ def prob_with_emulated_volumes(discretization):
 
 
     
-def prob_from_sample_set(set_old, set_new, emulate_set):
+def prob_from_sample_set(set_old, set_new, set_emulate):
+    r"""
+    
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
+    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}}) using
+    a set of emulated points are distributed with respect to the 
+    volume measure.
+
+    :param set_old: Sample set on which probabilities have already been
+    calculated
+    :type set_old: :class:`~bet.sample.sample_set_base` 
+    :param set_new: Sample set for which probabilities will be calculated.
+    :type set_new: :class:`~bet.sample.sample_set_base` 
+    :param set_emulate: Sample set for volume emulation
+    :type set_emulate: :class:`~bet.sample.sample_set_base`
+
+    """
+    # Check dimensions
     num_old = set_old.check_num()
     num_new = set_new.check_num()
-    emulate_set.check_num()
-    if (set_old._dim != set_new._dim) or (set_old._dim != emulate_set._dim):
+    set_emulate.check_num()
+    if (set_old._dim != set_new._dim) or (set_old._dim != set_emulate._dim):
         raise samp.dim_not_matching("Dimensions of sets are not equal.")
-    if emulate_set._values_local is None:
-        emulate_set.global_to_local()
-    (_, ptr1) = set_old.query(emulate_set._values_local)
-    (_, ptr2) = set_new.query(emulate_set._values_local)
+    # Localize emulated points
+    if set_emulate._values_local is None:
+        set_emulate.global_to_local()
+
+    # Map emulated points to old and new sets
+    (_, ptr1) = set_old.query(set_emulate._values_local)
+    (_, ptr2) = set_new.query(set_emulate._values_local)
     ptr1 = ptr1.flat[:]
     ptr2 = ptr2.flat[:]
+
+    # Set up probability vectors
     prob_new = np.zeros((num_new,))
     prob_em = np.zeros((len(ptr1), ))
+    
+    # Loop over old cells and divide probability over emulated cells
     for i in range(num_old):
         if set_old._probabilities[i] > 0.0:
             Itemp = np.equal(ptr1, i)
@@ -145,11 +169,14 @@ def prob_from_sample_set(set_old, set_new, emulate_set):
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:
                 prob_em[Itemp] += set_old._probabilities[i]/float(Itemp_sum)
+
+    # Loop over new cells and distribute probability from emulated cells
     for i in range(num_new):
         Itemp = np.equal(ptr2, i)
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
     
+    # Set probabilities
     set_new.set_probabilities(prob_new)
-    return np.sum(prob_new)
+    return prob_new
