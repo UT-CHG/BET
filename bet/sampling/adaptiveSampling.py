@@ -265,9 +265,6 @@ class sampler(bsam.sampler):
             of shape ``(num_chains, chain_length)``
         
         """
-        if comm.size > 1:
-            psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}_{}".format(comm.rank, os.path.basename(savefile)))
 
         # Calculate step_size
         max_ratio = t_set.max_ratio
@@ -468,10 +465,7 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['kern_old'] = kern_old
             
-            if comm.size > 1:
-                super(sampler, self).save(mdat, psavefile, disc)
-            else:
-                super(sampler, self).save(mdat, savefile, disc)
+            super(sampler, self).save(mdat, savefile, disc)
             input_old = input_new
 
         # collect everything

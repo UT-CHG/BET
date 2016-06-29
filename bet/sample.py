@@ -29,7 +29,7 @@ class dim_not_matching(Exception):
     Exception for when the dimension of the array is inconsistent.
     """
     
-def save_sample_set(save_set, file_name, sample_set_name=None):
+def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     """
     Saves this :class:`bet.sample.sample_set` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
@@ -42,8 +42,13 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
     :param string sample_set_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.sample_set_base` objects to a single
         ``.mat`` file
+    :param bool globalize: flag whether or not to globalize
 
     """
+    if comm.rank > 1:
+        file_name = os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+
     if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
         mdat = sio.loadmat(file_name)
     else:
@@ -59,8 +64,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
         if curr_attr is not None:
             mdat[sample_set_name+attrname] = curr_attr
     mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
-    if comm.rank == 0:
-        sio.savemat(file_name, mdat)
+    sio.savemat(file_name, mdat)
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -104,6 +108,30 @@ def load_sample_set(file_name, sample_set_name=None):
         loaded_set.global_to_local()
 
     return loaded_set
+
+def load_sample_set_parallel(file_name, sample_set_name=None):
+    """
+    Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file in parallel
+    and correctly re-localizes data if necessary. If a file contains multiple
+    :class:`~bet.sample.sample_set` objects then ``sample_set_name`` is used to
+    distinguish which between different :class:`~bet.sample.sample_set`
+    objects.
+
+    .. todo::
+
+        Implement based on the hot start implementation in
+        :class:`bet.sampling.adaptiveSampling.sampler`.
+
+    :param string file_name: Name of the ``.mat`` file, no extension is
+        needed.
+    :param string sample_set_name: String to prepend to attribute names when
+        saving multiple :class`bet.sample.sample_set` objects to a single
+        ``.mat`` file
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: the ``sample_set`` that matches the ``sample_set_name``
+    """
+    raise NotImplementedError("This method is not yet implemented.")
 
 class sample_set_base(object):
     """
@@ -625,7 +653,7 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
-    def query(self, x, k=1):
+    def (self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 
@@ -768,7 +796,8 @@ class sample_set_base(object):
 
         """
 
-def save_discretization(save_disc, file_name, discretization_name=None):
+def save_discretization(save_disc, file_name, discretization_name=None,
+        globalize=False):
     """
     Saves this :class:`bet.sample.discretization` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
@@ -781,9 +810,16 @@ def save_discretization(save_disc, file_name, discretization_name=None):
     :param string discretization_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.discretization` objects to a single
         ``.mat`` file
+    :param bool globalize: flag whether or not to globalize
+        :class:`bet.sample.sample_set_base` objects stored in this
+        discretization
 
     """
     new_mdat = dict()
+
+    if comm.rank > 1:
+        file_name = os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
 
     if discretization_name is None:
         discretization_name = 'default'
@@ -793,21 +829,20 @@ def save_discretization(save_disc, file_name, discretization_name=None):
         if curr_attr is not None:
             if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
-                    discretization_name+attrname)
+                    discretization_name+attrname, globalize)
     
     for attrname in discretization.vector_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
     
-    if comm.rank == 0:
-        if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-            mdat = sio.loadmat(file_name)
-            for i, v in new_mdat.iteritems():
-                mdat[i] = v
-            sio.savemat(file_name, mdat)
-        else:
-            sio.savemat(file_name, new_mdat)
+    if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
+        mdat = sio.loadmat(file_name)
+        for i, v in new_mdat.iteritems():
+            mdat[i] = v
+        sio.savemat(file_name, mdat)
+    else:
+        sio.savemat(file_name, new_mdat)
 
 def load_discretization(file_name, discretization_name=None):
     """
@@ -849,6 +884,32 @@ def load_discretization(file_name, discretization_name=None):
                         np.squeeze(mdat[discretization_name+attrname]))
     return loaded_disc
 
+def load_discretization_parallel(file_name, discretization_name=None):
+    """ 
+    
+    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file in
+    parallel and correctly re-localizes data if necessary. If a file contains
+    multiple :class:`~bet.sample.discretization` objects then
+    ``discretization_name`` is used to distinguish which between different
+    :class:`~bet.sample.discretization` objects.
+
+    .. todo::
+
+        Implement based on the hot start implementation in
+        :class:`bet.sampling.adaptiveSampling.sampler`.
+
+    :param string file_name: Name of the ``.mat`` file, no extension is
+        needed.
+    :param string discretization_name: String to prepend to attribute names when
+        saving multiple :class`bet.sample.discretization` objects to a single
+        ``.mat`` file
+
+    :rtype: :class:`~bet.sample.discretization`
+    :returns: the ``discretization`` that matches the ``discretization_name``
+    """
+    raise NotImplementedError("This method is not yet implemented.")
+
+
 class voronoi_sample_set(sample_set_base):
     """
 
@@ -872,7 +933,8 @@ class voronoi_sample_set(sample_set_base):
             self.set_kdtree()
         else:
             self.check_num()
-
+        
+        x = util.fix_dimensions_data(x)
         if x.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
 
