@@ -653,7 +653,7 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
-    def (self, x, k=1):
+    def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
 

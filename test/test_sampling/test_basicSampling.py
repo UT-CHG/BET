@@ -70,7 +70,7 @@ def test_loadmat():
 
 def verify_compute_QoI_and_create_discretization(model, sampler,
                                                  input_sample_set,
-                                                 savefile, parallel):
+                                                 savefile):
     """
     Verify that the user samples are correct.
     """
@@ -85,8 +85,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
 
     # evaluate the model at the samples
     my_discretization = sampler.compute_QoI_and_create_discretization(
-        input_sample_set, savefile,
-            parallel) 
+        input_sample_set, savefile) 
     my_num = my_discretization.check_nums() 
 
     # compare the samples
@@ -113,7 +112,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     comm.Barrier()
 
 def verify_create_random_discretization(model, sampler, sample_type, input_domain,
-        num_samples, savefile, parallel):
+        num_samples, savefile):
 
     np.random.seed(1)
     # recreate the samples
@@ -148,8 +147,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
 
     # create the random discretization using a specified input domain
     my_discretization = sampler.create_random_discretization(sample_type,
-            input_domain, savefile, num_samples=num_samples,
-            parallel=parallel)
+            input_domain, savefile, num_samples=num_samples)
     my_num = my_discretization.check_nums() 
     
     # make sure that the samples are within the boundaries
@@ -185,8 +183,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     my_sample_set.set_domain(input_domain)
     # create the random discretization using an initialized sample_set
     my_discretization = sampler.create_random_discretization(sample_type,
-                my_sample_set, savefile, num_samples=num_samples,
-                parallel=parallel)
+                my_sample_set, savefile, num_samples=num_samples)
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries
@@ -226,8 +223,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     np.random.seed(1)
     # create the random discretization using a specified input_dim
     my_discretization = sampler.create_random_discretization(sample_type,
-                    my_dim, savefile, num_samples=num_samples,
-                    parallel=parallel)
+                    my_dim, savefile, num_samples=num_samples)
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries
@@ -606,9 +602,8 @@ class Test_basic_sampler(unittest.TestCase):
                 self.savefiles)
 
         for model, sampler, input_sample_set, savefile in test_list: 
-            for parallel in [False, True]:
                 verify_compute_QoI_and_create_discretization(model, sampler,
-                    input_sample_set, savefile, parallel)
+                    input_sample_set, savefile)
    
     def test_random_sample_set(self):
         """
@@ -719,7 +714,6 @@ class Test_basic_sampler(unittest.TestCase):
         for model, sampler, input_domain, savefile in test_list:
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
-                    for parallel in [False, True]:
                         verify_create_random_discretization(model, sampler,
                                 sample_type, input_domain, num_samples,
-                                savefile, parallel)
+                                savefile)
