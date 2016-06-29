@@ -1317,6 +1317,10 @@ class rectangle_sample_set(sample_set_base):
                     in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
                 pt[:,j][in_rec_now]  = i
                 dist[:,j][in_rec_now] = 0.0
+        if k == 1:
+            dist = dist[:, 0]
+            pt = pt[:, 0]
+            
         
         return (dist, pt)
 
@@ -1476,6 +1480,9 @@ class ball_sample_set(sample_set_base):
                     in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
                 pt[:,j][in_rec_now]  = i
                 dist[:,j][in_rec_now] = 0.0
+        if k == 1:
+            dist = dist[:, 0]
+            pt = pt[:, 0]
         
         return (dist, pt)
 
