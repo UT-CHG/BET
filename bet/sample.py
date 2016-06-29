@@ -1179,9 +1179,9 @@ class rectangle_sample_set(sample_set_base):
         Initialization
 
         :param maxes: array or list of maxes for hyperrectangles
-        :type maxes: interable with components of length dim
+        :type maxes: iterable with components of length dim
         :param mins: array or list of mins for hyperrectangles
-        :type mins: interable with components of length dim
+        :type mins: iterable with components of length dim
 
         """
         # Check dimensions
@@ -1349,7 +1349,7 @@ class ball_sample_set(sample_set_base):
         Initialize.
         
         :param centers: centers of balls
-        :type centers: interable of shape (num-1, dim)
+        :type centers: iterable of shape (num-1, dim)
         :param radii: radii of balls
         :type radii: iterable of length num-1
         

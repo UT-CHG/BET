@@ -381,8 +381,11 @@ def verify_regular_sample_set(sampler, input_sample_set,
 
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
+        bin_width = (test_domain[i, 1] - test_domain[i, 0]) / \
+                    np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
-            test_domain[i, 0], test_domain[i, 1],
+            test_domain[i, 0] - 0.5 * bin_width,
+            test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     if np.equal(dim, 1):
@@ -432,8 +435,11 @@ def verify_regular_sample_set_domain(sampler, input_domain,
 
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
+        bin_width = (test_domain[i, 1] - test_domain[i, 0]) / \
+                    np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
-            test_domain[i, 0], test_domain[i, 1],
+            test_domain[i, 0] - 0.5 * bin_width,
+            test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     if np.equal(dim, 1):
@@ -484,8 +490,11 @@ def verify_regular_sample_set_dimension(sampler, input_dim,
 
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
+        bin_width = (test_domain[i, 1] - test_domain[i, 0]) / \
+                    np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
-            test_domain[i, 0], test_domain[i, 1],
+            test_domain[i, 0] - 0.5 * bin_width,
+            test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     if np.equal(dim, 1):
