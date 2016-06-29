@@ -172,9 +172,12 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
 
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
+        bin_width = (input_domain[i, 1] - input_domain[i, 0]) / \
+                    np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
-            input_domain[i, 0], input_domain[i, 1],
-            num_samples_per_dim[i]+2))[1:num_samples_per_dim[i]+1]
+            input_domain[i, 0] - 0.5 * bin_width,
+            input_domain[i, 1] + 0.5 * bin_width,
+            num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     if np.equal(dim, 1):
         arrays_samples_dimension = np.array([vec_samples_dimension])
