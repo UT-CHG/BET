@@ -873,8 +873,9 @@ class voronoi_sample_set(sample_set_base):
         else:
             self.check_num()
 
+        if x.shape[1] != self._dim:
+            raise dim_not_matching("dimension of values incorrect")
 
-        #TODO add exception if dimensions of x are wrong
         (dist, ptr) = self._kdtree.query(x, p=self._p_norm, k=k)
         return (dist, ptr)
 
