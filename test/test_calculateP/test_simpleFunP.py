@@ -391,39 +391,29 @@ class uniform_hyperrectangle_base(prob_uniform):
         Test that the right number of d_distr_samples are used to create
         rho_D_M.
         """
-        if not isinstance(self.center_pts_per_edge, collections.Iterable):
-            assert len(self.rho_D_M) == (self.center_pts_per_edge+2)**self.mdim
-        else:
-            assert len(self.rho_D_M) == np.prod(self.center_pts_per_edge+2)
-
+        assert len(self.rho_D_M) == 2
 
 class uniform_hyperrectangle_int(uniform_hyperrectangle_base):
     """
-    Set up :meth:`bet.calculateP.simpleFunP.uniform_hyperrectangle_*` with an
-    int type value for ``center_pts_per_edge``.
+    Set up :meth:`bet.calculateP.simpleFunP.uniform_hyperrectangle_*`.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        self.center_pts_per_edge = 2
-
 
 class uniform_hyperrectangle_list(uniform_hyperrectangle_base):
     """
-    Set up :meth:`bet.calculateP.simpleFunP.uniform_hyperrectangle_*` with an
-    iterable type value for ``center_pts_per_edge``.
+    Set up :meth:`bet.calculateP.simpleFunP.uniform_hyperrectangle_*.
     """
     def setUp(self):
         """
         Set up problem.
         """
-        self.center_pts_per_edge = 2*np.ones((self.mdim,), dtype=np.int)
 
 class regular_partition_uniform_distribution_rectangle_domain_int(uniform_hyperrectangle_int):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain` with an
-    int type of value fo r``center_pts_per_edge``
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain`.
     
     """
     def setUp(self):
@@ -447,14 +437,13 @@ class regular_partition_uniform_distribution_rectangle_domain_int(uniform_hyperr
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_domain(
-            self.data, self.rect_domain.transpose(), self.center_pts_per_edge)
+            self.data, self.rect_domain.transpose())
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
         
 class regular_partition_uniform_distribution_rectangle_domain_list(uniform_hyperrectangle_list):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain` with an
-    int type of value fo r``center_pts_per_edge``
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain`.
     
     """
     def setUp(self):
@@ -478,7 +467,7 @@ class regular_partition_uniform_distribution_rectangle_domain_list(uniform_hyper
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_domain(
-            self.data, self.rect_domain.transpose(), self.center_pts_per_edge)
+            self.data, self.rect_domain.transpose())
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
 
@@ -587,8 +576,7 @@ class test_regular_partition_uniform_distribution_rectangle_domain_list_3D(data_
 
 class regular_partition_uniform_distribution_rectangle_size_int(uniform_hyperrectangle_int):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size` with an
-    int type of value fo r``center_pts_per_edge``
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size``
     
     """
     def setUp(self):
@@ -613,14 +601,13 @@ class regular_partition_uniform_distribution_rectangle_size_int(uniform_hyperrec
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_size(
-            self.data, self.Q_ref, binsize, self.center_pts_per_edge)
+            self.data, self.Q_ref, binsize)
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
 
 class regular_partition_uniform_distribution_rectangle_size_list(uniform_hyperrectangle_list):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size` with an
-    int type of value fo r``center_pts_per_edge``
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size` 
     
     """
     def setUp(self):
@@ -645,7 +632,7 @@ class regular_partition_uniform_distribution_rectangle_size_list(uniform_hyperre
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_size(
-            self.data, self.Q_ref, binsize, self.center_pts_per_edge)
+            self.data, self.Q_ref, binsize)
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
 
@@ -753,8 +740,7 @@ class test_regular_partition_uniform_distribution_rectangle_size_list_3D(data_3D
 
 class regular_partition_uniform_distribution_rectangle_scaled_int(uniform_hyperrectangle_int):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled` with an
-    int type of value fo r``center_pts_per_edge``
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled`
     
     """
     def setUp(self):
@@ -779,14 +765,13 @@ class regular_partition_uniform_distribution_rectangle_scaled_int(uniform_hyperr
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_scaled(
-            self.data, self.Q_ref, binratio, self.center_pts_per_edge)
+            self.data, self.Q_ref, binratio)
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
 
 class regular_partition_uniform_distribution_rectangle_scaled_list(uniform_hyperrectangle_list):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled` with an
-    int type of value fo r``center_pts_per_edge``
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled` 
     
     """
     def setUp(self):
@@ -811,7 +796,7 @@ class regular_partition_uniform_distribution_rectangle_scaled_list(uniform_hyper
         self.rect_domain[:, 1] = Q_ref + .5*r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_scaled(
-            self.data, self.Q_ref, binratio, self.center_pts_per_edge)
+            self.data, self.Q_ref, binratio)
         self.rho_D_M = self.data_prob._probabilities
         self.d_distr_samples = self.data_prob._values
 

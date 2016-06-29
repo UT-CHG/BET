@@ -1242,9 +1242,9 @@ class rectangle_sample_set(sample_set_base):
         Initialization
 
         :param maxes: array or list of maxes for hyperrectangles
-        :type maxes: interable with components of length dim
+        :type maxes: iterable with components of length dim
         :param mins: array or list of mins for hyperrectangles
-        :type mins: interable with components of length dim
+        :type mins: iterable with components of length dim
 
         """
         # Check dimensions
@@ -1380,6 +1380,10 @@ class rectangle_sample_set(sample_set_base):
                     in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
                 pt[:,j][in_rec_now]  = i
                 dist[:,j][in_rec_now] = 0.0
+        if k == 1:
+            dist = dist[:, 0]
+            pt = pt[:, 0]
+            
         
         return (dist, pt)
 
@@ -1412,7 +1416,7 @@ class ball_sample_set(sample_set_base):
         Initialize.
         
         :param centers: centers of balls
-        :type centers: interable of shape (num-1, dim)
+        :type centers: iterable of shape (num-1, dim)
         :param radii: radii of balls
         :type radii: iterable of length num-1
         
@@ -1539,6 +1543,9 @@ class ball_sample_set(sample_set_base):
                     in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,j],num-1), in_rec), np.not_equal(pt[:,j-1],i))
                 pt[:,j][in_rec_now]  = i
                 dist[:,j][in_rec_now] = 0.0
+        if k == 1:
+            dist = dist[:, 0]
+            pt = pt[:, 0]
         
         return (dist, pt)
 
