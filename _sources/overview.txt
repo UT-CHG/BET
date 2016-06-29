@@ -38,6 +38,9 @@ Package Layout
 The package layout is as follows::
 
   bet/
+    util
+    Comm
+    sample
     calculateP/
       calculateP 
       simpleFunP
@@ -46,6 +49,7 @@ The package layout is as follows::
     sampling/
       basicSampling 
       adaptiveSampling
+      LpGeneralizedSamples
     postProcess/
       plotP
       plotDomains
@@ -56,24 +60,38 @@ The package layout is as follows::
 
 Code Overview
 --------------
-
-:mod:`calculateP` Package
+:mod:`bet.sample` module
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: bet.sample
+
+:mod:`bet.util` module
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: bet.util
+
+:mod:`bet.Comm` module
+~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: bet.Comm
+
+:mod:`bet.calculateP` Sub-package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.calculateP
 
-:mod:`sampling` Package
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:mod:`bet.sampling` Sub-package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.sampling
 
-:mod:`postProcess` Package
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:mod:`bet.postProcess` Sub-package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.postProcess
 
-:mod:`sensitivity` Package
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:mod:`bet.sensitivity` Sub-package
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: bet.sensitivity
 
@@ -83,36 +101,52 @@ Internal dependencies
 ---------------------
 Dependencies via :keyword:`import` statements::
 
-    bet 
-      \-calculateP 
-      | \-voronoiHistogram (bet.calculateP.simpleFunP)
-      \-sampling 
-        \-basicSampling (bet.sampling.adaptiveSampling)
+        bet 
+          \-Comm (bet.sample,bet.postProcess.postTools,bet.sampling.adaptiveSampling,bet.sensitivity.c
+    hooseQoIs,bet.sampling.basicSampling,bet.util,bet.calculateP.calculateP,bet.postProcess.plotP,bet.
+    calculateP.simpleFunP)
+          \-calculateP 
+          | \-voronoiHistogram (bet.calculateP.simpleFunP)
+          \-sample (bet.postProcess.postTools,bet.sampling.adaptiveSampling,bet.postProcess.plotDomain
+    s,bet.sampling.basicSampling,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postPro
+    cess.plotP,bet.calculateP.simpleFunP)
+          \-sampling 
+          | \-LpGeneralizedSamples (bet.sample)
+          | \-basicSampling (bet.sampling.adaptiveSampling)
+          \-util (bet.sample,bet.sensitivity.gradients,bet.sampling.adaptiveSampling,bet.sensitivity.c
+    hooseQoIs,bet.postProcess.plotDomains,bet.sampling.basicSampling,bet.calculateP.voronoiHistogram,b
+    et.calculateP.calculateP,bet.calculateP.simpleFunP)
 
 
 External dependencies
 ---------------------
-This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scipy.org>`_, mpl_toolkits,  `numpy
-<http://http://www.numpy.org>`_, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
+This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy
+<scipy.org>`_, mpl_toolkits,  `numpy <http://http://www.numpy.org>`_, and
+`pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
 <http://http://docs.python.org/2>`_.
 
 ::    
   
-    matplotlib 
-      \-cm (bet.postProcess.plotP)
-      \-pyplot (bet.postProcess.plotDomains,bet.postProcess.plotP)
-      \-ticker (bet.postProcess.plotP)
-      \-tri (bet.postProcess.plotDomains)
-    mpi4py 
-      \-MPI (bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.simpleFunP)
-    mpl_toolkits 
-      \-mplot3d (bet.postProcess.plotP)
-    numpy (bet.sampling.adaptiveSampling,bet.sampling.basicSampling,bet.postProcess.plotP,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotDomains,bet.calculateP.simpleFunP,bet.sensitivity.gradients,bet.sensitivity.chooseQoIs)
-    pyDOE (bet.sampling.basicSampling)
-    scipy 
-      \-io (bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
-      \-spatial (bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.simpleFunP,bet.sensitivity.gradients)
-      \-stats (bet.calculateP.simpleFunP)
+        matplotlib 
+          \-cm (bet.postProcess.plotP)
+          \-lines (bet.postProcess.plotDomains)
+          \-pyplot (bet.postProcess.plotP,bet.postProcess.plotDomains)
+          \-ticker (bet.postProcess.plotP)
+          \-tri (bet.postProcess.plotDomains)
+        mpl_toolkits 
+          \-mplot3d (bet.postProcess.plotP,bet.postProcess.plotDomains)
+        numpy (bet.sample,bet.sensitivity.gradients,bet.sampling.adaptiveSampling,bet.sensitivity.choo
+    seQoIs,bet.postProcess.plotDomains,bet.sampling.LpGeneralizedSamples,bet.sampling.basicSampling,be
+    t.util,bet.calculateP.indicatorFunctions,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP
+    ,bet.postProcess.postTools,bet.postProcess.plotP,bet.calculateP.simpleFunP)
+        pyDOE (bet.sampling.basicSampling)
+        scipy 
+          \-fftpack (bet.postProcess.plotP)
+          \-io (bet.sample,bet.postProcess.postTools,bet.sampling.basicSampling,bet.sampling.adaptiveS
+    ampling)
+          \-spatial (bet.sample,bet.sensitivity.gradients)
+          \-stats (bet.sample,bet.sensitivity.chooseQoIs,bet.calculateP.simpleFunP)
+
 
 
 

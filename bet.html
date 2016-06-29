@@ -83,7 +83,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-based-examples">ADCIRC Based Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
@@ -482,6 +483,20 @@ both have the same number of samples.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.discretization.estimate_input_volume_emulated">
+<code class="descname">estimate_input_volume_emulated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.estimate_input_volume_emulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.discretization.estimate_output_volume_emulated">
+<code class="descname">estimate_output_volume_emulated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.estimate_output_volume_emulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
 </dd></dl>
 
 <dl class="method">
@@ -985,18 +1000,27 @@ dim)) &#8211; New jacobians to append.</td>
 <code class="descname">estimate_volume</code><span class="sig-paren">(</span><em>n_mc_points=10000</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the volume faction of cells approximately using Monte
 Carlo integration.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">This currently presumes a uniform Lesbegue measure on the
-<code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
-<code class="docutils literal"><span class="pre">emulated_input_sample_set</span></code> is NOT used to calculate the volume.
-This should at least be an option.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; If estimate is True, number of MC points to use</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.estimate_volume_emulated">
+<code class="descname">estimate_volume_emulated</code><span class="sig-paren">(</span><em>emulated_sample_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume_emulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>emulated_sample_set</strong> (<code class="xref py py-class docutils literal"><span class="pre">bet.sample_set_base</span></code>) &#8211; The set of samples used to approximate the
+volume measure.</td>
 </tr>
 </tbody>
 </table>
@@ -1546,7 +1570,7 @@ saving multiple :class`bet.sample.sample_set` objects to a single
 a Voronoi tesselation.</p>
 <dl class="method">
 <dt id="bet.sample.voronoi_sample_set.estimate_local_volume">
-<code class="descname">estimate_local_volume</code><span class="sig-paren">(</span><em>num_l_emulate_local=100</em>, <em>max_num_l_emulate=1000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_local_volume" title="Permalink to this definition">¶</a></dt>
+<code class="descname">estimate_local_volume</code><span class="sig-paren">(</span><em>num_l_emulate_local=500</em>, <em>max_num_l_emulate=10000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_local_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the volume fraction of the Voronoice cells associated
 with <code class="docutils literal"><span class="pre">samples</span></code>. Specifically we are calculating
 <span class="math">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.
@@ -1556,9 +1580,13 @@ distribution.</p>
 <p class="first admonition-title">Note</p>
 <p class="last">If this <a class="reference internal" href="#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a> has exact/estimated
 radii of the Voronoi cell associated with each sample for a domain
-normalized to the unit hypercube (<code class="docutils literal"><span class="pre">_normalized_radii</span></code>).</p>
+normalized to the unit hypercube (<code class="docutils literal"><span class="pre">_normalized_radii</span></code>). Note that
+these are not centroidal Voronoi tesselations meaning that the
+centroid is NOT the generator of the Voronoi cell. What we desire
+for the radius is actually 
+<span class="math">\(sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda, \lambda^{(i)})\)</span>.</p>
 </div>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <p class="last">When we move away from domains defined on hypercubes this will need
 to be updated to use whatever <code class="docutils literal"><span class="pre">_in_domain</span></code> method exists.</p>
@@ -1573,6 +1601,58 @@ Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>num_l_emulate_local</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of emulated samples.</li>
 <li><strong>max_num_l_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum number of local emulated samples</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.voronoi_sample_set.estimate_radii">
+<code class="descname">estimate_radii</code><span class="sig-paren">(</span><em>n_mc_points=10000</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the radii of cells approximately using Monte
+Carlo integration.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">This currently presumes a uniform Lesbegue measure on the
+<code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
+<code class="docutils literal"><span class="pre">emulated_input_sample_set</span></code> is NOT used to calculate the volume.
+This should at least be an option.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; If estimate is True, number of MC points to use</li>
+<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; estimate normalized radius</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.voronoi_sample_set.estimate_radii_and_volume">
+<code class="descname">estimate_radii_and_volume</code><span class="sig-paren">(</span><em>n_mc_points=10000</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii_and_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the radii and volume faction of cells approximately using Monte
+Carlo integration.</p>
+<div class="admonition-todo admonition" id="index-2">
+<p class="first admonition-title">Todo</p>
+<p class="last">This currently presumes a uniform Lesbegue measure on the
+<code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
+<code class="docutils literal"><span class="pre">emulated_input_sample_set</span></code> is NOT used to calculate the volume.
+This should at least be an option.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; If estimate is True, number of MC points to use</li>
+<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; estimate normalized radius</li>
 </ul>
 </td>
 </tr>
@@ -1776,9 +1856,9 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 measure-theoretic. It is named for the developers of the key algorithm in
 <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">bet.calculateP.calculateP</span></code></a>.</p>
 <dl class="docutils">
-<dt>Comm <a class="reference internal" href="#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install</dt>
+<dt>Comm <a class="reference internal" href="overview.html#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install</dt>
 <dd>:program:<code class="docutils literal"><span class="pre">mpi4py</span></code>.</dd>
-<dt>util <a class="reference internal" href="#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides some general use methods for creating grids,</dt>
+<dt>util <a class="reference internal" href="overview.html#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides some general use methods for creating grids,</dt>
 <dd>checking/fixing dimensions, and globalizing arrays.</dd>
 </dl>
 <p>calculateP <a class="reference internal" href="overview.html#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides tools to approximate probabilities.</p>
@@ -1788,7 +1868,7 @@ measure-theoretic. It is named for the developers of the key algorithm in
 <dd>derivatives and optimally choosing quantities of interest.</dd>
 <dt>postProcess <a class="reference internal" href="overview.html#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal"><span class="pre">postProcess</span></code></a> provides plotting tools and tools to sort</dt>
 <dd>samples by probabilities.</dd>
-<dt>sample <a class="reference internal" href="#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal"><span class="pre">sample</span></code></a> provides data structures to store sets of samples and</dt>
+<dt>sample <a class="reference internal" href="overview.html#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal"><span class="pre">sample</span></code></a> provides data structures to store sets of samples and</dt>
 <dd>their associated arrays.</dd>
 </dl>
 </div>
@@ -1813,7 +1893,7 @@ measure-theoretic. It is named for the developers of the key algorithm in
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 14, 2016.
+      Last updated on Jun 29, 2016.
     </p>
   </div>
 
