@@ -61,7 +61,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 
     # Check for local probabilities
     if sample_obj._probabilities_local is None:
-        if sample_obj.probabilities is None:
+        if sample_obj._probabilities is None:
             raise missing_attribute("Missing probabilities")
         else:
             sample_obj.global_to_local()
@@ -122,7 +122,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
 
     # Check for local probabilities
     if sample_obj._probabilities_local is None:
-        if sample_obj.probabilities is None:
+        if sample_obj._probabilities is None:
             raise missing_attribute("Missing probabilities")
         else:
             sample_obj.global_to_local()
@@ -159,13 +159,17 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
 
 def plot_1D_marginal_probs(marginals, bins, sample_set,
         filename="file", lam_ref=None, interactive=False,
-        lambda_label=None, file_extension=".eps"):
+        lambda_label=None, file_extension=".png"):
         
     """
     This makes plots of every single marginal probability of
     input probability measure on a 1D  grid.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
+
+    .. note::
+
+        Do not specify the file extension in the file name.
 
     :param marginals: 1D marginal probabilities
     :type marginals: dictionary with int as keys and :class:`~numpy.ndarray` of
@@ -223,13 +227,17 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
 
 def plot_2D_marginal_probs(marginals, bins, sample_set,
         filename="file", lam_ref=None, plot_surface=False, interactive=False,
-        lambda_label=None, file_extension=".eps"):
+        lambda_label=None, file_extension=".png"):
         
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
     input probability measure on a rectangular grid.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
+
+    .. note::
+
+        Do not specify the file extension in the file name.
 
     :param marginals: 2D marginal probabilities
     :type marginals: dictionary with tuples of 2 integers as keys and

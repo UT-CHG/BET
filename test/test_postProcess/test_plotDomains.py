@@ -101,21 +101,23 @@ class test_plotDomains(unittest.TestCase):
         """
         # remove any files the we create
         filenames = glob.glob(self.filename+".*")
-        filenames.extend(glob.glob('param_samples_*cs.eps'))
-        filenames.extend(glob.glob('data_samples_*cs.eps'))
+        filenames.extend(glob.glob('param_samples_*cs.*'))
+        filenames.extend(glob.glob('data_samples_*cs.*'))
 
         filenames.extend(glob.glob(self.filename+".*"))
-        filenames.extend(glob.glob( 'param_samples_*cs.eps'))
+        filenames.extend(glob.glob( 'param_samples_*cs.*'))
         filenames.extend(glob.glob(os.path.join(local_path,
-            'data_samples_*cs.eps')))
+            'data_samples_*cs.*')))
 
 
-        filenames.append('domain_q1_q2_cs.eps')
-        filenames.append('domain_q1_q1_cs.eps')
-        filenames.append('q1_q2_domain_Q_cs.eps')
-        filenames.append('q1_q1_domain_Q_cs.eps')
+        filenames.append('domain_q1_q2_cs.*')
+        filenames.append('domain_q1_q1_cs.*')
+        filenames.append('q1_q2_domain_Q_cs.*')
+        filenames.append('q1_q1_domain_Q_cs.*')
         figfiles = glob.glob('figs/*')
         figfiles.extend(glob.glob(os.path.join(local_path, 'figs/*')))
+        figfiles.extend(glob.glob(os.path.join(local_path, '*.png')))
+        figfiles.extend(glob.glob('*.png'))
         filenames.extend(figfiles)
 
         for f in filenames:
@@ -277,7 +279,7 @@ class test_plotDomains(unittest.TestCase):
         """
         ref_markers = [None, self.markers]
         ref_colors = [None, self.colors]
-        filenames = [None, ['domain_q1_q1_cs.eps', 'q1_q2_domain_Q_cs.eps']]
+        filenames = [None, ['domain_q1_q1_cs', 'q1_q2_domain_Q_cs']]
 
         for rm, rc, fn in zip(ref_markers, ref_colors, filenames):
             self.check_show_data_domain_2D(rm, rc, None, True, fn)

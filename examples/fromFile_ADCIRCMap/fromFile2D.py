@@ -5,19 +5,14 @@
 # import necessary modules
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
+import bet.postProcess.plotDomains as pDom
 import scipy.io as sio
 from scipy.interpolate import griddata
 
 sample_save_file = 'sandbox2d'
 
-# Set minima and maxima
-lam_domain = np.array([[.07, .15], [.1, .2]])
-
 # Select only the stations I care about this will lead to better sampling
 station_nums = [0, 5] # 1, 6
-
-# Create Transition Kernel
-transition_set = asam.transition_set(.5, .5**5, 1.0)
 
 # Read in Q_ref and Q to create the appropriate rho_D 
 mdat = sio.loadmat('../matfiles/Q_2D')
@@ -36,6 +31,9 @@ def model(inputs):
         interp_values[:, i] = griddata(points.transpose(), Q[:, i],
                 inputs)
     return interp_values 
+
+# Create Transition Kernel
+transition_set = asam.transition_set(.5, .5**5, 1.0)
 
 # Create kernel
 maximum = 1/np.product(bin_size)
@@ -56,13 +54,27 @@ num_chains = 80
 num_samples = chain_length*num_chains
 sampler = asam.sampler(num_samples, chain_length, model)
 
+
+# Set minima and maxima
+lam_domain = np.array([[.07, .15], [.1, .2]])
+
 # Get samples
 inital_sample_type = "lhs"
 (my_disc,  all_step_ratios) = sampler.generalized_chains(lam_domain,
         transition_set, kernel_rD, sample_save_file, inital_sample_type)
 
 # Read in points_ref and plot results
-p_ref = mdat['points_true']
-p_ref = p_ref[5:7, 15]
+ref_sample = mdat['points_true']
+ref_sample = ref_sample[5:7, 15]
 
-        
+# Show the samples in the parameter space
+pDom.scatter_rhoD(my_disc, rho_D=rho_D, ref_sample=ref_sample, io_flag='input')
+# Show the corresponding samples in the data space
+pDom.scatter_rhoD(my_disc, rho_D=rho_D, ref_sample=Q_ref, io_flag='output')
+# Show the data domain that corresponds with the convex hull of samples in the
+# parameter space
+pDom.show_data_domain_2D(my_disc, Q_ref=Q_ref)
+# Show multiple data domains that correspond with the convex hull of samples in
+# the parameter space
+pDom.show_data_domain_multi(my_disc, Q_ref=Q_ref, showdim='all')
+

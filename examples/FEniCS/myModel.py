@@ -9,6 +9,24 @@ from poissonRandField import solvePoissonRandomField
 import scipy.io as sio
 
 def my_model(parameter_samples):
+
+    # We proceed by loading the mesh and defining the function space for which
+    # the eigenfunctions from Compute_Save_KL were computed.
+
+    # Step 1: Set up the Mesh and Function Space
+    mesh = Mesh("Lshaped.xml")
+
+    # initialize the mesh to generate connectivity
+    mesh.init()
+
+    # Random field is projected on the space of Hat functions in the mesh
+    V = FunctionSpace(mesh, "CG", 1)
+
+    # Load the KL expansion information
+    KL_mdat = sio.loadmat("KL_expansion")
+    KL_eigen_funcs = KL_mdat['KL_eigen_funcs']
+    KL_eigen_vals = KL_mdat['KL_eigen_vals']
+
     # number of parameter samples
     numSamples = parameter_samples.shape[0]
 
@@ -17,66 +35,6 @@ def my_model(parameter_samples):
 
     # the samples are the coefficients of the KL expansion typically denoted by xi_k
     xi_k = parameter_samples
-
-    '''
-    ++++++++++++++++ Steps in Computing the Numerical KL Expansion ++++++++++
-    We proceed by loading the mesh and defining the function space for which
-    the eigenfunctions are defined upon.
-
-    Then, we define the covariance kernel which requires correlation lengths
-    and a standard deviation.
-
-    We then compute the truncated KL expansion.
-    +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-    '''
-
-    # Step 1: Set up the Mesh and Function Space
-
-    mesh = Mesh("Lshaped.xml")
-    #mesh = RectangleMesh(0,0,10,10,20,20)
-
-    # Plot the mesh for visual check
-    #plot(mesh,interactive=True)
-
-    # initialize the mesh to generate connectivity
-    mesh.init()
-
-    # Random field is projected on the space of Hat functions in the mesh
-    V = FunctionSpace(mesh, "CG", 1)
-
-    # Step 2: Project covariance in the mesh and get the eigenfunctions
-
-    # Initialize the projectKL object with the mesh
-    Lmesh = projectKL(mesh)
-
-    # Create the covariance expression to project on the mesh.
-    etaX = 10.0
-    etaY = 10.0
-    C = 1
-
-    # Pick your favorite covariance. Popular choices are Gaussian (of course),
-    # Exponential, triangular (has finite support which is nice). Check out
-    # Ghanem and Spanos' book for more classical options.
-
-    # A Gaussian Covariance
-    '''
-    cov = Expression("C*exp(-((x[0]-x[1]))*((x[0]-x[1]))/ex - \
-      ((x[2]-x[3]))*((x[2]-x[3]))/ey)",
-             ex=etaX,ey=etaY, C=C)
-    '''
-    # An Exponential Covariance
-    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)",ex=etaX,ey=etaY, C=C)
-
-    # Solve the discrete covariance relation on the mesh
-    Lmesh.projectCovToMesh(numKL,cov)
-
-    # Get the eigenfunctions and eigenvalues
-    eigen_func = Lmesh.eigen_funcs
-    eigen_val = Lmesh.eigen_vals
-
-    #print 'eigen_vals'
-    #print eigen_val
-    #print eigen_val.sum()
 
     '''
     ++++++++++++++++ Steps in Solving Poisson with the KL fields ++++++++++++
@@ -123,11 +81,6 @@ def my_model(parameter_samples):
     Gamma_1 = DirichletBC(V,Constant(0.0),bottom_boundary)
     bcs = [Gamma_0,Gamma_1]
 
-    # Setup adjoint boundary conditions.
-    Gamma_adj_0 = DirichletBC(V,Constant(0.0),left_boundary)
-    Gamma_adj_1 = DirichletBC(V,Constant(0.0),bottom_boundary)
-    bcs_adj = [Gamma_adj_0, Gamma_adj_1]
-
     # Setup the QoI class
     class CharFunc(Expression):
       def __init__(self, region):
@@ -147,9 +100,6 @@ def my_model(parameter_samples):
 
     QoI_samples = np.zeros([numSamples,2])
 
-    QoI_deriv_1 = np.zeros([numSamples,numKL])
-    QoI_deriv_2 = np.zeros([numSamples,numKL])
-
     # For each sample solve the PDE
     f = Constant(-1.0) # forcing of Poisson
 
@@ -162,13 +112,12 @@ def my_model(parameter_samples):
         logPerm = np.zeros((mesh.num_vertices()), dtype=float)
         for kl in range(0, numKL):
             logPerm += xi_k[i, kl] * \
-                       sqrt(eigen_val[kl]) * eigen_func[kl].vector().array()
+                       np.sqrt(KL_eigen_vals[0,kl]) * KL_eigen_funcs[kl,:]
 
         # permiability is the exponential of log permeability logPerm
         perm_k_array = 0.1 + np.exp(logPerm)
-        # print "Mean value of the random field is: %g" % perm_k_array.mean()
 
-        ## use dof_to_vertex map to map values to the function space
+        # map permiability values to the function space object perm_k
         perm_k.vector()[:] = perm_k_array
 
         # solve Poisson with this random field using FEM
