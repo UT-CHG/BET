@@ -994,7 +994,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
         """
         x = np.array([[0.2, 0.2], [0.61, 0.61], [0.99, 0.99]])
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, [[1], [0], [2]])
+        nptest.assert_array_equal(ptr, [1, 0, 2])
 
     def test_volumes(self):
         """
@@ -1091,7 +1091,7 @@ class Test_ball_sample_set(unittest.TestCase):
         """
         x = np.array([[0.21, 0.19], [0.55, 0.55], [0.83, 0.73]])
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, [[0], [2], [1]])
+        nptest.assert_array_equal(ptr, [0, 2, 1])
 
     def test_volumes(self):
         """
@@ -1187,7 +1187,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
         """
         x = np.array([[0.2, 0.2], [0.6, 0.6], [0.1, 0.9], [0.8, 0.2], [5.0, 5.0]])
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, [[0], [3], [1], [2], [4]])
+        nptest.assert_array_equal(ptr, [0, 3, 1, 2, 4])
 
     def test_volumes(self):
         """
