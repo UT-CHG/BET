@@ -159,12 +159,17 @@ two-dimensional slices/projections of domains.</p>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>filename='scatter2d'</em>, <em>file_extension='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>filename='scatter2d'</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a two-dimensional scatter plot of the samples within the sample
 object colored by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise probability
 density values).  A reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be chosen by the user.
 This reference sample will be plotted as a mauve circle twice the size of
 the other markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -188,13 +193,54 @@ the other markers.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.postProcess.plotDomains.scatter_2D_input">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D_input</code><span class="sig-paren">(</span><em>my_disc</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>filename='scatter2d_input'</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a two-dimensional scatter plot of the input samples within the
+discretization object colored by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values).  A reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a>) &#8211; contains samples (<cite>my_disc._input_sample_set`</cite>) to create
+scatter plot</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; indicies of the samples to plot</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the samples by</li>
+<li><strong>ref_sample</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
+<li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+<li><strong>file_extension</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file extension</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_2D_multi">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D_multi</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>img_folder='figs/'</em>, <em>filename='scatter2Dm'</em>, <em>label_char='$\\lambda'</em>, <em>showdim=None</em>, <em>file_extension='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_multi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D_multi</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>img_folder='figs/'</em>, <em>filename='scatter2Dm'</em>, <em>label_char='$\\lambda'</em>, <em>showdim=None</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_multi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates two-dimensional projections of scatter plots of samples colored
 by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise probability density values). A
 reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be chosen by the user. This reference
 sample will be plotted as a mauve circle twice the size of the other
 markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -218,13 +264,54 @@ given dimension (<span class="math">\(\lambda_i\)</span>) or if <code class="doc
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.postProcess.plotDomains.scatter_2D_output">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_2D_output</code><span class="sig-paren">(</span><em>my_disc</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>filename='scatter2d_input'</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a two-dimensional scatter plot of the output samples within the
+discretization object colored by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values).  A reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a>) &#8211; contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; indicies of the samples to plot</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the samples by</li>
+<li><strong>ref_sample</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
+<li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+<li><strong>file_extension</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file extension</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_3D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>zlabel='z'</em>, <em>filename='scatter3d'</em>, <em>file_extension='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>zlabel='z'</em>, <em>filename='scatter3d'</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a three-dimensional scatter plot of samples within the sample
 object colored by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise probability
 density values). A reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be chosen by the user.
 This reference sample will be plotted as a mauve circle twice the size of
 the other markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -249,13 +336,92 @@ the other markers.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.postProcess.plotDomains.scatter_3D_input">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D_input</code><span class="sig-paren">(</span><em>my_disc</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>zlabel='z'</em>, <em>filename='scatter3d'</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a three-dimensional scatter plot of input samples within the
+discretization object colored by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values). A reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a>) &#8211; contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; indicies of the samples to plot</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the samples by</li>
+<li><strong>ref_sample</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
+<li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>zlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; z-axis label</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+<li><strong>file_extension</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file extension</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.postProcess.plotDomains.scatter_3D_output">
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_3D_output</code><span class="sig-paren">(</span><em>my_disc</em>, <em>sample_nos=None</em>, <em>color=None</em>, <em>ref_sample=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>xlabel='x'</em>, <em>ylabel='y'</em>, <em>zlabel='z'</em>, <em>filename='scatter3d'</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a three-dimensional scatter plot of output samples within the
+discretization object colored by <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values). A reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a>) &#8211; contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</li>
+<li><strong>sample_nos</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; indicies of the samples to plot</li>
+<li><strong>color</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; values to color the samples by</li>
+<li><strong>ref_sample</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; reference parameter value</li>
+<li><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to save the figure</li>
+<li><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to show the figure</li>
+<li><strong>xlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; x-axis label</li>
+<li><strong>ylabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; y-axis label</li>
+<li><strong>zlabel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; z-axis label</li>
+<li><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save the figure as</li>
+<li><strong>file_extension</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file extension</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.postProcess.plotDomains.scatter_rhoD">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_rhoD</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>ref_sample=None</em>, <em>sample_nos=None</em>, <em>io_flag='input'</em>, <em>rho_D=None</em>, <em>dim_nums=None</em>, <em>label_char=None</em>, <em>showdim=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>file_extension='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_rhoD" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">scatter_rhoD</code><span class="sig-paren">(</span><em>sample_obj</em>, <em>ref_sample=None</em>, <em>sample_nos=None</em>, <em>io_flag='input'</em>, <em>rho_D=None</em>, <em>dim_nums=None</em>, <em>label_char=None</em>, <em>showdim=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_rhoD" title="Permalink to this definition">¶</a></dt>
 <dd><p>Create scatter plots of samples within the sample object colored by
 <code class="docutils literal"><span class="pre">color</span></code> (usually an array of pointwise probability density values).  A
 reference sample (<code class="docutils literal"><span class="pre">ref_sample</span></code>) can be chosen by the user.  This reference
 sample will be plotted as a mauve circle twice the size of the other
 markers.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filename</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -289,11 +455,16 @@ dimensions</li>
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_2D">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>sample_disc</em>, <em>Q_ref=None</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2$'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em>, <em>file_extension='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_2D</code><span class="sig-paren">(</span><em>sample_disc</em>, <em>Q_ref=None</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>xlabel='$q_1$'</em>, <em>ylabel='$q_2$'</em>, <em>triangles=None</em>, <em>save=True</em>, <em>interactive=False</em>, <em>filenames=None</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots 2-D a single data domain D using a triangulation based on the first
 two coordinates (parameters) of the generating samples where <span class="math">\(Q={q_1,
 q_i}\)</span> for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for various <span class="math">\(Q_{ref}\)</span>. Assumes
 that the first dimension of data is <span class="math">\(q_1\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in BOTH <code class="docutils literal"><span class="pre">filenames</span></code> and
+<code class="docutils literal"><span class="pre">file_extension</span></code>.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -320,7 +491,7 @@ or <a class="reference internal" href="bet.html#bet.sample.sample_set_base" titl
 
 <dl class="function">
 <dt id="bet.postProcess.plotDomains.show_data_domain_multi">
-<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_multi</code><span class="sig-paren">(</span><em>sample_disc</em>, <em>Q_ref=None</em>, <em>Q_nums=None</em>, <em>img_folder='figs/'</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>showdim=None</em>, <em>file_extension='png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotDomains.</code><code class="descname">show_data_domain_multi</code><span class="sig-paren">(</span><em>sample_disc</em>, <em>Q_ref=None</em>, <em>Q_nums=None</em>, <em>img_folder='figs/'</em>, <em>ref_markers=None</em>, <em>ref_colors=None</em>, <em>showdim=None</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
 <dd><p>Plots 2-D projections of the data domain D using a triangulation based on
 the first two coordinates (parameters) of the generating samples where
 <span class="math">\(Q={q_1, q_i}\)</span> for <code class="docutils literal"><span class="pre">i=Q_nums</span></code>, with a marker for various
@@ -437,11 +608,15 @@ or <a class="reference internal" href="bet.html#bet.sample.discretization" title
 
 <dl class="function">
 <dt id="bet.postProcess.plotP.plot_1D_marginal_probs">
-<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_1D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>sample_set</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>interactive=False</em>, <em>lambda_label=None</em>, <em>file_extension='.eps'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_1D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>sample_set</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>interactive=False</em>, <em>lambda_label=None</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This makes plots of every single marginal probability of
 input probability measure on a 1D  grid.
 If the sample_set object is a discretization object, we assume
 that the probabilities to be plotted are from the input space.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in the file name.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -466,11 +641,15 @@ or <a class="reference internal" href="bet.html#bet.sample.discretization" title
 
 <dl class="function">
 <dt id="bet.postProcess.plotP.plot_2D_marginal_probs">
-<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_2D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>sample_set</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>plot_surface=False</em>, <em>interactive=False</em>, <em>lambda_label=None</em>, <em>file_extension='.eps'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.postProcess.plotP.</code><code class="descname">plot_2D_marginal_probs</code><span class="sig-paren">(</span><em>marginals</em>, <em>bins</em>, <em>sample_set</em>, <em>filename='file'</em>, <em>lam_ref=None</em>, <em>plot_surface=False</em>, <em>interactive=False</em>, <em>lambda_label=None</em>, <em>file_extension='.png'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>This makes plots of every pair of marginals (or joint in 2d case) of
 input probability measure on a rectangular grid.
 If the sample_set object is a discretization object, we assume
 that the probabilities to be plotted are from the input space.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not specify the file extension in the file name.</p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />

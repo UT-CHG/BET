@@ -209,9 +209,8 @@ parallel execution of scripts that use
 <a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.  The method
 <a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization" title="bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization"><code class="xref py py-meth docutils literal"><span class="pre">compute_QoI_and_create_discretization()</span></code></a>
 and <a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler.create_random_discretization" title="bet.sampling.basicSampling.sampler.create_random_discretization"><code class="xref py py-meth docutils literal"><span class="pre">create_random_discretization()</span></code></a>
-both have a parallel option (must be specified in the method call) which will
-partition the samples over several processors and a globalize option to return
-a globalized set of results. The method
+both  will partition the samples over several processors and have a globalize
+option to return a globalized set of results. The method
 <a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="bet.sampling.adaptiveSampling.sampler.generalized_chains"><code class="xref py py-meth docutils literal"><span class="pre">generalized_chains()</span></code></a> divides up
 the chains among the availiable processors and returns a globalized result.
 This method also has serial and parallel hotstart capabilties.</p>

@@ -88,9 +88,8 @@ parallel execution of scripts that use
 :class:`bet.sampling.adaptiveSampling.sampler`.  The method
 :meth:`~bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization`
 and :meth:`~bet.sampling.basicSampling.sampler.create_random_discretization`
-both have a parallel option (must be specified in the method call) which will
-partition the samples over several processors and a globalize option to return
-a globalized set of results. The method
+both  will partition the samples over several processors and have a globalize
+option to return a globalized set of results. The method
 :meth:`~bet.sampling.adaptiveSampling.sampler.generalized_chains` divides up
 the chains among the availiable processors and returns a globalized result.
 This method also has serial and parallel hotstart capabilties.

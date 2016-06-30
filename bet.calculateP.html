@@ -145,14 +145,26 @@
 <span class="math">\(P_{\Lambda}\)</span>.</p>
 <ul>
 <li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_emulated</span></code> provides a skeleton class and calculates</dt>
+<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_on_emulated_samples</span></code> provides a skeleton class and calculates</dt>
 <dd><p class="first last">the probability for a set of emulation points.</p>
 </dd>
 </dl>
 </li>
 <li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_samples_mc</span></code> estimates the </dt>
+<dt><a class="reference internal" href="#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><code class="xref py py-mod docutils literal"><span class="pre">prob</span></code></a> estimates the </dt>
 <dd><p class="first last">probability based on pre-defined volumes.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_with_emulated</span></code> estimates the </dt>
+<dd><p class="first last">probability using volume emulation.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><a class="reference internal" href="#bet.calculateP.calculateP.prob_from_sample_set" title="bet.calculateP.calculateP.prob_from_sample_set"><code class="xref py py-mod docutils literal"><span class="pre">prob_from_sample_set</span></code></a> estimates the </dt>
+<dd><p class="first last">probability based on probabilities from another sample set on the same space.</p>
 </dd>
 </dl>
 </li>
@@ -171,6 +183,29 @@ cells are provided.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) &#8211; An object containing the discretization information.</li>
 <li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Makes local variables global.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.calculateP.prob_from_sample_set">
+<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_sample_set</code><span class="sig-paren">(</span><em>set_old</em>, <em>set_new</em>, <em>set_emulate</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
+from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
+a set of emulated points are distributed with respect to the 
+volume measure.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>set_old</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set on which probabilities have already been
+calculated</li>
+<li><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for which probabilities will be calculated.</li>
+<li><strong>set_emulate</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for volume emulation</li>
 </ul>
 </td>
 </tr>
@@ -514,9 +549,7 @@ assumption</li>
 where <span class="math">\(\rho{\mathcal{D}, M}\)</span> is a uniform probablity density over the
 hyperrectangular domain specified by <code class="docutils literal"><span class="pre">rect_domain</span></code>.</p>
 <p>Since <span class="math">\(\rho_\mathcal{D}\)</span> is a uniform distribution on a
-hyperrectangle we should we able to represent it exactly with
-<span class="math">\(M=3^{m}\)</span> where m is the dimension of the data space or rather
-<code class="docutils literal"><span class="pre">len(d_distr_samples)</span> <span class="pre">==</span> <span class="pre">3**mdim</span></code>.</p>
+hyperrectangle we are able to represent it exactly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -526,15 +559,14 @@ hyperrectangle we should we able to represent it exactly with
 <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
 <li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (2, mdim)) &#8211; The domain overwhich <span class="math">\(\rho_\mathcal{D}\)</span> is
 uniform.</li>
-<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
-additional two points will be added to create the bounding layer</li>
+<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward compatability.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">rectangle_sample_set</span></code></a></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
 </td>
 </tr>
 </tbody>
@@ -548,9 +580,8 @@ additional two points will be added to create the bounding layer</li>
 where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
 centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> with <code class="docutils literal"><span class="pre">rect_scale</span></code> of the width
 of D.</p>
-<p>Since rho_D is a uniform distribution on a hyperrectanlge we should be able
-to represent it exactly with <code class="docutils literal"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">3^mdim</span></code> or rather
-<code class="docutils literal"><span class="pre">len(d_distr_samples)</span> <span class="pre">==</span> <span class="pre">3^mdim</span></code>.</p>
+<p>Since rho_D is a uniform distribution on a hyperrectanlge we are able
+to represent it exactly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -560,18 +591,15 @@ to represent it exactly with <code class="docutils literal"><span class="pre">M<
 <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
 <li><strong>rect_scale</strong> (<em>double or list()</em>) &#8211; The scale used to determine the width of the
 uniform distributiion as <code class="docutils literal"><span class="pre">rect_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*rect_scale</span></code></li>
-<li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
 <li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
-additional two points will be added to create the bounding layer</li>
+<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward compatability.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">rectangle_sample_set</span></code></a></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
 </td>
 </tr>
 </tbody>
@@ -584,9 +612,8 @@ additional two points will be added to create the bounding layer</li>
 <dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
 where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
 centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> with <code class="docutils literal"><span class="pre">rect_size</span></code> of the width of a hyperrectangle.</p>
-<p>Since rho_D is a uniform distribution on a hyperrectanlge we should be able
-to represent it exactly with <code class="docutils literal"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">3^mdim</span></code> or rather
-<code class="docutils literal"><span class="pre">len(d_distr_samples)</span> <span class="pre">==</span> <span class="pre">3^mdim</span></code>.</p>
+<p>Since rho_D is a uniform distribution on a hyperrectanlge we can represent
+it exactly.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -594,20 +621,17 @@ to represent it exactly with <code class="docutils literal"><span class="pre">M<
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>rect_size</strong> (<em>double or list()</em>) &#8211; The size used to determine the width of the uniform
 distribution</li>
-<li><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
 <li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
 <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
 <li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge
-and additional two points will be added to create the bounding layer</li>
+<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward compatability.</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">rectangle_sample_set</span></code></a></p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
 </td>
 </tr>
 </tbody>
@@ -664,19 +688,12 @@ distributions over irregularly shaped domains.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> 
-or <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
-additional two points will be added to create the bounding layer</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> 
+or <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sample_set object defininng simple function approximation</td>
 </tr>
 </tbody>
 </table>

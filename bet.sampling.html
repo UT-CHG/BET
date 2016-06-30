@@ -703,6 +703,40 @@ returns data</li>
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.sampling.basicSampling.loadmat_parallel">
+<code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">loadmat_parallel</code><span class="sig-paren">(</span><em>save_file</em>, <em>disc_name=None</em>, <em>model=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.loadmat_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data from <code class="docutils literal"><span class="pre">save_file</span></code> into a
+<code class="xref py py-class docutils literal"><span class="pre">sampler</span></code> object in parallel and correctly
+re-localizes data if necessary.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Implement based on the hot start implementation in
+<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>save_file</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; file name</li>
+<li><strong>disc_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; name of <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> in
+file</li>
+<li><strong>model</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#callable" title="(in Python v2.7)"><em>callable</em></a>) &#8211; runs the model at a given set of parameter samples and
+returns data</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(sampler, discretization)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.sampling.basicSampling.random_sample_set">
 <code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">random_sample_set</code><span class="sig-paren">(</span><em>sample_type</em>, <em>input_obj</em>, <em>num_samples</em>, <em>criterion='center'</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.random_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm with three basic options</p>
@@ -800,7 +834,7 @@ returns output</dd>
 </dl>
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization">
-<code class="descname">compute_QoI_and_create_discretization</code><span class="sig-paren">(</span><em>input_sample_set</em>, <em>savefile=None</em>, <em>parallel=False</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization" title="Permalink to this definition">¶</a></dt>
+<code class="descname">compute_QoI_and_create_discretization</code><span class="sig-paren">(</span><em>input_sample_set</em>, <em>savefile=None</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Samples the model at <code class="docutils literal"><span class="pre">input_sample_set</span></code> and saves the results.</p>
 <p>Note: There are many ways to generate samples on a regular grid in
 Numpy and other Python packages. Instead of reimplementing them here we
@@ -813,10 +847,7 @@ provide sampler that utilizes user specified samples.</p>
 <li><strong>input_sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> with
 num_smaples) &#8211; samples to evaluate the model at</li>
 <li><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; filename to save samples and data</li>
-<li><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag for parallel implementation. Default value
-is <code class="docutils literal"><span class="pre">False</span></code>.</li>
-<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Makes local variables global. Only applies if
-<code class="docutils literal"><span class="pre">parallel==True</span></code>.</li>
+<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Makes local variables global.</li>
 </ul>
 </td>
 </tr>
@@ -833,7 +864,7 @@ input and output of <code class="docutils literal"><span class="pre">num_samples
 
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.create_random_discretization">
-<code class="descname">create_random_discretization</code><span class="sig-paren">(</span><em>sample_type</em>, <em>input_obj</em>, <em>savefile=None</em>, <em>num_samples=None</em>, <em>criterion='center'</em>, <em>parallel=False</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.create_random_discretization" title="Permalink to this definition">¶</a></dt>
+<code class="descname">create_random_discretization</code><span class="sig-paren">(</span><em>sample_type</em>, <em>input_obj</em>, <em>savefile=None</em>, <em>num_samples=None</em>, <em>criterion='center'</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.create_random_discretization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm with three basic options</p>
 <blockquote>
 <div><ul>
@@ -870,10 +901,7 @@ or the dimension of an input space</li>
 <li><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
 </li>
-<li><strong>parallel</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag for parallel implementation.  Default value
-is <code class="docutils literal"><span class="pre">False</span></code>.</li>
-<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Makes local variables global. Only applies if
-<code class="docutils literal"><span class="pre">parallel==True</span></code>.</li>
+<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Makes local variables global.</li>
 </ul>
 </td>
 </tr>
