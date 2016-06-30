@@ -58,6 +58,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         mdat = sio.loadmat(local_file_name)
     else:
         mdat = dict()
+
     if sample_set_name is None:
         sample_set_name = 'default'
     for attrname in save_set.vector_names:
@@ -833,9 +834,6 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     else:
         local_file_name = file_name
 
-    if globalize:
-        save_set.local_to_global()
-
     if discretization_name is None:
         discretization_name = 'default'
 
@@ -861,9 +859,9 @@ def save_discretization(save_disc, file_name, discretization_name=None,
             sio.savemat(local_file_name, mdat)
     else:
         if globalize and comm.rank == 0:
-            sio.savemat(local_file_name, mdat)
+            sio.savemat(local_file_name, new_mdat)
         elif not globalize:
-            sio.savemat(local_file_name, mdat)
+            sio.savemat(local_file_name, new_mdat)
 
 def load_discretization(file_name, discretization_name=None):
     """

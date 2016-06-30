@@ -264,12 +264,12 @@ class sampler(object):
         """
 
         if comm.rank > 1 and not globalize:
-            local_file_name = os.path.join(os.path.dirname(file_name),
-                    "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+            local_save_file = os.path.join(os.path.dirname(save_file),
+                    "proc{}_{}".format(comm.rank, os.path.basename(save_file)))
         else:
-            local_file_name = file_name
+            local_save_file = save_file
 
-        sio.savemat(local_file_name, mdict, do_compression=True)
+        sio.savemat(local_save_file, mdict, do_compression=True)
         if discretization is not None:
             sample.save_discretization(discretization, save_file,
                     globalize=globalize)
@@ -386,7 +386,8 @@ class sampler(object):
         discretization = sample.discretization(input_sample_set,
                 output_sample_set)
 
-        self.update_mdict(dict())
+        mdat = dict()
+        self.update_mdict(mdat)
 
         if savefile is not None:
             self.save(mdat, savefile, discretization, globalize=globalize)
