@@ -46,14 +46,16 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
 
     """
     if comm.rank > 1 and not globalize:
-        file_name = os.path.join(os.path.dirname(file_name),
+        local_file_name = os.path.join(os.path.dirname(file_name),
                 "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+    else:
+        local_file_name = file_name
 
     if globalize:
         save_set.local_to_global()
 
-    if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-        mdat = sio.loadmat(file_name)
+    if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
+        mdat = sio.loadmat(local_file_name)
     else:
         mdat = dict()
     if sample_set_name is None:
@@ -69,7 +71,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
 
     if globalize and comm.rank == 0:
-        sio.savemat(file_name, mdat)
+        sio.savemat(local_file_name, mdat)
     elif not globalize:
         sio.savemat(file_name, mdat)
 
@@ -826,8 +828,10 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     new_mdat = dict()
 
     if comm.rank > 1 and not globalize:
-        file_name = os.path.join(os.path.dirname(file_name),
+        local_file_name = os.path.join(os.path.dirname(file_name),
                 "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+    else:
+        local_file_name = file_name
 
     if globalize:
         save_set.local_to_global()
@@ -847,19 +851,19 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
    
-    if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-        mdat = sio.loadmat(file_name)
+    if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
+        mdat = sio.loadmat(local_file_name)
         for i, v in new_mdat.iteritems():
             mdat[i] = v
         if globalize and comm.rank == 0:
-            sio.savemat(file_name, mdat)
+            sio.savemat(local_file_name, mdat)
         elif not globalize:
-            sio.savemat(file_name, mdat)
+            sio.savemat(local_file_name, mdat)
     else:
         if globalize and comm.rank == 0:
-            sio.savemat(file_name, mdat)
+            sio.savemat(local_file_name, mdat)
         elif not globalize:
-            sio.savemat(file_name, mdat)
+            sio.savemat(local_file_name, mdat)
 
 def load_discretization(file_name, discretization_name=None):
     """

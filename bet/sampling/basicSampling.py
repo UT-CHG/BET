@@ -262,7 +262,14 @@ class sampler(object):
         :param bool globalize: Makes local variables global. 
 
         """
-        sio.savemat(save_file, mdict, do_compression=True)
+
+        if comm.rank > 1 and not globalize:
+            local_file_name = os.path.join(os.path.dirname(file_name),
+                    "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        sio.savemat(local_file_name, mdict, do_compression=True)
         if discretization is not None:
             sample.save_discretization(discretization, save_file,
                     globalize=globalize)
