@@ -6,7 +6,6 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Index &mdash; BET 2.0.0-beta documentation</title>
@@ -16,6 +15,7 @@
   
 
   
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -34,7 +34,7 @@
     <link rel="top" title="BET 2.0.0-beta documentation" href="index.html"/> 
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
 </head>
 
@@ -44,27 +44,11 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> BET
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                2.0
-              </div>
-            
-          
-
-          
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> BET</a>
+        
+        
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -72,26 +56,49 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+      </div>
 
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
           
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-            
-            
-                <ul>
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a></li>
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.html">bet package</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
 </ul>
 
-            
           
-        </div>
+        
       </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -106,27 +113,18 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
     <li></li>
       <li class="wy-breadcrumbs-aside">
         
-          
-        
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+          <div role="main" class="document">
             
 
 <h1 id="index">Index</h1>
@@ -295,7 +293,7 @@
   </dt>
 
       
-  <dt><a href="bet.html#module-bet.Comm">bet.Comm (module)</a>
+  <dt><a href="bet.html#module-bet.Comm">bet.Comm (module)</a>, <a href="overview.html#module-bet.Comm">[1]</a>
   </dt>
 
       
@@ -317,7 +315,7 @@
   </dt>
 
       
-  <dt><a href="bet.html#module-bet.sample">bet.sample (module)</a>
+  <dt><a href="bet.html#module-bet.sample">bet.sample (module)</a>, <a href="overview.html#module-bet.sample">[1]</a>
   </dt>
 
       
@@ -349,7 +347,7 @@
   </dt>
 
       
-  <dt><a href="bet.html#module-bet.util">bet.util (module)</a>
+  <dt><a href="bet.html#module-bet.util">bet.util (module)</a>, <a href="overview.html#module-bet.util">[1]</a>
   </dt>
 
       
@@ -815,7 +813,15 @@
   </dt>
 
       
+  <dt><a href="bet.html#bet.sample.load_discretization_parallel">load_discretization_parallel() (in module bet.sample)</a>
+  </dt>
+
+      
   <dt><a href="bet.html#bet.sample.load_sample_set">load_sample_set() (in module bet.sample)</a>
+  </dt>
+
+      
+  <dt><a href="bet.html#bet.sample.load_sample_set_parallel">load_sample_set_parallel() (in module bet.sample)</a>
   </dt>
 
       
@@ -830,6 +836,10 @@
       </dl></dd>
   </dl></td>
   <td style="width: 33%" valign="top"><dl>
+      
+  <dt><a href="bet.sampling.html#bet.sampling.basicSampling.loadmat_parallel">loadmat_parallel() (in module bet.sampling.basicSampling)</a>
+  </dt>
+
       
   <dt><a href="bet.html#bet.sample.sample_set_base.local_to_global">local_to_global() (bet.sample.sample_set_base method)</a>
   </dt>
@@ -910,6 +920,10 @@
   <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.calculateP.html#bet.calculateP.calculateP.prob">prob() (in module bet.calculateP.calculateP)</a>
+  </dt>
+
+      
+  <dt><a href="bet.calculateP.html#bet.calculateP.calculateP.prob_from_sample_set">prob_from_sample_set() (in module bet.calculateP.calculateP)</a>
   </dt>
 
       
@@ -1101,11 +1115,27 @@
   </dt>
 
       
+  <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_2D_input">scatter_2D_input() (in module bet.postProcess.plotDomains)</a>
+  </dt>
+
+      
   <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_2D_multi">scatter_2D_multi() (in module bet.postProcess.plotDomains)</a>
   </dt>
 
       
+  <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_2D_output">scatter_2D_output() (in module bet.postProcess.plotDomains)</a>
+  </dt>
+
+      
   <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_3D">scatter_3D() (in module bet.postProcess.plotDomains)</a>
+  </dt>
+
+      
+  <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_3D_input">scatter_3D_input() (in module bet.postProcess.plotDomains)</a>
+  </dt>
+
+      
+  <dt><a href="bet.postProcess.html#bet.postProcess.plotDomains.scatter_3D_output">scatter_3D_output() (in module bet.postProcess.plotDomains)</a>
   </dt>
 
       
@@ -1128,6 +1158,8 @@
   <dt><a href="bet.html#bet.sample.discretization.set_emulated_input_sample_set">set_emulated_input_sample_set() (bet.sample.discretization method)</a>
   </dt>
 
+  </dl></td>
+  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.html#bet.sample.discretization.set_emulated_oo_ptr">set_emulated_oo_ptr() (bet.sample.discretization method)</a>
   </dt>
@@ -1136,8 +1168,6 @@
   <dt><a href="bet.html#bet.sample.discretization.set_emulated_output_sample_set">set_emulated_output_sample_set() (bet.sample.discretization method)</a>
   </dt>
 
-  </dl></td>
-  <td style="width: 33%" valign="top"><dl>
       
   <dt><a href="bet.html#bet.sample.sample_set_base.set_error_estimates">set_error_estimates() (bet.sample.sample_set_base method)</a>
   </dt>
@@ -1369,7 +1399,6 @@
 
 
 
-           </div>
           </div>
           <footer>
   
@@ -1379,14 +1408,13 @@
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 27, 2016.
-
+      Last updated on Jun 29, 2016.
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
-
         </div>
       </div>
 

@@ -5,7 +5,6 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>bet package &mdash; BET 2.0.0-beta documentation</title>
@@ -15,6 +14,7 @@
   
 
   
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -36,7 +36,7 @@
         <link rel="prev" title="bet" href="modules.html"/> 
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
 </head>
 
@@ -46,27 +46,11 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> BET
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                2.0
-              </div>
-            
-          
-
-          
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> BET</a>
+        
+        
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -74,43 +58,49 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+      </div>
 
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
           
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-            
-            
-                <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a></li>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="reference internal" href="modules.html">bet</a><ul class="current">
-<li class="toctree-l2 current"><a class="current reference internal" href="#">bet package</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#subpackages">Subpackages</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="bet.calculateP.html">bet.calculateP package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="bet.postProcess.html">bet.postProcess package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="bet.sampling.html">bet.sampling package</a></li>
-<li class="toctree-l4"><a class="reference internal" href="bet.sensitivity.html">bet.sensitivity package</a></li>
-</ul>
-</li>
-<li class="toctree-l3"><a class="reference internal" href="#submodules">Submodules</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.Comm">bet.Comm module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sample">bet.sample module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.util">bet.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-contents">Module contents</a></li>
-</ul>
-</li>
+<li class="toctree-l2 current"><a class="current reference internal" href="">bet package</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
 </ul>
 
-            
           
-        </div>
+        
       </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -125,13 +115,7 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
- 
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
@@ -140,16 +124,13 @@
     <li>bet package</li>
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/bet.txt" rel="nofollow"> View page source</a>
-          
+          <a href="_sources/bet.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+          <div role="main" class="document">
             
   <div class="section" id="bet-package">
 <h1>bet package<a class="headerlink" href="#bet-package" title="Permalink to this headline">¶</a></h1>
@@ -202,7 +183,7 @@ to run BET.</p>
 <dl class="class">
 <dt id="bet.Comm.MPI_for_no_mpi4py">
 <em class="property">class </em><code class="descclassname">bet.Comm.</code><code class="descname">MPI_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Provides a fake MPI implementation so that the user need not install
 mpi4py.</p>
 </dd></dl>
@@ -210,7 +191,7 @@ mpi4py.</p>
 <dl class="class">
 <dt id="bet.Comm.comm_for_no_mpi4py">
 <em class="property">class </em><code class="descclassname">bet.Comm.</code><code class="descname">comm_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>Provides a fake MPI.COMM_WORLD implementation so that the user need not
 install mpi4py.</p>
 <dl class="method">
@@ -220,9 +201,9 @@ install mpi4py.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<em>object</em>) &#8211; object to Allgather</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Allgather</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">object</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">val</td>
 </tr>
@@ -238,13 +219,13 @@ install mpi4py.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val1</strong> (<em>object</em>) &#8211; object to Allreduce</li>
-<li><strong>val2</strong> (<em>object</em>) &#8211; object to Allreduce</li>
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Allreduce</li>
+<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Allreduce</li>
 <li><strong>op</strong> &#8211; None</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">object</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
@@ -268,12 +249,12 @@ install mpi4py.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val</strong> (<em>object</em>) &#8211; object to gather</li>
-<li><strong>root</strong> (<em>int</em>) &#8211; 0</li>
+<li><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">object</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val</p>
@@ -290,7 +271,7 @@ install mpi4py.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">0</td>
 </tr>
@@ -305,7 +286,7 @@ install mpi4py.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">1</td>
 </tr>
@@ -321,13 +302,13 @@ install mpi4py.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val1</strong> (<em>object</em>) &#8211; object to Scatter</li>
-<li><strong>val2</strong> (<em>object</em>) &#8211; object to Scatter</li>
-<li><strong>root</strong> (<em>int</em>) &#8211; 0</li>
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Scatter</li>
+<li><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to Scatter</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">object</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
@@ -344,9 +325,9 @@ install mpi4py.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<em>object</em>) &#8211; object to allgather</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to allgather</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">object</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">val</td>
 </tr>
@@ -361,9 +342,9 @@ install mpi4py.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val1</strong> (<em>object</em>) &#8211; object to allreduce</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to allreduce</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">object</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">val1</td>
 </tr>
@@ -385,12 +366,12 @@ install mpi4py.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val</strong> (<em>object</em>) &#8211; object to broadcast</li>
-<li><strong>root</strong> (<em>int</em>) &#8211; 0</li>
+<li><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to broadcast</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">object</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val</p>
@@ -408,12 +389,12 @@ install mpi4py.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val1</strong> (<em>object</em>) &#8211; object to gather</li>
-<li><strong>root</strong> (<em>int</em>) &#8211; 0</li>
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to gather</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">object</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
@@ -431,12 +412,12 @@ install mpi4py.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>val1</strong> (<em>object</em>) &#8211; object to scatter</li>
-<li><strong>root</strong> (<em>int</em>) &#8211; 0</li>
+<li><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) &#8211; object to scatter</li>
+<li><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; 0</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">object</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">val1</p>
@@ -557,18 +538,21 @@ dim)) &#8211; New jacobians to append.</td>
 The distance is set to 0 if it is in the rectangle and infinity 
 if it is not.
 It is only considered in or out.</p>
-<p><code class="xref py py-meth docutils literal"><span class="pre">scipy.spatial.KDTree.query()</span></code></p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">scipy.spatial.KDTree.query()</span></code></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) &#8211; points for query</li>
-<li><strong>k</strong> (<em>int</em>) &#8211; number of nearest neighbors to return</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of nearest neighbors to return</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(dist, ptr)</p>
@@ -587,7 +571,7 @@ It is only considered in or out.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>centers</strong> (<em>interable of shape (num-1, dim)</em>) &#8211; centers of balls</li>
+<li><strong>centers</strong> (<em>iterable of shape (num-1, dim)</em>) &#8211; centers of balls</li>
 <li><strong>radii</strong> (<em>iterable of length num-1</em>) &#8211; radii of balls</li>
 </ul>
 </td>
@@ -616,7 +600,11 @@ It is only considered in or out.</p>
 <dd><p>Bases: <a class="reference internal" href="#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.rectangle_sample_set</span></code></a></p>
 <p>Defines a hyperrectangle discretization based on a Cartesian grid.</p>
 <blockquote>
-<div><a class="reference internal" href="#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-meth docutils literal"><span class="pre">bet.sample.rectangle_sample_set()</span></code></a></div></blockquote>
+<div><div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><a class="reference internal" href="#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-meth docutils literal"><span class="pre">bet.sample.rectangle_sample_set()</span></code></a></p>
+</div>
+</div></blockquote>
 <dl class="method">
 <dt id="bet.sample.cartesian_sample_set.setup">
 <code class="descname">setup</code><span class="sig-paren">(</span><em>xi</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.cartesian_sample_set.setup" title="Permalink to this definition">¶</a></dt>
@@ -630,14 +618,14 @@ It is only considered in or out.</p>
 <dl class="exception">
 <dt id="bet.sample.dim_not_matching">
 <em class="property">exception </em><code class="descclassname">bet.sample.</code><code class="descname">dim_not_matching</code><a class="headerlink" href="#bet.sample.dim_not_matching" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
 <p>Exception for when the dimension of the array is inconsistent.</p>
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.sample.discretization">
 <em class="property">class </em><code class="descclassname">bet.sample.</code><code class="descname">discretization</code><span class="sig-paren">(</span><em>input_sample_set</em>, <em>output_sample_set</em>, <em>output_probability_set=None</em>, <em>emulated_input_sample_set=None</em>, <em>emulated_output_sample_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>A data structure to store all of the <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>
 objects and associated pointers to solve an stochastic inverse problem.</p>
 <dl class="method">
@@ -649,7 +637,7 @@ both have the same number of samples.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Number of samples</td>
 </tr>
@@ -862,9 +850,9 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; flag whether or not to globalize
+<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to globalize
 <code class="docutils literal"><span class="pre">self._output_sample_set</span></code></li>
-<li><strong>p</strong> (<em>int</em>) &#8211; Which Minkowski p-norm to use. (1 &lt;= p &lt;= infinity)</li>
+<li><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Which Minkowski p-norm to use. (1 &lt;= p &lt;= infinity)</li>
 </ul>
 </td>
 </tr>
@@ -900,9 +888,9 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; flag whether or not to globalize
+<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to globalize
 <code class="docutils literal"><span class="pre">self._output_sample_set</span></code></li>
-<li><strong>p</strong> (<em>int</em>) &#8211; Which Minkowski p-norm to use. (1 &lt;= p &lt;= infinity)</li>
+<li><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Which Minkowski p-norm to use. (1 &lt;= p &lt;= infinity)</li>
 </ul>
 </td>
 </tr>
@@ -947,7 +935,7 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>globalize</strong> (<em>bool</em>) &#8211; flag whether or not to globalize
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to globalize
 <code class="docutils literal"><span class="pre">self._output_sample_set</span></code></td>
 </tr>
 </tbody>
@@ -992,7 +980,7 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <dl class="exception">
 <dt id="bet.sample.length_not_matching">
 <em class="property">exception </em><code class="descclassname">bet.sample.</code><code class="descname">length_not_matching</code><a class="headerlink" href="#bet.sample.length_not_matching" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
 <p>Exception for when the length of the array is inconsistent.</p>
 </dd></dl>
 
@@ -1008,9 +996,45 @@ contains multiple <a class="reference internal" href="#bet.sample.discretization
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>file_name</strong> (<em>string</em>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
 needed.</li>
-<li><strong>discretization_name</strong> (<em>string</em>) &#8211; String to prepend to attribute names when
+<li><strong>discretization_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
+saving multiple :class`bet.sample.discretization` objects to a single
+<code class="docutils literal"><span class="pre">.mat</span></code> file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the <code class="docutils literal"><span class="pre">discretization</span></code> that matches the <code class="docutils literal"><span class="pre">discretization_name</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sample.load_discretization_parallel">
+<code class="descclassname">bet.sample.</code><code class="descname">load_discretization_parallel</code><span class="sig-paren">(</span><em>file_name</em>, <em>discretization_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.load_discretization_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> from a <code class="docutils literal"><span class="pre">.mat</span></code> file in
+parallel and correctly re-localizes data if necessary. If a file contains
+multiple <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> objects then
+<code class="docutils literal"><span class="pre">discretization_name</span></code> is used to distinguish which between different
+<a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> objects.</p>
+<div class="admonition-todo admonition" id="index-0">
+<p class="first admonition-title">Todo</p>
+<p class="last">Implement based on the hot start implementation in
+<a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
+needed.</li>
+<li><strong>discretization_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
 saving multiple :class`bet.sample.discretization` objects to a single
 <code class="docutils literal"><span class="pre">.mat</span></code> file</li>
 </ul>
@@ -1038,9 +1062,45 @@ contains multiple <a class="reference internal" href="#bet.sample.sample_set" ti
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>file_name</strong> (<em>string</em>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
 needed.</li>
-<li><strong>sample_set_name</strong> (<em>string</em>) &#8211; String to prepend to attribute names when
+<li><strong>sample_set_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
+saving multiple :class`bet.sample.sample_set` objects to a single
+<code class="docutils literal"><span class="pre">.mat</span></code> file</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">the <code class="docutils literal"><span class="pre">sample_set</span></code> that matches the <code class="docutils literal"><span class="pre">sample_set_name</span></code></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.sample.load_sample_set_parallel">
+<code class="descclassname">bet.sample.</code><code class="descname">load_sample_set_parallel</code><span class="sig-paren">(</span><em>file_name</em>, <em>sample_set_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.load_sample_set_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads a <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> from a <code class="docutils literal"><span class="pre">.mat</span></code> file in parallel
+and correctly re-localizes data if necessary. If a file contains multiple
+<a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> objects then <code class="docutils literal"><span class="pre">sample_set_name</span></code> is used to
+distinguish which between different <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a>
+objects.</p>
+<div class="admonition-todo admonition" id="index-1">
+<p class="first admonition-title">Todo</p>
+<p class="last">Implement based on the hot start implementation in
+<a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.</p>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
+needed.</li>
+<li><strong>sample_set_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
 saving multiple :class`bet.sample.sample_set` objects to a single
 <code class="docutils literal"><span class="pre">.mat</span></code> file</li>
 </ul>
@@ -1154,18 +1214,21 @@ dim)) &#8211; New jacobians to append.</td>
 Only returns the neighbors for which <span class="math">\(x_i \in A_k\)</span>. The distance
 is set to 0 if it is in the rectangle and infinity if it is not.
 It is only considered in or out.</p>
-<p><code class="xref py py-meth docutils literal"><span class="pre">scipy.spatial.KDTree.query()</span></code></p>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">scipy.spatial.KDTree.query()</span></code></p>
+</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) &#8211; points for query</li>
-<li><strong>k</strong> (<em>int</em>) &#8211; number of nearest neighbors to return</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of nearest neighbors to return</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(dist, ptr)</p>
@@ -1184,8 +1247,8 @@ It is only considered in or out.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>maxes</strong> (<em>interable with components of length dim</em>) &#8211; array or list of maxes for hyperrectangles</li>
-<li><strong>mins</strong> (<em>interable with components of length dim</em>) &#8211; array or list of mins for hyperrectangles</li>
+<li><strong>maxes</strong> (<em>iterable with components of length dim</em>) &#8211; array or list of maxes for hyperrectangles</li>
+<li><strong>mins</strong> (<em>iterable with components of length dim</em>) &#8211; array or list of mins for hyperrectangles</li>
 </ul>
 </td>
 </tr>
@@ -1217,7 +1280,7 @@ It is only considered in or out.</p>
 <dl class="class">
 <dt id="bet.sample.sample_set_base">
 <em class="property">class </em><code class="descclassname">bet.sample.</code><code class="descname">sample_set_base</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
 <p>A data structure containing arrays specific to a set of samples.</p>
 <dl class="attribute">
 <dt id="bet.sample.sample_set_base.all_ndarray_names">
@@ -1301,7 +1364,7 @@ dim)) &#8211; New jacobians to append.</td>
 
 <dl class="attribute">
 <dt id="bet.sample.sample_set_base.array_names">
-<code class="descname">array_names</code><em class="property"> = ['_values', '_volumes', '_probabilities', '_jacobians', '_error_estimates', '_right', '_left', '_width', '_kdtree_values', '_radii']</em><a class="headerlink" href="#bet.sample.sample_set_base.array_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">array_names</code><em class="property"> = ['_values', '_volumes', '_probabilities', '_jacobians', '_error_estimates', '_right', '_left', '_width', '_kdtree_values', '_radii', '_normalized_radii']</em><a class="headerlink" href="#bet.sample.sample_set_base.array_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1320,7 +1383,7 @@ dim)) &#8211; New jacobians to append.</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">num</td>
 </tr>
@@ -1353,7 +1416,7 @@ Carlo integration.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n_mc_points</strong> (<em>int</em>) &#8211; If estimate is True, number of MC points to use</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; If estimate is True, number of MC points to use</td>
 </tr>
 </tbody>
 </table>
@@ -1401,7 +1464,7 @@ assumption.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">int</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">Dimension of the sample space.</td>
 </tr>
@@ -1629,7 +1692,7 @@ assumption.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>x</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) &#8211; points for query</li>
-<li><strong>k</strong> (<em>int</em>) &#8211; number of nearest neighbors to return</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of nearest neighbors to return</li>
 </ul>
 </td>
 </tr>
@@ -1728,7 +1791,7 @@ dim)) &#8211; local sample jacobians</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p_norm</strong> (<em>float</em>) &#8211; p-norm to use</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>p_norm</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) &#8211; p-norm to use</td>
 </tr>
 </tbody>
 </table>
@@ -1826,7 +1889,7 @@ dim)) &#8211; local sample jacobians</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(num, dim)</td>
 </tr>
@@ -1842,7 +1905,7 @@ dim)) &#8211; local sample jacobians</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(local_num, dim)</td>
 </tr>
@@ -1858,7 +1921,7 @@ dim)) &#8211; local sample jacobians</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>num</strong> (<em>int</em>) &#8211; Determinzes shape of pointwise bounds (num, dim)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Determinzes shape of pointwise bounds (num, dim)</td>
 </tr>
 </tbody>
 </table>
@@ -1874,7 +1937,7 @@ dim)) &#8211; local sample jacobians</td>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>local_num</strong> (<em>int</em>) &#8211; Determinzes shape of local pointwise bounds
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>local_num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Determinzes shape of local pointwise bounds
 (local_num, dim)</td>
 </tr>
 </tbody>
@@ -1883,14 +1946,14 @@ dim)) &#8211; local sample jacobians</td>
 
 <dl class="attribute">
 <dt id="bet.sample.sample_set_base.vector_names">
-<code class="descname">vector_names</code><em class="property"> = ['_probabilities', '_probabilities_local', '_volumes', '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii']</em><a class="headerlink" href="#bet.sample.sample_set_base.vector_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">vector_names</code><em class="property"> = ['_probabilities', '_probabilities_local', '_volumes', '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii', '_normalized_radii']</em><a class="headerlink" href="#bet.sample.sample_set_base.vector_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sample.save_discretization">
-<code class="descclassname">bet.sample.</code><code class="descname">save_discretization</code><span class="sig-paren">(</span><em>save_disc</em>, <em>file_name</em>, <em>discretization_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.save_discretization" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.sample.</code><code class="descname">save_discretization</code><span class="sig-paren">(</span><em>save_disc</em>, <em>file_name</em>, <em>discretization_name=None</em>, <em>globalize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.save_discretization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves this <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a> as a <code class="docutils literal"><span class="pre">.mat</span></code> file. Each
 attribute is added to a dictionary of names and arrays which are then
 saved to a MATLAB-style file.</p>
@@ -1900,11 +1963,14 @@ saved to a MATLAB-style file.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>save_disc</strong> (<a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; sample set to save</li>
-<li><strong>file_name</strong> (<em>string</em>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
 needed.</li>
-<li><strong>discretization_name</strong> (<em>string</em>) &#8211; String to prepend to attribute names when
+<li><strong>discretization_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
 saving multiple :class`bet.sample.discretization` objects to a single
 <code class="docutils literal"><span class="pre">.mat</span></code> file</li>
+<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to globalize
+<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a> objects stored in this
+discretization</li>
 </ul>
 </td>
 </tr>
@@ -1914,7 +1980,7 @@ saving multiple :class`bet.sample.discretization` objects to a single
 
 <dl class="function">
 <dt id="bet.sample.save_sample_set">
-<code class="descclassname">bet.sample.</code><code class="descname">save_sample_set</code><span class="sig-paren">(</span><em>save_set</em>, <em>file_name</em>, <em>sample_set_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.save_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.sample.</code><code class="descname">save_sample_set</code><span class="sig-paren">(</span><em>save_set</em>, <em>file_name</em>, <em>sample_set_name=None</em>, <em>globalize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.save_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Saves this <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set</span></code></a> as a <code class="docutils literal"><span class="pre">.mat</span></code> file. Each
 attribute is added to a dictionary of names and arrays which are then
 saved to a MATLAB-style file.</p>
@@ -1924,11 +1990,12 @@ saved to a MATLAB-style file.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>save_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set to save</li>
-<li><strong>file_name</strong> (<em>string</em>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
+<li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
 needed.</li>
-<li><strong>sample_set_name</strong> (<em>string</em>) &#8211; String to prepend to attribute names when
+<li><strong>sample_set_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
 saving multiple :class`bet.sample.sample_set_base` objects to a single
 <code class="docutils literal"><span class="pre">.mat</span></code> file</li>
+<li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to globalize</li>
 </ul>
 </td>
 </tr>
@@ -1944,7 +2011,7 @@ saving multiple :class`bet.sample.sample_set_base` objects to a single
 a Voronoi tesselation.</p>
 <dl class="method">
 <dt id="bet.sample.voronoi_sample_set.estimate_local_volume">
-<code class="descname">estimate_local_volume</code><span class="sig-paren">(</span><em>num_l_emulate_local=500</em>, <em>max_num_l_emulate=10000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_local_volume" title="Permalink to this definition">¶</a></dt>
+<code class="descname">estimate_local_volume</code><span class="sig-paren">(</span><em>num_emulate_local=500</em>, <em>max_num_emulate=10000</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_local_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Estimates the volume fraction of the Voronoice cells associated
 with <code class="docutils literal"><span class="pre">samples</span></code>. Specifically we are calculating
 <span class="math">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.
@@ -1960,7 +2027,7 @@ centroid is NOT the generator of the Voronoi cell. What we desire
 for the radius is actually 
 <span class="math">\(sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda, \lambda^{(i)})\)</span>.</p>
 </div>
-<div class="admonition-todo admonition" id="index-0">
+<div class="admonition-todo admonition" id="index-2">
 <p class="first admonition-title">Todo</p>
 <p class="last">When we move away from domains defined on hypercubes this will need
 to be updated to use whatever <code class="docutils literal"><span class="pre">_in_domain</span></code> method exists.</p>
@@ -1973,8 +2040,8 @@ Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>num_l_emulate_local</strong> (<em>int</em>) &#8211; The number of emulated samples.</li>
-<li><strong>max_num_l_emulate</strong> (<em>int</em>) &#8211; Maximum number of local emulated samples</li>
+<li><strong>num_emulate_local</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The number of emulated samples.</li>
+<li><strong>max_num_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Maximum number of local emulated samples</li>
 </ul>
 </td>
 </tr>
@@ -1987,7 +2054,7 @@ Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
 <code class="descname">estimate_radii</code><span class="sig-paren">(</span><em>n_mc_points=10000</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the radii of cells approximately using Monte
 Carlo integration.</p>
-<div class="admonition-todo admonition" id="index-1">
+<div class="admonition-todo admonition" id="index-3">
 <p class="first admonition-title">Todo</p>
 <p class="last">This currently presumes a uniform Lesbegue measure on the
 <code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
@@ -1999,8 +2066,8 @@ This should at least be an option.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_mc_points</strong> (<em>int</em>) &#8211; If estimate is True, number of MC points to use</li>
-<li><strong>normalize</strong> (<em>bool</em>) &#8211; estimate normalized radius</li>
+<li><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; If estimate is True, number of MC points to use</li>
+<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; estimate normalized radius</li>
 </ul>
 </td>
 </tr>
@@ -2013,7 +2080,7 @@ This should at least be an option.</p>
 <code class="descname">estimate_radii_and_volume</code><span class="sig-paren">(</span><em>n_mc_points=10000</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii_and_volume" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the radii and volume faction of cells approximately using Monte
 Carlo integration.</p>
-<div class="admonition-todo admonition" id="index-2">
+<div class="admonition-todo admonition" id="index-4">
 <p class="first admonition-title">Todo</p>
 <p class="last">This currently presumes a uniform Lesbegue measure on the
 <code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
@@ -2025,8 +2092,8 @@ This should at least be an option.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>n_mc_points</strong> (<em>int</em>) &#8211; If estimate is True, number of MC points to use</li>
-<li><strong>normalize</strong> (<em>bool</em>) &#8211; estimate normalized radius</li>
+<li><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; If estimate is True, number of MC points to use</li>
+<li><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; estimate normalized radius</li>
 </ul>
 </td>
 </tr>
@@ -2036,24 +2103,10 @@ This should at least be an option.</p>
 
 <dl class="method">
 <dt id="bet.sample.voronoi_sample_set.exact_volume_1D">
-<code class="descname">exact_volume_1D</code><span class="sig-paren">(</span><em>distribution='uniform'</em>, <em>a=None</em>, <em>b=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.exact_volume_1D" title="Permalink to this definition">¶</a></dt>
+<code class="descname">exact_volume_1D</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.exact_volume_1D" title="Permalink to this definition">¶</a></dt>
 <dd><p>Exactly calculates the volume fraction of the Voronoic cells.
 Specifically we are calculating 
 <span class="math">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>distribution</strong> (<em>string</em>) &#8211; Probability distribution (uniform, normal,
-truncnorm, beta)</li>
-<li><strong>a</strong> (<em>float</em>) &#8211; mean or alpha (normal/truncnorm, beta)</li>
-<li><strong>b</strong> (<em>float</em>) &#8211; covariance or beta (normal/truncnorm, beta)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
 </dd></dl>
 
 <dl class="method">
@@ -2066,11 +2119,11 @@ truncnorm, beta)</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>x</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) &#8211; points for query</li>
-<li><strong>k</strong> (<em>int</em>) &#8211; number of nearest neighbors to return</li>
+<li><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; number of nearest neighbors to return</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(dist, ptr)</p>
@@ -2120,7 +2173,7 @@ If <code class="docutils literal"><span class="pre">data</span></code> is a nump
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>data</strong> &#8211; numerical object</li>
-<li><strong>dim</strong> (<em>int</em>) &#8211; The dimension of the &#8220;data&#8221; space.</li>
+<li><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; The dimension of the &#8220;data&#8221; space.</li>
 </ul>
 </td>
 </tr>
@@ -2143,7 +2196,7 @@ shape (dim, 2).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> (<code class="xref py py-class docutils literal"><span class="pre">collections.Iterable</span></code>) &#8211; numerical object of at least length 2</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>vector</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/collections.html#collections.Iterable" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">collections.Iterable</span></code></a>) &#8211; numerical object of at least length 2</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a></td>
 </tr>
@@ -2212,7 +2265,7 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<em>tuple</em>) &#8211; A tuple containing the 1d coordinate arrays</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>X</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)"><em>tuple</em></a>) &#8211; A tuple containing the 1d coordinate arrays</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_grid_points,n)</td>
 </tr>
@@ -2230,9 +2283,9 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 measure-theoretic. It is named for the developers of the key algorithm in
 <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">bet.calculateP.calculateP</span></code></a>.</p>
 <dl class="docutils">
-<dt>Comm <a class="reference internal" href="#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install</dt>
+<dt>Comm <a class="reference internal" href="overview.html#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install</dt>
 <dd>:program:<code class="docutils literal"><span class="pre">mpi4py</span></code>.</dd>
-<dt>util <a class="reference internal" href="#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides some general use methods for creating grids,</dt>
+<dt>util <a class="reference internal" href="overview.html#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides some general use methods for creating grids,</dt>
 <dd>checking/fixing dimensions, and globalizing arrays.</dd>
 </dl>
 <p>calculateP <a class="reference internal" href="overview.html#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides tools to approximate probabilities.</p>
@@ -2242,23 +2295,22 @@ measure-theoretic. It is named for the developers of the key algorithm in
 <dd>derivatives and optimally choosing quantities of interest.</dd>
 <dt>postProcess <a class="reference internal" href="overview.html#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal"><span class="pre">postProcess</span></code></a> provides plotting tools and tools to sort</dt>
 <dd>samples by probabilities.</dd>
-<dt>sample <a class="reference internal" href="#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal"><span class="pre">sample</span></code></a> provides data structures to store sets of samples and</dt>
+<dt>sample <a class="reference internal" href="overview.html#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal"><span class="pre">sample</span></code></a> provides data structures to store sets of samples and</dt>
 <dd>their associated arrays.</dd>
 </dl>
 </div>
 </div>
 
 
-           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="bet.calculateP.html" class="btn btn-neutral float-right" title="bet.calculateP package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="bet.calculateP.html" class="btn btn-neutral float-right" title="bet.calculateP package">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="modules.html" class="btn btn-neutral" title="bet" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="modules.html" class="btn btn-neutral" title="bet"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -2268,14 +2320,13 @@ measure-theoretic. It is named for the developers of the key algorithm in
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 27, 2016.
-
+      Last updated on Jun 29, 2016.
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
-
         </div>
       </div>
 
