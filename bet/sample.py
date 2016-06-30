@@ -1354,7 +1354,7 @@ class rectangle_sample_set(sample_set_base):
 
         .. seealso::
 
-        :meth:`scipy.spatial.KDTree.query`
+            :meth:`scipy.spatial.KDTree.query`
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
@@ -1520,7 +1520,7 @@ class ball_sample_set(sample_set_base):
 
         .. seealso::
 
-        :meth:`scipy.spatial.KDTree.query`
+            :meth:`scipy.spatial.KDTree.query`
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
@@ -1567,7 +1567,7 @@ class cartesian_sample_set(rectangle_sample_set):
 
         .. seealso::
 
-        :meth:`bet.sample.rectangle_sample_set`
+            :meth:`bet.sample.rectangle_sample_set`
 
     """
     def setup(self, xi):
