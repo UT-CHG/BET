@@ -1672,7 +1672,7 @@ class discretization(object):
         """
         if self._output_sample_set._values_local is None:
             self._output_sample_set.global_to_local()
-            (_, self._io_ptr_local) = self._output_probability_set.query(\
+        (_, self._io_ptr_local) = self._output_probability_set.query(\
                 self._output_sample_set._values_local)
                                                             
         if globalize:
@@ -1712,7 +1712,7 @@ class discretization(object):
         """
         if self._emulated_input_sample_set._values_local is None:
             self._emulated_input_sample_set.global_to_local()
-            (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
+        (_, self._emulated_ii_ptr_local) = self._input_sample_set.query(\
                 self._emulated_input_sample_set._values_local)
         if globalize:
             self._emulated_ii_ptr = util.get_global_values\
@@ -1752,7 +1752,7 @@ class discretization(object):
         """
         if self._emulated_output_sample_set._values_local is None:
             self._emulated_output_sample_set.global_to_local()
-            (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
+        (_, self._emulated_oo_ptr_local) = self._output_probability_set.query(\
                 self._emulated_output_sample_set._values_local)
                                                                 
         if globalize:

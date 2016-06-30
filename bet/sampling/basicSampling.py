@@ -129,7 +129,9 @@ def random_sample_set(sample_type, input_obj, num_samples,
         input_values = input_values * lhs(dim,
                 num_samples, criterion)
     elif sample_type == "random" or "r":
-        input_values = input_values * np.random.random(input_values.shape) 
+        if comm.rank == 0:
+            input_values = input_values * np.random.random(input_values.shape)
+        input_values = comm.bcast(input_values)
     input_values = input_values + input_sample_set._left
     
     input_sample_set.set_values_local(np.array_split(input_values,
