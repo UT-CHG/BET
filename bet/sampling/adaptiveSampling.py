@@ -470,8 +470,8 @@ class sampler(bsam.sampler):
 
         # collect everything
         disc._input_sample_set.update_bounds_local() 
-        disc._input_sample_set.local_to_global()
-        disc._output_sample_set.local_to_global()
+        #disc._input_sample_set.local_to_global()
+        #disc._output_sample_set.local_to_global()
 
         MYall_step_ratios = np.copy(all_step_ratios) 
         # ``all_step_ratios`` is np.ndarray of shape (num_chains,
@@ -486,7 +486,7 @@ class sampler(bsam.sampler):
         mdat['kern_old'] = util.get_global_values(kern_old,
                 shape=(self.num_chains,))
         if comm.rank == 0:
-            super(sampler, self).save(mdat, savefile, disc)
+            super(sampler, self).save(mdat, savefile, disc, globalize=True)
 
         return (disc, all_step_ratios)
         

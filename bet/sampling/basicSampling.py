@@ -250,18 +250,22 @@ class sampler(object):
 
         self.lb_model = lb_model
 
-    def save(self, mdict, save_file, discretization=None):
+    def save(self, mdict, save_file, discretization=None, globalize=False):
         """
         Save matrices to a ``*.mat`` file for use by ``MATLAB BET`` code and
         :meth:`~bet.basicSampling.loadmat`
 
-        :param dict mdict: dictonary of sampling data and sampler parameters
+        :param dict mdict: dictonary of sampler parameters
         :param string save_file: file name
+        :param discretization: input and output from sampling
+        :type discretization: :class:`bet.sample.discretization`
+        :param bool globalize: Makes local variables global. 
 
         """
         sio.savemat(save_file, mdict, do_compression=True)
         if discretization is not None:
-            sample.save_discretization(discretization, save_file)
+            sample.save_discretization(discretization, save_file,
+                    globalize=globalize)
 
     def update_mdict(self, mdict):
         """
@@ -296,8 +300,7 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool globalize: Makes local variables global. Only applies if
-            ``parallel==True``.
+        :param bool globalize: Makes local variables global. 
         
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_set` object which contains
@@ -376,11 +379,10 @@ class sampler(object):
         discretization = sample.discretization(input_sample_set,
                 output_sample_set)
 
-        mdat = dict()
-        self.update_mdict(mdat)
+        self.update_mdict(dict())
 
         if savefile is not None:
-            self.save(mdat, savefile, discretization)
+            self.save(mdat, savefile, discretization, globalize=globalize)
         comm.barrier()
         return discretization
 
