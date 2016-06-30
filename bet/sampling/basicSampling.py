@@ -71,7 +71,7 @@ def loadmat(save_file, disc_name=None, model=None):
     return (loaded_sampler, discretization)
 
 def random_sample_set(sample_type, input_obj, num_samples,
-        criterion='center', globalize=False):
+        criterion='center', globalize=True):
     """
     Sampling algorithm with three basic options
 
@@ -131,10 +131,12 @@ def random_sample_set(sample_type, input_obj, num_samples,
     elif sample_type == "random" or "r":
         input_values = input_values * np.random.random(input_values.shape) 
     input_values = input_values + input_sample_set._left
+    
     input_sample_set.set_values_local(np.array_split(input_values,
         comm.size)[comm.rank])
+
     if globalize:
-        input_sample_set.global_to_local()
+        input_sample_set.local_to_global()
     return input_sample_set
 
 def regular_sample_set(input_obj, num_samples_per_dim=1):
@@ -185,8 +187,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     else:
         input_domain = input_sample_set.get_domain()
     # update the bounds based on the number of samples
-    input_sample_set.update_bounds(num_samples)
-    input_values = np.copy(input_sample_set._width)
+    input_values = np.zeros((num_samples, dim))
 
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
@@ -331,7 +332,7 @@ class sampler(object):
         return regular_sample_set(input_obj, num_samples_per_dim)
         
     def compute_QoI_and_create_discretization(self, input_sample_set,
-            savefile=None, globalize=False):
+            savefile=None, globalize=True):
         """
         Samples the model at ``input_sample_set`` and saves the results.
 
@@ -383,7 +384,7 @@ class sampler(object):
 
     def create_random_discretization(self, sample_type, input_obj,
             savefile=None, num_samples=None, criterion='center',
-            globalize=False):
+            globalize=True):
         """
         Sampling algorithm with three basic options
 

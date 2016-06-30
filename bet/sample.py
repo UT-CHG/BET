@@ -653,6 +653,7 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
+
     def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
@@ -933,11 +934,7 @@ class voronoi_sample_set(sample_set_base):
             self.set_kdtree()
         else:
             self.check_num()
-        
-        x = util.fix_dimensions_data(x)
-        if x.shape[1] != self._dim:
-            raise dim_not_matching("dimension of values incorrect")
-
+       
         (dist, ptr) = self._kdtree.query(x, p=self._p_norm, k=k)
         return (dist, ptr)
 
