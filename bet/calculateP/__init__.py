@@ -15,4 +15,5 @@ probability measure :math:`P_{\Lambda}`.
 * :mod:`~bet.calculateP.indicatorFunctions` provides methods for creating
     indicator functions for use by various other classes.
 """
-__all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram', 'indicatorFunctions']
+__all__ = ['calculateP', 'simpleFunP', 'voronoiHistogram', 'indicatorFunctions',
+           'calculateError']
