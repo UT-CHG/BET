@@ -2,7 +2,7 @@
 
 # Steve Mattis 03/23/2016
 
-import unittest, os
+import unittest, os, glob
 import numpy as np
 import numpy.testing as nptest
 import bet
@@ -50,9 +50,8 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
-        if comm.rank == 0:
-            sample.save_sample_set(self.sam_set, os.path.join(local_path,
-                'testfile.mat'), "TEST", True)
+        sample.save_sample_set(self.sam_set, os.path.join(local_path,
+            'testfile.mat'), "TEST", True)
         comm.barrier()
 
         loaded_set = sample.load_sample_set(os.path.join(local_path, 
@@ -75,7 +74,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_copy(self):
         """
-        Check save_sample_set and load_sample_set.
+        Check copy.
         """
         prob = 1.0/float(self.num)*np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
@@ -465,10 +464,10 @@ class Test_discretization_simple(unittest.TestCase):
         """
         Test saving and loading of discretization
         """
-        if comm.rank == 0:
-            sample.save_discretization(self.disc, os.path.join(local_path, 
-                'testfile.mat'), "TEST", True)
+        sample.save_discretization(self.disc, os.path.join(local_path,
+            'testfile.mat'), "TEST", True)
         comm.barrier()
+        print glob.glob('*.mat')
         loaded_disc = sample.load_discretization(os.path.join(local_path, 
             'testfile.mat'), "TEST")
 
@@ -936,9 +935,8 @@ class Test_rectangle_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
-        if comm.rank == 0:
-            sample.save_sample_set(self.sam_set, os.path.join(local_path,
-                'testfile.mat'), "TEST", True)
+        sample.save_sample_set(self.sam_set, os.path.join(local_path,
+            'testfile.mat'), "TEST", True)
         comm.barrier()
 
         loaded_set = sample.load_sample_set(os.path.join(local_path, 
@@ -962,7 +960,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
 
     def test_copy(self):
         """
-        Check save_sample_set and load_sample_set.
+        Check copy.
         """
         prob = 1.0/float(self.num)*np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
@@ -1033,9 +1031,8 @@ class Test_ball_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
-        if comm.rank == 0:
-            sample.save_sample_set(self.sam_set, os.path.join(local_path,
-                'testfile.mat'), "TEST", True)
+        sample.save_sample_set(self.sam_set, os.path.join(local_path,
+            'testfile.mat'), "TEST", True)
         comm.barrier()
 
         loaded_set = sample.load_sample_set(os.path.join(local_path, 
@@ -1059,7 +1056,7 @@ class Test_ball_sample_set(unittest.TestCase):
 
     def test_copy(self):
         """
-        Check save_sample_set and load_sample_set.
+        Check copy.
         """
         prob = 1.0/float(self.num)*np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
@@ -1129,9 +1126,8 @@ class Test_cartesian_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
-        if comm.rank == 0:
-            sample.save_sample_set(self.sam_set, os.path.join(local_path,
-                'testfile.mat'), "TEST", True)
+        sample.save_sample_set(self.sam_set, os.path.join(local_path,
+            'testfile.mat'), "TEST", True)
         comm.barrier()
 
         loaded_set = sample.load_sample_set(os.path.join(local_path, 
@@ -1155,7 +1151,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
 
     def test_copy(self):
         """
-        Check save_sample_set and load_sample_set.
+        Check copy.
         """
         prob = 1.0/float(self.num)*np.ones((self.num,))
         self.sam_set.set_probabilities(prob)

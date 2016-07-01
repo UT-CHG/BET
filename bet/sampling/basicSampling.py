@@ -263,7 +263,7 @@ class sampler(object):
 
         """
 
-        if comm.rank > 1 and not globalize:
+        if comm.size > 1 and not globalize:
             local_save_file = os.path.join(os.path.dirname(save_file),
                     "proc{}_{}".format(comm.rank, os.path.basename(save_file)))
         else:

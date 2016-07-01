@@ -236,8 +236,9 @@ class Test_adaptive_sampler(unittest.TestCase):
                 os.remove(f+".mat")
         proc_savefiles = glob.glob("p{}*.mat".format(comm.rank))
         proc_savefiles.extend(glob.glob("proc{}*.mat".format(comm.rank)))
-        for pf in proc_savefiles:
-            if os.path.exists(pf):
+        if comm.rank == 0:
+            for pf in proc_savefiles:
+                if os.path.exists(pf):
                 os.remove(pf)
 
     def test_update(self):
