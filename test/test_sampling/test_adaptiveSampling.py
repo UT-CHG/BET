@@ -239,7 +239,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         if comm.rank == 0:
             for pf in proc_savefiles:
                 if os.path.exists(pf):
-                os.remove(pf)
+                    os.remove(pf)
 
     def test_update(self):
         """

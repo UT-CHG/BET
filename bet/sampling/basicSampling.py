@@ -11,6 +11,7 @@ assume the measure on both spaces in Lebesgue.
 """
 
 import collections
+import os
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
