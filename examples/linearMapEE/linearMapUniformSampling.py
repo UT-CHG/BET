@@ -129,6 +129,7 @@ emulated_inputs = bsam.random_sample_set('r',
                                          my_discretization._input_sample_set._domain,
                                          num_samples = 10001,
                                          globalize=True)
+my_discretization._output_sample_set._error_estimates = 0.01 * np.ones(my_discretization._output_sample_set._values.shape)
 # calculate probablities
 calculateP.prob(my_discretization)
 
@@ -144,3 +145,6 @@ s_set.setup(maxes=[[0.75, 0.75, 0.75]], mins=[[0.25, 0.25, 0.25]])
                                            emulated_set=emulated_inputs)
 
 print (h,l)
+me = calculateError.model_error(my_discretization)
+e = me.calculate_for_contour_events()
+print e
