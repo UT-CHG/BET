@@ -75,6 +75,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         sio.savemat(file_name, mdat)
     elif not globalize:
         sio.savemat(local_file_name, mdat)
+    comm.barrier()
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -868,6 +869,7 @@ def save_discretization(save_disc, file_name, discretization_name=None,
             sio.savemat(local_file_name, mdat)
         else:
             sio.savemat(local_file_name, new_mdat)
+    comm.barrier()
 
 def load_discretization(file_name, discretization_name=None):
     """
