@@ -272,8 +272,11 @@ class sampler(object):
                     "proc{}_{}".format(comm.rank, os.path.basename(save_file)))
         else:
             local_save_file = save_file
-
-        sio.savemat(local_save_file, mdict, do_compression=True)
+        
+        if globalize and comm.rank == 0: 
+            sio.savemat(local_save_file, mdict, do_compression=True)
+        elif not globalize:
+            sio.savemat(local_save_file, mdict, do_compression=True)
         comm.barrier()
 
         if discretization is not None:

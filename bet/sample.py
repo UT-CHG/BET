@@ -55,6 +55,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         save_set.local_to_global()
 
     comm.barrier()
+
     if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
         mdat = sio.loadmat(local_file_name)
     else:
@@ -846,7 +847,6 @@ def save_discretization(save_disc, file_name, discretization_name=None,
             if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
                     discretization_name+attrname, globalize)
-                comm.barrier()
     
     for attrname in discretization.vector_names:
         curr_attr = getattr(save_disc, attrname)
@@ -863,7 +863,7 @@ def save_discretization(save_disc, file_name, discretization_name=None,
             sio.savemat(file_name, mdat)
         else:
             sio.savemat(file_name, new_mdat)
-    else:
+    elif not globalize:
         if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
             mdat = sio.loadmat(local_file_name)
             for i, v in new_mdat.iteritems():
