@@ -232,8 +232,7 @@ class sampler(bsam.sampler):
 
         .. todo::
 
-            Test HOTSTART from parallel files using different and same num proc
-       
+            Test HOTSTART from parallel files using different num proc
 
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)

@@ -18,8 +18,9 @@ import bet.sample
 from bet.sample import sample_set
 from bet.sample import discretization as disc
 
-local_path = os.path.join(os.path.dirname(bet.__file__),
-    "../test/test_sampling")
+#local_path = os.path.join(os.path.dirname(bet.__file__),
+#    "../test/test_sampling")
+local_path = "test/test_sampling"
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 def test_loadmat_init():
@@ -84,9 +85,9 @@ def test_loadmat_init():
     assert loaded_sampler2.num_chains == num_chains2
     nptest.assert_array_equal(np.repeat(range(num_chains2), chain_length, 0),
             loaded_sampler2.sample_batch_no)
-    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+    if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile1.mat')):
         os.remove(os.path.join(local_path, 'testfile1.mat'))
-    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+    if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile2.mat')):
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_samples(QoI_range, sampler, input_domain,
@@ -236,10 +237,9 @@ class Test_adaptive_sampler(unittest.TestCase):
                 os.remove(f+".mat")
         proc_savefiles = glob.glob("p{}*.mat".format(comm.rank))
         proc_savefiles.extend(glob.glob("proc{}*.mat".format(comm.rank)))
-        if comm.rank == 0:
-            for pf in proc_savefiles:
-                if os.path.exists(pf):
-                    os.remove(pf)
+        for pf in proc_savefiles:
+            if os.path.exists(pf):
+                os.remove(pf)
 
     def test_update(self):
         """
