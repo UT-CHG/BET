@@ -283,8 +283,8 @@ class sampler(bsam.sampler):
             comm.Barrier()
             
             # populate local values 
-            disc_old._input_sample_set.global_to_local()
-            disc_old._output_sample_set.global_to_local()
+            #disc_old._input_sample_set.global_to_local()
+            #disc_old._output_sample_set.global_to_local()
             input_old = disc_old._input_sample_set.copy()
             
             disc = disc_old.copy()

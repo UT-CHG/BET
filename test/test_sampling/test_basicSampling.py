@@ -63,9 +63,9 @@ def test_loadmat():
     assert discretization2._output_sample_set is None
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
-    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+    if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile1.mat')):
         os.remove(os.path.join(local_path, 'testfile1.mat'))
-    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+    if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile2.mat')):
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_compute_QoI_and_create_discretization(model, sampler,
@@ -86,6 +86,8 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     # evaluate the model at the samples
     my_discretization = sampler.compute_QoI_and_create_discretization(
         input_sample_set, savefile) 
+    #comm.barrier()
+
     my_num = my_discretization.check_nums() 
 
     # compare the samples
@@ -99,17 +101,14 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     assert my_num == sampler.num_samples
     
     # did the file get correctly saved?
-    comm.barrier()
-    if comm.rank == 0:
-        print "ONE"
-        saved_disc = bet.sample.load_discretization(savefile)
-        # compare the samples
-        nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
-            saved_disc._input_sample_set.get_values())
-        # compare the data
-        nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
-           saved_disc._output_sample_set.get_values())
-    comm.Barrier()
+    saved_disc = bet.sample.load_discretization(savefile)
+    #comm.barrier()
+    # compare the samples
+    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
+        saved_disc._input_sample_set.get_values())
+    # compare the data
+    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
+       saved_disc._output_sample_set.get_values())
 
 def verify_create_random_discretization(model, sampler, sample_type, input_domain,
         num_samples, savefile):
@@ -144,10 +143,10 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
 
     # reset the random seed
     np.random.seed(1)
-
+    comm.barrier()
     # create the random discretization using a specified input domain
     my_discretization = sampler.create_random_discretization(sample_type,
-            input_domain, savefile, num_samples=num_samples)
+            input_domain, savefile, num_samples=num_samples, globalize=True)
     my_num = my_discretization.check_nums() 
     
     # make sure that the samples are within the boundaries
@@ -165,25 +164,25 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     assert my_num == sampler.num_samples
     
     # did the file get correctly saved?
-    if comm.rank == 0:
-        saved_disc = bet.sample.load_discretization(savefile)
-        
-        # compare the samples
-        nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
-            saved_disc._input_sample_set.get_values())
-        # compare the data
-        nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
-           saved_disc._output_sample_set.get_values())
-    #comm.Barrier()
+    saved_disc = bet.sample.load_discretization(savefile)
+    
+    # compare the samples
+    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
+        saved_disc._input_sample_set.get_values())
+    # compare the data
+    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
+       saved_disc._output_sample_set.get_values())
 
     # reset the random seed
     np.random.seed(1)
 
     my_sample_set = sample_set(input_domain.shape[0])
     my_sample_set.set_domain(input_domain)
+    comm.barrier()
     # create the random discretization using an initialized sample_set
     my_discretization = sampler.create_random_discretization(sample_type,
-                my_sample_set, savefile, num_samples=num_samples)
+                my_sample_set, savefile, num_samples=num_samples,
+                globalize=True)
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries
@@ -221,9 +220,11 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
 
     # reset random seed
     np.random.seed(1)
+    comm.barrier()
     # create the random discretization using a specified input_dim
     my_discretization = sampler.create_random_discretization(sample_type,
-                    my_dim, savefile, num_samples=num_samples)
+            my_dim, savefile, num_samples=num_samples, globalize=True)
+    comm.barrier()
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries

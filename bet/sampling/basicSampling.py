@@ -141,6 +141,8 @@ def random_sample_set(sample_type, input_obj, num_samples,
 
     if globalize:
         input_sample_set.local_to_global()
+    else:
+        input_sample_set._values = None
     return input_sample_set
 
 def regular_sample_set(input_obj, num_samples_per_dim=1):
@@ -272,6 +274,8 @@ class sampler(object):
             local_save_file = save_file
 
         sio.savemat(local_save_file, mdict, do_compression=True)
+        comm.barrier()
+
         if discretization is not None:
             sample.save_discretization(discretization, save_file,
                     globalize=globalize)
@@ -384,9 +388,13 @@ class sampler(object):
         if globalize:
             input_sample_set.local_to_global()
             output_sample_set.local_to_global()
-        
+        else:
+            input_sample_set._values = None
+        comm.barrier()
+
         discretization = sample.discretization(input_sample_set,
                 output_sample_set)
+        comm.barrier()
 
         mdat = dict()
         self.update_mdict(mdat)

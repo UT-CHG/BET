@@ -54,6 +54,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     if globalize and save_set._values_local is not None:
         save_set.local_to_global()
 
+    comm.barrier()
     if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
         mdat = sio.loadmat(local_file_name)
     else:
@@ -851,7 +852,9 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
-   
+  
+    comm.barrier()
+
     if globalize and comm.rank == 0:
         if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
             mdat = sio.loadmat(file_name)
@@ -1682,8 +1685,10 @@ class discretization(object):
         """
         out_num = self._output_sample_set.check_num()
         in_num = self._input_sample_set.check_num()
-        if out_num != in_num:
-            raise length_not_matching("input and output lengths do not match")
+        if out_num != in_num and self._output_sample_set._values is not None \
+                and self._input_sample_set._values is not None: 
+            raise length_not_matching("input {} and output {} lengths do not\
+                    match".format(in_num, out_num))
         else:
             return in_num
 
