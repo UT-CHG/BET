@@ -464,7 +464,7 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['kern_old'] = kern_old
             
-            super(sampler, self).save(mdat, savefile, disc)
+            super(sampler, self).save(mdat, savefile, disc, globalize=False)
             input_old = input_new
 
         # collect everything
