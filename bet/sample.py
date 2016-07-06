@@ -755,6 +755,7 @@ class sample_set_base(object):
             if current_array is not None:
                 setattr(self, array_name + "_local",
                         np.array_split(current_array, comm.size)[comm.rank])
+        comm.barrier()
 
     def copy(self):
         """

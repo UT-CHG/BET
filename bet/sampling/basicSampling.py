@@ -137,6 +137,7 @@ def random_sample_set(sample_type, input_obj, num_samples,
     
     input_sample_set.set_values_local(np.array_split(input_values,
         comm.size)[comm.rank])
+    comm.barrier()
 
     if globalize:
         input_sample_set.local_to_global()

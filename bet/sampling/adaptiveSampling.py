@@ -278,7 +278,7 @@ class sampler(bsam.sampler):
             # not necessarily random). Call these Samples_old.
             disc_old = super(sampler, self).create_random_discretization(
                     initial_sample_type, input_obj, savefile,
-                    self.num_chains, criterion)
+                    self.num_chains, criterion, globalize=False)
             self.num_samples = self.chain_length * self.num_chains
             comm.Barrier()
             

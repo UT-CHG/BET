@@ -116,23 +116,31 @@ def verify_samples(QoI_range, sampler, input_domain,
         
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
-    
-    if not hot_start:
-        # run generalized chains
-        (my_discretization, all_step_ratios) = sampler.generalized_chains(\
-                input_domain, t_set, kernel_rD, savefile, initial_sample_type)
+    print "HERE", comm.rank
+    if comm.rank == 0:
+        print "dim", input_domain.shape
+    #if not hot_start:
+    # run generalized chains
+    (my_discretization, all_step_ratios) = sampler.generalized_chains(\
+            input_domain, t_set, kernel_rD, savefile, initial_sample_type)
+    print "COLD", comm.rank
+    """
     else:
         # cold start
         sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
                 sampler.lb_model)
         (my_discretization, all_step_ratios) = sampler1.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
+        print "COLD then", comm.rank
         comm.barrier()
         # hot start 
         (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type,
                 hot_start=hot_start)
-
+        print "HOT", comm.rank
+    """
+    comm.barrier()
+    print "OVER HERE", comm.rank
     # check dimensions of input and output
     assert my_discretization.check_nums()
 
