@@ -50,14 +50,20 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = True
         sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            'testfile.mat'), "TEST", True)
+            file_name), "TEST", globalize)
         comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
 
-        loaded_set = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
-        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'))
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
 
@@ -69,8 +75,11 @@ class Test_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
+
+        if comm.rank == 1 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
 
     def test_copy(self):
         """
@@ -464,12 +473,17 @@ class Test_discretization_simple(unittest.TestCase):
         """
         Test saving and loading of discretization
         """
-        sample.save_discretization(self.disc, os.path.join(local_path,
-            'testfile.mat'), "TEST", True)
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = True
+        sample.save_discretization(self.disc, file_name, "TEST", globalize)
         comm.barrier()
-        print glob.glob('*.mat')
-        loaded_disc = sample.load_discretization(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        loaded_disc = sample.load_discretization(local_file_name, "TEST")
 
         for attrname in sample.discretization.vector_names:
             curr_attr = getattr(loaded_disc, attrname)
@@ -487,8 +501,11 @@ class Test_discretization_simple(unittest.TestCase):
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
         comm.barrier()
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
+
+        if comm.rank == 1 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
 
     def Test_copy_discretization(self):
         """
@@ -935,14 +952,20 @@ class Test_rectangle_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = True
         sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            'testfile.mat'), "TEST", True)
+            file_name), "TEST", globalize)
         comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
 
-        loaded_set = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
-        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'))
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
 
@@ -954,9 +977,10 @@ class Test_rectangle_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
-
+        if comm.rank == 1 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
 
     def test_copy(self):
         """
@@ -1028,17 +1052,21 @@ class Test_ball_sample_set(unittest.TestCase):
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
 
+        globalize = True
+        file_name = os.path.join(local_path, 'testfile.mat')
         sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            'testfile.mat'), "TEST", True)
+            file_name), "TEST", globalize)
         comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
 
-        loaded_set = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
-        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'))
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
 
@@ -1050,8 +1078,10 @@ class Test_ball_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
+        if comm.rank == 1 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
 
 
     def test_copy(self):
@@ -1126,14 +1156,20 @@ class Test_cartesian_sample_set(unittest.TestCase):
         self.sam_set.update_bounds()
         self.sam_set.update_bounds_local()
 
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = True
         sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            'testfile.mat'), "TEST", True)
+            file_name), "TEST", globalize)
         comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
 
-        loaded_set = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'), "TEST")
-        loaded_set_none = sample.load_sample_set(os.path.join(local_path, 
-            'testfile.mat'))
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
 
@@ -1145,9 +1181,10 @@ class Test_cartesian_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile.mat')):
-            os.remove(os.path.join(local_path, 'testfile.mat'))
-
+        if comm.rank == 1 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
 
     def test_copy(self):
         """

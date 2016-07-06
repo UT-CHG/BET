@@ -858,7 +858,6 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     if globalize and comm.rank == 0:
         if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
             mdat = sio.loadmat(file_name)
-            comm.barrier()
             for i, v in new_mdat.iteritems():
                 mdat[i] = v
             sio.savemat(file_name, mdat)
@@ -867,7 +866,6 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     else:
         if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
             mdat = sio.loadmat(local_file_name)
-            comm.barrier()
             for i, v in new_mdat.iteritems():
                 mdat[i] = v
             sio.savemat(local_file_name, mdat)
