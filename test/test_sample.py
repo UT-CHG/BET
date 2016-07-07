@@ -949,8 +949,6 @@ class Test_rectangle_sample_set(unittest.TestCase):
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
 
         file_name = os.path.join(local_path, 'testfile.mat')
         globalize = True
@@ -996,8 +994,6 @@ class Test_rectangle_sample_set(unittest.TestCase):
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
@@ -1098,8 +1094,6 @@ class Test_ball_sample_set(unittest.TestCase):
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
@@ -1153,8 +1147,6 @@ class Test_cartesian_sample_set(unittest.TestCase):
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
 
         file_name = os.path.join(local_path, 'testfile.mat')
         globalize = True
@@ -1200,8 +1192,6 @@ class Test_cartesian_sample_set(unittest.TestCase):
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
-        self.sam_set.update_bounds()
-        self.sam_set.update_bounds_local()
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
