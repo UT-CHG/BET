@@ -52,8 +52,7 @@ class Test_sample_set(unittest.TestCase):
 
         file_name = os.path.join(local_path, 'testfile.mat')
         globalize = True
-        sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            file_name), "TEST", globalize)
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
         comm.barrier()
         
         if comm.size > 1 and not globalize:
@@ -76,7 +75,7 @@ class Test_sample_set(unittest.TestCase):
                         curr_attr)
 
 
-        if comm.rank == 1 and globalize:
+        if comm.rank == 0 and globalize:
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
@@ -502,7 +501,7 @@ class Test_discretization_simple(unittest.TestCase):
                                 curr_set, set_attrname))
         comm.barrier()
 
-        if comm.rank == 1 and globalize:
+        if comm.rank == 0 and globalize:
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
@@ -952,8 +951,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
 
         file_name = os.path.join(local_path, 'testfile.mat')
         globalize = True
-        sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            file_name), "TEST", globalize)
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
         comm.barrier()
         
         if comm.size > 1 and not globalize:
@@ -975,7 +973,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 1 and globalize:
+        if comm.rank == 0 and globalize:
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
@@ -1051,16 +1049,18 @@ class Test_ball_sample_set(unittest.TestCase):
 
         globalize = True
         file_name = os.path.join(local_path, 'testfile.mat')
-        sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            file_name), "TEST", globalize)
-        comm.barrier()
-        
         if comm.size > 1 and not globalize:
             local_file_name = os.path.os.path.join(os.path.dirname(file_name),
                 "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
         else:
             local_file_name = file_name
 
+        print os.path.exists(local_file_name)
+        print self.sam_set._radii
+
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
+        comm.barrier()
+        
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
         loaded_set_none = sample.load_sample_set(local_file_name)
 
@@ -1074,7 +1074,7 @@ class Test_ball_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 1 and globalize:
+        if comm.rank == 0 and globalize:
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
@@ -1148,10 +1148,19 @@ class Test_cartesian_sample_set(unittest.TestCase):
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
 
-        file_name = os.path.join(local_path, 'testfile.mat')
+
         globalize = True
-        sample.save_sample_set(self.sam_set, os.path.join(local_path,
-            file_name), "TEST", globalize)
+        file_name = os.path.join(local_path, 'testfile.mat')
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        print os.path.exists(local_file_name)
+        print self.sam_set._radii
+
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
         comm.barrier()
         
         if comm.size > 1 and not globalize:
@@ -1173,7 +1182,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
-        if comm.rank == 1 and globalize:
+        if comm.rank == 0 and globalize:
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)

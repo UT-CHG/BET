@@ -24,8 +24,6 @@ instead of ::
     
     $ python YOUR_SCRIPT.py
 
-You might need to make sure your globalize your arrays or make sure to choose
-the ``parallel`` flag on some functions to ensure correct execution.
 
 Example scripts are availiable in ``examples/parallel_and_serial_sampling``
 which demonstrate different modes of parallel and serial sampling. Also the

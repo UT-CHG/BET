@@ -109,19 +109,15 @@ def load_sample_set(file_name, sample_set_name=None):
                 format(sample_set_name))
         return None
 
-    for attrname in sample_set_base.vector_names:
+    for attrname in loaded_set.vector_names:
         if attrname is not '_dim':
             if sample_set_name+attrname in mdat.keys():
                 setattr(loaded_set, attrname,
                     np.squeeze(mdat[sample_set_name+attrname]))
-    for attrname in sample_set_base.all_ndarray_names:
+    for attrname in loaded_set.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     
-    # localize arrays if necessary
-    if sample_set_name+"_values_local" in mdat.keys():
-        loaded_set.global_to_local()
-
     return loaded_set
 
 def load_sample_set_parallel(file_name, sample_set_name=None):
@@ -339,8 +335,8 @@ class sample_set_base(object):
                     first_array = array_name
                 else:
                     if num != current_array.shape[0]:
-                        raise length_not_matching("length of {} inconsistent \
-                                with {}".format(array_name,
+                        errortxt = "length of {} inconsistent with {}"
+                        raise length_not_matching(errortxt.format(array_name,
                                                   first_array)) 
         if self._values is not None and self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
