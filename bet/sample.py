@@ -8,7 +8,7 @@ This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.dim_not_matching`
 """
 
-import os, logging
+import os, logging, glob
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -55,6 +55,8 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         save_set.local_to_global()
 
     comm.barrier()
+    print local_file_name, globalize
+    print glob.glob('*.mat')
 
     if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
         mdat = sio.loadmat(local_file_name)
