@@ -267,6 +267,10 @@ class model_error(object):
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_input_sample_set(emulated_set)
             disc_new.set_emulated_ii_ptr()
+            disc_new_set = samp.discretization(input_sample_set = s_set,
+                                               output_sample_set = s_set,
+                                               emulated_input_sample_set = emulated_set)
+            disc_new_set.set_emulated_ii_ptr()
         elif self.disc._emulated_input_sample_set is not None:
             disc = self.disc
             if disc._emulated_ii_ptr is None:
@@ -276,6 +280,10 @@ class model_error(object):
             #                                emulated_input_sample_set = self.disc._emulated_input_sample_set)
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_ii_ptr()
+            disc_new_set = samp.discretization(input_sample_set = s_set,
+                                               output_sample_set = s_set,
+                                               emulated_input_sample_set = disc._emulated_input_sample_set)
+            disc_new_set.set_emulated_ii_ptr()
         else:
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set._values)
@@ -287,6 +295,10 @@ class model_error(object):
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_input_sample_set(disc._input_sample_set._values)
             disc_new.set_emulated_ii_ptr()
+            disc_new_set = samp.discretization(input_sample_set=s_set,
+                                               output_sample_set=s_set,
+                                               emulated_input_sample_set=disc._input_sample_set._values)
+            disc_new_set.set_emulated_ii_ptr()
         # lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
         # l_tree1 = spatial.KDTree(self.samples)
         # l_tree2 = spatial.KDTree(samples_A)
@@ -294,15 +306,18 @@ class model_error(object):
         # ptr2 = l_tree2.query(lambda_emulate)[1]
         ptr1 = disc._emulated_ii_ptr_local
         ptr2 = disc_new._emulated_ii_ptr_local
+        ptr3 = disc_new_set._emulated_ii_ptr_local
                 
 
-        in_A = id_A[ptr2]
+        in_A = marker[ptr3]
         er_est = 0.0
-        for i in range(self.rho_D_M.shape[0]):
-            if self.rho_D_M[i] > 0.0:
-                indices1 = np.equal(self.io_ptr1,i)
+        ops_num = self.disc._output_probability_set.check_num()
+
+        for i in range(ops_num):
+            if self.disc._output_probability_set._probabilities[i] > 0.0:
+                indices1 = np.equal(self.disc._io_ptr_local ,i)
                 in_Ai1 = indices1[ptr1]
-                indices2 = np.equal(self.io_ptr2,i)
+                indices2 = np.equal(self.disc_new._io_ptr_local ,i)
                 in_Ai2 = indices2[ptr1]
                 JiA_local = float(np.sum(np.logical_and(in_A,in_Ai1)))
                 JiA = comm.allreduce(JiA_local, op=MPI.SUM)
@@ -312,6 +327,6 @@ class model_error(object):
                 JiAe = comm.allreduce(JiAe_local, op=MPI.SUM)
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
-                er_est += self.rho_D_M[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+                er_est += self.disc._output_probability_set._probabilities[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
 
         return er_est
