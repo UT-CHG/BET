@@ -273,9 +273,7 @@ class sampler(object):
         else:
             local_save_file = save_file
        
-        if globalize and comm.rank == 0:
-            sio.savemat(local_save_file, mdict)
-        elif not globalize:
+        if (globalize and comm.rank == 0) or not globalize:
             sio.savemat(local_save_file, mdict)
         comm.barrier()
         print comm.rank, sio.loadmat(local_save_file)
