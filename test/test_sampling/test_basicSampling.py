@@ -85,8 +85,8 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
 
     # evaluate the model at the sample
     print savefile, input_sample_set.get_dim()
-    my_discretization = sampler.compute_QoI_and_create_discretization(
-        input_sample_set, savefile) 
+    my_discretization = sampler.compute_QoI_and_create_discretization(\
+        input_sample_set, savefile, globalize=True) 
     #comm.barrier()
 
     my_num = my_discretization.check_nums() 
@@ -100,7 +100,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
 
     # did num_samples get updated?
     assert my_num == sampler.num_samples
-    
+   
     # did the file get correctly saved?
     saved_disc = bet.sample.load_discretization(savefile)
     #comm.barrier()
@@ -148,6 +148,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     # create the random discretization using a specified input domain
     my_discretization = sampler.create_random_discretization(sample_type,
             input_domain, savefile, num_samples=num_samples, globalize=True)
+    #comm.barrier()
     my_num = my_discretization.check_nums() 
     
     # make sure that the samples are within the boundaries
@@ -179,7 +180,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
 
     my_sample_set = sample_set(input_domain.shape[0])
     my_sample_set.set_domain(input_domain)
-    comm.barrier()
+    #comm.barrier()
     # create the random discretization using an initialized sample_set
     my_discretization = sampler.create_random_discretization(sample_type,
                 my_sample_set, savefile, num_samples=num_samples,
@@ -225,7 +226,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     # create the random discretization using a specified input_dim
     my_discretization = sampler.create_random_discretization(sample_type,
             my_dim, savefile, num_samples=num_samples, globalize=True)
-    comm.barrier()
+    #comm.barrier()
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries

@@ -278,6 +278,7 @@ class sampler(object):
         elif not globalize:
             sio.savemat(local_save_file, mdict)
         comm.barrier()
+        print comm.rank, sio.loadmat(local_save_file)
 
         if discretization is not None:
             sample.save_discretization(discretization, save_file,
