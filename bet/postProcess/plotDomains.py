@@ -427,7 +427,6 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     if dim_nums is None:
         dim_nums = 1 + np.array(range(sample_obj.get_values().shape[1]))
     # Create the labels based on the user selected parameter coordinates
-    print label_char, dim_nums
     xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
     ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
     savename = prefix+'samples_cs'

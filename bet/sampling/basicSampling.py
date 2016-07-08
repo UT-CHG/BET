@@ -12,6 +12,7 @@ assume the measure on both spaces in Lebesgue.
 
 import collections
 import os
+import warnings
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
@@ -182,7 +183,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     if not isinstance(num_samples_per_dim, collections.Iterable):
         num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
     if np.any(np.less_equal(num_samples_per_dim, 0)):
-        print 'Warning: num_samples_per_dim must be greater than 0'
+        warnings.warn('Warning: num_samples_per_dim must be greater than 0')
 
     num_samples = np.product(num_samples_per_dim)
 
@@ -276,7 +277,6 @@ class sampler(object):
         if (globalize and comm.rank == 0) or not globalize:
             sio.savemat(local_save_file, mdict)
         comm.barrier()
-        print comm.rank, sio.loadmat(local_save_file)
 
         if discretization is not None:
             sample.save_discretization(discretization, save_file,

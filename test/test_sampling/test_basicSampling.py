@@ -103,6 +103,8 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
    
     # did the file get correctly saved?
     saved_disc = bet.sample.load_discretization(savefile)
+    mdat = sio.loadmat(savefile)
+    print "HERE HERE", mdat, my_num
     #comm.barrier()
     # compare the samples
     nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),

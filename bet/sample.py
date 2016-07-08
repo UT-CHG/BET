@@ -60,9 +60,6 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     # create temporary dictionary
     new_mdat = dict()
 
-    print local_file_name, globalize
-    print glob.glob('*.mat')
-
     # store sample set in dictionary
     if sample_set_name is None:
         sample_set_name = 'default'
@@ -83,7 +80,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
                 os.path.exists(local_file_name+'.mat'):
             mdat = sio.loadmat(local_file_name)
             new_mdat.update(mdat)
-            sio.savemat(local_file_name, mdat)
+            sio.savemat(local_file_name, new_mdat)
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
@@ -870,7 +867,7 @@ def save_discretization(save_disc, file_name, discretization_name=None,
                 os.path.exists(local_file_name+'.mat'):
             mdat = sio.loadmat(local_file_name)
             new_mdat.update(mdat)
-            sio.savemat(local_file_name, mdat)
+            sio.savemat(local_file_name, new_mdat)
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
