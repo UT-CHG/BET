@@ -68,6 +68,20 @@ def test_loadmat():
     if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
+def test_save_sampler():
+    """
+
+    .. todo::
+        
+        Write test for :class:`bet.sampling.basicSampling.sampler.save`.
+
+    """
+    # create a discretization with full input and output
+    # save
+    # load
+    # verify
+    pass
+
 def verify_compute_QoI_and_create_discretization(model, sampler,
                                                  input_sample_set,
                                                  savefile):
