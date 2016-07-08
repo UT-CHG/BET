@@ -871,6 +871,25 @@ def save_discretization(save_disc, file_name, discretization_name=None,
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
 
+def load_discretization_parallel(file_name, discretization_name=None):
+    """
+    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
+    contains multiple :class:`~bet.sample.discretization` objects then
+    ``discretization_name`` is used to distinguish which between different
+    :class:`~bet.sample.discretization` objects.
+
+    :param string file_name: Name of the ``.mat`` file, no extension is
+        needed.
+    :param string discretization_name: String to prepend to attribute names when
+        saving multiple :class`bet.sample.discretization` objects to a single
+        ``.mat`` file
+
+    :rtype: :class:`~bet.sample.discretization`
+    :returns: the ``discretization`` that matches the ``discretization_name``
+    
+    """
+    raise NotImplementedError("This method is not yet implemented.")
+
 def load_discretization(file_name, discretization_name=None):
     """
     Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
@@ -886,6 +905,7 @@ def load_discretization(file_name, discretization_name=None):
 
     :rtype: :class:`~bet.sample.discretization`
     :returns: the ``discretization`` that matches the ``discretization_name``
+    
     """
     mdat = sio.loadmat(file_name)
     if discretization_name is None:

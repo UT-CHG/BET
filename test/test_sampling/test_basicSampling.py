@@ -63,9 +63,9 @@ def test_loadmat():
     assert discretization2._output_sample_set is None
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
-    if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
         os.remove(os.path.join(local_path, 'testfile1.mat'))
-    if comm.rank == 0 and os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_compute_QoI_and_create_discretization(model, sampler,
@@ -83,7 +83,8 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     output_sample_set.set_values(output_values)
     discretization = disc(input_sample_set, output_sample_set)
 
-    # evaluate the model at the samples
+    # evaluate the model at the sample
+    print savefile, input_sample_set.get_dim()
     my_discretization = sampler.compute_QoI_and_create_discretization(
         input_sample_set, savefile) 
     #comm.barrier()
@@ -575,6 +576,7 @@ class Test_basic_sampler(unittest.TestCase):
             for f in self.savefiles:
                 if os.path.exists(f+".mat"):
                     os.remove(f+".mat")
+        comm.barrier()
 
     def test_init(self):
         """
