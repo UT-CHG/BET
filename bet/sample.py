@@ -45,40 +45,47 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     :param bool globalize: flag whether or not to globalize
 
     """
+    # create processor specific file name
     if comm.size > 1 and not globalize:
         local_file_name = os.path.join(os.path.dirname(file_name),
                 "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
     else:
         local_file_name = file_name
 
+    # globalize
     if globalize and save_set._values_local is not None:
         save_set.local_to_global()
-
     comm.barrier()
+
+    # create temporary dictionary
+    new_mdat = dict()
+
     print local_file_name, globalize
     print glob.glob('*.mat')
 
-    if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
-        mdat = sio.loadmat(local_file_name)
-    else:
-        mdat = dict()
-
+    # store sample set in dictionary
     if sample_set_name is None:
         sample_set_name = 'default'
     for attrname in save_set.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
-            mdat[sample_set_name+attrname] = curr_attr
+            new_mdat[sample_set_name+attrname] = curr_attr
     for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
-            mdat[sample_set_name+attrname] = curr_attr
-    mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
+            new_mdat[sample_set_name+attrname] = curr_attr
+    new_mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
+    comm.barrier()
 
-    if globalize and comm.rank == 0:
-        sio.savemat(file_name, mdat)
-    elif not globalize:
-        sio.savemat(local_file_name, mdat)
+    # save new file or append to existing file
+    if (globalize and comm.rank == 0) or not globalize:
+        if os.path.exists(local_file_name) or \
+                os.path.exists(local_file_name+'.mat'):
+            mdat = sio.loadmat(local_file_name)
+            new_mdat.update(mdat)
+            sio.savemat(local_file_name, mdat)
+        else:
+            sio.savemat(local_file_name, new_mdat)
     comm.barrier()
 
 def load_sample_set(file_name, sample_set_name=None):
@@ -828,17 +835,21 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         discretization
 
     """
+    # create temporary dictionary
     new_mdat = dict()
 
+    # create processor specific file name
     if comm.size > 1 and not globalize:
         local_file_name = os.path.join(os.path.dirname(file_name),
                 "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
     else:
         local_file_name = file_name
 
+    # set name if doesn't exist
     if discretization_name is None:
         discretization_name = 'default'
 
+    # save sample sets if they exist
     for attrname in discretization.sample_set_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
@@ -846,26 +857,19 @@ def save_discretization(save_disc, file_name, discretization_name=None,
                 save_sample_set(curr_attr, file_name,
                     discretization_name+attrname, globalize)
     
+    # store discretization in dictionary
     for attrname in discretization.vector_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
-  
     comm.barrier()
 
-    if globalize and comm.rank == 0:
-        if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-            mdat = sio.loadmat(file_name)
-            for i, v in new_mdat.iteritems():
-                mdat[i] = v
-            sio.savemat(file_name, mdat)
-        else:
-            sio.savemat(file_name, new_mdat)
-    elif not globalize:
-        if os.path.exists(local_file_name) or os.path.exists(local_file_name+'.mat'):
+    # save new file or append to existing file
+    if (globalize and comm.rank == 0) or not globalize:
+        if os.path.exists(local_file_name) or \
+                os.path.exists(local_file_name+'.mat'):
             mdat = sio.loadmat(local_file_name)
-            for i, v in new_mdat.iteritems():
-                mdat[i] = v
+            new_mdat.update(mdat)
             sio.savemat(local_file_name, mdat)
         else:
             sio.savemat(local_file_name, new_mdat)
