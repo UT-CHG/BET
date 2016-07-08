@@ -25,7 +25,7 @@ def prob_on_emulated_samples(discretization, globalize=True):
     r"""
 
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
-    probability assoicated with a set of voronoi cells defined by
+    probability associated with a set of voronoi cells defined by
     ``num_l_emulate`` iid samples :math:`(\lambda_{emulate})`.
     This is added to the emulated input sample set object.
 

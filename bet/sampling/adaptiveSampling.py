@@ -5,7 +5,7 @@
 """
 This module contains functions for adaptive random sampling. We assume we are
 given access to a model, a parameter space, and a data space. The model is a
-map from the paramter space to the data space. We desire to build up a set of
+map from the parameter space to the data space. We desire to build up a set of
 samples to solve an inverse problem thus giving us information about the
 inverse mapping. Each sample consists of a parameter coordinate, data
 coordinate pairing. We assume the measure of both spaces is Lebesgue.

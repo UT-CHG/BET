@@ -525,7 +525,7 @@ class sample_set_base(object):
         """
         Creates ``self._right``, ``self._left``, ``self._width``.
 
-        :param int num: Determinzes shape of pointwise bounds (num, dim)
+        :param int num: Determinizes shape of pointwise bounds (num, dim)
 
         """
         if num is None:
@@ -540,7 +540,7 @@ class sample_set_base(object):
         ``self._width`` (``self._right_local``, ``self._left_local``,
         ``self._width_local``).
 
-        :param int local_num: Determinzes shape of local pointwise bounds
+        :param int local_num: Determinizes shape of local pointwise bounds
             (local_num, dim)
 
         """
@@ -1002,7 +1002,7 @@ class sample_set_base(object):
 
     def estimate_volume(self, n_mc_points=int(1E4)):
         """
-        Calculate the volume faction of cells approximately using Monte
+        Calculate the volume fraction of cells approximately using Monte
         Carlo integration. 
 
         :param int n_mc_points: If estimate is True, number of MC points to use
@@ -1011,7 +1011,7 @@ class sample_set_base(object):
         n_mc_points_local = (n_mc_points/comm.size) + \
                             (comm.rank < n_mc_points%comm.size)
         width = self._domain[:, 1] - self._domain[:, 0]
-        mc_points = width*np.random.random((n_mc_points_local,
+        mc_points = width*np.random.random((int(n_mc_points_local),
             self._domain.shape[0])) + self._domain[:, 0]
         (_, emulate_ptr) = self.query(mc_points)
         vol = np.zeros((num,))
@@ -1026,7 +1026,7 @@ class sample_set_base(object):
 
     def estimate_volume_emulated(self, emulated_sample_set):
         """
-        Calculate the volume faction of cells approximately using Monte
+        Calculate the volume fraction of cells approximately using Monte
         Carlo integration.
 
         .. note ::
