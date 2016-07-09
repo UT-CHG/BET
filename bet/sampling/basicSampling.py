@@ -144,6 +144,7 @@ def random_sample_set(sample_type, input_obj, num_samples,
         input_values_local = input_values_local + input_sample_set._left_local
     
         input_sample_set.set_values_local(input_values_local)
+    
     comm.barrier()
 
     if globalize:
