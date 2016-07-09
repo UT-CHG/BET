@@ -1,3 +1,14 @@
+# Copyright (C) 2014-2016 The BET Development Team
+
+r""" 
+This module provides methods for calulating error estimates of 
+the probability measure for calculate probability measures.
+
+* :mod:`~bet.calculateErrors.cell_connectivity_exact` calculates the connectivity
+of cells.
+
+"""
+
 from bet.Comm import comm, MPI 
 import numpy as np
 import math
@@ -20,12 +31,22 @@ class type_not_yet_written(Exception):
 
 def cell_connectivity_exact(disc):
     """
+    
+    Calculates the the neighboring Voronoi cells for each cell.
+
+    :param disc: An object containing the discretization information.
+    :type disc: class:`bet.sample.discretization`
+
+    :rtype: list
+    :returns: list of lists of neighboring cells
+
     """
     from scipy.spatial import Delaunay
     from collections import defaultdict
     import itertools
     import numpy.linalg as nlinalg
 
+    # Check inputs
     if not isinstance(disc, samp.discretization):
         msg = "The argument must be of type bet.sample.discretization."
         raise wrong_argument_type(msg)
@@ -38,21 +59,41 @@ def cell_connectivity_exact(disc):
         raise wrong_argument_type(msg)
 
     num = disc.check_nums()
+    # Set up necessary pointers
     if disc.get_io_ptr() is None:
         disc.set_io_ptr()
+    # Form Delaunay triangulation
     tri = Delaunay(disc._input_sample_set._values)
+
+    # Find neighbors
     neiList=defaultdict(set)
     for p in tri.vertices:
         for i,j in itertools.combinations(p,2):
             neiList[i].add(disc._io_ptr[j])
             neiList[j].add(disc._io_ptr[i])
+    # Get rid of redundant entries
     for i in range(num):
         neiList[i] = list(set(neiList[i]))
+
     return neiList
 
 def boundary_sets(disc, nei_list):
+    """
+    
+    Calculates the the neighboring Voronoi cells for each cell.
+
+    :param disc: An object containing the discretization information.
+    :type disc: class:`bet.sample.discretization`
+    :param nei_list: list of lists defining neighboring cells.
+    :type nei_list: list
+
+    :rtype: tuple
+    :returns: (B_N, C_N) as defined in Butler et al. 2015.
+
+    """
     from collections import defaultdict
 
+    # Check inputs
     if not isinstance(disc, samp.discretization):
         msg = "The argument must be of type bet.sample.discretization."
         raise wrong_argument_type(msg)
@@ -66,8 +107,11 @@ def boundary_sets(disc, nei_list):
         raise wrong_argument_type(msg)
 
     num = disc.check_nums()
+    
+    # Form necessary pointers
     if disc.get_io_ptr() is None:
         disc.set_io_ptr()
+    # Define strictly interior and boundary cells for each contour event
     B_N = defaultdict(list)
     C_N = defaultdict(list)
     for i in range(num):
@@ -80,7 +124,19 @@ def boundary_sets(disc, nei_list):
     return (B_N, C_N)
 
 class sampling_error(object):
+    """
+    A class for calculating the error due to sampling for a discretization.
+    """
     def __init__(self, disc, exact=True):
+          """
+          
+          Set things up for a given discretization
+          
+          :param disc: An object containing the discretization information.
+          :type disc: class:`bet.sample.discretization`
+          :param exact: Whether or not to use exact connectivity
+          :type exact: bool
+          """
         if not isinstance(disc, samp.discretization):
             msg = "The argument must be of type bet.sample.discretization."
             raise wrong_argument_type(msg)
