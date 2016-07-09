@@ -224,6 +224,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
             else:
                 plt.close()
             plt.clf()
+    comm.barrier()
 
 def plot_2D_marginal_probs(marginals, bins, sample_set,
         filename="file", lam_ref=None, plot_surface=False, interactive=False,
@@ -330,7 +331,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                 else:
                     plt.close()
                 plt.clf()
-		
+    comm.barrier()
 		
 def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """

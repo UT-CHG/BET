@@ -17,8 +17,10 @@ import numpy.testing as nptest
 from bet.Comm import comm
 import bet.sample as sample
 
-local_path = os.path.join(os.path.dirname(bet.__file__),
-        "../test/test_sampling")
+#local_path = os.path.join(os.path.dirname(bet.__file__),
+#        "../test/test_sampling")
+
+local_path = '.'
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):

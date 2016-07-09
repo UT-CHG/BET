@@ -529,9 +529,9 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M, num_d_emulate=
     covariance = std ** 2
 
     d_distr_samples = np.zeros((M, len(Q_ref)))
-    print "d_distr_samples.shape", d_distr_samples.shape
-    print "Q_ref.shape", Q_ref.shape
-    print "std.shape", std.shape
+    logging.info("d_distr_samples.shape "+str(d_distr_samples.shape))
+    logging.info("Q_ref.shape "+str(Q_ref.shape))
+    logging.info("std.shape "+str(std.shape))
 
     if comm.rank == 0:
         for i in range(len(Q_ref)):

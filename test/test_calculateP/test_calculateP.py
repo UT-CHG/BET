@@ -21,7 +21,8 @@ import numpy.testing as nptest
 import bet.util as util
 from bet.Comm import comm 
 
-data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
+#data_path = os.path.dirname(bet.__file__) + "/../test/test_calculateP/datafiles"
+data_path = "test/test_calculateP/datafiles"
 
 class prob:
     def test_prob_sum_to_1(self):

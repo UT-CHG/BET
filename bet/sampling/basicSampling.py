@@ -11,6 +11,8 @@ assume the measure on both spaces in Lebesgue.
 """
 
 import collections
+import os
+import warnings
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
@@ -22,6 +24,29 @@ class bad_object(Exception):
     Exception for when the wrong type of object is used.
     """
 
+def loadmat_parallel(save_file, disc_name=None, model=None):
+    """
+    Loads data from ``save_file`` into a
+    :class:`~bet.basicSampling.sampler` object in parallel and correctly
+    re-localizes data if necessary.
+
+    .. todo::
+
+        Implement based on the hot start implementation in
+        :class:`bet.sampling.adaptiveSampling.sampler`.
+
+    :param string save_file: file name
+    :param string disc_name: name of :class:`~bet.sample.discretization` in
+        file
+    :param model: runs the model at a given set of parameter samples and
+        returns data 
+    :type model: callable
+
+    :rtype: tuple
+    :returns: (sampler, discretization)
+
+    """
+    raise NotImplementedError("This method is not yet implemented.")
 
 def loadmat(save_file, disc_name=None, model=None):
     """
@@ -106,17 +131,19 @@ def random_sample_set(sample_type, input_obj, num_samples,
         input_values = input_values * lhs(dim,
                 num_samples, criterion)
     elif sample_type == "random" or "r":
-        input_values = input_values * np.random.random(input_values.shape) 
+        if comm.rank == 0:
+            input_values = input_values * np.random.random(input_values.shape)
+        input_values = comm.bcast(input_values)
     input_values = input_values + input_sample_set._left
-    if globalize is True:
-        input_sample_set.set_values(input_values)
-    elif globalize is False and \
-            (sample_type == "random" or sample_type == 'r'):
-        input_sample_set.set_values_local(input_values)
-    else:
-        input_sample_set.set_values(input_values)
-        input_sample_set.global_to_local()
+    
+    input_sample_set.set_values_local(np.array_split(input_values,
+        comm.size)[comm.rank])
+    comm.barrier()
 
+    if globalize:
+        input_sample_set.local_to_global()
+    else:
+        input_sample_set._values = None
     return input_sample_set
 
 def regular_sample_set(input_obj, num_samples_per_dim=1):
@@ -156,7 +183,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     if not isinstance(num_samples_per_dim, collections.Iterable):
         num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
     if np.any(np.less_equal(num_samples_per_dim, 0)):
-        print 'Warning: num_smaples_per_dim must be greater than 0'
+        warnings.warn('Warning: num_samples_per_dim must be greater than 0')
 
     num_samples = np.product(num_samples_per_dim)
 
@@ -167,8 +194,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     else:
         input_domain = input_sample_set.get_domain()
     # update the bounds based on the number of samples
-    input_sample_set.update_bounds(num_samples)
-    input_values = np.copy(input_sample_set._width)
+    input_values = np.zeros((num_samples, dim))
 
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
@@ -194,6 +220,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
                     .flat[:])
 
     input_sample_set.set_values(input_values)
+    input_sample_set.global_to_local() 
 
     return input_sample_set
 
@@ -228,18 +255,32 @@ class sampler(object):
 
         self.lb_model = lb_model
 
-    def save(self, mdict, save_file, discretization=None):
+    def save(self, mdict, save_file, discretization=None, globalize=False):
         """
         Save matrices to a ``*.mat`` file for use by ``MATLAB BET`` code and
         :meth:`~bet.basicSampling.loadmat`
 
-        :param dict mdict: dictonary of sampling data and sampler parameters
+        :param dict mdict: dictonary of sampler parameters
         :param string save_file: file name
+        :param discretization: input and output from sampling
+        :type discretization: :class:`bet.sample.discretization`
+        :param bool globalize: Makes local variables global. 
 
         """
-        sio.savemat(save_file, mdict, do_compression=True)
+
+        if comm.size > 1 and not globalize:
+            local_save_file = os.path.join(os.path.dirname(save_file),
+                    "proc{}_{}".format(comm.rank, os.path.basename(save_file)))
+        else:
+            local_save_file = save_file
+       
+        if (globalize and comm.rank == 0) or not globalize:
+            sio.savemat(local_save_file, mdict)
+        comm.barrier()
+
         if discretization is not None:
-            sample.save_discretization(discretization, save_file)
+            sample.save_discretization(discretization, save_file,
+                    globalize=globalize)
 
     def update_mdict(self, mdict):
         """
@@ -274,8 +315,7 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see 
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool globalize: Makes local variables global. Only applies if
-            ``parallel==True``.
+        :param bool globalize: Makes local variables global. 
         
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_set` object which contains
@@ -312,7 +352,7 @@ class sampler(object):
         return regular_sample_set(input_obj, num_samples_per_dim)
         
     def compute_QoI_and_create_discretization(self, input_sample_set,
-            savefile=None, parallel=False, globalize=True):
+            savefile=None, globalize=True):
         """
         Samples the model at ``input_sample_set`` and saves the results.
 
@@ -324,11 +364,8 @@ class sampler(object):
         :type input_sample_set: :class:`~bet.sample.sample_set` with
             num_smaples
         :param string savefile: filename to save samples and data
-        :param bool parallel: Flag for parallel implementation. Default value
-            is ``False``.  
-        :param bool globalize: Makes local variables global. Only applies if
-            ``parallel==True``.
-        
+        :param bool globalize: Makes local variables global. 
+
         :rtype: :class:`~bet.sample.discretization` 
         :returns: :class:`~bet.sample.discretization` object which contains
             input and output of ``num_samples`` 
@@ -339,47 +376,39 @@ class sampler(object):
         self.num_samples = input_sample_set.check_num()
 
         # Solve the model at the samples
-        if not(parallel) or comm.size == 1:
-            output_values = self.lb_model(\
-                    input_sample_set.get_values())
-            # figure out the dimension of the output
-            if len(output_values.shape) == 1:
-                output_dim = 1
-            else:
-                output_dim = output_values.shape[1]
-            output_sample_set = sample.sample_set(output_dim)
-            output_sample_set.set_values(output_values)
-        elif parallel:
-            if input_sample_set._values_local is None: 
-                input_sample_set.global_to_local()
-            local_output_values = self.lb_model(\
-                    input_sample_set.get_values_local())
-            # figure out the dimension of the output
-            if len(local_output_values.shape) <= 1:
-                output_dim = 1
-            else:
-                output_dim = local_output_values.shape[1]
-            output_sample_set = sample.sample_set(output_dim)
-            output_sample_set.set_values_local(local_output_values)
-            if globalize:
-                input_sample_set.local_to_global()
-                output_sample_set.local_to_global()
-        
+        if input_sample_set._values_local is None: 
+            input_sample_set.global_to_local()
+        local_output_values = self.lb_model(\
+                input_sample_set.get_values_local())
+        # figure out the dimension of the output
+        if len(local_output_values.shape) <= 1:
+            output_dim = 1
+        else:
+            output_dim = local_output_values.shape[1]
+        output_sample_set = sample.sample_set(output_dim)
+        output_sample_set.set_values_local(local_output_values)
+        if globalize:
+            input_sample_set.local_to_global()
+            output_sample_set.local_to_global()
+        else:
+            input_sample_set._values = None
+        comm.barrier()
+
         discretization = sample.discretization(input_sample_set,
                 output_sample_set)
+        comm.barrier()
 
         mdat = dict()
         self.update_mdict(mdat)
 
-        if comm.rank == 0 and savefile is not None:
-            self.save(mdat, savefile, discretization)
+        if savefile is not None:
+            self.save(mdat, savefile, discretization, globalize=globalize)
         comm.barrier()
         return discretization
 
-
     def create_random_discretization(self, sample_type, input_obj,
             savefile=None, num_samples=None, criterion='center',
-            parallel=False, globalize=True):
+            globalize=True):
         """
         Sampling algorithm with three basic options
 
@@ -406,10 +435,7 @@ class sampler(object):
         :param int num_samples: N, number of samples (optional)
         :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool parallel: Flag for parallel implementation.  Default value
-            is ``False``.
-        :param bool globalize: Makes local variables global. Only applies if
-            ``parallel==True``.
+        :param bool globalize: Makes local variables global.
 
         :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
@@ -424,4 +450,4 @@ class sampler(object):
                 num_samples, criterion, globalize)
 
         return self.compute_QoI_and_create_discretization(input_sample_set, 
-                savefile, parallel, globalize)
+                savefile, globalize)
