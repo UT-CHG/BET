@@ -168,7 +168,7 @@ class sampling_error(object):
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
-                indices = np.equal(disc._io_ptr_local, i)
+                indices = np.equal(disc._io_ptr, i)
                 in_Ai = indices[disc._emulated_ii_ptr_local]
                 
                 sum1 = np.sum(np.logical_and(in_A, in_Ai))
@@ -315,9 +315,9 @@ class model_error(object):
 
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
-                indices1 = np.equal(self.disc._io_ptr_local ,i)
+                indices1 = np.equal(self.disc._io_ptr ,i)
                 in_Ai1 = indices1[ptr1]
-                indices2 = np.equal(self.disc_new._io_ptr_local ,i)
+                indices2 = np.equal(self.disc_new._io_ptr ,i)
                 in_Ai2 = indices2[ptr1]
                 JiA_local = float(np.sum(np.logical_and(in_A,in_Ai1)))
                 JiA = comm.allreduce(JiA_local, op=MPI.SUM)

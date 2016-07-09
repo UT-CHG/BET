@@ -33,6 +33,7 @@ import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
+from bet.Comm import comm, MPI
 from myModel import my_model
 
 # Define the sampler that will be used to create the discretization
@@ -61,7 +62,7 @@ If using regular sampling, try different numbers of samples
 per dimension.
 '''
 # Generate samples on the parameter space
-randomSampling = True
+randomSampling = False
 if randomSampling is True:
     input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E4)
 else:
@@ -125,11 +126,20 @@ else:
         data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
         M=50, num_d_emulate=1E5)
 
-emulated_inputs = bsam.random_sample_set('r',
-                                         my_discretization._input_sample_set._domain,
-                                         num_samples = 10001,
-                                         globalize=True)
-my_discretization._output_sample_set._error_estimates = 0.15 * np.ones(my_discretization._output_sample_set._values.shape)
+# emulated_inputs = bsam.random_sample_set('r',
+#                                          my_discretization._input_sample_set._domain,
+#                                          num_samples = 10001,
+#                                          globalize=True)
+num_l_emulate = 10001
+num_l_emulate = (num_l_emulate/comm.size) + (comm.rank < num_l_emulate%comm.size)
+lam_domain = my_discretization._input_sample_set._domain
+lam_width = lam_domain[:,1] - lam_domain[:,0]
+lambda_emulate = lam_width*np.random.random((num_l_emulate,lam_domain.shape[0])) + lam_domain[:,0]
+
+emulated_inputs = samp.sample_set(3)
+emulated_inputs.set_domain(lam_domain)
+emulated_inputs.set_values_local(lambda_emulate)
+my_discretization._output_sample_set._error_estimates = 0.01 * np.ones(my_discretization._output_sample_set._values.shape)
 # calculate probablities
 calculateP.prob(my_discretization)
 
