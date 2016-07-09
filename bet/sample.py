@@ -344,6 +344,43 @@ class sample_set_base(object):
                                                   first_array)) 
         if self._values is not None and self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
+            
+        if num is None:
+            num_local = self.check_num_local()
+            if num_local is None:
+                num_local = 0
+            num = comm.allreduce(num_local, op=MPI.SUM)
+        
+        return num
+
+    def check_num_local(self):
+        """
+        
+        Checks that the number of entries in ``self._values_local``,
+        ``self._volumes_local``, ``self._probabilities_local``, 
+        ``self._jacobians_local``, and ``self._error_estimates_local`` 
+        all match (assuming the named array exists).
+        
+        :rtype: int
+        :returns: num
+
+        """
+        num = None
+        for array_name in self.array_names:
+            array_name_local = array_name + "_local"
+            current_array = getattr(self, array_name_local)
+            if current_array is not None:
+                if num is None:
+                    num = current_array.shape[0]
+                    first_array = array_name
+                else:
+                    if num != current_array.shape[0]:
+                        errortxt = "length of {} inconsistent with {}"
+                        raise length_not_matching(errortxt.format(array_name,
+                                                  first_array)) 
+        if self._values is not None and self._values.shape[1] != self._dim:
+            raise dim_not_matching("dimension of values incorrect")
+            
         return num
 
     def get_dim(self):
