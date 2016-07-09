@@ -8,7 +8,7 @@ This module contains data structure/storage classes for BET. Notably:
     :class:`bet.sample.dim_not_matching`
 """
 
-import os, logging
+import os, logging, glob
 import numpy as np
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -29,7 +29,7 @@ class dim_not_matching(Exception):
     Exception for when the dimension of the array is inconsistent.
     """
     
-def save_sample_set(save_set, file_name, sample_set_name=None):
+def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     """
     Saves this :class:`bet.sample.sample_set` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
@@ -42,25 +42,48 @@ def save_sample_set(save_set, file_name, sample_set_name=None):
     :param string sample_set_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.sample_set_base` objects to a single
         ``.mat`` file
+    :param bool globalize: flag whether or not to globalize
 
     """
-    if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-        mdat = sio.loadmat(file_name)
+    # create processor specific file name
+    if comm.size > 1 and not globalize:
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
     else:
-        mdat = dict()
+        local_file_name = file_name
+
+    # globalize
+    if globalize and save_set._values_local is not None:
+        save_set.local_to_global()
+    comm.barrier()
+
+    # create temporary dictionary
+    new_mdat = dict()
+
+    # store sample set in dictionary
     if sample_set_name is None:
         sample_set_name = 'default'
     for attrname in save_set.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
-            mdat[sample_set_name+attrname] = curr_attr
+            new_mdat[sample_set_name+attrname] = curr_attr
     for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
-            mdat[sample_set_name+attrname] = curr_attr
-    mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
-    if comm.rank == 0:
-        sio.savemat(file_name, mdat)
+            new_mdat[sample_set_name+attrname] = curr_attr
+    new_mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
+    comm.barrier()
+
+    # save new file or append to existing file
+    if (globalize and comm.rank == 0) or not globalize:
+        if os.path.exists(local_file_name) or \
+                os.path.exists(local_file_name+'.mat'):
+            mdat = sio.loadmat(local_file_name)
+            new_mdat.update(mdat)
+            sio.savemat(local_file_name, new_mdat)
+        else:
+            sio.savemat(local_file_name, new_mdat)
+    comm.barrier()
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -90,20 +113,40 @@ def load_sample_set(file_name, sample_set_name=None):
                 format(sample_set_name))
         return None
 
-    for attrname in sample_set_base.vector_names:
+    for attrname in loaded_set.vector_names:
         if attrname is not '_dim':
             if sample_set_name+attrname in mdat.keys():
                 setattr(loaded_set, attrname,
                     np.squeeze(mdat[sample_set_name+attrname]))
-    for attrname in sample_set_base.all_ndarray_names:
+    for attrname in loaded_set.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
     
-    # localize arrays if necessary
-    if sample_set_name+"_values_local" in mdat.keys():
-        loaded_set.global_to_local()
-
     return loaded_set
+
+def load_sample_set_parallel(file_name, sample_set_name=None):
+    """
+    Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file in parallel
+    and correctly re-localizes data if necessary. If a file contains multiple
+    :class:`~bet.sample.sample_set` objects then ``sample_set_name`` is used to
+    distinguish which between different :class:`~bet.sample.sample_set`
+    objects.
+
+    .. todo::
+
+        Implement based on the hot start implementation in
+        :class:`bet.sampling.adaptiveSampling.sampler`.
+
+    :param string file_name: Name of the ``.mat`` file, no extension is
+        needed.
+    :param string sample_set_name: String to prepend to attribute names when
+        saving multiple :class`bet.sample.sample_set` objects to a single
+        ``.mat`` file
+
+    :rtype: :class:`~bet.sample.sample_set`
+    :returns: the ``sample_set`` that matches the ``sample_set_name``
+    """
+    raise NotImplementedError("This method is not yet implemented.")
 
 class sample_set_base(object):
     """
@@ -296,8 +339,8 @@ class sample_set_base(object):
                     first_array = array_name
                 else:
                     if num != current_array.shape[0]:
-                        raise length_not_matching("length of {} inconsistent \
-                                with {}".format(array_name,
+                        errortxt = "length of {} inconsistent with {}"
+                        raise length_not_matching(errortxt.format(array_name,
                                                   first_array)) 
         if self._values is not None and self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
@@ -625,6 +668,7 @@ class sample_set_base(object):
             if current_array_local is not None:
                 setattr(self, array_name,
                         util.get_global_values(current_array_local))
+
     def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
@@ -715,6 +759,7 @@ class sample_set_base(object):
             if current_array is not None:
                 setattr(self, array_name + "_local",
                         np.array_split(current_array, comm.size)[comm.rank])
+        comm.barrier()
 
     def copy(self):
         """
@@ -768,7 +813,8 @@ class sample_set_base(object):
 
         """
 
-def save_discretization(save_disc, file_name, discretization_name=None):
+def save_discretization(save_disc, file_name, discretization_name=None,
+        globalize=False):
     """
     Saves this :class:`bet.sample.discretization` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
@@ -781,33 +827,69 @@ def save_discretization(save_disc, file_name, discretization_name=None):
     :param string discretization_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.discretization` objects to a single
         ``.mat`` file
+    :param bool globalize: flag whether or not to globalize
+        :class:`bet.sample.sample_set_base` objects stored in this
+        discretization
 
     """
+    # create temporary dictionary
     new_mdat = dict()
 
+    # create processor specific file name
+    if comm.size > 1 and not globalize:
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+    else:
+        local_file_name = file_name
+
+    # set name if doesn't exist
     if discretization_name is None:
         discretization_name = 'default'
 
+    # save sample sets if they exist
     for attrname in discretization.sample_set_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
-                    discretization_name+attrname)
+                    discretization_name+attrname, globalize)
     
+    # store discretization in dictionary
     for attrname in discretization.vector_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
-    
-    if comm.rank == 0:
-        if os.path.exists(file_name) or os.path.exists(file_name+'.mat'):
-            mdat = sio.loadmat(file_name)
-            for i, v in new_mdat.iteritems():
-                mdat[i] = v
-            sio.savemat(file_name, mdat)
+    comm.barrier()
+
+    # save new file or append to existing file
+    if (globalize and comm.rank == 0) or not globalize:
+        if os.path.exists(local_file_name) or \
+                os.path.exists(local_file_name+'.mat'):
+            mdat = sio.loadmat(local_file_name)
+            new_mdat.update(mdat)
+            sio.savemat(local_file_name, new_mdat)
         else:
-            sio.savemat(file_name, new_mdat)
+            sio.savemat(local_file_name, new_mdat)
+    comm.barrier()
+
+def load_discretization_parallel(file_name, discretization_name=None):
+    """
+    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
+    contains multiple :class:`~bet.sample.discretization` objects then
+    ``discretization_name`` is used to distinguish which between different
+    :class:`~bet.sample.discretization` objects.
+
+    :param string file_name: Name of the ``.mat`` file, no extension is
+        needed.
+    :param string discretization_name: String to prepend to attribute names when
+        saving multiple :class`bet.sample.discretization` objects to a single
+        ``.mat`` file
+
+    :rtype: :class:`~bet.sample.discretization`
+    :returns: the ``discretization`` that matches the ``discretization_name``
+    
+    """
+    raise NotImplementedError("This method is not yet implemented.")
 
 def load_discretization(file_name, discretization_name=None):
     """
@@ -824,6 +906,7 @@ def load_discretization(file_name, discretization_name=None):
 
     :rtype: :class:`~bet.sample.discretization`
     :returns: the ``discretization`` that matches the ``discretization_name``
+    
     """
     mdat = sio.loadmat(file_name)
     if discretization_name is None:
@@ -849,6 +932,32 @@ def load_discretization(file_name, discretization_name=None):
                         np.squeeze(mdat[discretization_name+attrname]))
     return loaded_disc
 
+def load_discretization_parallel(file_name, discretization_name=None):
+    """ 
+    
+    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file in
+    parallel and correctly re-localizes data if necessary. If a file contains
+    multiple :class:`~bet.sample.discretization` objects then
+    ``discretization_name`` is used to distinguish which between different
+    :class:`~bet.sample.discretization` objects.
+
+    .. todo::
+
+        Implement based on the hot start implementation in
+        :class:`bet.sampling.adaptiveSampling.sampler`.
+
+    :param string file_name: Name of the ``.mat`` file, no extension is
+        needed.
+    :param string discretization_name: String to prepend to attribute names when
+        saving multiple :class`bet.sample.discretization` objects to a single
+        ``.mat`` file
+
+    :rtype: :class:`~bet.sample.discretization`
+    :returns: the ``discretization`` that matches the ``discretization_name``
+    """
+    raise NotImplementedError("This method is not yet implemented.")
+
+
 class voronoi_sample_set(sample_set_base):
     """
 
@@ -872,9 +981,7 @@ class voronoi_sample_set(sample_set_base):
             self.set_kdtree()
         else:
             self.check_num()
-
-
-        #TODO add exception if dimensions of x are wrong
+       
         (dist, ptr) = self._kdtree.query(x, p=self._p_norm, k=k)
         return (dist, ptr)
 
@@ -1294,7 +1401,7 @@ class rectangle_sample_set(sample_set_base):
 
         .. seealso::
 
-        :meth:`scipy.spatial.KDTree.query`
+            :meth:`scipy.spatial.KDTree.query`
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
@@ -1460,7 +1567,7 @@ class ball_sample_set(sample_set_base):
 
         .. seealso::
 
-        :meth:`scipy.spatial.KDTree.query`
+            :meth:`scipy.spatial.KDTree.query`
 
         :param x: points for query
         :type x: :class:`numpy.ndarray` of shape ``(*, dim)``
@@ -1507,7 +1614,7 @@ class cartesian_sample_set(rectangle_sample_set):
 
         .. seealso::
 
-        :meth:`bet.sample.rectangle_sample_set`
+            :meth:`bet.sample.rectangle_sample_set`
 
     """
     def setup(self, xi):
@@ -1595,8 +1702,10 @@ class discretization(object):
         """
         out_num = self._output_sample_set.check_num()
         in_num = self._input_sample_set.check_num()
-        if out_num != in_num:
-            raise length_not_matching("input and output lengths do not match")
+        if out_num != in_num and self._output_sample_set._values is not None \
+                and self._input_sample_set._values is not None: 
+            raise length_not_matching("input {} and output {} lengths do not\
+                    match".format(in_num, out_num))
         else:
             return in_num
 
@@ -1613,7 +1722,7 @@ class discretization(object):
         if self._output_sample_set._values_local is None:
             self._output_sample_set.global_to_local()
         (_, self._io_ptr_local) = self._output_probability_set.query(\
-                    self._output_sample_set._values_local)
+                        self._output_sample_set._values_local)
                                                             
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)

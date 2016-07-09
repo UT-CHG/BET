@@ -18,8 +18,9 @@ import bet.sample
 from bet.sample import sample_set
 from bet.sample import discretization as disc
 
-local_path = os.path.join(os.path.dirname(bet.__file__),
-    "../test/test_sampling")
+#local_path = os.path.join(os.path.dirname(bet.__file__),
+#    "../test/test_sampling")
+local_path = "test/test_sampling"
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 def test_loadmat_init():
@@ -55,9 +56,9 @@ def test_loadmat_init():
         num_chains2])
 
     bet.sample.save_discretization(disc(my_input1, my_output),
-            os.path.join(local_path, 'testfile1'))
+            os.path.join(local_path, 'testfile1'), globalize=True)
     bet.sample.save_discretization(disc(my_input2, None),
-            os.path.join(local_path, 'testfile2'))
+            os.path.join(local_path, 'testfile2'), globalize=True)
 
     (loaded_sampler1, discretization1) = asam.loadmat(os.path.join(local_path,
         'testfile1'))
@@ -115,23 +116,27 @@ def verify_samples(QoI_range, sampler, input_domain,
         
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
-    
+    if comm.rank == 0:
+        print "dim", input_domain.shape
     if not hot_start:
         # run generalized chains
         (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
+        print "COLD", comm.rank
     else:
         # cold start
         sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
                 sampler.lb_model)
         (my_discretization, all_step_ratios) = sampler1.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
+        print "COLD then", comm.rank
         comm.barrier()
         # hot start 
         (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type,
                 hot_start=hot_start)
-
+        print "HOT", comm.rank
+    comm.barrier()
     # check dimensions of input and output
     assert my_discretization.check_nums()
 
@@ -156,22 +161,22 @@ def verify_samples(QoI_range, sampler, input_domain,
     # did the savefiles get created? (proper number, contain proper keys)
     comm.barrier()
     mdat = dict()
-    if comm.rank == 0:
-        mdat = sio.loadmat(savefile)
-        saved_disc = bet.sample.load_discretization(savefile)
-        # compare the input
-        nptest.assert_array_equal(my_discretization._input_sample_set.\
-                get_values(), saved_disc._input_sample_set.get_values())
-        # compare the output
-        nptest.assert_array_equal(my_discretization._output_sample_set.\
-                get_values(), saved_disc._output_sample_set.get_values())
+    #if comm.rank == 0:
+    mdat = sio.loadmat(savefile)
+    saved_disc = bet.sample.load_discretization(savefile)
+    # compare the input
+    nptest.assert_array_equal(my_discretization._input_sample_set.\
+            get_values(), saved_disc._input_sample_set.get_values())
+    # compare the output
+    nptest.assert_array_equal(my_discretization._output_sample_set.\
+            get_values(), saved_disc._output_sample_set.get_values())
 
-        nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
-        assert sampler.chain_length == mdat['chain_length']
-        assert sampler.num_samples == mdat['num_samples']
-        assert sampler.num_chains == mdat['num_chains']
-        nptest.assert_array_equal(sampler.sample_batch_no,
-                np.squeeze(mdat['sample_batch_no']))
+    nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
+    assert sampler.chain_length == mdat['chain_length']
+    assert sampler.num_samples == mdat['num_samples']
+    assert sampler.num_chains == mdat['num_chains']
+    nptest.assert_array_equal(sampler.sample_batch_no,
+            np.squeeze(mdat['sample_batch_no']))
 
 class Test_adaptive_sampler(unittest.TestCase):
     """

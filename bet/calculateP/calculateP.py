@@ -133,12 +133,12 @@ def prob_from_sample_set(set_old, set_new, set_emulate):
     r"""
     
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
-    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}}) using
+    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` using
     a set of emulated points are distributed with respect to the 
     volume measure.
 
     :param set_old: Sample set on which probabilities have already been
-    calculated
+        calculated
     :type set_old: :class:`~bet.sample.sample_set_base` 
     :param set_new: Sample set for which probabilities will be calculated.
     :type set_new: :class:`~bet.sample.sample_set_base` 

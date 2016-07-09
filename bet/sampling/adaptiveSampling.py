@@ -232,8 +232,7 @@ class sampler(bsam.sampler):
 
         .. todo::
 
-            Test HOTSTART from parallel files using different and same num proc
-       
+            Test HOTSTART from parallel files using different num proc
 
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
@@ -265,9 +264,6 @@ class sampler(bsam.sampler):
             of shape ``(num_chains, chain_length)``
         
         """
-        if comm.size > 1:
-            psavefile = os.path.join(os.path.dirname(savefile),
-                    "proc{}_{}".format(comm.rank, os.path.basename(savefile)))
 
         # Calculate step_size
         max_ratio = t_set.max_ratio
@@ -282,13 +278,13 @@ class sampler(bsam.sampler):
             # not necessarily random). Call these Samples_old.
             disc_old = super(sampler, self).create_random_discretization(
                     initial_sample_type, input_obj, savefile,
-                    self.num_chains, criterion)
+                    self.num_chains, criterion, globalize=False)
             self.num_samples = self.chain_length * self.num_chains
             comm.Barrier()
             
             # populate local values 
-            disc_old._input_sample_set.global_to_local()
-            disc_old._output_sample_set.global_to_local()
+            #disc_old._input_sample_set.global_to_local()
+            #disc_old._output_sample_set.global_to_local()
             input_old = disc_old._input_sample_set.copy()
             
             disc = disc_old.copy()
@@ -468,16 +464,13 @@ class sampler(bsam.sampler):
             mdat['step_ratios'] = all_step_ratios
             mdat['kern_old'] = kern_old
             
-            if comm.size > 1:
-                super(sampler, self).save(mdat, psavefile, disc)
-            else:
-                super(sampler, self).save(mdat, savefile, disc)
+            super(sampler, self).save(mdat, savefile, disc, globalize=False)
             input_old = input_new
 
         # collect everything
         disc._input_sample_set.update_bounds_local() 
-        disc._input_sample_set.local_to_global()
-        disc._output_sample_set.local_to_global()
+        #disc._input_sample_set.local_to_global()
+        #disc._output_sample_set.local_to_global()
 
         MYall_step_ratios = np.copy(all_step_ratios) 
         # ``all_step_ratios`` is np.ndarray of shape (num_chains,
@@ -491,8 +484,7 @@ class sampler(bsam.sampler):
         mdat['step_ratios'] = all_step_ratios
         mdat['kern_old'] = util.get_global_values(kern_old,
                 shape=(self.num_chains,))
-        if comm.rank == 0:
-            super(sampler, self).save(mdat, savefile, disc)
+        super(sampler, self).save(mdat, savefile, disc, globalize=True)
 
         return (disc, all_step_ratios)
         

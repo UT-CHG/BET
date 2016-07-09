@@ -24,8 +24,12 @@ instead of ::
     
     $ python YOUR_SCRIPT.py
 
-You might need to make sure your globalize your arrays or make sure to choose
-the ``parallel`` flag on some functions to ensure correct execution.
+
+Example scripts are availiable in ``examples/parallel_and_serial_sampling``
+which demonstrate different modes of parallel and serial sampling. Also the
+:ref:`fenicsMultipleSerialExample` is an example that can be run with serial
+BET and uses `Launcher <https://github.com/TACC/launcher>_` to launch multiple
+serial runs of the model in parallel.
 
 Parallel Enabled Modules
 ------------------------
@@ -34,6 +38,8 @@ The modules that have parallel capabilities are as follows::
 
   bet/
     util
+    sample
+    Comm
     calculateP/
       calculateP
       simpleFunP
@@ -52,17 +58,23 @@ The module :mod:`~bet.util` provides the method
 :meth:`~bet.util.get_global_values` to globalize local arrays into an array of
 global values on all processors.
 
+sample
+~~~~~~
+The :class:`~bet.sample.sample_set_base` has methods which benifit from
+parallel execution and has methods for localizing
+(:meth:`~bet.sample.sample_set_base.local_to_local`) and localizing
+(:meth:`~bet.sample.sample_set_base.local_to_global`) member attributes.
+Localized attributes are denoted as ``*_local``. The
+:class:`~bet.sample.discretization` aslo has methods which enable and benifit
+from parallel execution.
+
 calculateP
 ~~~~~~~~~~
 All methods in the module :mod:`~bet.calculateP.calculateP` benefit from
-parallel execution. Only local arrays are returned for ``P``, use
-:meth:`~bet.util.get_global_values` to globalize local arrays.
+parallel execution.
 
-In the module :mod:`~bet.calculateP.simpleFunP` the methods
-:meth:`~bet.calculateP.simpleFunP.unif_unif`,
-:meth:`~bet.calculateP.simpleFunP.normal_normal`, and 
-:meth:`~bet.calculateP.simpleFunP.unif_normal` benefit from parallel
-execution.
+In the module :mod:`~bet.calculateP.simpleFunP` any method with a
+``num_d_emulate`` option benefits greatly from parallel execution.
 
 sampling
 ~~~~~~~~
@@ -72,11 +84,13 @@ model simulatenously. If your model is serial then you might benefit from
 parallel execution of scripts that use
 :class:`bet.sampling.basicSampling.sampler` or
 :class:`bet.sampling.adaptiveSampling.sampler`.  The method
-:meth:`~bet.sampling.basicSampling.sampler.user_samples` has a parallel option
-(must be specified in the method call) which will partition the samples over
-several processors and return a globalized set of results.  The method
+:meth:`~bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization`
+and :meth:`~bet.sampling.basicSampling.sampler.create_random_discretization`
+both  will partition the samples over several processors and have a globalize
+option to return a globalized set of results. The method
 :meth:`~bet.sampling.adaptiveSampling.sampler.generalized_chains` divides up
 the chains among the availiable processors and returns a globalized result.
+This method also has serial and parallel hotstart capabilties.
 
 postProcess
 ~~~~~~~~~~~
