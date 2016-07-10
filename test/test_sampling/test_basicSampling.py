@@ -68,14 +68,17 @@ def test_loadmat():
     if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
-def test_save_sampler():
+def test_save_load_sampler():
     """
 
-    .. todo::
-        
-        Write test for :class:`bet.sampling.basicSampling.sampler.save`.
+    Tests :class:`bet.sampling.basicSampling.sampler.save`,
+    :class:`bet.sampling.basicSampling.sampler.loadmat`.
 
     """
+    if comm.size > 1:
+        globalize = False
+    else:
+        globalize = True
     # create a discretization with full input and output
     # save
     # load
