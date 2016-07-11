@@ -139,7 +139,7 @@ lambda_emulate = lam_width*np.random.random((num_l_emulate,lam_domain.shape[0]))
 emulated_inputs = samp.sample_set(3)
 emulated_inputs.set_domain(lam_domain)
 emulated_inputs.set_values_local(lambda_emulate)
-my_discretization._output_sample_set._error_estimates = 0.01 * np.ones(my_discretization._output_sample_set._values.shape)
+my_discretization._output_sample_set._error_estimates = 0.1 * np.ones(my_discretization._output_sample_set._values.shape)
 # calculate probablities
 calculateP.prob(my_discretization)
 
@@ -150,15 +150,16 @@ print (h,l)
 
 s_set = samp.rectangle_sample_set(3)
 s_set.setup(maxes=[[0.75, 0.75, 0.75]], mins=[[0.25, 0.25, 0.25]])
-(h,l) = se.calculate_for_marked_sample_set(s_set=s_set,
-                                           marker=np.array([True, False]),
-                                           emulated_set=emulated_inputs)
+s_set.set_region(np.array([0,1]))
+(h,l) = se.calculate_sample_set_region(s_set=s_set,
+                                       region=0,
+                                       emulated_set=emulated_inputs)
 
 print (h,l)
 me = calculateError.model_error(my_discretization)
 e = me.calculate_for_contour_events()
 print e
-e = me.calculate_for_marked_sample_set(s_set=s_set,
-                                           marker=np.array([True, False]),
+e = me.calculate_sample_set_region(s_set=s_set,
+                                       region=0,
                                            emulated_set=emulated_inputs)
 print e

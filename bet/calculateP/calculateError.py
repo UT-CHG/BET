@@ -128,21 +128,25 @@ class sampling_error(object):
     A class for calculating the error due to sampling for a discretization.
     """
     def __init__(self, disc, exact=True):
-          """
+        """
           
-          Set things up for a given discretization
+        Set things up for a given discretization
           
-          :param disc: An object containing the discretization information.
-          :type disc: class:`bet.sample.discretization`
-          :param exact: Whether or not to use exact connectivity
-          :type exact: bool
-          """
+        :param disc: An object containing the discretization information.
+        :type disc: class:`bet.sample.discretization`
+        :param exact: Whether or not to use exact connectivity
+        :type exact: bool
+        
+        """
+        # Check inputs
         if not isinstance(disc, samp.discretization):
             msg = "The argument must be of type bet.sample.discretization."
             raise wrong_argument_type(msg)
 
         self.disc = disc 
         self.num = self.disc.check_nums()
+
+        # Set up neighbor list and B_N and C_N
         if exact:
             nei_list = cell_connectivity_exact(self.disc)
         else:
@@ -152,8 +156,18 @@ class sampling_error(object):
         (self.B_N, self.C_N) = boundary_sets(self.disc, nei_list)
         
     def calculate_for_contour_events(self):
+        """
+        Calculate the sampling error bounds for each contour event.
+
+        :rtype tuple
+        :returns: (up_list, low_list) where up_list is a list of
+        the upper bounds for each contour event and low_list is a list
+        of the lower bounds.
+
+        """
         up_list = []
         low_list = []
+        # Check for and possibly calculate volumes
         if self.disc._input_sample_set._volumes is None:
             if self.disc._emulated_input_sample_set is not None:
                 logging.warning("Using emulated points to estimate volumes.")
@@ -161,7 +175,8 @@ class sampling_error(object):
             else:
                 logging.warning("Making MC assumption to estimate volumes.")
                 self.disc._input_sample_set.estimate_volume_mc()
-                
+
+        # Loop over contour events and calculate error bounds
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
@@ -186,9 +201,39 @@ class sampling_error(object):
             else:
                 up_list.append(0.0)
                 low_list.append(0.0)
+
         return (up_list, low_list)
 
-    def calculate_for_marked_sample_set(self, s_set, marker, emulated_set=None):
+    def calculate_sample_set_region(self, s_set, 
+                                     region, emulated_set=None):
+        """
+        Calculate the sampling error bounds for a region of the input space
+        defined by a sample set object.
+
+        :param s_set: sample set for which to calculate error
+        :type s_set: :class:`bet.sample.sample_set_base`
+        :param region: region of s_set for which to calculate error
+        :type region: int
+        :param emulated_set: sample set for volume emulation
+        :type s_set: :class:`bet.sample_set_base`
+
+        :rtype tuple
+        :returns: (upper_bound, lower_bound) the upper and lower bounds
+        for the error.
+
+        """
+        # Set up marker
+        self.disc._input_sample_set.local_to_global()
+        if s_set._region is None:
+            msg = "regions must be defined for the sample set."
+            raise wrong_argument_type(msg)
+        marker = np.equal(s_set._region, region)
+        if not np.any(marker):
+            msg = "The given region does not exist."
+            raise wrong_argument_type(msg)
+            
+            
+        # Set up discretizations
         if emulated_set is not None:
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(emulated_set)
@@ -198,6 +243,7 @@ class sampling_error(object):
                                            emulated_input_sample_set = emulated_set)
             disc_new.set_emulated_ii_ptr()
         elif self.disc._emulated_input_sample_set is not None:
+            logging.warning("Using emulated_input_sample_set for volume emulation")
             disc = self.disc
             if disc._emulated_ii_ptr is None:
                 disc.set_emulated_ii_ptr()
@@ -207,6 +253,7 @@ class sampling_error(object):
             
             disc_new.set_emulated_ii_ptr()
         else:
+            logging.warning("Using input_sample_set for volume emulation")
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set._values)
             disc.set_emulated_ii_ptr()
@@ -215,12 +262,13 @@ class sampling_error(object):
                                            output_sample_set = s_set,
                                            emulated_input_sample_set = self.disc._input_sample_set)
             disc_new.set_emulated_ii_ptr()
-            
+        
+        # Emulated points in the the region
         in_A = marker[disc_new._emulated_ii_ptr_local]
         
         upper_bound = 0.0
         lower_bound = 0.0
-    
+        # Loop over contour intervals and add error contributions
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
@@ -257,7 +305,20 @@ class sampling_error(object):
         return (upper_bound, lower_bound)
 
 class model_error(object):
+    """
+    A class for calculating the error due to numerical error
+    for a discretization.
+    """
     def __init__(self, disc):
+        """
+          
+        Set things up for a given discretization
+          
+        :param disc: An object containing the discretization information.
+        :type disc: class:`bet.sample.discretization`
+        
+        """
+        # Check inputs
         if not isinstance(disc, samp.discretization):
             msg = "The argument must be of type bet.sample.discretization."
             raise wrong_argument_type(msg)
@@ -278,7 +339,15 @@ class model_error(object):
         
 
     def calculate_for_contour_events(self):
-        
+        """
+        Calculate the numerical error for each contour event.
+
+        :rtype list
+        :returns: er_list, a list of the error estimates
+        for each contour event.
+
+        """
+        # Calculate volumes if necessary
         if self.disc._input_sample_set._volumes is None:
             if self.disc._emulated_input_sample_set is not None:
                 logging.warning("Using emulated points to estimate volumes.")
@@ -286,10 +355,11 @@ class model_error(object):
             else:
                 logging.warning("Making MC assumption to estimate volumes.")
                 self.disc._input_sample_set.estimate_volume_mc()
-
+        # Localize if necessary
         if self.disc._input_sample_set._volumes_local is None:
             self.disc._input_sample_set.global_to_local()
 
+        # Loop over contour events and add contributions
         er_list = []
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
@@ -311,15 +381,39 @@ class model_error(object):
 
         return er_list
 
-    def calculate_for_marked_sample_set(self, s_set, marker, emulated_set=None):
+    def calculate_sample_set_region(self, s_set, 
+                                    region, emulated_set=None):
+        """
+        Calculate the numerical error estimate for a region of the input space
+        defined by a sample set object.
+
+        :param s_set: sample set for which to calculate error
+        :type s_set: :class:`bet.sample.sample_set_base`
+        :param region: region of s_set for which to calculate error
+        :type region: int
+        :param emulated_set: sample set for volume emulation
+        :type s_set: :class:`bet.sample_set_base`
+
+        :rtype float
+        :returns: er_est, the numerical error estimate for the region
+
+        """
+        # Set up marker
+        self.disc._input_sample_set.local_to_global()
+        if s_set._region is None:
+            msg = "regions must be defined for the sample set."
+            raise wrong_argument_type(msg)
+        marker = np.equal(s_set._region, region)
+        if not np.any(marker):
+            msg = "The given region does not exist."
+            raise wrong_argument_type(msg)
+
+        # Setup discretizations
         if emulated_set is not None:
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(emulated_set)
             disc.set_emulated_ii_ptr()
         
-            #disc_new = samp.discretization(input_sample_set = s_set,
-            #                               output_sample_set = s_set,
-            #                               emulated_input_sample_set = emulated_set)
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_input_sample_set(emulated_set)
             disc_new.set_emulated_ii_ptr()
@@ -328,12 +422,10 @@ class model_error(object):
                                                emulated_input_sample_set = emulated_set)
             disc_new_set.set_emulated_ii_ptr()
         elif self.disc._emulated_input_sample_set is not None:
+            logging.warning("Using emulated_input_sample_set for volume emulation")
             disc = self.disc
             if disc._emulated_ii_ptr is None:
                 disc.set_emulated_ii_ptr()
-            # disc_new = samp.discretization(input_sample_set = s_set,
-            #                                output_sample_set = s_set,
-            #                                emulated_input_sample_set = self.disc._emulated_input_sample_set)
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_ii_ptr()
             disc_new_set = samp.discretization(input_sample_set = s_set,
@@ -341,13 +433,10 @@ class model_error(object):
                                                emulated_input_sample_set = disc._emulated_input_sample_set)
             disc_new_set.set_emulated_ii_ptr()
         else:
+            logging.warning("Using input_sample_set for volume emulation")
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set._values)
             disc.set_emulated_ii_ptr()
-            
-            # disc_new = samp.discretization(input_sample_set = s_set,
-            #                                output_sample_set = s_set,
-            #                                emulated_input_sample_set = self.disc._input_sample_set)
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_input_sample_set(disc._input_sample_set._values)
             disc_new.set_emulated_ii_ptr()
@@ -355,17 +444,16 @@ class model_error(object):
                                                output_sample_set=s_set,
                                                emulated_input_sample_set=disc._input_sample_set._values)
             disc_new_set.set_emulated_ii_ptr()
-        # lambda_emulate = calculateP.emulate_iid_lebesgue(lam_domain, num_l_emulate)
-        # l_tree1 = spatial.KDTree(self.samples)
-        # l_tree2 = spatial.KDTree(samples_A)
-        # ptr1 = l_tree1.query(lambda_emulate)[1]
-        # ptr2 = l_tree2.query(lambda_emulate)[1]
+        
+        # Setup pointers
         ptr1 = disc._emulated_ii_ptr_local
         ptr2 = disc_new._emulated_ii_ptr_local
         ptr3 = disc_new_set._emulated_ii_ptr_local
                 
-
+        # Check if in the region
         in_A = marker[ptr3]
+
+        # Loop over contour events and add error contribution
         er_est = 0.0
         ops_num = self.disc._output_probability_set.check_num()
 

@@ -158,12 +158,13 @@ class sample_set_base(object):
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
                     '_volumes_local', '_local_index', '_dim', '_p_norm',
-                    '_radii', '_normalized_radii']
+                    '_radii', '_normalized_radii', '_region']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values', '_radii', '_normalized_radii'] 
+                   '_kdtree_values', '_radii', '_normalized_radii',
+                   '_region'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -240,12 +241,16 @@ class sample_set_base(object):
         self._p_norm = 2.0
         #: :class:`numpy.ndarray` of sample radii of shape (num,)
         self._radii = None
-         #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
+        #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
         self._radii_local = None
         #: :class:`numpy.ndarray` of normalized sample radii of shape (num,)
         self._normalized_radii = None
-         #: :class:`numpy.ndarray` of normalized sample radii of shape (local_num,)
+        #: :class:`numpy.ndarray` of normalized sample radii of shape (local_num,)
         self._normalized_radii_local = None
+        #: :class:`numpy.ndarray` of integers marking regions of the domain
+        self._region = None
+        #: :class:`numpy.ndarray` of integers marking regions of the domain
+        self._region_local = None
 
     def set_p_norm(self, p_norm):
         """
@@ -261,6 +266,36 @@ class sample_set_base(object):
         Returns p-norm for sample set
         """
         return self._p_norm
+
+    def set_region(self, region):
+        """
+        Sets region for sample set.
+
+        :param region: array of regions
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._region = region
+
+    def get_region(self):
+        """
+        Returns region.
+        """
+        return self._region
+
+    def set_region_local(self, region):
+        """
+        Sets local region for sample set.
+
+        :param region: array of regions
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._region_local = region
+
+    def get_region_local(self):
+        """
+        Returns local region.
+        """
+        return self._region_local  
         
     def update_bounds(self, num=None):
         """
@@ -753,7 +788,7 @@ class sample_set_base(object):
 
         :param emulated_sample_set: The set of samples used to approximate the
             volume measure.
-        :type emulated_sample_set: :class:`bet.sample_set_base`
+        :type emulated_sample_set: :class:`bet.sample.sample_set_base`
 
         """
         num = self.check_num()
@@ -1347,7 +1382,8 @@ class rectangle_sample_set(sample_set_base):
         self._left[-1,:] = -np.inf
         self._width = self._right - self._left
         self.set_values(values)
-        logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
+        if len(maxes) > 1:
+            logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
 
         
                     
