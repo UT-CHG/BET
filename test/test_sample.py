@@ -62,7 +62,6 @@ class Test_sample_set(unittest.TestCase):
             local_file_name = file_name
 
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -962,7 +961,6 @@ class Test_rectangle_sample_set(unittest.TestCase):
             local_file_name = file_name
 
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -1063,7 +1061,6 @@ class Test_ball_sample_set(unittest.TestCase):
         comm.barrier()
         
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -1171,7 +1168,6 @@ class Test_cartesian_sample_set(unittest.TestCase):
             local_file_name = file_name
 
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
