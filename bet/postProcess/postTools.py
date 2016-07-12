@@ -444,3 +444,57 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
         for result in results_list:
             adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
     return adjusted_total_prob
+
+class piecewise_polynomial_surrogate(object):
+    def __init__(self,
+                 input_disc):
+        """
+        """
+        if not isinstance(input_disc, sample.discretization):
+            msg = "The argument must be of type bet.sample.discretization."
+        raise wrong_argument_type(msg)
+        input_disc.check_nums()
+        self.input_disc = input_disc
+        
+    def generate_for_input_set(input_sample_set, order=0):
+        # Check inputs
+        if input_sample_set._dim != self.input_disc._input_sample_set._dim:
+            raise sample.dim_not_matching("Dimensions of input sets are not equal.")
+            
+        if input_sample_set._domain is None:
+            if self.input_disc._input_sample_set._domain is not None:
+                input_sample_set.set_domain(self.input_disc._input_sample_set._domain)
+        if input_sample_set._p_norm is None:
+            if self.input_disc._input_sample_set._p_norm is not None:
+                input_sample_set.set_p_norm(self.input_disc._input_sample_set._p_norm)
+
+        # Assumes Voronoi sample set for now
+        output_sample_set = sample.sample_set(self.input_disc._output_sample_set._dim)
+        dummy_disc = self.input_disc.copy()
+        dummy_disc.set_emulated_input_sample_set(input_sample_set)
+        dummy_disc.set_emulated_ii_ptr(globalize=False)
+
+        if order == 0:
+            new_values_local = self.input_disc._output_sample_set._values[dummy_disc._emulated_ii_ptr_local]
+            output_sample_set.set_values_local(new_values_local)
+        elif order == 1:
+            jac_local = self.input_disc._jacobians[dummy_disc._emulated_ii_ptr_local]
+            diff_local = self._input_disc._values[self.input_disc._jacobians[dummy_disc._emulated_ii_ptr_local]] - input_sample_set._values_local
+            new_values_local = np.einsum('ijk,ik->ij', jac_local, diff_local)
+           
+        if self.input_disc._error_estimates is not None:
+            new_ee = self.input_disc._output_sample_set._error_estimates[dummy_disc._emulated_ii_ptr_local]
+            output_sample_set.set_error_estimates_local(new_ee)
+
+        disc = sample.discretization(input_sample_set=input_sample_set,
+                                     output_sample_set=output_sample_set,
+                                     output_probability_set=self.input_disc._output_probability_set)
+
+        return disc
+        
+        
+        
+        
+        
+        
+       

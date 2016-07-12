@@ -4,8 +4,8 @@ r"""
 This module provides methods for calulating error estimates of 
 the probability measure for calculate probability measures.
 
-* :mod:`~bet.calculateErrors.cell_connectivity_exact` calculates the connectivity
-of cells.
+* :mod:`~bet.calculateErrors.cell_connectivity_exact` calculates 
+the connectivity of cells.
 
 """
 
@@ -237,31 +237,31 @@ class sampling_error(object):
         if emulated_set is not None:
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(emulated_set)
-            disc.set_emulated_ii_ptr()
+            disc.set_emulated_ii_ptr(globalize=False)
             disc_new = samp.discretization(input_sample_set = s_set,
                                            output_sample_set = s_set,
                                            emulated_input_sample_set = emulated_set)
-            disc_new.set_emulated_ii_ptr()
+            disc_new.set_emulated_ii_ptr(globalize=False)
         elif self.disc._emulated_input_sample_set is not None:
             logging.warning("Using emulated_input_sample_set for volume emulation")
             disc = self.disc
             if disc._emulated_ii_ptr is None:
-                disc.set_emulated_ii_ptr()
+                disc.set_emulated_ii_ptr(globalize=False)
             disc_new = samp.discretization(input_sample_set = s_set,
                                            output_sample_set = s_set,
                                            emulated_input_sample_set = self.disc._emulated_input_sample_set)
             
-            disc_new.set_emulated_ii_ptr()
+            disc_new.set_emulated_ii_ptr(globalize=False)
         else:
             logging.warning("Using input_sample_set for volume emulation")
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set._values)
-            disc.set_emulated_ii_ptr()
+            disc.set_emulated_ii_ptr(globalize=False)
             
             disc_new = samp.discretization(input_sample_set = s_set,
                                            output_sample_set = s_set,
                                            emulated_input_sample_set = self.disc._input_sample_set)
-            disc_new.set_emulated_ii_ptr()
+            disc_new.set_emulated_ii_ptr(globalize=False)
         
         # Emulated points in the the region
         in_A = marker[disc_new._emulated_ii_ptr_local]
@@ -333,9 +333,12 @@ class model_error(object):
 
         # Setup new discretization object adding error estimates
         self.disc_new = disc.copy()
-        self.disc_new._output_sample_set._values_local = None
+        # Think about parallelism here
+        #self.disc_new._output_sample_set._values_local = None
+        #if self.disc._output_sample_set._error_estimates_local is None:
+        #   self.disc._output_sample_set.global_to_local() 
         self.disc_new._output_sample_set._values += self.disc._output_sample_set._error_estimates
-        self.disc_new.set_io_ptr()
+        self.disc_new.set_io_ptr(globalize=True)
         
 
     def calculate_for_contour_events(self):
@@ -412,38 +415,38 @@ class model_error(object):
         if emulated_set is not None:
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(emulated_set)
-            disc.set_emulated_ii_ptr()
+            disc.set_emulated_ii_ptr(globalize=False)
         
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_input_sample_set(emulated_set)
-            disc_new.set_emulated_ii_ptr()
+            disc_new.set_emulated_ii_ptr(globalize=False)
             disc_new_set = samp.discretization(input_sample_set = s_set,
                                                output_sample_set = s_set,
                                                emulated_input_sample_set = emulated_set)
-            disc_new_set.set_emulated_ii_ptr()
+            disc_new_set.set_emulated_ii_ptr(globalize=False)
         elif self.disc._emulated_input_sample_set is not None:
             logging.warning("Using emulated_input_sample_set for volume emulation")
             disc = self.disc
             if disc._emulated_ii_ptr is None:
-                disc.set_emulated_ii_ptr()
+                disc.set_emulated_ii_ptr(globalize=False)
             disc_new = self.disc_new.copy()
-            disc_new.set_emulated_ii_ptr()
+            disc_new.set_emulated_ii_ptr(globalize=False)
             disc_new_set = samp.discretization(input_sample_set = s_set,
                                                output_sample_set = s_set,
                                                emulated_input_sample_set = disc._emulated_input_sample_set)
-            disc_new_set.set_emulated_ii_ptr()
+            disc_new_set.set_emulated_ii_ptr(globalize=False)
         else:
             logging.warning("Using input_sample_set for volume emulation")
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set._values)
-            disc.set_emulated_ii_ptr()
+            disc.set_emulated_ii_ptr(globalize=False)
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_input_sample_set(disc._input_sample_set._values)
-            disc_new.set_emulated_ii_ptr()
+            disc_new.set_emulated_ii_ptr(globalize=False)
             disc_new_set = samp.discretization(input_sample_set=s_set,
                                                output_sample_set=s_set,
                                                emulated_input_sample_set=disc._input_sample_set._values)
-            disc_new_set.set_emulated_ii_ptr()
+            disc_new_set.set_emulated_ii_ptr(globalize=False)
         
         # Setup pointers
         ptr1 = disc._emulated_ii_ptr_local

@@ -18,6 +18,7 @@ import numpy as np
 from bet.Comm import comm, MPI 
 import bet.util as util
 import bet.sampling.basicSampling as bsam
+import logging
 
 def prob_on_emulated_samples(discretization, globalize=True): 
     r"""
@@ -165,8 +166,9 @@ def prob_from_sample_set(set_old, set_new, set_emulate):
     # Set up probability vectors
     prob_new = np.zeros((num_new,))
     prob_em = np.zeros((len(ptr1), ))
-    
+
     # Loop over old cells and divide probability over emulated cells
+    warn = False
     for i in range(num_old):
         if set_old._probabilities[i] > 0.0:
             Itemp = np.equal(ptr1, i)
@@ -174,7 +176,16 @@ def prob_from_sample_set(set_old, set_new, set_emulate):
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:
                 prob_em[Itemp] += set_old._probabilities[i]/float(Itemp_sum)
-
+            else:
+                warn = True
+    # Warn that some cells have no emulated points in them
+    if warn:
+        msg = "Some old cells have no emulated points in them. "
+        msg += "Renormalizing probability."
+        logging.warning(msg)
+        total_prob = np.sum(prob_em)
+        total_prob = comm.allreduce(total_prob, op=MPI.SUM)
+        prob_em = prob_em/total_prob
     # Loop over new cells and distribute probability from emulated cells
     for i in range(num_new):
         Itemp = np.equal(ptr2, i)

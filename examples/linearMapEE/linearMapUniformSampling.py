@@ -31,6 +31,7 @@ import bet.calculateP.calculateP as calculateP
 import bet.calculateP.calculateError as calculateError
 import bet.postProcess.plotP as plotP
 import bet.postProcess.plotDomains as plotD
+import bet.postProcess.postTools as postTools
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 from bet.Comm import comm, MPI
@@ -126,19 +127,11 @@ else:
         data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
         M=50, num_d_emulate=1E5)
 
-# emulated_inputs = bsam.random_sample_set('r',
-#                                          my_discretization._input_sample_set._domain,
-#                                          num_samples = 10001,
-#                                          globalize=True)
-num_l_emulate = 10001
-num_l_emulate = (num_l_emulate/comm.size) + (comm.rank < num_l_emulate%comm.size)
-lam_domain = my_discretization._input_sample_set._domain
-lam_width = lam_domain[:,1] - lam_domain[:,0]
-lambda_emulate = lam_width*np.random.random((num_l_emulate,lam_domain.shape[0])) + lam_domain[:,0]
+emulated_inputs = bsam.random_sample_set('r',
+                                         my_discretization._input_sample_set._domain,
+                                         num_samples = 10001,
+                                         globalize=True)
 
-emulated_inputs = samp.sample_set(3)
-emulated_inputs.set_domain(lam_domain)
-emulated_inputs.set_values_local(lambda_emulate)
 my_discretization._output_sample_set._error_estimates = 0.1 * np.ones(my_discretization._output_sample_set._values.shape)
 # calculate probablities
 calculateP.prob(my_discretization)
@@ -146,20 +139,35 @@ calculateP.prob(my_discretization)
 se = calculateError.sampling_error(my_discretization, exact=True)
 
 (h,l) = se.calculate_for_contour_events()
-print (h,l)
+if comm.rank == 0:
+    print (h,l)
 
 s_set = samp.rectangle_sample_set(3)
 s_set.setup(maxes=[[0.75, 0.75, 0.75]], mins=[[0.25, 0.25, 0.25]])
-s_set.set_region(np.array([0,1]))
+#s_set.set_region(np.array([0,1]))
 (h,l) = se.calculate_sample_set_region(s_set=s_set,
                                        region=0,
                                        emulated_set=emulated_inputs)
-
-print (h,l)
+if comm.rank == 0:
+    print (h,l)
 me = calculateError.model_error(my_discretization)
 e = me.calculate_for_contour_events()
-print e
+
+if comm.rank == 0:
+    print e
 e = me.calculate_sample_set_region(s_set=s_set,
-                                       region=0,
-                                           emulated_set=emulated_inputs)
-print e
+                                   region=0,
+                                   emulated_set=emulated_inputs)
+if comm.rank == 0:
+    print e
+
+calculateP.prob_from_sample_set(my_discretization._input_sample_set,
+                                s_set,
+                                emulated_inputs)
+if comm.rank == 0:
+    print  s_set._probabilities
+
+print np.sum(my_discretization._input_sample_set._probabilities)
+
+sur = postTools.piecewise_polynomial_surrogate(my_discretization)
+sur.generate_for_input_set(emulated_inputs)

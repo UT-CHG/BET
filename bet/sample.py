@@ -1384,6 +1384,7 @@ class rectangle_sample_set(sample_set_base):
         self.set_values(values)
         if len(maxes) > 1:
             logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
+        self._region = np.arange(len(maxes) + 1) 
 
         
                     
@@ -1550,7 +1551,9 @@ class ball_sample_set(sample_set_base):
         self._radii = np.zeros((len(centers)+1,))
         self._radii[0:-1] = radii
         self._radii[-1] = np.inf
-        logging.warning("If balls intersect on a set nonzero measure, calculated values will be wrong.")
+        if len(centers) > 1:
+            logging.warning("If balls intersect on a set nonzero measure, calculated values will be wrong.")
+        self._region = np.arange(len(centers) + 1)
 
     def append_values(self, values):
         """
