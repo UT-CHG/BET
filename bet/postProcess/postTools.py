@@ -7,6 +7,7 @@ from bet.Comm import comm
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
+import bet.calculateP.calculateError as calculateError
 import logging
 
 class dim_not_matching(Exception):
@@ -452,11 +453,13 @@ class piecewise_polynomial_surrogate(object):
         """
         if not isinstance(input_disc, sample.discretization):
             msg = "The argument must be of type bet.sample.discretization."
-        raise wrong_argument_type(msg)
+            raise calculateError.wrong_argument_type(msg)
         input_disc.check_nums()
         self.input_disc = input_disc
+        self.input_disc._input_sample_set.local_to_global()
+        self.input_disc._output_sample_set.local_to_global()
         
-    def generate_for_input_set(input_sample_set, order=0):
+    def generate_for_input_set(self, input_sample_set, order=0):
         # Check inputs
         if input_sample_set._dim != self.input_disc._input_sample_set._dim:
             raise sample.dim_not_matching("Dimensions of input sets are not equal.")
@@ -478,11 +481,11 @@ class piecewise_polynomial_surrogate(object):
             new_values_local = self.input_disc._output_sample_set._values[dummy_disc._emulated_ii_ptr_local]
             output_sample_set.set_values_local(new_values_local)
         elif order == 1:
-            jac_local = self.input_disc._jacobians[dummy_disc._emulated_ii_ptr_local]
-            diff_local = self._input_disc._values[self.input_disc._jacobians[dummy_disc._emulated_ii_ptr_local]] - input_sample_set._values_local
+            jac_local = self.input_disc._input_sample_set._jacobians[dummy_disc._emulated_ii_ptr_local]
+            diff_local = self.input_disc._input_sample_set._values[dummy_disc._emulated_ii_ptr_local] - input_sample_set._values_local
             new_values_local = np.einsum('ijk,ik->ij', jac_local, diff_local)
            
-        if self.input_disc._error_estimates is not None:
+        if self.input_disc._output_sample_set._error_estimates is not None:
             new_ee = self.input_disc._output_sample_set._error_estimates[dummy_disc._emulated_ii_ptr_local]
             output_sample_set.set_error_estimates_local(new_ee)
 

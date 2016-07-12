@@ -1785,6 +1785,18 @@ class discretization(object):
         else:
             return in_num
 
+    def globalize_ptrs(self):
+        """
+        Globalizes discretization pointers.
+
+        """
+        if (self._io_ptr_local is not None) and  (self._io_ptr is  None):
+            self._io_ptr = util.get_global_values(self._io_ptr_local)
+        if (self._emulated_ii_ptr_local is not None) and  (self._emulated_ii_ptr is  None):
+            self._emulated_ii_ptr = util.get_global_values(self._emulated_ii_ptr_local)
+        if (self._emulated_oo_ptr_local is not None) and  (self._emulated_oo_ptr is  None):
+            self._emulated_oo_ptr = util.get_global_values(self._emulated_oo_ptr_local)
+
     def set_io_ptr(self, globalize=True):
         """
         

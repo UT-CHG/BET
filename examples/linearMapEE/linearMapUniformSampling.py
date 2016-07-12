@@ -170,4 +170,27 @@ if comm.rank == 0:
 print np.sum(my_discretization._input_sample_set._probabilities)
 
 sur = postTools.piecewise_polynomial_surrogate(my_discretization)
-sur.generate_for_input_set(emulated_inputs)
+sur_disc = sur.generate_for_input_set(emulated_inputs)
+sur_disc._input_sample_set.estimate_volume_mc()
+#import pdb
+#pdb.set_trace()
+me = calculateError.model_error(sur_disc)
+e = me.calculate_for_contour_events()
+
+if comm.rank == 0:
+    print e
+num = my_discretization.check_nums()
+pb = np.zeros((num,2,3))
+pb[:,:,:] =  np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]]).transpose()
+my_discretization._input_sample_set.set_jacobians(pb)
+
+sur = postTools.piecewise_polynomial_surrogate(my_discretization)
+sur_disc = sur.generate_for_input_set(emulated_inputs, order=1)
+sur_disc._input_sample_set.estimate_volume_mc()
+#import pdb
+#pdb.set_trace()
+me = calculateError.model_error(sur_disc)
+e = me.calculate_for_contour_events()
+
+if comm.rank == 0:
+    print e

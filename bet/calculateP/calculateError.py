@@ -16,7 +16,6 @@ import logging
 import scipy.spatial as spatial
 import bet.util as util
 import bet.calculateP.calculateP as calculateP
-import bet.postProcess.postTools as postTools
 import bet.sample as samp
 
 class wrong_argument_type(Exception):
@@ -322,23 +321,28 @@ class model_error(object):
         if not isinstance(disc, samp.discretization):
             msg = "The argument must be of type bet.sample.discretization."
             raise wrong_argument_type(msg)
-        if disc._output_sample_set._error_estimates is None:
-            msg = "Error estimates for the output sample set are required."
-            raise wrong_argument_type(msg)
-
+        disc._output_sample_set.global_to_local()
         self.disc = disc 
+        if self.disc._output_sample_set._error_estimates is None:
+            if self.disc._output_sample_set._error_estimates_local is None:
+                msg = "Error estimates for the output sample set are required."
+                raise wrong_argument_type(msg)
+        #self.disc._output_sample_set.global_to_local()
+
         self.num = self.disc.check_nums()
         if self.disc._io_ptr_local is None:
             self.disc.set_io_ptr()
 
         # Setup new discretization object adding error estimates
         self.disc_new = disc.copy()
+        
         # Think about parallelism here
         #self.disc_new._output_sample_set._values_local = None
         #if self.disc._output_sample_set._error_estimates_local is None:
         #   self.disc._output_sample_set.global_to_local() 
-        self.disc_new._output_sample_set._values += self.disc._output_sample_set._error_estimates
-        self.disc_new.set_io_ptr(globalize=True)
+        self.disc_new._output_sample_set._values_local += self.disc._output_sample_set._error_estimates_local
+        self.disc_new.set_io_ptr(globalize=False) #True)
+        self.disc_new._io_ptr = None
         
 
     def calculate_for_contour_events(self):
@@ -413,6 +417,9 @@ class model_error(object):
 
         # Setup discretizations
         if emulated_set is not None:
+            self.disc.globalize_ptrs()
+            self.disc_new.globalize_ptrs()
+
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(emulated_set)
             disc.set_emulated_ii_ptr(globalize=False)
@@ -426,8 +433,10 @@ class model_error(object):
             disc_new_set.set_emulated_ii_ptr(globalize=False)
         elif self.disc._emulated_input_sample_set is not None:
             logging.warning("Using emulated_input_sample_set for volume emulation")
+            self.disc.globalize_ptrs()
+            self.disc_new.globalize_ptrs()
             disc = self.disc
-            if disc._emulated_ii_ptr is None:
+            if disc._emulated_ii_ptr_local is None:
                 disc.set_emulated_ii_ptr(globalize=False)
             disc_new = self.disc_new.copy()
             disc_new.set_emulated_ii_ptr(globalize=False)
@@ -437,6 +446,9 @@ class model_error(object):
             disc_new_set.set_emulated_ii_ptr(globalize=False)
         else:
             logging.warning("Using input_sample_set for volume emulation")
+            # Next two lines not necessary for this case. should make new method
+            self.disc.globalize_ptrs()
+            self.disc_new.globalize_ptrs()
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set._values)
             disc.set_emulated_ii_ptr(globalize=False)
@@ -475,5 +487,5 @@ class model_error(object):
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
                 er_est += self.disc._output_probability_set._probabilities[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
-
+               
         return er_est
