@@ -158,13 +158,14 @@ class sample_set_base(object):
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
                     '_volumes_local', '_local_index', '_dim', '_p_norm',
-                    '_radii', '_normalized_radii', '_region']
+                    '_radii', '_normalized_radii', '_region', '_region_local',
+                    '_error_id', '_error_id_local']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
                    '_kdtree_values', '_radii', '_normalized_radii',
-                   '_region'] 
+                   '_region', '_error_id'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -251,6 +252,10 @@ class sample_set_base(object):
         self._region = None
         #: :class:`numpy.ndarray` of integers marking regions of the domain
         self._region_local = None
+        #: :class:`numpy.ndarray` of error identifiers  of shape (num,)
+        self._error_id = None
+        #: :class:`numpy.ndarray` of error identifiers  of shape (local_num,)
+        self._error_id_local = None
 
     def set_p_norm(self, p_norm):
         """
@@ -296,6 +301,36 @@ class sample_set_base(object):
         Returns local region.
         """
         return self._region_local  
+
+    def set_error_id(self, error_id):
+        """
+        Sets error_id for sample set.
+
+        :param error_id: array of error identifiers
+        :type error_id: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._error_id = error_id
+
+    def get_error_id(self):
+        """
+        Returns error identifiers.
+        """
+        return self._error_id
+
+    def set_error_id_local(self, error_id):
+        """
+        Sets local error id for sample set.
+
+        :param error_id: array of error identifiers
+        :type error_id: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._error_local = error_id
+
+    def get_error_id_local(self):
+        """
+        Returns local error identifier.
+        """
+        return self._error_id_local
         
     def update_bounds(self, num=None):
         """

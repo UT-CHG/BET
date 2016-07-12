@@ -145,7 +145,7 @@ if comm.rank == 0:
 s_set = samp.rectangle_sample_set(3)
 s_set.setup(maxes=[[0.75, 0.75, 0.75]], mins=[[0.25, 0.25, 0.25]])
 #s_set.set_region(np.array([0,1]))
-(h,l) = se.calculate_sample_set_region(s_set=s_set,
+(h,l) = se.calculate_for_sample_set_region(s_set=s_set,
                                        region=0,
                                        emulated_set=emulated_inputs)
 if comm.rank == 0:
@@ -155,7 +155,7 @@ e = me.calculate_for_contour_events()
 
 if comm.rank == 0:
     print e
-e = me.calculate_sample_set_region(s_set=s_set,
+e = me.calculate_for_sample_set_region(s_set=s_set,
                                    region=0,
                                    emulated_set=emulated_inputs)
 if comm.rank == 0:
@@ -191,6 +191,11 @@ sur_disc._input_sample_set.estimate_volume_mc()
 #pdb.set_trace()
 me = calculateError.model_error(sur_disc)
 e = me.calculate_for_contour_events()
+
+if comm.rank == 0:
+    print e
+e = me.calculate_for_sample_set_region(s_set=s_set,
+                                      region=0)
 
 if comm.rank == 0:
     print e

@@ -203,7 +203,7 @@ class sampling_error(object):
 
         return (up_list, low_list)
 
-    def calculate_sample_set_region(self, s_set, 
+    def calculate_for_sample_set_region(self, s_set, 
                                      region, emulated_set=None):
         """
         Calculate the sampling error bounds for a region of the input space
@@ -214,7 +214,7 @@ class sampling_error(object):
         :param region: region of s_set for which to calculate error
         :type region: int
         :param emulated_set: sample set for volume emulation
-        :type s_set: :class:`bet.sample_set_base`
+        :type emulated_set: :class:`bet.sample_set_base`
 
         :rtype tuple
         :returns: (upper_bound, lower_bound) the upper and lower bounds
@@ -302,6 +302,7 @@ class sampling_error(object):
                 upper_bound += self.disc._output_probability_set._probabilities[i]*max(term1,term2)
                 lower_bound += self.disc._output_probability_set._probabilities[i]*min(term1,term2)
         return (upper_bound, lower_bound)
+                                       
 
 class model_error(object):
     """
@@ -388,7 +389,7 @@ class model_error(object):
 
         return er_list
 
-    def calculate_sample_set_region(self, s_set, 
+    def calculate_for_sample_set_region(self, s_set, 
                                     region, emulated_set=None):
         """
         Calculate the numerical error estimate for a region of the input space
@@ -399,14 +400,13 @@ class model_error(object):
         :param region: region of s_set for which to calculate error
         :type region: int
         :param emulated_set: sample set for volume emulation
-        :type s_set: :class:`bet.sample_set_base`
+        :type emulated_sample_set: :class:`bet.sample_set_base`
 
         :rtype float
         :returns: er_est, the numerical error estimate for the region
 
         """
         # Set up marker
-        self.disc._input_sample_set.local_to_global()
         if s_set._region is None:
             msg = "regions must be defined for the sample set."
             raise wrong_argument_type(msg)
@@ -417,6 +417,7 @@ class model_error(object):
 
         # Setup discretizations
         if emulated_set is not None:
+            self.disc._input_sample_set.local_to_global()
             self.disc.globalize_ptrs()
             self.disc_new.globalize_ptrs()
 
@@ -424,45 +425,47 @@ class model_error(object):
             disc.set_emulated_input_sample_set(emulated_set)
             disc.set_emulated_ii_ptr(globalize=False)
         
-            disc_new = self.disc_new.copy()
-            disc_new.set_emulated_input_sample_set(emulated_set)
-            disc_new.set_emulated_ii_ptr(globalize=False)
+            #disc_new = self.disc_new.copy()
+            #disc_new.set_emulated_input_sample_set(emulated_set)
+            #disc_new.set_emulated_ii_ptr(globalize=False)
             disc_new_set = samp.discretization(input_sample_set = s_set,
                                                output_sample_set = s_set,
                                                emulated_input_sample_set = emulated_set)
             disc_new_set.set_emulated_ii_ptr(globalize=False)
         elif self.disc._emulated_input_sample_set is not None:
+            self.disc._input_sample_set.local_to_global()
             logging.warning("Using emulated_input_sample_set for volume emulation")
             self.disc.globalize_ptrs()
             self.disc_new.globalize_ptrs()
             disc = self.disc
             if disc._emulated_ii_ptr_local is None:
                 disc.set_emulated_ii_ptr(globalize=False)
-            disc_new = self.disc_new.copy()
+            #disc_new = self.disc_new.copy()
             disc_new.set_emulated_ii_ptr(globalize=False)
             disc_new_set = samp.discretization(input_sample_set = s_set,
                                                output_sample_set = s_set,
                                                emulated_input_sample_set = disc._emulated_input_sample_set)
             disc_new_set.set_emulated_ii_ptr(globalize=False)
         else:
-            logging.warning("Using input_sample_set for volume emulation")
-            # Next two lines not necessary for this case. should make new method
-            self.disc.globalize_ptrs()
-            self.disc_new.globalize_ptrs()
-            disc = self.disc.copy()
-            disc.set_emulated_input_sample_set(disc._input_sample_set._values)
-            disc.set_emulated_ii_ptr(globalize=False)
-            disc_new = self.disc_new.copy()
-            disc_new.set_emulated_input_sample_set(disc._input_sample_set._values)
-            disc_new.set_emulated_ii_ptr(globalize=False)
-            disc_new_set = samp.discretization(input_sample_set=s_set,
-                                               output_sample_set=s_set,
-                                               emulated_input_sample_set=disc._input_sample_set._values)
-            disc_new_set.set_emulated_ii_ptr(globalize=False)
+            logging.warning("Using MC assumption for volumes.")
+            return self.calculate_for_sample_set_region_mc(s_set, region)
+            # # Next two lines not necessary for this case. should make new method
+            # self.disc.globalize_ptrs()
+            # self.disc_new.globalize_ptrs()
+            # disc = self.disc.copy()
+            # disc.set_emulated_input_sample_set(disc._input_sample_set._values)
+            # disc.set_emulated_ii_ptr(globalize=False)
+            # disc_new = self.disc_new.copy()
+            # disc_new.set_emulated_input_sample_set(disc._input_sample_set._values)
+            # disc_new.set_emulated_ii_ptr(globalize=False)
+            # disc_new_set = samp.discretization(input_sample_set=s_set,
+            #                                    output_sample_set=s_set,
+            #                                    emulated_input_sample_set=disc._input_sample_set._values)
+            # disc_new_set.set_emulated_ii_ptr(globalize=False)
         
         # Setup pointers
         ptr1 = disc._emulated_ii_ptr_local
-        ptr2 = disc_new._emulated_ii_ptr_local
+        #ptr2 = disc_new._emulated_ii_ptr_local
         ptr3 = disc_new_set._emulated_ii_ptr_local
                 
         # Check if in the region
@@ -487,5 +490,73 @@ class model_error(object):
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
                 er_est += self.disc._output_probability_set._probabilities[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+               
+        return er_est
+
+    def calculate_for_sample_set_region_mc(self, s_set, 
+                                       region):
+        """
+        Calculate the numerical error estimate for a region of the input space
+        defined by a sample set object, using the MC assumption.
+
+        :param s_set: sample set for which to calculate error
+        :type s_set: :class:`bet.sample.sample_set_base`
+        :param region: region of s_set for which to calculate error
+        :type region: int
+
+        :rtype float
+        :returns: er_est, the numerical error estimate for the region
+
+        """
+        # Set up marker
+        if s_set._region is None:
+            msg = "regions must be defined for the sample set."
+            raise wrong_argument_type(msg)
+        marker = np.equal(s_set._region, region)
+        if not np.any(marker):
+            msg = "The given region does not exist."
+            raise wrong_argument_type(msg)
+
+        disc_new_set = samp.discretization(input_sample_set=s_set,
+                                           output_sample_set=s_set,
+                                           emulated_input_sample_set=self.disc._input_sample_set)
+        disc_new_set.set_emulated_ii_ptr(globalize=False)
+        #ptr3 = disc_new_set._emulated_ii_ptr_local
+        # Check if in the region
+        in_A = marker[disc_new_set._emulated_ii_ptr_local]
+
+        # Loop over contour events and add error contribution
+        er_est = 0.0
+        ops_num = self.disc._output_probability_set.check_num()
+        for i in range(ops_num):
+            if self.disc._output_probability_set._probabilities[i] > 0.0:
+                #indices1 = np.equal(self.disc._io_ptr ,i)
+                #in_Ai1 = indices1[ptr1]
+                in_Ai1 = np.equal(self.disc._io_ptr_local, i)
+                #indices2 = np.equal(self.disc_new._io_ptr ,i)
+                #in_Ai2 = indices2[ptr1]
+                in_Ai2 = np.equal(self.disc_new._io_ptr_local, i)
+                JiA_local = float(np.sum(np.logical_and(in_A,in_Ai1)))
+                JiA = comm.allreduce(JiA_local, op=MPI.SUM)
+                Ji_local = float(np.sum(in_Ai1))
+                Ji = comm.allreduce(Ji_local, op=MPI.SUM)
+                JiAe_local = float(np.sum(np.logical_and(in_A,in_Ai2)))
+                JiAe = comm.allreduce(JiAe_local, op=MPI.SUM)
+                Jie_local = float(np.sum(in_Ai2))
+                Jie = comm.allreduce(Jie_local, op=MPI.SUM)
+                er_cont = self.disc._output_probability_set._probabilities[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+                er_est += er_cont
+                error_cells1 = np.logical_and(np.logical_and(in_Ai1, np.logical_not(in_A)), np.logical_and(in_A2, in_A))
+                error_cells2 = np.logical_and(np.logical_and(in_Ai2, np.logical_not(in_A)), np.logical_and(in_A1, in_A))
+                #error_cells3 = np.logical_and(in_Ai1, np.logical_not(in_Ai2))
+                #error_cells4 = np.logical_and(in_Ai2, np.logical_not(in_Ai1))
+                error_cells3 = np.not_equal(in_Ai1, in_Ai2)
+                error_cells = np.logical_or(error_cells1, error_cells2)
+                error_cells = np.logical_or(error_cells, error_cells3)
+                #error_cells = np.logical_or(error_cells, error_cells4)
+
+                error_cells_num_local = float(np.sum(error_cells))
+                error_cells_num = comm.allreduce(error_cells_num_local, op=MPI.SUM)
+                self.disc._output_sample_set._error_id_local += er_cont/error_cells_num
                
         return er_est
