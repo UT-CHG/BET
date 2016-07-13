@@ -110,8 +110,7 @@ def test_loadmat_parallel():
     bet.sample.save_discretization(disc(my_input2, None),
             file_name2, "NAME", globalize=False)
 
-    (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
-        'testfile1'))
+    (loaded_sampler1, discretization1) = bsam.loadmat(file_name1)
     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
             my_input1.get_values())
     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
@@ -119,19 +118,19 @@ def test_loadmat_parallel():
     assert loaded_sampler1.num_samples == 5
     assert loaded_sampler1.lb_model is None
 
-    (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
-        'testfile2'), disc_name="NAME", model=model)
+    (loaded_sampler2, discretization2) = bsam.loadmat(file_name2,
+        disc_name="NAME", model=model)
     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
             my_input2.get_values())
     assert discretization2._output_sample_set is None
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
-    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
-        os.remove(os.path.join(local_path, 'testfile1.mat'))
-    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
-        os.remove(os.path.join(local_path, 'testfile2.mat'))
-
-
+    if comm.size == 0:
+        os.remove(file_name1)
+        os.remove(file_name2)
+    else:
+        os.remove(local_file_name1)
+        os.remove(local_file_name2)
 
 def verify_compute_QoI_and_create_discretization(model, sampler,
                                                  input_sample_set,
