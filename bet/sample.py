@@ -169,7 +169,9 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         # if the number of processors is the same then set mdat to
         # be the one with the matching processor number (doesn't
         # really matter)
-        return load_sample_set(mdat_files[comm.rank], sample_set_name)
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        return load_sample_set(local_file_name, sample_set_name)
     else:
         logging.info("Loading {} sample set using parallel files (diff nproc)"\
             .format(sample_set_name))        
