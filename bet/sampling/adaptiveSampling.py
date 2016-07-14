@@ -43,6 +43,9 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
     :returns: (``sampler``, ``discretization``, ``all_step_ratios``, ``kern_old``)
     
     """
+    print hot_start
+    if hot_start is None:
+        hot_start = 1
    # LOAD FILES
     if hot_start == 1: # HOT START FROM PARTIAL RUN
         if comm.rank == 0:
