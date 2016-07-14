@@ -75,21 +75,22 @@ def test_loadmat_parallel():
 
     """
     np.random.seed(1)
-    mdat1 = {'num_samples':5}
-    mdat2 = {'num_samples':6}
+    mdat1 = {'num_samples':10}
+    mdat2 = {'num_samples':20}
     model = "this is not a model"
 
     my_input1 = sample_set(1)
     my_input1.set_values_local(np.array_split(np.random.random((10,1)),
-        comm.size)[comm.rank]
+        comm.size)[comm.rank])
     my_output = sample_set(1)
     my_output.set_values_local(np.array_split(np.random.random((10,1)),
-        comm.size)[comm.rank] my_input2 = sample_set(1)
+        comm.size)[comm.rank]) 
+    my_input2 = sample_set(1)
     my_input2.set_values_local(np.array_split(np.random.random((20,1)),
-        comm.size)[comm.rank]
+        comm.size)[comm.rank])
 
-    file_name1 = 'testfile1'
-    file_name2 = 'testfile2'
+    file_name1 = 'testfile1.mat'
+    file_name2 = 'testfile2.mat'
 
     if comm.size > 1 and not globalize:
         local_file_name1 = os.path.os.path.join(os.path.dirname(file_name1),
@@ -115,7 +116,7 @@ def test_loadmat_parallel():
             my_input1.get_values())
     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
             my_output.get_values())
-    assert loaded_sampler1.num_samples == 5
+    assert loaded_sampler1.num_samples == 10
     assert loaded_sampler1.lb_model is None
 
     (loaded_sampler2, discretization2) = bsam.loadmat(file_name2,
@@ -123,9 +124,9 @@ def test_loadmat_parallel():
     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
             my_input2.get_values())
     assert discretization2._output_sample_set is None
-    assert loaded_sampler2.num_samples == 6
+    assert loaded_sampler2.num_samples == 20
     assert loaded_sampler2.lb_model == model
-    if comm.size == 0:
+    if comm.size == 1:
         os.remove(file_name1)
         os.remove(file_name2)
     else:

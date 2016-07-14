@@ -52,16 +52,17 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         base_name = os.path.dirname(save_file)
         mdat_files = glob.glob(os.path.join(save_dir,
                 "proc*_{}".format(base_name)))
-        tmp_mdat = sio.loadmat(mdat_files[comm.rank])
+        if len(mdat_files) > 0:
+            tmp_mdat = sio.loadmat(mdat_files[comm.rank])
         if num_chains is None: 
             num_chains = tmp_mdat['num_chains']
-        num_chains_pproc = num_chains / comm.rank
+        num_chains_pproc = num_chains / comm.size
         if len(mdat_files) == 0:
             logging.info("HOT START using serial file")
             mdat = sio.loadmat(save_file)
             if num_chains is None: 
                 num_chains = mdat['num_chains']
-            num_chains_pproc = num_chains / comm.rank
+            num_chains_pproc = num_chains / comm.size
             disc = sample.load_discretization(save_file)
             kern_old = np.squeeze(mdat['kern_old'])
             all_step_ratios = np.squeeze(mdat['step_ratios'])
@@ -141,7 +142,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         mdat = sio.loadmat(save_file)
         if num_chains is None: 
             num_chains = mdat['num_chains']
-        num_chains_pproc = num_chains / comm.rank
+        num_chains_pproc = num_chains / comm.size
         disc = sample.load_discretization(save_file)
         kern_old = np.squeeze(mdat['kern_old'])
         all_step_ratios = np.squeeze(mdat['step_ratios'])
