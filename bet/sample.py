@@ -420,7 +420,7 @@ class sample_set_base(object):
             if num_local is None:
                 num_local = 0
             num = comm.allreduce(num_local, op=MPI.SUM)
-        
+           
         return num
 
     def check_num_local(self):
@@ -855,8 +855,8 @@ class sample_set_base(object):
             self._volumes = 1.0/float(num)*np.ones((num,))
             self.global_to_local()
         else:
-            num_local = self.check_num_local
-            self._volumes = 1.0/float(num)*np.ones((num_local,))
+            num_local = self.check_num_local()
+            self._volumes_local = 1.0/float(num)*np.ones((num_local,))
 
     def global_to_local(self):
         """

@@ -450,7 +450,7 @@ class model_error(object):
             disc = self.disc
             if disc._emulated_ii_ptr_local is None:
                 disc.set_emulated_ii_ptr(globalize=False)
-            disc_new.set_emulated_ii_ptr(globalize=False)
+            self.disc_new.set_emulated_ii_ptr(globalize=False)
             disc_new_set = samp.discretization(input_sample_set = s_set,
                                                output_sample_set = s_set,
                                                emulated_input_sample_set = disc._emulated_input_sample_set)

@@ -34,6 +34,9 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
 
     """
     def setUp(self):
+        """
+        Setup map.
+        """
         param_ref = np.array([0.5, 0.5, 0.5])
         Q_ref =  linear_model1(param_ref)
         
@@ -44,9 +47,9 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         disc = sampler.compute_QoI_and_create_discretization(input_samples, 
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-        data_set=disc, Q_ref=Q_ref, rect_scale=0.25)
+        data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
         num = disc.check_nums()
-        disc._output_sample_set.set_error_estimates(0.1 * np.ones((num, 2)))
+        disc._output_sample_set.set_error_estimates(0.01 * np.ones((num, 2)))
         jac = np.zeros((num,2,3))
         jac[:,:,:] = np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]]).transpose()
 
@@ -54,6 +57,9 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         self.sur = surrogates.piecewise_polynomial_surrogate(disc)
 
     def Test_constants(self):
+        """
+        Test for piecewise constants.
+        """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
                                      num_samples = 10,
@@ -64,9 +70,21 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         nptest.assert_array_equal(sur_disc._input_sample_set._domain,
                                   self.sur.input_disc._input_sample_set._domain)
         sur_disc._input_sample_set._values_local[0,:]
+        s_set = sur_disc._input_sample_set.copy()
+        sur_disc.set_io_ptr()
+        regions_local = np.equal(sur_disc._io_ptr_local, 0)
+        s_set.set_region_local(regions_local)
+        s_set.local_to_global()
+        s_set.check_num()
+        self.sur.calculate_prob_for_sample_set_region(s_set, 
+                                                      regions=[0],
+                                                      update_input=True)
         
         
     def Test_linears(self):
+        """
+        Test for piecewise linears.
+        """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
                                      num_samples = 10,
@@ -77,6 +95,15 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         nptest.assert_array_equal(sur_disc._input_sample_set._domain,
                                   self.sur.input_disc._input_sample_set._domain)
         sur_disc._input_sample_set._values_local[0,:]
+        s_set = sur_disc._input_sample_set.copy()
+        sur_disc.set_io_ptr()
+        regions_local = np.equal(sur_disc._io_ptr_local, 0)
+        s_set.set_region_local(regions_local)
+        s_set.local_to_global()
+        s_set.check_num()
+        self.sur.calculate_prob_for_sample_set_region(s_set, 
+                                                      regions=[0],
+                                                      update_input=True)
 
 class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
     """
@@ -85,6 +112,9 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
 
     """
     def setUp(self):
+        """
+        Setup problem.
+        """
         param_ref = np.array([0.5, 0.5, 0.5])
         Q_ref =  linear_model2(param_ref)
         
@@ -95,9 +125,9 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         disc = sampler.compute_QoI_and_create_discretization(input_samples, 
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-        data_set=disc, Q_ref=Q_ref, rect_scale=0.25)
+        data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
         num = disc.check_nums()
-        disc._output_sample_set.set_error_estimates(0.1 * np.ones((num, 1)))
+        disc._output_sample_set.set_error_estimates(0.01 * np.ones((num, 1)))
         jac = np.zeros((num,1,3))
         jac[:,:,:] = np.array([[0.506],[0.253], [0.085]]).transpose()
 
@@ -105,6 +135,9 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         self.sur = surrogates.piecewise_polynomial_surrogate(disc)
 
     def Test_constants(self):
+        """
+        Test for piecewise constants.
+        """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
                                      num_samples = 10,
@@ -115,9 +148,22 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         nptest.assert_array_equal(sur_disc._input_sample_set._domain,
                                   self.sur.input_disc._input_sample_set._domain)
         sur_disc._input_sample_set._values_local[0,:]
+
+        s_set = sur_disc._input_sample_set.copy()
+        sur_disc.set_io_ptr()
+        regions_local = np.equal(sur_disc._io_ptr_local, 0)
+        s_set.set_region_local(regions_local)
+        s_set.local_to_global()
+        s_set.check_num()
+        self.sur.calculate_prob_for_sample_set_region(s_set, 
+                                                      regions=[0],
+                                                      update_input=True)
         
         
     def Test_linears(self):
+        """
+        Test for piecewise linears.
+        """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
                                      num_samples = 10,
@@ -129,6 +175,16 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
                                   self.sur.input_disc._input_sample_set._domain)
         sur_disc._input_sample_set._values_local[0,:]
 
+        s_set = sur_disc._input_sample_set.copy()
+        sur_disc.set_io_ptr()
+        regions_local = np.equal(sur_disc._io_ptr_local, 0)
+        s_set.set_region_local(regions_local)
+        s_set.local_to_global()
+        s_set.check_num()
+        self.sur.calculate_prob_for_sample_set_region(s_set, 
+                                                      regions=[0],
+                                                      update_input=True)
+
 class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
     """
     Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a 
@@ -136,6 +192,9 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
 
     """
     def setUp(self):
+        """
+        Setup maps
+        """
         param_ref = np.array([0.5])
         Q_ref =  linear_model3(param_ref)
         
@@ -146,16 +205,20 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         disc = sampler.compute_QoI_and_create_discretization(input_samples, 
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-        data_set=disc, Q_ref=Q_ref, rect_scale=0.25)
+        data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
         num = disc.check_nums()
-        disc._output_sample_set.set_error_estimates(0.1 * np.ones((num, 1)))
+        disc._output_sample_set.set_error_estimates(0.01 * np.ones((num, 1)))
         jac = np.zeros((num,1,1))
         jac[:,:,:] = np.array([[0.506]]).transpose()
 
         disc._input_sample_set.set_jacobians(jac)
         self.sur = surrogates.piecewise_polynomial_surrogate(disc)
 
+  
     def Test_constants(self):
+        """
+        Test methods for order 0 polynomials.
+        """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
                                      num_samples = 10,
@@ -166,9 +229,22 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         nptest.assert_array_equal(sur_disc._input_sample_set._domain,
                                   self.sur.input_disc._input_sample_set._domain)
         sur_disc._input_sample_set._values_local[0,:]
+
+        s_set = sur_disc._input_sample_set.copy()
+        sur_disc.set_io_ptr()
+        regions_local = np.equal(sur_disc._io_ptr_local, 0)
+        s_set.set_region_local(regions_local)
+        s_set.local_to_global()
+        s_set.check_num()
+        self.sur.calculate_prob_for_sample_set_region(s_set, 
+                                                      regions=[0],
+                                                      update_input=True)
         
         
     def Test_linears(self):
+        """
+        Test for piecewise linears.
+        """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
                                      num_samples = 10,
@@ -179,3 +255,13 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         nptest.assert_array_equal(sur_disc._input_sample_set._domain,
                                   self.sur.input_disc._input_sample_set._domain)
         sur_disc._input_sample_set._values_local[0,:]
+
+        s_set = sur_disc._input_sample_set.copy()
+        sur_disc.set_io_ptr()
+        regions_local = np.equal(sur_disc._io_ptr_local, 0)
+        s_set.set_region_local(regions_local)
+        s_set.local_to_global()
+        s_set.check_num()
+        self.sur.calculate_prob_for_sample_set_region(s_set, 
+                                                      regions=[0],
+                                                      update_input=True)

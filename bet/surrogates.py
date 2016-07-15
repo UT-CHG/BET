@@ -7,7 +7,8 @@ import numpy as np
 import logging
 import bet.sample as sample
 import bet.calculateP.calculateError as calculateError
-from bet.Comm import comm
+import bet.calculateP.calculateP as calculateP
+from bet.Comm import comm, MPI
 
 class piecewise_polynomial_surrogate(object):
     def __init__(self, input_disc):
@@ -105,10 +106,10 @@ class piecewise_polynomial_surrogate(object):
         and error estimates for those probabilities.
         
         """
-        if not hasattr(self, surrogate_discretization):
-            msg = "surrogate discretization has not been created"
-            raise calculateError.wrong_argument_type(msg)
-        if not isinstance(disc._input_sample_set, samp.voronoi_sample_set):
+        if not hasattr(self, 'surrogate_discretization'):
+           msg = "surrogate discretization has not been created"
+           raise calculateError.wrong_argument_type(msg)
+        if not isinstance(s_set, sample.sample_set_base):
             msg = "s_set must be of type bet.sample.sample_set_base"
             raise calculateError.wrong_argument_type(msg)
             
@@ -119,7 +120,7 @@ class piecewise_polynomial_surrogate(object):
         prob_new_values = calculateP.prob_from_sample_set_mc(self.surrogate_discretization._input_sample_set, s_set)
         
         # Calcualte for each region
-        probabilites = []
+        probabilities = []
         error_estimates = []
         for region in regions:
             marker = np.equal(s_set._region, region)
@@ -129,7 +130,7 @@ class piecewise_polynomial_surrogate(object):
             model_error = calculateError.model_error(self.surrogate_discretization)
             error_estimate = model_error.calculate_for_sample_set_region_mc(s_set,
                                                                             region)
-            probabilites.append(probability)
+            probabilities.append(probability)
             error_estimates.append(error_estimates)
         # Update input only if 1 region is given
         if update_input:
@@ -137,7 +138,7 @@ class piecewise_polynomial_surrogate(object):
             prob = np.zeros((num,))
             error_id = np.zeros((num,))
             for i in range(num):
-                Itemp = np.equal(self.dummy_disc._ii_ptr_local, i)
+                Itemp = np.equal(self.dummy_disc._emulated_ii_ptr_local, i)
                 prob_sum = np.sum(self.surrogate_discretization._input_sample_set._probabilities_local[Itemp])
                 prob[i] = comm.allreduce(prob_sum, op=MPI.SUM)
                 error_id_sum = np.sum(self.surrogate_discretization._input_sample_set._error_id_local[Itemp])

@@ -53,7 +53,19 @@ class calculate_error(object):
         (up, low) = s_error.calculate_for_sample_set_region(s_set, 
                                                             1)         
         self.assertAlmostEqual(up, upper[0])
-        self.assertAlmostEqual(low, lower[0])   
+        self.assertAlmostEqual(low, lower[0]) 
+
+        (up, low) = s_error.calculate_for_sample_set_region(s_set, 
+                                                            1,
+                                                            emulated_set=self.disc._input_sample_set)         
+        self.assertAlmostEqual(up, upper[0])
+        self.assertAlmostEqual(low, lower[0])
+
+        self.disc.set_emulated_input_sample_set(self.disc._input_sample_set)
+        (up, low) = s_error.calculate_for_sample_set_region(s_set, 
+                                                            1)         
+        self.assertAlmostEqual(up, upper[0])
+        self.assertAlmostEqual(low, lower[0])
 
     def Test_model_error(self):
         """
@@ -73,6 +85,19 @@ class calculate_error(object):
         error_id_sum_local = np.sum(self.disc._input_sample_set._error_id_local)
         error_id_sum = comm.allreduce(error_id_sum_local, op=MPI.SUM)
         self.assertAlmostEqual(er_est2, error_id_sum)
+
+        emulated_set=self.disc._input_sample_set
+        er_est3 = m_error.calculate_for_sample_set_region(s_set, 
+                                                            1,
+                                                            emulated_set=emulated_set)
+        self.assertAlmostEqual(er_est[0], er_est3)
+        self.disc.set_emulated_input_sample_set(self.disc._input_sample_set)
+        m_error = calculateError.model_error(self.disc)
+        er_est4 = m_error.calculate_for_sample_set_region(s_set, 
+                                                    1)
+        self.assertAlmostEqual(er_est[0], er_est4)
+
+        
 
 class Test_3_to_2(calculate_error, unittest.TestCase):
     """
