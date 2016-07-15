@@ -147,7 +147,7 @@ def prob_from_sample_set(set_old, set_new, set_emulate=None):
     :type set_emulate: :class:`~bet.sample.sample_set_base`
 
     """
-    if set_emulated is None:
+    if set_emulate is None:
         logging.warning("Using MC assumption because no emulated points given")
         prob_from_sample_set_mc(set_old, set_new)
 
