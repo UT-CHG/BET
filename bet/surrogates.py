@@ -64,13 +64,13 @@ class piecewise_polynomial_surrogate(object):
         # Setup dummy discretizion to get pointers
         # Assumes Voronoi sample set for now
         output_sample_set = sample.sample_set(self.input_disc._output_sample_set._dim)
-        dummy_disc = self.input_disc.copy()
-        dummy_disc.set_emulated_input_sample_set(input_sample_set)
-        dummy_disc.set_emulated_ii_ptr(globalize=False)
+        self.dummy_disc = self.input_disc.copy()
+        self.dummy_disc.set_emulated_input_sample_set(input_sample_set)
+        self.dummy_disc.set_emulated_ii_ptr(globalize=False)
 
         if order == 0:
             # define new values based on piecewise constants
-            new_values_local = self.input_disc._output_sample_set._values[dummy_disc._emulated_ii_ptr_local]
+            new_values_local = self.input_disc._output_sample_set._values[self.dummy_disc._emulated_ii_ptr_local]
             output_sample_set.set_values_local(new_values_local)
         elif order == 1:
             # define new values based on piecewise linears using Jacobians
@@ -81,20 +81,70 @@ class piecewise_polynomial_surrogate(object):
                 else:
                    self.input_disc._input_sample_set.local_to_global()
                     
-            jac_local = self.input_disc._input_sample_set._jacobians[dummy_disc._emulated_ii_ptr_local]
-            diff_local = self.input_disc._input_sample_set._values[dummy_disc._emulated_ii_ptr_local] - input_sample_set._values_local
-            new_values_local = self.input_disc._output_sample_set._values[dummy_disc._emulated_ii_ptr_local]
+            jac_local = self.input_disc._input_sample_set._jacobians[self.dummy_disc._emulated_ii_ptr_local]
+            diff_local = self.input_disc._input_sample_set._values[self.dummy_disc._emulated_ii_ptr_local] - input_sample_set._values_local
+            new_values_local = self.input_disc._output_sample_set._values[self.dummy_disc._emulated_ii_ptr_local]
             new_values_local += np.einsum('ijk,ik->ij', jac_local, diff_local)
             output_sample_set.set_values_local(new_values_local)
         
-        # if the exist, define error estimates with piecewise constants
+        # if they exist, define error estimates with piecewise constants
         if self.input_disc._output_sample_set._error_estimates is not None:
-            new_ee = self.input_disc._output_sample_set._error_estimates[dummy_disc._emulated_ii_ptr_local]
+            new_ee = self.input_disc._output_sample_set._error_estimates[self.dummy_disc._emulated_ii_ptr_local]
             output_sample_set.set_error_estimates_local(new_ee)
         # create discretization object for the surrogate
-        disc = sample.discretization(input_sample_set=input_sample_set,
+        self.surrogate_discretization = sample.discretization(input_sample_set=input_sample_set,
                                      output_sample_set=output_sample_set,
                                      output_probability_set=self.input_disc._output_probability_set)
-        return disc
+        return self.surrogate_discretization
+    
+    def calculate_prob_for_sample_set_region(self, s_set, 
+                                             regions, update_input=True):
+        """
+        Solves stochastic inverse problem based on surrogate points and the
+        MC assumption. Calculates the probability of a regions of input space
+        and error estimates for those probabilities.
+        
+        """
+        if not hasattr(self, surrogate_discretization):
+            msg = "surrogate discretization has not been created"
+            raise calculateError.wrong_argument_type(msg)
+        if not isinstance(disc._input_sample_set, samp.voronoi_sample_set):
+            msg = "s_set must be of type bet.sample.sample_set_base"
+            raise calculateError.wrong_argument_type(msg)
+            
+        # Calculate probability of region 
+        if self.surrogate_discretization._input_sample_set._volumes_local is None:
+            self.surrogate_discretization._input_sample_set.estimate_volume_mc(globalize=False)
+        calculateP.prob(self.surrogate_discretization, globalize=False)
+        prob_new_values = calculateP.prob_from_sample_set_mc(self.surrogate_discretization._input_sample_set, s_set)
+        
+        # Calcualte for each region
+        probabilites = []
+        error_estimates = []
+        for region in regions:
+            marker = np.equal(s_set._region, region)
+            probability = np.sum(prob_new_values[marker])
+
+            # Calculate error estimate for region
+            model_error = calculateError.model_error(self.surrogate_discretization)
+            error_estimate = model_error.calculate_for_sample_set_region_mc(s_set,
+                                                                            region)
+            probabilites.append(probability)
+            error_estimates.append(error_estimates)
+        # Update input only if 1 region is given
+        if update_input:
+            num = self.input_disc._input_sample_set.check_num()
+            prob = np.zeros((num,))
+            error_id = np.zeros((num,))
+            for i in range(num):
+                Itemp = np.equal(self.dummy_disc._ii_ptr_local, i)
+                prob_sum = np.sum(self.surrogate_discretization._input_sample_set._probabilities_local[Itemp])
+                prob[i] = comm.allreduce(prob_sum, op=MPI.SUM)
+                error_id_sum = np.sum(self.surrogate_discretization._input_sample_set._error_id_local[Itemp])
+                error_id[i] = comm.allreduce(error_id_sum, op=MPI.SUM)
+            self.input_disc._input_sample_set.set_probabilities(prob)
+            self.input_disc._input_sample_set.set_error_id(error_id)
+                    
+        return (probabilities, error_estimates)
         
         

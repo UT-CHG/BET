@@ -845,14 +845,18 @@ class sample_set_base(object):
         self._volumes = vol
         self.global_to_local()
 
-    def estimate_volume_mc(self):
+    def estimate_volume_mc(self, globalize=True):
         """
         Give all cells the same volume fraction based on the Monte Carlo
         assumption.  
         """
         num = self.check_num()
-        self._volumes = 1.0/float(num)*np.ones((num,))
-        self.global_to_local()
+        if globalize:
+            self._volumes = 1.0/float(num)*np.ones((num,))
+            self.global_to_local()
+        else:
+            num_local = self.check_num_local
+            self._volumes = 1.0/float(num)*np.ones((num_local,))
 
     def global_to_local(self):
         """
