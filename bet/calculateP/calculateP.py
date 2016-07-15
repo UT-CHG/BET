@@ -64,7 +64,7 @@ def prob_on_emulated_samples(discretization, globalize=True):
         discretization._emulated_input_sample_set.local_to_global()
     pass
 
-def prob(discretization): 
+def prob(discretization, globalize=True): 
     r"""
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability assoicated with a set of  cells defined by the model
@@ -99,9 +99,9 @@ def prob(discretization):
                 P_local[Itemp] = discretization._output_probability_set.\
                         _probabilities[i]*discretization._input_sample_set.\
                         _volumes_local[Itemp]/Itemp_sum
-        
-    discretization._input_sample_set._probabilities = util.\
-            get_global_values(P_local)
+    if globalize:
+        discretization._input_sample_set._probabilities = util.\
+                                        get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
 
 def prob_with_emulated_volumes(discretization): 
@@ -130,7 +130,7 @@ def prob_with_emulated_volumes(discretization):
 
 
     
-def prob_from_sample_set(set_old, set_new, set_emulate):
+def prob_from_sample_set(set_old, set_new, set_emulate=None):
     r"""
     
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
@@ -147,6 +147,10 @@ def prob_from_sample_set(set_old, set_new, set_emulate):
     :type set_emulate: :class:`~bet.sample.sample_set_base`
 
     """
+    if set_emulated is None:
+        logging.warning("Using MC assumption because no emulated points given")
+        prob_from_sample_set_mc(set_old, set_new)
+
     # Check dimensions
     num_old = set_old.check_num()
     num_new = set_new.check_num()
@@ -190,6 +194,47 @@ def prob_from_sample_set(set_old, set_new, set_emulate):
     for i in range(num_new):
         Itemp = np.equal(ptr2, i)
         Itemp_sum = np.sum(prob_em[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
+        prob_new[i] = Itemp_sum
+    
+    # Set probabilities
+    set_new.set_probabilities(prob_new)
+    return prob_new
+
+def prob_from_sample_set_mc(set_old, set_new):
+    r"""
+    
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
+    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` using
+    the MC assumption with respect to set_old.
+
+    :param set_old: Sample set on which probabilities have already been
+        calculated
+    :type set_old: :class:`~bet.sample.sample_set_base` 
+    :param set_new: Sample set for which probabilities will be calculated.
+    :type set_new: :class:`~bet.sample.sample_set_base` 
+    
+    """
+    # Check dimensions
+    num_old = set_old.check_num()
+    num_new = set_new.check_num()
+
+    if (set_old._dim != set_new._dim):
+        raise samp.dim_not_matching("Dimensions of sets are not equal.")
+
+    # Map old points new sets
+    if set_old._values_local is None:
+        set_old.global_to_local()
+    (_, ptr) = set_new.query(set_old._values_local)
+    ptr = ptr.flat[:]
+
+    # Set up probability vector
+    prob_new = np.zeros((num_new,))
+
+    # Loop over new cells and distribute probability from old
+    for i in range(num_new):
+        Itemp = np.equal(ptr, i)
+        Itemp_sum = np.sum(set_old._probabilities_local[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
     
