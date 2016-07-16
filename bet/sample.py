@@ -162,8 +162,10 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
     base_name = os.path.dirname(file_name)
     mdat_files = glob.glob(os.path.join(save_dir,
             "proc*_{}".format(base_name)))
-
+    
+    print "HERE"
     if len(mdat_files) == comm.size:
+        print "SAME"
         logging.info("Loading {} sample set using parallel files (same nproc)"\
                 .format(sample_set_name))
         # if the number of processors is the same then set mdat to
