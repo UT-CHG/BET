@@ -44,6 +44,9 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         ``.mat`` file
     :param bool globalize: flag whether or not to globalize
 
+    :rtype: string
+    :returns: local file name
+
     """
     # create processor specific file name
     if comm.size > 1 and not globalize:
@@ -84,6 +87,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
+    return local_file_name
 
 def load_sample_set(file_name, sample_set_name=None):
     """
@@ -950,6 +954,9 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         :class:`bet.sample.sample_set_base` objects stored in this
         discretization
 
+    :rtype: string
+    :returns: local file name
+
     """
     # create temporary dictionary
     new_mdat = dict()
@@ -990,6 +997,7 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
+    return local_file_name
 
 def load_discretization_parallel(file_name, discretization_name=None):
     """
