@@ -62,7 +62,6 @@ class Test_sample_set(unittest.TestCase):
             local_file_name = file_name
 
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -75,6 +74,36 @@ class Test_sample_set(unittest.TestCase):
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
 
+        if comm.rank == 0 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
+
+        comm.barrier()
+        
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = False
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
+        comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
 
         if comm.rank == 0 and globalize:
             os.remove(local_file_name)
@@ -506,6 +535,39 @@ class Test_discretization_simple(unittest.TestCase):
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
+        globalize = False 
+        sample.save_discretization(self.disc, file_name, "TEST", globalize)
+        comm.barrier()
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        loaded_disc = sample.load_discretization(local_file_name, "TEST")
+
+        for attrname in sample.discretization.vector_names:
+            curr_attr = getattr(loaded_disc, attrname)
+            if curr_attr is not None:
+                nptest.assert_array_equal(curr_attr, getattr(self.disc,
+                    attrname))
+
+        for attrname in sample.discretization.sample_set_names:
+            curr_set = getattr(loaded_disc, attrname)
+            if curr_set is not None:
+                for set_attrname in sample.sample_set.vector_names+\
+                        sample.sample_set.all_ndarray_names:
+                    curr_attr = getattr(curr_set, set_attrname)
+                    if curr_attr is not None:
+                        nptest.assert_array_equal(curr_attr, getattr(\
+                                curr_set, set_attrname))
+        comm.barrier()
+
+        if comm.rank == 0 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
+
 
     def Test_copy_discretization(self):
         """
@@ -962,7 +1024,6 @@ class Test_rectangle_sample_set(unittest.TestCase):
             local_file_name = file_name
 
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -979,6 +1040,37 @@ class Test_rectangle_sample_set(unittest.TestCase):
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
+        comm.barrier()
+        
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = False
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
+        comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        if comm.rank == 0 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
+
 
     def test_copy(self):
         """
@@ -1049,6 +1141,7 @@ class Test_ball_sample_set(unittest.TestCase):
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
 
+        # Do serial tests
         globalize = True
         file_name = os.path.join(local_path, 'testfile.mat')
         if comm.size > 1 and not globalize:
@@ -1063,7 +1156,6 @@ class Test_ball_sample_set(unittest.TestCase):
         comm.barrier()
         
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -1080,6 +1172,38 @@ class Test_ball_sample_set(unittest.TestCase):
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
+        comm.barrier()
+       
+        # Do parallel tests
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = False
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
+        comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        if comm.rank == 0 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
+
 
 
     def test_copy(self):
@@ -1171,7 +1295,6 @@ class Test_cartesian_sample_set(unittest.TestCase):
             local_file_name = file_name
 
         loaded_set = sample.load_sample_set(local_file_name, "TEST")
-        loaded_set.global_to_local()
         loaded_set_none = sample.load_sample_set(local_file_name)
 
         assert loaded_set_none is None
@@ -1188,6 +1311,37 @@ class Test_cartesian_sample_set(unittest.TestCase):
             os.remove(local_file_name)
         elif not globalize:
             os.remove(local_file_name)
+        comm.barrier()
+        
+        file_name = os.path.join(local_path, 'testfile.mat')
+        globalize = False
+        sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
+        comm.barrier()
+        
+        if comm.size > 1 and not globalize:
+            local_file_name = os.path.os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        else:
+            local_file_name = file_name
+
+        loaded_set = sample.load_sample_set(local_file_name, "TEST")
+        loaded_set_none = sample.load_sample_set(local_file_name)
+
+        assert loaded_set_none is None
+
+        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+                all_ndarray_names:
+            curr_attr = getattr(loaded_set, attrname)
+            print attrname
+            if curr_attr is not None:
+                nptest.assert_array_equal(getattr(self.sam_set, attrname),
+                        curr_attr)
+
+        if comm.rank == 0 and globalize:
+            os.remove(local_file_name)
+        elif not globalize:
+            os.remove(local_file_name)
+
 
     def test_copy(self):
         """

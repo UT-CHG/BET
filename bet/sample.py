@@ -44,6 +44,9 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         ``.mat`` file
     :param bool globalize: flag whether or not to globalize
 
+    :rtype: string
+    :returns: local file name
+
     """
     # create processor specific file name
     if comm.size > 1 and not globalize:
@@ -84,8 +87,9 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
+    return local_file_name
 
-def load_sample_set(file_name, sample_set_name=None):
+def load_sample_set(file_name, sample_set_name=None, localize=True):
     """
     Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file. If a file
     contains multiple :class:`~bet.sample.sample_set` objects then
@@ -97,10 +101,21 @@ def load_sample_set(file_name, sample_set_name=None):
     :param string sample_set_name: String to prepend to attribute names when
         saving multiple :class`bet.sample.sample_set` objects to a single
         ``.mat`` file
+    :param bool localize: Flag whether or not to re-localize arrays. If
+        ``file_name`` is prepended by ``proc_{}`` localize is set to ``False``.
 
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
+    
     """
+    # check to see if parallel file name
+    if file_name.startswith('proc_'):
+        localize = False
+    elif not os.path.exists(file_name) and os.path.exists(os.path.join(\
+            os.path.dirname(file_name), "proc{}_0".format(\
+                os.path.basename(file_name)))):
+        return load_sample_set_parallel(file_name, sample_set_name)
+
     mdat = sio.loadmat(file_name)
     if sample_set_name is None:
         sample_set_name = 'default'
@@ -121,6 +136,10 @@ def load_sample_set(file_name, sample_set_name=None):
     for attrname in loaded_set.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
+
+    if localize:
+        # re-localize if necessary
+        loaded_set.global_to_local()
     
     return loaded_set
 
@@ -132,11 +151,6 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
     distinguish which between different :class:`~bet.sample.sample_set`
     objects.
 
-    .. todo::
-
-        Implement based on the hot start implementation in
-        :class:`bet.sampling.adaptiveSampling.sampler`.
-
     :param string file_name: Name of the ``.mat`` file, no extension is
         needed.
     :param string sample_set_name: String to prepend to attribute names when
@@ -146,7 +160,79 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     """
-    raise NotImplementedError("This method is not yet implemented.")
+   
+    if sample_set_name is None:
+            sample_set_name = 'default'
+   # Find and open save files
+    save_dir = os.path.dirname(file_name)
+    base_name = os.path.basename(file_name)
+    mdat_files = glob.glob(os.path.join(save_dir,
+            "proc*_{}".format(base_name)))
+    
+    if len(mdat_files) == comm.size:
+        logging.info("Loading {} sample set using parallel files (same nproc)"\
+                .format(sample_set_name))
+        # if the number of processors is the same then set mdat to
+        # be the one with the matching processor number (doesn't
+        # really matter)
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        return load_sample_set(local_file_name, sample_set_name)
+    else:
+        logging.info("Loading {} sample set using parallel files (diff nproc)"\
+            .format(sample_set_name))        
+                # Determine how many processors the previous data used
+        # otherwise gather the data from mdat and then scatter
+        # among the processors and update mdat
+        mdat_files_local = comm.scatter(mdat_files)
+        mdat_local = [sio.loadmat(m) for m in mdat_files_local]
+        mdat_list = comm.allgather(mdat_files_local)
+        mdat_global = []
+        # instead of a list of lists, create a list of mdat
+        for mlist in mdat_list: 
+            mdat_global.extend(mlist)
+        # get num_proc and num_chains_pproc for previous run
+        old_num_proc = max((len(mdat_list), 1))
+        
+        if sample_set_name+"_dim" in mdat_global[0].keys():
+            loaded_set = eval(mdat_global[0][sample_set_name + \
+                    '_sample_set_type'][0])(
+                    np.squeeze(mdat_global[0][sample_set_name+"_dim"]))
+        else:
+            logging.info("No sample_set named {} with _dim in file".\
+                    format(sample_set_name))
+            return None
+
+        # load attributes
+        for attrname in loaded_set.vector_names:
+            if attrname is not '_dim':
+                if sample_set_name+attrname in mdat_global[0].keys():
+                    # create lists of local data
+                    if attrname.endswith('_local'): 
+                        temp_input = []
+                        for mdat in mdat_global:
+                            temp_input.append(np.squeeze(mdat[sample_set_name+attrname]))
+                        # turn into arrays
+                        temp_input = np.concatenate(temp_input)
+                    else:
+                        temp_input = np.squeeze(mdat[sample_set_name+attrname])
+                    setattr(loaded_set, attrname, temp_input) 
+        for attrname in loaded_set.all_ndarray_names:
+            if sample_set_name+attrname in mdat_global[0].keys():
+                if attrname.endswith('_local'): 
+                    # create lists of local data
+                    temp_input = []
+                    for mdat in mdat_global:
+                        temp_input.append(mdat[sample_set_name+attrname])
+                    # turn into arrays
+                    temp_input = np.concatenate(temp_input)
+                else:
+                    temp_input = mdat[sample_set_name+attrname]
+                setattr(loaded_set, attrname, temp_input)
+
+        # re-localize if necessary
+        loaded_set.local_to_global()
+
 
 class sample_set_base(object):
     """
@@ -868,6 +954,9 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         :class:`bet.sample.sample_set_base` objects stored in this
         discretization
 
+    :rtype: string
+    :returns: local file name
+
     """
     # create temporary dictionary
     new_mdat = dict()
@@ -908,6 +997,7 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
+    return local_file_name
 
 def load_discretization_parallel(file_name, discretization_name=None):
     """
@@ -926,7 +1016,72 @@ def load_discretization_parallel(file_name, discretization_name=None):
     :returns: the ``discretization`` that matches the ``discretization_name``
     
     """
-    raise NotImplementedError("This method is not yet implemented.")
+    # Find and open save files
+    save_dir = os.path.dirname(file_name)
+    base_name = os.path.basename(file_name)
+    mdat_files = glob.glob(os.path.join(save_dir,
+            "proc*_{}".format(base_name)))
+
+    if len(mdat_files) == comm.size:
+        logging.info("Loading {} sample set using parallel files (same nproc)"\
+                .format(discretization_name))
+        # if the number of processors is the same then set mdat to
+        # be the one with the matching processor number (doesn't
+        # really matter)
+        return load_discretization(mdat_files[comm.rank], discretization_name)
+    else:
+        logging.info("Loading {} sample set using parallel files (diff nproc)"\
+            .format(discretization_name)) 
+        
+        if discretization_name is None:
+            discretization_name = 'default'
+
+        input_sample_set = load_sample_set(file_name,
+                discretization_name+'_input_sample_set')
+
+        output_sample_set = load_sample_set(file_name,
+                discretization_name+'_output_sample_set')
+
+        loaded_disc = discretization(input_sample_set, output_sample_set)
+       
+        # Determine how many processors the previous data used
+        # otherwise gather the data from mdat and then scatter
+        # among the processors and update mdat
+        mdat_files_local = comm.scatter(mdat_files)
+        mdat_local = [sio.loadmat(m) for m in mdat_files_local]
+        mdat_list = comm.allgather(mdat_local)
+        mdat_global = []
+        # instead of a list of lists, create a list of mdat
+        for mlist in mdat_list: 
+            mdat_global.extend(mlist)
+        
+        # load attributes
+        for attrname in discretization.vector_names:
+            if discretization_name+attrname in mdat_global[0].keys():
+                if attrname.endswith('_local') and comm.size != len(mdat_list): 
+                    # create lists of local data
+                    temp_input = None 
+                else:
+                        temp_input = np.squeeze(mdat[discretization_name+attrname])
+                setattr(loaded_disc, attrname, temp_input) 
+        
+        # load sample sets
+        for attrname in discretization.sample_set_names:
+            if attrname is not '_input_sample_set' and \
+                    attrname is not '_output_sample_set':
+                setattr(loaded_disc, attrname, load_sample_set(file_name,
+                        discretization_name+attrname))
+        
+        # re-localize if necessary
+        if file_name.startswith('proc_') and comm.size > 1 \
+                and comm.size != len(mdat_list):
+            warn_string = "Local pointers have been removed and will be"
+            warn_string += " re-created as necessary)"
+            warnings.warn(warn_string)
+            #loaded_disc._io_ptr_local = None
+            #loaded_disc._emulated_ii_ptr_local = None
+            #loaded_disc._emulated_oo_ptr_local = None
+    return loaded_disc
 
 def load_discretization(file_name, discretization_name=None):
     """
@@ -945,6 +1100,15 @@ def load_discretization(file_name, discretization_name=None):
     :returns: the ``discretization`` that matches the ``discretization_name``
     
     """
+
+    # check to see if parallel file name
+    if file_name.startswith('proc_'):
+        pass
+    elif not os.path.exists(file_name) and os.path.exists(os.path.join(\
+            os.path.dirname(file_name), "proc{}_{}".format(comm.rank,
+                os.path.basename(file_name)))):
+        return load_discretization_parallel(file_name, discretization_name)
+
     mdat = sio.loadmat(file_name)
     if discretization_name is None:
         discretization_name = 'default'
@@ -967,32 +1131,14 @@ def load_discretization(file_name, discretization_name=None):
         if discretization_name+attrname in mdat.keys():
             setattr(loaded_disc, attrname,
                         np.squeeze(mdat[discretization_name+attrname]))
-    return loaded_disc
-
-def load_discretization_parallel(file_name, discretization_name=None):
-    """ 
     
-    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file in
-    parallel and correctly re-localizes data if necessary. If a file contains
-    multiple :class:`~bet.sample.discretization` objects then
-    ``discretization_name`` is used to distinguish which between different
-    :class:`~bet.sample.discretization` objects.
-
-    .. todo::
-
-        Implement based on the hot start implementation in
-        :class:`bet.sampling.adaptiveSampling.sampler`.
-
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string discretization_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.discretization` objects to a single
-        ``.mat`` file
-
-    :rtype: :class:`~bet.sample.discretization`
-    :returns: the ``discretization`` that matches the ``discretization_name``
-    """
-    raise NotImplementedError("This method is not yet implemented.")
+    # re-localize if necessary
+    if file_name.rfind('proc_') == 0 and comm.size > 1:
+        loaded_disc._io_ptr_local = None
+        loaded_disc._emulated_ii_ptr_local = None
+        loaded_disc._emulated_oo_ptr_local = None
+            
+    return loaded_disc
 
 
 class voronoi_sample_set(sample_set_base):

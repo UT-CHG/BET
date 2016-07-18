@@ -20,7 +20,7 @@ import math, os, glob, logging
 from bet.Comm import comm 
 import bet.sample as sample
 
-def loadmat(save_file, lb_model=None):
+def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
     """
     Loads data from ``save_file`` into a
     :class:`~bet.sampling.adaptiveSampling.sampler` object.
@@ -28,20 +28,160 @@ def loadmat(save_file, lb_model=None):
     :param string save_file: file name
     :param lb_model: runs the model at a given set of parameter samples, (N,
         ndim), and returns data (N, mdim)
+    :param int hot_start: Flag whether or not hot start the sampling
+            chains from a previous set of chains. Note that ``num_chains`` must
+            be the same, but ``num_chains_pproc`` need not be the same. 0 -
+            cold start, 1 - hot start from uncompleted run, 2 - hot
+            start from finished run
+    :param int num_chains: total number of chains of samples
+    :param callable lb_model: runs the model at a given set of parameter
+        samples, (N, ndim), and returns data (N, mdim)
     
-    :rtype: tuple
-    :returns: (sampler, discretization)
+    :rtype: tuple of (:class:`bet.sampling.adaptiveSampling.sampler`,
+        :class:`bet.sample.discretization`, :class:`numpy.ndarray`,
+        :class:`numpy.ndarray`)
+    :returns: (``sampler``, ``discretization``, ``all_step_ratios``, ``kern_old``)
     
     """
-    # load the data from a *.mat file
-    mdat = sio.loadmat(save_file)
-    # load the discretization
-    discretization = sample.load_discretization(save_file)
-    num_samples = np.squeeze(mdat['num_samples'])
-    # recreate the sampler
-    new_sampler = sampler(num_samples,
-            np.squeeze(mdat['chain_length']), lb_model)
-    return (new_sampler, discretization)
+    print hot_start
+    if hot_start is None:
+        hot_start = 1
+   # LOAD FILES
+    if hot_start == 1: # HOT START FROM PARTIAL RUN
+        if comm.rank == 0:
+            logging.info("HOT START from partial run")
+        # Find and open save files
+        save_dir = os.path.dirname(save_file)
+        base_name = os.path.basename(save_file)
+        mdat_files = glob.glob(os.path.join(save_dir,
+                "proc*_{}".format(base_name)))
+        if len(mdat_files) > 0:
+            tmp_mdat = sio.loadmat(mdat_files[0])
+        else:
+            tmp_mdat = sio.loadmat(save_file)
+        if num_chains is None: 
+            num_chains = np.squeeze(tmp_mdat['num_chains'])
+        num_chains_pproc = num_chains / comm.size
+        if len(mdat_files) == 0:
+            logging.info("HOT START using serial file")
+            mdat = sio.loadmat(save_file)
+            if num_chains is None: 
+                num_chains = np.squeeze(mdat['num_chains'])
+            num_chains_pproc = num_chains / comm.size
+            disc = sample.load_discretization(save_file)
+            kern_old = np.squeeze(mdat['kern_old'])
+            all_step_ratios = np.squeeze(mdat['step_ratios'])
+            chain_length = disc.check_nums()/num_chains
+            if all_step_ratios.shape == (num_chains,
+                                                chain_length):
+                msg = "Serial file, from completed"
+                msg += " run updating hot_start"
+                hot_start = 2
+            # reshape if parallel
+            if comm.size > 1:
+                temp_input = np.reshape(disc._input_sample_set.\
+                        get_values(), (num_chains,
+                            chain_length, -1), 'F')
+                temp_output = np.reshape(disc._output_sample_set.\
+                        get_values(), (num_chains,
+                            chain_length, -1), 'F')
+                all_step_ratios = np.reshape(all_step_ratios,
+                         (num_chains, -1), 'F')
+        elif hot_start == 1 and len(mdat_files) == comm.size:
+            logging.info("HOT START using parallel files (same nproc)")
+            # if the number of processors is the same then set mdat to
+            # be the one with the matching processor number (doesn't
+            # really matter)
+            disc = sample.load_discretization(mdat_files[comm.rank])
+            kern_old = np.squeeze(tmp_mdat['kern_old'])
+            all_step_ratios = np.squeeze(tmp_mdat['step_ratios'])
+        elif hot_start == 1 and len(mdat_files) != comm.size:
+            logging.info("HOT START using parallel files (diff nproc)")
+            # Determine how many processors the previous data used
+            # otherwise gather the data from mdat and then scatter
+            # among the processors and update mdat
+            mdat_files_local = comm.scatter(mdat_files)
+            mdat_local = [sio.loadmat(m) for m in mdat_files_local]
+            disc_local = [sample.load_discretization(m) for m in\
+                    mdat_files_local]
+            mdat_list = comm.allgather(mdat_local)
+            disc_list = comm.allgather(disc_local)
+            mdat_global = []
+            disc_global = []
+            # instead of a list of lists, create a list of mdat
+            for mlist, dlist in zip(mdat_list, disc_list): 
+                mdat_global.extend(mlist)
+                disc_global.extend(dlist)
+            # get num_proc and num_chains_pproc for previous run
+            old_num_proc = max((len(mdat_list), 1))
+            old_num_chains_pproc = num_chains/old_num_proc
+            # get batch size and/or number of dimensions
+            chain_length = disc_global[0].check_nums()/\
+                    old_num_chains_pproc
+            disc = disc_global[0].copy()
+            # create lists of local data
+            temp_input = []
+            temp_output = []
+            all_step_ratios = []
+            kern_old = []
+            # RESHAPE old_num_chains_pproc, chain_length(or batch), dim
+            for mdat, disc_local in zip(mdat_global, disc_local):
+                temp_input.append(np.reshape(disc_local.\
+                        _input_sample_set.get_values_local(),
+                        (old_num_chains_pproc, chain_length, -1), 'F'))
+                temp_output.append(np.reshape(disc_local.\
+                        _output_sample_set.get_values_local(),
+                        (old_num_chains_pproc, chain_length, -1), 'F'))
+                all_step_ratios.append(np.reshape(mdat['step_ratios'],
+                    (old_num_chains_pproc, chain_length, -1), 'F'))
+                kern_old.append(np.reshape(mdat['kern_old'],
+                    (old_num_chains_pproc,), 'F'))
+            # turn into arrays
+            temp_input = np.concatenate(temp_input)
+            temp_output = np.concatenate(temp_output)
+            all_step_ratios = np.concatenate(all_step_ratios)
+            kern_old = np.concatenate(kern_old)
+    if hot_start == 2: # HOT START FROM COMPLETED RUN:
+        if comm.rank == 0:
+            logging.info("HOT START from completed run")
+        mdat = sio.loadmat(save_file)
+        if num_chains is None: 
+            num_chains = np.squeeze(mdat['num_chains'])
+        num_chains_pproc = num_chains / comm.size
+        disc = sample.load_discretization(save_file)
+        kern_old = np.squeeze(mdat['kern_old'])
+        all_step_ratios = np.squeeze(mdat['step_ratios'])
+        chain_length = disc.check_nums()/num_chains
+        # reshape if parallel
+        if comm.size > 1:
+            temp_input = np.reshape(disc._input_sample_set.\
+                        get_values(), (num_chains, chain_length,
+                            -1), 'F')
+            temp_output = np.reshape(disc._output_sample_set.\
+                        get_values(), (num_chains, chain_length,
+                            -1), 'F')
+            all_step_ratios = np.reshape(all_step_ratios,
+                    (num_chains, chain_length), 'F')
+    # SPLIT DATA IF NECESSARY
+    if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
+            len(mdat_files) != comm.size)):
+        # Use split to split along num_chains and set *._values_local
+        disc._input_sample_set.set_values_local(np.reshape(np.split(\
+                temp_input, comm.size, 0)[comm.rank],
+                (num_chains_pproc*chain_length, -1), 'F'))
+        disc._output_sample_set.set_values_local(np.reshape(np.split(\
+                temp_output, comm.size, 0)[comm.rank],
+                (num_chains_pproc*chain_length, -1), 'F'))
+        all_step_ratios = np.reshape(np.split(all_step_ratios,
+            comm.size, 0)[comm.rank],
+            (num_chains_pproc*chain_length,), 'F')
+        kern_old = np.reshape(np.split(kern_old, comm.size,
+            0)[comm.rank], (num_chains_pproc,), 'F')
+    else:
+        all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
+    print chain_length*num_chains, chain_length, lb_model
+    new_sampler = sampler(chain_length*num_chains, chain_length, lb_model) 
+    return (new_sampler, disc, all_step_ratios, kern_old)
 
 class sampler(bsam.sampler):
     """
@@ -294,128 +434,11 @@ class sampler(bsam.sampler):
                     _output_sample_set.get_values_local(), None)
 
             start_ind = 1
+
         if hot_start:
             # LOAD FILES
-            if hot_start == 1: # HOT START FROM PARTIAL RUN
-                if comm.rank == 0:
-                    logging.info("HOT START from partial run")
-                # Find and open save files
-                save_dir = os.path.dirname(savefile)
-                base_name = os.path.dirname(savefile)
-                mdat_files = glob.glob(os.path.join(save_dir,
-                        "proc*_{}".format(base_name)))
-                if len(mdat_files) == 0:
-                    logging.info("HOT START using serial file")
-                    mdat = sio.loadmat(savefile)
-                    disc = sample.load_discretization(savefile)
-                    kern_old = np.squeeze(mdat['kern_old'])
-                    all_step_ratios = np.squeeze(mdat['step_ratios'])
-                    chain_length = disc.check_nums()/self.num_chains
-                    if all_step_ratios.shape == (self.num_chains,
-                                                        chain_length):
-                        msg = "Serial file, from completed"
-                        msg += " run updating hot_start"
-                        hot_start = 2
-                    # reshape if parallel
-                    if comm.size > 1:
-                        temp_input = np.reshape(disc._input_sample_set.\
-                                get_values(), (self.num_chains,
-                                    chain_length, -1), 'F')
-                        temp_output = np.reshape(disc._output_sample_set.\
-                                get_values(), (self.num_chains,
-                                    chain_length, -1), 'F')
-                        all_step_ratios = np.reshape(all_step_ratios,
-                                 (self.num_chains, -1), 'F')
-                elif hot_start == 1 and len(mdat_files) == comm.size:
-                    logging.info("HOT START using parallel files (same nproc)")
-                    # if the number of processors is the same then set mdat to
-                    # be the one with the matching processor number (doesn't
-                    # really matter)
-                    mdat = sio.loadmat(mdat_files[comm.rank])
-                    disc = sample.load_discretization(mdat_files[comm.rank])
-                    kern_old = np.squeeze(mdat['kern_old'])
-                    all_step_ratios = np.squeeze(mdat['step_ratios'])
-                elif hot_start == 1 and len(mdat_files) != comm.size:
-                    logging.info("HOT START using parallel files (diff nproc)")
-                    # Determine how many processors the previous data used
-                    # otherwise gather the data from mdat and then scatter
-                    # among the processors and update mdat
-                    mdat_files_local = comm.scatter(mdat_files)
-                    mdat_local = [sio.loadmat(m) for m in mdat_files_local]
-                    disc_local = [sample.load_discretization(m) for m in\
-                            mdat_files_local]
-                    mdat_list = comm.allgather(mdat_local)
-                    disc_list = comm.allgather(disc_local)
-                    mdat_global = []
-                    disc_global = []
-                    # instead of a list of lists, create a list of mdat
-                    for mlist, dlist in zip(mdat_list, disc_list): 
-                        mdat_global.extend(mlist)
-                        disc_global.extend(dlist)
-                    # get num_proc and num_chains_pproc for previous run
-                    old_num_proc = max((len(mdat_list), 1))
-                    old_num_chains_pproc = self.num_chains/old_num_proc
-                    # get batch size and/or number of dimensions
-                    chain_length = disc_global[0].check_nums()/\
-                            old_num_chains_pproc
-                    disc = disc_global[0].copy()
-                    # create lists of local data
-                    temp_input = []
-                    temp_output = []
-                    all_step_ratios = []
-                    kern_old = []
-                    # RESHAPE old_num_chains_pproc, chain_length(or batch), dim
-                    for mdat, disc_local in zip(mdat_global, disc_local):
-                        temp_input.append(np.reshape(disc_local.\
-                                _input_sample_set.get_values_local(),
-                                (old_num_chains_pproc, chain_length, -1), 'F'))
-                        temp_output.append(np.reshape(disc_local.\
-                                _output_sample_set.get_values_local(),
-                                (old_num_chains_pproc, chain_length, -1), 'F'))
-                        all_step_ratios.append(np.reshape(mdat['step_ratios'],
-                            (old_num_chains_pproc, chain_length, -1), 'F'))
-                        kern_old.append(np.reshape(mdat['kern_old'],
-                            (old_num_chains_pproc,), 'F'))
-                    # turn into arrays
-                    temp_input = np.concatenate(temp_input)
-                    temp_output = np.concatenate(temp_output)
-                    all_step_ratios = np.concatenate(all_step_ratios)
-                    kern_old = np.concatenate(kern_old)
-            if hot_start == 2: # HOT START FROM COMPLETED RUN:
-                if comm.rank == 0:
-                    logging.info("HOT START from completed run")
-                mdat = sio.loadmat(savefile)
-                disc = sample.load_discretization(savefile)
-                kern_old = np.squeeze(mdat['kern_old'])
-                all_step_ratios = np.squeeze(mdat['step_ratios'])
-                chain_length = disc.check_nums()/self.num_chains
-                # reshape if parallel
-                if comm.size > 1:
-                    temp_input = np.reshape(disc._input_sample_set.\
-                                get_values(), (self.num_chains, chain_length,
-                                    -1), 'F')
-                    temp_output = np.reshape(disc._output_sample_set.\
-                                get_values(), (self.num_chains, chain_length,
-                                    -1), 'F')
-                    all_step_ratios = np.reshape(all_step_ratios,
-                            (self.num_chains, chain_length), 'F')
-            # SPLIT DATA IF NECESSARY
-            if comm.size > 1 and (hot_start == 2 or (hot_start == 1 and \
-                    len(mdat_files) != comm.size)):
-                # Use split to split along num_chains and set *._values_local
-                disc._input_sample_set.set_values_local(np.reshape(np.split(\
-                        temp_input, comm.size, 0)[comm.rank],
-                        (self.num_chains_pproc*chain_length, -1), 'F'))
-                disc._output_sample_set.set_values_local(np.reshape(np.split(\
-                        temp_output, comm.size, 0)[comm.rank],
-                        (self.num_chains_pproc*chain_length, -1), 'F'))
-                all_step_ratios = np.reshape(np.split(all_step_ratios,
-                    comm.size, 0)[comm.rank],
-                    (self.num_chains_pproc*chain_length,), 'F')
-                kern_old = np.reshape(np.split(kern_old, comm.size,
-                    0)[comm.rank], (self.num_chains_pproc,), 'F')
-            else:
-                all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
+            _, disc, all_step_ratios, kern_old = loadmat(savefile, lb_model=None,
+                    hot_start=hot_start, num_chains=self.num_chains)
             # MAKE SURE ARRAYS ARE LOCALIZED FROM HERE ON OUT WILL ONLY
             # OPERATE ON _local_values
             # Set mdat, step_ratio, input_old, start_ind appropriately
