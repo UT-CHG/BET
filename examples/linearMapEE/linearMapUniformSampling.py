@@ -34,6 +34,7 @@ import bet.postProcess.plotDomains as plotD
 import bet.postProcess.postTools as postTools
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
+import bet.surrogates as surrogates
 from bet.Comm import comm, MPI
 from myModel import my_model
 
@@ -63,7 +64,7 @@ If using regular sampling, try different numbers of samples
 per dimension.
 '''
 # Generate samples on the parameter space
-randomSampling = False
+randomSampling = True
 if randomSampling is True:
     input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E4)
 else:
@@ -169,7 +170,7 @@ if comm.rank == 0:
 
 print np.sum(my_discretization._input_sample_set._probabilities)
 
-sur = postTools.piecewise_polynomial_surrogate(my_discretization)
+sur = surrogates.piecewise_polynomial_surrogate(my_discretization)
 sur_disc = sur.generate_for_input_set(emulated_inputs)
 sur_disc._input_sample_set.estimate_volume_mc()
 #import pdb
@@ -184,7 +185,7 @@ pb = np.zeros((num,2,3))
 pb[:,:,:] =  np.array([[0.506, 0.463],[0.253, 0.918], [0.085, 0.496]]).transpose()
 my_discretization._input_sample_set.set_jacobians(pb)
 
-sur = postTools.piecewise_polynomial_surrogate(my_discretization)
+sur = surrogates.piecewise_polynomial_surrogate(my_discretization)
 sur_disc = sur.generate_for_input_set(emulated_inputs, order=1)
 sur_disc._input_sample_set.estimate_volume_mc()
 #import pdb
@@ -199,3 +200,34 @@ e = me.calculate_for_sample_set_region(s_set=s_set,
 
 if comm.rank == 0:
     print e
+(p, ee) = sur.calculate_prob_for_sample_set_region(s_set,
+                                        regions=[0],
+                                        update_input=True)
+print p, ee
+
+#my_discretization._output_sample_set._error_estimates = 0.1 * np.ones(my_discretization._output_sample_set._values.shape)
+# calculate probablities
+#my_discretization._output_sample_set._values += my_discretization._output_sample_set._error_estimates
+input_samples2 = samp.sample_set(3)
+
+# Set parameter domain
+input_samples2.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
+input_samples2 = sampler.random_sample_set('random', input_samples2, num_samples=1E5)
+my_discretization2 = sampler.compute_QoI_and_create_discretization(input_samples2,
+                                               savefile = '3to2_discretization.txt.gz')
+
+if comm.size == 0:
+    my_discretization2._output_sample_set._values += my_discretization._output_sample_set._error_estimates[0]
+else:
+    my_discretization2._output_sample_set._values_local += my_discretization._output_sample_set._error_estimates_local[0]
+if randomDataDiscretization is False:
+    simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+        data_set=my_discretization2, Q_ref=Q_ref, rect_scale=0.25,
+        center_pts_per_edge = 3)
+else:
+    simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(
+        data_set=my_discretization2, Q_ref=Q_ref, rect_scale=0.25,
+        M=50, num_d_emulate=1E5)
+calculateP.prob(my_discretization2)
+calculateP.prob_from_sample_set(my_discretization2._input_sample_set, s_set,emulated_inputs)
+print s_set._probabilities
