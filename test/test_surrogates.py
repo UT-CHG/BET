@@ -201,7 +201,7 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         sampler = bsam.sampler(linear_model3)
         input_samples = sample.sample_set(1)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 1, axis=0))
-        input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E2)
+        input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
         disc = sampler.compute_QoI_and_create_discretization(input_samples, 
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(

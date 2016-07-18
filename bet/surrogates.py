@@ -131,7 +131,7 @@ class piecewise_polynomial_surrogate(object):
             error_estimate = model_error.calculate_for_sample_set_region_mc(s_set,
                                                                             region)
             probabilities.append(probability)
-            error_estimates.append(error_estimates)
+            error_estimates.append(error_estimate)
         # Update input only if 1 region is given
         if update_input:
             num = self.input_disc._input_sample_set.check_num()

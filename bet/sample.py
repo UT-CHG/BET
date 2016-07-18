@@ -171,7 +171,8 @@ class sample_set_base(object):
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
                          '_values', '_values_local', '_left', '_left_local', 
                          '_right', '_right_local', '_width', '_width_local', 
-                         '_domain', '_kdtree_values'] 
+                         '_domain', '_kdtree_values', '_jacobians', 
+                         '_jacobians_local'] 
 
 
     def __init__(self, dim):

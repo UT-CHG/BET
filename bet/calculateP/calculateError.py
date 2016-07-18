@@ -296,6 +296,8 @@ class sampling_error(object):
                 sum2 = np.sum(in_Ai)
                 sum1 = comm.allreduce(sum1, op=MPI.SUM)
                 sum2 = comm.allreduce(sum2, op=MPI.SUM)
+                if sum2 == 0.0:
+                    return (float('nan'), float('nan'))
                 E = float(sum1)/float(sum2)
 
                 in_B_N = np.zeros(in_A.shape, dtype=np.bool)
@@ -310,11 +312,15 @@ class sampling_error(object):
                 sum4 = np.sum(in_C_N)
                 sum3 = comm.allreduce(sum3, op=MPI.SUM)
                 sum4 = comm.allreduce(sum4, op=MPI.SUM)
+                if sum4 == 0.0:
+                    return (float('nan'), float('nan'))
                 term1 = float(sum3)/float(sum4) - E
                 sum5 = np.sum(np.logical_and(in_A,in_C_N))
                 sum6 = np.sum(in_B_N)
                 sum5 = comm.allreduce(sum5, op=MPI.SUM)
                 sum6 = comm.allreduce(sum6, op=MPI.SUM)
+                if sum6 == 0.0:
+                    return (float('nan'), float('nan'))
                 term2 = float(sum5)/float(sum6) - E
 
                 upper_bound += self.disc._output_probability_set._probabilities[i]*max(term1,term2)
@@ -548,7 +554,8 @@ class model_error(object):
 
                 error_cells_num_local = float(np.sum(error_cells))
                 error_cells_num = comm.allreduce(error_cells_num_local, op=MPI.SUM)
-                self.disc._input_sample_set._error_id_local[error_cells] += er_cont/error_cells_num
+                if error_cells_num != 0:
+                    self.disc._input_sample_set._error_id_local[error_cells] += er_cont/error_cells_num
        
                
         return er_est
