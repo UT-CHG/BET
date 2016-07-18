@@ -28,7 +28,7 @@ def test_loadmat_init():
     :meth:`bet.sampling.adaptiveSampling.sampler.init`.
     """
     np.random.seed(1)
-    chain_length = 10
+    chain_length = 5
 
 
     mdat1 = {'num_samples':50, 'chain_length':chain_length}
@@ -92,10 +92,12 @@ def test_loadmat_init():
             loaded_sampler2.sample_batch_no)
     nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
             my_output2.get_values())
-    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
-        os.remove(os.path.join(local_path, 'testfile1.mat'))
-    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
-        os.remove(os.path.join(local_path, 'testfile2.mat'))
+    comm.barrier()
+    if comm.rank == 0:
+        if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+            os.remove(os.path.join(local_path, 'testfile1.mat'))
+        if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+            os.remove(os.path.join(local_path, 'testfile2.mat'))
 
 def verify_samples(QoI_range, sampler, input_domain,
         t_set, savefile, initial_sample_type, hot_start=0):

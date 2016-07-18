@@ -1141,6 +1141,7 @@ class Test_ball_sample_set(unittest.TestCase):
         self.sam_set.global_to_local()
         self.sam_set.set_domain(self.domain)
 
+        # Do serial tests
         globalize = True
         file_name = os.path.join(local_path, 'testfile.mat')
         if comm.size > 1 and not globalize:
@@ -1172,7 +1173,8 @@ class Test_ball_sample_set(unittest.TestCase):
         elif not globalize:
             os.remove(local_file_name)
         comm.barrier()
-        
+       
+        # Do parallel tests
         file_name = os.path.join(local_path, 'testfile.mat')
         globalize = False
         sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)

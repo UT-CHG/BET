@@ -13,6 +13,7 @@ assume the measure on both spaces in Lebesgue.
 import collections
 import os
 import warnings
+import glob
 import numpy as np
 import scipy.io as sio
 from pyDOE import lhs
@@ -40,8 +41,17 @@ def loadmat(save_file, disc_name=None, model=None):
     :returns: (sampler, discretization)
 
     """
-    # load the data from a *.mat file
-    mdat = sio.loadmat(save_file)
+    # check to see if parallel save
+    if not (os.path.exists(save_file) or os.path.exists(save_file+'.mat')):
+        save_dir = os.path.dirname(save_file)
+        base_name = os.path.basename(save_file)
+        mdat_files = glob.glob(os.path.join(save_dir,
+                "proc*_{}".format(base_name)))
+        # load the data from a *.mat file
+        mdat = sio.loadmat(mdat_files[0])
+    else:
+        # load the data from a *.mat file
+        mdat = sio.loadmat(save_file)
     num_samples = mdat['num_samples']
     # load the discretization
     discretization = sample.load_discretization(save_file, disc_name)

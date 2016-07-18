@@ -52,7 +52,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
             logging.info("HOT START from partial run")
         # Find and open save files
         save_dir = os.path.dirname(save_file)
-        base_name = os.path.dirname(save_file)
+        base_name = os.path.basename(save_file)
         mdat_files = glob.glob(os.path.join(save_dir,
                 "proc*_{}".format(base_name)))
         if len(mdat_files) > 0:
