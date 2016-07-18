@@ -3,6 +3,8 @@ BET
 
 BET is in active development. Hence, some features are still being added and you may find bugs we have overlooked. If you find something please report these problems to us through github so that we can fix them. Thanks!
 
+Please note that we are using continuous integration and issues for bug tracking.
+
 Butler, Estep, Tavener Method
 
 This code has been documented with Sphinx. The documentation is available online ta http://ut-chg.github.io/BET. To build documentation run 

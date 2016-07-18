@@ -82,17 +82,20 @@ def test_loadmat_parallel():
     my_input1 = sample_set(1)
     my_input1.set_values_local(np.array_split(np.random.random((10,1)),
         comm.size)[comm.rank])
-    my_output = sample_set(1)
-    my_output.set_values_local(np.array_split(np.random.random((10,1)),
+    my_output1 = sample_set(1)
+    my_output1.set_values_local(np.array_split(np.random.random((10,1)),
         comm.size)[comm.rank]) 
     my_input2 = sample_set(1)
     my_input2.set_values_local(np.array_split(np.random.random((20,1)),
         comm.size)[comm.rank])
+    my_output2 = sample_set(1)
+    my_output2.set_values_local(np.array_split(np.random.random((20,1)),
+        comm.size)[comm.rank]) 
 
     file_name1 = 'testfile1.mat'
     file_name2 = 'testfile2.mat'
 
-    if comm.size > 1 and not globalize:
+    if comm.size > 1:
         local_file_name1 = os.path.os.path.join(os.path.dirname(file_name1),
             "proc{}_{}".format(comm.rank, os.path.basename(file_name1)))
         local_file_name2 = os.path.os.path.join(os.path.dirname(file_name2),
@@ -104,18 +107,18 @@ def test_loadmat_parallel():
 
     sio.savemat(local_file_name1, mdat1)
     sio.savemat(local_file_name2, mdat2)
-
+    comm.barrier()
     
-    bet.sample.save_discretization(disc(my_input1, my_output),
+    bet.sample.save_discretization(disc(my_input1, my_output1),
             file_name1, globalize=False)
-    bet.sample.save_discretization(disc(my_input2, None),
+    bet.sample.save_discretization(disc(my_input2, my_output2),
             file_name2, "NAME", globalize=False)
 
     (loaded_sampler1, discretization1) = bsam.loadmat(file_name1)
     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
             my_input1.get_values())
     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
-            my_output.get_values())
+            my_output1.get_values())
     assert loaded_sampler1.num_samples == 10
     assert loaded_sampler1.lb_model is None
 
@@ -123,7 +126,9 @@ def test_loadmat_parallel():
         disc_name="NAME", model=model)
     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
             my_input2.get_values())
-    assert discretization2._output_sample_set is None
+    nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
+            my_output2.get_values())
+
     assert loaded_sampler2.num_samples == 20
     assert loaded_sampler2.lb_model == model
     if comm.size == 1:
