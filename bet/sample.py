@@ -244,7 +244,8 @@ class sample_set_base(object):
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
                     '_volumes_local', '_local_index', '_dim', '_p_norm',
-                    '_radii', '_normalized_radii']
+                    '_radii', '_radii_local', '_normalized_radii',
+                    '_normalize_radii_local']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
