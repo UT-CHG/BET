@@ -405,6 +405,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     :returns: Estimate of number of samples in the high probability area.
 
     """
+    raise PendingDeprecationWarning
     if sample_nos is None:
         sample_nos = range(data.shape[0])
     if len(data.shape) == 1:
@@ -435,6 +436,7 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     :returns: Estimate of number of samples in the high probability area.
 
     """
+    raise PendingDeprecationWarning
     adjusted_total_prob = list()
     if sample_nos_list:
         for result, sample_nos in zip(results_list, sample_nos_list):
