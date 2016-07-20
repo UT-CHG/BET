@@ -113,6 +113,11 @@ class piecewise_polynomial_surrogate(object):
         :param update_input: whether or not to update probabilities and
             errror identifiers for input discretization
         :type update_input: bool
+
+        :rtype: tuple
+        :returns: (probabilities, ``error_estimates``), the probability and
+            error estimates for the region
+        
         """
         if not hasattr(self, 'surrogate_discretization'):
            msg = "surrogate discretization has not been created"

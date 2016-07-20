@@ -162,7 +162,9 @@ class sampling_error(object):
             msg = "The argument must be of type bet.sample.discretization."
             raise wrong_argument_type(msg)
 
+        #: :class:`bet.sample.discretization` that defines the problem
         self.disc = disc 
+        #: number of inputs and outputs
         self.num = self.disc.check_nums()
 
         # Set up neighbor list and B_N and C_N
@@ -171,7 +173,7 @@ class sampling_error(object):
         else:
             msg = "sampling_error only handles exact connectivity for now."
             raise NotImplementedError(msg)
-        
+        #: dictionaries of interior and boundary sets
         (self.B_N, self.C_N) = boundary_sets(self.disc, nei_list)
         
     def calculate_for_contour_events(self):
@@ -362,6 +364,7 @@ class model_error(object):
             msg = "The argument must be of type bet.sample.discretization."
             raise wrong_argument_type(msg)
         disc._output_sample_set.global_to_local()
+        #: :class:`bet.sample.discretiztion` defining the problem
         self.disc = disc 
         # discretization must have error estimates
         if self.disc._output_sample_set._error_estimates is None:
@@ -369,11 +372,13 @@ class model_error(object):
                 msg = "Error estimates for the output sample set are required."
                 raise wrong_argument_type(msg)
 
+        #: number of inputs and outputs
         self.num = self.disc.check_nums()
         if self.disc._io_ptr_local is None:
             self.disc.set_io_ptr()
 
         # Setup new discretization object adding error estimates
+        #: :class:`bet.sample.discretiztion` from adding error estimates
         self.disc_new = disc.copy()
         self.disc_new._output_sample_set._values_local += self.disc._output_sample_set._error_estimates_local
         self.disc_new.set_io_ptr(globalize=False)
