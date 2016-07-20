@@ -86,7 +86,7 @@ if comm.rank == 0:
     print "True probability: ",  P_true
 
 # Approximate probabilty
-P_approx  = calculateP.prob_from_sample_set_mc(my_disc._input_sample_set,
+P_approx  = calculateP.prob_from_sample_set(my_disc._input_sample_set,
                                              s_set)[0]
 if comm.rank == 0:
     print "Approximate probability: ",  P_approx

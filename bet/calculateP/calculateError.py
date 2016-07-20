@@ -2,11 +2,12 @@
 
 r""" 
 This module provides methods for calulating error estimates of 
-the probability measure for calculate probability measures.
+the probability measure for calculate probability measures. See
+`Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`.
 
-* :mod:`~bet.calculateErrors.cell_connectivity_exact` calculates 
+* :meth:`~bet.calculateErrors.cell_connectivity_exact` calculates 
 the connectivity of cells.
-* :mod:`~bet.calculateErrors.boundary_sets` calculates which cells are 
+* :meth:`~bet.calculateErrors.boundary_sets` calculates which cells are 
 on the boundary and strictly interior for contour events.
 * :class:`~bet.calculateErrors.sampling_error` is for calculating error
 estimates due to sampling
@@ -29,18 +30,14 @@ class wrong_argument_type(Exception):
     Exception for when the argument is not one of the acceptible
     types.
     """
-class type_not_yet_written(Exception):
-    """
-    Exception for when the method is not yet written.
-    """
 
 def cell_connectivity_exact(disc):
     """
     
-    Calculates contour events of the cells and its neighbors
+    Calculates contour events of the cells and its neighbors.
 
     :param disc: An object containing the discretization information.
-    :type disc: class:`bet.sample.discretization`
+    :type disc: :class:`bet.sample.discretization`
 
     :rtype: list
     :returns: list of lists of neighboring cells
@@ -69,6 +66,7 @@ def cell_connectivity_exact(disc):
         disc.set_io_ptr()
         
     if disc._input_sample_set._dim == 1:
+        # Adding contours on the left
         s_sort = disc._input_sample_set._values.flat[:].argsort()
         neiList = defaultdict(set)
         for p in range(num): 
@@ -100,12 +98,16 @@ def boundary_sets(disc, nei_list):
     Calculates the the neighboring Voronoi cells for each cell.
 
     :param disc: An object containing the discretization information.
-    :type disc: class:`bet.sample.discretization`
+    :type disc: :class:`bet.sample.discretization`
     :param nei_list: list of lists defining contour events of neighboring cells.
     :type nei_list: list
 
     :rtype: tuple
-    :returns: (B_N, C_N) as defined in Butler et al. 2015.
+    :returns: (:math:`B_N, C_N`) where B_N are the cells strictly on the 
+        interior of a contour event and C_N are the cells on the boundary 
+        of a contour eventas defined in 
+        `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
+    
 
     """
     from collections import defaultdict
@@ -150,7 +152,7 @@ class sampling_error(object):
         Set things up for a given discretization
           
         :param disc: An object containing the discretization information.
-        :type disc: class:`bet.sample.discretization`
+        :type disc: :class:`bet.sample.discretization`
         :param exact: Whether or not to use exact connectivity
         :type exact: bool
         
@@ -168,18 +170,21 @@ class sampling_error(object):
             nei_list = cell_connectivity_exact(self.disc)
         else:
             msg = "sampling_error only handles exact connectivity for now."
-            raise type_not_yet_written(msg)
+            raise NotImplementedError(msg)
         
         (self.B_N, self.C_N) = boundary_sets(self.disc, nei_list)
         
     def calculate_for_contour_events(self):
         """
         Calculate the sampling error bounds for each contour event.
+        If volumes are already calculated these are used. If not,
+        volume emulation is used if an emulated input set exists.
+        Otherwise the MC assumption is made.
 
-        :rtype tuple
-        :returns: (up_list, low_list) where up_list is a list of
-        the upper bounds for each contour event and low_list is a list
-        of the lower bounds.
+        :rtype: tuple
+        :returns: (``up_list``, ``low_list``) where ``up_list`` is a list of
+            the upper bounds for each contour event and ``low_list`` is a list
+            of the lower bounds.
 
         """
         up_list = []
@@ -196,15 +201,19 @@ class sampling_error(object):
         # Loop over contour events and calculate error bounds
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
+            # contour event :math:`\mathcal{A} = A_{i,N}`
             if self.disc._output_probability_set._probabilities[i] > 0.0:
                 lam_vol = np.zeros((self.num,))
                 indices = np.equal(self.disc._io_ptr,i)
                 lam_vol[indices] = self.disc._input_sample_set._volumes[indices]
                 if i in self.B_N:
+                    # val1 = :math:`\mu_{\Lambda}(B_{i,N})`
                     val1 = np.sum(self.disc._input_sample_set._volumes[self.B_N[i]])
+                    # val2 = :math:`\mu_{\Lambda}(\mathcal{A} \cap B_{i,N})`
                     val2 = np.sum(lam_vol[self.B_N[i]])
-                
+                    # val3 = :math:`\mu_\Lambda(C_{i,N})`
                     val3 = np.sum(self.disc._input_sample_set._volumes[self.C_N[i]])
+                    # val4 = :math:`\mu_{\Lambda}(\mathcal{A} \cap C_{i,N})`
                     val4 = np.sum(lam_vol[self.C_N[i]])
                 
                     term1 = val2/val3 - 1.0
@@ -225,7 +234,7 @@ class sampling_error(object):
                                      region, emulated_set=None):
         """
         Calculate the sampling error bounds for a region of the input space
-        defined by a sample set object.
+        defined by a sample set object which defines an event :math:`A`.
 
         :param s_set: sample set for which to calculate error
         :type s_set: :class:`bet.sample.sample_set_base`
@@ -235,7 +244,7 @@ class sampling_error(object):
         :type emulated_set: :class:`bet.sample_set_base`
 
         :rtype tuple
-        :returns: (upper_bound, lower_bound) the upper and lower bounds
+        :returns: (``upper_bound``, ``lower_bound``) the upper and lower bounds
         for the error.
 
         """
@@ -270,7 +279,7 @@ class sampling_error(object):
             
             disc_new.set_emulated_ii_ptr(globalize=False)
         else:
-            logging.warning("Using input_sample_set for volume emulation")
+            logging.warning("Using MC assumption for calculating volumes.")
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(disc._input_sample_set)
             disc.set_emulated_ii_ptr(globalize=False)
@@ -288,11 +297,13 @@ class sampling_error(object):
         # Loop over contour intervals and add error contributions
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
+            # Contribution from contour event :math:`A_{i,N}`
             if self.disc._output_probability_set._probabilities[i] > 0.0:
                 indices = np.equal(disc._io_ptr, i)
                 in_Ai = indices[disc._emulated_ii_ptr_local]
-                
+                # sum1 :math:`\mu_{\Lambda}(A \cap A_{i,N})`
                 sum1 = np.sum(np.logical_and(in_A, in_Ai))
+                # sum2 :math:`\mu_{\Lambda}(A_{i,N})`
                 sum2 = np.sum(in_Ai)
                 sum1 = comm.allreduce(sum1, op=MPI.SUM)
                 sum2 = comm.allreduce(sum2, op=MPI.SUM)
@@ -307,15 +318,19 @@ class sampling_error(object):
                 in_C_N = np.zeros(in_A.shape, dtype=np.bool)
                 for j in self.C_N[i]:
                     in_C_N =  np.logical_or(np.equal(disc._emulated_ii_ptr_local,j), in_C_N)
-
+                # sum3 :math:`\mu_{\Lambda}(A \cap B_N)`
                 sum3 = np.sum(np.logical_and(in_A,in_B_N))
+                # sum4 :math:`\mu_{\Lambda}(C_N)`
                 sum4 = np.sum(in_C_N)
                 sum3 = comm.allreduce(sum3, op=MPI.SUM)
                 sum4 = comm.allreduce(sum4, op=MPI.SUM)
                 if sum4 == 0.0:
                     return (float('nan'), float('nan'))
                 term1 = float(sum3)/float(sum4) - E
+
+                # sum5 :math:`\mu_{\Lambda}(A \cap C_N)`
                 sum5 = np.sum(np.logical_and(in_A,in_C_N))
+                # sum6 :math:`\mu_{\Lambda}(B_N)`
                 sum6 = np.sum(in_B_N)
                 sum5 = comm.allreduce(sum5, op=MPI.SUM)
                 sum6 = comm.allreduce(sum6, op=MPI.SUM)
@@ -339,7 +354,7 @@ class model_error(object):
         Set things up for a given discretization
           
         :param disc: An object containing the discretization information.
-        :type disc: class:`bet.sample.discretization`
+        :type disc: :class:`bet.sample.discretization`
         
         """
         # Check inputs
@@ -348,11 +363,11 @@ class model_error(object):
             raise wrong_argument_type(msg)
         disc._output_sample_set.global_to_local()
         self.disc = disc 
+        # discretization must have error estimates
         if self.disc._output_sample_set._error_estimates is None:
             if self.disc._output_sample_set._error_estimates_local is None:
                 msg = "Error estimates for the output sample set are required."
                 raise wrong_argument_type(msg)
-        #self.disc._output_sample_set.global_to_local()
 
         self.num = self.disc.check_nums()
         if self.disc._io_ptr_local is None:
@@ -370,8 +385,8 @@ class model_error(object):
         Calculate the numerical error for each contour event.
 
         :rtype list
-        :returns: er_list, a list of the error estimates
-        for each contour event.
+        :returns: ``er_list``, a list of the error estimates
+            for each contour event.
 
         """
         # Calculate volumes if necessary
@@ -390,7 +405,9 @@ class model_error(object):
         er_list = []
         ops_num = self.disc._output_probability_set.check_num()
         for i in range(ops_num):
-            if self.disc._output_probability_set._probabilities[i] > 0.0:                
+            if self.disc._output_probability_set._probabilities[i] > 0.0: 
+                # JiA, Ji, Jie, and JiAe are defined ast in 
+                # `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
                 ind1 = np.equal(self.disc._io_ptr_local, i)
                 ind2 = np.equal(self.disc_new._io_ptr_local, i)
                 JiA = np.sum(self.disc._input_sample_set._volumes_local[ind1])
@@ -422,7 +439,7 @@ class model_error(object):
         :type emulated_sample_set: :class:`bet.sample_set_base`
 
         :rtype float
-        :returns: er_est, the numerical error estimate for the region
+        :returns: ``er_est``, the numerical error estimate for the region
 
         """
         # Set up marker
@@ -479,6 +496,8 @@ class model_error(object):
 
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
+                # JiA, Ji, Jie, and JiAe are defined ast in 
+                # `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
                 indices1 = np.equal(self.disc._io_ptr ,i)
                 in_Ai1 = indices1[ptr1]
                 indices2 = np.equal(self.disc_new._io_ptr ,i)
@@ -507,7 +526,7 @@ class model_error(object):
         :type region: int
 
         :rtype float
-        :returns: er_est, the numerical error estimate for the region
+        :returns: ``er_est``, the numerical error estimate for the region
 
         """
         # Set up marker
@@ -534,6 +553,8 @@ class model_error(object):
 
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
+                # JiA, Ji, Jie, and JiAe are defined ast in 
+                # `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
                 in_Ai1 = np.equal(self.disc._io_ptr_local, i)
                 in_Ai2 = np.equal(self.disc_new._io_ptr_local, i)
                 JiA_local = float(np.sum(np.logical_and(in_A,in_Ai1)))

@@ -238,7 +238,7 @@ class sampler(object):
         :param lb_model: Interface to physics-based model takes an input of
             shape (N, ndim) and returns an output of shape (N, mdim)
         :type lb_model: callable function
-        :param int num_samples: N, number of samples ()
+        :param int num_samples: N, number of samples
         :param bool error_estimates: Whether or not the model returns error estimates
         :param bool jacobians: Whether or not the model returns Jacobians
 

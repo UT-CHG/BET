@@ -130,7 +130,8 @@ def prob_with_emulated_volumes(discretization):
 
 
     
-def prob_from_sample_set(set_old, set_new, set_emulate=None):
+def prob_from_sample_set_with_emulated_volumes(set_old, set_new, 
+                                               set_emulate=None):
     r"""
     
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
@@ -149,7 +150,7 @@ def prob_from_sample_set(set_old, set_new, set_emulate=None):
     """
     if set_emulate is None:
         logging.warning("Using MC assumption because no emulated points given")
-        prob_from_sample_set_mc(set_old, set_new)
+        return prob_from_sample_set(set_old, set_new)
 
     # Check dimensions
     num_old = set_old.check_num()
@@ -201,7 +202,7 @@ def prob_from_sample_set(set_old, set_new, set_emulate=None):
     set_new.set_probabilities(prob_new)
     return prob_new
 
-def prob_from_sample_set_mc(set_old, set_new):
+def prob_from_sample_set(set_old, set_new):
     r"""
     
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
@@ -235,6 +236,55 @@ def prob_from_sample_set_mc(set_old, set_new):
     for i in range(num_new):
         Itemp = np.equal(ptr, i)
         Itemp_sum = np.sum(set_old._probabilities_local[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
+        prob_new[i] = Itemp_sum
+    
+    # Set probabilities
+    set_new.set_probabilities(prob_new)
+    return prob_new
+
+def prob_from_discretization_input(disc, set_new):
+    r"""
+    
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
+    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` where
+    :math:`\lambda_{samples_old}` come from an input discretization.
+
+    :param disc: Discretiztion on which probabilities have already been
+        calculated
+    :type disc: :class:`~bet.sample.discretization` 
+    :param set_new: Sample set for which probabilities will be calculated.
+    :type set_new: :class:`~bet.sample.sample_set_base` 
+
+    """
+    if disc._emulated_input_sample_set is None:
+        logging.warning("Using MC assumption because no emulated points given")
+        em_set = disc._input_sample_set
+    else:
+        em_set = disc._emulated_input_sample_set
+    
+    if em_set._values_local is None:
+        em_set.global_to_local()
+    if em_set._probabilities_local is None:
+        raise AttributeError("Probabilities must be pre-calculated.")
+
+    # Check dimensions
+    num_old = disc.check_nums()
+    num_new = set_new.check_num()
+
+    if (disc._input_sample_set._dim != set_new._dim):
+        raise samp.dim_not_matching("Dimensions of sets are not equal.")
+
+    (_, ptr) = set_new.query(em_set._values_local)
+    ptr = ptr.flat[:]
+
+    # Set up probability vectors
+    prob_new = np.zeros((num_new,))
+    prob_em = em_set._probabilities_local
+
+    for i in range(num_new):
+        Itemp = np.equal(ptr, i)
+        Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
     

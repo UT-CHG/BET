@@ -18,7 +18,7 @@ class piecewise_polynomial_surrogate(object):
 
         :param discretization: An object containing the discretization 
         information.
-        :type discretization: class:`bet.sample.discretization`
+        :type discretization: :class:`bet.sample.discretization`
 
         """
         if not isinstance(input_disc, sample.discretization):
@@ -35,13 +35,14 @@ class piecewise_polynomial_surrogate(object):
         for a user-defined input sample set. The output sample set values
         and error estimates are piecewise polynomially defined over input sample
         set cells from the input discretization. For order 0, both are piecewise
-        constant. For order 1, values are piecewise linear (assuming Jacobians)
-        exist, and error estimates are piecewise constant.
+        constant. For order 1, values are piecewise linear (assuming Jacobians
+        exist), and error estimates are piecewise constant.
 
         :param input_sample_set: input sample set for surrogate discretization
         :type set_old: :class:`~bet.sample.sample_set_base`
         :param order: Polynomial order
         :type order: int
+
         :rtype: :class:`~bet.sample.discretization`
         :returns: discretization defining the surrogate model
 
@@ -104,7 +105,14 @@ class piecewise_polynomial_surrogate(object):
         Solves stochastic inverse problem based on surrogate points and the
         MC assumption. Calculates the probability of a regions of input space
         and error estimates for those probabilities.
-        
+
+        :param: s_set: sample set for which to calculate error
+        :type s_set: :class:`bet.sample.sample_set_base`
+        :param region: list of regions of s_set for which to calculate error
+        :type region: list
+        :param update_input: whether or not to update probabilities and
+            errror identifiers for input discretization
+        :type update_input: bool
         """
         if not hasattr(self, 'surrogate_discretization'):
            msg = "surrogate discretization has not been created"
@@ -117,9 +125,9 @@ class piecewise_polynomial_surrogate(object):
         if self.surrogate_discretization._input_sample_set._volumes_local is None:
             self.surrogate_discretization._input_sample_set.estimate_volume_mc(globalize=False)
         calculateP.prob(self.surrogate_discretization, globalize=False)
-        prob_new_values = calculateP.prob_from_sample_set_mc(self.surrogate_discretization._input_sample_set, s_set)
+        prob_new_values = calculateP.prob_from_sample_set(self.surrogate_discretization._input_sample_set, s_set)
         
-        # Calcualte for each region
+        # Calculate for each region
         probabilities = []
         error_estimates = []
         for region in regions:

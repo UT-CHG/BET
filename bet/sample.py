@@ -1047,6 +1047,9 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     if discretization_name is None:
         discretization_name = 'default'
 
+    # globalize the pointers
+    if globalize:
+        save_disc.globalize_ptrs()
     # save sample sets if they exist
     for attrname in discretization.sample_set_names:
         curr_attr = getattr(save_disc, attrname)

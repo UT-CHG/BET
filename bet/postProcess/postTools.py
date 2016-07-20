@@ -7,7 +7,6 @@ from bet.Comm import comm
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
-import bet.calculateP.calculateError as calculateError
 import logging
 
 class dim_not_matching(Exception):
