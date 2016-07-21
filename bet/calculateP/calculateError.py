@@ -246,7 +246,7 @@ class sampling_error(object):
         :param emulated_set: sample set for volume emulation
         :type emulated_set: :class:`bet.sample_set_base`
 
-        :rtype tuple
+        :rtype: tuple
         :returns: (``upper_bound``, ``lower_bound``) the upper and lower bounds
             for the error.
 
