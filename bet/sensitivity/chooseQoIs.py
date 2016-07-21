@@ -1,14 +1,15 @@
 # Copyright (C) 2014-2016 The BET Development Team
 
 """
-This module contains functions for choosing optimal sets of QoIs to use in the stochastic inverse problem.
+This module contains functions for choosing optimal sets of QoIs to use in the
+stochastic inverse problem.  
 """
 import logging
-import numpy as np
 from itertools import combinations
+import numpy as np
+from scipy import stats
 from bet.Comm import comm
 import bet.util as util
-from scipy import stats
 
 def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     r"""
@@ -108,7 +109,7 @@ def calculate_avg_skewness(input_set, qoi_set=None):
     # Calculate the measure of the parallelepipeds defined by the rows of each
     # Jacobian if we remove the i'th row.
     muGi = np.zeros([num_centers, output_dim])
-    for i in range(G.shape[1]):
+    for i in xrange(G.shape[1]):
         muGi[:, i] = np.prod(np.linalg.svd(np.delete(G, i, axis=1),
             compute_uv=False), axis=1)
 
@@ -205,7 +206,7 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider.  Default is
-        range(0, input_set._jacobians.shape[1])
+        xrange(0, input_set._jacobians.shape[1])
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
     :param int num_qois_return: Number of desired QoIs to use in the
         inverse problem.  Default is input_dim
@@ -246,7 +247,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider.  Default is
-        range(0, input_set._jacobians.shape[1])
+        xrange(0, input_set._jacobians.shape[1])
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
     :param int num_qois_return: Number of desired QoIs to use in the
         inverse problem.  Default is input_dim
@@ -269,7 +270,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     num_centers = G.shape[0]
 
     if qoiIndices is None:
-        qoiIndices = range(0, G.shape[1])
+        qoiIndices = xrange(0, G.shape[1])
     if num_qois_return is None:
         num_qois_return = input_dim
     if num_optsets_return is None:
@@ -298,7 +299,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     measure_skewness_indices_mat[:, 0] = np.inf
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
         num_optsets_return])
-    for qoi_set in range(len(qoi_combs)):
+    for qoi_set in xrange(len(qoi_combs)):
         if measure == False:
             (current_measskew, singvals) = calculate_avg_skewness(input_set,
                 qoi_combs[qoi_set])
@@ -374,7 +375,7 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     input_dim = input_set._dim
     G = input_set._jacobians
     if qoiIndices is None:
-        qoiIndices = range(0, G.shape[1])
+        qoiIndices = xrange(0, G.shape[1])
 
     # Normalize the gradient vectors with respect to the 2-norm so the inner
     # product tells us about the angle between the two vectors.
@@ -383,7 +384,7 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     # Remove any QoI that has a zero vector at atleast one of the centers.
     if remove_zeros:
         indz = np.array([])
-        for i in range(norm_G.shape[1]):
+        for i in xrange(norm_G.shape[1]):
             if np.sum(norm_G[:, i] == 0) > 0:
                 indz = np.append(indz, i)
     else:
@@ -409,7 +410,7 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     # second QoI if the angle is below some tolerance.  At this point all the
     # vectors are normalized, so the inner product will be between -1 and 1.
     repeat_vec = np.array([])
-    for qoi_set in range(len(qoi_combs)):
+    for qoi_set in xrange(len(qoi_combs)):
         curr_set = qoi_combs[qoi_set]
 
         # If neither of the current QoIs are in the repeat_vec, test them
@@ -477,7 +478,7 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
     # For each good set of size (n - 1), find the possible sets of size n and
     # compute the average skewness of each
     count_qois = 0
-    for i in range(good_sets_prev.shape[0]):
+    for i in xrange(good_sets_prev.shape[0]):
         min_ind = np.max(good_sets_prev[i, :])
         # Find all possible combinations of QoIs that include this set of
         # (n - 1)
@@ -500,11 +501,11 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
 
         # For each combination, compute the average measure(skewness) and add
         # the set to good_sets if it is less than measskew_tol
-        for qoi_set in range(len(qoi_combs)):
+        for qoi_set in xrange(len(qoi_combs)):
             count_qois += 1
             curr_set = util.fix_dimensions_vector_2darray(qoi_combs[qoi_set])\
                 .transpose()
-            if measure == False:
+            if measure is False:
                 (current_measskew, singvals) = calculate_avg_skewness(input_set,
                     qoi_combs[qoi_set])
             else:
@@ -577,7 +578,7 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider from input_set._jacobians.
-        Default is range(0, input_set._jacobians.shape[1])
+        Default is xrange(0, input_set._jacobians.shape[1])
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
     :param int max_qois_return: Maximum number of desired QoIs to use in the
         inverse problem.  Default is input_dim
@@ -622,7 +623,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
     :param qoiIndices: Set of QoIs to consider from G.  Default is
-        range(0, G.shape[1]).
+        xrange(0, G.shape[1]).
     :type qoiIndices: :class:`np.ndarray` of size (1, num QoIs to consider)
     :param int max_qois_return: Maximum number of desired QoIs to use in the
         inverse problem.  Default is input_dim.
@@ -650,7 +651,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     if input_set._jacobians is None:
         raise ValueError("You must have jacobians to use this method.")
     if qoiIndices is None:
-        qoiIndices = range(0, input_set._jacobians.shape[1])
+        qoiIndices = xrange(0, input_set._jacobians.shape[1])
     if max_qois_return is None:
         max_qois_return = input_dim
     if num_optsets_return is None:
@@ -671,7 +672,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     optsingvals_list = []
 
     # Given good sets of QoIs of size (n - 1), find the good sets of size n
-    for qois_return in range(2, max_qois_return + 1):
+    for qois_return in xrange(2, max_qois_return + 1):
         (good_sets_curr, best_sets_curr, optsingvals_tensor_curr) = \
             find_good_sets(input_set, good_sets_curr, unique_indices,
             num_optsets_return, measskew_tol, measure)

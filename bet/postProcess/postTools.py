@@ -3,11 +3,11 @@
 """
 This module provides methods for postprocessing probabilities and data. 
 """
-from bet.Comm import comm
+import logging
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
-import logging
+from bet.Comm import comm
 
 class dim_not_matching(Exception):
     """
@@ -379,7 +379,7 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     :param list column_headings: Column headings to print to screen
 
     """
-    if column_headings == None:
+    if column_headings is None:
         column_headings = "Run parameters"
     logging.info("Sample Set No., Quality, "+ str(column_headings))
     for i in reversed(sort_ind):

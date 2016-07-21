@@ -108,12 +108,11 @@ Dependencies via :keyword:`import` statements::
           \-calculateP 
           | \-calculateError (bet.surrogates)
           | \-calculateP (bet.surrogates,bet.calculateP.calculateError)
-          | \-voronoiHistogram (bet.calculateP.simpleFunP)
-          \-sample (bet.surrogates,bet.sampling.adaptiveSampling,bet.postProcess.plotDomains,bet.sampling.basicSampling,bet.sensitivity.gradients,bet.calculateP.voronoiHistogram,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+          \-sample (bet.surrogates,bet.sampling.adaptiveSampling,bet.postProcess.plotDomains,bet.sampling.basicSampling,bet.sensitivity.gradients,,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
           \-sampling 
           | \-LpGeneralizedSamples (bet.sample,bet.sensitivity.gradients)
           | \-basicSampling (bet.sampling.adaptiveSampling,bet.calculateP.calculateP)
-          \-util (bet.sample,bet.sensitivity.gradients,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+          \-util (bet.sample,bet.sensitivity.gradients,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,,bet.calculateP.calculateP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
 
 
 External dependencies
@@ -133,7 +132,7 @@ This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy
           \-tri (bet.postProcess.plotDomains)
         mpl_toolkits 
           \-mplot3d (bet.postProcess.plotP,bet.postProcess.plotDomains)
-        numpy (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,bet.sampling.LpGeneralizedSamples,bet.sampling.basicSampling,bet.sensitivity.gradients,bet.calculateP.indicatorFunctions,bet.util,bet.calculateP.voronoiHistogram,bet.calculateP.calculateP,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+        numpy (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,bet.sampling.LpGeneralizedSamples,bet.sampling.basicSampling,bet.sensitivity.gradients,bet.calculateP.indicatorFunctions,bet.util,,bet.calculateP.calculateP,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
           \-linalg (bet.sample,bet.calculateP.calculateError)
         pyDOE (bet.sampling.basicSampling)
         scipy 
