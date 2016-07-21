@@ -244,18 +244,21 @@ class sample_set_base(object):
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
                     '_volumes_local', '_local_index', '_dim', '_p_norm',
-                    '_radii', '_normalized_radii']
+                    '_radii', '_normalized_radii', '_region', '_region_local',
+                    '_error_id', '_error_id_local']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values', '_radii', '_normalized_radii'] 
+                   '_kdtree_values', '_radii', '_normalized_radii',
+                   '_region', '_error_id'] 
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
                          '_values', '_values_local', '_left', '_left_local', 
                          '_right', '_right_local', '_width', '_width_local', 
-                         '_domain', '_kdtree_values'] 
+                         '_domain', '_kdtree_values', '_jacobians', 
+                         '_jacobians_local'] 
 
 
     def __init__(self, dim):
@@ -326,12 +329,20 @@ class sample_set_base(object):
         self._p_norm = 2.0
         #: :class:`numpy.ndarray` of sample radii of shape (num,)
         self._radii = None
-         #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
+        #: :class:`numpy.ndarray` of sample radii of shape (local_num,)
         self._radii_local = None
         #: :class:`numpy.ndarray` of normalized sample radii of shape (num,)
         self._normalized_radii = None
-         #: :class:`numpy.ndarray` of normalized sample radii of shape (local_num,)
+        #: :class:`numpy.ndarray` of normalized sample radii of shape (local_num,)
         self._normalized_radii_local = None
+        #: :class:`numpy.ndarray` of integers marking regions of the domain
+        self._region = None
+        #: :class:`numpy.ndarray` of integers marking regions of the domain
+        self._region_local = None
+        #: :class:`numpy.ndarray` of error identifiers  of shape (num,)
+        self._error_id = None
+        #: :class:`numpy.ndarray` of error identifiers  of shape (local_num,)
+        self._error_id_local = None
 
     def set_p_norm(self, p_norm):
         """
@@ -347,6 +358,66 @@ class sample_set_base(object):
         Returns p-norm for sample set
         """
         return self._p_norm
+
+    def set_region(self, region):
+        """
+        Sets region for sample set.
+
+        :param region: array of regions
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._region = region
+
+    def get_region(self):
+        """
+        Returns region.
+        """
+        return self._region
+
+    def set_region_local(self, region):
+        """
+        Sets local region for sample set.
+
+        :param region: array of regions
+        :type values: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._region_local = region
+
+    def get_region_local(self):
+        """
+        Returns local region.
+        """
+        return self._region_local  
+
+    def set_error_id(self, error_id):
+        """
+        Sets error_id for sample set.
+
+        :param error_id: array of error identifiers
+        :type error_id: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._error_id = error_id
+
+    def get_error_id(self):
+        """
+        Returns error identifiers.
+        """
+        return self._error_id
+
+    def set_error_id_local(self, error_id):
+        """
+        Sets local error id for sample set.
+
+        :param error_id: array of error identifiers
+        :type error_id: :class:`numpy.ndarray` of shape (some_num, dim)
+        """
+        self._error_local = error_id
+
+    def get_error_id_local(self):
+        """
+        Returns local error identifier.
+        """
+        return self._error_id_local
         
     def update_bounds(self, num=None):
         """
@@ -436,7 +507,7 @@ class sample_set_base(object):
             if num_local is None:
                 num_local = 0
             num = comm.allreduce(num_local, op=MPI.SUM)
-        
+           
         return num
 
     def check_num_local(self):
@@ -839,7 +910,7 @@ class sample_set_base(object):
 
         :param emulated_sample_set: The set of samples used to approximate the
             volume measure.
-        :type emulated_sample_set: :class:`bet.sample_set_base`
+        :type emulated_sample_set: :class:`bet.sample.sample_set_base`
 
         """
         num = self.check_num()
@@ -861,14 +932,18 @@ class sample_set_base(object):
         self._volumes = vol
         self.global_to_local()
 
-    def estimate_volume_mc(self):
+    def estimate_volume_mc(self, globalize=True):
         """
         Give all cells the same volume fraction based on the Monte Carlo
         assumption.  
         """
         num = self.check_num()
-        self._volumes = 1.0/float(num)*np.ones((num,))
-        self.global_to_local()
+        if globalize:
+            self._volumes = 1.0/float(num)*np.ones((num,))
+            self.global_to_local()
+        else:
+            num_local = self.check_num_local()
+            self._volumes_local = 1.0/float(num)*np.ones((num_local,))
 
     def global_to_local(self):
         """
@@ -972,6 +1047,9 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     if discretization_name is None:
         discretization_name = 'default'
 
+    # globalize the pointers
+    if globalize:
+        save_disc.globalize_ptrs()
     # save sample sets if they exist
     for attrname in discretization.sample_set_names:
         curr_attr = getattr(save_disc, attrname)
@@ -1493,7 +1571,9 @@ class rectangle_sample_set(sample_set_base):
         self._left[-1,:] = -np.inf
         self._width = self._right - self._left
         self.set_values(values)
-        logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
+        if len(maxes) > 1:
+            logging.warning("If rectangles intersect on a set nonzero measure, calculated values will be wrong.")
+        self._region = np.arange(len(maxes) + 1) 
 
         
                     
@@ -1660,7 +1740,9 @@ class ball_sample_set(sample_set_base):
         self._radii = np.zeros((len(centers)+1,))
         self._radii[0:-1] = radii
         self._radii[-1] = np.inf
-        logging.warning("If balls intersect on a set nonzero measure, calculated values will be wrong.")
+        if len(centers) > 1:
+            logging.warning("If balls intersect on a set nonzero measure, calculated values will be wrong.")
+        self._region = np.arange(len(centers) + 1)
 
     def append_values(self, values):
         """
@@ -1892,6 +1974,18 @@ class discretization(object):
         else:
             return in_num
 
+    def globalize_ptrs(self):
+        """
+        Globalizes discretization pointers.
+
+        """
+        if (self._io_ptr_local is not None) and  (self._io_ptr is  None):
+            self._io_ptr = util.get_global_values(self._io_ptr_local)
+        if (self._emulated_ii_ptr_local is not None) and  (self._emulated_ii_ptr is  None):
+            self._emulated_ii_ptr = util.get_global_values(self._emulated_ii_ptr_local)
+        if (self._emulated_oo_ptr_local is not None) and  (self._emulated_oo_ptr is  None):
+            self._emulated_oo_ptr = util.get_global_values(self._emulated_oo_ptr_local)
+
     def set_io_ptr(self, globalize=True):
         """
         
@@ -1905,7 +1999,7 @@ class discretization(object):
         if self._output_sample_set._values_local is None:
             self._output_sample_set.global_to_local()
         (_, self._io_ptr_local) = self._output_probability_set.query(\
-                self._output_sample_set._values_local)
+                        self._output_sample_set._values_local)
                                                             
         if globalize:
             self._io_ptr = util.get_global_values(self._io_ptr_local)
