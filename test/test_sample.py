@@ -1,4 +1,4 @@
-# Copyright (C) 2016 The BET Development TEam
+# Copyright (C) 2016 The BET Development Team
 
 # Steve Mattis 03/23/2016
 
@@ -265,6 +265,24 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.check_num()
         nptest.assert_array_equal(ee, self.sam_set.get_error_estimates())
 
+    def test_region(self):
+        """
+        Check region methods
+        """
+        region = np.ones((self.num,), dtype=np.int)
+        self.sam_set.set_region(region)
+        self.sam_set.check_num()
+        nptest.assert_array_equal(region, self.sam_set.get_region())
+
+    def test_error_id(self):
+        """
+        Check error identifier methods
+        """
+        error_id = np.ones((self.num,))
+        self.sam_set.set_error_id(error_id)
+        self.sam_set.check_num()
+        nptest.assert_array_equal(error_id, self.sam_set.get_error_id())
+
     def test_jacobian_methods(self):
         """
         Check jacobian methods.
@@ -402,6 +420,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.get_io_ptr()
         self.disc.set_io_ptr(globalize=False)
         self.disc.get_io_ptr()
+        self.disc.globalize_ptrs()
 
     def Test_set_emulated_ii_ptr(self):
         """
@@ -417,6 +436,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.set_emulated_ii_ptr(globalize=False)
         self.disc._emulated_input_sample_set.local_to_global()
         self.disc.get_emulated_ii_ptr()
+        self.disc.globalize_ptrs()
 
         
     def Test_set_emulated_oo_ptr(self):
@@ -432,6 +452,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.get_emulated_oo_ptr()
         self.disc.set_emulated_oo_ptr(globalize=False)
         self.disc.get_emulated_oo_ptr()
+        self.disc.globalize_ptrs()
 
     def Test_set_input_sample_set(self):
         """

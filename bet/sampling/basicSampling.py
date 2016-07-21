@@ -230,14 +230,18 @@ class sampler(object):
         callable function that runs the model at a given set of input and
         returns output
     """
-    def __init__(self, lb_model, num_samples=None):
+    def __init__(self, lb_model, num_samples=None,
+                 error_estimates=False, jacobians=False):
         """
         Initialization
         
         :param lb_model: Interface to physics-based model takes an input of
             shape (N, ndim) and returns an output of shape (N, mdim)
         :type lb_model: callable function
-        :param int num_samples: N, number of samples ()
+        :param int num_samples: N, number of samples
+        :param bool error_estimates: Whether or not the model returns error estimates
+        :param bool jacobians: Whether or not the model returns Jacobians
+
         """
         #: int, total number of samples OR list of number of samples per
         #: dimension such that total number of samples is prob(num_samples)
@@ -247,6 +251,8 @@ class sampler(object):
         #: parameter samples and returns data 
 
         self.lb_model = lb_model
+        self.error_estimates = error_estimates
+        self.jacobians = jacobians
 
     def save(self, mdict, save_file, discretization=None, globalize=False):
         """
@@ -371,8 +377,24 @@ class sampler(object):
         # Solve the model at the samples
         if input_sample_set._values_local is None: 
             input_sample_set.global_to_local()
-        local_output_values = self.lb_model(\
+        local_output = self.lb_model(\
                 input_sample_set.get_values_local())
+        if isinstance(local_output, np.ndarray):
+            local_output_values = local_output
+        elif isinstance(local_output, tuple):
+            if len(local_output) == 1:
+                local_output_values = local_output[0]
+            elif len(local_output) == 2 and self.error_estimates:
+                (local_output_values, local_output_ee) = local_output
+            elif len(local_output) == 2 and self.jacobians:
+                (local_output_values, local_output_jac) = local_output
+            elif  len(local_output) == 3:
+                (local_output_values, local_output_ee, local_output_jac) = \
+                    local_output
+        else:
+             raise bad_object("lb_model is not returning the proper type")
+            
+                
         # figure out the dimension of the output
         if len(local_output_values.shape) <= 1:
             output_dim = 1
@@ -380,6 +402,11 @@ class sampler(object):
             output_dim = local_output_values.shape[1]
         output_sample_set = sample.sample_set(output_dim)
         output_sample_set.set_values_local(local_output_values)
+        if self.error_estimates:
+            output_sample_set.set_error_estimates_local(local_output_ee)
+        if self.jacobians:
+            input_sample_set.set_jacobians_local(local_output_jac)
+
         if globalize:
             input_sample_set.local_to_global()
             output_sample_set.local_to_global()

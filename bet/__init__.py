@@ -29,4 +29,4 @@ sample :mod:`~bet.sample` provides data structures to store sets of samples and
 """
 
 __all__ = ['sampling', 'calculateP', 'postProcess', 'sensitivity', 'util', 
-    'Comm', 'sample']
+           'Comm', 'sample', 'surrogates']

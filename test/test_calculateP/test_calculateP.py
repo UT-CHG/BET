@@ -369,7 +369,10 @@ class Test_prob_with_emulated_volumes_1to1(TestProbMethod_1to1, prob_with_emulat
 
 class Test_prob_from_sample_set(unittest.TestCase):
     """
-    Test: method: `bet.calculateP.prob_from_sample_set` on a 2D domain.
+    Test: method: `bet.calculateP.prob_from_sample_set`, 
+    : method: `bet.calculateP.prob_from_sample_set_with_emulated_volumes`,
+    and : method: `bet.calculateP.prob_from_discretization_input` 
+    on a 2D domain.
     """
     def setUp(self):
         self.set_new = samp.rectangle_sample_set(dim=2)
@@ -389,6 +392,24 @@ class Test_prob_from_sample_set(unittest.TestCase):
         self.set_em.setup([np.linspace(0,1,101), np.linspace(0,1,101)])
         
 
-    def test_method(self):
-        calcP.prob_from_sample_set(self.set_old, self.set_new, self.set_em)
+    def test_methods(self):
+        calcP.prob_from_sample_set_with_emulated_volumes(self.set_old, self.set_new, self.set_em)
         nptest.assert_almost_equal(self.set_new._probabilities, [0.25, 0.75])
+        calcP.prob_from_sample_set(self.set_old, self.set_new)
+        nptest.assert_almost_equal(self.set_new._probabilities, [0.25, 0.75])
+        disc = samp.discretization(input_sample_set=self.set_old,
+                                   output_sample_set=self.set_old)
+        calcP.prob_from_discretization_input(disc, self.set_new)
+        nptest.assert_almost_equal(self.set_new._probabilities, [0.25, 0.75])
+        num_em = self.set_em.check_num()
+        probs = np.zeros((num_em,))
+        probs[0:-1] = 1.0/float(num_em-1)
+        self.set_em.set_probabilities(probs)
+        self.set_em.global_to_local()
+        disc = samp.discretization(input_sample_set=self.set_old,
+                                   output_sample_set=self.set_old,
+                                   emulated_input_sample_set=self.set_em)
+        calcP.prob_from_discretization_input(disc, self.set_new)
+        nptest.assert_almost_equal(self.set_new._probabilities, [0.25, 0.75])
+
+        
