@@ -379,6 +379,7 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     :param list column_headings: Column headings to print to screen
 
     """
+    raise PendingDeprecationWarning
     if column_headings is None:
         column_headings = "Run parameters"
     logging.info("Sample Set No., Quality, "+ str(column_headings))
