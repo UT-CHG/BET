@@ -30,6 +30,14 @@ bet.sample module
     :undoc-members:
     :show-inheritance:
 
+bet.surrogates module
+---------------------
+
+.. automodule:: bet.surrogates
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bet.util module
 ---------------
 

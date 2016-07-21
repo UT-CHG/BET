@@ -85,8 +85,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
@@ -140,10 +140,10 @@
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="bet.calculateP.html">bet.calculateP package</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateError">bet.calculateP.calculateError module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP">bet.calculateP.calculateP module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.indicatorFunctions">bet.calculateP.indicatorFunctions module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP">bet.calculateP.simpleFunP module</a></li>
-<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.voronoiHistogram">bet.calculateP.voronoiHistogram module</a></li>
 <li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP">Module contents</a></li>
 </ul>
 </li>
@@ -609,8 +609,19 @@ It is only considered in or out.</p>
 <dt id="bet.sample.cartesian_sample_set.setup">
 <code class="descname">setup</code><span class="sig-paren">(</span><em>xi</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.cartesian_sample_set.setup" title="Permalink to this definition">¶</a></dt>
 <dd><p>Initialize.</p>
-<p>#x1, x2,..., xn : array_like
-1-D arrays representing the coordinates of a grid</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>xi</strong> (<em>array_like</em>) &#8211; x1, x2,..., xn, 1-D arrays representing the coordinates of a
+grid</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition seealso">
+<p class="first admonition-title">See also</p>
+<p class="last"><code class="xref py py-meth docutils literal"><span class="pre">numpy.meshgrid()</span></code></p>
+</div>
 </dd></dl>
 
 </dd></dl>
@@ -710,7 +721,8 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <dl class="method">
 <dt id="bet.sample.discretization.get_emulated_input_sample_set">
 <code class="descname">get_emulated_input_sample_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_emulated_input_sample_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a reference to the emulated_input sample set for this discretization.</p>
+<dd><p>Returns a reference to the emulated_input sample set for this
+discretization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -748,7 +760,8 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <dl class="method">
 <dt id="bet.sample.discretization.get_emulated_output_sample_set">
 <code class="descname">get_emulated_output_sample_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_emulated_output_sample_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a reference to the emulated_output sample set for this discretization.</p>
+<dd><p>Returns a reference to the emulated_output sample set for this
+discretization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -802,7 +815,8 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 <dl class="method">
 <dt id="bet.sample.discretization.get_output_probability_set">
 <code class="descname">get_output_probability_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_output_probability_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Returns a reference to the output probability sample set for this discretization.</p>
+<dd><p>Returns a reference to the output probability sample set for this
+discretization.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -829,6 +843,12 @@ of <code class="docutils literal"><span class="pre">_emulated_output_sample_set<
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.discretization.globalize_ptrs">
+<code class="descname">globalize_ptrs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.globalize_ptrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Globalizes discretization pointers.</p>
 </dd></dl>
 
 <dl class="attribute">
@@ -1017,16 +1037,10 @@ saving multiple :class`bet.sample.discretization` objects to a single
 <dl class="function">
 <dt id="bet.sample.load_discretization_parallel">
 <code class="descclassname">bet.sample.</code><code class="descname">load_discretization_parallel</code><span class="sig-paren">(</span><em>file_name</em>, <em>discretization_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.load_discretization_parallel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads a <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> from a <code class="docutils literal"><span class="pre">.mat</span></code> file in
-parallel and correctly re-localizes data if necessary. If a file contains
-multiple <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> objects then
+<dd><p>Loads a <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> from a <code class="docutils literal"><span class="pre">.mat</span></code> file. If a file
+contains multiple <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> objects then
 <code class="docutils literal"><span class="pre">discretization_name</span></code> is used to distinguish which between different
 <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> objects.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Implement based on the hot start implementation in
-<a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1052,7 +1066,7 @@ saving multiple :class`bet.sample.discretization` objects to a single
 
 <dl class="function">
 <dt id="bet.sample.load_sample_set">
-<code class="descclassname">bet.sample.</code><code class="descname">load_sample_set</code><span class="sig-paren">(</span><em>file_name</em>, <em>sample_set_name=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.load_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.sample.</code><code class="descname">load_sample_set</code><span class="sig-paren">(</span><em>file_name</em>, <em>sample_set_name=None</em>, <em>localize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.load_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Loads a <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> from a <code class="docutils literal"><span class="pre">.mat</span></code> file. If a file
 contains multiple <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> objects then
 <code class="docutils literal"><span class="pre">sample_set_name</span></code> is used to distinguish which between different
@@ -1067,6 +1081,8 @@ needed.</li>
 <li><strong>sample_set_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; String to prepend to attribute names when
 saving multiple :class`bet.sample.sample_set` objects to a single
 <code class="docutils literal"><span class="pre">.mat</span></code> file</li>
+<li><strong>localize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; Flag whether or not to re-localize arrays. If
+<code class="docutils literal"><span class="pre">file_name</span></code> is prepended by <code class="docutils literal"><span class="pre">proc_{}</span></code> localize is set to <code class="docutils literal"><span class="pre">False</span></code>.</li>
 </ul>
 </td>
 </tr>
@@ -1088,11 +1104,6 @@ and correctly re-localizes data if necessary. If a file contains multiple
 <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> objects then <code class="docutils literal"><span class="pre">sample_set_name</span></code> is used to
 distinguish which between different <a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a>
 objects.</p>
-<div class="admonition-todo admonition" id="index-1">
-<p class="first admonition-title">Todo</p>
-<p class="last">Implement based on the hot start implementation in
-<a class="reference internal" href="bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>.</p>
-</div>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1120,8 +1131,8 @@ saving multiple :class`bet.sample.sample_set` objects to a single
 <dt id="bet.sample.rectangle_sample_set">
 <em class="property">class </em><code class="descclassname">bet.sample.</code><code class="descname">rectangle_sample_set</code><span class="sig-paren">(</span><em>dim</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a></p>
-<p>A data structure containing arrays specific to a set of samples defining
-a hyperrectangle discretization.</p>
+<p>A data structure containing arrays specific to a set of samples defining a
+hyperrectangle discretization.</p>
 <p>A series of n hyperrectangles <span class="math">\(A_i \subset \Lambda\)</span> with 
 <span class="math">\(A_i \cap A_j = \emptyset\)</span> 
 for <span class="math">\(i \neq j\)</span>. The last entry represents the remainder 
@@ -1284,7 +1295,7 @@ It is only considered in or out.</p>
 <p>A data structure containing arrays specific to a set of samples.</p>
 <dl class="attribute">
 <dt id="bet.sample.sample_set_base.all_ndarray_names">
-<code class="descname">all_ndarray_names</code><em class="property"> = ['_error_estimates', '_error_estimates_local', '_values', '_values_local', '_left', '_left_local', '_right', '_right_local', '_width', '_width_local', '_domain', '_kdtree_values']</em><a class="headerlink" href="#bet.sample.sample_set_base.all_ndarray_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">all_ndarray_names</code><em class="property"> = ['_error_estimates', '_error_estimates_local', '_values', '_values_local', '_left', '_left_local', '_right', '_right_local', '_width', '_width_local', '_domain', '_kdtree_values', '_jacobians', '_jacobians_local']</em><a class="headerlink" href="#bet.sample.sample_set_base.all_ndarray_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1364,7 +1375,7 @@ dim)) &#8211; New jacobians to append.</td>
 
 <dl class="attribute">
 <dt id="bet.sample.sample_set_base.array_names">
-<code class="descname">array_names</code><em class="property"> = ['_values', '_volumes', '_probabilities', '_jacobians', '_error_estimates', '_right', '_left', '_width', '_kdtree_values', '_radii', '_normalized_radii']</em><a class="headerlink" href="#bet.sample.sample_set_base.array_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">array_names</code><em class="property"> = ['_values', '_volumes', '_probabilities', '_jacobians', '_error_estimates', '_right', '_left', '_width', '_kdtree_values', '_radii', '_normalized_radii', '_region', '_error_id']</em><a class="headerlink" href="#bet.sample.sample_set_base.array_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 <dl class="method">
@@ -1379,6 +1390,25 @@ dim)) &#8211; New jacobians to append.</td>
 <dd><p>Checks that the number of entries in <code class="docutils literal"><span class="pre">self._values</span></code>,
 <code class="docutils literal"><span class="pre">self._volumes</span></code>, <code class="docutils literal"><span class="pre">self._probabilities</span></code>, <code class="docutils literal"><span class="pre">self._jacobians</span></code>, and
 <code class="docutils literal"><span class="pre">self._error_estimates</span></code> all match (assuming the named array exists).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">num</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.check_num_local">
+<code class="descname">check_num_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.check_num_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that the number of entries in <code class="docutils literal"><span class="pre">self._values_local</span></code>,
+<code class="docutils literal"><span class="pre">self._volumes_local</span></code>, <code class="docutils literal"><span class="pre">self._probabilities_local</span></code>, 
+<code class="docutils literal"><span class="pre">self._jacobians_local</span></code>, and <code class="docutils literal"><span class="pre">self._error_estimates_local</span></code> 
+all match (assuming the named array exists).</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
@@ -1436,7 +1466,7 @@ of an <code class="docutils literal"><span class="pre">emulated_sample_set</span
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>emulated_sample_set</strong> (<code class="xref py py-class docutils literal"><span class="pre">bet.sample_set_base</span></code>) &#8211; The set of samples used to approximate the
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>emulated_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; The set of samples used to approximate the
 volume measure.</td>
 </tr>
 </tbody>
@@ -1445,7 +1475,7 @@ volume measure.</td>
 
 <dl class="method">
 <dt id="bet.sample.sample_set_base.estimate_volume_mc">
-<code class="descname">estimate_volume_mc</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume_mc" title="Permalink to this definition">¶</a></dt>
+<code class="descname">estimate_volume_mc</code><span class="sig-paren">(</span><em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume_mc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Give all cells the same volume fraction based on the Monte Carlo
 assumption.</p>
 </dd></dl>
@@ -1518,6 +1548,18 @@ assumption.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.get_error_id">
+<code class="descname">get_error_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_error_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns error identifiers.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.get_error_id_local">
+<code class="descname">get_error_id_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_error_id_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local error identifier.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1604,6 +1646,24 @@ assumption.</p>
 </tr>
 </tbody>
 </table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.get_reference_value">
+<code class="descname">get_reference_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_reference_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reference value of a sample set.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.get_region">
+<code class="descname">get_region</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns region.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.get_region_local">
+<code class="descname">get_region_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_region_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local region.</p>
 </dd></dl>
 
 <dl class="method">
@@ -1749,6 +1809,34 @@ assumption.</p>
 </dd></dl>
 
 <dl class="method">
+<dt id="bet.sample.sample_set_base.set_error_id">
+<code class="descname">set_error_id</code><span class="sig-paren">(</span><em>error_id</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_error_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets error_id for sample set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_id</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) &#8211; array of error identifiers</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.set_error_id_local">
+<code class="descname">set_error_id_local</code><span class="sig-paren">(</span><em>error_id</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_error_id_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets local error id for sample set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>error_id</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) &#8211; array of error identifiers</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
 <dt id="bet.sample.sample_set_base.set_jacobians">
 <code class="descname">set_jacobians</code><span class="sig-paren">(</span><em>jacobians</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_jacobians" title="Permalink to this definition">¶</a></dt>
 <dd><p>Returns sample jacobians.</p>
@@ -1820,6 +1908,48 @@ dim)) &#8211; local sample jacobians</td>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>probabilities_local</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) &#8211; local sample probabilities</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.set_reference_value">
+<code class="descname">set_reference_value</code><span class="sig-paren">(</span><em>ref_val</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_reference_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets reference value for sample set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>ref_val</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) &#8211; reference value</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.set_region">
+<code class="descname">set_region</code><span class="sig-paren">(</span><em>region</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets region for sample set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region</strong> &#8211; array of regions</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.sample.sample_set_base.set_region_local">
+<code class="descname">set_region_local</code><span class="sig-paren">(</span><em>region</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_region_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets local region for sample set.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>region</strong> &#8211; array of regions</td>
 </tr>
 </tbody>
 </table>
@@ -1946,7 +2076,7 @@ dim)) &#8211; local sample jacobians</td>
 
 <dl class="attribute">
 <dt id="bet.sample.sample_set_base.vector_names">
-<code class="descname">vector_names</code><em class="property"> = ['_probabilities', '_probabilities_local', '_volumes', '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii', '_normalized_radii']</em><a class="headerlink" href="#bet.sample.sample_set_base.vector_names" title="Permalink to this definition">¶</a></dt>
+<code class="descname">vector_names</code><em class="property"> = ['_probabilities', '_probabilities_local', '_volumes', '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii', '_radii_local', '_normalized_radii', '_normalize_radii_local', '_region', '_region_local', '_error_id', '_error_id_local', '_reference_value']</em><a class="headerlink" href="#bet.sample.sample_set_base.vector_names" title="Permalink to this definition">¶</a></dt>
 <dd></dd></dl>
 
 </dd></dl>
@@ -1961,7 +2091,7 @@ saved to a MATLAB-style file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>save_disc</strong> (<a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; sample set to save</li>
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
 needed.</li>
@@ -1972,6 +2102,12 @@ saving multiple :class`bet.sample.discretization` objects to a single
 <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a> objects stored in this
 discretization</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)">string</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">local file name</p>
 </td>
 </tr>
 </tbody>
@@ -1988,7 +2124,7 @@ saved to a MATLAB-style file.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>save_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set to save</li>
 <li><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)"><em>string</em></a>) &#8211; Name of the <code class="docutils literal"><span class="pre">.mat</span></code> file, no extension is
 needed.</li>
@@ -1997,6 +2133,12 @@ saving multiple :class`bet.sample.sample_set_base` objects to a single
 <code class="docutils literal"><span class="pre">.mat</span></code> file</li>
 <li><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; flag whether or not to globalize</li>
 </ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/string.html#module-string" title="(in Python v2.7)">string</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">local file name</p>
 </td>
 </tr>
 </tbody>
@@ -2025,9 +2167,10 @@ normalized to the unit hypercube (<code class="docutils literal"><span class="pr
 these are not centroidal Voronoi tesselations meaning that the
 centroid is NOT the generator of the Voronoi cell. What we desire
 for the radius is actually 
-<span class="math">\(sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda, \lambda^{(i)})\)</span>.</p>
+<span class="math">\(sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda,
+\lambda^{(i)})\)</span>.</p>
 </div>
-<div class="admonition-todo admonition" id="index-2">
+<div class="admonition-todo admonition" id="index-0">
 <p class="first admonition-title">Todo</p>
 <p class="last">When we move away from domains defined on hypercubes this will need
 to be updated to use whatever <code class="docutils literal"><span class="pre">_in_domain</span></code> method exists.</p>
@@ -2054,7 +2197,7 @@ Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
 <code class="descname">estimate_radii</code><span class="sig-paren">(</span><em>n_mc_points=10000</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the radii of cells approximately using Monte
 Carlo integration.</p>
-<div class="admonition-todo admonition" id="index-3">
+<div class="admonition-todo admonition" id="index-1">
 <p class="first admonition-title">Todo</p>
 <p class="last">This currently presumes a uniform Lesbegue measure on the
 <code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
@@ -2078,9 +2221,9 @@ This should at least be an option.</p>
 <dl class="method">
 <dt id="bet.sample.voronoi_sample_set.estimate_radii_and_volume">
 <code class="descname">estimate_radii_and_volume</code><span class="sig-paren">(</span><em>n_mc_points=10000</em>, <em>normalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii_and_volume" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculate the radii and volume faction of cells approximately using Monte
-Carlo integration.</p>
-<div class="admonition-todo admonition" id="index-4">
+<dd><p>Calculate the radii and volume faction of cells approximately using
+Monte Carlo integration.</p>
+<div class="admonition-todo admonition" id="index-2">
 <p class="first admonition-title">Todo</p>
 <p class="last">This currently presumes a uniform Lesbegue measure on the
 <code class="docutils literal"><span class="pre">domain</span></code>. Currently the way this is written
@@ -2127,6 +2270,78 @@ Specifically we are calculating
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(dist, ptr)</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.surrogates">
+<span id="bet-surrogates-module"></span><h2>bet.surrogates module<a class="headerlink" href="#module-bet.surrogates" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for generating and using surrogate models.</p>
+<dl class="class">
+<dt id="bet.surrogates.piecewise_polynomial_surrogate">
+<em class="property">class </em><code class="descclassname">bet.surrogates.</code><code class="descname">piecewise_polynomial_surrogate</code><span class="sig-paren">(</span><em>input_disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.surrogates.piecewise_polynomial_surrogate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>This class provides methods for generating a piecewise polynomial
+surrogate.</p>
+<dl class="method">
+<dt id="bet.surrogates.piecewise_polynomial_surrogate.calculate_prob_for_sample_set_region">
+<code class="descname">calculate_prob_for_sample_set_region</code><span class="sig-paren">(</span><em>s_set</em>, <em>regions</em>, <em>update_input=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.surrogates.piecewise_polynomial_surrogate.calculate_prob_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves stochastic inverse problem based on surrogate points and the
+MC assumption. Calculates the probability of a regions of input space
+and error estimates for those probabilities.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Param:</th><td class="field-body"><p class="first">s_set: sample set for which to calculate error</p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of regions of s_set for which to calculate error</li>
+<li><strong>update_input</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) &#8211; whether or not to update probabilities and
+errror identifiers for input discretization</li>
+</ul>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(probabilities, <code class="docutils literal"><span class="pre">error_estimates</span></code>), the probability and
+error estimates for the region</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.surrogates.piecewise_polynomial_surrogate.generate_for_input_set">
+<code class="descname">generate_for_input_set</code><span class="sig-paren">(</span><em>input_sample_set</em>, <em>order=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.surrogates.piecewise_polynomial_surrogate.generate_for_input_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a surrogate discretization based on the input discretization,
+for a user-defined input sample set. The output sample set values
+and error estimates are piecewise polynomially defined over input sample
+set cells from the input discretization. For order 0, both are piecewise
+constant. For order 1, values are piecewise linear (assuming Jacobians
+exist), and error estimates are piecewise constant.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>input_sample_set</strong> &#8211; input sample set for surrogate discretization</li>
+<li><strong>order</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; Polynomial order</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">discretization defining the surrogate model</p>
 </td>
 </tr>
 </tbody>
@@ -2283,8 +2498,8 @@ one-dimensional coordinate arrays (x1, x2,..., xn).</p>
 measure-theoretic. It is named for the developers of the key algorithm in
 <a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">bet.calculateP.calculateP</span></code></a>.</p>
 <dl class="docutils">
-<dt>Comm <a class="reference internal" href="overview.html#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install</dt>
-<dd>:program:<code class="docutils literal"><span class="pre">mpi4py</span></code>.</dd>
+<dt>Comm <a class="reference internal" href="overview.html#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to</dt>
+<dd>install :program:<code class="docutils literal"><span class="pre">mpi4py</span></code>.</dd>
 <dt>util <a class="reference internal" href="overview.html#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">util</span></code></a> provides some general use methods for creating grids,</dt>
 <dd>checking/fixing dimensions, and globalizing arrays.</dd>
 </dl>
@@ -2297,6 +2512,8 @@ measure-theoretic. It is named for the developers of the key algorithm in
 <dd>samples by probabilities.</dd>
 <dt>sample <a class="reference internal" href="overview.html#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal"><span class="pre">sample</span></code></a> provides data structures to store sets of samples and</dt>
 <dd>their associated arrays.</dd>
+<dt>surrogates <a class="reference internal" href="#module-bet.surrogates" title="bet.surrogates"><code class="xref py py-mod docutils literal"><span class="pre">surrogates</span></code></a> provides methods for generating and using</dt>
+<dd>surrogate models.</dd>
 </dl>
 </div>
 </div>
@@ -2320,7 +2537,7 @@ measure-theoretic. It is named for the developers of the key algorithm in
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 29, 2016.
+      Last updated on Jul 21, 2016.
     </p>
   </div>
 
