@@ -4,6 +4,14 @@ bet.calculateP package
 Submodules
 ----------
 
+bet.calculateP.calculateError module
+------------------------------------
+
+.. automodule:: bet.calculateP.calculateError
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bet.calculateP.calculateP module
 --------------------------------
 
@@ -24,14 +32,6 @@ bet.calculateP.simpleFunP module
 --------------------------------
 
 .. automodule:: bet.calculateP.simpleFunP
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-bet.calculateP.voronoiHistogram module
---------------------------------------
-
-.. automodule:: bet.calculateP.voronoiHistogram
     :members:
     :undoc-members:
     :show-inheritance:

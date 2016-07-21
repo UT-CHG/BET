@@ -85,8 +85,8 @@
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example:</a></li>
-<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples:</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples</a></li>
 <li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
@@ -139,14 +139,226 @@
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
+<div class="section" id="module-bet.calculateP.calculateError">
+<span id="bet-calculatep-calculateerror-module"></span><h2>bet.calculateP.calculateError module<a class="headerlink" href="#module-bet.calculateP.calculateError" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for calulating error estimates of 
+the probability measure for calculate probability measures. See
+<cite>Butler et al. 2015. &lt;http://arxiv.org/pdf/1407.3851&gt;</cite>.</p>
+<ul>
+<li><dl class="first docutils">
+<dt><code class="xref py py-meth docutils literal"><span class="pre">cell_connectivity_exact()</span></code> calculates </dt>
+<dd><p class="first last">the connectivity of cells.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-meth docutils literal"><span class="pre">boundary_sets()</span></code> calculates which cells are </dt>
+<dd><p class="first last">on the boundary and strictly interior for contour events.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-class docutils literal"><span class="pre">sampling_error</span></code> is for calculating error</dt>
+<dd><p class="first last">estimates due to sampling</p>
+</dd>
+</dl>
+</li>
+<li><dl class="first docutils">
+<dt><code class="xref py py-class docutils literal"><span class="pre">model_error</span></code> is for calculating error</dt>
+<dd><p class="first last">estimates due to error in solution of QoIs</p>
+</dd>
+</dl>
+</li>
+</ul>
+<dl class="function">
+<dt id="bet.calculateP.calculateError.boundary_sets">
+<code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">boundary_sets</code><span class="sig-paren">(</span><em>disc</em>, <em>nei_list</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.boundary_sets" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates the the neighboring Voronoi cells for each cell.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; An object containing the discretization information.</li>
+<li><strong>nei_list</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; list of lists defining contour events of neighboring cells.</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<span class="math">\(B_N, C_N\)</span>) where B_N are the cells strictly on the 
+interior of a contour event and C_N are the cells on the boundary 
+of a contour eventas defined in 
+<cite>Butler et al. 2015. &lt;http://arxiv.org/pdf/1407.3851&gt;</cite></p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.calculateError.cell_connectivity_exact">
+<code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">cell_connectivity_exact</code><span class="sig-paren">(</span><em>disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.cell_connectivity_exact" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates contour events of the cells and its neighbors.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; An object containing the discretization information.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of lists of neighboring cells</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="class">
+<dt id="bet.calculateP.calculateError.model_error">
+<em class="property">class </em><code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">model_error</code><span class="sig-paren">(</span><em>disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A class for calculating the error due to numerical error
+for a discretization.</p>
+<dl class="method">
+<dt id="bet.calculateP.calculateError.model_error.calculate_for_contour_events">
+<code class="descname">calculate_for_contour_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_contour_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the numerical error for each contour event.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)">list</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">er_list</span></code>, a list of the error estimates
+for each contour event.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.calculateP.calculateError.model_error.calculate_for_sample_set_region">
+<code class="descname">calculate_for_sample_set_region</code><span class="sig-paren">(</span><em>s_set</em>, <em>region</em>, <em>emulated_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the numerical error estimate for a region of the input space
+defined by a sample set object.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set for which to calculate error</li>
+<li><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; region of s_set for which to calculate error</li>
+<li><strong>emulated_set</strong> &#8211; sample set for volume emulation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="docutils literal"><span class="pre">er_est</span></code>, the numerical error estimate for the region</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.calculateP.calculateError.model_error.calculate_for_sample_set_region_mc">
+<code class="descname">calculate_for_sample_set_region_mc</code><span class="sig-paren">(</span><em>s_set</em>, <em>region</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_sample_set_region_mc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the numerical error estimate for a region of the input space
+defined by a sample set object, using the MC assumption.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set for which to calculate error</li>
+<li><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; region of s_set for which to calculate error</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>:rtype float
+:returns: <code class="docutils literal"><span class="pre">er_est</span></code>, the numerical error estimate for the region</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="bet.calculateP.calculateError.sampling_error">
+<em class="property">class </em><code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">sampling_error</code><span class="sig-paren">(</span><em>disc</em>, <em>exact=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+<p>A class for calculating the error due to sampling for a discretization.</p>
+<dl class="method">
+<dt id="bet.calculateP.calculateError.sampling_error.calculate_for_contour_events">
+<code class="descname">calculate_for_contour_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.calculate_for_contour_events" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the sampling error bounds for each contour event.  If volumes
+are already calculated these are used. If not, volume emulation is used
+if an emulated input set exists.  Otherwise the MC assumption is
+made.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(<code class="docutils literal"><span class="pre">up_list</span></code>, <code class="docutils literal"><span class="pre">low_list</span></code>) where <code class="docutils literal"><span class="pre">up_list</span></code> is a list of
+the upper bounds for each contour event and <code class="docutils literal"><span class="pre">low_list</span></code> is a list
+of the lower bounds.</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="bet.calculateP.calculateError.sampling_error.calculate_for_sample_set_region">
+<code class="descname">calculate_for_sample_set_region</code><span class="sig-paren">(</span><em>s_set</em>, <em>region</em>, <em>emulated_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.calculate_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the sampling error bounds for a region of the input space
+defined by a sample set object which defines an event <span class="math">\(A\)</span>.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set for which to calculate error</li>
+<li><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) &#8211; region of s_set for which to calculate error</li>
+<li><strong>emulated_set</strong> (<code class="xref py py-class docutils literal"><span class="pre">bet.sample_set_base</span></code>) &#8211; sample set for volume emulation</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="docutils literal"><span class="pre">upper_bound</span></code>, <code class="docutils literal"><span class="pre">lower_bound</span></code>) the upper and lower bounds
+for the error.</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="exception">
+<dt id="bet.calculateP.calculateError.wrong_argument_type">
+<em class="property">exception </em><code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">wrong_argument_type</code><a class="headerlink" href="#bet.calculateP.calculateError.wrong_argument_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/exceptions.html#exceptions.Exception" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></a></p>
+<p>Exception for when the argument is not one of the acceptible
+types.</p>
+</dd></dl>
+
+</div>
 <div class="section" id="module-bet.calculateP.calculateP">
 <span id="bet-calculatep-calculatep-module"></span><h2>bet.calculateP.calculateP module<a class="headerlink" href="#module-bet.calculateP.calculateP" title="Permalink to this headline">¶</a></h2>
 <p>This module provides methods for calulating the probability measure
 <span class="math">\(P_{\Lambda}\)</span>.</p>
 <ul>
 <li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_on_emulated_samples</span></code> provides a skeleton class and calculates</dt>
-<dd><p class="first last">the probability for a set of emulation points.</p>
+<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_on_emulated_samples</span></code> provides a skeleton class and</dt>
+<dd><p class="first last">calculates the probability for a set of emulation points.</p>
 </dd>
 </dl>
 </li>
@@ -164,14 +376,15 @@
 </li>
 <li><dl class="first docutils">
 <dt><a class="reference internal" href="#bet.calculateP.calculateP.prob_from_sample_set" title="bet.calculateP.calculateP.prob_from_sample_set"><code class="xref py py-mod docutils literal"><span class="pre">prob_from_sample_set</span></code></a> estimates the </dt>
-<dd><p class="first last">probability based on probabilities from another sample set on the same space.</p>
+<dd><p class="first last">probability based on probabilities from another sample set on the same
+space.</p>
 </dd>
 </dl>
 </li>
 </ul>
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob</code><span class="sig-paren">(</span><em>discretization</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob</code><span class="sig-paren">(</span><em>discretization</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})\)</span>, the
 probability assoicated with a set of  cells defined by the model
 solves at <span class="math">\((\lambda_{samples})\)</span> where the volumes of these 
@@ -191,8 +404,50 @@ cells are provided.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.calculateP.calculateP.prob_from_discretization_input">
+<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_discretization_input</code><span class="sig-paren">(</span><em>disc</em>, <em>set_new</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_discretization_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
+from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> where
+<span class="math">\(\lambda_{samples_old}\)</span> come from an input discretization.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a>) &#8211; Discretiztion on which probabilities have already been
+calculated</li>
+<li><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for which probabilities will be calculated.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.calculateP.calculateP.prob_from_sample_set">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_sample_set</code><span class="sig-paren">(</span><em>set_old</em>, <em>set_new</em>, <em>set_emulate</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_sample_set</code><span class="sig-paren">(</span><em>set_old</em>, <em>set_new</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
+from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
+the MC assumption with respect to set_old.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>set_old</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set on which probabilities have already been
+calculated</li>
+<li><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for which probabilities will be calculated.</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.calculateP.prob_from_sample_set_with_emulated_volumes">
+<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_sample_set_with_emulated_volumes</code><span class="sig-paren">(</span><em>set_old</em>, <em>set_new</em>, <em>set_emulate=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set_with_emulated_volumes" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
 from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
 a set of emulated points are distributed with respect to the 
@@ -508,6 +763,18 @@ radius.</p>
 used by <a class="reference internal" href="#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a>. These simple function approximations
 are returned as <cite>bet.sample.sample_set</cite> objects.</p>
 <dl class="function">
+<dt id="bet.calculateP.simpleFunP.check_inputs">
+<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">check_inputs</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_inputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks inputs to methods.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.simpleFunP.check_inputs_no_reference">
+<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">check_inputs_no_reference</code><span class="sig-paren">(</span><em>data_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_inputs_no_reference" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks inputs to methods.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.calculateP.simpleFunP.normal_partition_normal_distribution">
 <code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">normal_partition_normal_distribution</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>std</em>, <em>M</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.normal_partition_normal_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
@@ -559,7 +826,8 @@ hyperrectangle we are able to represent it exactly.</p>
 <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
 <li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (2, mdim)) &#8211; The domain overwhich <span class="math">\(\rho_\mathcal{D}\)</span> is
 uniform.</li>
-<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward compatability.</li>
+<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward
+compatability.</li>
 </ul>
 </td>
 </tr>
@@ -578,7 +846,9 @@ uniform.</li>
 <code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">regular_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>rect_scale</em>, <em>center_pts_per_edge=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
 where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
-centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> with <code class="docutils literal"><span class="pre">rect_scale</span></code> of the width
+centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> (or the <code class="docutils literal"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used.) 
+with <code class="docutils literal"><span class="pre">rect_scale</span></code> of the width
 of D.</p>
 <p>Since rho_D is a uniform distribution on a hyperrectanlge we are able
 to represent it exactly.</p>
@@ -592,7 +862,8 @@ to represent it exactly.</p>
 <li><strong>rect_scale</strong> (<em>double or list()</em>) &#8211; The scale used to determine the width of the
 uniform distributiion as <code class="docutils literal"><span class="pre">rect_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*rect_scale</span></code></li>
 <li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward compatability.</li>
+<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward
+compatability.</li>
 </ul>
 </td>
 </tr>
@@ -608,10 +879,12 @@ uniform distributiion as <code class="docutils literal"><span class="pre">rect_s
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">regular_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>rect_size</em>, <em>center_pts_per_edge=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">regular_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref=None</em>, <em>rect_size=None</em>, <em>center_pts_per_edge=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
 where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
-centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> with <code class="docutils literal"><span class="pre">rect_size</span></code> of the width of a hyperrectangle.</p>
+centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> (or the <code class="docutils literal"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used) 
+with <code class="docutils literal"><span class="pre">rect_size</span></code> of the width of a hyperrectangle.</p>
 <p>Since rho_D is a uniform distribution on a hyperrectanlge we can represent
 it exactly.</p>
 <table class="docutils field-list" frame="void" rules="none">
@@ -624,7 +897,8 @@ distribution</li>
 <li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
 <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
 <li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward compatability.</li>
+<li><strong>center_pts_per_edge</strong> &#8211; Does nothing. Is here for backward
+compatability.</li>
 </ul>
 </td>
 </tr>
@@ -746,10 +1020,11 @@ assumption</li>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>rect_scale=0.2</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref=None</em>, <em>rect_scale=0.2</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D}}\)</span>
 where <span class="math">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
-a generalized rectangle centered at <code class="docutils literal"><span class="pre">Q_ref</span></code>.
+a generalized rectangle centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> or the <code class="docutils literal"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used..
 The support of this density is defined by <code class="docutils literal"><span class="pre">rect_scale</span></code>, which determines
 the size of the generalized rectangle by scaling the circumscribing 
 generalized rectangle of <span class="math">\(\mathcal{D}\)</span>.
@@ -795,10 +1070,11 @@ assumption</li>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>rect_size</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref=None</em>, <em>rect_size=None</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D}}\)</span>
 where <span class="math">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
-a generalized rectangle centered at <code class="docutils literal"><span class="pre">Q_ref</span></code>.
+a generalized rectangle centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> or the <code class="docutils literal"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used.
 The support of this density is defined by <code class="docutils literal"><span class="pre">rect_size</span></code>, which determines
 the size of the generalized rectangle.
 The simple function approximation is then defined by determining <code class="docutils literal"><span class="pre">M</span></code>
@@ -809,6 +1085,10 @@ sampling from <span class="math">\(\rho{\mathcal{D}}\)</span> and using nearest 
 searches to bin these samples in the <code class="docutils literal"><span class="pre">M</span></code> implicitly defined bins.
 The result is the simple function approximation denoted by
 <span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last"><code class="docutils literal"><span class="pre">data_set</span></code> is only used to determine dimension.</p>
+</div>
 <p>Note that all computations in the measure-theoretic framework that
 follow from this are for the fixed simple function approximation
 <span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
@@ -886,215 +1166,6 @@ types.</p>
 </dd></dl>
 
 </div>
-<div class="section" id="module-bet.calculateP.voronoiHistogram">
-<span id="bet-calculatep-voronoihistogram-module"></span><h2>bet.calculateP.voronoiHistogram module<a class="headerlink" href="#module-bet.calculateP.voronoiHistogram" title="Permalink to this headline">¶</a></h2>
-<p>This module provides methods for creating the edges and generating point for
-regular (hyperrectangle) multidimensional voronoi cells and for determining the
-volumes of these cells.</p>
-<dl class="function">
-<dt id="bet.calculateP.voronoiHistogram.center_and_layer1_points">
-<code class="descclassname">bet.calculateP.voronoiHistogram.</code><code class="descname">center_and_layer1_points</code><span class="sig-paren">(</span><em>center_pts_per_edge</em>, <em>center</em>, <em>r_ratio</em>, <em>sur_domain</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.voronoiHistogram.center_and_layer1_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a regular grid of center points that define the voronoi
-tesselation of exactly the interior of a hyperrectangle centered at
-<code class="docutils literal"><span class="pre">center</span></code> with sides of length <code class="docutils literal"><span class="pre">r_ratio*sur_width</span></code> and the layers
-of voronoi cells that bound these interior cells. The resulting voronoi
-tesselation exactly represents the hyperrectangle.</p>
-<p>This method can also be used to tile <code class="docutils literal"><span class="pre">sur_domain</span></code> with points to define
-voronoi regions if the user sets <code class="docutils literal"><span class="pre">r_ratio</span> <span class="pre">=</span> <span class="pre">1</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
-additional two points will be added to create the bounding layer</li>
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
-<li><strong>r_ratio</strong> (<em>double or list()</em>) &#8211; ratio of the length of the sides of the
-hyperrectangle rect_domain to definie voronoi cells for</li>
-<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
-surrounding domain. The surrounding domain is the bounded domain
-in the data space (i.e. the data domain).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(points, interior_and_layer1, rect_domain) where where points is
-an <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points, dim),
-interior_and_layer1 is a list() of dim <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray`s</span> <span class="pre">of</span> <span class="pre">shape</span>
-<span class="pre">(center_pts_per_edge+2,),</span> <span class="pre">rect_domain</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">:class:`numpy.ndarray</span></code> of
-shape (mdim, 2).</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="bet.calculateP.voronoiHistogram.center_and_layer1_points_binsize">
-<code class="descclassname">bet.calculateP.voronoiHistogram.</code><code class="descname">center_and_layer1_points_binsize</code><span class="sig-paren">(</span><em>center_pts_per_edge</em>, <em>center</em>, <em>r_size</em>, <em>sur_domain</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.voronoiHistogram.center_and_layer1_points_binsize" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a regular grid of center points that define the voronoi
-tesselation of exactly the interior of a hyperrectangle centered at
-<code class="docutils literal"><span class="pre">center</span></code> with sides of length <code class="docutils literal"><span class="pre">r_size</span></code> and the layers
-of voronoi cells that bound these interior cells. The resulting voronoi
-tesselation exactly represents the hyperrectangle.</p>
-<p>This method can also be used to tile <code class="docutils literal"><span class="pre">sur_domain</span></code> with points to define
-voronoi regions if the user sets <code class="docutils literal"><span class="pre">r_ratio</span> <span class="pre">=</span> <span class="pre">1</span></code>. (use binratio)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center_pts_per_edge</strong> (<em>list()</em>) &#8211; number of center points per edge and
-additional two points will be added to create the bounding layer</li>
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim,)) &#8211; location of the center of the hyperrectangle</li>
-<li><strong>r_size</strong> (<em>double or list()</em>) &#8211; size of the length of the sides of the
-hyperrectangle rect_domain to definie voronoi cells for</li>
-<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
-surrounding domain. The surrounding domain is the bounded domain
-in the data space (i.e. the data domain).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(points, interior_and_layer1, rect_domain) where where points is
-an <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points, dim),
-interior_and_layer1 is a list() of dim <code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray`s</span> <span class="pre">of</span> <span class="pre">shape</span>
-<span class="pre">(center_pts_per_edge+2,),</span> <span class="pre">rect_domain</span> <span class="pre">is</span> <span class="pre">a</span> <span class="pre">:class:`numpy.ndarray</span></code> of
-shape (mdim, 2)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="bet.calculateP.voronoiHistogram.edges_from_points">
-<code class="descclassname">bet.calculateP.voronoiHistogram.</code><code class="descname">edges_from_points</code><span class="sig-paren">(</span><em>points</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.voronoiHistogram.edges_from_points" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a sequence of arrays describing the voronoi points in each dimension
-that define a set of bounded hyperrectangular bins returns the edges of bins
-formed by voronoi cells along each dimensions.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>points</strong> (list of dim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (nbins+2,)) &#8211; the coordindates of voronoi points that would generate
-these bins in each dimensions</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Rtype edges:</th><td class="field-body">A list() containing mdim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
-(nbins_per_dim+1,)</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">edges, A sequence of arrays describing the edges of bins along
-each dimension.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="bet.calculateP.voronoiHistogram.edges_regular">
-<code class="descclassname">bet.calculateP.voronoiHistogram.</code><code class="descname">edges_regular</code><span class="sig-paren">(</span><em>center_pts_per_edge</em>, <em>rect_domain</em>, <em>sur_domain</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.voronoiHistogram.edges_regular" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a sequence of arrays describing the edges of the finite voronoi
-cells in each direction. The voronoi tesselation is defined by regular grid
-of center points that define the voronoi tesselation of exactly the
-interior of a hyperrectangle  defined by <code class="docutils literal"><span class="pre">rect_domain</span></code>  and the layers of
-voronoi cells that bound these interior cells. The resulting voronoi
-tesselation exactly represents the hyperrectangle. The bounding voronoi
-cells are made finite by bounding them with an  additional layer to
-represent <code class="docutils literal"><span class="pre">sur_domain</span></code>.</p>
-<p>This method can also be used to tile <code class="docutils literal"><span class="pre">sur_domain</span></code> with points to define
-voronoi regions if the user sets <code class="docutils literal"><span class="pre">r_ratio</span> <span class="pre">=</span> <span class="pre">1</span></code>. use binratio below</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center_pts_per_edge</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#list" title="(in Python v2.7)"><em>list</em></a>) &#8211; number of center points per edge and
-additional two points will be added to create the bounding layer</li>
-<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; The rectangular domain to define the voronoi
-tesselation for. This domain should be contained in the <code class="docutils literal"><span class="pre">sur_domain</span></code>.</li>
-<li><strong>sur_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
-surrounding domain. The surrounding domain is the bounded domain
-in the data space (i.e. the data domain).</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#tuple" title="(in Python v2.7)">tuple</a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">interior_and_layer1 is a list of dim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of
-shape (center_pts_per_edge+2,)</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="bet.calculateP.voronoiHistogram.histogramdd_volumes">
-<code class="descclassname">bet.calculateP.voronoiHistogram.</code><code class="descname">histogramdd_volumes</code><span class="sig-paren">(</span><em>edges</em>, <em>points</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.voronoiHistogram.histogramdd_volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a sequence of arrays describing the edges of voronoi cells (bins)
-along each dimension and an <code class="docutils literal"><span class="pre">ij</span></code> ordered sequence of points (1 per voronoi
-cell) returns a list of the volumes associated with these voronoi cells.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>edges</strong> (A list() containing mdim <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
-(nbins_per_dim+1,)) &#8211; A sequence of arrays describing the edges of bins along
-each dimension.</li>
-<li><strong>points</strong> (<code class="xref py py-class docutils literal"><span class="pre">numpy.ndarrray</span></code> of shape (num_points, mdim)) &#8211; points used to define the voronoi tesselation (only the
-points that define regions of finite volumes)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of (H, volume, edges)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">H is the result of <code class="xref py py-meth docutils literal"><span class="pre">np.histogramdd(points,</span> <span class="pre">edges,</span>
-<span class="pre">normed=True)()</span></code>, volumes is a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape
-(len(points),) continaing the  finite volumes associated with
-<code class="docutils literal"><span class="pre">points</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="bet.calculateP.voronoiHistogram.simple_fun_uniform">
-<code class="descclassname">bet.calculateP.voronoiHistogram.</code><code class="descname">simple_fun_uniform</code><span class="sig-paren">(</span><em>points</em>, <em>volumes</em>, <em>rect_domain</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.voronoiHistogram.simple_fun_uniform" title="Permalink to this definition">¶</a></dt>
-<dd><p>Given a set of points, the volumes associated with these points, and
-<code class="docutils literal"><span class="pre">rect_domain</span></code> creates a simple function approximation of a uniform
-distribution over the hyperrectangle defined by <code class="docutils literal"><span class="pre">rect_domain</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>points</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_points,)) &#8211; points used to define the voronoi tesselation (only the
-points that define regions of finite volumes)</li>
-<li><strong>volumes</strong> (<em>list()</em>) &#8211; finite volumes associated with <code class="docutils literal"><span class="pre">points</span></code></li>
-<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (mdim, 2)) &#8211; minima and maxima of each dimension defining the
-hyperrectangle of uniform probability</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
 <div class="section" id="module-bet.calculateP">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h2>
 <p>This subpackage provides classes and methods for calulating the
@@ -1109,14 +1180,6 @@ probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
 <li><dl class="first docutils">
 <dt><a class="reference internal" href="#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt>
 <dd><p class="first last">function approximations of probability densisties</p>
-</dd>
-</dl>
-</li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.calculateP.voronoiHistogram" title="bet.calculateP.voronoiHistogram"><code class="xref py py-mod docutils literal"><span class="pre">voronoiHistogram</span></code></a> provides methods for creating the</dt>
-<dd><p class="first last">generating points for cells that define a regular grid for use by
-<code class="xref py py-meth docutils literal"><span class="pre">numpy.histogramdd()</span></code> and for determining their volumes, etc. This
-module is only for use by <a class="reference internal" href="#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a>.</p>
 </dd>
 </dl>
 </li>
@@ -1149,7 +1212,7 @@ module is only for use by <a class="reference internal" href="#module-bet.calcul
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jun 29, 2016.
+      Last updated on Jul 21, 2016.
     </p>
   </div>
 
