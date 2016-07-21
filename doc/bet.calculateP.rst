@@ -36,14 +36,6 @@ bet.calculateP.simpleFunP module
     :undoc-members:
     :show-inheritance:
 
-bet.calculateP.voronoiHistogram module
---------------------------------------
-
-.. automodule:: bet.calculateP.voronoiHistogram
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 
 Module contents
 ---------------
