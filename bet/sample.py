@@ -1666,7 +1666,7 @@ class rectangle_sample_set(sample_set_base):
 
         """
         msg = "Values cannot be appended for this type of sample set."
-        logging.warning()
+        logging.warning(msg)
 
     def append_error_estimates(self, new_error_estimates):
         """
@@ -1682,7 +1682,7 @@ class rectangle_sample_set(sample_set_base):
 
         """
         msg = "Values cannot be appended for this type of sample set."
-        logging.warning()
+        logging.warning(msg)
         
     def query(self, x, k=1):
         r"""
