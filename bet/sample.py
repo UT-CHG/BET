@@ -346,6 +346,60 @@ class sample_set_base(object):
         #: :class:`numpy.ndarray` of reference value of shape (dim,)
         self._reference_value = None
 
+    def normalize_domain(self):
+        if self._domain is None:
+            logging.warning("Not normalizing because domain is not defined.")
+            pass
+        else:
+            rescale_list = [self._jacobians, self._jacobians_local,
+                            self._width, self,_width_local,
+                            self._radii, self._radii_local]
+            for val in rescale_list:
+                if val is not None:
+                    val*=(self._domain[:,1] - self._domain[:,0])
+            shift_list = [self._values, self._values_local,
+                          self._error_estimates, self,_error_estimates_local,
+                          self._left, self._left_local,
+                          self._right, self._right_local]
+
+            for val in shift_list:
+                if val is not None:
+                    val -= self._domain[:,0]
+                    val = val/(self._domain[:,1] - self._domain[:,0])
+
+            self._domain_original = np.copy(self._domain)
+            self._domain = np.repeat([[0.0, 1.0]], self._dim, axis=0)    
+
+       def undo_normalize_domain(self):
+        if self._domain is None:
+            logging.warning("Not undoing normalizing because domain is not defined.")
+            pass
+        elif self._domain_original is None:
+            logging.warning("Doing nothing because set never normalized")
+            pass
+        else:
+            rescale_list = [self._jacobians, self._jacobians_local,
+                            self._width, self,_width_local,
+                            self._radii, self._radii_local]
+            for val in rescale_list:
+                if val is not None:
+                    val = val/(self._domain_original[:,1] - self._domain_original[:,0])
+            shift_list = [self._values, self._values_local,
+                          self._error_estimates, self,_error_estimates_local,
+                          self._left, self._left_local,
+                          self._right, self._right_local]
+
+            for val in shift_list:
+                if val is not None:
+                    val = val*(self._domain_orginal[:,1] - self._domain_original[:,0])
+
+                    val += self._domain_original[:,0]
+
+            
+            self._domain = np.copy(self._domain_original)
+            self._domain_original = None
+            
+
     def set_p_norm(self, p_norm):
         """
         Sets p-norm for sample set.
