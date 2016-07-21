@@ -4,6 +4,14 @@ bet.calculateP package
 Submodules
 ----------
 
+bet.calculateP.calculateError module
+------------------------------------
+
+.. automodule:: bet.calculateP.calculateError
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bet.calculateP.calculateP module
 --------------------------------
 

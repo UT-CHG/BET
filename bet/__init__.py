@@ -26,6 +26,9 @@ postProcess :mod:`~bet.postProcess` provides plotting tools and tools to sort
 sample :mod:`~bet.sample` provides data structures to store sets of samples and
     their associated arrays.
 
+surrogates :mod:`~bet.surrogates` provides methods for generating and using
+    surrogate models. 
+
 """
 
 __all__ = ['sampling', 'calculateP', 'postProcess', 'sensitivity', 'util', 

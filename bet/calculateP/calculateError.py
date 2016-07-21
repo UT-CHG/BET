@@ -6,13 +6,13 @@ the probability measure for calculate probability measures. See
 `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`.
 
 * :meth:`~bet.calculateErrors.cell_connectivity_exact` calculates 
-the connectivity of cells.
+    the connectivity of cells.
 * :meth:`~bet.calculateErrors.boundary_sets` calculates which cells are 
-on the boundary and strictly interior for contour events.
+    on the boundary and strictly interior for contour events.
 * :class:`~bet.calculateErrors.sampling_error` is for calculating error
-estimates due to sampling
+    estimates due to sampling
 * :class:`~bet.calculateErrors.model_error` is for calculating error
-estimates due to error in solution of QoIs
+    estimates due to error in solution of QoIs
 
 """
 
@@ -178,10 +178,12 @@ class sampling_error(object):
         
     def calculate_for_contour_events(self):
         """
-        Calculate the sampling error bounds for each contour event.
-        If volumes are already calculated these are used. If not,
-        volume emulation is used if an emulated input set exists.
-        Otherwise the MC assumption is made.
+
+        Calculate the sampling error bounds for each contour event.  If volumes
+        are already calculated these are used. If not, volume emulation is used
+        if an emulated input set exists.  Otherwise the MC assumption is
+        made.
+
 
         :rtype: tuple
         :returns: (``up_list``, ``low_list``) where ``up_list`` is a list of
@@ -234,20 +236,19 @@ class sampling_error(object):
 
     def calculate_for_sample_set_region(self, s_set, 
                                      region, emulated_set=None):
-        """
+        r"""
         Calculate the sampling error bounds for a region of the input space
         defined by a sample set object which defines an event :math:`A`.
 
         :param s_set: sample set for which to calculate error
         :type s_set: :class:`bet.sample.sample_set_base`
-        :param region: region of s_set for which to calculate error
-        :type region: int
+        :param int region: region of s_set for which to calculate error
         :param emulated_set: sample set for volume emulation
         :type emulated_set: :class:`bet.sample_set_base`
 
         :rtype tuple
         :returns: (``upper_bound``, ``lower_bound``) the upper and lower bounds
-        for the error.
+            for the error.
 
         """
         # Set up marker
@@ -386,10 +387,11 @@ class model_error(object):
         
 
     def calculate_for_contour_events(self):
-        """
+        r"""
+        
         Calculate the numerical error for each contour event.
 
-        :rtype list
+        :rtype: list
         :returns: ``er_list``, a list of the error estimates
             for each contour event.
 
@@ -443,7 +445,7 @@ class model_error(object):
         :param emulated_set: sample set for volume emulation
         :type emulated_sample_set: :class:`bet.sample_set_base`
 
-        :rtype float
+        :rtype: float
         :returns: ``er_est``, the numerical error estimate for the region
 
         """

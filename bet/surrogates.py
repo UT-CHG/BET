@@ -11,13 +11,17 @@ import bet.calculateP.calculateP as calculateP
 from bet.Comm import comm, MPI
 
 class piecewise_polynomial_surrogate(object):
+    """
+    This class provides methods for generating a piecewise polynomial
+    surrogate.
+    """
     def __init__(self, input_disc):
         """
         Initializes a piecewise polynomial surrogate based on 
         existing input discretization.
 
         :param discretization: An object containing the discretization 
-        information.
+            information.
         :type discretization: :class:`bet.sample.discretization`
 
         """
