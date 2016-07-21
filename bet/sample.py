@@ -1886,8 +1886,14 @@ class cartesian_sample_set(rectangle_sample_set):
         """
         Initialize.
 
-        #x1, x2,..., xn : array_like
-        1-D arrays representing the coordinates of a grid
+        :param xi: x1, x2,..., xn, 1-D arrays representing the coordinates of a grid
+        :type xi: array_like
+        
+        .. seealso::
+
+            :meth:`numpy.meshgrid`
+
+
         """
         if len(xi) != self._dim:
             raise dim_not_matching("dimension of values incorrect")
