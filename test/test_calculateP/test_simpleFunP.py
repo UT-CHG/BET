@@ -131,6 +131,7 @@ class data_3D(object):
         """
         self.data = samp.sample_set(3)
         self.data.set_values(np.random.random((100,3))*10.0)
+        self.data.set_reference_value(np.array([5.0, 5.0, 5.0]))
         self.Q_ref = np.array([5.0, 5.0, 5.0])
         self.data_domain = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
         self.mdim = 3
@@ -143,8 +144,15 @@ class uniform_partition_uniform_distribution_rectangle_scaled(prob_uniform):
         """
         Set up problem.
         """
+        if isinstance(self.data, samp.sample_set_base):
+            if self.data._reference_value is not None:
+                Q_ref = None
+            else:
+                Q_ref = self.Q_ref
+        else:
+            Q_ref = self.Q_ref
         self.data_prob = sFun.uniform_partition_uniform_distribution_rectangle_scaled(
-            self.data, self.Q_ref, rect_scale=0.1, M=67, num_d_emulate=1E3)
+            self.data, Q_ref, rect_scale=0.1, M=67, num_d_emulate=1E3)
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
 

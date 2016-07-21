@@ -42,9 +42,11 @@ class calculate_error(object):
         s_error = calculateError.sampling_error(self.disc, exact=True)
         (upper, lower) = s_error.calculate_for_contour_events()
         for x in upper:
-            self.assertGreaterEqual(x, 0.0)
+            if not np.isnan(x):
+                self.assertGreaterEqual(x, 0.0)
         for x in lower:
-            self.assertLessEqual(x, 0.0)
+            if not np.isnan(x):
+                self.assertLessEqual(x, 0.0)
 
         s_set = self.disc._input_sample_set.copy()
         regions_local = np.equal(self.disc._io_ptr_local, 0)

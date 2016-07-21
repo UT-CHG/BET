@@ -245,7 +245,7 @@ class sample_set_base(object):
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
                     '_volumes_local', '_local_index', '_dim', '_p_norm',
                     '_radii', '_normalized_radii', '_region', '_region_local',
-                    '_error_id', '_error_id_local']
+                    '_error_id', '_error_id_local', '_reference_value']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
@@ -343,6 +343,8 @@ class sample_set_base(object):
         self._error_id = None
         #: :class:`numpy.ndarray` of error identifiers  of shape (local_num,)
         self._error_id_local = None
+        #: :class:`numpy.ndarray` of reference value of shape (dim,)
+        self._reference_value = None
 
     def set_p_norm(self, p_norm):
         """
@@ -358,6 +360,24 @@ class sample_set_base(object):
         Returns p-norm for sample set
         """
         return self._p_norm
+
+    def set_reference_value(self, ref_val):
+        """
+        Sets reference value for sample set.
+
+        :param ref_val: reference value
+        :type ref_val: :class:`numpy.ndarray` of shape (dim,)
+        """
+        if ref_val.shape != (self._dim,):
+            raise dim_not_matching("Reference value is of wrong dimension.")
+                
+        self._reference_value = ref_val
+
+    def get_reference_value(self):
+        """
+        Returns the reference value of a sample set.
+        """
+        return self._reference_value
 
     def set_region(self, region):
         """
