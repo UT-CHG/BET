@@ -2428,8 +2428,11 @@ class discretization(object):
         for obj in slice_list2:
             val = getattr(self._input_sample_set, obj)
             if val is not None:
-                setattr(input_ss, obj, val[:, outputs, inputs])
-                
+                #setattr(input_ss, obj, val[:, outputs, inputs])
+                nval = np.copy(val)
+                nval = nval.take(outputs, axis=1)
+                nval = nval.take(inputs, axis=2)
+                setattr(input_ss, obj, nval)
         disc = discretization(input_sample_set=input_ss,
                               output_sample_set=output_ss)
         return disc
