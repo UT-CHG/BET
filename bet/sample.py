@@ -245,7 +245,8 @@ class sample_set_base(object):
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
                     '_volumes_local', '_local_index', '_dim', '_p_norm',
                     '_radii', '_normalized_radii', '_region', '_region_local',
-                    '_error_id', '_error_id_local', '_reference_value']
+                    '_error_id', '_error_id_local', '_reference_value',
+                    '_domain_original']
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
@@ -258,7 +259,7 @@ class sample_set_base(object):
                          '_values', '_values_local', '_left', '_left_local', 
                          '_right', '_right_local', '_width', '_width_local', 
                          '_domain', '_kdtree_values', '_jacobians', 
-                         '_jacobians_local'] 
+                         '_jacobians_local', '_domain_original'] 
 
 
     def __init__(self, dim):
@@ -285,6 +286,8 @@ class sample_set_base(object):
         self._error_estimates = None
         #: The sample domain :class:`numpy.ndarray` of shape (dim, 2)
         self._domain = None
+        #: The sample domain before normalization :class:`numpy.ndarray` of shape (dim, 2)
+        self._domain_original = None
         #: Bounding box of values, :class:`numpy.ndarray`of shape (dim, 2)
         self._bounding_box = None
         #: Local values for parallelism, :class:`numpy.ndarray` of shape
@@ -351,26 +354,29 @@ class sample_set_base(object):
             logging.warning("Not normalizing because domain is not defined.")
             pass
         else:
-            rescale_list = [self._jacobians, self._jacobians_local,
-                            self._width, self,_width_local,
-                            self._radii, self._radii_local]
-            for val in rescale_list:
+            rescale_list = ['_jacobians', '_jacobians_local']
+            for obj in rescale_list:
+                val = getattr(self, obj)
                 if val is not None:
                     val*=(self._domain[:,1] - self._domain[:,0])
-            shift_list = [self._values, self._values_local,
-                          self._error_estimates, self,_error_estimates_local,
-                          self._left, self._left_local,
-                          self._right, self._right_local]
+                    setattr(self, obj, val)
 
-            for val in shift_list:
+            shift_list = ['_values', '_values_local',
+                          '_error_estimates', '_error_estimates_local',
+                          '_left', '_left_local',
+                          '_right', '_right_local']
+
+            for obj in shift_list:
+                val = getattr(self, obj)
                 if val is not None:
                     val -= self._domain[:,0]
                     val = val/(self._domain[:,1] - self._domain[:,0])
-
+                    setattr(self, obj, val)
+                    
             self._domain_original = np.copy(self._domain)
             self._domain = np.repeat([[0.0, 1.0]], self._dim, axis=0)    
 
-       def undo_normalize_domain(self):
+    def undo_normalize_domain(self):
         if self._domain is None:
             logging.warning("Not undoing normalizing because domain is not defined.")
             pass
@@ -378,24 +384,25 @@ class sample_set_base(object):
             logging.warning("Doing nothing because set never normalized")
             pass
         else:
-            rescale_list = [self._jacobians, self._jacobians_local,
-                            self._width, self,_width_local,
-                            self._radii, self._radii_local]
-            for val in rescale_list:
+            rescale_list = ['_jacobians', '_jacobians_local']
+            for obj in rescale_list:
+                val = getattr(self, obj)
                 if val is not None:
                     val = val/(self._domain_original[:,1] - self._domain_original[:,0])
-            shift_list = [self._values, self._values_local,
-                          self._error_estimates, self,_error_estimates_local,
-                          self._left, self._left_local,
-                          self._right, self._right_local]
-
-            for val in shift_list:
+                    setattr(self, obj, val)
+              
+            shift_list = ['_values', '_values_local',
+                          '_error_estimates', '_error_estimates_local',
+                          '_left', '_left_local',
+                          '_right', '_right_local']
+            for obj in shift_list:
+                val = getattr(self, obj)
                 if val is not None:
-                    val = val*(self._domain_orginal[:,1] - self._domain_original[:,0])
+                    val = val*(self._domain_original[:,1] - self._domain_original[:,0])
 
-                    val += self._domain_original[:,0]
+                    val = val + self._domain_original[:,0]
+                    setattr(self, obj, val)
 
-            
             self._domain = np.copy(self._domain_original)
             self._domain_original = None
             
