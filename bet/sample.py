@@ -2393,3 +2393,48 @@ class discretization(object):
             raise AttributeError("Required: _emulated_output_sample_set")
         else:
             self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)
+
+    def choose_inputs_outputs(self,
+                              inputs=None,
+                              outputs=None):
+        # global_list = [
+        slice_list = ['_values', '_values_local',
+                      '_error_estimates', '_error_estimates_local']
+        slice_list2 = ['_jacobians', '_jacobians_local']
+        # if inputs is None:
+        #     input_ss = self._input_sample_set
+        # else:
+        input_ss = sample_set(len(inputs))
+        output_ss = sample_set(len(outputs))
+        input_ss.set_p_norm(self._input_sample_set._p_norm)
+        if self._input_sample_set._domain is not None:
+            input_ss.set_domain(self._input_sample_set._domain[inputs,:])
+        if self._input_sample_set._reference_value is not None:
+            input_ss.set_reference_value(self._input_sample_set._reference_value[inputs])
+
+        output_ss.set_p_norm(self._output_sample_set._p_norm)
+        if self._output_sample_set._domain is not None:
+            output_ss.set_domain(self._output_sample_set._domain[outputs,:])
+        if self._output_sample_set._reference_value is not None:
+            output_ss.set_reference_value(self._output_sample_set._reference_value[outputs])
+
+        for obj in slice_list:
+            val = getattr(self._input_sample_set, obj)
+            if val is not None:
+                setattr(input_ss, obj, val[:,inputs])
+            val = getattr(self._output_sample_set, obj)
+            if val is not None:
+                setattr(output_ss, obj, val[:,outputs])
+        for obj in slice_list2:
+            val = getattr(self._input_sample_set, obj)
+            if val is not None:
+                setattr(input_ss, obj, val[:, outputs, inputs])
+                
+        disc = discretization(input_sample_set=input_ss,
+                              output_sample_set=output_ss)
+        return disc
+    
+
+
+                        
+                
