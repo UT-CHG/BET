@@ -60,8 +60,11 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         save_set.local_to_global()
     comm.barrier()
 
-    # create temporary dictionary
     new_mdat = dict()
+    # create temporary dictionary
+    if os.path.exists(local_file_name) or \
+            os.path.exists(local_file_name+'.mat'):
+        new_mdat = sio.loadmat(local_file_name)
 
     # store sample set in dictionary
     if sample_set_name is None:
@@ -70,21 +73,19 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             new_mdat[sample_set_name+attrname] = curr_attr
+        elif new_mdat.has_key(sample_set_name+attrname):
+            new_mdat.pop(sample_set_name+attrname)
     for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             new_mdat[sample_set_name+attrname] = curr_attr
+        elif new_mdat.has_key(sample_set_name+attrname):
+            new_mdat.pop(sample_set_name+attrname)
     new_mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
     comm.barrier()
 
     # save new file or append to existing file
     if (globalize and comm.rank == 0) or not globalize:
-        if os.path.exists(local_file_name) or \
-                os.path.exists(local_file_name+'.mat'):
-            mdat = sio.loadmat(local_file_name)
-            new_mdat.update(mdat)
-            sio.savemat(local_file_name, new_mdat)
-        else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
     return local_file_name
@@ -1069,6 +1070,13 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     if discretization_name is None:
         discretization_name = 'default'
 
+    has_ext = local_file_name.find(".mat")
+
+    if has_ext < 0 and os.path.exists(local_file_name+".mat"):
+        os.remove(local_file_name+".mat")
+    elif has_ext > 0 and os.path.exists(local_file_name):
+        os.remove(local_file_name)
+
     # globalize the pointers
     if globalize:
         save_disc.globalize_ptrs()
@@ -1092,8 +1100,8 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         if os.path.exists(local_file_name) or \
                 os.path.exists(local_file_name+'.mat'):
             mdat = sio.loadmat(local_file_name)
-            new_mdat.update(mdat)
-            sio.savemat(local_file_name, new_mdat)
+            mdat.update(new_mdat)
+            sio.savemat(local_file_name, mdat)
         else:
             sio.savemat(local_file_name, new_mdat)
     comm.barrier()
@@ -1327,6 +1335,9 @@ class voronoi_sample_set(sample_set_base):
             self.update_bounds()
             samples = samples - self._left
             samples = samples/self._width
+            self._left = None
+            self._right = None
+            self._width = None
 
         width = self._domain[:, 1] - self._domain[:, 0]
         mc_points = width*np.random.random((n_mc_points_local,
