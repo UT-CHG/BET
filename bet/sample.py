@@ -86,7 +86,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
 
     # save new file or append to existing file
     if (globalize and comm.rank == 0) or not globalize:
-            sio.savemat(local_file_name, new_mdat)
+        sio.savemat(local_file_name, new_mdat)
     comm.barrier()
     return local_file_name
 
@@ -1070,13 +1070,6 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     if discretization_name is None:
         discretization_name = 'default'
 
-    has_ext = local_file_name.find(".mat")
-
-    if has_ext < 0 and os.path.exists(local_file_name+".mat"):
-        os.remove(local_file_name+".mat")
-    elif has_ext > 0 and os.path.exists(local_file_name):
-        os.remove(local_file_name)
-
     # globalize the pointers
     if globalize:
         save_disc.globalize_ptrs()
@@ -1088,22 +1081,24 @@ def save_discretization(save_disc, file_name, discretization_name=None,
                 save_sample_set(curr_attr, file_name,
                     discretization_name+attrname, globalize)
     
+    new_mdat = dict()
+    # create temporary dictionary
+    if os.path.exists(local_file_name) or \
+            os.path.exists(local_file_name+'.mat'):
+        new_mdat = sio.loadmat(local_file_name)
+
     # store discretization in dictionary
     for attrname in discretization.vector_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
+        elif new_mdat.has_key(discretization_name+attrname):
+            new_mdat.pop(discretization_name+attrname)
     comm.barrier()
 
     # save new file or append to existing file
     if (globalize and comm.rank == 0) or not globalize:
-        if os.path.exists(local_file_name) or \
-                os.path.exists(local_file_name+'.mat'):
-            mdat = sio.loadmat(local_file_name)
-            mdat.update(new_mdat)
-            sio.savemat(local_file_name, mdat)
-        else:
-            sio.savemat(local_file_name, new_mdat)
+        sio.savemat(local_file_name, new_mdat)
     comm.barrier()
     return local_file_name
 
