@@ -364,7 +364,7 @@ class sample_set_base(object):
             shift_list = ['_values', '_values_local',
                           '_error_estimates', '_error_estimates_local',
                           '_left', '_left_local',
-                          '_right', '_right_local', 'reference_value']
+                          '_right', '_right_local', '_reference_value']
 
             for obj in shift_list:
                 val = getattr(self, obj)
@@ -394,7 +394,7 @@ class sample_set_base(object):
             shift_list = ['_values', '_values_local',
                           '_error_estimates', '_error_estimates_local',
                           '_left', '_left_local',
-                          '_right', '_right_local', 'reference_value']
+                          '_right', '_right_local', '_reference_value']
             for obj in shift_list:
                 val = getattr(self, obj)
                 if val is not None:
