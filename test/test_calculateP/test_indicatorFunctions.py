@@ -3,7 +3,7 @@
 # -*- coding: utf-8 -*-
 # Lindley Graham 10/16/2015
 """
-Test methods in :mod:`bet.calculateP.voronoiHistogram`. We only test for
+Test methods in :mod:`bet.calculateP.indicatorFunctions`. We only test for
 dimensions 1, 2, 3.
 """
 

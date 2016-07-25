@@ -4,10 +4,10 @@
 This module contains general tools for BET.
 """
 
+import sys
+import collections
 import numpy as np
 from bet.Comm import comm, MPI
-import collections
-import sys
 
 possible_types = {int:MPI.INT, float:MPI.DOUBLE}
 
@@ -171,7 +171,7 @@ def fix_dimensions_data(data, dim=None):
     :returns: array of shape (N, dim)
     
     """
-    if dim == None:
+    if dim is None:
         if not isinstance(data, np.ndarray):
             return fix_dimensions_vector_2darray(data)
         elif len(data.shape) == 1:

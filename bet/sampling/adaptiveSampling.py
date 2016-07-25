@@ -12,11 +12,11 @@ coordinate pairing. We assume the measure of both spaces is Lebesgue.
 We employ an approach based on using multiple sample chains.
 """
 
+import math, os, glob, logging
 import numpy as np
 import scipy.io as sio
 import bet.sampling.basicSampling as bsam
 import bet.util as util
-import math, os, glob, logging
 from bet.Comm import comm 
 import bet.sample as sample
 

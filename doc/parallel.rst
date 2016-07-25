@@ -28,7 +28,7 @@ instead of ::
 Example scripts are availiable in ``examples/parallel_and_serial_sampling``
 which demonstrate different modes of parallel and serial sampling. Also the
 :ref:`fenicsMultipleSerialExample` is an example that can be run with serial
-BET and uses `Launcher <https://github.com/TACC/launcher>_` to launch multiple
+BET and uses `Launcher <https://github.com/TACC/launcher>`_ to launch multiple
 serial runs of the model in parallel.
 
 Parallel Enabled Modules
@@ -40,9 +40,11 @@ The modules that have parallel capabilities are as follows::
     util
     sample
     Comm
+    surrogates
     calculateP/
       calculateP
       simpleFunP
+      calculateError
     sampling/
       basicSampling 
       adaptiveSampling
