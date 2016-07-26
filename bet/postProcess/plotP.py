@@ -197,6 +197,9 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     else:
         raise bad_object("Improper sample object")
 
+    if lam_ref is None:
+        lam_ref = sample_obj._reference_value
+
     lam_domain = sample_obj.get_domain()
 
     if comm.rank == 0:
@@ -265,6 +268,9 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
         sample_obj = sample_set
     else:
         raise bad_object("Improper sample object")
+
+    if lam_ref is None:
+        lam_ref = sample_obj._reference_value
 
     lam_domain = sample_obj.get_domain()
 
