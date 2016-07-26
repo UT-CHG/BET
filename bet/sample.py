@@ -557,6 +557,19 @@ class sample_set_base(object):
         self._values_local = np.concatenate((self._values_local,
                 util.fix_dimensions_data(values_local)), 0)
 
+    def clip(self, cnum):
+        sset = self.copy()
+        num = sset.check_num()
+        if sset._values is None:
+            sset.local_to_global()
+        for array_name in self.array_names:
+            current_array = getattr(sset, array_name)
+            if current_array is not None:
+                new_array = current_array[0:cnum]
+                setattr(sset, array_name, new_array)
+        return sset
+        
+
     def check_num(self):
         """
         
@@ -2393,6 +2406,16 @@ class discretization(object):
             raise AttributeError("Required: _emulated_output_sample_set")
         else:
             self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)
+        
+    def clip(self, cnum):
+        ci = self._input_sample_set.clip(cnum)
+        co = self._output_sample_set.clip(cnum)
+
+        return discretization(input_sample_set=ci,
+                              output_sample_set=co,
+                              output_probability_set=self._output_probability_set,
+                              emulated_input_sample_set = self._emulated_input_sample_set,
+                              emulated_output_sample_set=self._emulated_output_sample_set)
 
     def choose_inputs_outputs(self,
                               inputs=None,
@@ -2438,6 +2461,7 @@ class discretization(object):
         return disc
     
 
+        
 
                         
                 
