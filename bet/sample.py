@@ -28,6 +28,11 @@ class dim_not_matching(Exception):
     """
     Exception for when the dimension of the array is inconsistent.
     """
+
+class wrong_p_norm(Exception):
+    """
+    Exception for when the dimension of the array is inconsistent.
+    """
     
 def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     """
@@ -1301,6 +1306,95 @@ class voronoi_sample_set(sample_set_base):
         lam_vol[sort_ind] = sorted_lam_vol
         lam_vol = lam_vol/domain_width
         self._volumes = lam_vol
+        self.global_to_local()
+
+    def exact_radii(self, normalize=True):
+        """
+        Calculate the exact radii of cells using Delaunay triangulation. 
+
+        :param bool normalize: calculate normalized radius
+
+        """
+
+        from scipy.spatial import Delaunay
+        from collections import defaultdict
+        import itertools
+
+        if self._p_norm != 2.0:
+            msg = "p_norm must be the 2-norm"
+            raise wrong_p_norm(msg)
+
+        num = self.check_num()
+        samples = np.copy(self.get_values())
+
+        # normalize the samples
+        if normalize:
+            self.update_bounds()
+            samples = samples - self._left
+            samples = samples/self._width
+            self._left = None
+            self._right = None
+            self._width = None
+
+        if not np.isinf(self._p_norm):
+            pairwise_distance = spatial.distance.pdist(samples,
+                    p=self._p_norm)
+        else:
+            pairwise_distance = spatial.distance.pdist(samples,
+                    p='chebyshev') 
+        # dist(u=X[i], v=X[j]) where i<j<n so if i>j then just swap the two
+        pairwise_distance = spatial.distance.squareform(pairwise_distance)
+
+        rad = np.zeros((num,))
+
+        # determine furthest neighbors
+
+        if self._dim == 1:
+            # Adding contours on the left
+            s_sort = samples.flat[:].argsort()
+            # parallelize
+            local_p = np.split(np.arange(num), comm.size)[comm.rank]
+            for p in local_p: 
+                order = s_sort[p]
+                if order > 0:
+                    val = np.equal(s_sort, order - 1)
+                    args = np.argwhere(val)
+                    i = p
+                    j = args[0][0]
+                    if i > j:
+                        dist = pairwise_distance[j, i]
+                    else:
+                        dist = pairwise_distance[i, j]
+                    if rad[i] < dist:
+                        rad[i] = dist
+                    if rad[j] < dist:
+                        rad[j] = dist
+        else:
+            # Form Delaunay triangulation
+            tri = Delaunay(samples)
+            # Find neighbors
+            # parallelize
+            local_p = np.split(tri.simplices, comm.size)[comm.rank]
+            for p in local_p:
+                for i, j in itertools.combinations(p, 2):
+                    if i > j:
+                        dist = pairwise_distance[j, i]
+                    else:
+                        dist = pairwise_distance[i, j]
+                    if rad[i] < dist:
+                        rad[i] = dist
+                    if rad[j] < dist:
+                        rad[j] = dist
+
+        crad = np.copy(rad)
+        comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
+        rad = crad
+
+        if normalize:
+            self._normalized_radii = rad
+        else:
+            self._radii = rad
+        
         self.global_to_local()
 
     def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
