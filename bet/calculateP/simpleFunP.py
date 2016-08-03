@@ -364,7 +364,6 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     s_set.set_domain(domain)
     s_set.exact_volume_lebesgue()
     vol = np.sum(s_set._volumes[0:-1])
-    print s_set._volumes
     prob = np.zeros(s_set._volumes.shape)
     prob[0:-1] = s_set._volumes[0:-1]/vol
     s_set.set_probabilities(prob)
