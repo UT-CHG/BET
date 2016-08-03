@@ -310,7 +310,7 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set,
 
 
 def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
-        rect_size=None, center_pts_per_edge=1): 
+                                                          rect_size=None, center_pts_per_edge=0): 
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -329,8 +329,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
         :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
-    :param center_pts_per_edge: Does nothing. Is here for backward
-        compatability.
+    :param list() center_pts_per_edge: number of center points per edge.
 
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
@@ -348,11 +347,27 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
         msg = 'rect_size must be greater than 0'
         raise wrong_argument_type(msg)
 
+    if not isinstance(center_pts_per_edge, collections.Iterable):
+        center_pts_per_edge = np.ones((dim,)) * center_pts_per_edge
+
     maxes = [Q_ref + 0.5*np.array(rect_size)]
     mins = [Q_ref - 0.5*np.array(rect_size)]
-    s_set = samp.rectangle_sample_set(dim)
-    s_set.setup(maxes, mins)
-    s_set.set_probabilities(np.array([1.0, 0.0]))
+
+    xi = []
+    for i in xrange(dim):
+        xi.append(np.linspace(mins[0][i], maxes[0][i], center_pts_per_edge[i] + 2))
+    s_set = samp.cartesian_sample_set(dim)
+    s_set.setup(xi)
+    domain = np.zeros((dim, 2))
+    domain[:,0] = mins[0]
+    domain[:,1] = maxes[0]
+    s_set.set_domain(domain)
+    s_set.exact_volume_lebesgue()
+    vol = np.sum(s_set._volumes[0:-1])
+    print s_set._volumes
+    prob = np.zeros(s_set._volumes.shape)
+    prob[0:-1] = s_set._volumes[0:-1]/vol
+    s_set.set_probabilities(prob)
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
@@ -360,7 +375,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
 
 def regular_partition_uniform_distribution_rectangle_domain(data_set,
-        rect_domain, center_pts_per_edge=1):
+                                                            rect_domain, center_pts_per_edge=0):
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
@@ -375,8 +390,7 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
     :param rect_domain: The domain overwhich :math:`\rho_\mathcal{D}` is
         uniform.
     :type rect_domain: :class:`numpy.ndarray` of shape (2, mdim)
-    :param center_pts_per_edge: Does nothing. Is here for backward
-        compatability.
+    :param center_pts_per_edge: number of center points per edge
     
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
@@ -392,10 +406,10 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
  
     return regular_partition_uniform_distribution_rectangle_size(data_set,
-                            domain_center, domain_lengths)
+                                                                 domain_center, domain_lengths, center_pts_per_edge)
 
 def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
-        rect_scale, center_pts_per_edge=1):
+                                                            rect_scale, center_pts_per_edge=0):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -416,8 +430,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     :type rect_scale: double or list()
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
-    :param center_pts_per_edge: Does nothing. Is here for backward
-        compatability.
+    :param center_pts_per_edge: number of center points per edge
     
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
@@ -432,7 +445,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
 
     rect_size = (np.max(data, 0) - np.min(data, 0))*rect_scale
     return regular_partition_uniform_distribution_rectangle_size(data_set,
-            Q_ref, rect_size)
+                                                                 Q_ref, rect_size, center_pts_per_edge)
 
 def uniform_partition_uniform_distribution_data_samples(data_set):
     r"""
