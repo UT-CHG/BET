@@ -58,10 +58,12 @@ Choose the bin ratio for the uniform output probability::
   bin_ratio = 0.25 #ratio of length of data region to invert
 
 Load the reference parameter and QoI values::
+
   param_ref = np.loadtxt("files/lam_ref.txt.gz") #reference parameter set
   Q_ref = np.loadtxt("files/Q_ref.txt.gz")[QoI_indices_observe] #reference QoI set
 
 Plot 2D projections of the data domain::
+
   plotD.scatter_rhoD(my_discretization, ref_sample=Q_ref, io_flag='output', showdim=2)
 Suggested changes for user (1)
 ------------------------------
@@ -153,11 +155,12 @@ Plot 1d marginal probs::
 
 Sort samples by highest probability density and take highest x percent::
 
-  (num_samples, P_high, samples_high, lam_vol_high, data_high)= postTools.sample_highest_prob(top_percentile=percentile, P_samples=P, samples=samples, lam_vol=lam_vol,data = data,sort=True)
+  (num_samples, my_discretization_highP, indices)= postTools.sample_highest_prob(
+    percentile, my_discretization, sort=True)
 
 Print the number of these samples  and the ratio of the volume they take up::
 
-  print (numsamples, np.sum(lam_vol_high)
+  print (num_samples, np.sum(my_discretization_highP._input_sample_set.get_volumes()))
 
 
 Suggested changes for user (4):
@@ -175,13 +178,17 @@ Change ``percentile`` to values between 1.0 and 0.0. Notice that while the regio
 
 Propogate highest probability part of the probability measure through a different QoI map::
 
-  (_, P_pred, _, _ , data_pred)= postTools.sample_highest_prob(top_percentile=percentile, P_samples=P, samples=samples, lam_vol=lam_vol,data = dataf[:,7],sort=True)
-
+  QoI_indices_predict = np.array([7])
+  output_samples_predict = samp.sample_set(QoI_indices_predict.size)
+  output_samples_predict.set_values(np.loadtxt("files/data.txt.gz")[:,QoI_indices_predict])
+  output_samples_predict.set_probabilities(input_samples.get_probabilities())
+  
 Calculate and plot PDF of predicted QoI::
 
-  (bins_pred, marginals1D_pred) = plotP.calculate_1D_marginal_probs(P_samples = P_pred, samples = data_pred, lam_domain = np.array([[np.min(data_pred),np.max(data_pred)]]), nbins = 20)
-
-  plotP.plot_1D_marginal_probs(marginals1D_pred, bins_pred, lam_domain= np.array([[np.min(data_pred),np.max(data_pred)]]), filename = "contaminant_prediction", interactive=False)
+  (bins_pred, marginals1D_pred) = plotP.calculate_1D_marginal_probs(output_samples_predict,
+                                                                  nbins = 20)
+   plotP.plot_1D_marginal_probs(marginals1D_pred, bins_pred, output_samples_predict,
+                             filename = "contaminant_prediction", interactive=False)
 
 Suggested changes for user (6):
 -------------------------------
