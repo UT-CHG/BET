@@ -63,7 +63,7 @@ if deterministic_discretize_D == True:
   simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(data_set=my_discretization,
                                                                      Q_ref=Q_ref,
                                                                      rect_scale=0.25,
-                                                                     center_pts_per_edge = 1)
+                                                                     cells_per_dimension = 1)
 else:
   simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(data_set=my_discretization,
                                                                      Q_ref=Q_ref,

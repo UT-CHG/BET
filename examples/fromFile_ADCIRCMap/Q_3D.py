@@ -39,7 +39,7 @@ def postprocess(station_nums, ref_num):
     # approximation itself (this can be used to make close comparisions...)
     output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
             output_sample_set, q_ref, rect_scale=0.15,
-            center_pts_per_edge=np.ones((data.shape[1],)))
+            cells_per_dimension=np.ones((data.shape[1],)))
 
     my_disc = sample.discretization(input_sample_set, output_sample_set,
             output_probability_set)

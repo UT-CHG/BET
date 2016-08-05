@@ -103,7 +103,7 @@ my_discretization = sample.discretization(input_sample_set=input_samples,
 # Find the simple function approximation
 simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
     data_set=my_discretization, Q_ref=Q_ref, rect_scale=bin_ratio,
-    center_pts_per_edge=1)
+    cells_per_dimension=1)
 
 # Calculate probablities making the Monte Carlo assumption
 calculateP.prob(my_discretization)
