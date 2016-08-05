@@ -38,7 +38,7 @@ def postprocess(station_nums, ref_num):
     # approximation itself (this can be used to make close comparisions...)
     output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
             output_sample_set, q_ref, rect_scale=0.15,
-            center_pts_per_edge=np.ones((data.shape[1],)))
+            cells_per_dimension=np.ones((data.shape[1],)))
 
     num_l_emulate = 1e4
     set_emulated = bsam.random_sample_set('r', lam_domain, num_l_emulate)
