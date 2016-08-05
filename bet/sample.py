@@ -1944,8 +1944,12 @@ class cartesian_sample_set(rectangle_sample_set):
         for xv in xi:
             xmin.append(xv[0:-1])
             xmax.append(xv[1::])
-        maxes = np.vstack(np.array(np.meshgrid(*xmax)).T)
-        mins = np.vstack(np.array(np.meshgrid(*xmin)).T)
+        if len(xmax) == 1:
+            maxes = np.array([xmax])
+            mins = np.array([xmin])
+        else:
+            maxes = np.vstack(np.array(np.meshgrid(*xmax)).T)
+            mins = np.vstack(np.array(np.meshgrid(*xmin)).T)
         shp = np.array(maxes.shape)
         pd = np.product(shp[0:-1])
         maxes = maxes.reshape((pd, shp[-1]))
