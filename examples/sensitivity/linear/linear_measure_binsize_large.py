@@ -90,8 +90,8 @@ expected volume of the cross section of the inverse solution.
 # the parameter space.  We choose the set of QoIs to consider.
 
 QoI_indices = [0, 7] # choose up to input_dim
-#QoI_indices = [0, 1]
-#QoI_indices = [0, 7, 34, 39, 90]
+QoI_indices = [0, 1]
+QoI_indices = [0, 7, 34, 39, 90]
 #QoI_indices = [0, 1, 2, 3, 4]
 
 # Choose some QoI indices to solve the ivnerse problem with

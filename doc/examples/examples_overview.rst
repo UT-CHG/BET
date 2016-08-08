@@ -101,7 +101,7 @@ spatially variable thermal diffusivity. The goal is to optimize the QoI map with
 respect to a geometric property related to numerical accuracy in computing the
 solution to the stochastic inverse problem with a finite number of samples.
 
-See :ref:`linear_sensitivity` for a suite of examples based on optimizing
+See :ref:`linear_sensitivity` for an example based on optimizing
 a QoI map from a space of linear QoI maps under different optimization criteria.
 
 
