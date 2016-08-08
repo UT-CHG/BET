@@ -9,15 +9,15 @@ AROUND THE FIRST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
 import numpy as np
 import scipy.spatial as spatial
 import bet.util as util
-import sys
 import bet.sample as sample
 import bet.sampling.LpGeneralizedSamples as lpsam
 
 def sample_lp_ball(input_set, num_close, radius, p_num=2):
     r"""
-    Pick num_close points in a the Lp ball of length 2*``radii_vec`` around a point
-    in the input space, do this for each point in centers.  If this box extends
-    outside of the domain of the input space, we sample the intersection.
+    Pick num_close points in a the Lp ball of length 2*``radii_vec`` around a
+    point in the input space, do this for each point in centers.  If this box
+    extends outside of the domain of the input space, we sample the
+    intersection.
 
     :param input_set: The input sample set.  Make sure the attribute
         ``_values`` is not ``None``
@@ -25,8 +25,8 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
     :param int num_close: Number of points in each cluster
     :param radii_vec: Each side of the box will have length ``2*radii_vec[i]``
     :type radii_vec: :class:`numpy.ndarray` of shape (``input_dim``,)
-    :param float p_num: :math:`0 < p \leq \infty`, p for the lp norm where infinity is
-        ``numpy.inf``
+    :param float p_num: :math:`0 < p \leq \infty`, p for the lp norm where
+        infinity is ``numpy.inf``
     
     :rtype: :class:`~bet.sample.sample_set`
     :returns: Centers and clusters of samples near each center (values are 
@@ -69,12 +69,12 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
                 in_bounds = num_close
 
         if in_bounds > num_close:
-            new_cluster = new_cluster[:num_close,:]
+            new_cluster = new_cluster[:num_close, :]
         cluster_set.append_values(new_cluster)
 
     # reset bounds
     cluster_set._left = None
-    cluster_set._right= None
+    cluster_set._right = None
     cluster_set._width = None
     return cluster_set
 
@@ -366,12 +366,14 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
     center_input_sample_set = sample.sample_set(input_dim)
     center_input_sample_set.set_values(samples[:num_centers, :])
     if cluster_discretization._input_sample_set.get_domain() is not None:
-        center_input_sample_set.set_domain(cluster_discretization._input_sample_set.get_domain())
+        center_input_sample_set.set_domain(cluster_discretization.\
+                _input_sample_set.get_domain())
     center_input_sample_set.set_jacobians(gradient_tensor)
     center_output_sample_set = sample.sample_set(output_dim)
     center_output_sample_set.set_values(data[:num_centers, :])
     if cluster_discretization._output_sample_set.get_domain() is not None:
-        center_output_sample_set.set_domain(cluster_discretization._output_sample_set.get_domain())
+        center_output_sample_set.set_domain(cluster_discretization.\
+                _output_sample_set.get_domain())
     #center_output_sample_set.set_jacobians(gradient_tensor.transpose())
     center_discretization = sample.discretization(center_input_sample_set,
             center_output_sample_set)
@@ -420,7 +422,8 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
     data = util.clean_data(data)
     gradient_tensor = np.zeros([num_centers, output_dim, input_dim])
 
-    radii_vec = np.tile(np.repeat(radii_vec, output_dim, axis=1), [num_centers, 1])
+    radii_vec = np.tile(np.repeat(radii_vec, output_dim, axis=1), [num_centers,
+        1])
 
     # Compute the gradient vectors using the standard FFD stencil
     gradient_mat = (data[num_centers:] - np.repeat(data[0:num_centers], \
@@ -444,12 +447,14 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
     center_input_sample_set = sample.sample_set(input_dim)
     center_input_sample_set.set_values(samples[:num_centers, :])
     if cluster_discretization._input_sample_set.get_domain() is not None:
-        center_input_sample_set.set_domain(cluster_discretization._input_sample_set.get_domain())
+        center_input_sample_set.set_domain(cluster_discretization.\
+                _input_sample_set.get_domain())
     center_input_sample_set.set_jacobians(gradient_tensor)
     center_output_sample_set = sample.sample_set(output_dim)
     center_output_sample_set.set_values(data[:num_centers, :])
     if cluster_discretization._output_sample_set.get_domain() is not None:
-        center_output_sample_set.set_domain(cluster_discretization._output_sample_set.get_domain())
+        center_output_sample_set.set_domain(cluster_discretization.\
+                _output_sample_set.get_domain())
     #center_output_sample_set.set_jacobians(gradient_tensor.transpose())
     center_discretization = sample.discretization(center_input_sample_set,
             center_output_sample_set)
@@ -496,10 +501,11 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
     radii_vec = util.fix_dimensions_vector_2darray(radii_vec.diagonal())
 
     # Clean the data
-    data = util.clean_data( data[num_centers:])
+    data = util.clean_data(data[num_centers:])
     gradient_tensor = np.zeros([num_centers, output_dim, input_dim])
 
-    radii_vec = np.tile(np.repeat(radii_vec, output_dim, axis=1), [num_centers, 1])
+    radii_vec = np.tile(np.repeat(radii_vec, output_dim, axis=1), [num_centers,
+        1])
 
     # Construct indices for CFD gradient approxiation
     inds = np.repeat(range(0, 2 * input_dim * num_centers, 2 * input_dim),
@@ -526,12 +532,14 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
     center_input_sample_set = sample.sample_set(input_dim)
     center_input_sample_set.set_values(samples[:num_centers, :])
     if cluster_discretization._input_sample_set.get_domain() is not None:
-        center_input_sample_set.set_domain(cluster_discretization._input_sample_set.get_domain())
+        center_input_sample_set.set_domain(cluster_discretization.\
+                _input_sample_set.get_domain())
     center_input_sample_set.set_jacobians(gradient_tensor)
     center_output_sample_set = sample.sample_set(output_dim)
     center_output_sample_set.set_values(data[:num_centers, :])
     if cluster_discretization._output_sample_set.get_domain() is not None:
-        center_output_sample_set.set_domain(cluster_discretization._output_sample_set.get_domain())
+        center_output_sample_set.set_domain(cluster_discretization.\
+                _output_sample_set.get_domain())
     #center_output_sample_set.set_jacobians(gradient_tensor.transpose())
     center_discretization = sample.discretization(center_input_sample_set,
             center_output_sample_set)

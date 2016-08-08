@@ -1,6 +1,5 @@
 # Copyright (C) 2014-2015 The BET Development Team
 
-import bet.sampling.basicSampling as bsam
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
 import numpy as np
@@ -20,13 +19,11 @@ lam_domain = np.array([[0.07, .15], [0.1, 0.2]])
 input_sample_set = sample.sample_set(points.shape[0])
 input_sample_set.set_values(points.transpose())
 input_sample_set.set_domain(lam_domain)
-
-
 print "Finished loading data"
 
 def postprocess(station_nums, ref_num):
     
-    filename = 'P_q'+str(station_nums[0]+1)+'_q'
+    filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
     if len(station_nums) == 3:
         filename += '_q'+str(station_nums[2]+1)
     filename += '_ref_'+str(ref_num+1)
@@ -41,7 +38,7 @@ def postprocess(station_nums, ref_num):
     # approximation itself (this can be used to make close comparisions...)
     output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
             output_sample_set, q_ref, rect_scale=0.15,
-            center_pts_per_edge=np.ones((data.shape[1],)))
+            cells_per_dimension=np.ones((data.shape[1],)))
 
     num_l_emulate = 1e4
     set_emulated = bsam.random_sample_set('r', lam_domain, num_l_emulate)
@@ -77,5 +74,5 @@ ref_nums = ref_nums.ravel()
 stations = stations.ravel()
 
 for tnum, stat in zip(ref_nums, stations):
-    postprocess([0], tnum)
+    postprocess([0, stat], tnum)
 

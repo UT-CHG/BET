@@ -4,12 +4,12 @@
 This module provides methods for plotting probabilities. 
 """
 
-from bet.Comm import comm, MPI 
+import copy, math
+import numpy as np
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
 #plt.rc('font', family='serif')
-import numpy as np
-import copy, math
+from bet.Comm import comm, MPI 
 import bet.sample as sample
 
 
@@ -80,8 +80,8 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     # Calculate marginals
     marginals = {}
     for i in range(sample_obj.get_dim()):
-        [marg, _] = np.histogram(sample_obj.get_values_local()[:, i], bins=bins[i],
-                                 weights=sample_obj.get_probabilities_local())
+        [marg, _] = np.histogram(sample_obj.get_values_local()[:, i],
+                bins=bins[i], weights=sample_obj.get_probabilities_local())
         marg_temp = np.copy(marg)
         comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
         marginals[i] = marg_temp
@@ -197,6 +197,9 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     else:
         raise bad_object("Improper sample object")
 
+    if lam_ref is None:
+        lam_ref = sample_obj._reference_value
+
     lam_domain = sample_obj.get_domain()
 
     if comm.rank == 0:
@@ -211,7 +214,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
             ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
             if lam_ref is not None:
                 ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
-            if lambda_label == None:
+            if lambda_label is None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
             else:
                 label1 = lambda_label[i]
@@ -266,6 +269,9 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     else:
         raise bad_object("Improper sample object")
 
+    if lam_ref is None:
+        lam_ref = sample_obj._reference_value
+
     lam_domain = sample_obj.get_domain()
 
     from matplotlib import cm
@@ -286,7 +292,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                     vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
             if lam_ref is not None:
                 ax.plot(lam_ref[i], lam_ref[j], 'wo', markersize=10)
-            if lambda_label == None:
+            if lambda_label is None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
                 label2 = r'$\lambda_{' + str(j+1) + '}$'
             else:

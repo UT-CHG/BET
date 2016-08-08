@@ -112,21 +112,22 @@ def random_sample_set(sample_type, input_obj, num_samples,
      
     if sample_type == "lhs":
         # update the bounds based on the number of samples
-         input_sample_set.update_bounds(num_samples)
-         input_values = np.copy(input_sample_set._width)
-         input_values = input_values * lhs(dim,
-                num_samples, criterion)
-         input_values = input_values + input_sample_set._left
-         input_sample_set.set_values_local(np.array_split(input_values,
-        comm.size)[comm.rank])
+        input_sample_set.update_bounds(num_samples)
+        input_values = np.copy(input_sample_set._width)
+        input_values = input_values * lhs(dim,
+            num_samples, criterion)
+        input_values = input_values + input_sample_set._left
+        input_sample_set.set_values_local(np.array_split(input_values,
+            comm.size)[comm.rank])
     elif sample_type == "random" or "r":
         # define local number of samples
-        num_samples_local =  int((num_samples/comm.size) + \
+        num_samples_local = int((num_samples/comm.size) + \
             (comm.rank < num_samples%comm.size))
         # update the bounds based on the number of samples
         input_sample_set.update_bounds_local(num_samples_local)
         input_values_local = np.copy(input_sample_set._width_local)
-        input_values_local = input_values_local * np.random.random(input_values_local.shape)
+        input_values_local = input_values_local * \
+                np.random.random(input_values_local.shape)
         input_values_local = input_values_local + input_sample_set._left_local
     
         input_sample_set.set_values_local(input_values_local)
@@ -239,7 +240,8 @@ class sampler(object):
             shape (N, ndim) and returns an output of shape (N, mdim)
         :type lb_model: callable function
         :param int num_samples: N, number of samples
-        :param bool error_estimates: Whether or not the model returns error estimates
+        :param bool error_estimates: Whether or not the model returns error
+            estimates 
         :param bool jacobians: Whether or not the model returns Jacobians
 
         """
@@ -390,9 +392,9 @@ class sampler(object):
                 (local_output_values, local_output_jac) = local_output
             elif  len(local_output) == 3:
                 (local_output_values, local_output_ee, local_output_jac) = \
-                    local_output
+                        local_output
         else:
-             raise bad_object("lb_model is not returning the proper type")
+            raise bad_object("lb_model is not returning the proper type")
             
                 
         # figure out the dimension of the output

@@ -6,23 +6,19 @@ the probability measure for calculate probability measures. See
 `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`.
 
 * :meth:`~bet.calculateErrors.cell_connectivity_exact` calculates 
-the connectivity of cells.
+    the connectivity of cells.
 * :meth:`~bet.calculateErrors.boundary_sets` calculates which cells are 
-on the boundary and strictly interior for contour events.
+    on the boundary and strictly interior for contour events.
 * :class:`~bet.calculateErrors.sampling_error` is for calculating error
-estimates due to sampling
+    estimates due to sampling
 * :class:`~bet.calculateErrors.model_error` is for calculating error
-estimates due to error in solution of QoIs
+    estimates due to error in solution of QoIs
 
 """
 
-from bet.Comm import comm, MPI 
-import numpy as np
-import math
 import logging
-import scipy.spatial as spatial
-import bet.util as util
-import bet.calculateP.calculateP as calculateP
+import numpy as np
+from bet.Comm import comm, MPI 
 import bet.sample as samp
 
 class wrong_argument_type(Exception):
@@ -54,10 +50,12 @@ def cell_connectivity_exact(disc):
         raise wrong_argument_type(msg)
 
     if not isinstance(disc._input_sample_set, samp.voronoi_sample_set):
-        msg = "disc._input_sample_set must be of type bet.sample.voronoi_sample_set defined with the 2-norm"
+        msg = "disc._input_sample_set must be of type bet.sample.voronoi"
+        msg += "_sample_set defined with the 2-norm"
         raise wrong_argument_type(msg)
     elif disc._input_sample_set._p_norm != 2.0:
-        msg = "disc._input_sample_set must be of type bet.sample.voronoi_sample_set defined with the 2-norm"
+        msg = "disc._input_sample_set must be of type bet.sample.voronoi"
+        msg += "_sample_set defined with the 2-norm"
         raise wrong_argument_type(msg)
 
     num = disc.check_nums()
@@ -73,7 +71,7 @@ def cell_connectivity_exact(disc):
             order = s_sort[p]
             if order > 0:
                 val = np.equal(s_sort, order - 1)
-                args  = np.argwhere(val)                
+                args = np.argwhere(val)                
                 neiList[p].add(disc._io_ptr[args[0][0]])
                 neiList[args[0][0]].add(disc._io_ptr[p])
     else:
@@ -83,7 +81,7 @@ def cell_connectivity_exact(disc):
         # Find neighbors
         neiList = defaultdict(set)
         for p in tri.vertices:
-            for i,j in itertools.combinations(p,2):
+            for i, j in itertools.combinations(p, 2):
                 neiList[i].add(disc._io_ptr[j])
                 neiList[j].add(disc._io_ptr[i])
     # Get rid of redundant entries
@@ -118,11 +116,13 @@ def boundary_sets(disc, nei_list):
         raise wrong_argument_type(msg)
 
     if not isinstance(disc._input_sample_set, samp.voronoi_sample_set):
-        msg = "disc._input_sample_set must be of type bet.sample.voronoi_sample_set defined with the 2-norm"
+        msg = "disc._input_sample_set must be of type bet.sample.voronoi"
+        msg += "_sample_set defined with the 2-norm"
         raise wrong_argument_type(msg)
     elif disc._input_sample_set._p_norm != 2.0:
 
-        msg = "disc._input_sample_set must be of type bet.sample.voronoi_sample_set defined with the 2-norm"
+        msg = "disc._input_sample_set must be of type bet.sample.voronoii"
+        msg += "_sample_set defined with the 2-norm"
         raise wrong_argument_type(msg)
 
     num = disc.check_nums()
@@ -178,10 +178,12 @@ class sampling_error(object):
         
     def calculate_for_contour_events(self):
         """
-        Calculate the sampling error bounds for each contour event.
-        If volumes are already calculated these are used. If not,
-        volume emulation is used if an emulated input set exists.
-        Otherwise the MC assumption is made.
+
+        Calculate the sampling error bounds for each contour event.  If volumes
+        are already calculated these are used. If not, volume emulation is used
+        if an emulated input set exists.  Otherwise the MC assumption is
+        made.
+
 
         :rtype: tuple
         :returns: (``up_list``, ``low_list``) where ``up_list`` is a list of
@@ -195,7 +197,8 @@ class sampling_error(object):
         if self.disc._input_sample_set._volumes is None:
             if self.disc._emulated_input_sample_set is not None:
                 logging.warning("Using emulated points to estimate volumes.")
-                self.disc._input_sample_set.estimate_volume_emulated(self.disc._emulated_input_sample_set)
+                self.disc._input_sample_set.estimate_volume_emulated(self.\
+                        disc._emulated_input_sample_set)
             else:
                 logging.warning("Making MC assumption to estimate volumes.")
                 self.disc._input_sample_set.estimate_volume_mc()
@@ -206,22 +209,26 @@ class sampling_error(object):
             # contour event :math:`\mathcal{A} = A_{i,N}`
             if self.disc._output_probability_set._probabilities[i] > 0.0:
                 lam_vol = np.zeros((self.num,))
-                indices = np.equal(self.disc._io_ptr,i)
+                indices = np.equal(self.disc._io_ptr, i)
                 lam_vol[indices] = self.disc._input_sample_set._volumes[indices]
                 if i in self.B_N:
                     # val1 = :math:`\mu_{\Lambda}(B_{i,N})`
-                    val1 = np.sum(self.disc._input_sample_set._volumes[self.B_N[i]])
+                    val1 = np.sum(self.disc._input_sample_set._volumes[self.\
+                            B_N[i]])
                     # val2 = :math:`\mu_{\Lambda}(\mathcal{A} \cap B_{i,N})`
                     val2 = np.sum(lam_vol[self.B_N[i]])
                     # val3 = :math:`\mu_\Lambda(C_{i,N})`
-                    val3 = np.sum(self.disc._input_sample_set._volumes[self.C_N[i]])
+                    val3 = np.sum(self.disc._input_sample_set._volumes[self.\
+                            C_N[i]])
                     # val4 = :math:`\mu_{\Lambda}(\mathcal{A} \cap C_{i,N})`
                     val4 = np.sum(lam_vol[self.C_N[i]])
                 
                     term1 = val2/val3 - 1.0
                     term2 = val4/val1 - 1.0
-                    up_list.append(self.disc._output_probability_set._probabilities[i]*max(term1,term2))
-                    low_list.append(self.disc._output_probability_set._probabilities[i]*min(term1,term2))
+                    up_list.append(self.disc._output_probability_set.\
+                            _probabilities[i]*max(term1, term2))
+                    low_list.append(self.disc._output_probability_set.\
+                            _probabilities[i]*min(term1, term2))
                 else:
                     up_list.append(float('nan'))
                     low_list.append(float('nan'))
@@ -234,20 +241,19 @@ class sampling_error(object):
 
     def calculate_for_sample_set_region(self, s_set, 
                                      region, emulated_set=None):
-        """
+        r"""
         Calculate the sampling error bounds for a region of the input space
         defined by a sample set object which defines an event :math:`A`.
 
         :param s_set: sample set for which to calculate error
         :type s_set: :class:`bet.sample.sample_set_base`
-        :param region: region of s_set for which to calculate error
-        :type region: int
+        :param int region: region of s_set for which to calculate error
         :param emulated_set: sample set for volume emulation
         :type emulated_set: :class:`bet.sample_set_base`
 
-        :rtype tuple
+        :rtype: tuple
         :returns: (``upper_bound``, ``lower_bound``) the upper and lower bounds
-        for the error.
+            for the error.
 
         """
         # Set up marker
@@ -266,18 +272,22 @@ class sampling_error(object):
             disc = self.disc.copy()
             disc.set_emulated_input_sample_set(emulated_set)
             disc.set_emulated_ii_ptr(globalize=False)
-            disc_new = samp.discretization(input_sample_set = s_set,
-                                           output_sample_set = s_set,
-                                           emulated_input_sample_set = emulated_set)
+            disc_new = samp.discretization(input_sample_set=s_set,
+                                           output_sample_set=s_set,
+                                           emulated_input_sample_set\
+                                                   =emulated_set)
             disc_new.set_emulated_ii_ptr(globalize=False)
         elif self.disc._emulated_input_sample_set is not None:
-            logging.warning("Using emulated_input_sample_set for volume emulation")
+            msg = "Using emulated_input_sample_set for volume emulation"
+            logging.warning(msg)
             disc = self.disc
             if disc._emulated_ii_ptr is None:
                 disc.set_emulated_ii_ptr(globalize=False)
-            disc_new = samp.discretization(input_sample_set = s_set,
-                                           output_sample_set = s_set,
-                                           emulated_input_sample_set = self.disc._emulated_input_sample_set)
+            disc_new = samp.discretization(input_sample_set=s_set,
+                                           output_sample_set=s_set,
+                                           emulated_input_sample_set=self.\
+                                                   disc.\
+                                                   _emulated_input_sample_set)
             
             disc_new.set_emulated_ii_ptr(globalize=False)
         else:
@@ -286,9 +296,10 @@ class sampling_error(object):
             disc.set_emulated_input_sample_set(disc._input_sample_set)
             disc.set_emulated_ii_ptr(globalize=False)
             
-            disc_new = samp.discretization(input_sample_set = s_set,
-                                           output_sample_set = s_set,
-                                           emulated_input_sample_set = self.disc._input_sample_set)
+            disc_new = samp.discretization(input_sample_set=s_set,
+                                           output_sample_set=s_set,
+                                           emulated_input_sample_set=self.\
+                                                   disc._input_sample_set)
             disc_new.set_emulated_ii_ptr(globalize=False)
         
         # Emulated points in the the region
@@ -315,13 +326,15 @@ class sampling_error(object):
 
                 in_B_N = np.zeros(in_A.shape, dtype=np.bool)
                 for j in self.B_N[i]:
-                    in_B_N = np.logical_or(np.equal(disc._emulated_ii_ptr_local,j),in_B_N)
+                    in_B_N = np.logical_or(np.equal(disc.\
+                            _emulated_ii_ptr_local, j), in_B_N)
 
                 in_C_N = np.zeros(in_A.shape, dtype=np.bool)
                 for j in self.C_N[i]:
-                    in_C_N =  np.logical_or(np.equal(disc._emulated_ii_ptr_local,j), in_C_N)
+                    in_C_N = np.logical_or(np.equal(disc.\
+                            _emulated_ii_ptr_local, j), in_C_N)
                 # sum3 :math:`\mu_{\Lambda}(A \cap B_N)`
-                sum3 = np.sum(np.logical_and(in_A,in_B_N))
+                sum3 = np.sum(np.logical_and(in_A, in_B_N))
                 # sum4 :math:`\mu_{\Lambda}(C_N)`
                 sum4 = np.sum(in_C_N)
                 sum3 = comm.allreduce(sum3, op=MPI.SUM)
@@ -331,7 +344,7 @@ class sampling_error(object):
                 term1 = float(sum3)/float(sum4) - E
 
                 # sum5 :math:`\mu_{\Lambda}(A \cap C_N)`
-                sum5 = np.sum(np.logical_and(in_A,in_C_N))
+                sum5 = np.sum(np.logical_and(in_A, in_C_N))
                 # sum6 :math:`\mu_{\Lambda}(B_N)`
                 sum6 = np.sum(in_B_N)
                 sum5 = comm.allreduce(sum5, op=MPI.SUM)
@@ -340,8 +353,10 @@ class sampling_error(object):
                     return (float('nan'), float('nan'))
                 term2 = float(sum5)/float(sum6) - E
 
-                upper_bound += self.disc._output_probability_set._probabilities[i]*max(term1,term2)
-                lower_bound += self.disc._output_probability_set._probabilities[i]*min(term1,term2)
+                upper_bound += self.disc._output_probability_set.\
+                        _probabilities[i]*max(term1, term2)
+                lower_bound += self.disc._output_probability_set.\
+                        _probabilities[i]*min(term1, term2)
         return (upper_bound, lower_bound)
                                        
 
@@ -380,16 +395,18 @@ class model_error(object):
         # Setup new discretization object adding error estimates
         #: :class:`bet.sample.discretiztion` from adding error estimates
         self.disc_new = disc.copy()
-        self.disc_new._output_sample_set._values_local += self.disc._output_sample_set._error_estimates_local
+        self.disc_new._output_sample_set._values_local += self.disc.\
+                _output_sample_set._error_estimates_local
         self.disc_new.set_io_ptr(globalize=False)
         self.disc_new._io_ptr = None
         
 
     def calculate_for_contour_events(self):
-        """
+        r"""
+        
         Calculate the numerical error for each contour event.
 
-        :rtype list
+        :rtype: list
         :returns: ``er_list``, a list of the error estimates
             for each contour event.
 
@@ -398,7 +415,8 @@ class model_error(object):
         if self.disc._input_sample_set._volumes is None:
             if self.disc._emulated_input_sample_set is not None:
                 logging.warning("Using emulated points to estimate volumes.")
-                self.disc._input_sample_set.estimate_volume_emulated(self.disc._emulated_input_sample_set)
+                self.disc._input_sample_set.estimate_volume_emulated(self.\
+                        disc._emulated_input_sample_set)
             else:
                 logging.warning("Making MC assumption to estimate volumes.")
                 self.disc._input_sample_set.estimate_volume_mc()
@@ -417,14 +435,16 @@ class model_error(object):
                 ind2 = np.equal(self.disc_new._io_ptr_local, i)
                 JiA = np.sum(self.disc._input_sample_set._volumes_local[ind1])
                 Ji = JiA
-                JiAe = np.sum(self.disc._input_sample_set._volumes_local[np.logical_and(ind1,ind2)])
+                JiAe = np.sum(self.disc._input_sample_set._volumes_local[\
+                        np.logical_and(ind1, ind2)])
                 Jie = np.sum(self.disc._input_sample_set._volumes_local[ind2])
 
                 JiA = comm.allreduce(JiA, op=MPI.SUM)
                 Ji = comm.allreduce(Ji, op=MPI.SUM)
                 JiAe = comm.allreduce(JiAe, op=MPI.SUM)
                 Jie = comm.allreduce(Jie, op=MPI.SUM)
-                er_list.append(self.disc._output_probability_set._probabilities[i] * ((JiA*Jie - JiAe*Ji)/(Ji*Jie)))
+                er_list.append(self.disc._output_probability_set.\
+                        _probabilities[i] * ((JiA*Jie - JiAe*Ji)/(Ji*Jie)))
             else:
                 er_list.append(0.0)
        
@@ -443,7 +463,7 @@ class model_error(object):
         :param emulated_set: sample set for volume emulation
         :type emulated_sample_set: :class:`bet.sample_set_base`
 
-        :rtype float
+        :rtype: float
         :returns: ``er_est``, the numerical error estimate for the region
 
         """
@@ -466,22 +486,24 @@ class model_error(object):
             disc.set_emulated_input_sample_set(emulated_set)
             disc.set_emulated_ii_ptr(globalize=False)
         
-            disc_new_set = samp.discretization(input_sample_set = s_set,
-                                               output_sample_set = s_set,
-                                               emulated_input_sample_set = emulated_set)
+            disc_new_set = samp.discretization(input_sample_set=s_set,
+                                               output_sample_set=s_set,
+                                               emulated_input_sample_set\
+                                                       =emulated_set)
             disc_new_set.set_emulated_ii_ptr(globalize=False)
         elif self.disc._emulated_input_sample_set is not None:
             self.disc._input_sample_set.local_to_global()
-            logging.warning("Using emulated_input_sample_set for volume emulation")
+            msg = "Using emulated_input_sample_set for volume emulation"
+            logging.warning(msg)
             self.disc.globalize_ptrs()
             self.disc_new.globalize_ptrs()
             disc = self.disc
             if disc._emulated_ii_ptr_local is None:
                 disc.set_emulated_ii_ptr(globalize=False)
             self.disc_new.set_emulated_ii_ptr(globalize=False)
-            disc_new_set = samp.discretization(input_sample_set = s_set,
-                                               output_sample_set = s_set,
-                                               emulated_input_sample_set = disc._emulated_input_sample_set)
+            disc_new_set = samp.discretization(input_sample_set=s_set,
+                output_sample_set=s_set, emulated_input_sample_set\
+                =disc._emulated_input_sample_set)
             disc_new_set.set_emulated_ii_ptr(globalize=False)
         else:
             logging.warning("Using MC assumption for volumes.")
@@ -502,20 +524,21 @@ class model_error(object):
         for i in range(ops_num):
             if self.disc._output_probability_set._probabilities[i] > 0.0:
                 # JiA, Ji, Jie, and JiAe are defined ast in 
-                # `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
-                indices1 = np.equal(self.disc._io_ptr ,i)
+                # `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`_
+                indices1 = np.equal(self.disc._io_ptr, i)
                 in_Ai1 = indices1[ptr1]
-                indices2 = np.equal(self.disc_new._io_ptr ,i)
+                indices2 = np.equal(self.disc_new._io_ptr, i)
                 in_Ai2 = indices2[ptr1]
-                JiA_local = float(np.sum(np.logical_and(in_A,in_Ai1)))
+                JiA_local = float(np.sum(np.logical_and(in_A, in_Ai1)))
                 JiA = comm.allreduce(JiA_local, op=MPI.SUM)
                 Ji_local = float(np.sum(in_Ai1))
                 Ji = comm.allreduce(Ji_local, op=MPI.SUM)
-                JiAe_local = float(np.sum(np.logical_and(in_A,in_Ai2)))
+                JiAe_local = float(np.sum(np.logical_and(in_A, in_Ai2)))
                 JiAe = comm.allreduce(JiAe_local, op=MPI.SUM)
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
-                er_est += self.disc._output_probability_set._probabilities[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+                er_est += self.disc._output_probability_set._probabilities[i]\
+                        *((JiA*Jie - JiAe*Ji)/(Ji*Jie))
                
         return er_est
 
@@ -545,7 +568,8 @@ class model_error(object):
 
         disc_new_set = samp.discretization(input_sample_set=s_set,
                                            output_sample_set=s_set,
-                                           emulated_input_sample_set=self.disc._input_sample_set)
+                                           emulated_input_sample_set=\
+                                                   self.disc._input_sample_set)
         disc_new_set.set_emulated_ii_ptr(globalize=False)
         # Check if in the region
         in_A = marker[disc_new_set._emulated_ii_ptr_local]
@@ -562,26 +586,29 @@ class model_error(object):
                 # `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
                 in_Ai1 = np.equal(self.disc._io_ptr_local, i)
                 in_Ai2 = np.equal(self.disc_new._io_ptr_local, i)
-                JiA_local = float(np.sum(np.logical_and(in_A,in_Ai1)))
+                JiA_local = float(np.sum(np.logical_and(in_A, in_Ai1)))
                 JiA = comm.allreduce(JiA_local, op=MPI.SUM)
                 Ji_local = float(np.sum(in_Ai1))
                 Ji = comm.allreduce(Ji_local, op=MPI.SUM)
-                JiAe_local = float(np.sum(np.logical_and(in_A,in_Ai2)))
+                JiAe_local = float(np.sum(np.logical_and(in_A, in_Ai2)))
                 JiAe = comm.allreduce(JiAe_local, op=MPI.SUM)
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
-                er_cont = self.disc._output_probability_set._probabilities[i]*((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+                er_cont = self.disc._output_probability_set._probabilities[i]\
+                        *((JiA*Jie - JiAe*Ji)/(Ji*Jie))
                 er_est += er_cont
-                error_cells1 = np.logical_and(np.logical_and(in_Ai1, np.logical_not(in_A)), np.logical_and(in_Ai2, in_A))
-                error_cells2 = np.logical_and(np.logical_and(in_Ai2, np.logical_not(in_A)), np.logical_and(in_Ai1, in_A))
+                error_cells1 = np.logical_and(np.logical_and(in_Ai1, 
+                    np.logical_not(in_A)), np.logical_and(in_Ai2, in_A))
+                error_cells2 = np.logical_and(np.logical_and(in_Ai2, 
+                    np.logical_not(in_A)), np.logical_and(in_Ai1, in_A))
                 error_cells3 = np.not_equal(in_Ai1, in_Ai2)
                 error_cells = np.logical_or(error_cells1, error_cells2)
                 error_cells = np.logical_or(error_cells, error_cells3)
 
                 error_cells_num_local = float(np.sum(error_cells))
-                error_cells_num = comm.allreduce(error_cells_num_local, op=MPI.SUM)
+                error_cells_num = comm.allreduce(error_cells_num_local,
+                        op=MPI.SUM)
                 if error_cells_num != 0:
-                    self.disc._input_sample_set._error_id_local[error_cells] += er_cont/error_cells_num
-       
-               
+                    self.disc._input_sample_set._error_id_local[error_cells] \
+                            += er_cont/error_cells_num
         return er_est
