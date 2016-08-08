@@ -345,8 +345,7 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
     .. note::
 
         Do not specify the file extension in BOTH ``filename`` and
-    sample_obj = my_disc.get_input_sample_set()
-        ``file_extension``.
+        sample_obj = my_disc.get_input_sample_set() ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
         scatter plot

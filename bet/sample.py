@@ -1312,6 +1312,10 @@ class voronoi_sample_set(sample_set_base):
         """
         Calculate the exact radii of cells using Delaunay triangulation. 
 
+        .. todo::
+
+            Need to account for a bounded domain.
+
         :param bool normalize: calculate normalized radius
 
         """
@@ -1346,6 +1350,9 @@ class voronoi_sample_set(sample_set_base):
         pairwise_distance = spatial.distance.squareform(pairwise_distance)
 
         rad = np.zeros((num,))
+
+        # calculate distance to nearest edge of the domain
+        # do things
 
         # determine furthest neighbors
 
@@ -1388,7 +1395,7 @@ class voronoi_sample_set(sample_set_base):
 
         crad = np.copy(rad)
         comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
-        rad = crad
+        rad = crad/2.0
 
         if normalize:
             self._normalized_radii = rad
