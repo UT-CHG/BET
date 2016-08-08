@@ -353,6 +353,11 @@ class sample_set_base(object):
         self._reference_value = None
 
     def normalize_domain(self):
+        """
+
+        Normalize the domain and attributes to a unit hyperbox.
+
+        """
         if self._domain is None:
             logging.warning("Not normalizing because domain is not defined.")
             pass
@@ -380,6 +385,12 @@ class sample_set_base(object):
             self._domain = np.repeat([[0.0, 1.0]], self._dim, axis=0)    
 
     def undo_normalize_domain(self):
+        """
+
+        Undoes normalization of the domain and attributes if they have been
+        normailized.
+
+        """
         if self._domain is None:
             logging.warning("Not undoing normalizing because domain is not defined.")
             pass
@@ -561,6 +572,16 @@ class sample_set_base(object):
                 util.fix_dimensions_data(values_local)), 0)
 
     def clip(self, cnum):
+        """
+        Creates and returns a sample set with the the first `cnum` 
+        entries of the sample set.
+
+        :param int cnum: number of values of sample set to return
+
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: the clipped sample set
+
+        """
         sset = self.copy()
         num = sset.check_num()
         if sset._values is None:
@@ -2448,6 +2469,16 @@ class discretization(object):
             self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)
         
     def clip(self, cnum):
+        """
+        Creates and returns a discretization with the the first `cnum` 
+        entries of the input and output sample sets.
+
+        :param int cnum: number of values of sample set to return
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: clipped discretization
+
+        """
         ci = self._input_sample_set.clip(cnum)
         co = self._output_sample_set.clip(cnum)
 
@@ -2460,13 +2491,20 @@ class discretization(object):
     def choose_inputs_outputs(self,
                               inputs=None,
                               outputs=None):
-        # global_list = [
+        """
+        Slices the inputs and outputs of the discretization.
+
+        :param list inputs: list of indices of input sample set to include
+        :param list outputs: list of indices of output sample set to include
+        
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: sliced discretization
+
+        """
         slice_list = ['_values', '_values_local',
                       '_error_estimates', '_error_estimates_local']
         slice_list2 = ['_jacobians', '_jacobians_local']
-        # if inputs is None:
-        #     input_ss = self._input_sample_set
-        # else:
+    
         input_ss = sample_set(len(inputs))
         output_ss = sample_set(len(outputs))
         input_ss.set_p_norm(self._input_sample_set._p_norm)
@@ -2491,7 +2529,6 @@ class discretization(object):
         for obj in slice_list2:
             val = getattr(self._input_sample_set, obj)
             if val is not None:
-                #setattr(input_ss, obj, val[:, outputs, inputs])
                 nval = np.copy(val)
                 nval = nval.take(outputs, axis=1)
                 nval = nval.take(inputs, axis=2)
