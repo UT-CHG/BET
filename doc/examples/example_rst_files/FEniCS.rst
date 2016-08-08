@@ -70,7 +70,7 @@ the stochastic inverse problem using some default options::
     Q_ref = my_model(param_ref)
     simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
         data_set=my_discretization, Q_ref=Q_ref[0,:], rect_scale=0.1,
-        center_pts_per_edge=3)
+        cells_per_dimension=3)
 
     calculateP.prob(my_discretization)
 
@@ -219,7 +219,7 @@ on choice of QoI_num in `myModel.py
     if randomDataDiscretization is False:
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
-            center_pts_per_edge = 3)
+            cells_per_dimension = 3)
     else:
         simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(
             data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,

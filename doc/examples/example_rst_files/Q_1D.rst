@@ -84,7 +84,7 @@ simple function approximation to this density::
         q_ref = Q_ref[ref_num, station_nums]
         output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
                 output_sample_set, q_ref, rect_scale=0.15,
-                center_pts_per_edge=np.ones((data.shape[1],)))
+                cells_per_dimension=np.ones((data.shape[1],)))
 
 We generate 1e6 uniformly distributed points in :math:`\Lambda`. We call these points :math:`\lambda_{emulate} = \{ \lambda_j \}_{j=1}^{10^6}`::
 
