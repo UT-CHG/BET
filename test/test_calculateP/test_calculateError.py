@@ -44,6 +44,7 @@ class calculate_error(object):
         for x in upper:
             if not np.isnan(x):
                 self.assertGreaterEqual(x, 0.0)
+                
         for x in lower:
             if not np.isnan(x):
                 self.assertLessEqual(x, 0.0)
@@ -53,9 +54,15 @@ class calculate_error(object):
         s_set.set_region_local(regions_local)
         s_set.local_to_global()
         (up, low) = s_error.calculate_for_sample_set_region(s_set, 
-                                                            1)         
-        self.assertAlmostEqual(up, upper[0])
-        self.assertAlmostEqual(low, lower[0]) 
+                                                            1)
+        if not np.isnan(up):
+            self.assertAlmostEqual(up, upper[0])
+        else:
+            self.assertTrue(np.isnan(upper[0]))
+        if not np.isnan(low):
+            self.assertAlmostEqual(low, lower[0])
+        else:
+            self.assertTrue(np.isnan(lower[0]))
 
         (up, low) = s_error.calculate_for_sample_set_region(s_set, 
                                                             1,
