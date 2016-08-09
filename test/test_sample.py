@@ -963,6 +963,7 @@ class TestExactVolume1D(unittest.TestCase):
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
 
+
 class TestEstimateRadii(unittest.TestCase):
     """
     Test :meth:`bet.calculateP.calculateP.estimate_radii`.
@@ -1010,7 +1011,7 @@ class TestEstimateRadii(unittest.TestCase):
 
     def test_radii(self):
         """
-        Check that the volumes are within a tolerance for a regular grid of
+        Check that the radii are within a tolerance for a regular grid of
         samples.
         """
         nptest.assert_array_almost_equal(self.rad, self.radii_exact, 1)

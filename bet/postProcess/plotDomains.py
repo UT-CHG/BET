@@ -42,7 +42,7 @@ class bad_object(Exception):
 
 
 def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y',
+        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
         filename='scatter2d', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the samples within the sample
@@ -67,6 +67,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
+    :param string cbar_label: color bar label
     :param string filename: filename to save the figure as
     :param string file_extension: file extension
 
@@ -87,9 +88,14 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     # to the default colormap of matplotlib
     if color is None:
         color = np.ones((sample_obj.get_values().shape[0],))
+        cbar_label = "index"
         cmap = None
     else:
         cmap = plt.cm.PuBu
+
+    if cbar_label is None:
+        cbar_label = r'$\rho_\mathcal{D}(q)$'
+
     markersize = 75
     color = color[sample_nos]
     # create the scatter plot for the samples specified by sample_nos
@@ -100,7 +106,9 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     # samples are colored by the pointwise probability density on the data
     # space
     cbar = plt.colorbar()
-    cbar.set_label(r'$\rho_\mathcal{D}(q)$')
+
+    cbar.set_label(cbar_label)
+
     # if there is a reference value plot it with a notiable marker
     if ref_sample is not None:
         plt.scatter(ref_sample[0], ref_sample[1], c='m', s=2 * markersize)
@@ -120,7 +128,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         plt.close()
 
 def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y',
+        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
         filename='scatter2d_input', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the input samples within the
@@ -139,13 +147,15 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
-    :type color: :class:`numpy.ndarray`
+    :type color: :class:`numpy.ndarray` or string (volumes, probabilities,
+        radii, normalized radii, or error id)
     :param ref_sample: reference parameter value
     :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
+    :param string cbar_label: color bar label
     :param string filename: filename to save the figure as
     :param string file_extension: file extension
 
@@ -153,11 +163,30 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
     if not isinstance(my_disc, sample.discretization):
         raise bad_object("Improper discretization object")
 
-    scatter_2D(my_disc.get_input_sample_set(), sample_nos, color, ref_sample,
-            save, interactive, xlabel, ylabel, filename, file_extension)
+    sample_obj = my_disc.get_input_sample_set()
+
+    if color is "volumes":
+        cbar_label = r'$\mu_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj.get_volumes()
+    elif color is "probabilities":
+        cbar_label = r'$\P_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj.get_probabilities()
+    elif color is "radii":
+        cbar_label = r'$diam_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj._radii
+    elif color is "normalized radii":
+        cbar_label = r'$diam_\Lambda_{norm}(\mathcal{V}_{i,N})$'
+        color = sample_obj._normalized_radii
+    elif color is "error_id":
+        cbar_label = 'error id'
+        color = sample_obj.get_error_id()
+
+    scatter_2D(sample_obj, sample_nos, color, ref_sample,
+            save, interactive, xlabel, ylabel, cbar_label, filename,
+            file_extension)
 
 def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y',
+        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
         filename='scatter2d_input', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the output samples within the
@@ -176,13 +205,15 @@ def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
-    :type color: :class:`numpy.ndarray`
+    :type color: :class:`numpy.ndarray` or string (volumes, probabilities,
+        radii, normalized radii, or error id)
     :param ref_sample: reference parameter value
     :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
     :param bool interactive: flag whether or not to show the figure
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
+    :param string cbar_label: color bar label
     :param string filename: filename to save the figure as
     :param string file_extension: file extension
 
@@ -190,13 +221,32 @@ def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
     if not isinstance(my_disc, sample.discretization):
         raise bad_object("Improper discretization object")
 
-    scatter_2D(my_disc.get_output_sample_set(), sample_nos, color, ref_sample,
-            save, interactive, xlabel, ylabel, filename, file_extension)
+    sample_obj = my_disc.get_output_sample_set()
+
+    if color is "volumes":
+        cbar_label = r'$\mu_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj.get_volumes()
+    elif color is "probabilities":
+        cbar_label = r'$\P_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj.get_probabilities()
+    elif color is "radii":
+        cbar_label = r'$diam_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj._radii
+    elif color is "normalized radii":
+        cbar_label = r'$diam_\mathcal{D}_{norm}(\mathcal{I}_{j,M})$'
+        color = sample_obj._normalized_radii
+    elif color is "error_id":
+        cbar_label = 'error id'
+        color = sample_obj.get_error_id()
+
+    scatter_2D(sample_obj, sample_nos, color, ref_sample,
+            save, interactive, xlabel, ylabel, cbar_label, filename,
+            file_extension)
 
 
 def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        filename="scatter3d", file_extension=".png"):
+        cbar_label=None, filename="scatter3d", file_extension=".png"):
     r"""
     Creates a three-dimensional scatter plot of samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
@@ -221,6 +271,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string zlabel: z-axis label
+    :param string cbar_label: color bar label
     :param string filename: filename to save the figure as
     :param string file_extension: file extension
 
@@ -258,7 +309,9 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     # samples are colored by the pointwise probability density on the data
     # space
     cbar = fig.colorbar(p)
-    cbar.set_label(r'$\rho_\mathcal{D}(q)$')
+    if cbar_label is None:
+        cbar_label = r'$\rho_\mathcal{D}(q)$'
+    cbar.set_label(cbar_label)
     # if there is a reference value plot it with a notiable marker
     if ref_sample is not None:
         ax.scatter(ref_sample[0], ref_sample[1], ref_sample[2], c='m', s=2 *
@@ -281,7 +334,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
 
 def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
         save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        filename="scatter3d", file_extension=".png"):
+        cbar_label=None, filename="scatter3d", file_extension=".png"):
     r"""
     Creates a three-dimensional scatter plot of input samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -292,14 +345,15 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
     .. note::
 
         Do not specify the file extension in BOTH ``filename`` and
-        ``file_extension``.
+        sample_obj = my_disc.get_input_sample_set() ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
         scatter plot
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
-    :type color: :class:`numpy.ndarray`
+    :type color: :class:`numpy.ndarray` or string (volumes, probabilities,
+        radii, normalized radii, or error id)
     :param ref_sample: reference parameter value
     :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
@@ -307,19 +361,39 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string zlabel: z-axis label
+    :param string cbar_label: color bar label
     :param string filename: filename to save the figure as
     :param string file_extension: file extension
 
     """
     if not isinstance(my_disc, sample.discretization):
         raise bad_object("Improper discretization object")
-    scatter_3D_input(my_disc.get_input_sample_set(), sample_nos, color,
-            ref_sample, save, interactive, xlabel, ylabel, zlabel, filename,
-            file_extension)
+
+    sample_obj = my_disc.get_input_sample_set()
+
+    if color is "volumes":
+        cbar_label = r'$\mu_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj.get_volumes()
+    elif color is "probabilities":
+        cbar_label = r'$\P_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj.get_probabilities()
+    elif color is "radii":
+        cbar_label = r'$diam_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj._radii
+    elif color is "normalized radii":
+        cbar_label = r'$diam_\Lambda_{norm}(\mathcal{V}_{i,N})$'
+        color = sample_obj._normalized_radii
+    elif color is "error_id":
+        cbar_label = 'error id'
+        color = sample_obj.get_error_id()
+
+    scatter_3D_input(sample_obj, sample_nos, color,
+            ref_sample, save, interactive, xlabel, ylabel, zlabel, cbar_label,
+            filename, file_extension)
 
 def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
         save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        filename="scatter3d", file_extension=".png"):
+        cbar_label=None, filename="scatter3d", file_extension=".png"):
     r"""
     Creates a three-dimensional scatter plot of output samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -337,7 +411,8 @@ def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
-    :type color: :class:`numpy.ndarray`
+    :type color: :class:`numpy.ndarray` or string (volumes, probabilities,
+        radii, normalized radii, or error id)
     :param ref_sample: reference parameter value
     :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
     :param bool save: flag whether or not to save the figure
@@ -345,15 +420,35 @@ def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
     :param string xlabel: x-axis label
     :param string ylabel: y-axis label
     :param string zlabel: z-axis label
+    :param string cbar_label: color bar label
     :param string filename: filename to save the figure as
     :param string file_extension: file extension
 
     """
     if not isinstance(my_disc, sample.discretization):
         raise bad_object("Improper discretization object")
-    scatter_3D_output(my_disc.get_output_sample_set(), sample_nos, color,
-            ref_sample, save, interactive, xlabel, ylabel, zlabel, filename,
-            file_extension)
+
+    sample_obj = my_disc.get_output_sample_set()
+
+    if color is "volumes":
+        cbar_label = r'$\mu_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj.get_volumes()
+    elif color is "probabilities":
+        cbar_label = r'$\P_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj.get_probabilities()
+    elif color is "radii":
+        cbar_label = r'$diam_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj._radii
+    elif color is "normalized radii":
+        cbar_label = r'$diam_\mathcal{D}_{norm}(\mathcal{I}_{j,M})$'
+        color = sample_obj._normalized_radii
+    elif color is "error_id":
+        cbar_label = 'error id'
+        color = sample_obj.get_error_id()
+
+    scatter_3D_output(sample_obj, sample_nos, color,
+            ref_sample, save, interactive, xlabel, ylabel, zlabel, cbar_label,
+            filename, file_extension)
 
 def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         rho_D=None, dim_nums=None, label_char=None, showdim=None, save=True,
@@ -440,11 +535,11 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     # Plot 2 or 3 dimensional scatter plots of the samples colored by rD.
     if sample_obj.get_dim() == 2:
         scatter_2D(sample_obj, sample_nos, rD, ref_sample, save,
-                   interactive, xlabel, ylabel, savename)
+                   interactive, xlabel, ylabel, None, savename)
     elif sample_obj.get_dim() == 3:
         zlabel = label_char+r'{' + str(dim_nums[2]) + '}$'
         scatter_3D(sample_obj, sample_nos, rD, ref_sample, save,
-                   interactive, xlabel, ylabel, zlabel, savename)
+                   interactive, xlabel, ylabel, zlabel, None, savename)
     elif sample_obj.get_dim() > 2 and showdim == 2:
         temp_obj = sample.sample_set(2)
         for x, y in combinations(dim_nums, 2):
@@ -453,7 +548,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
             savename = prefix+'samples_x' + str(x) + 'x' + str(y) + '_cs'
             temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1]])
             scatter_2D(temp_obj, sample_nos, rD, ref_sample, save,
-                       interactive, xlabel, ylabel, savename)
+                       interactive, xlabel, ylabel, None, savename)
     elif sample_obj.get_dim() > 3 and showdim == 3:
         temp_obj = sample.sample_set(3)
         for x, y, z in combinations(dim_nums, 3):
@@ -465,7 +560,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
             temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1, \
                     z - 1]])
             scatter_3D(temp_obj, sample_nos, rD, ref_sample, save,
-                       interactive, xlabel, ylabel, zlabel, savename,
+                       interactive, xlabel, ylabel, zlabel, None, savename,
                        file_extension)
 
 def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
@@ -681,7 +776,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
 def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
         img_folder='figs/', filename="scatter2Dm", label_char=r'$\lambda',
-        showdim=None, file_extension=".png"):
+        showdim=None, file_extension=".png", cbar_label=None):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
@@ -707,6 +802,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
         given dimension (:math:`\lambda_i`) or if ``all`` show all combinations.
     :type showdim: int or string
     :param string filename: filename to save the figure as
+    :param string cbar_label: color bar label
 
     """
     if not isinstance(sample_obj, sample.sample_set_base):
@@ -738,12 +834,14 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                         ref_sample=ref_sample[[showdim, i]], save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
-                        filename=myfilename, file_extension=file_extension)
+                        cbar_label=cbar_label, filename=myfilename,
+                        file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None,
                            color=color, ref_sample=None, save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
-                           filename=myfilename, file_extension=file_extension)
+                           cbar_label=cbar_label, filename=myfilename,
+                           file_extension=file_extension)
 
     # Create plots of all of the possible pairwise combinations of parameters
     elif showdim == 'all' or showdim == 'ALL':
@@ -761,9 +859,125 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                         ref_sample=ref_sample[[x, y]], save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
-                        filename=myfilename, file_extension=file_extension)
+                        cbar_label=cbar_label, filename=myfilename,
+                        file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                            ref_sample=None, save=True, interactive=False,
-                           xlabel=xlabel, ylabel=ylabel, filename=myfilename,
-                           file_extension=file_extension)
+                           xlabel=xlabel, ylabel=ylabel, cbar_label=cbar_label,
+                           filename=myfilename, file_extension=file_extension)
+
+def scatter_2D_multi_input(my_disc, color=None, ref_sample=None,
+        img_folder='figs/', filename="scatter2Dm_input",
+        label_char=r'$\lambda', showdim=None, file_extension=".png"):
+    r"""
+    Creates two-dimensional projections of scatter plots of samples colored
+    by ``color`` (usually an array of pointwise probability density values). A
+    reference sample (``ref_sample``) can be chosen by the user. This reference
+    sample will be plotted as a mauve circle twice the size of the other
+    markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
+
+    :param my_disc: contains samples (`my_disc._output_sample_set``) to create
+        scatter plot
+    :type my_disc: :class:`~bet.sample.discretization`
+    :param color: values to color the ``samples`` by
+    :type color: :class:`numpy.ndarray` or string (volumes, probabilities,
+        radii, normalized radii, or error id)
+    :param string filename: filename to save the figure as
+    :param string label_char: character to use to label coordinate axes
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string img_folder: folder to save the plots to
+    :param showdim: default 1. If int then flag to show all combinations with a
+        given dimension (:math:`\lambda_i`) or if ``all`` show all combinations.
+    :type showdim: int or string
+    :param string filename: filename to save the figure as
+
+    """
+    if not isinstance(my_disc, sample.discretization):
+        raise bad_object("Improper sample object")
+
+    sample_obj = my_disc.get_input_sample_set()
+
+    if color is "volumes":
+        cbar_label = r'$\mu_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj.get_volumes()
+    elif color is "probabilities":
+        cbar_label = r'$\P_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj.get_probabilities()
+    elif color is "radii":
+        cbar_label = r'$diam_\Lambda(\mathcal{V}_{i,N})$'
+        color = sample_obj._radii
+    elif color is "normalized radii":
+        cbar_label = r'$diam_\Lambda_{norm}(\mathcal{V}_{i,N})$'
+        color = sample_obj._normalized_radii
+    elif color is "error_id":
+        cbar_label = 'error id'
+        color = sample_obj.get_error_id()
+
+    scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
+        img_folder=img_folder, filename=filename, label_char=label_char,
+        showdim=showdim, file_extension=file_extension, cbar_label=cbar_label)
+
+def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
+        img_folder='figs/', filename="scatter2Dm_output",
+        label_char=r'$q$', showdim=None, file_extension=".png"):
+    r"""
+    Creates two-dimensional projections of scatter plots of samples colored
+    by ``color`` (usually an array of pointwise probability density values). A
+    reference sample (``ref_sample``) can be chosen by the user. This reference
+    sample will be plotted as a mauve circle twice the size of the other
+    markers.
+
+    .. note::
+
+        Do not specify the file extension in BOTH ``filename`` and
+        ``file_extension``.
+
+    :param my_disc: contains samples (`my_disc._output_sample_set``) to create
+        scatter plot
+    :type my_disc: :class:`~bet.sample.discretization`
+    :param color: values to color the ``samples`` by
+    :type color: :class:`numpy.ndarray` or string (volumes, probabilities,
+        radii, normalized radii, or error id)
+    :param string filename: filename to save the figure as
+    :param string label_char: character to use to label coordinate axes
+    :param bool save: flag whether or not to save the figure
+    :param bool interactive: flag whether or not to show the figure
+    :param string img_folder: folder to save the plots to
+    :param showdim: default 1. If int then flag to show all combinations with a
+        given dimension (:math:`q_i`) or if ``all`` show all combinations.
+    :type showdim: int or string
+    :param string filename: filename to save the figure as
+
+    """
+    if not isinstance(my_disc, sample.discretization):
+        raise bad_object("Improper sample object")
+
+    sample_obj = my_disc.get_output_sample_set()
+
+    if color is "volumes":
+        cbar_label = r'$\mu_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj.get_volumes()
+    elif color is "probabilities":
+        cbar_label = r'$\P_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj.get_probabilities()
+    elif color is "radii":
+        cbar_label = r'$diam_\mathcal{D}(\mathcal{I}_{j,M})$'
+        color = sample_obj._radii
+    elif color is "normalized radii":
+        cbar_label = r'$diam_\mathcal{D}_{norm}(\mathcal{I}_{j,M})$'
+        color = sample_obj._normalized_radii
+    elif color is "error_id":
+        cbar_label = 'error id'
+        color = sample_obj.get_error_id()
+
+    scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
+        img_folder=img_folder, filename=filename, label_char=label_char,
+        showdim=showdim, file_extension=file_extension, cbar_label=cbar_label)
+
