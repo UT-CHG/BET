@@ -104,7 +104,7 @@ class TestProbMethod_3to2(unittest.TestCase):
         self.outputs.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz"))
         Q_ref = np.array([0.422, 0.9385])
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, cells_per_dimension=1)
 
         self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
@@ -170,7 +170,7 @@ class TestProbMethod_3to1(unittest.TestCase):
         self.outputs.set_values(np.loadtxt(data_path + "/3to2_data.txt.gz")[:,0])
         Q_ref = np.array([0.422])
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, cells_per_dimension=1)
 
         self.inputs.set_domain(np.array([[0.0, 1.0],
                                         [0.0, 1.0],
@@ -247,7 +247,7 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.inputs_emulated = bsam.random_sample_set('r',
                 self.inputs.get_domain(), num_samples=1001, globalize=True)
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, cells_per_dimension=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
                                         output_probability_set=self.output_prob,
@@ -321,7 +321,7 @@ class TestProbMethod_1to1(unittest.TestCase):
                 self.inputs.get_domain(), num_samples=self.num_l_emulate,
                 globalize=True) 
         self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-            self.outputs, Q_ref = Q_ref, rect_scale=0.2, center_pts_per_edge=1)
+            self.outputs, Q_ref = Q_ref, rect_scale=0.2, cells_per_dimension=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
                                         output_probability_set=self.output_prob,

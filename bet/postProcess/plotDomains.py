@@ -78,6 +78,8 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     if sample_obj.get_dim() != 2:
         raise dim_not_matching("Cannot create 2D plot of non-2D sample "
                                "object")
+    if ref_sample is None:
+        ref_sample = sample_obj._reference_value
 
     # plot all of the samples by default
     if sample_nos is None:
@@ -281,6 +283,9 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         raise dim_not_matching("Cannot create 3D plot of non-3D sample "
                                "object")
 
+    if ref_sample is None:
+        ref_sample = sample_obj._reference_value
+
     # plot all of the samples by default
     if sample_nos is None:
         sample_nos = np.arange(sample_obj.get_values().shape[0])
@@ -340,8 +345,7 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
     .. note::
 
         Do not specify the file extension in BOTH ``filename`` and
-    sample_obj = my_disc.get_input_sample_set()
-        ``file_extension``.
+        sample_obj = my_disc.get_input_sample_set() ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
         scatter plot
@@ -501,6 +505,9 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
             rD = rho_D(sample_obj.get_values())
     else:
         raise bad_object("Improper sample object")
+
+    if ref_sample is None:
+        ref_sample = sample_obj._reference_value
     
     if rD is None:
         rD = np.ones(sample_obj.get_values().shape[0])
@@ -590,6 +597,10 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
 
     data_obj = sample_disc._output_sample_set
     sample_obj = sample_disc._input_sample_set
+    
+    if Q_ref is None:
+        Q_ref = data_obj._reference_value
+
     # If no specific coordinate numbers are given for the data coordinates
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
@@ -704,6 +715,9 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
     data_obj = sample_disc._output_sample_set
     sample_obj = sample_disc._input_sample_set
+
+    if Q_ref is None:
+        Q_ref = data_obj._reference_value
 
     # Set the default marker and colors
     if ref_markers is None:
