@@ -57,7 +57,7 @@ Define the refernce solution. We define a region of interest, :math:`R_{ref} \su
         q_ref = Q_ref[ref_num, station_nums]
         output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
                 output_sample_set, q_ref, rect_scale=0.15,
-                center_pts_per_edge=np.ones((data.shape[1],)))
+                cells_per_dimension=np.ones((data.shape[1],)))
 
 
 Finally, we calculate :math:`\hat{\rho}_{\Lambda, j}` for three reference solutions and the QoI :math:`( (q_1,q_2), (q_1, q_5)`, and :math:`(q_1, q_6))` ::

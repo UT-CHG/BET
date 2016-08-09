@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Example: Estimate the parameter space probabiliy density with a 3D data space &mdash; BET 2.0.0-beta documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -32,11 +32,11 @@
   
     <link rel="top" title="BET 2.0.0-beta documentation" href="../../index.html"/>
         <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Heatplate Model with Clustered Sampling" href="chooseOptQoIs_2d.html"/>
+        <link rel="next" title="Example: Optimizing space-time measurements of temperature on a thin plate" href="chooseOptQoIs_2d.html"/>
         <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -46,11 +46,27 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-nav-search">
-        
-          <a href="../../index.html" class="fa fa-home"> BET</a>
-        
-        
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -58,27 +74,17 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-      </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        
           
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
-</ul>
-</li>
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#validation-example">Validation example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#linear-map-example">Linear Map Example</a></li>
@@ -87,20 +93,39 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#contaminant-transport-example">Contaminant Transport Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="FEniCS.html">Example: FEniCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="FEniCSMultipleSerial.html">Example: Multiple Serial FEniCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_1D.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Estimate the parameter space probabiliy density with  a 3D data space</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#example-solutions">Example solutions</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chooseOptQoIs_2d.html">Example: Optimizing space-time measurements of temperature on a thin plate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile2D.html">Example: Batch Adaptive Sampling (2-to-2 example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_condnum_binratio.html">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_volume_binsize_large.html">Example: Linear Map Choose QoIs (volume / bin_size / large)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nonlinearMapUniformSampling.html">Example: Nonlinear Map with Uniform Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="validation.html">Example: Validation</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
 </ul>
 
+            
           
-        
+        </div>
       </div>
-      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -115,7 +140,13 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../../index.html">Docs</a> &raquo;</li>
       
@@ -124,13 +155,16 @@
     <li>Example: Estimate the parameter space probabiliy density with  a 3D data space</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="../../_sources/examples/example_rst_files/Q_3D.txt" rel="nofollow"> View page source</a>
+          
+            <a href="../../_sources/examples/example_rst_files/Q_3D.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="example-estimate-the-parameter-space-probabiliy-density-with-a-3d-data-space">
 <span id="q3d"></span><h1>Example: Estimate the parameter space probabiliy density with  a 3D data space<a class="headerlink" href="#example-estimate-the-parameter-space-probabiliy-density-with-a-3d-data-space" title="Permalink to this headline">¶</a></h1>
@@ -142,27 +176,27 @@ dimensional.</p>
 \[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
 <p>See <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_3D.py">Q_3D.py</a>
 for the example source code. Since example is essentially the same as
-<a class="reference internal" href="Q_2D.html#q2d"><span>Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a> we will only highlight the differences between the two.</p>
+<a class="reference internal" href="Q_2D.html#q2d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a> we will only highlight the differences between the two.</p>
 <p>Instead of loading data for a 2-dimensional parameter space we load data for a
 3-dimensional data space:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_3D&#39;</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;Q_3D&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We define the parameter domain <span class="math">\(\Lambda\)</span>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">-</span><span class="mi">900</span><span class="p">,</span> <span class="mi">1200</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>Define the input sample set, here it is 3D rather than 2D:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">input_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">input_sample_set</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
 <span class="n">input_sample_set</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Define the filename to save <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">station_nums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-    <span class="n">filename</span> <span class="o">+=</span> <span class="s">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
-<span class="n">filename</span> <span class="o">+=</span> <span class="s">&#39;_ref_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ref_num</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+    <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;_ref_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ref_num</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="example-solutions">
@@ -170,21 +204,21 @@ for the example source code. Since example is essentially the same as
 <p>Finally, we calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> for the 15th reference
 solution at <span class="math">\(Q = (q_1, q_5, q_2), (q_1, q_5), (q_1, q_5, q_{12}), (q_1,
 q_9, q_7),\)</span> and <span class="math">\((q_1, q_9, q_{12})\)</span>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">ref_num</span> <span class="o">=</span> <span class="mi">14</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ref_num</span> <span class="o">=</span> <span class="mi">14</span>
 
-<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c"># 1, 5, 2</span>
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># 1, 5, 2</span>
 <span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
 
-<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c"># 1, 5</span>
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># 1, 5</span>
 <span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
 
-<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="c"># 1, 5, 12</span>
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="c1"># 1, 5, 12</span>
 <span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
 
-<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="c"># 1, 9, 7</span>
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">6</span><span class="p">]</span> <span class="c1"># 1, 9, 7</span>
 <span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
 
-<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="c"># 1, 9, 12</span>
+<span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">11</span><span class="p">]</span> <span class="c1"># 1, 9, 12</span>
 <span class="n">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -192,15 +226,16 @@ q_9, q_7),\)</span> and <span class="math">\((q_1, q_9, q_{12})\)</span>:</p>
 </div>
 
 
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="chooseOptQoIs_2d.html" class="btn btn-neutral float-right" title="Example: Heatplate Model with Clustered Sampling">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="chooseOptQoIs_2d.html" class="btn btn-neutral float-right" title="Example: Optimizing space-time measurements of temperature on a thin plate" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Q_2D.html" class="btn btn-neutral" title="Example: Estimate the parameter space probabiliy density with a 2D data space"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Q_2D.html" class="btn btn-neutral" title="Example: Estimate the parameter space probabiliy density with a 2D data space" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -210,13 +245,14 @@ q_9, q_7),\)</span> and <span class="math">\((q_1, q_9, q_{12})\)</span>:</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Jul 22, 2016.
+      Last updated on Aug 08, 2016.
+
     </p>
   </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
 </footer>
+
         </div>
       </div>
 
