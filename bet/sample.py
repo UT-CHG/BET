@@ -244,10 +244,11 @@ class sample_set_base(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
     vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-            '_volumes_local', '_local_index', '_dim', '_p_norm', '_radii',
-            '_radii_local', '_normalized_radii', '_normalized_radii_local',
-            '_region', '_region_local', '_error_id', '_error_id_local',
-            '_reference_value']
+                    '_volumes_local', '_local_index', '_dim', '_p_norm',
+                    '_radii', '_normalized_radii', '_region', '_region_local',
+                    '_error_id', '_error_id_local', '_reference_value',
+                    '_domain_original']
+
     #: List of global attribute names for attributes that are 
     #: :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
@@ -260,7 +261,7 @@ class sample_set_base(object):
                          '_values', '_values_local', '_left', '_left_local', 
                          '_right', '_right_local', '_width', '_width_local', 
                          '_domain', '_kdtree_values', '_jacobians', 
-                         '_jacobians_local'] 
+                         '_jacobians_local', '_domain_original'] 
 
 
     def __init__(self, dim):
@@ -287,6 +288,8 @@ class sample_set_base(object):
         self._error_estimates = None
         #: The sample domain :class:`numpy.ndarray` of shape (dim, 2)
         self._domain = None
+        #: The sample domain before normalization :class:`numpy.ndarray` of shape (dim, 2)
+        self._domain_original = None
         #: Bounding box of values, :class:`numpy.ndarray`of shape (dim, 2)
         self._bounding_box = None
         #: Local values for parallelism, :class:`numpy.ndarray` of shape
@@ -348,6 +351,75 @@ class sample_set_base(object):
         self._error_id_local = None
         #: :class:`numpy.ndarray` of reference value of shape (dim,)
         self._reference_value = None
+
+    def normalize_domain(self):
+        """
+
+        Normalize the domain and attributes to a unit hyperbox.
+
+        """
+        if self._domain is None:
+            logging.warning("Not normalizing because domain is not defined.")
+            pass
+        else:
+            rescale_list = ['_jacobians', '_jacobians_local']
+            for obj in rescale_list:
+                val = getattr(self, obj)
+                if val is not None:
+                    val*=(self._domain[:,1] - self._domain[:,0])
+                    setattr(self, obj, val)
+
+            shift_list = ['_values', '_values_local',
+                          '_error_estimates', '_error_estimates_local',
+                          '_left', '_left_local',
+                          '_right', '_right_local', '_reference_value']
+
+            for obj in shift_list:
+                val = getattr(self, obj)
+                if val is not None:
+                    val -= self._domain[:,0]
+                    val = val/(self._domain[:,1] - self._domain[:,0])
+                    setattr(self, obj, val)
+                    
+            self._domain_original = np.copy(self._domain)
+            self._domain = np.repeat([[0.0, 1.0]], self._dim, axis=0)    
+
+    def undo_normalize_domain(self):
+        """
+
+        Undoes normalization of the domain and attributes if they have been
+        normailized.
+
+        """
+        if self._domain is None:
+            logging.warning("Not undoing normalizing because domain is not defined.")
+            pass
+        elif self._domain_original is None:
+            logging.warning("Doing nothing because set never normalized")
+            pass
+        else:
+            rescale_list = ['_jacobians', '_jacobians_local']
+            for obj in rescale_list:
+                val = getattr(self, obj)
+                if val is not None:
+                    val = val/(self._domain_original[:,1] - self._domain_original[:,0])
+                    setattr(self, obj, val)
+              
+            shift_list = ['_values', '_values_local',
+                          '_error_estimates', '_error_estimates_local',
+                          '_left', '_left_local',
+                          '_right', '_right_local', '_reference_value']
+            for obj in shift_list:
+                val = getattr(self, obj)
+                if val is not None:
+                    val = val*(self._domain_original[:,1] - self._domain_original[:,0])
+
+                    val = val + self._domain_original[:,0]
+                    setattr(self, obj, val)
+
+            self._domain = np.copy(self._domain_original)
+            self._domain_original = None
+            
 
     def set_p_norm(self, p_norm):
         """
@@ -498,6 +570,29 @@ class sample_set_base(object):
         """
         self._values_local = np.concatenate((self._values_local,
                 util.fix_dimensions_data(values_local)), 0)
+
+    def clip(self, cnum):
+        """
+        Creates and returns a sample set with the the first `cnum` 
+        entries of the sample set.
+
+        :param int cnum: number of values of sample set to return
+
+        :rtype: :class:`~bet.sample.sample_set`
+        :returns: the clipped sample set
+
+        """
+        sset = self.copy()
+        num = sset.check_num()
+        if sset._values is None:
+            sset.local_to_global()
+        for array_name in self.array_names:
+            current_array = getattr(sset, array_name)
+            if current_array is not None:
+                new_array = current_array[0:cnum]
+                setattr(sset, array_name, new_array)
+        return sset
+        
 
     def check_num(self):
         """
@@ -2371,5 +2466,80 @@ class discretization(object):
         if self._emulated_output_sample_set is None:
             raise AttributeError("Required: _emulated_output_sample_set")
         else:
-            self._output_sample_set.estimate_volume_emulated(\
-                    self._emulated_output_sample_set)
+            self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)
+        
+    def clip(self, cnum):
+        """
+        Creates and returns a discretization with the the first `cnum` 
+        entries of the input and output sample sets.
+
+        :param int cnum: number of values of sample set to return
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: clipped discretization
+
+        """
+        ci = self._input_sample_set.clip(cnum)
+        co = self._output_sample_set.clip(cnum)
+
+        return discretization(input_sample_set=ci,
+                              output_sample_set=co,
+                              output_probability_set=self._output_probability_set,
+                              emulated_input_sample_set = self._emulated_input_sample_set,
+                              emulated_output_sample_set=self._emulated_output_sample_set)
+
+    def choose_inputs_outputs(self,
+                              inputs=None,
+                              outputs=None):
+        """
+        Slices the inputs and outputs of the discretization.
+
+        :param list inputs: list of indices of input sample set to include
+        :param list outputs: list of indices of output sample set to include
+        
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: sliced discretization
+
+        """
+        slice_list = ['_values', '_values_local',
+                      '_error_estimates', '_error_estimates_local']
+        slice_list2 = ['_jacobians', '_jacobians_local']
+    
+        input_ss = sample_set(len(inputs))
+        output_ss = sample_set(len(outputs))
+        input_ss.set_p_norm(self._input_sample_set._p_norm)
+        if self._input_sample_set._domain is not None:
+            input_ss.set_domain(self._input_sample_set._domain[inputs,:])
+        if self._input_sample_set._reference_value is not None:
+            input_ss.set_reference_value(self._input_sample_set._reference_value[inputs])
+
+        output_ss.set_p_norm(self._output_sample_set._p_norm)
+        if self._output_sample_set._domain is not None:
+            output_ss.set_domain(self._output_sample_set._domain[outputs,:])
+        if self._output_sample_set._reference_value is not None:
+            output_ss.set_reference_value(self._output_sample_set._reference_value[outputs])
+
+        for obj in slice_list:
+            val = getattr(self._input_sample_set, obj)
+            if val is not None:
+                setattr(input_ss, obj, val[:,inputs])
+            val = getattr(self._output_sample_set, obj)
+            if val is not None:
+                setattr(output_ss, obj, val[:,outputs])
+        for obj in slice_list2:
+            val = getattr(self._input_sample_set, obj)
+            if val is not None:
+                nval = np.copy(val)
+                nval = nval.take(outputs, axis=1)
+                nval = nval.take(inputs, axis=2)
+                setattr(input_ss, obj, nval)
+        disc = discretization(input_sample_set=input_ss,
+                              output_sample_set=output_ss)
+        return disc
+    
+
+        
+
+                        
+                
+

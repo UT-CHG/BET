@@ -21,6 +21,48 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set = sample.sample_set(dim=self.dim)
         self.sam_set.set_values(self.values)
         self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+    def test_normalize(self):
+        """
+        Test normalize and undo normalize domain.
+        """
+        domain = 5.0*self.domain -1.0 
+        self.sam_set.set_domain(domain)
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+
+        self.sam_set.normalize_domain()
+        nptest.assert_array_equal(self.sam_set._domain, self.domain)
+        nptest.assert_array_almost_equal(self.sam_set._values, 0.4)
+        nptest.assert_array_almost_equal(self.sam_set._error_estimates, 0.4)
+        nptest.assert_array_almost_equal(self.sam_set._jacobians, 5.0)
+
+        self.sam_set.undo_normalize_domain()
+        nptest.assert_array_equal(self.sam_set._domain, domain)
+        nptest.assert_array_almost_equal(self.sam_set._values, 1.0)
+        nptest.assert_array_almost_equal(self.sam_set._error_estimates, 1.0)
+        nptest.assert_array_almost_equal(self.sam_set._jacobians, 1.0)
+    def test_clip(self):
+        """
+        Test clipping of sample set.
+        """
+        ee = np.ones((self.num, self.dim))
+        self.sam_set.set_error_estimates(ee)
+        jac = np.ones((self.num, 3, self.dim))
+        self.sam_set.set_jacobians(jac)
+
+        cnum = int(0.5*self.num)
+        sam_set_clipped = self.sam_set.clip(cnum)
+        
+        num = sam_set_clipped.check_num()
+        self.assertEqual(num, cnum)
+        nptest.assert_array_equal(self.sam_set._values[0:cnum,:],
+                                  sam_set_clipped._values)
+        nptest.assert_array_equal(self.sam_set._error_estimates[0:cnum,:],
+                                  sam_set_clipped._error_estimates)
+        nptest.assert_array_equal(self.sam_set._jacobians[0:cnum,:],
+                                  sam_set_clipped._jacobians)
     def test_set_domain(self):
         """
         Test set domain.
@@ -410,7 +452,32 @@ class Test_discretization_simple(unittest.TestCase):
         """
         num = self.disc.check_nums()
         self.assertEqual(num, self.num)
+    
+    def Test_clip(self):
+        """
+        Test clipping of discretization.
+        """
+        cnum = int(0.5*self.num)
+        disc_clipped = self.disc.clip(cnum)
+        nptest.assert_array_equal(self.disc._input_sample_set._values[0:cnum,:],
+                                  disc_clipped._input_sample_set._values)
+        nptest.assert_array_equal(self.disc._output_sample_set._values[0:cnum,:],
+                                  disc_clipped._output_sample_set._values)
+    def Test_slicing(self):
+        """
+        Test `bet.sample.discretization.choose_inputs_outputs`
+        """
+        self.disc._output_sample_set.set_error_estimates(np.ones((self.num, self.dim2)))
+        self.disc._input_sample_set.set_jacobians(np.ones((self.num, self.dim2, self.dim1)))
 
+        disc_new = self.disc.choose_inputs_outputs(inputs=[0,2], outputs=[0])
+        nptest.assert_array_equal(self.disc._input_sample_set._values[:,[0,2]],
+                                   disc_new._input_sample_set._values)
+        nptest.assert_array_equal(self.disc._output_sample_set._values[:,[0]],
+                                   disc_new._output_sample_set._values)
+        nptest.assert_array_equal(self.disc._output_sample_set._error_estimates[:,[0]],
+                                   disc_new._output_sample_set._error_estimates)
+        self.assertEqual(disc_new._input_sample_set._jacobians.shape, (self.num, 1, 2))
     def Test_set_io_ptr(self):
         """
         Test setting io ptr
