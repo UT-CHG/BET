@@ -104,7 +104,7 @@ Internal dependencies
 Dependencies via :keyword:`import` statements::
 
         bet 
-          \-Comm (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.sampling.basicSampling,bet.util,bet.calculateP.calculateP,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+          \-Comm (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.sampling.basicSampling,bet.util,bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
           \-calculateP 
           | \-calculateError (bet.surrogates)
           | \-calculateP (bet.surrogates,bet.calculateP.calculateError)
@@ -137,7 +137,7 @@ This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy
         pyDOE (bet.sampling.basicSampling)
         scipy 
           \-fftpack (bet.postProcess.plotP)
-          \-io (bet.sample,bet.postProcess.postTools,bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
+          \-io (bet.sample,bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
           \-spatial (bet.sample,bet.sensitivity.gradients,bet.calculateP.calculateError)
           \-stats (bet.sample,bet.sensitivity.chooseQoIs,bet.calculateP.simpleFunP)
 

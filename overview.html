@@ -5,16 +5,16 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; BET 2.0.0-beta documentation</title>
+  <title>Overview &mdash; BET 2.0.0 documentation</title>
   
 
   
   
 
   
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -30,12 +30,12 @@
   
 
   
-    <link rel="top" title="BET 2.0.0-beta documentation" href="index.html"/>
+    <link rel="top" title="BET 2.0.0 documentation" href="index.html"/>
         <link rel="next" title="Parallel" href="parallel.html"/>
         <link rel="prev" title="Welcome to BET’s documentation!" href="index.html"/> 
 
   
-  <script src="_static/js/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
 </head>
 
@@ -45,27 +45,11 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="index.html" class="icon icon-home"> BET
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                2.0
-              </div>
-            
-          
-
-          
+      <div class="wy-side-nav-search">
+        
+          <a href="index.html" class="fa fa-home"> BET</a>
+        
+        
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -73,42 +57,49 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+      </div>
 
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
           
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-            
-            
-                <ul class="current">
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#package-layout">Package Layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#code-overview">Code Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sample"><code class="docutils literal"><span class="pre">bet.sample</span></code> module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.util"><code class="docutils literal"><span class="pre">bet.util</span></code> module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.Comm"><code class="docutils literal"><span class="pre">bet.Comm</span></code> module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.calculateP"><code class="docutils literal"><span class="pre">bet.calculateP</span></code> Sub-package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sampling"><code class="docutils literal"><span class="pre">bet.sampling</span></code> Sub-package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.postProcess"><code class="docutils literal"><span class="pre">bet.postProcess</span></code> Sub-package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sensitivity"><code class="docutils literal"><span class="pre">bet.sensitivity</span></code> Sub-package</a></li>
-</ul>
-</li>
+<li class="toctree-l2"><a class="reference internal" href="#code-overview">Code Overview</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#internal-dependencies">Internal dependencies</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#external-dependencies">External dependencies</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
-<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a></li>
-<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#validation-example">Validation example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#linear-map-example">Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#non-linear-map-example">Non-Linear Map Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#fenics-example-serial-bet-and-serial-model">FEniCS Example (serial BET and serial model)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#contaminant-transport-example">Contaminant Transport Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="examples/examples_overview.html#list-of-all-examples">List of all examples</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.html">bet package</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
 </ul>
 
-            
           
-        </div>
+        
       </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -123,29 +114,20 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
- 
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="index.html">Docs</a> &raquo;</li>
       
     <li>Overview</li>
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
-          
+          <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+          <div role="main" class="document">
             
   <div class="section" id="overview">
 <span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
@@ -155,7 +137,7 @@
 If you have a
 <a class="reference external" href="https://github.com/UT-CHG/BET/archive/master.zip">zip file</a> you can install
 BET using:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+<div class="highlight-python"><div class="highlight"><pre>python setup.py install
 </pre></div>
 </div>
 <p>from the package root directory. The BET package is currently NOT avaiable in
@@ -163,11 +145,11 @@ the <a class="reference external" href="http://pypi.python.org/pypi/Sphinx">Pyth
 change in the future. This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
 <p>If you have <a class="reference external" href="http://nose.readthedocs.org/en/latest/index.html">nose</a>
 installed you can run tests by typing:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">nosetests</span>
 </pre></div>
 </div>
 <p>in <code class="docutils literal"><span class="pre">BET</span></code> to run the serial tests or</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="n">NPROC</span> <span class="n">nosetests</span>
+<div class="highlight-python"><div class="highlight"><pre>mpirun -np NPROC nosetests
 </pre></div>
 </div>
 <p>to run the parallel tests.</p>
@@ -175,28 +157,28 @@ installed you can run tests by typing:</p>
 <div class="section" id="package-layout">
 <h2>Package Layout<a class="headerlink" href="#package-layout" title="Permalink to this headline">¶</a></h2>
 <p>The package layout is as follows:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bet</span><span class="o">/</span>
-  <span class="n">util</span>
-  <span class="n">Comm</span>
-  <span class="n">sample</span>
-  <span class="n">surrogates</span>
-  <span class="n">calculateP</span><span class="o">/</span>
-    <span class="n">calculateP</span>
-    <span class="n">calculateError</span>
-    <span class="n">simpleFunP</span>
-    <span class="n">voronoiHistogram</span>
-    <span class="n">indicatorFunctions</span>
-  <span class="n">sampling</span><span class="o">/</span>
-    <span class="n">basicSampling</span>
-    <span class="n">adaptiveSampling</span>
-    <span class="n">LpGeneralizedSamples</span>
-  <span class="n">postProcess</span><span class="o">/</span>
-    <span class="n">plotP</span>
-    <span class="n">plotDomains</span>
-    <span class="n">postTools</span>
-  <span class="n">sensitivity</span><span class="o">/</span>
-    <span class="n">gradients</span>
-    <span class="n">chooseQoIs</span>
+<div class="highlight-python"><div class="highlight"><pre>bet/
+  util
+  Comm
+  sample
+  surrogates
+  calculateP/
+    calculateP
+    calculateError
+    simpleFunP
+    voronoiHistogram
+    indicatorFunctions
+  sampling/
+    basicSampling
+    adaptiveSampling
+    LpGeneralizedSamples
+  postProcess/
+    plotP
+    plotDomains
+    postTools
+  sensitivity/
+    gradients
+    chooseQoIs
 </pre></div>
 </div>
 </div>
@@ -310,23 +292,23 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
 </ul>
 <div class="admonition seealso">
 <p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
+<p class="last"><a class="reference internal" href="py-modindex.html"><span>Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
 </div>
 </div>
 </div>
 <div class="section" id="internal-dependencies">
 <h2>Internal dependencies<a class="headerlink" href="#internal-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>Dependencies via <code class="xref std std-keyword docutils literal"><span class="pre">import</span></code> statements:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bet</span>
-  \<span class="o">-</span><span class="n">Comm</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">chooseQoIs</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">basicSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">util</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">postTools</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">simpleFunP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">calculateP</span>
-  <span class="o">|</span> \<span class="o">-</span><span class="n">calculateError</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">)</span>
-  <span class="o">|</span> \<span class="o">-</span><span class="n">calculateP</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">sample</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">basicSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">gradients</span><span class="p">,,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">postTools</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">simpleFunP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">sampling</span>
-  <span class="o">|</span> \<span class="o">-</span><span class="n">LpGeneralizedSamples</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">gradients</span><span class="p">)</span>
-  <span class="o">|</span> \<span class="o">-</span><span class="n">basicSampling</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">util</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">gradients</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">chooseQoIs</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">,,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">simpleFunP</span><span class="p">)</span>
+<p>Dependencies via <a class="reference external" href="https://docs.python.org/2.7/reference/simple_stmts.html#import" title="(in Python v2.7)"><code class="xref std std-keyword docutils literal"><span class="pre">import</span></code></a> statements:</p>
+<div class="highlight-python"><div class="highlight"><pre>bet
+  \-Comm (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.sampling.basicSampling,bet.util,bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+  \-calculateP
+  | \-calculateError (bet.surrogates)
+  | \-calculateP (bet.surrogates,bet.calculateP.calculateError)
+  \-sample (bet.surrogates,bet.sampling.adaptiveSampling,bet.postProcess.plotDomains,bet.sampling.basicSampling,bet.sensitivity.gradients,,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+  \-sampling
+  | \-LpGeneralizedSamples (bet.sample,bet.sensitivity.gradients)
+  | \-basicSampling (bet.sampling.adaptiveSampling,bet.calculateP.calculateP)
+  \-util (bet.sample,bet.sensitivity.gradients,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,,bet.calculateP.calculateP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
 </pre></div>
 </div>
 </div>
@@ -334,38 +316,37 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
 <h2>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and
 <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">matplotlib</span>
-  \<span class="o">-</span><span class="n">cm</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">lines</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">pyplot</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">ticker</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">tri</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">)</span>
-<span class="n">mpl_toolkits</span>
-  \<span class="o">-</span><span class="n">mplot3d</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">)</span>
-<span class="n">numpy</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">chooseQoIs</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">LpGeneralizedSamples</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">basicSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">gradients</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">indicatorFunctions</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">util</span><span class="p">,,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">postTools</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">simpleFunP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">linalg</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">)</span>
-<span class="n">pyDOE</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">basicSampling</span><span class="p">)</span>
-<span class="n">scipy</span>
-  \<span class="o">-</span><span class="n">fftpack</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">io</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">postTools</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">basicSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">spatial</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">gradients</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">)</span>
-  \<span class="o">-</span><span class="n">stats</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">chooseQoIs</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">simpleFunP</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre>matplotlib
+  \-cm (bet.postProcess.plotP)
+  \-lines (bet.postProcess.plotDomains)
+  \-pyplot (bet.postProcess.plotP,bet.postProcess.plotDomains)
+  \-ticker (bet.postProcess.plotP)
+  \-tri (bet.postProcess.plotDomains)
+mpl_toolkits
+  \-mplot3d (bet.postProcess.plotP,bet.postProcess.plotDomains)
+numpy (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,bet.sampling.LpGeneralizedSamples,bet.sampling.basicSampling,bet.sensitivity.gradients,bet.calculateP.indicatorFunctions,bet.util,,bet.calculateP.calculateP,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
+  \-linalg (bet.sample,bet.calculateP.calculateError)
+pyDOE (bet.sampling.basicSampling)
+scipy
+  \-fftpack (bet.postProcess.plotP)
+  \-io (bet.sample,bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
+  \-spatial (bet.sample,bet.sensitivity.gradients,bet.calculateP.calculateError)
+  \-stats (bet.sample,bet.sensitivity.chooseQoIs,bet.calculateP.simpleFunP)
 </pre></div>
 </div>
 </div>
 </div>
 
 
-           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="parallel.html" class="btn btn-neutral float-right" title="Parallel" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="parallel.html" class="btn btn-neutral float-right" title="Parallel">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to BET’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral" title="Welcome to BET’s documentation!"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -375,14 +356,13 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Aug 08, 2016.
-
+      Last updated on Aug 09, 2016.
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
-
         </div>
       </div>
 
@@ -397,7 +377,7 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'./',
-            VERSION:'2.0.0-beta',
+            VERSION:'2.0.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true

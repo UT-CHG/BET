@@ -5,16 +5,16 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
-  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Linear Map with Uniform Sampling &mdash; BET 2.0.0-beta documentation</title>
+  <title>Example: Linear Map with Uniform Sampling &mdash; BET 2.0.0 documentation</title>
   
 
   
   
 
   
+  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -30,13 +30,13 @@
   
 
   
-    <link rel="top" title="BET 2.0.0-beta documentation" href="../../index.html"/>
+    <link rel="top" title="BET 2.0.0 documentation" href="../../index.html"/>
         <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Linear Map Choose QoIs (condition number / bin_ratio)" href="linear_condnum_binratio.html"/>
+        <link rel="next" title="Example: Linear Map Choose QoIs to minimize scale of inverses in measure" href="linear_measure_binratio.html"/>
         <link rel="prev" title="Example: Batch Adaptive Sampling (3-to-3 example)" href="fromfile3D.html"/> 
 
   
-  <script src="../../_static/js/modernizr.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
 
 </head>
 
@@ -46,27 +46,11 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
-          
-
-          
-            <a href="../../index.html" class="icon icon-home"> BET
-          
-
-          
-          </a>
-
-          
-            
-            
-              <div class="version">
-                2.0
-              </div>
-            
-          
-
-          
+      <div class="wy-side-nav-search">
+        
+          <a href="../../index.html" class="fa fa-home"> BET</a>
+        
+        
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -74,17 +58,27 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
+      </div>
 
+      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+        
           
-        </div>
-
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-            
-            
-                <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
+</ul>
+</li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#validation-example">Validation example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#linear-map-example">Linear Map Example</a></li>
@@ -93,45 +87,20 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#contaminant-transport-example">Contaminant Transport Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a><ul class="current">
-<li class="toctree-l3"><a class="reference internal" href="FEniCS.html">Example: FEniCS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="FEniCSMultipleSerial.html">Example: Multiple Serial FEniCS</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Q_1D.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="Q_3D.html">Example: Estimate the parameter space probabiliy density with  a 3D data space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="chooseOptQoIs_2d.html">Example: Optimizing space-time measurements of temperature on a thin plate</a></li>
-<li class="toctree-l3"><a class="reference internal" href="contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
-<li class="toctree-l3"><a class="reference internal" href="domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fromfile2D.html">Example: Batch Adaptive Sampling (2-to-2 example)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
-<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Linear Map with Uniform Sampling</a><ul>
-<li class="toctree-l4"><a class="reference internal" href="#step-0-setting-up-the-environment">Step (0): Setting up the environment</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-1-define-interface-to-the-model">Step (1): Define interface to the model</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-2-describe-and-sample-the-input-space">Step (2): Describe and sample the input space</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-generate-qoi-samples">Step (3): Generate QoI samples</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-4-describe-the-data-distribution">Step (4): Describe the data distribution</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-5-solve-the-stochastic-inverse-problem">Step (5): Solve the stochastic inverse problem</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-6-optional-post-processing">Step (6) [Optional]: Post-processing</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a></li>
 </ul>
 </li>
-<li class="toctree-l3"><a class="reference internal" href="linear_condnum_binratio.html">Example: Linear Map Choose QoIs (condition number / bin_ratio)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="linear_volume_binsize_large.html">Example: Linear Map Choose QoIs (volume / bin_size / large)</a></li>
-<li class="toctree-l3"><a class="reference internal" href="nonlinearMapUniformSampling.html">Example: Nonlinear Map with Uniform Sampling</a></li>
-<li class="toctree-l3"><a class="reference internal" href="validation.html">Example: Validation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
 </ul>
 </li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
 </ul>
 
-            
           
-        </div>
+        
       </div>
+      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -146,13 +115,7 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          
-
- 
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
+          <div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../../index.html">Docs</a> &raquo;</li>
       
@@ -161,16 +124,13 @@
     <li>Example: Linear Map with Uniform Sampling</li>
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../../_sources/examples/example_rst_files/linearMapUniformSampling.txt" rel="nofollow"> View page source</a>
-          
+          <a href="../../_sources/examples/example_rst_files/linearMapUniformSampling.txt" rel="nofollow"> View page source</a>
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
-           <div itemprop="articleBody">
+          <div role="main" class="document">
             
   <div class="section" id="example-linear-map-with-uniform-sampling">
 <span id="linearmap"></span><h1>Example: Linear Map with Uniform Sampling<a class="headerlink" href="#example-linear-map-with-uniform-sampling" title="Permalink to this headline">¶</a></h1>
@@ -207,7 +167,7 @@ the &#8220;entire&#8221; code (omitting setting the environment,
 post-processing, and commenting) required
 for solving
 the stochastic inverse problem using some default options:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
 
 <span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
@@ -228,13 +188,13 @@ the stochastic inverse problem using some default options:</p>
 <div class="section" id="step-0-setting-up-the-environment">
 <h2>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h2>
 <p>Import the necessary modules:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">simpleFunP</span>
-<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="k">as</span> <span class="nn">calculateP</span>
-<span class="kn">import</span> <span class="nn">bet.postProcess.plotP</span> <span class="k">as</span> <span class="nn">plotP</span>
-<span class="kn">import</span> <span class="nn">bet.postProcess.plotDomains</span> <span class="k">as</span> <span class="nn">plotD</span>
-<span class="kn">import</span> <span class="nn">bet.sample</span> <span class="k">as</span> <span class="nn">samp</span>
-<span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="k">as</span> <span class="nn">bsam</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="kn">as</span> <span class="nn">simpleFunP</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="kn">as</span> <span class="nn">calculateP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotP</span> <span class="kn">as</span> <span class="nn">plotP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotDomains</span> <span class="kn">as</span> <span class="nn">plotD</span>
+<span class="kn">import</span> <span class="nn">bet.sample</span> <span class="kn">as</span> <span class="nn">samp</span>
+<span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="kn">as</span> <span class="nn">bsam</span>
 </pre></div>
 </div>
 </div>
@@ -244,7 +204,7 @@ the stochastic inverse problem using some default options:</p>
 that takes as input a numpy array of model input parameter samples,
 generated from the sampler (see below), evaluates the model to
 generate QoI samples, and returns the QoI samples:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myModel</span> <span class="k">import</span> <span class="n">my_model</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="kn">from</span> <span class="nn">myModel</span> <span class="kn">import</span> <span class="n">my_model</span>
 </pre></div>
 </div>
 <p>Define the sampler that will be used to create the discretization
@@ -252,7 +212,7 @@ object, which is the fundamental object used by BET to compute
 solutions to the stochastic inverse problem.
 The sampler and my_model is the interface of BET to the model,
 and it allows BET to create input/output samples of the model:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -260,7 +220,7 @@ and it allows BET to create input/output samples of the model:</p>
 <h2>Step (2): Describe and sample the input space<a class="headerlink" href="#step-2-describe-and-sample-the-input-space" title="Permalink to this headline">¶</a></h2>
 <p>Initialize the (3-dimensional) input parameter sample set object
 and set the parameter domain to be a unit-cube:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
 <span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
 </pre></div>
 </div>
@@ -273,9 +233,9 @@ See what happens when <code class="docutils literal"><span class="pre">num_sampl
 Try using <code class="docutils literal"><span class="pre">'lhs'</span></code> instead of <code class="docutils literal"><span class="pre">'random'</span></code> in the random_sample_set.</p>
 <p>If using regular sampling, try different numbers of samples
 per dimension:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">randomSampling</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="k">if</span> <span class="n">randomSampling</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
-    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mi">1</span><span class="n">E3</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">randomSampling</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">if</span> <span class="n">randomSampling</span> <span class="ow">is</span> <span class="bp">True</span><span class="p">:</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s">&#39;random&#39;</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 </pre></div>
@@ -289,9 +249,9 @@ the standard MC assumption is true.</p>
 <p>See what happens if the MC assumption is not assumed to be true, and
 if different numbers of points are used to estimate the volumes of
 the Voronoi cells:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">MC_assumption</span> <span class="o">=</span> <span class="kc">True</span>
-<span class="k">if</span> <span class="n">MC_assumption</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
-    <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume</span><span class="p">(</span><span class="n">n_mc_points</span><span class="o">=</span><span class="mi">1</span><span class="n">E5</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">MC_assumption</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">if</span> <span class="n">MC_assumption</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
+    <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume</span><span class="p">(</span><span class="n">n_mc_points</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
 </pre></div>
@@ -302,8 +262,8 @@ the Voronoi cells:</p>
 <h2>Step (3): Generate QoI samples<a class="headerlink" href="#step-3-generate-qoi-samples" title="Permalink to this headline">¶</a></h2>
 <p>Create the discretization object holding all the input (parameter) samples
 and output (QoI) samples using the sampler:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
-                                               <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;3to2_discretization.txt.gz&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+                                               <span class="n">savefile</span> <span class="o">=</span> <span class="s">&#39;3to2_discretization.txt.gz&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>At this point, all of the model information has been extracted for BET
@@ -329,15 +289,15 @@ define a distribution &#8220;around&#8221; this datum.</p>
 <h3>Suggested changes for user (3)<a class="headerlink" href="#suggested-changes-for-user-3" title="Permalink to this headline">¶</a></h3>
 <p>Try different reference parameters that produce different
 reference QoI data.:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
 <span class="n">Q_ref</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Use the reference samples and discretization to generate plots (this
 is completely optional):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_2D_multi</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span> <span class="n">param_ref</span><span class="p">,</span> <span class="n">showdim</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
-                       <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;linearMap_ParameterSamples.eps&#39;</span><span class="p">)</span>
-<span class="n">plotD</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s1">&#39;eps&#39;</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_2D_multi</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span> <span class="n">param_ref</span><span class="p">,</span> <span class="n">showdim</span> <span class="o">=</span> <span class="s">&#39;all&#39;</span><span class="p">,</span>
+                       <span class="n">filename</span> <span class="o">=</span> <span class="s">&#39;linearMap_ParameterSamples.eps&#39;</span><span class="p">)</span>
+<span class="n">plotD</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s">&#39;eps&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -347,15 +307,15 @@ is completely optional):</p>
 space defined as a uniform
 probability measure on a rectangle centered at Q_ref whose
 size is determined by scaling the circumscribing box of the data space:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">randomDataDiscretization</span> <span class="o">=</span> <span class="kc">False</span>
-<span class="k">if</span> <span class="n">randomDataDiscretization</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">randomDataDiscretization</span> <span class="o">=</span> <span class="bp">False</span>
+<span class="k">if</span> <span class="n">randomDataDiscretization</span> <span class="ow">is</span> <span class="bp">False</span><span class="p">:</span>
     <span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
         <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
         <span class="n">cells_per_dimension</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
 <span class="k">else</span><span class="p">:</span>
     <span class="n">simpleFunP</span><span class="o">.</span><span class="n">uniform_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
         <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
-        <span class="n">M</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_d_emulate</span><span class="o">=</span><span class="mi">1</span><span class="n">E5</span><span class="p">)</span>
+        <span class="n">M</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_d_emulate</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -364,7 +324,7 @@ size is determined by scaling the circumscribing box of the data space:</p>
 <h2>Step (5): Solve the stochastic inverse problem<a class="headerlink" href="#step-5-solve-the-stochastic-inverse-problem" title="Permalink to this headline">¶</a></h2>
 <p>Calculate probablities on the parameter space (which are stored within
 the discretization object):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -384,36 +344,35 @@ more).</p>
 when looking at marginals of higher-dimensional problems with parameter ranges
 that have disparate scales (assuming the parameters were not first normalized
 as part of a &#8220;un-dimensionalization&#8221; of the space, which is highly encouraged):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
                                                         <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 
 <span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 
-<span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;linearMap&quot;</span><span class="p">,</span>
-                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s2">&quot;.eps&quot;</span><span class="p">,</span> <span class="n">plot_surface</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;linearMap&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s">&quot;.eps&quot;</span><span class="p">,</span> <span class="n">plot_surface</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
 <span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
                                                         <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
 <span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
 
-<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;linearMap&quot;</span><span class="p">,</span>
-                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s2">&quot;.eps&quot;</span><span class="p">)</span>
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s">&quot;linearMap&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s">&quot;.eps&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
 </div>
 
 
-           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="linear_condnum_binratio.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs (condition number / bin_ratio)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="linear_measure_binratio.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs to minimize scale of inverses in measure">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="fromfile3D.html" class="btn btn-neutral" title="Example: Batch Adaptive Sampling (3-to-3 example)" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="fromfile3D.html" class="btn btn-neutral" title="Example: Batch Adaptive Sampling (3-to-3 example)"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -423,14 +382,13 @@ as part of a &#8220;un-dimensionalization&#8221; of the space, which is highly e
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Aug 08, 2016.
-
+      Last updated on Aug 09, 2016.
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
+  
 </footer>
-
         </div>
       </div>
 
@@ -445,7 +403,7 @@ as part of a &#8220;un-dimensionalization&#8221; of the space, which is highly e
     <script type="text/javascript">
         var DOCUMENTATION_OPTIONS = {
             URL_ROOT:'../../',
-            VERSION:'2.0.0-beta',
+            VERSION:'2.0.0',
             COLLAPSE_INDEX:false,
             FILE_SUFFIX:'.html',
             HAS_SOURCE:  true
