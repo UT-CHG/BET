@@ -95,6 +95,16 @@ Choosing Optimal QoIs Examples
 ==============================
 The files for these examples can be found in ``examples/sensitivity``.
 
+See :ref:`chooseQoIs` for an example based on optimizing the space-time
+locations of two temperature measurements on a thin metal plate with
+spatially variable thermal diffusivity. The goal is to optimize the QoI map with
+respect to a geometric property related to numerical accuracy in computing the
+solution to the stochastic inverse problem with a finite number of samples.
+
+See :ref:`linear_sensitivity` for an example based on optimizing
+a QoI map from a space of linear QoI maps under different optimization criteria.
+
+
 List of all examples
 ====================
 .. toctree::
