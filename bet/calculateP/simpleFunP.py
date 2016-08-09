@@ -310,7 +310,8 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set,
 
 
 def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
-                                                          rect_size=None, cells_per_dimension=1): 
+                                                          rect_size=None,
+                                                          cells_per_dimension=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -355,12 +356,14 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
     xi = []
     for i in xrange(dim):
-        xi.append(np.linspace(mins[0][i], maxes[0][i], cells_per_dimension[i] + 1))
+        xi.append(np.linspace(mins[0][i], maxes[0][i], 
+            cells_per_dimension[i] + 1))
+    
     s_set = samp.cartesian_sample_set(dim)
     s_set.setup(xi)
     domain = np.zeros((dim, 2))
-    domain[:,0] = mins[0]
-    domain[:,1] = maxes[0]
+    domain[:, 0] = mins[0]
+    domain[:, 1] = maxes[0]
     s_set.set_domain(domain)
     s_set.exact_volume_lebesgue()
     vol = np.sum(s_set._volumes[0:-1])
@@ -374,7 +377,8 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
 
 def regular_partition_uniform_distribution_rectangle_domain(data_set,
-                                                            rect_domain, cells_per_dimension=1):
+                                                        rect_domain,
+                                                        cells_per_dimension=1):
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
@@ -406,10 +410,13 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
  
     return regular_partition_uniform_distribution_rectangle_size(data_set,
-                                                                 domain_center, domain_lengths, cells_per_dimension)
+                                                                 domain_center,
+                                                                 domain_lengths,
+                                                                 cells_per_dimension)
 
 def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
-                                                            rect_scale, cells_per_dimension=1):
+                                                            rect_scale,
+                                                            cells_per_dimension=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
@@ -445,7 +452,9 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
 
     rect_size = (np.max(data, 0) - np.min(data, 0))*rect_scale
     return regular_partition_uniform_distribution_rectangle_size(data_set,
-                                                                 Q_ref, rect_size, cells_per_dimension)
+                                                                 Q_ref,
+                                                                 rect_size,
+                                                                 cells_per_dimension)
 
 def uniform_partition_uniform_distribution_data_samples(data_set):
     r"""

@@ -5,9 +5,7 @@ This module provides methods for postprocessing probabilities and data.
 """
 import logging
 import numpy as np
-import scipy.io as sio
 import bet.sample as sample
-from bet.Comm import comm
 
 class dim_not_matching(Exception):
     """

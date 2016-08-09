@@ -371,7 +371,7 @@ class sample_set_base(object):
             for obj in rescale_list:
                 val = getattr(self, obj)
                 if val is not None:
-                    val*=(self._domain[:,1] - self._domain[:,0])
+                    val *= (self._domain[:, 1] - self._domain[:, 0])
                     setattr(self, obj, val)
 
             shift_list = ['_values', '_values_local',
@@ -382,8 +382,8 @@ class sample_set_base(object):
             for obj in shift_list:
                 val = getattr(self, obj)
                 if val is not None:
-                    val -= self._domain[:,0]
-                    val = val/(self._domain[:,1] - self._domain[:,0])
+                    val -= self._domain[:, 0]
+                    val = val/(self._domain[:, 1] - self._domain[:, 0])
                     setattr(self, obj, val)
                     
             self._domain_original = np.copy(self._domain)
@@ -407,7 +407,7 @@ class sample_set_base(object):
             for obj in rescale_list:
                 val = getattr(self, obj)
                 if val is not None:
-                    val = val/(self._domain_original[:,1] - self._domain_original[:,0])
+                    val = val/(self._domain_original[:, 1] - self._domain_original[:, 0])
                     setattr(self, obj, val)
               
             shift_list = ['_values', '_values_local',
@@ -417,9 +417,9 @@ class sample_set_base(object):
             for obj in shift_list:
                 val = getattr(self, obj)
                 if val is not None:
-                    val = val*(self._domain_original[:,1] - self._domain_original[:,0])
+                    val = val*(self._domain_original[:, 1] - self._domain_original[:, 0])
 
-                    val = val + self._domain_original[:,0]
+                    val = val + self._domain_original[:, 0]
                     setattr(self, obj, val)
 
             self._domain = np.copy(self._domain_original)
@@ -588,7 +588,7 @@ class sample_set_base(object):
 
         """
         sset = self.copy()
-        num = sset.check_num()
+        sset.check_num()
         if sset._values is None:
             sset.local_to_global()
         for array_name in self.array_names:
@@ -598,7 +598,6 @@ class sample_set_base(object):
                 setattr(sset, array_name, new_array)
         return sset
         
-
     def check_num(self):
         """
         
@@ -1868,7 +1867,7 @@ class ball_sample_set(sample_set_base):
         if len(centers) != len(radii):
             raise length_not_matching("Different number of centers and radii.")
         for i in xrange(len(centers)):
-            if (len(centers[i]) != self._dim):
+            if len(centers[i]) != self._dim:
                 msg = "Center " + `i` + " has the wrong number of entries."
                 raise length_not_matching(msg)
         values = np.zeros((len(centers)+1, self._dim))
@@ -2471,7 +2470,8 @@ class discretization(object):
         if self._emulated_output_sample_set is None:
             raise AttributeError("Required: _emulated_output_sample_set")
         else:
-            self._output_sample_set.estimate_volume_emulated(self._emulated_output_sample_set)
+            self._output_sample_set.estimate_volume_emulated(\
+                    self._emulated_output_sample_set)
         
     def clip(self, cnum):
         """
@@ -2489,9 +2489,12 @@ class discretization(object):
 
         return discretization(input_sample_set=ci,
                               output_sample_set=co,
-                              output_probability_set=self._output_probability_set,
-                              emulated_input_sample_set = self._emulated_input_sample_set,
-                              emulated_output_sample_set=self._emulated_output_sample_set)
+                              output_probability_set=\
+                                      self._output_probability_set,
+                              emulated_input_sample_set=\
+                                      self._emulated_input_sample_set,
+                              emulated_output_sample_set=\
+                                      self._emulated_output_sample_set)
 
     def choose_inputs_outputs(self,
                               inputs=None,
@@ -2514,23 +2517,23 @@ class discretization(object):
         output_ss = sample_set(len(outputs))
         input_ss.set_p_norm(self._input_sample_set._p_norm)
         if self._input_sample_set._domain is not None:
-            input_ss.set_domain(self._input_sample_set._domain[inputs,:])
+            input_ss.set_domain(self._input_sample_set._domain[inputs, :])
         if self._input_sample_set._reference_value is not None:
             input_ss.set_reference_value(self._input_sample_set._reference_value[inputs])
 
         output_ss.set_p_norm(self._output_sample_set._p_norm)
         if self._output_sample_set._domain is not None:
-            output_ss.set_domain(self._output_sample_set._domain[outputs,:])
+            output_ss.set_domain(self._output_sample_set._domain[outputs, :])
         if self._output_sample_set._reference_value is not None:
             output_ss.set_reference_value(self._output_sample_set._reference_value[outputs])
 
         for obj in slice_list:
             val = getattr(self._input_sample_set, obj)
             if val is not None:
-                setattr(input_ss, obj, val[:,inputs])
+                setattr(input_ss, obj, val[:, inputs])
             val = getattr(self._output_sample_set, obj)
             if val is not None:
-                setattr(output_ss, obj, val[:,outputs])
+                setattr(output_ss, obj, val[:, outputs])
         for obj in slice_list2:
             val = getattr(self._input_sample_set, obj)
             if val is not None:

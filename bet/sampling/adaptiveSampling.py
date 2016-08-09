@@ -40,7 +40,8 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
     :rtype: tuple of (:class:`bet.sampling.adaptiveSampling.sampler`,
         :class:`bet.sample.discretization`, :class:`numpy.ndarray`,
         :class:`numpy.ndarray`)
-    :returns: (``sampler``, ``discretization``, ``all_step_ratios``, ``kern_old``)
+    :returns: (``sampler``, ``discretization``, ``all_step_ratios``,
+        ``kern_old``)
     
     """
     print hot_start
@@ -437,8 +438,9 @@ class sampler(bsam.sampler):
 
         if hot_start:
             # LOAD FILES
-            _, disc, all_step_ratios, kern_old = loadmat(savefile, lb_model=None,
-                    hot_start=hot_start, num_chains=self.num_chains)
+            _, disc, all_step_ratios, kern_old = loadmat(savefile,
+                    lb_model=None, hot_start=hot_start,
+                    num_chains=self.num_chains)
             # MAKE SURE ARRAYS ARE LOCALIZED FROM HERE ON OUT WILL ONLY
             # OPERATE ON _local_values
             # Set mdat, step_ratio, input_old, start_ind appropriately

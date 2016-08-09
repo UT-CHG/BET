@@ -776,7 +776,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
 def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
         img_folder='figs/', filename="scatter2Dm", label_char=r'$\lambda',
-        showdim=None, file_extension=".png"):
+        showdim=None, file_extension=".png", cbar_label=None):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
@@ -802,6 +802,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
         given dimension (:math:`\lambda_i`) or if ``all`` show all combinations.
     :type showdim: int or string
     :param string filename: filename to save the figure as
+    :param string cbar_label: color bar label
 
     """
     if not isinstance(sample_obj, sample.sample_set_base):
@@ -833,13 +834,13 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                         ref_sample=ref_sample[[showdim, i]], save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
-                        cbar_label=None, filename=myfilename,
+                        cbar_label=cbar_label, filename=myfilename,
                         file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None,
                            color=color, ref_sample=None, save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
-                           cbar_label=None, filename=myfilename,
+                           cbar_label=cbar_label, filename=myfilename,
                            file_extension=file_extension)
 
     # Create plots of all of the possible pairwise combinations of parameters
@@ -858,12 +859,12 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                         ref_sample=ref_sample[[x, y]], save=True,
                         interactive=False, xlabel=xlabel, ylabel=ylabel,
-                        cbar_label=None, filename=myfilename,
+                        cbar_label=cbar_label, filename=myfilename,
                         file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                            ref_sample=None, save=True, interactive=False,
-                           xlabel=xlabel, ylabel=ylabel, cbar_label=None,
+                           xlabel=xlabel, ylabel=ylabel, cbar_label=cbar_label,
                            filename=myfilename, file_extension=file_extension)
 
 def scatter_2D_multi_input(my_disc, color=None, ref_sample=None,
@@ -921,7 +922,7 @@ def scatter_2D_multi_input(my_disc, color=None, ref_sample=None,
 
     scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
         img_folder=img_folder, filename=filename, label_char=label_char,
-        showdim=showdim, file_extension=file_extension)
+        showdim=showdim, file_extension=file_extension, cbar_label)
 
 def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
         img_folder='figs/', filename="scatter2Dm_output",
@@ -978,5 +979,5 @@ def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
 
     scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
         img_folder=img_folder, filename=filename, label_char=label_char,
-        showdim=showdim, file_extension=file_extension)
+        showdim=showdim, file_extension=file_extension, cbar_label)
 
