@@ -47,7 +47,7 @@ Choose random samples in parameter space to solve the model::
     samples = np.random.random([num_samples, Lambda_dim])
     data = Q.dot(samples.transpose()).transpose()
 
-Calculate the gradient vectors at some subset of the samples.  Here the 
+Calculate the gradient vectors at some subset of the samples.  Here the
 *normalize* argument is set to *True* because we are using *bin_ratio* to
 determine the uncertainty in our data::
 
@@ -76,10 +76,10 @@ the parameter space.  We choose the set of QoIs to consider::
 
 In this linear case we expect our ordering of sets of QoIs to be very good.  But
 we see in this example that the set [3, 4, 5, 8, 9] (set 1) has a smaller
-expected volume ratio than the set [2, 3, 6, 8, 9] (set 2), however the inverse 
+expected volume ratio than the set [2, 3, 6, 8, 9] (set 2), however the inverse
 solution yields larger volume of support for set 1 than set 2.  This is likely
-due to the fact that we restrict ourselves to the parameter space [0, 1]^5, and 
-the actual support of the inverse solution may extend out of this space.  The 
+due to the fact that we restrict ourselves to the parameter space [0, 1]^5, and
+the actual support of the inverse solution may extend out of this space.  The
 expected volume ratio is computed assuming an unbounded parameter space.
 
 Restrict the data to have just QoI_indices::
