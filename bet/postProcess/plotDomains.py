@@ -922,7 +922,7 @@ def scatter_2D_multi_input(my_disc, color=None, ref_sample=None,
 
     scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
         img_folder=img_folder, filename=filename, label_char=label_char,
-        showdim=showdim, file_extension=file_extension, cbar_label)
+        showdim=showdim, file_extension=file_extension, cbar_label=cbar_label)
 
 def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
         img_folder='figs/', filename="scatter2Dm_output",
@@ -979,5 +979,5 @@ def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
 
     scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
         img_folder=img_folder, filename=filename, label_char=label_char,
-        showdim=showdim, file_extension=file_extension, cbar_label)
+        showdim=showdim, file_extension=file_extension, cbar_label=cbar_label)
 
