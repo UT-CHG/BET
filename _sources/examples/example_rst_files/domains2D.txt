@@ -29,7 +29,7 @@ The compact (bounded, finite-dimensional) paramter space is::
 
 In this example we form a linear interpolant to the QoI map :math:`Q(\lambda) =
 (q_1(\lambda), q_6(\lambda))` using data read from a ``.mat`` :download:`file
-<../../../examples/fromFile_ADCIRCMap/Q_2D.mat>`::
+<../../../examples/matfiles/Q_2D.mat>`::
 
     station_nums = [0, 5] # 1, 6
     mdat = sio.loadmat('Q_2D')
