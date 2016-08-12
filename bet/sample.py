@@ -2044,8 +2044,8 @@ class cartesian_sample_set(rectangle_sample_set):
             xmin.append(xv[0:-1])
             xmax.append(xv[1::])
         if len(xmax) == 1:
-            maxes = np.array([xmax])
-            mins = np.array([xmin])
+            maxes = np.transpose(np.array([xmax]))
+            mins = np.transpose(np.array([xmin]))
         else:
             maxes = np.vstack(np.array(np.meshgrid(*xmax)).T)
             mins = np.vstack(np.array(np.meshgrid(*xmin)).T)
