@@ -86,7 +86,8 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
             new_mdat[sample_set_name+attrname] = curr_attr
         elif new_mdat.has_key(sample_set_name+attrname):
             new_mdat.pop(sample_set_name+attrname)
-    new_mdat[sample_set_name + '_sample_set_type'] = save_set.__class__.__name__
+    new_mdat[sample_set_name + '_sample_set_type'] = \
+            str(type(save_set)).split("'")[1]
     comm.barrier()
 
     # save new file or append to existing file
@@ -1089,7 +1090,7 @@ class sample_set_base(object):
         :returns: Copy of this :class:`~bet.sample.sample_set_base`
 
         """
-        my_copy = eval(self.__class__.__name__)(self.get_dim())
+        my_copy = type(self)(self.get_dim())
         for array_name in self.all_ndarray_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
