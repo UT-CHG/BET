@@ -597,6 +597,8 @@ class sample_set_base(object):
             if current_array is not None:
                 new_array = current_array[0:cnum]
                 setattr(sset, array_name, new_array)
+        if sset._values_local is not None:
+            sset.global_to_local()
         return sset
         
     def check_num(self):
