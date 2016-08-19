@@ -1683,7 +1683,7 @@ class voronoi_sample_set(sample_set_base):
             raise dim_not_matching(msg)
         # check domain
         if self._domain is not None and sset_.domain is not None:
-            if not np.allclose(self._domain, sset._domain)
+            if not np.allclose(self._domain, sset._domain):
                 msg = "These sample sets have different domains."
                 raise domain_not_matching(msg)
         
@@ -1702,7 +1702,7 @@ class voronoi_sample_set(sample_set_base):
         if sset._values_local is None:
             sset.global_to_local()
         mset.set_values_local(np.concatenate((self._values_local,
-            sset._values_local), 0)
+            sset._values_local), 0))
         mset.local_to_global()
         return mset
 
@@ -2562,7 +2562,7 @@ class discretization(object):
         mei = self._emulated_input_sample_set.merge(disc.\
                 _emulated_input_sample_set)
         meo = self._emulated_output_sample_set.merge(disc.\
-                _emulated_output_sample_set))
+                _emulated_output_sample_set)
 
         return discretization(input_sample_set=mi,
                               output_sample_set=mo,
