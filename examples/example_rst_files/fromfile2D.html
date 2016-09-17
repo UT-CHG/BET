@@ -5,6 +5,7 @@
 <!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
 <head>
   <meta charset="utf-8">
+  
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
   <title>Example: Batch Adaptive Sampling (2-to-2 example) &mdash; BET 2.0.0 documentation</title>
@@ -14,7 +15,6 @@
   
 
   
-  <link href='https://fonts.googleapis.com/css?family=Lato:400,700,400italic,700italic|Roboto+Slab:400,700|Inconsolata:400,700&subset=latin,cyrillic' rel='stylesheet' type='text/css'>
 
   
   
@@ -36,7 +36,7 @@
         <link rel="prev" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space" href="domains3D.html"/> 
 
   
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.6.2/modernizr.min.js"></script>
+  <script src="../../_static/js/modernizr.min.js"></script>
 
 </head>
 
@@ -46,11 +46,27 @@
 
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
-      <div class="wy-side-nav-search">
-        
-          <a href="../../index.html" class="fa fa-home"> BET</a>
-        
-        
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search">
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                2.0
+              </div>
+            
+          
+
+          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -58,27 +74,17 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-      </div>
 
-      <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-        
           
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
           
-              <ul class="current">
-<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#package-layout">Package Layout</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#code-overview">Code Overview</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#internal-dependencies">Internal dependencies</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../overview.html#external-dependencies">External dependencies</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#installation">Installation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#running-in-parallel">Running in parallel</a></li>
-<li class="toctree-l2"><a class="reference internal" href="../../parallel.html#parallel-enabled-modules">Parallel Enabled Modules</a></li>
-</ul>
-</li>
+            
+            
+                <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#validation-example">Validation example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#linear-map-example">Linear Map Example</a></li>
@@ -87,20 +93,40 @@
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#contaminant-transport-example">Contaminant Transport Example</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../examples_overview.html#choosing-optimal-qois-examples">Choosing Optimal QoIs Examples</a></li>
-<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a></li>
+<li class="toctree-l2 current"><a class="reference internal" href="../examples_overview.html#list-of-all-examples">List of all examples</a><ul class="current">
+<li class="toctree-l3"><a class="reference internal" href="FEniCS.html">Example: FEniCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="FEniCSMultipleSerial.html">Example: Multiple Serial FEniCS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_1D.html">Example: Estimate the parameter space probabiliy density with  a 1D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_2D.html">Example: Estimate the parameter space probabiliy density with  a 2D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="Q_3D.html">Example: Estimate the parameter space probabiliy density with  a 3D data space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="chooseOptQoIs_2d.html">Example: Optimizing space-time measurements of temperature on a thin plate</a></li>
+<li class="toctree-l3"><a class="reference internal" href="contaminantTransport.html">Example: Concentration of Contaminant in Wells Based on Transport Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains2D.html">Example: Generalized Chains with a 2,2-dimensional data,parameter space</a></li>
+<li class="toctree-l3"><a class="reference internal" href="domains3D.html">Example: Generalized Chains with a 3,3-dimensional data,parameter space</a></li>
+<li class="toctree-l3 current"><a class="current reference internal" href="#">Example: Batch Adaptive Sampling (2-to-2 example)</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#generating-a-single-set-of-adaptive-samples">Generating a single set of adaptive samples</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#generating-and-comparing-several-sets-of-adaptive-samples">Generating and comparing several sets of adaptive samples</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="../../bet.html">bet package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="fromfile3D.html">Example: Batch Adaptive Sampling (3-to-3 example)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linearMapUniformSampling.html">Example: Linear Map with Uniform Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_measure_binratio.html">Example: Linear Map Choose QoIs to minimize scale of inverses in measure</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_measure_binsize_large.html">Example: Linear Map Choose QoIs (volume / bin_size / large)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="linear_volume_binratio.html">Example: Linear Map Choose QoIs (volume / bin_ratio)</a></li>
+<li class="toctree-l3"><a class="reference internal" href="nonlinearMapUniformSampling.html">Example: Nonlinear Map with Uniform Sampling</a></li>
+<li class="toctree-l3"><a class="reference internal" href="validation.html">Example: Validation</a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../modules.html">bet</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
 </ul>
 
+            
           
-        
+        </div>
       </div>
-      &nbsp;
     </nav>
 
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
@@ -115,7 +141,13 @@
       
       <div class="wy-nav-content">
         <div class="rst-content">
-          <div role="navigation" aria-label="breadcrumbs navigation">
+          
+
+ 
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
   <ul class="wy-breadcrumbs">
     <li><a href="../../index.html">Docs</a> &raquo;</li>
       
@@ -124,13 +156,16 @@
     <li>Example: Batch Adaptive Sampling (2-to-2 example)</li>
       <li class="wy-breadcrumbs-aside">
         
-          <a href="../../_sources/examples/example_rst_files/fromfile2D.txt" rel="nofollow"> View page source</a>
+          
+            <a href="../../_sources/examples/example_rst_files/fromfile2D.txt" rel="nofollow"> View page source</a>
+          
         
       </li>
   </ul>
   <hr/>
 </div>
-          <div role="main" class="document">
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
             
   <div class="section" id="example-batch-adaptive-sampling-2-to-2-example">
 <span id="fromfile2dexample"></span><h1>Example: Batch Adaptive Sampling (2-to-2 example)<a class="headerlink" href="#example-batch-adaptive-sampling-2-to-2-example" title="Permalink to this headline">¶</a></h1>
@@ -184,11 +219,11 @@ Interfacing to ADCIRC directly would likely require the use of <a class="referen
 <div class="section" id="step-0-setting-up-the-environment">
 <h3>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h3>
 <p>Import the necessary modules:::</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">bet.sampling.adaptiveSampling</span> <span class="kn">as</span> <span class="nn">asam</span>
-<span class="kn">import</span> <span class="nn">bet.postProcess.plotDomains</span> <span class="kn">as</span> <span class="nn">pDom</span>
-<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="kn">as</span> <span class="nn">sio</span>
-<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="kn">import</span> <span class="n">griddata</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">bet.sampling.adaptiveSampling</span> <span class="k">as</span> <span class="nn">asam</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotDomains</span> <span class="k">as</span> <span class="nn">pDom</span>
+<span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+<span class="kn">from</span> <span class="nn">scipy.interpolate</span> <span class="k">import</span> <span class="n">griddata</span>
 </pre></div>
 </div>
 </div>
@@ -203,15 +238,15 @@ a (piecewise-defined) linear interpolant to the QoI map
 <span class="math">\(Q(\lambda) =(q_1(\lambda), q_6(\lambda))\)</span> using data read
 from a <code class="docutils literal"><span class="pre">.mat</span></code>
 <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/matfiles/Q_2D.mat">file</a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c"># 1, 6</span>
-<span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s">&#39;Q_2D&#39;</span><span class="p">)</span>
-<span class="n">Q</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q&#39;</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">station_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># 1, 6</span>
+<span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;Q_2D&#39;</span><span class="p">)</span>
+<span class="n">Q</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">station_nums</span><span class="p">]</span>
-<span class="c"># Create experiment model</span>
-<span class="n">points</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;points&#39;</span><span class="p">]</span>
+<span class="c1"># Create experiment model</span>
+<span class="n">points</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span>
 <span class="k">def</span> <span class="nf">model</span><span class="p">(</span><span class="n">inputs</span><span class="p">):</span>
     <span class="n">interp_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">((</span><span class="n">inputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
-    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">xrange</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">xrange</span><span class="p">(</span><span class="n">Q</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">]):</span>
         <span class="n">interp_values</span><span class="p">[:,</span> <span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">griddata</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">transpose</span><span class="p">(),</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">i</span><span class="p">],</span>
             <span class="n">inputs</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">interp_values</span>
@@ -228,7 +263,7 @@ with an
 initial step size ratio of 0.5 and a minimum, maximum step size ratio of
 <code class="docutils literal"><span class="pre">.5**5</span></code> and 1.0 respectively. Note that this algorithm only generates
 samples inside the parameter domain, <code class="docutils literal"><span class="pre">lam_domain</span></code> (see Step (2) below):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Create Transition Kernel</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Create Transition Kernel</span>
 <span class="n">transition_set</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">transition_set</span><span class="p">(</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">5</span><span class="o">**</span><span class="mi">5</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -240,17 +275,17 @@ In this instance we choose our kernel
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><code class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></code></a>.</p>
 <p>We choose some <span class="math">\(\lambda_{ref}\)</span> and
 let <span class="math">\(Q_{ref} = Q(\lambda_{ref})\)</span>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">Q_ref</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;Q_true&#39;</span><span class="p">]</span>
-<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span> <span class="c"># 16th/20</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Q_ref</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;Q_true&#39;</span><span class="p">]</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span> <span class="c1"># 16th/20</span>
 </pre></div>
 </div>
 <p>We define a rectangle, <span class="math">\(R_{ref} \subset \mathcal{D}\)</span> centered at
 <span class="math">\(Q(\lambda_{ref})\)</span> with sides 15% the length of <span class="math">\(q_1\)</span> and
 <span class="math">\(q_6\)</span>.
 Set <span class="math">\(\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}\)</span>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.15</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.15</span>
 <span class="n">bin_size</span> <span class="o">=</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span><span class="o">-</span><span class="n">np</span><span class="o">.</span><span class="n">min</span><span class="p">(</span><span class="n">Q</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span><span class="o">*</span><span class="n">bin_ratio</span>
-<span class="c"># Create kernel</span>
+<span class="c1"># Create kernel</span>
 <span class="n">maximum</span> <span class="o">=</span> <span class="mi">1</span><span class="o">/</span><span class="n">np</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="n">bin_size</span><span class="p">)</span>
 <span class="k">def</span> <span class="nf">rho_D</span><span class="p">(</span><span class="n">outputs</span><span class="p">):</span>
     <span class="n">rho_left</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([</span><span class="n">Q_ref</span><span class="o">-.</span><span class="mi">5</span><span class="o">*</span><span class="n">bin_size</span><span class="p">],</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
@@ -259,7 +294,7 @@ Set <span class="math">\(\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||
     <span class="n">rho_right</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">all</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">less_equal</span><span class="p">(</span><span class="n">outputs</span><span class="p">,</span> <span class="n">rho_right</span><span class="p">),</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
     <span class="n">inside</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">logical_and</span><span class="p">(</span><span class="n">rho_left</span><span class="p">,</span> <span class="n">rho_right</span><span class="p">)</span>
     <span class="n">max_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">outputs</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mi">0</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">inside</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s">&#39;float64&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">max_values</span>
+    <span class="k">return</span> <span class="n">inside</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="s1">&#39;float64&#39;</span><span class="p">)</span><span class="o">*</span><span class="n">max_values</span>
 
 <span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
 </pre></div>
@@ -274,7 +309,7 @@ will return a <a class="reference external" href="http://docs.scipy.org/doc/nump
 <p>Next, we create the <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-mod docutils literal"><span class="pre">sampler</span></code></a>. This
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-mod docutils literal"><span class="pre">sampler</span></code></a> will create 80 independent
 sampling chains that are each 125 samples long:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Create sampler</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Create sampler</span>
 <span class="n">chain_length</span> <span class="o">=</span> <span class="mi">125</span>
 <span class="n">num_chains</span> <span class="o">=</span> <span class="mi">80</span>
 <span class="n">num_samples</span> <span class="o">=</span> <span class="n">chain_length</span><span class="o">*</span><span class="n">num_chains</span>
@@ -306,36 +341,36 @@ these two samples sets together were used to define the
 discretization object used to solve the stochastic inverse problem.</p>
 <p>The compact (bounded, finite-dimensional) paramter space for this
 example is:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">.</span><span class="mo">07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]])</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="o">.</span><span class="mi">07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="o">.</span><span class="mi">1</span><span class="p">,</span> <span class="o">.</span><span class="mi">2</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>We choose an initial sample type to seed the sampling chains, which
 in this case comes from using Latin-Hypercube sampling:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">inital_sample_type</span> <span class="o">=</span> <span class="s">&quot;lhs&quot;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">inital_sample_type</span> <span class="o">=</span> <span class="s2">&quot;lhs&quot;</span>
 </pre></div>
 </div>
 <p>Finally, we adaptively generate the samples using
 <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="bet.sampling.adaptiveSampling.sampler.generalized_chains"><code class="xref py py-meth docutils literal"><span class="pre">generalized_chains()</span></code></a>:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span>  <span class="n">all_step_ratios</span><span class="p">)</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">generalized_chains</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">,</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span>  <span class="n">all_step_ratios</span><span class="p">)</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">generalized_chains</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">,</span>
     <span class="n">transition_set</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">,</span> <span class="n">inital_sample_type</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>[OPTIONAL] We may choose to visualize the results by executing the
 following code:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Read in points_ref and plot results</span>
-<span class="n">ref_sample</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s">&#39;points_true&#39;</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Read in points_ref and plot results</span>
+<span class="n">ref_sample</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;points_true&#39;</span><span class="p">]</span>
 <span class="n">ref_sample</span> <span class="o">=</span> <span class="n">ref_sample</span><span class="p">[</span><span class="mi">5</span><span class="p">:</span><span class="mi">7</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span>
 
-<span class="c"># Show the samples in the parameter space</span>
-<span class="n">pDom</span><span class="o">.</span><span class="n">scatter_rhoD</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">rho_D</span><span class="o">=</span><span class="n">rho_D</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">ref_sample</span><span class="p">,</span> <span class="n">io_flag</span><span class="o">=</span><span class="s">&#39;input&#39;</span><span class="p">)</span>
-<span class="c"># Show the corresponding samples in the data space</span>
-<span class="n">pDom</span><span class="o">.</span><span class="n">scatter_rhoD</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">rho_D</span><span class="o">=</span><span class="n">rho_D</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">io_flag</span><span class="o">=</span><span class="s">&#39;output&#39;</span><span class="p">)</span>
-<span class="c"># Show the data domain that corresponds with the convex hull of samples in the</span>
-<span class="c"># parameter space</span>
+<span class="c1"># Show the samples in the parameter space</span>
+<span class="n">pDom</span><span class="o">.</span><span class="n">scatter_rhoD</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">rho_D</span><span class="o">=</span><span class="n">rho_D</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">ref_sample</span><span class="p">,</span> <span class="n">io_flag</span><span class="o">=</span><span class="s1">&#39;input&#39;</span><span class="p">)</span>
+<span class="c1"># Show the corresponding samples in the data space</span>
+<span class="n">pDom</span><span class="o">.</span><span class="n">scatter_rhoD</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">rho_D</span><span class="o">=</span><span class="n">rho_D</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">io_flag</span><span class="o">=</span><span class="s1">&#39;output&#39;</span><span class="p">)</span>
+<span class="c1"># Show the data domain that corresponds with the convex hull of samples in the</span>
+<span class="c1"># parameter space</span>
 <span class="n">pDom</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">)</span>
-<span class="c"># Show multiple data domains that correspond with the convex hull of samples in</span>
-<span class="c"># the parameter space</span>
-<span class="n">pDom</span><span class="o">.</span><span class="n">show_data_domain_multi</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">showdim</span><span class="o">=</span><span class="s">&#39;all&#39;</span><span class="p">)</span>
+<span class="c1"># Show multiple data domains that correspond with the convex hull of samples in</span>
+<span class="c1"># the parameter space</span>
+<span class="n">pDom</span><span class="o">.</span><span class="n">show_data_domain_multi</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">showdim</span><span class="o">=</span><span class="s1">&#39;all&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="admonition note">
@@ -349,7 +384,7 @@ samples.</p>
 <h3>Steps (4)-(5) [user]: Defining and solving a stochastic inverse problem<a class="headerlink" href="#steps-4-5-user-defining-and-solving-a-stochastic-inverse-problem" title="Permalink to this headline">¶</a></h3>
 <p>In the call to <code class="docutils literal"><span class="pre">sampler.generalized_chains</span></code> above, a discretization
 object is created and saved. The user may wish to follow some of the other
-examples (e.g., <a class="reference internal" href="linearMapUniformSampling.html#linearmap"><span>Example: Linear Map with Uniform Sampling</span></a> or <a class="reference internal" href="nonlinearMapUniformSampling.html#nonlinearmap"><span>Example: Nonlinear Map with Uniform Sampling</span></a>)
+examples (e.g., <a class="reference internal" href="linearMapUniformSampling.html#linearmap"><span class="std std-ref">Example: Linear Map with Uniform Sampling</span></a> or <a class="reference internal" href="nonlinearMapUniformSampling.html#nonlinearmap"><span class="std std-ref">Example: Nonlinear Map with Uniform Sampling</span></a>)
 along with the paper referenced above to describe a data
 distribution around a reference datum (Step (4)) and solve the stochastic
 inverse problem (Step (5)) using the adaptively generated discretization
@@ -372,21 +407,21 @@ set up in <a class="reference external" href="https://github.com/UT-CHG/BET/tree
 and is
 omitted for brevity.</p>
 <p>We can explore several types of kernels:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">kernel_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">kernel_mm</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_mean_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
 <span class="n">kernel_m</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">maxima_kernel</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">Q_ref</span><span class="p">]),</span> <span class="n">rho_D</span><span class="p">)</span>
 <span class="n">kernel_rD</span> <span class="o">=</span> <span class="n">asam</span><span class="o">.</span><span class="n">rhoD_kernel</span><span class="p">(</span><span class="n">maximum</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">)</span>
 <span class="n">kern_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">kernel_mm</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">kernel_m</span><span class="p">]</span>
-<span class="c"># Get samples</span>
-<span class="c"># Run with varying kernels</span>
+<span class="c1"># Get samples</span>
+<span class="c1"># Run with varying kernels</span>
 <span class="n">gen_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_gen</span><span class="p">(</span><span class="n">kern_list</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span> <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span>
         <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_set</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can explore <a class="reference internal" href="../../bet.sampling.html#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">transition_set</span></code></a> with
 various inital, minimum, and maximum step size ratios:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Run with varying transition sets bounds</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Run with varying transition sets bounds</span>
 <span class="n">init_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]</span>
-<span class="n">min_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2e-3</span><span class="p">,</span> <span class="mf">2e-5</span><span class="p">,</span> <span class="mf">2e-8</span><span class="p">]</span>
+<span class="n">min_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="n">e</span><span class="o">-</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="n">e</span><span class="o">-</span><span class="mi">5</span><span class="p">,</span> <span class="mi">2</span><span class="n">e</span><span class="o">-</span><span class="mi">8</span><span class="p">]</span>
 <span class="n">max_ratio</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="mi">5</span><span class="p">,</span> <span class="o">.</span><span class="mi">75</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]</span>
 <span class="n">tk_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_tk</span><span class="p">(</span><span class="n">init_ratio</span><span class="p">,</span> <span class="n">min_ratio</span><span class="p">,</span> <span class="n">max_ratio</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span>
         <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span> <span class="n">param_max</span><span class="p">,</span> <span class="n">kernel_rD</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
@@ -395,9 +430,9 @@ various inital, minimum, and maximum step size ratios:</p>
 <p>We can explore a single kernel with varying values of ratios for increasing
 and decreasing the step size (i.e. the size of the hyperrectangle to draw a new
 step from using a transition set):</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="n">increase</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">increase</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1.0</span><span class="p">,</span> <span class="mf">2.0</span><span class="p">,</span> <span class="mf">4.0</span><span class="p">]</span>
 <span class="n">decrease</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5e2</span><span class="p">,</span> <span class="mf">0.5e3</span><span class="p">]</span>
-<span class="n">tolerance</span> <span class="o">=</span> <span class="p">[</span><span class="mf">1e-4</span><span class="p">,</span> <span class="mf">1e-6</span><span class="p">,</span> <span class="mf">1e-8</span><span class="p">]</span>
+<span class="n">tolerance</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">6</span><span class="p">,</span> <span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">8</span><span class="p">]</span>
 <span class="n">incdec_results</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">run_inc_dec</span><span class="p">(</span><span class="n">increase</span><span class="p">,</span> <span class="n">decrease</span><span class="p">,</span> <span class="n">tolerance</span><span class="p">,</span> <span class="n">rho_D</span><span class="p">,</span>
     <span class="n">maximum</span><span class="p">,</span> <span class="n">param_min</span><span class="p">,</span> <span class="n">param_max</span><span class="p">,</span> <span class="n">transition_set</span><span class="p">,</span> <span class="n">sample_save_file</span><span class="p">)</span>
 </pre></div>
@@ -412,12 +447,12 @@ the product of these lists you need to use <code class="docutils literal"><span 
 <p>To compare the results in terms of yield or the total number of samples
 generated in the region of interest we can use
 <code class="xref py py-class docutils literal"><span class="pre">compare_yield</span></code> to display the results to screen:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="c"># Compare the quality of several sets of samples</span>
-<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with various kernels&quot;</span>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Compare the quality of several sets of samples</span>
+<span class="nb">print</span> <span class="s2">&quot;Compare yield of sample sets with various kernels&quot;</span>
 <span class="n">bsam</span><span class="o">.</span><span class="n">compare_yield</span><span class="p">(</span><span class="n">gen_results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">gen_results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">gen_results</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with various transition sets bounds&quot;</span>
+<span class="nb">print</span> <span class="s2">&quot;Compare yield of sample sets with various transition sets bounds&quot;</span>
 <span class="n">bsam</span><span class="o">.</span><span class="n">compare_yield</span><span class="p">(</span><span class="n">tk_results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">tk_results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">tk_results</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
-<span class="k">print</span> <span class="s">&quot;Compare yield of sample sets with variouos increase/decrease ratios&quot;</span>
+<span class="nb">print</span> <span class="s2">&quot;Compare yield of sample sets with variouos increase/decrease ratios&quot;</span>
 <span class="n">bsam</span><span class="o">.</span><span class="n">compare_yield</span><span class="p">(</span><span class="n">incdec_results</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span> <span class="n">incdec_results</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span><span class="n">incdec_results</span><span class="p">[</span><span class="mi">4</span><span class="p">])</span>
 </pre></div>
 </div>
@@ -428,15 +463,16 @@ by <code class="docutils literal"><span class="pre">sort_ind</span></code>.</p>
 </div>
 
 
+           </div>
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="fromfile3D.html" class="btn btn-neutral float-right" title="Example: Batch Adaptive Sampling (3-to-3 example)">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="fromfile3D.html" class="btn btn-neutral float-right" title="Example: Batch Adaptive Sampling (3-to-3 example)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="domains3D.html" class="btn btn-neutral" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="domains3D.html" class="btn btn-neutral" title="Example: Generalized Chains with a 3,3-dimensional data,parameter space" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -446,13 +482,14 @@ by <code class="docutils literal"><span class="pre">sort_ind</span></code>.</p>
   <div role="contentinfo">
     <p>
         &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Aug 10, 2016.
+      Last updated on Sep 16, 2016.
+
     </p>
   </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>.
-  
 </footer>
+
         </div>
       </div>
 
