@@ -118,7 +118,7 @@ size is determined by scaling the circumscribing box of D.
 randomDataDiscretization = False
 if randomDataDiscretization is False:
     simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
-        data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.15,
+        data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
         cells_per_dimension = 3)
 else:
     simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(
