@@ -1,0 +1,7 @@
+bin/
+doc/_build
+hershel_bin
+gh-pages/
+*.pyc
+*~
+build/
