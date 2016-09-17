@@ -14,7 +14,7 @@ observations of the solution to the elliptic PDE .. math::
     u|_{\partial \Omega} &= 0,
   \end{cases}
 
-where :math:`A(\lambda)=\text{diag}(1/\lambda_1,1/\lambda_2)`,
+where :math:`A(\lambda)=\text{diag}(1/\lambda_1^2,1/\lambda_2^2)`,
 :math: `f(x,y;\lambda) = \pi^2 \sin(\pi x\lambda_1)\sin(\pi y \lambda_2)`,
 and :math:`\Omega=[0,1]\times[0,1]`.
 
