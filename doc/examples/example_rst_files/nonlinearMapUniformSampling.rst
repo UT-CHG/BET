@@ -25,7 +25,7 @@ solution to the elliptic PDE
 where 
 
 .. math:: A(\lambda)=\left(\begin{array}{cc}
-		1/\lambda_1 & 0 \\ 0 & 1/\lambda_2 \end{array}\right),
+		1/\lambda_1^2 & 0 \\ 0 & 1/\lambda_2^2 \end{array}\right),
 .. math:: f(x,y;\lambda) = \pi^2 \sin(\pi x\lambda_1)\sin(\pi y \lambda_2),
 and 
 
