@@ -298,11 +298,14 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
             else:
                 label1 = lambda_label[i]
                 label2 = lambda_label[j]
-            ax.set_xlabel(label1) 
-            ax.set_ylabel(label2)
+            ax.set_xlabel(label1, fontsize=20) 
+            ax.set_ylabel(label2, fontsize=20)
+            ax.tick_params(axis='both', which='major', labelsize=14)
             label_cbar = r'$\rho_{\lambda_{' + str(i+1) + '}, ' 
-            label_cbar += r'\lambda_{' + str(j+1) + '}' + '}$ (Lesbesgue)'
-            fig.colorbar(quadmesh, ax=ax, label=label_cbar)
+            label_cbar += r'\lambda_{' + str(j+1) + '}' + '}$ (Lebesgue)'
+            cb = fig.colorbar(quadmesh, ax=ax, label=label_cbar)
+            cb.ax.tick_params(labelsize=14)
+            cb.set_label(label_cbar, size=20)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
             fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) +\
