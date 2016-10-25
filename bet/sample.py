@@ -570,7 +570,7 @@ class sample_set_base(object):
         :type values: :class:`numpy.ndarray` of shape (some_num, dim)
         """
         self._values = np.concatenate((self._values,
-                util.fix_dimensions_data(values)), 0)
+                util.fix_dimensions_data(values, self._dim)), 0)
 
     def append_values_local(self, values_local):
         """
@@ -584,7 +584,7 @@ class sample_set_base(object):
         :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
         """
         self._values_local = np.concatenate((self._values_local,
-                util.fix_dimensions_data(values_local)), 0)
+                util.fix_dimensions_data(values_local, self._dim)), 0)
 
     def clip(self, cnum):
         """
@@ -710,7 +710,7 @@ class sample_set_base(object):
         :type values: :class:`numpy.ndarray` of shape (num, dim)
 
         """
-        self._values = util.fix_dimensions_data(values)
+        self._values = util.fix_dimensions_data(values, self._dim)
         if self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         
@@ -869,7 +869,7 @@ class sample_set_base(object):
         :type values_local: :class:`numpy.ndarray` of shape (local_num, dim)
 
         """
-        self._values_local = util.fix_dimensions_data(values_local)
+        self._values_local = util.fix_dimensions_data(values_local, self._dim)
         if self._values_local.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         pass

@@ -123,7 +123,7 @@ def fix_dimensions_vector_2darray(vector):
         vector = np.array([vector])
     elif not isinstance(vector, np.ndarray):
         vector = np.array(vector)
-    if len(vector.shape) == 1:
+    if len(vector.shape) <= 1:
         vector = np.expand_dims(vector, axis=1)
     return vector
 
@@ -171,6 +171,8 @@ def fix_dimensions_data(data, dim=None):
     :returns: array of shape (N, dim)
     
     """
+    if comm.rank == comm.size-1:
+        print "b", data.shape
     if dim is None:
         if not isinstance(data, np.ndarray):
             return fix_dimensions_vector_2darray(data)
@@ -180,6 +182,8 @@ def fix_dimensions_data(data, dim=None):
             return data
 
     data = fix_dimensions_vector_2darray(data)
+    if comm.rank== comm.size-1:
+        print "a", data.shape
     if data.shape[1] != dim:
         return data.transpose()
     else:
