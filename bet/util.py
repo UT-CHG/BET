@@ -84,7 +84,7 @@ def get_global_values(array, shape=None):
             # do a lowercase allgather
             a_shape = len(array.shape)
             array = comm.allgather(array)
-            if a_shape == 1:
+            if a_shape <= 1:
                 return np.hstack(array)
             else:
                 return np.vstack(array)
