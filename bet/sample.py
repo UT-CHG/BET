@@ -870,7 +870,8 @@ class sample_set_base(object):
 
         """
         self._values_local = util.fix_dimensions_data(values_local, self._dim)
-        if self._values_local.shape[1] != self._dim:
+        if len(self._values_local.shape) > 1 and \
+                self._values_local.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         pass
 
