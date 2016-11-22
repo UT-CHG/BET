@@ -2620,6 +2620,16 @@ class discretization(object):
         disc = discretization(input_sample_set=input_ss,
                               output_sample_set=output_ss)
         return disc
+
+    def local_to_global(self):
+        """
+        Call local_to_global for ``input_sample_set`` and
+        ``output_sample_set``.
+        """
+        if self._input_sample_set is not None:
+            self._input_sample_set.local_to_global()
+        if self._output_sample_set is not None:
+            self._output_sample_set.local_to_global()
     
 
         
