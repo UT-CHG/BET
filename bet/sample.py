@@ -10,6 +10,7 @@ This module contains data structure/storage classes for BET. Notably:
 
 import os, logging, glob, warnings
 import numpy as np
+import math as math
 import numpy.linalg as linalg
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -1379,7 +1380,7 @@ class voronoi_sample_set(sample_set_base):
     def exact_volume_1D(self):
         r"""
         
-        Exactly calculates the volume fraction of the Voronoic cells.
+        Exactly calculates the volume fraction of the Voronoi cells.
         Specifically we are calculating 
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
         
@@ -1405,6 +1406,68 @@ class voronoi_sample_set(sample_set_base):
         lam_vol = lam_vol/domain_width
         self._volumes = lam_vol
         self.global_to_local()
+
+    def exact_volume_2D(self, side_ratio=0.25):
+        r"""
+        
+        Exactly calculates the volume fraction of the Voronoi cells.
+        Specifically we are calculating 
+        :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
+
+        :param float side_ratio: ratio of width to reflect across boundary
+        
+        """
+        num = self.check_num()
+        if self._dim != 2:
+            raise dim_not_matching("Only applicable for 2D domains.")
+        new_samp = np.copy(self._values)
+
+        add_points = np.less(self._values[:,0], self._domain[0][0]+side_ratio*(self._domain[0][1] - self._domain[0][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,0] = self._domain[0][0] - (points_new[:,0]-self._domain[0][0])
+        new_samp = np.vstack((new_samp, points_new))
+
+        add_points = np.greater(self._values[:,0], self._domain[0][1]-side_ratio*(self._domain[0][1] - self._domain[0][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,0] = self._domain[0][1] + (-points_new[:,0]+self._domain[0][1])
+        new_samp = np.vstack((new_samp, points_new))
+
+        add_points = np.less(self._values[:,1], self._domain[1][0]+side_ratio*(self._domain[1][1] - self._domain[1][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,1] = self._domain[1][0] - (points_new[:,1]-self._domain[1][0])
+        new_samp = np.vstack((new_samp, points_new))
+
+        add_points = np.greater(self._values[:,1], self._domain[1][1]-side_ratio*(self._domain[1][1] - self._domain[1][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,1] = self._domain[1][1] + (-points_new[:,1]+self._domain[1][1])
+        new_samp = np.vstack((new_samp, points_new))
+
+        vor = spatial.Voronoi(new_samp)
+        local_index = range(0+comm.rank, num, comm.size)
+        local_array = np.array(local_index, dtype='int64')
+        lam_vol_local = np.zeros(local_array.shape)
+
+        for I,i in enumerate(local_index):
+            val =vor.point_region[i]
+            region = vor.regions[val]
+            if not -1 in region:
+                polygon = [vor.vertices[k] for k in region]
+                delan = spatial.Delaunay(polygon)
+                simplices = delan.points[delan.simplices]
+                vol = 0.0
+                for j in range(simplices.shape[0]):
+                    mat = np.empty((self._dim, self._dim))
+                    mat[:,:] = (simplices[j][1::,:] - simplices[j][0,:]).transpose()
+                    vol += abs(1.0/math.factorial(self._dim)*linalg.det(mat))
+                lam_vol_local[I] = vol
+        lam_size = np.prod(self._domain[:,1] - self._domain[:,0])
+        lam_vol_local  = lam_vol_local/lam_size
+        lam_vol_global = util.get_global_values(lam_vol_local)
+        global_index = util.get_global_values(local_array)
+        lam_vol = np.zeros(lam_vol_global.shape)
+        self._volumes = np.zeros((num,))
+        self._volumes[global_index] = lam_vol_global[:]
+
 
     def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
         """

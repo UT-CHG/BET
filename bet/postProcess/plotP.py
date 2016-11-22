@@ -6,6 +6,7 @@ This module provides methods for plotting probabilities.
 
 import copy, math
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
 #plt.rc('font', family='serif')
@@ -435,3 +436,197 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
             j)]/np.sum(marginals_smooth[(i, j)])
 
     return marginals_smooth
+
+def plot_1D_voronoi(sample_set, density=False, filename="file", 
+                    lam_ref=None, interactive=False,
+                    lambda_label=None, file_extension=".png"):
+    if isinstance(sample_set, sample.discretization):
+        sample_obj = sample_set._input_sample_set
+        if sample_obj is None:
+            raise missing_attribute("Missing input_sample_set")
+    elif isinstance(sample_set, sample.sample_set_base):
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    if sample_obj._dim != 1:
+            raise dim_not_matching("Only applicable for 1D domains.")
+
+    if lam_ref is None:
+        lam_ref = sample_obj._reference_value
+
+    ind_sort = np.argsort(sample_obj._values, axis=0)
+    ends = 0.5 * (sample_obj._values[ind_sort][1::] + sample_obj._values[ind_sort][0:-1])
+    ends = ends[:, 0, 0]
+    mins = np.array([sample_obj._domain[0][0]] + list(ends))
+    maxes = np.array(list(ends) + [sample_obj._domain[0][1]])
+    #import pdb
+    #pdb.set_trace()
+    fig = plt.figure(0)
+    if density:
+        plt.hlines(sample_obj._probabilities[ind_sort]/(maxes-mins), mins, maxes)
+        plt.ylabel(r'$\rho_{\lambda}$')
+        #plt.xlabel(r'$\lambda$')
+    else:
+        plt.hlines(sample_obj._probabilities[ind_sort], mins, maxes)
+        plt.ylabel(r'$P_{\Lambda}(\mathcal{V}_i)$')
+        #plt.xlabel(r'$\lambda$')
+    if lam_ref is not None:
+        plt.plot(lam_ref[0], 0.0, 'ko', markersize=10)
+    if lambda_label is None:
+        label1 = r'$\lambda$'
+    else:
+        label1 = lambda_label[0]
+    plt.xlabel(label1)
+    if interactive:
+        plt.show()
+    fig.savefig(filename + file_extension)
+
+def plot_2D_voronoi(sample_set, density=False, colormap_type='BuGn'):
+    from scipy.spatial import Voronoi, voronoi_plot_2d
+    if isinstance(sample_set, sample.discretization):
+        sample_obj = sample_set._input_sample_set
+        if sample_obj is None:
+            raise missing_attribute("Missing input_sample_set")
+    elif isinstance(sample_set, sample.sample_set_base):
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    if sample_obj._dim != 2:
+            raise dim_not_matching("Only applicable for 2D domains.")
+
+    vor = Voronoi(sample_obj._values)
+    regions, vertices =  voronoi_finite_polygons_2d(vor)
+    points = sample_obj._values
+    cmap = matplotlib.cm.get_cmap(colormap_type)
+    if density:
+        P = sample_obj._probabilities/sample_obj._volumes
+    else:
+        P = sample_obj._probabilities
+    P_max = np.max(P)
+
+    #fig = plt.figure(0)
+    #ax = fig.add_subplot(111)
+    for i,region in enumerate(regions):
+        polygon = vertices[region]
+        plt.fill(*zip(*polygon),color=cmap(P[i]/P_max), edgecolor = 'k', linewidth = 0.005)
+
+    #plt.plot(points[:,0], points[:,1], 'ko')
+    #plt.xlim(vor.min_bound[0], vor.max_bound[0])
+    #plt.ylim(vor.min_bound[1] , vor.max_bound[1])
+    plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1], sample_obj._domain[1][0], sample_obj._domain[1][1]])
+    #fig.colorbar(ax=ax, mappable=sample_obj._probabilities[i])
+    #plt.colorbar()
+    plt.xlabel(r'$\lambda_1$')
+    plt.ylabel(r'$\lambda_2$')
+    ax, _ = matplotlib.colorbar.make_axes(plt.gca(), shrink=0.9)
+    if density:
+        cbar = matplotlib.colorbar.ColorbarBase(ax, cmap=cmap,
+                                            norm=matplotlib.colors.Normalize(vmin=0.0, vmax=P_max), label=r'$\rho_{\Lambda}$')
+    else:
+        cbar = matplotlib.colorbar.ColorbarBase(ax, cmap=cmap,
+                                            norm=matplotlib.colors.Normalize(vmin=0.0, vmax=P_max), label=r'$P_{\Lambda}(\mathcal{V}_i)$')
+    #cbar.set_clim(-2, 2)
+
+    #plt.tight_layout()
+    plt.show()
+    #voronoi_plot_2d(vor, show_points=False, show_vertices=False)
+    # fig = plt.figure()
+    # plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1], sample_obj._domain[1][0], sample_obj._domain[1][1]])
+    # plt.hold(True)
+    # cmap = matplotlib.cm.get_cmap('BuGn')
+    # P_max = np.max(sample_obj._probabilities)
+    # for i,val in enumerate(vor.point_region):
+    #     region = vor.regions[val]
+    #     if not -1 in region:
+    #         polygon = [vor.vertices[i] for i in region]
+    #         z = zip(*polygon)
+    #         #plt.fill(z[0], z[1],color=cmap(sample_obj._probabilities[i]/P_max) , edgecolor = 'k', linewidth = 0.005)
+    #         plt.fill(z[0], z[1], color='r' , edgecolor = 'k', linewidth = 0.005)
+
+    #plt.show()
+
+def voronoi_finite_polygons_2d(vor, radius=None):
+    """
+    Reconstruct infinite voronoi regions in a 2D diagram to finite
+    regions.
+
+    Parameters
+    ----------
+    vor : Voronoi
+        Input diagram
+    radius : float, optional
+        Distance to 'points at infinity'.
+
+    Returns
+    -------
+    regions : list of tuples
+        Indices of vertices in each revised Voronoi regions.
+    vertices : list of tuples
+        Coordinates for revised Voronoi vertices. Same as coordinates
+        of input vertices, with 'points at infinity' appended to the
+        end.
+
+    """
+
+    if vor.points.shape[1] != 2:
+        raise ValueError("Requires 2D input")
+
+    new_regions = []
+    new_vertices = vor.vertices.tolist()
+
+    center = vor.points.mean(axis=0)
+    if radius is None:
+        radius = vor.points.ptp().max()
+
+    # Construct a map containing all ridges for a given point
+    all_ridges = {}
+    for (p1, p2), (v1, v2) in zip(vor.ridge_points, vor.ridge_vertices):
+        all_ridges.setdefault(p1, []).append((p2, v1, v2))
+        all_ridges.setdefault(p2, []).append((p1, v1, v2))
+
+    # Reconstruct infinite regions
+    for p1, region in enumerate(vor.point_region):
+        vertices = vor.regions[region]
+
+        if all(v >= 0 for v in vertices):
+            # finite region
+            new_regions.append(vertices)
+            continue
+
+        # reconstruct a non-finite region
+        ridges = all_ridges[p1]
+        new_region = [v for v in vertices if v >= 0]
+
+        for p2, v1, v2 in ridges:
+            if v2 < 0:
+                v1, v2 = v2, v1
+            if v1 >= 0:
+                # finite ridge: already in the region
+                continue
+
+            # Compute the missing endpoint of an infinite ridge
+
+            t = vor.points[p2] - vor.points[p1] # tangent
+            t /= np.linalg.norm(t)
+            n = np.array([-t[1], t[0]])  # normal
+
+            midpoint = vor.points[[p1, p2]].mean(axis=0)
+            direction = np.sign(np.dot(midpoint - center, n)) * n
+            far_point = vor.vertices[v2] + direction * radius
+
+            new_region.append(len(new_vertices))
+            new_vertices.append(far_point.tolist())
+
+        # sort region counterclockwise
+        vs = np.asarray([new_vertices[v] for v in new_region])
+        c = vs.mean(axis=0)
+        angles = np.arctan2(vs[:,1] - c[1], vs[:,0] - c[0])
+        new_region = np.array(new_region)[np.argsort(angles)]
+
+        # finish
+        new_regions.append(new_region.tolist())
+
+    return new_regions, np.asarray(new_vertices)
+
