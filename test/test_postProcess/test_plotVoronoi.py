@@ -20,6 +20,7 @@ from bet.Comm import comm
 import os
 import bet.sample as sample
 
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class Test_plot_1D_voronoi(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotVoronoi.plot_1D_voronoi`
