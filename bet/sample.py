@@ -1417,11 +1417,13 @@ class voronoi_sample_set(sample_set_base):
         :param float side_ratio: ratio of width to reflect across boundary
         
         """
+        # Check inputs
         num = self.check_num()
         if self._dim != 2:
             raise dim_not_matching("Only applicable for 2D domains.")
         new_samp = np.copy(self._values)
 
+        # Add points around boundary
         add_points = np.less(self._values[:,0], self._domain[0][0]+side_ratio*(self._domain[0][1] - self._domain[0][0]))
         points_new = self._values[add_points,:]
         points_new[:,0] = self._domain[0][0] - (points_new[:,0]-self._domain[0][0])
@@ -1442,11 +1444,11 @@ class voronoi_sample_set(sample_set_base):
         points_new[:,1] = self._domain[1][1] + (-points_new[:,1]+self._domain[1][1])
         new_samp = np.vstack((new_samp, points_new))
 
+        # Make Voronoi diagram and calculate volumes
         vor = spatial.Voronoi(new_samp)
         local_index = range(0+comm.rank, num, comm.size)
         local_array = np.array(local_index, dtype='int64')
         lam_vol_local = np.zeros(local_array.shape)
-
         for I,i in enumerate(local_index):
             val =vor.point_region[i]
             region = vor.regions[val]
@@ -1467,7 +1469,7 @@ class voronoi_sample_set(sample_set_base):
         lam_vol = np.zeros(lam_vol_global.shape)
         self._volumes = np.zeros((num,))
         self._volumes[global_index] = lam_vol_global[:]
-
+        self.global_to_local()
 
     def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
         """
