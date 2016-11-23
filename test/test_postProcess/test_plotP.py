@@ -180,9 +180,9 @@ class Test_calc_marg_2D(unittest.TestCase):
             plotP.plot_1D_marginal_probs(marginals, bins, self.samples,
                                          filename = "file", interactive=False)
             go = True
-            if os.path.exists("file_1D_0.png"):
+            if os.path.exists("file_1D_0.png") and comm.rank == 0:
                 os.remove("file_1D_0.png")
-            if os.path.exists("file_1D_1.png"):
+            if os.path.exists("file_1D_1.png") and comm.rank == 0:
                 os.remove("file_1D_1.png")
         except (RuntimeError, TypeError, NameError):
             go = False
