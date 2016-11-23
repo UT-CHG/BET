@@ -11,6 +11,7 @@ import unittest
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.postProcess.plotP as plotP
+import bet.postProcess.plotVoronoi as plotVoronoi
 import numpy as np
 import scipy.spatial as spatial
 import numpy.testing as nptest
@@ -53,7 +54,7 @@ class Test_plot_1D_voronoi(unittest.TestCase):
         for a 1D parameter space.
         """
         try:
-            plotP.plot_1D_voronoi(self.samples,
+            plotVoronoi.plot_1D_voronoi(self.samples,
                                   filename = "file", interactive=False)
             go = True
             if os.path.exists("file.png"):
@@ -97,7 +98,7 @@ class Test_plot_2D_voronoi(unittest.TestCase):
         for a 2D parameter space.
         """
         try:
-            plotP.plot_2D_voronoi(self.samples,
+            plotVoronoi.plot_2D_voronoi(self.samples,
                                   filename = "file", interactive=False)
             go = True
             if os.path.exists("file.png"):
