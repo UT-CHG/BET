@@ -200,7 +200,7 @@ class Test_calc_marg_2D(unittest.TestCase):
             plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
                                          filename = "file", interactive=False)
             go = True
-            if os.path.exists("file_2D_0_1.png"):
+            if os.path.exists("file_2D_0_1.png") and comm.rank == 0:
                 os.remove("file_2D_0_1.png")
         except (RuntimeError, TypeError, NameError):
             go = False
@@ -249,6 +249,7 @@ class Test_plot_1D_voronoi(unittest.TestCase):
             go = False
         nptest.assert_equal(go, True)
 
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class Test_plot_2D_voronoi(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.plot_2D_voronoi`
