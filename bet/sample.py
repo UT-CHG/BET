@@ -32,7 +32,7 @@ class dim_not_matching(Exception):
     """
 
 
-class domqin_not_matching(Exception):
+class domain_not_matching(Exception):
     """
     Exception for when the domain does not match.
     """
@@ -534,7 +534,7 @@ class sample_set_base(object):
         """
         Creates ``self._right``, ``self._left``, ``self._width``.
 
-        :param int num: Determinzes shape of pointwise bounds (num, dim)
+        :param int num: Determines shape of pointwise bounds (num, dim)
 
         """
         if num is None:
@@ -549,7 +549,7 @@ class sample_set_base(object):
         ``self._width`` (``self._right_local``, ``self._left_local``,
         ``self._width_local``).
 
-        :param int local_num: Determinzes shape of local pointwise bounds
+        :param int local_num: Determines shape of local pointwise bounds
             (local_num, dim)
 
         """
