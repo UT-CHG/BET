@@ -22,6 +22,16 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set = sample.sample_set(dim=self.dim)
         self.sam_set.set_values(self.values)
         self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+    def test_merge(self):
+        """
+        Test merge.
+        """
+        other_set = self.sam_set.copy()
+        merge_set = self.sam_set.merge(other_set)
+        nptest.assert_array_equal(self.sam_set._domain, merge_set._domain)
+        nptest.assert_array_equal(self.sam_set._values,
+                merge_set._values[0:self.num-1, :])
+
     def test_normalize(self):
         """
         Test normalize and undo normalize domain.
