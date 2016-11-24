@@ -30,7 +30,7 @@ class Test_sample_set(unittest.TestCase):
         merge_set = self.sam_set.merge(other_set)
         nptest.assert_array_equal(self.sam_set._domain, merge_set._domain)
         nptest.assert_array_equal(self.sam_set._values,
-                merge_set._values[0:self.num-1, :])
+                merge_set._values[0:self.num, :])
 
     def test_normalize(self):
         """
