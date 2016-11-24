@@ -8,6 +8,7 @@ import numpy.testing as nptest
 import bet
 import bet.sample as sample
 import bet.util as util
+import bet.sampling.basicSampling as bsam
 from bet.Comm import comm, MPI
 
 #local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
@@ -963,6 +964,32 @@ class TestExactVolume1D(unittest.TestCase):
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
 
+class TestExactVolume2D(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.exact_volume_2D`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+        """
+        sampler = bsam.sampler(None)        
+        self.input_samples = sample.sample_set(2)
+        self.input_samples.set_domain(np.array([[0.0,1.0],[0.0,1.0]]))
+        self.input_samples = sampler.regular_sample_set(self.input_samples, num_samples_per_dim=[10, 9])
+        self.input_samples.exact_volume_2D()
+        self.vol1 = np.copy(self.input_samples._volumes)
+        self.input_samples.estimate_volume_mc()
+        self.vol2 = np.copy(self.input_samples._volumes)
+ 
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.vol1, self.vol2)
+        nptest.assert_almost_equal(np.sum(self.vol1), 1.0)
 
 class TestEstimateRadii(unittest.TestCase):
     """

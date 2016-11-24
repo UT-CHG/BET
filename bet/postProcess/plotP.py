@@ -6,6 +6,7 @@ This module provides methods for plotting probabilities.
 
 import copy, math
 import numpy as np
+import matplotlib
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
 #plt.rc('font', family='serif')
@@ -435,3 +436,5 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
             j)]/np.sum(marginals_smooth[(i, j)])
 
     return marginals_smooth
+
+
