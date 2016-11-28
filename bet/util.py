@@ -84,7 +84,7 @@ def get_global_values(array, shape=None):
             # do a lowercase allgather
             a_shape = len(array.shape)
             array = comm.allgather(array)
-            if a_shape == 1:
+            if a_shape <= 1:
                 return np.hstack(array)
             else:
                 return np.vstack(array)
@@ -123,7 +123,7 @@ def fix_dimensions_vector_2darray(vector):
         vector = np.array([vector])
     elif not isinstance(vector, np.ndarray):
         vector = np.array(vector)
-    if len(vector.shape) == 1:
+    if len(vector.shape) <= 1:
         vector = np.expand_dims(vector, axis=1)
     return vector
 
@@ -180,7 +180,7 @@ def fix_dimensions_data(data, dim=None):
             return data
 
     data = fix_dimensions_vector_2darray(data)
-    if data.shape[1] != dim:
+    if len(data.shape) > 1 and data.shape[1] != dim:
         return data.transpose()
     else:
         return data
