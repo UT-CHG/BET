@@ -66,15 +66,29 @@ class calculate_error(object):
 
         (up, low) = s_error.calculate_for_sample_set_region(s_set, 
                                                             1,
-                                                            emulated_set=self.disc._input_sample_set)         
-        self.assertAlmostEqual(up, upper[0])
-        self.assertAlmostEqual(low, lower[0])
+                                                            emulated_set=self.disc._input_sample_set)
+        if np.isnan(up):
+            self.assertEqual(isnan(upper[0]), True)
+        else:
+            self.assertAlmostEqual(up, upper[0])
+
+        if np.isnan(low):
+            self.assertEqual(isnan(lower[0]), True)
+        else:
+            self.assertAlmostEqual(low, lower[0])
 
         self.disc.set_emulated_input_sample_set(self.disc._input_sample_set)
         (up, low) = s_error.calculate_for_sample_set_region(s_set, 
                                                             1)         
-        self.assertAlmostEqual(up, upper[0])
-        self.assertAlmostEqual(low, lower[0])
+        if np.isnan(up):
+            self.assertEqual(isnan(upper[0]), True)
+        else:
+            self.assertAlmostEqual(up, upper[0])
+
+        if np.isnan(low):
+            self.assertEqual(isnan(lower[0]), True)
+        else:
+            self.assertAlmostEqual(low, lower[0])
 
     def Test_model_error(self):
         """

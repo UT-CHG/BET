@@ -168,6 +168,8 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
             raise missing_attribute("Missing probabilities")
         else:
             sample_obj.local_to_global()
+    if sample_obj._values is None:
+        sample_obj.local_to_global()
 
     if lam_ref is None:
         lam_ref = sample_obj._reference_value
