@@ -83,7 +83,8 @@ def my_model(parameter_samples):
 
     # Setup the QoI class
     class CharFunc(Expression):
-      def __init__(self, region):
+      def __init__(self, **kwargs):
+        region = kwargs["region"]
         self.a = region[0]
         self.b = region[1]
         self.c = region[2]
@@ -95,8 +96,8 @@ def my_model(parameter_samples):
         return v
 
     # Define the QoI maps
-    Chi_1 = CharFunc([0.75, 1.25, 7.75, 8.25])
-    Chi_2 = CharFunc([7.75, 8.25, 0.75, 1.25])
+    Chi_1 = CharFunc(degree=1, region = [0.75, 1.25, 7.75, 8.25])
+    Chi_2 = CharFunc(degree=1, region = [7.75, 8.25, 0.75, 1.25])
 
     QoI_samples = np.zeros([numSamples,2])
 
@@ -121,7 +122,7 @@ def my_model(parameter_samples):
         perm_k.vector()[:] = perm_k_array
 
         # solve Poisson with this random field using FEM
-        u = solvePoissonRandomField(perm_k, mesh, 1, f, bcs)
+        u = solvePoissonRandomField(perm_k, V, f, bcs)
 
         # Compute QoI
         QoI_samples[i, 0] = assemble(u * Chi_1 * dx)
