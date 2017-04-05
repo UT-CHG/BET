@@ -173,6 +173,9 @@ def verify_samples(QoI_range, sampler, input_domain,
     #if comm.rank == 0:
     mdat = sio.loadmat(savefile)
     saved_disc = bet.sample.load_discretization(savefile)
+
+    saved_disc.local_to_global()
+
     # compare the input
     nptest.assert_array_equal(my_discretization._input_sample_set.\
             get_values(), saved_disc._input_sample_set.get_values())
@@ -442,7 +445,7 @@ class Test_adaptive_sampler(unittest.TestCase):
 
     def test_generalized_chains(self):
         """
-        Test :met:`bet.sampling.adaptiveSampling.sampler.generalized_chains`
+        Test :meth:`bet.sampling.adaptiveSampling.sampler.generalized_chains`
         for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
         """
         # create a transition set

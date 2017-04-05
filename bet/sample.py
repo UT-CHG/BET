@@ -161,6 +161,9 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
     loaded_set._right = None
     loaded_set._left = None
     loaded_set._width = None
+    loaded_set._right_local = None
+    loaded_set._left_local = None
+    loaded_set._width_local = None
 
     if localize:
         # re-localize if necessary
@@ -185,7 +188,6 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     """
-   
     if sample_set_name is None:
         sample_set_name = 'default'
     # Find and open save files
@@ -206,6 +208,9 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         loaded_set._right = None
         loaded_set._left = None
         loaded_set._width = None
+        loaded_set._right_local = None
+        loaded_set._left_local = None
+        loaded_set._width_local = None
 
         return load_sample_set(local_file_name, sample_set_name)
     else:
@@ -269,7 +274,9 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         loaded_set._right = None
         loaded_set._left = None
         loaded_set._width = None
-
+        loaded_set._right_local = None
+        loaded_set._left_local = None
+        loaded_set._width_local = None
 
         # re-localize if necessary
         loaded_set.local_to_global()
@@ -1269,7 +1276,7 @@ def load_discretization_parallel(file_name, discretization_name=None):
         # if the number of processors is the same then set mdat to
         # be the one with the matching processor number (doesn't
         # really matter)
-        return load_discretization(mdat_files[comm.rank], discretization_name)
+        return load_discretization(mdat_files[comm.rank][:-4], discretization_name)
     else:
         logging.info("Loading {} sample set using parallel files (diff nproc)"\
             .format(discretization_name)) 
