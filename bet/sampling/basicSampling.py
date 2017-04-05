@@ -54,7 +54,10 @@ def loadmat(save_file, disc_name=None, model=None):
         mdat = sio.loadmat(save_file)
     num_samples = mdat['num_samples']
     # load the discretization
-    discretization = sample.load_discretization(save_file, disc_name)
+    if '.mat' in save_file:
+        discretization = sample.load_discretization(save_file[:-4], disc_name)
+    else:
+        discretization = sample.load_discretization(save_file, disc_name)
     loaded_sampler = sampler(model, num_samples)    
     return (loaded_sampler, discretization)
 

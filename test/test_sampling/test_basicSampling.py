@@ -131,6 +131,7 @@ def test_loadmat_parallel():
 
     assert loaded_sampler2.num_samples == 20
     assert loaded_sampler2.lb_model == model
+    comm.barrier()
     if comm.size == 1:
         os.remove(file_name1)
         os.remove(file_name2)

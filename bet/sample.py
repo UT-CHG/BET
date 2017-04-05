@@ -125,6 +125,7 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     
     """
+
     # check to see if parallel file name
     if file_name.startswith('proc'):
         localize = False
@@ -138,7 +139,7 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
         sample_set_name = 'default'
     
     if sample_set_name+"_dim" in mdat.keys():
-        classname = mdat_global[0][sample_set_name + '_sample_set_type'][0]
+        classname = mdat[sample_set_name + '_sample_set_type'][0]
         exec('import '+classname.rpartition('.')[0])
         loaded_set = eval(classname)(
             np.squeeze(mdat[sample_set_name+"_dim"]))
@@ -155,6 +156,11 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
     for attrname in loaded_set.all_ndarray_names:
         if sample_set_name+attrname in mdat.keys():
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
+
+    # clear, left, right, width
+    loaded_set._right = None
+    loaded_set._left = None
+    loaded_set._width = None
 
     if localize:
         # re-localize if necessary
@@ -196,6 +202,11 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         # really matter)
         local_file_name = os.path.join(os.path.dirname(file_name),
                 "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+        # clear, left, right, width
+        loaded_set._right = None
+        loaded_set._left = None
+        loaded_set._width = None
+
         return load_sample_set(local_file_name, sample_set_name)
     else:
         logging.info("Loading {} sample set using parallel files (diff nproc)"\
@@ -253,6 +264,12 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
                 else:
                     temp_input = mdat_global[0][sample_set_name+attrname]
                 setattr(loaded_set, attrname, temp_input)
+
+        # clear, left, right, width
+        loaded_set._right = None
+        loaded_set._left = None
+        loaded_set._width = None
+
 
         # re-localize if necessary
         loaded_set.local_to_global()
@@ -1332,7 +1349,7 @@ def load_discretization(file_name, discretization_name=None):
         pass
     elif not os.path.exists(file_name) and os.path.exists(os.path.join(\
             os.path.dirname(file_name), "proc{}_{}".format(comm.rank,
-                os.path.basename(file_name)))):
+                os.path.basename(file_name)))+'.mat'):
         return load_discretization_parallel(file_name, discretization_name)
 
     mdat = sio.loadmat(file_name)
