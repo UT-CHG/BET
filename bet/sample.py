@@ -119,18 +119,18 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
         saving multiple :class`bet.sample.sample_set` objects to a single
         ``.mat`` file
     :param bool localize: Flag whether or not to re-localize arrays. If
-        ``file_name`` is prepended by ``proc_{}`` localize is set to ``False``.
+        ``file_name`` is prepended by ``proc`` localize is set to ``False``.
 
     :rtype: :class:`~bet.sample.sample_set`
     :returns: the ``sample_set`` that matches the ``sample_set_name``
     
     """
     # check to see if parallel file name
-    if file_name.startswith('proc_'):
+    if file_name.startswith('proc'):
         localize = False
     elif not os.path.exists(file_name) and os.path.exists(os.path.join(\
-            os.path.dirname(file_name), "proc{}_0".format(\
-                os.path.basename(file_name)))):
+            os.path.dirname(file_name), "proc0_{}".format(\
+                os.path.basename(file_name)))+'.mat'):
         return load_sample_set_parallel(file_name, sample_set_name)
 
     mdat = sio.loadmat(file_name)
@@ -138,7 +138,9 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
         sample_set_name = 'default'
     
     if sample_set_name+"_dim" in mdat.keys():
-        loaded_set = eval(mdat[sample_set_name + '_sample_set_type'][0])(
+        classname = mdat_global[0][sample_set_name + '_sample_set_type'][0]
+        exec('import '+classname.rpartition('.')[0])
+        loaded_set = eval(classname)(
             np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
         logging.info("No sample_set named {} with _dim in file".\
@@ -184,7 +186,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
     save_dir = os.path.dirname(file_name)
     base_name = os.path.basename(file_name)
     mdat_files = glob.glob(os.path.join(save_dir,
-            "proc*_{}".format(base_name)))
+            "proc*_{}".format(base_name))+'.mat')
     
     if len(mdat_files) == comm.size:
         logging.info("Loading {} sample set using parallel files (same nproc)"\
@@ -201,7 +203,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
                 # Determine how many processors the previous data used
         # otherwise gather the data from mdat and then scatter
         # among the processors and update mdat
-        mdat_files_local = comm.scatter(mdat_files)
+        mdat_files_local = np.array_split(mdat_files, comm.size)[comm.rank]
         mdat_local = [sio.loadmat(m) for m in mdat_files_local]
         mdat_list = comm.allgather(mdat_local)
         mdat_global = []
@@ -210,8 +212,13 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
             mdat_global.extend(mlist)
         
         if sample_set_name+"_dim" in mdat_global[0].keys():
-            loaded_set = eval(mdat_global[0][sample_set_name + \
-                    '_sample_set_type'][0])(
+            # use eval to import the correct module which is the portion of the
+            # sample set type to the right of the last period (leave off the
+            # class)
+            classname = mdat_global[0][sample_set_name + \
+                    '_sample_set_type'][0]
+            exec('import '+classname.rpartition('.')[0])
+            loaded_set = eval(classname)(\
                     np.squeeze(mdat_global[0][sample_set_name+"_dim"]))
         else:
             logging.info("No sample_set named {} with _dim in file".\
@@ -249,6 +256,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
 
         # re-localize if necessary
         loaded_set.local_to_global()
+        return loaded_set
 
 
 class sample_set_base(object):
@@ -1236,7 +1244,7 @@ def load_discretization_parallel(file_name, discretization_name=None):
     save_dir = os.path.dirname(file_name)
     base_name = os.path.basename(file_name)
     mdat_files = glob.glob(os.path.join(save_dir,
-            "proc*_{}".format(base_name)))
+            "proc*_{}".format(base_name))+'.mat')
 
     if len(mdat_files) == comm.size:
         logging.info("Loading {} sample set using parallel files (same nproc)"\
@@ -1263,7 +1271,7 @@ def load_discretization_parallel(file_name, discretization_name=None):
         # Determine how many processors the previous data used
         # otherwise gather the data from mdat and then scatter
         # among the processors and update mdat
-        mdat_files_local = comm.scatter(mdat_files)
+        mdat_files_local = np.array_split(mdat_files, comm.size)[comm.rank]
         mdat_local = [sio.loadmat(m) for m in mdat_files_local]
         mdat_list = comm.allgather(mdat_local)
         mdat_global = []
@@ -1291,7 +1299,7 @@ def load_discretization_parallel(file_name, discretization_name=None):
                         discretization_name+attrname))
         
         # re-localize if necessary
-        if file_name.startswith('proc_') and comm.size > 1 \
+        if file_name.startswith('proc') and comm.size > 1 \
                 and comm.size != len(mdat_list):
             warn_string = "Local pointers have been removed and will be"
             warn_string += " re-created as necessary)"
@@ -1320,7 +1328,7 @@ def load_discretization(file_name, discretization_name=None):
     """
 
     # check to see if parallel file name
-    if file_name.startswith('proc_'):
+    if file_name.startswith('proc'):
         pass
     elif not os.path.exists(file_name) and os.path.exists(os.path.join(\
             os.path.dirname(file_name), "proc{}_{}".format(comm.rank,
@@ -1351,7 +1359,7 @@ def load_discretization(file_name, discretization_name=None):
                         np.squeeze(mdat[discretization_name+attrname]))
     
     # re-localize if necessary
-    if file_name.rfind('proc_') == 0 and comm.size > 1:
+    if file_name.rfind('proc') == 0 and comm.size > 1:
         loaded_disc._io_ptr_local = None
         loaded_disc._emulated_ii_ptr_local = None
         loaded_disc._emulated_oo_ptr_local = None
