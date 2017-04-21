@@ -8,6 +8,7 @@ import numpy.testing as nptest
 import bet
 import bet.sample as sample
 import bet.util as util
+import bet.sampling.basicSampling as bsam
 from bet.Comm import comm, MPI
 
 #local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
@@ -21,6 +22,16 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set = sample.sample_set(dim=self.dim)
         self.sam_set.set_values(self.values)
         self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+    def test_merge(self):
+        """
+        Test merge.
+        """
+        other_set = self.sam_set.copy()
+        merge_set = self.sam_set.merge(other_set)
+        nptest.assert_array_equal(self.sam_set._domain, merge_set._domain)
+        nptest.assert_array_equal(self.sam_set._values,
+                merge_set._values[0:self.num, :])
+
     def test_normalize(self):
         """
         Test normalize and undo normalize domain.
@@ -963,6 +974,32 @@ class TestExactVolume1D(unittest.TestCase):
         nptest.assert_array_almost_equal(self.lam_vol, self.volume_exact)
         nptest.assert_almost_equal(np.sum(self.lam_vol), 1.0)
 
+class TestExactVolume2D(unittest.TestCase):
+    """
+    Test :meth:`bet.calculateP.calculateP.exact_volume_2D`.
+    """
+    
+    def setUp(self):
+        """
+        Test dimension, number of samples, and that all the samples are within
+        lambda_domain.
+        """
+        sampler = bsam.sampler(None)        
+        self.input_samples = sample.sample_set(2)
+        self.input_samples.set_domain(np.array([[0.0,1.0],[0.0,1.0]]))
+        self.input_samples = sampler.regular_sample_set(self.input_samples, num_samples_per_dim=[10, 9])
+        self.input_samples.exact_volume_2D()
+        self.vol1 = np.copy(self.input_samples._volumes)
+        self.input_samples.estimate_volume_mc()
+        self.vol2 = np.copy(self.input_samples._volumes)
+ 
+    def test_volumes(self):
+        """
+        Check that the volumes are within a tolerance for a regular grid of
+        samples.
+        """
+        nptest.assert_array_almost_equal(self.vol1, self.vol2)
+        nptest.assert_almost_equal(np.sum(self.vol1), 1.0)
 
 class TestEstimateRadii(unittest.TestCase):
     """

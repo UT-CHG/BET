@@ -10,6 +10,7 @@ This module contains data structure/storage classes for BET. Notably:
 
 import os, logging, glob, warnings
 import numpy as np
+import math as math
 import numpy.linalg as linalg
 import scipy.spatial as spatial
 import scipy.io as sio
@@ -30,11 +31,19 @@ class dim_not_matching(Exception):
     Exception for when the dimension of the array is inconsistent.
     """
 
+
+class domain_not_matching(Exception):
+    """
+    Exception for when the domain does not match.
+    """
+
+
 class wrong_p_norm(Exception):
     """
     Exception for when the dimension of the array is inconsistent.
     """
     
+
 def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     """
     Saves this :class:`bet.sample.sample_set` as a ``.mat`` file. Each
@@ -525,7 +534,7 @@ class sample_set_base(object):
         """
         Creates ``self._right``, ``self._left``, ``self._width``.
 
-        :param int num: Determinzes shape of pointwise bounds (num, dim)
+        :param int num: Determines shape of pointwise bounds (num, dim)
 
         """
         if num is None:
@@ -540,7 +549,7 @@ class sample_set_base(object):
         ``self._width`` (``self._right_local``, ``self._left_local``,
         ``self._width_local``).
 
-        :param int local_num: Determinzes shape of local pointwise bounds
+        :param int local_num: Determines shape of local pointwise bounds
             (local_num, dim)
 
         """
@@ -562,7 +571,7 @@ class sample_set_base(object):
         :type values: :class:`numpy.ndarray` of shape (some_num, dim)
         """
         self._values = np.concatenate((self._values,
-                util.fix_dimensions_data(values)), 0)
+                util.fix_dimensions_data(values, self._dim)), 0)
 
     def append_values_local(self, values_local):
         """
@@ -576,7 +585,7 @@ class sample_set_base(object):
         :type values_local: :class:`numpy.ndarray` of shape (some_num, dim)
         """
         self._values_local = np.concatenate((self._values_local,
-                util.fix_dimensions_data(values_local)), 0)
+                util.fix_dimensions_data(values_local, self._dim)), 0)
 
     def clip(self, cnum):
         """
@@ -601,7 +610,7 @@ class sample_set_base(object):
         if sset._values_local is not None:
             sset.global_to_local()
         return sset
-        
+
     def check_num(self):
         """
         
@@ -702,7 +711,7 @@ class sample_set_base(object):
         :type values: :class:`numpy.ndarray` of shape (num, dim)
 
         """
-        self._values = util.fix_dimensions_data(values)
+        self._values = util.fix_dimensions_data(values, self._dim)
         if self._values.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         
@@ -861,8 +870,9 @@ class sample_set_base(object):
         :type values_local: :class:`numpy.ndarray` of shape (local_num, dim)
 
         """
-        self._values_local = util.fix_dimensions_data(values_local)
-        if self._values_local.shape[1] != self._dim:
+        self._values_local = util.fix_dimensions_data(values_local, self._dim)
+        if len(self._values_local.shape) > 1 and \
+                self._values_local.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
         pass
 
@@ -1379,7 +1389,7 @@ class voronoi_sample_set(sample_set_base):
     def exact_volume_1D(self):
         r"""
         
-        Exactly calculates the volume fraction of the Voronoic cells.
+        Exactly calculates the volume fraction of the Voronoi cells.
         Specifically we are calculating 
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
         
@@ -1404,6 +1414,70 @@ class voronoi_sample_set(sample_set_base):
         lam_vol[sort_ind] = sorted_lam_vol
         lam_vol = lam_vol/domain_width
         self._volumes = lam_vol
+        self.global_to_local()
+
+    def exact_volume_2D(self, side_ratio=0.25):
+        r"""
+        
+        Exactly calculates the volume fraction of the Voronoi cells.
+        Specifically we are calculating 
+        :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
+
+        :param float side_ratio: ratio of width to reflect across boundary
+        
+        """
+        # Check inputs
+        num = self.check_num()
+        if self._dim != 2:
+            raise dim_not_matching("Only applicable for 2D domains.")
+        new_samp = np.copy(self._values)
+
+        # Add points around boundary
+        add_points = np.less(self._values[:,0], self._domain[0][0]+side_ratio*(self._domain[0][1] - self._domain[0][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,0] = self._domain[0][0] - (points_new[:,0]-self._domain[0][0])
+        new_samp = np.vstack((new_samp, points_new))
+
+        add_points = np.greater(self._values[:,0], self._domain[0][1]-side_ratio*(self._domain[0][1] - self._domain[0][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,0] = self._domain[0][1] + (-points_new[:,0]+self._domain[0][1])
+        new_samp = np.vstack((new_samp, points_new))
+
+        add_points = np.less(self._values[:,1], self._domain[1][0]+side_ratio*(self._domain[1][1] - self._domain[1][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,1] = self._domain[1][0] - (points_new[:,1]-self._domain[1][0])
+        new_samp = np.vstack((new_samp, points_new))
+
+        add_points = np.greater(self._values[:,1], self._domain[1][1]-side_ratio*(self._domain[1][1] - self._domain[1][0]))
+        points_new = self._values[add_points,:]
+        points_new[:,1] = self._domain[1][1] + (-points_new[:,1]+self._domain[1][1])
+        new_samp = np.vstack((new_samp, points_new))
+
+        # Make Voronoi diagram and calculate volumes
+        vor = spatial.Voronoi(new_samp)
+        local_index = range(0+comm.rank, num, comm.size)
+        local_array = np.array(local_index, dtype='int64')
+        lam_vol_local = np.zeros(local_array.shape)
+        for I,i in enumerate(local_index):
+            val =vor.point_region[i]
+            region = vor.regions[val]
+            if not -1 in region:
+                polygon = [vor.vertices[k] for k in region]
+                delan = spatial.Delaunay(polygon)
+                simplices = delan.points[delan.simplices]
+                vol = 0.0
+                for j in range(simplices.shape[0]):
+                    mat = np.empty((self._dim, self._dim))
+                    mat[:,:] = (simplices[j][1::,:] - simplices[j][0,:]).transpose()
+                    vol += abs(1.0/math.factorial(self._dim)*linalg.det(mat))
+                lam_vol_local[I] = vol
+        lam_size = np.prod(self._domain[:,1] - self._domain[:,0])
+        lam_vol_local  = lam_vol_local/lam_size
+        lam_vol_global = util.get_global_values(lam_vol_local)
+        global_index = util.get_global_values(local_array)
+        lam_vol = np.zeros(lam_vol_global.shape)
+        self._volumes = np.zeros((num,))
+        self._volumes[global_index] = lam_vol_global[:]
         self.global_to_local()
 
     def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
@@ -1659,6 +1733,44 @@ class voronoi_sample_set(sample_set_base):
         self.set_volumes(self._volumes / domain_vol)
         self.set_volumes_local(self._volumes_local / domain_vol)
 
+    def merge(self, sset):
+        """
+        Merges a given sample set with this one by merging the values.
+
+        :param sset: Sample set object to merge with.
+        :type sset: :class:`bet.sample.voronoi_sample_set`
+
+        :rtype: :class:`bet.sample.voronoi_sample_set`
+        :returns: Merged discretization
+        """
+        # check dimensions
+        if self._dim != sset._dim:
+            msg = "These sample sets must have the same dimension."
+            raise dim_not_matching(msg)
+        # check domain
+        if self._domain is not None and sset_.domain is not None:
+            if not np.allclose(self._domain, sset._domain):
+                msg = "These sample sets have different domains."
+                raise domain_not_matching(msg)
+        
+        # create merged set
+        mset = voronoi_sample_set(self._dim)
+        
+        # set domain
+        if self._domain is not None:
+            mset.set_domain(self._domain)
+        elif sset._domain is not None:
+            mset.set_domain(sset._domain)
+
+        # merge and set values
+        if self._values_local is None:
+            self.global_to_local()
+        if sset._values_local is None:
+            sset.global_to_local()
+        mset.set_values_local(np.concatenate((self._values_local,
+            sset._values_local), 0))
+        mset.local_to_global()
+        return mset
 
 class sample_set(voronoi_sample_set):
     """
@@ -2500,6 +2612,31 @@ class discretization(object):
                               emulated_output_sample_set=\
                                       self._emulated_output_sample_set)
 
+    def merge(self, disc):
+        """
+        Merges a given discretization with this one by merging the input and
+        output sample sets.
+
+        :param disc: Discretization object to merge with.
+        :type disc: :class:`bet.sample.discretization`
+
+        :rtype: :class:`bet.sample.discretization`
+        :returns: Merged discretization
+        """
+        mi = self._input_sample_set.merge(disc._input_sample_set)
+        mo = self._output_sample_set.merge(disc._output_sample_set)
+        mei = self._emulated_input_sample_set.merge(disc.\
+                _emulated_input_sample_set)
+        meo = self._emulated_output_sample_set.merge(disc.\
+                _emulated_output_sample_set)
+
+        return discretization(input_sample_set=mi,
+                              output_sample_set=mo,
+                              output_probability_set=\
+                                      self._output_probability_set,
+                              emulated_input_sample_set=mei,
+                              emulated_output_sample_set=meo)
+
     def choose_inputs_outputs(self,
                               inputs=None,
                               outputs=None):
@@ -2548,6 +2685,16 @@ class discretization(object):
         disc = discretization(input_sample_set=input_ss,
                               output_sample_set=output_ss)
         return disc
+
+    def local_to_global(self):
+        """
+        Call local_to_global for ``input_sample_set`` and
+        ``output_sample_set``.
+        """
+        if self._input_sample_set is not None:
+            self._input_sample_set.local_to_global()
+        if self._output_sample_set is not None:
+            self._output_sample_set.local_to_global()
     
 
         

@@ -594,7 +594,10 @@ class model_error(object):
                 JiAe = comm.allreduce(JiAe_local, op=MPI.SUM)
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
-                er_cont = self.disc._output_probability_set._probabilities[i]\
+                if Ji*Jie == 0:
+                    er_cont = np.inf
+                else:
+                    er_cont = self.disc._output_probability_set._probabilities[i]\
                         *((JiA*Jie - JiAe*Ji)/(Ji*Jie))
                 er_est += er_cont
                 error_cells1 = np.logical_and(np.logical_and(in_Ai1, 
