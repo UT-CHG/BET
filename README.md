@@ -27,11 +27,11 @@ Tests
 
 To run tests in serial call::
 
-    nosetests tests
+    nosetests
 
 To run tests in parallel call::
 
-    mpirun -np NPROC nosetets tests
+    mpirun -np NPROC nosetests
 
 Dependencies
 ------------
