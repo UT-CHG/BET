@@ -69,11 +69,11 @@ station_nums = [0, 4, 11] # 1, 5, 12
 postprocess(station_nums, ref_num)
 
 
-station_nums = [0, 8, 6] # 1, 5, 12
+station_nums = [0, 8, 6] # 1, 9, 7
 postprocess(station_nums, ref_num)
 
 
-station_nums = [0, 8, 11] # 1, 5, 12
+station_nums = [0, 8, 11] # 1, 9, 12
 postprocess(station_nums, ref_num)
 """
 
