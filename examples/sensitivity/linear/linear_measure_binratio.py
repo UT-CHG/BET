@@ -50,7 +50,7 @@ input_samples = sample.sample_set(input_dim)
 output_samples = sample.sample_set(QoI_scalar_map_num)
 
 # Choose random samples in parameter space to solve the model
-input_samples.set_values(np.random.uniform(0, 1, [num_samples, input_dim]))
+input_samples.set_values(np.random.uniform(0, 1, [np.int(num_samples), input_dim]))
 
 
 # Compute the output values with the map Q
