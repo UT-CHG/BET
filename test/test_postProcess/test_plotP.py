@@ -237,3 +237,4 @@ class Test_calc_marg_2D(unittest.TestCase):
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
+        

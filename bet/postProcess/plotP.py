@@ -221,8 +221,6 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
             else:
                 label1 = lambda_label[i]
-            #ax.set_xlabel(label1) 
-            #ax.set_ylabel(r'$\rho$')
             ax.set_xlabel(label1, fontsize=30) 
             ax.set_ylabel(r'PDF', fontsize=30)
             ax.tick_params(axis='both', which='major', 
@@ -538,11 +536,6 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
             plt.clabel(quadmesh, fontsize=contour_font_size, 
                        inline=1, style='sci')
             
-#            label_cbar = r'$\rho_{\lambda_{' + str(i+1) + '}, ' 
-#            label_cbar += r'\lambda_{' + str(j+1) + '}' + '}$ (Lebesgue)'
-#            cb = fig.colorbar(quadmesh, ax=ax, label=label_cbar)
-#            cb.ax.tick_params(labelsize=14)
-#            cb.set_label(label_cbar, size=20)
             if plot_domain is None:
                 plt.axis([lam_domain[i][0], lam_domain[i][1], 
                           lam_domain[j][0], lam_domain[j][1]]) 
@@ -557,3 +550,4 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
                 plt.close()
  
     comm.barrier()
+    
