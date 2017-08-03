@@ -91,7 +91,8 @@ def my_model(parameter_samples):
         self.d = region[3]
       def eval(self, v, x):
         v[0] = 0
-        if (x[0] >= self.a) & (x[0] <= self.b) & (x[1] >= self.c) & (x[1] <= self.d):
+        if (x[0] >= self.a) and (x[0] <= self.b) and (x[1] >= self.c)\
+            and (x[1] <= self.d):
           v[0] = 1
         return v
 
