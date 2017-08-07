@@ -64,9 +64,11 @@ per dimension (be careful if the dimension is not 2).
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E2)
+    input_samples = sampler.random_sample_set('random', 
+                                              input_samples, num_samples=1E2)
 else:
-    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[10, 10])
+    input_samples = sampler.regular_sample_set(input_samples, 
+                                               num_samples_per_dim=[10, 10])
 
 '''
 A standard Monte Carlo (MC) assumption is that every Voronoi cell
@@ -97,12 +99,14 @@ param_ref = np.ones((1,num_KL_terms))
 Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D(input_samples, ref_sample=param_ref[0,:],
+if num_KL_terms == 2:
+    plotD.scatter_2D(input_samples, ref_sample=param_ref[0,:],
                  filename='FEniCS_ParameterSamples',
                  file_extension = '.eps')
 if Q_ref.size == 2:
     plotD.show_data_domain_2D(my_discretization, Q_ref=Q_ref[0,:],
             file_extension=".eps")
+
 
 '''
 Suggested changes for user:
@@ -145,11 +149,9 @@ plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
                                                         nbins=20)
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.5)
-# plot 2d marginal probs
+# plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
                              filename="FEniCS",
                              lam_ref=param_ref[0,:],
                              file_extension=".eps")
-
-
 

@@ -6,6 +6,8 @@ from slepc4py import SLEPc
 from meshDS import*
 # initialize petsc
 petsc4py.init()
+petsc4py.PETSc.Sys.popErrorHandler()
+
 
 class projectKL(object):
 
@@ -67,10 +69,10 @@ class projectKL(object):
                         # evaluate the expression
                         cov_expr.eval(cov_ij,xycor)
                         if cov_ij[0] > 0:
-			  temp_cov_ij += (1.0/3)*(1.0/3)*cov_ij[0]*self.c_volume_array[elem_i]* \
-					  self.c_volume_array[elem_j]
-                cov_mat.setValue(node_i,node_j,temp_cov_ij)
-                cov_mat.setValue(node_j,node_i,temp_cov_ij)
+                            temp_cov_ij += (1.0/3)*(1.0/3)*cov_ij[0]*self.c_volume_array[elem_i]* \
+                            self.c_volume_array[elem_j]
+                            cov_mat.setValue(node_i,node_j,temp_cov_ij)
+                            cov_mat.setValue(node_j,node_i,temp_cov_ij)
         cov_mat.assemblyBegin()
         cov_mat.assemblyEnd()
         print '---------------------------'
@@ -104,7 +106,7 @@ class projectKL(object):
         B.setSizes(self.domain.getNodes(),self.domain.getNodes())
         B.setUp()
 
-	B_ij =  B_temp.array()
+        B_ij =  B_temp.array()
 	 
         v_to_d_map = vertex_to_dof_map(V)
         
@@ -114,11 +116,11 @@ class projectKL(object):
         print '---------------------------'
         print '---------------------------'
         for node_i in range(0, self.domain.getNodes()):
-	  for node_j in range(node_i, self.domain.getNodes()):
-	    B_ij_nodes = B_ij[v_to_d_map[node_i],v_to_d_map[node_j]]
-	    if B_ij_nodes > 0:
-                B.setValue(node_i,node_j,B_ij_nodes)
-	        B.setValue(node_j,node_i,B_ij_nodes)
+            for node_j in range(node_i, self.domain.getNodes()):
+                B_ij_nodes = B_ij[v_to_d_map[node_i],v_to_d_map[node_j]]
+                if B_ij_nodes > 0:
+                    B.setValue(node_i,node_j,B_ij_nodes)
+                    B.setValue(node_j,node_i,B_ij_nodes)
 	
 	B.assemblyBegin()
 	B.assemblyEnd()
@@ -138,14 +140,19 @@ class projectKL(object):
         # turn the flag to true
         self.flag = True
         # get C,B matrices
-        C = PETScMatrix(self.getCovMat(cov_expr))
-        B = PETScMatrix(self._getBMat())
+        C = self.getCovMat(cov_expr)
+        B = self._getBMat()
         # Solve the generalized eigenvalue problem
-        eigensolver = SLEPcEigenSolver(C,B)
-        eigensolver.solve(num_kl)
+        eigensolver = SLEPc.EPS()
+        eigensolver.create()
+        eigensolver.setOperators(C, B)
+        eigensolver.setDimensions(num_kl)
+        eigensolver.setProblemType(SLEPc.EPS.ProblemType.GHEP)
+        eigensolver.setFromOptions()
+        eigensolver.solve()
         # Get the number of eigen values that converged.
-        nconv = eigensolver.get_number_converged()
-
+        #nconv = eigensolver.get_number_converged()
+	
         # Get N eigenpairs where N is the number of KL expansion and check if N < nconv otherwise you had
         # really bad matrix
 
@@ -155,14 +162,21 @@ class projectKL(object):
 
         # store the eigenvalues and eigen functions
         V = FunctionSpace(self._mesh, "CG", 1)
+        x_real = PETSc.Vec().create()
+        x_real.setSizes(self.domain.getNodes())
+        x_real.setUp()
+        x_real.setValues(range(0,self.domain.getNodes()), np.zeros(self.domain.getNodes()))
+#        for i in range(0, self.domain.getNodes()):
+#            x_real.setValue(i, 0, 0.)
+
         for eigen_pairs in range(0,num_kl):
-            lambda_r, lambda_c, x_real, x_complex = eigensolver.get_eigenpair(eigen_pairs)
+            lam = eigensolver.getEigenpair(eigen_pairs, x_real)
             self.eigen_funcs[eigen_pairs] = Function(V)
             # use dof_to_vertex map to map values to the function space
-            self.eigen_funcs[eigen_pairs].vector()[:] = x_real[dof_to_vertex_map(V)]#*np.sqrt(lambda_r)
+            self.eigen_funcs[eigen_pairs].vector()[:] = x_real.getValues(dof_to_vertex_map(V).astype('int32'))
             # divide by norm to make the unit norm again
             self.eigen_funcs[eigen_pairs].vector()[:] = self.eigen_funcs[eigen_pairs].vector()[:] / \
-	      norm(self.eigen_funcs[eigen_pairs])
-            self.eigen_vals[eigen_pairs] = lambda_r
+                        norm(self.eigen_funcs[eigen_pairs])
+            self.eigen_vals[eigen_pairs] = lam.real
 
 

@@ -465,16 +465,10 @@ def verify_regular_sample_set(sampler, input_sample_set,
             test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
-    if np.equal(dim, 1):
-        arrays_samples_dimension = np.array([vec_samples_dimension])
-    else:
-        arrays_samples_dimension = np.meshgrid(
+    arrays_samples_dimension = np.meshgrid(
             *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
-    if np.equal(dim, 1):
-        test_values = arrays_samples_dimension.transpose()
-    else:
-        for i in np.arange(0, dim):
+    for i in np.arange(0, dim):
             test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
     test_sample_set.set_values(test_values)
@@ -519,17 +513,11 @@ def verify_regular_sample_set_domain(sampler, input_domain,
             test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
-    if np.equal(dim, 1):
-        arrays_samples_dimension = np.array([vec_samples_dimension])
-    else:
-        arrays_samples_dimension = np.meshgrid(
+    arrays_samples_dimension = np.meshgrid(
             *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
-    if np.equal(dim, 1):
-        test_values = arrays_samples_dimension.transpose()
-    else:
-        for i in np.arange(0, dim):
-            test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+    for i in np.arange(0, dim):
+        test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
     test_sample_set.set_values(test_values)
 
@@ -574,17 +562,11 @@ def verify_regular_sample_set_dimension(sampler, input_dim,
             test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
-    if np.equal(dim, 1):
-        arrays_samples_dimension = np.array([vec_samples_dimension])
-    else:
-        arrays_samples_dimension = np.meshgrid(
+    arrays_samples_dimension = np.meshgrid(
             *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
-    if np.equal(dim, 1):
-        test_values = arrays_samples_dimension.transpose()
-    else:
-        for i in np.arange(0, dim):
-            test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+    for i in np.arange(0, dim):
+        test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
     test_sample_set.set_values(test_values)
 

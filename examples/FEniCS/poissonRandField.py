@@ -1,12 +1,11 @@
 from dolfin import*
 
-def solvePoissonRandomField(rand_field,mesh,poly_order,f,bcs):
+def solvePoissonRandomField(rand_field,V,f,bcs):
     """
     Solves the poisson equation with a random field :
     (\grad \dot (rand_field \grad(u)) = -f)
     """
     # create the function space
-    V = FunctionSpace(mesh, "CG", poly_order)
     u = TrialFunction(V)
     v = TestFunction(V)
     L = f*v*dx
