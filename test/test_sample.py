@@ -383,7 +383,7 @@ class Test_sample_set(unittest.TestCase):
         jac = np.ones((self.num, 3, self.dim))
         self.sam_set.set_jacobians(jac)
         self.sam_set.global_to_local()
-        self.assertNotEqual(self.sam_set._values_local, None)
+        self.assertNotIn(None,self.sam_set._values_local)
         if comm.size > 1:
             for array_name in sample.sample_set.array_names:
                 current_array = getattr(self.sam_set, array_name+"_local")

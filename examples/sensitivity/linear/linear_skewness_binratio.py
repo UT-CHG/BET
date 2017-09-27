@@ -38,7 +38,7 @@ input_samples = sample.sample_set(input_dim)
 output_samples = sample.sample_set(output_dim)
 
 # Choose random samples in parameter space to solve the model
-input_samples.set_values(np.random.uniform(0, 1, [num_samples, input_dim]))
+input_samples.set_values(np.random.uniform(0, 1, [np.int(num_samples), input_dim]))
 
 # Make the MC assumption and compute the volumes of each voronoi cell
 input_samples.estimate_volume_mc()

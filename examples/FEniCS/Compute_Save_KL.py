@@ -65,7 +65,8 @@ def computeSaveKL(numKL):
              ex=etaX,ey=etaY, C=C)
     '''
     # An Exponential Covariance
-    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)",ex=etaX,ey=etaY, C=C,degree=2)
+    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)",ex=etaX,ey=etaY, C=C, \
+	degree = 10)
 
     # Solve the discrete covariance relation on the mesh
     Lmesh.projectCovToMesh(numKL,cov)

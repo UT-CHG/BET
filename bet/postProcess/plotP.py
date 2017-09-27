@@ -214,13 +214,17 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
             ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
             if lam_ref is not None:
-                ax.plot(lam_ref[i], 0.0, 'ko', markersize=10)
+                ax.plot(lam_ref[i], 
+                        0.02*1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0])),
+                        'ko', markersize=15)
             if lambda_label is None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
             else:
                 label1 = lambda_label[i]
-            ax.set_xlabel(label1) 
-            ax.set_ylabel(r'$\rho$')
+            ax.set_xlabel(label1, fontsize=30) 
+            ax.set_ylabel(r'PDF', fontsize=30)
+            ax.tick_params(axis='both', which='major', 
+                           labelsize=20)
             fig.savefig(filename + "_1D_" + str(i) + file_extension,
                     transparent=True) 
             if interactive:
@@ -290,7 +294,8 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                     interpolation='bicubic', cmap=cm.CMRmap_r, 
                     extent=[lam_domain[i][0], lam_domain[i][1],
                     lam_domain[j][0], lam_domain[j][1]], origin='lower',
-                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, aspect='auto')
+                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, 
+                    aspect='auto')
             if lam_ref is not None:
                 ax.plot(lam_ref[i], lam_ref[j], 'wo', markersize=10)
             if lambda_label is None:
@@ -438,3 +443,111 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
     return marginals_smooth
 
 
+def plot_2D_marginal_contours(marginals, bins, sample_set,
+                              contour_num = 8, 
+                              lam_ref=None, lam_refs = None,
+                              plot_domain = None,
+                              interactive=False,
+                              lambda_label=None, 
+                              contour_font_size = 20,
+                              filename="file", 
+                              file_extension=".png"):
+        
+    """
+    This makes contour plots of every pair of marginals (or joint in 2d case) 
+    of input probability measure on a rectangular grid.
+    If the sample_set object is a discretization object, we assume
+    that the probabilities to be plotted are from the input space.
+
+    .. note::
+
+        Do not specify the file extension in the file name.
+
+    :param marginals: 2D marginal probabilities
+    :type marginals: dictionary with tuples of 2 integers as keys and
+        :class:`~numpy.ndarray` of shape (nbins+1,) as values 
+    :param bins: Endpoints of bins used in calculating marginals
+    :type bins: :class:`~numpy.ndarray` of shape (nbins+1,2)
+    :param sample_set: Object containing samples and probabilities
+    :type sample_set: :class:`~bet.sample.sample_set_base` 
+        or :class:`~bet.sample.discretization`
+    :param filename: Prefix for output files.
+    :type filename: str
+    :param lam_ref: True parameters.
+    :type lam_ref: :class:`~numpy.ndarray` of shape (ndim,) or None
+    :param interactive: Whether or not to display interactive plots.
+    :type interactive: bool
+    :param lambda_label: Label for each parameter for plots.
+    :type lambda_label: list of length nbins of strings or None
+    :param string file_extension: file extenstion
+
+    """
+    if isinstance(sample_set, sample.discretization):
+        sample_obj = sample_set._input_sample_set
+    elif isinstance(sample_set, sample.sample_set_base):
+        sample_obj = sample_set
+    else:
+        raise bad_object("Improper sample object")
+
+    if lam_ref is None:
+        lam_ref = sample_obj._reference_value
+
+    lam_domain = sample_obj.get_domain()
+  
+    matplotlib.rcParams['xtick.direction'] = 'out'
+    matplotlib.rcParams['ytick.direction'] = 'out'
+    matplotlib.rcParams.update({'figure.autolayout': True})
+    
+    if comm.rank == 0:
+        pairs = copy.deepcopy(marginals.keys())
+        pairs.sort()
+        for k, (i, j) in enumerate(pairs):
+            fig = plt.figure(k)
+            ax = fig.add_subplot(111)
+            boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
+            nx = len(bins[i])-1
+            ny = len(bins[j])-1
+            dx = bins[i][1] - bins[i][0]
+            dy = bins[j][1] - bins[j][0]
+
+            x_kernel = np.linspace(-nx*dx/2, nx*dx/2, nx)
+            y_kernel = np.linspace(-ny*dy/2, ny*dy/2, ny)
+            X, Y = np.meshgrid(x_kernel, y_kernel, indexing='ij')
+            quadmesh = ax.contour(marginals[(i, j)].transpose()/boxSize,
+                    contour_num, colors='k', 
+                    extent=[lam_domain[i][0], lam_domain[i][1],
+                    lam_domain[j][0], lam_domain[j][1]], origin='lower',
+                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, 
+                    aspect='auto')
+            if lam_refs is not None:
+                ax.plot(lam_refs[:,i], lam_refs[:,j], 'wo', markersize=20)
+            if lam_ref is not None:
+                ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=20)
+            if lambda_label is None:
+                label1 = r'$\lambda_{' + str(i+1) + '}$'
+                label2 = r'$\lambda_{' + str(j+1) + '}$'
+            else:
+                label1 = lambda_label[i]
+                label2 = lambda_label[j]
+            ax.set_xlabel(label1, fontsize=30) 
+            ax.set_ylabel(label2, fontsize=30)
+            ax.tick_params(axis='both', which='major', 
+                           labelsize=20)
+            plt.clabel(quadmesh, fontsize=contour_font_size, 
+                       inline=1, style='sci')
+            
+            if plot_domain is None:
+                plt.axis([lam_domain[i][0], lam_domain[i][1], 
+                          lam_domain[j][0], lam_domain[j][1]]) 
+            else:
+                plt.axis([plot_domain[i][0], plot_domain[i][1], 
+                          plot_domain[j][0], plot_domain[j][1]]) 
+            fig.savefig(filename + "_2D_contours_" + str(i) + "_" + str(j) +\
+                    file_extension, transparent=True)
+            if interactive:
+                plt.show()
+            else:
+                plt.close()
+ 
+    comm.barrier()
+    
