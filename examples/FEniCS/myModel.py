@@ -95,8 +95,8 @@ def my_model(parameter_samples):
         return v
 
     # Define the QoI maps
-    Chi_1 = CharFunc([0.75, 1.25, 7.75, 8.25])
-    Chi_2 = CharFunc([7.75, 8.25, 0.75, 1.25])
+    Chi_1 = CharFunc((0.75, 1.25, 7.75, 8.25))
+    Chi_2 = CharFunc((7.75, 8.25, 0.75, 1.25))
 
     QoI_samples = np.zeros([numSamples,2])
 

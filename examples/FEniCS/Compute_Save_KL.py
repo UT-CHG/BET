@@ -7,8 +7,19 @@ from meshDS import meshDS
 from projectKL import projectKL
 from poissonRandField import solvePoissonRandomField
 import scipy.io as sio
-import sys
+import argparse
 
+# This has been changed from a function to a script which can be run in
+# simple docker container. The function is defined below, but as a script,
+# this file takes in-line arguments for numKL. Default value is 2.
+
+parser = argparse.ArgumentParser(description='Process some integers.')
+parser.add_argument('Kval', type=int, nargs='?', default='2',
+                    help='an integer for the number of KL terms')
+
+nK = parser.parse_args()
+print(nK.Kval)
+print("which is type: " +str(type(nK.Kval)))
 
 def computeSaveKL(numKL):
     '''
@@ -54,7 +65,7 @@ def computeSaveKL(numKL):
              ex=etaX,ey=etaY, C=C)
     '''
     # An Exponential Covariance
-    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)",ex=etaX,ey=etaY, C=C)
+    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)",ex=etaX,ey=etaY, C=C,degree=2)
 
     # Solve the discrete covariance relation on the mesh
     Lmesh.projectCovToMesh(numKL,cov)
@@ -71,3 +82,8 @@ def computeSaveKL(numKL):
     kl_mdat['KL_eigen_vals'] = eigen_val
 
     sio.savemat("KL_expansion", kl_mdat)
+
+
+# added code which runs KL function defined above with nK terms
+computeSaveKL(nK.Kval)
+print("Were the KL_expansions saved?")
