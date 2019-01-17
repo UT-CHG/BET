@@ -18,5 +18,5 @@ setup(name='bet',
       license='GNU LGPL',
       url='https://github.com/UT-CHG/BET',
       packages=['bet', 'bet.sampling', 'bet.calculateP', 'bet.postProcess', 'bet.sensitivity'],
-      install_requires=['matplotlib<=2.2.3', 'pyDOE', 'scipy<=0.19.1',
-          'numpy<1.13.0', 'nose'])
+      install_requires=['matplotlib<=2.2.3', 'pyDOE', 'scipy',
+          'numpy', 'nose'])
