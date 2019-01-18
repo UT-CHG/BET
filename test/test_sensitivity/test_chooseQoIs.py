@@ -362,7 +362,7 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
             
             self.output_dim = 28
             self.output_set = sample.sample_set(self.output_dim)
-            coeffs = np.zeros((self.input_dim, 2*self.input_dim))
+            coeffs = np.ones((self.input_dim, 2*self.input_dim))
             coeffs = np.append(coeffs, np.random.random((self.input_dim,
                 self.output_dim - 3 * self.input_dim)), axis=1)
             self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)

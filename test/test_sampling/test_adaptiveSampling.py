@@ -319,7 +319,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         for num_hps in results_rD:
             assert isinstance(num_hps, int)
         for inds in sort_ind:
-            assert np.issubdtype(type(inds), int)
+            assert np.issubdtype(type(inds), np.signedinteger)
         for asr in mean_ss:
             assert asr > t_set.min_ratio
             assert asr < t_set.max_ratio
@@ -377,7 +377,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         for num_hps in results_rD:
             assert isinstance(num_hps, int)
         for inds in sort_ind:
-            assert np.issubdtype(type(inds), int)
+            assert np.issubdtype(type(inds), np.signedinteger)
         for asr, mir, mar in zip(mean_ss, min_ratio, max_ratio):
             assert asr > mir
             assert asr < mar
@@ -435,7 +435,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         for num_hps in results_rD:
             assert isinstance(num_hps, int)
         for inds in sort_ind:
-            assert np.issubdtype(type(inds), int)
+            assert np.issubdtype(type(inds), np.signedinteger)
         for asr in mean_ss:
             assert asr > t_set.min_ratio
             assert asr < t_set.max_ratio

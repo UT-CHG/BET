@@ -432,7 +432,6 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
 
         aug_kernel = fftshift(aug_kernel, 0) 
         aug_kernel = fftshift(aug_kernel, 1)
-
         aug_marginals_smooth = ifft2(fft2(aug_kernel)*fft2(aug_marginals))
         aug_marginals_smooth = np.real(aug_marginals_smooth)
         marginals_smooth[(i, j)] = aug_marginals_smooth[augx:augx+nx, 
