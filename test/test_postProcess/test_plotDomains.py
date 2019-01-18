@@ -163,8 +163,9 @@ class test_plotDomains(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotDomains.scatter_3D`
         """
-        sample_nos = [None, 25]
+        sample_nos = [None, [25]]
         p_ref = [None, self.disc._input_sample_set.get_values()[4, :]]
+        #import pdb; pdb.set_trace()        
         for sn, pr in zip(sample_nos, p_ref):
                 self.check_scatter_3D(sn, pr, True)
 
@@ -176,6 +177,8 @@ class test_plotDomains(unittest.TestCase):
         try:
             input_sample_set_temp = sample.sample_set(3)
             input_sample_set_temp.set_values(self.disc._input_sample_set.get_values()[:, [0, 1, 2]])
+            #p_ref = p_ref[0, 1, 2]
+            #import pdb; pdb.set_trace()
             plotDomains.scatter_3D(
                 input_sample_set_temp,
                 sample_nos,
@@ -191,7 +194,7 @@ class test_plotDomains(unittest.TestCase):
         """
         Test :meth:`bet.postProcess.plotDomains.scatter_rhoD`
         """
-        sample_nos = [None, 25]
+        sample_nos = [None, [25]]
         samples = [self.disc._input_sample_set.get_values(),
                    self.disc._input_sample_set.get_values()[:, [0, 1]],
                    self.disc._input_sample_set.get_values()[:, [0, 1, 2]]]
