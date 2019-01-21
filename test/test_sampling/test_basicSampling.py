@@ -19,7 +19,6 @@ import collections
 
 local_path = os.path.join(".")
 
-
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 def test_loadmat():
     """
