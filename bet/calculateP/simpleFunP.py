@@ -188,7 +188,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     (_, k) = s_set.query(d_distr_emulate)
 
     count_neighbors = np.zeros((M,), dtype=np.int)
-    for i in xrange(M):
+    for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Use the binning to define :math:`\rho_{\mathcal{D},M}`
@@ -355,7 +355,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     mins = [Q_ref - 0.5*np.array(rect_size)]
 
     xi = []
-    for i in xrange(dim):
+    for i in range(dim):
         xi.append(np.linspace(mins[0][i], maxes[0][i], 
             cells_per_dimension[i] + 1))
     
@@ -544,7 +544,7 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     logging.info("std.shape "+str(std.shape))
 
     if comm.rank == 0:
-        for i in xrange(len(Q_ref)):
+        for i in range(len(Q_ref)):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M)
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
@@ -559,7 +559,7 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     num_d_emulate_local = int((num_d_emulate/comm.size) + \
                               (comm.rank < num_d_emulate%comm.size))
     d_distr_emulate = np.zeros((num_d_emulate_local, len(Q_ref)))
-    for i in xrange(len(Q_ref)):
+    for i in range(len(Q_ref)):
         d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i],
                                                  num_d_emulate_local)
 
@@ -570,7 +570,7 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     (_, k) = s_set.query(d_distr_emulate)
     count_neighbors = np.zeros((M,), dtype=np.int)
     volumes = np.zeros((M,))
-    for i in xrange(M):
+    for i in range(M):
         Itemp = np.equal(k, i)
         count_neighbors[i] = np.sum(Itemp)
         volumes[i] = np.sum(1.0 / stats.multivariate_normal.pdf \
@@ -650,7 +650,7 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
     num_d_emulate_local = int((num_d_emulate/comm.size) + \
             (comm.rank < num_d_emulate%comm.size))
     d_distr_emulate = np.zeros((num_d_emulate_local, len(Q_ref)))
-    for i in xrange(len(Q_ref)):
+    for i in range(len(Q_ref)):
         d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i],
                                                  num_d_emulate_local)
 
@@ -661,7 +661,7 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
     (_, k) = s_set.query(d_distr_emulate)
     count_neighbors = np.zeros((M,), dtype=np.int)
     # volumes = np.zeros((M,))
-    for i in xrange(M):
+    for i in range(M):
         Itemp = np.equal(k, i)
         count_neighbors[i] = np.sum(Itemp)
 
@@ -769,7 +769,7 @@ def user_partition_user_distribution(data_set, data_partition_set,
     (_, k) = s_set.query(d_distr_emulate)
 
     count_neighbors = np.zeros((M,), dtype=np.int)
-    for i in xrange(M):
+    for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Use the binning to define :math:`\rho_{\mathcal{D},M}`

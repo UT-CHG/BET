@@ -527,7 +527,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     # (e.g. i, where \lambda_i is a coordinate in the parameter space), then
     # set them to be the the counting numbers.
     if dim_nums is None:
-        dim_nums = 1 + np.array(range(sample_obj.get_values().shape[1]))
+        dim_nums = 1 + np.array(list(range(sample_obj.get_values().shape[1])))
     # Create the labels based on the user selected parameter coordinates
     xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
     ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
@@ -605,7 +605,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
     if Q_nums is None:
-        Q_nums = range(data_obj.get_dim())
+        Q_nums = list(range(data_obj.get_dim()))
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim is None:
@@ -762,7 +762,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
                 pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
-        for i in xrange(Q_ref.shape[0]):
+        for i in range(Q_ref.shape[0]):
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
     if save:
@@ -814,7 +814,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
     # Create list of all the parameter coordinates
-    p_nums = range(sample_obj.get_dim())
+    p_nums = list(range(sample_obj.get_dim()))
 
     # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
     # other parameters

@@ -46,7 +46,7 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
         cluster_set.set_domain(input_domain)
     cluster_set.set_values(centers)
 
-    for i in xrange(num_centers):
+    for i in range(num_centers):
         in_bounds = 0
         inflate = 1.0
         while in_bounds < num_close:
@@ -508,8 +508,8 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
         1])
 
     # Construct indices for CFD gradient approxiation
-    inds = np.repeat(range(0, 2 * input_dim * num_centers, 2 * input_dim),
-        input_dim) + np.tile(range(0, input_dim), num_centers)
+    inds = np.repeat(list(range(0, 2 * input_dim * num_centers, 2 * input_dim)),
+        input_dim) + np.tile(list(range(0, input_dim)), num_centers)
     inds = np.array([inds, inds+input_dim]).transpose()
 
     gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / radii_vec)

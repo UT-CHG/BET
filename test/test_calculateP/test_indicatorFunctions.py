@@ -84,7 +84,7 @@ class check_inside(object):
         self.outcoords_sphere = util.meshgrid_ndim(outcoords_sphere)
         self.oncoords_sphere = np.row_stack((-np.eye(dim),
             np.eye(dim).transpose()))*self.radius+self.center 
-        print "SPHERE", self.center, self.radius, self.oncoords_sphere
+        print("SPHERE", self.center, self.radius, self.oncoords_sphere)
 
     def test_hyperrectangle(self):
         """
