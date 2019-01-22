@@ -1018,8 +1018,9 @@ class sample_set_base(object):
         :param int n_mc_points: If estimate is True, number of MC points to use
         """
         num = self.check_num()
-        n_mc_points_local = (n_mc_points/comm.size) + \
-                            (comm.rank < n_mc_points%comm.size)
+        n_mc_points = int(n_mc_points) # enforce for Python 3
+        n_mc_points_local = int(n_mc_points/comm.size) + \
+                            int(comm.rank < n_mc_points%comm.size)
         width = self._domain[:, 1] - self._domain[:, 0]
         mc_points = width*np.random.random((n_mc_points_local,
             self._domain.shape[0])) + self._domain[:, 0]
@@ -1497,10 +1498,10 @@ class voronoi_sample_set(sample_set_base):
 
         """
         num = self.check_num()
-
+        n_mc_points = int(n_mc_points) # enforce for Python 3
         samples = np.copy(self.get_values())
-        n_mc_points_local = (n_mc_points/comm.size) + \
-                            (comm.rank < n_mc_points%comm.size)
+        n_mc_points_local = int(n_mc_points/comm.size) + \
+                            int(comm.rank < n_mc_points%comm.size)
 
         # normalize the samples
         if normalize:
@@ -1559,10 +1560,10 @@ class voronoi_sample_set(sample_set_base):
 
         """
         num = self.check_num()
-
+        n_mc_points = int(n_mc_points) # enforce for Python 3
         samples = np.copy(self.get_values())
-        n_mc_points_local = (n_mc_points/comm.size) + \
-                            (comm.rank < n_mc_points%comm.size)
+        n_mc_points_local = int(n_mc_points/comm.size) + \
+                            int(comm.rank < n_mc_points%comm.size)
 
         # normalize the samples
         if normalize:
@@ -1647,7 +1648,8 @@ class voronoi_sample_set(sample_set_base):
         self.update_bounds()
         samples = samples - self._left
         samples = samples/self._width
-
+        num_emulate_local = int(num_emulate_local) # enforce for Python 3
+        max_num_emulate = int(max_num_emulate)
         kdtree = spatial.KDTree(samples)
 
         # for each sample determine the appropriate radius of the Lp ball (this
