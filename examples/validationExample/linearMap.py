@@ -168,7 +168,7 @@ plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
                                                         nbins = [30, 30])
 
-# plot 2d marginal probs
+# plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
                              filename = "validation_raw",
                              file_extension = ".eps")
@@ -176,7 +176,7 @@ plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.1)
 
-# plot 2d marginal probs
+# plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
                              filename = "validation_smooth",
                              file_extension = ".eps")
