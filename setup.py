@@ -11,12 +11,12 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='bet',
-      version='2.0.0',
+      version='2.0.1',
       description='Butler, Estep, Tavener method',
       author='Steven Mattis',
       author_email='steve.a.mattis@gmail.com',
       license='GNU LGPL',
       url='https://github.com/UT-CHG/BET',
       packages=['bet', 'bet.sampling', 'bet.calculateP', 'bet.postProcess', 'bet.sensitivity'],
-      install_requires=['matplotlib<=2.2.3', 'pyDOE', 'scipy<=1.1.0',
-          'numpy<=1.15.4', 'nose'])
+      install_requires=['matplotlib<=2.2.3', 'pyDOE', 'scipy<=1.2.0',
+          'numpy<=1.16.0', 'nose'])
