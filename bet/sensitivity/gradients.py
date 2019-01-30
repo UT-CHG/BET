@@ -318,7 +318,7 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
     # If centers is None we assume the user chose clusters of size
     # input_dim + 2
     if num_centers is None:
-        num_centers = num_model_samples / (input_dim + 2)
+        num_centers = num_model_samples // (input_dim + 2)
     centers = samples[:num_centers, :]
 
     rbf_tensor = np.zeros([num_centers, num_model_samples, input_dim])
@@ -412,7 +412,7 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
 
     num_model_samples = cluster_discretization.check_nums()
     input_dim = cluster_discretization._input_sample_set.get_dim()
-    num_centers = num_model_samples / (input_dim + 1)
+    num_centers = num_model_samples // (input_dim + 1)
 
     # Find radii_vec from the first cluster of samples
     radii_vec = samples[num_centers:num_centers + input_dim, :] - samples[0, :]
@@ -494,7 +494,7 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
     num_model_samples = cluster_discretization.check_nums()
     input_dim = cluster_discretization._input_sample_set.get_dim()
 
-    num_centers = num_model_samples / (2*input_dim + 1)
+    num_centers = num_model_samples // (2*input_dim + 1)
 
     # Find radii_vec from the first cluster of samples
     radii_vec = samples[num_centers:num_centers + input_dim, :] - samples[0, :]

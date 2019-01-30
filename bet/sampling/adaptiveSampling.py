@@ -68,11 +68,11 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
             mdat = sio.loadmat(save_file)
             if num_chains is None: 
                 num_chains = np.squeeze(mdat['num_chains'])
-            num_chains_pproc = num_chains / comm.size
+            num_chains_pproc = num_chains // comm.size
             disc = sample.load_discretization(save_file)
             kern_old = np.squeeze(mdat['kern_old'])
             all_step_ratios = np.squeeze(mdat['step_ratios'])
-            chain_length = disc.check_nums()/num_chains
+            chain_length = disc.check_nums() // num_chains
             if all_step_ratios.shape == (num_chains,
                                                 chain_length):
                 msg = "Serial file, from completed"
@@ -115,9 +115,9 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
                 disc_global.extend(dlist)
             # get num_proc and num_chains_pproc for previous run
             old_num_proc = max((len(mdat_list), 1))
-            old_num_chains_pproc = num_chains/old_num_proc
+            old_num_chains_pproc = num_chains // old_num_proc
             # get batch size and/or number of dimensions
-            chain_length = disc_global[0].check_nums()/\
+            chain_length = disc_global[0].check_nums() // \
                     old_num_chains_pproc
             disc = disc_global[0].copy()
             # create lists of local data
@@ -148,11 +148,11 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         mdat = sio.loadmat(save_file)
         if num_chains is None: 
             num_chains = np.squeeze(mdat['num_chains'])
-        num_chains_pproc = num_chains / comm.size
+        num_chains_pproc = num_chains // comm.size
         disc = sample.load_discretization(save_file)
         kern_old = np.squeeze(mdat['kern_old'])
         all_step_ratios = np.squeeze(mdat['step_ratios'])
-        chain_length = disc.check_nums()/num_chains
+        chain_length = disc.check_nums() // num_chains
         # reshape if parallel
         if comm.size > 1:
             temp_input = np.reshape(disc._input_sample_set.\

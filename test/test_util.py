@@ -70,7 +70,7 @@ def compare_get_global_values(i, provide_shape):
     else:
         original_array = None
     original_array = comm.bcast(original_array)
-    my_len = original_array.shape[0]/comm.size
+    my_len = original_array.shape[0]//comm.size
     my_index = list(range(0+comm.rank*my_len, (comm.rank+1)*my_len))
     if i == 0:
         my_array = original_array[my_index]
