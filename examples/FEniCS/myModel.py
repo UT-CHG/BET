@@ -107,7 +107,7 @@ def my_model(parameter_samples):
 
     for i in range(0, numSamples):
 
-        print("Sample point number: %g" % i)
+        print "Sample point number: %g" % i
 
         # create a temp array to store logPerm as sum of KL expansions
         # logPerm is log permeability

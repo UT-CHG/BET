@@ -154,7 +154,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     discretization = disc(input_sample_set, output_sample_set)
 
     # evaluate the model at the sample
-    print(savefile, input_sample_set.get_dim())
+    print savefile, input_sample_set.get_dim()
     my_discretization = sampler.compute_QoI_and_create_discretization(\
         input_sample_set, savefile, globalize=True) 
     #comm.barrier()
@@ -174,7 +174,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
     # did the file get correctly saved?
     saved_disc = bet.sample.load_discretization(savefile)
     mdat = sio.loadmat(savefile)
-    print("HERE HERE", mdat, my_num)
+    print "HERE HERE", mdat, my_num
     #comm.barrier()
     # compare the samples
     nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
@@ -342,7 +342,7 @@ def verify_random_sample_set_domain(sampler, sample_type, input_domain,
     np.random.seed(1)
 
     # create the sample set from the domain
-    print(sample_type)
+    print sample_type
     my_sample_set = sampler.random_sample_set(sample_type, input_domain,
                                             num_samples=num_samples)
 
@@ -423,7 +423,7 @@ def verify_random_sample_set(sampler, sample_type, input_sample_set,
     np.random.seed(1)
 
     # create the sample set from the domain
-    print(sample_type)
+    print sample_type
     my_sample_set = sampler.random_sample_set(sample_type, input_sample_set,
                                                   num_samples=num_samples)
 
@@ -671,8 +671,8 @@ class Test_basic_sampler(unittest.TestCase):
             list_of_sample_sets[i] = sample_set(list_of_dims[i])
             list_of_sample_sets[i].set_values(array)
 
-        test_list = list(zip(self.models, self.samplers, list_of_sample_sets, 
-                self.savefiles))
+        test_list = zip(self.models, self.samplers, list_of_sample_sets, 
+                self.savefiles)
 
         for model, sampler, input_sample_set, savefile in test_list: 
                 verify_compute_QoI_and_create_discretization(model, sampler,
@@ -690,7 +690,7 @@ class Test_basic_sampler(unittest.TestCase):
                              self.input_sample_set5,
                              self.input_sample_set6]
 
-        test_list = list(zip(self.samplers, input_sample_set_list))
+        test_list = zip(self.samplers, input_sample_set_list)
 
         for sampler, input_sample_set in test_list:
             for sample_type in ["random", "r", "lhs"]:
@@ -706,7 +706,7 @@ class Test_basic_sampler(unittest.TestCase):
         input_domain_list = [self.input_domain1, self.input_domain1,
                              self.input_domain3, self.input_domain3, self.input_domain10]
 
-        test_list = list(zip(self.samplers, input_domain_list))
+        test_list = zip(self.samplers, input_domain_list)
 
         for sampler, input_domain in test_list:
             for sample_type in ["random", "r", "lhs"]:
@@ -721,7 +721,7 @@ class Test_basic_sampler(unittest.TestCase):
         """
         input_dim_list = [self.input_dim1, self.input_dim2, self.input_dim3]
 
-        test_list = list(zip(self.samplers, input_dim_list))
+        test_list = zip(self.samplers, input_dim_list)
 
         for sampler, input_dim in test_list:
             for sample_type in ["random", "r", "lhs"]:
@@ -739,7 +739,7 @@ class Test_basic_sampler(unittest.TestCase):
                                  self.input_sample_set4,
                                  self.input_sample_set5]
 
-        test_list = list(zip(self.samplers, input_sample_set_list))
+        test_list = zip(self.samplers, input_sample_set_list)
 
         for sampler, input_sample_set in test_list:
             for num_samples_per_dim in [None, 10]:
@@ -753,7 +753,7 @@ class Test_basic_sampler(unittest.TestCase):
         input_domain_list= [self.input_domain1,
                             self.input_domain3]
 
-        test_list = list(zip(self.samplers, input_domain_list))
+        test_list = zip(self.samplers, input_domain_list)
 
         for sampler, input_domain in test_list:
             for num_samples_per_dim in [None, 10]:
@@ -767,7 +767,7 @@ class Test_basic_sampler(unittest.TestCase):
         input_dimension_list = [self.input_dim1,
                              self.input_dim2]
 
-        test_list = list(zip(self.samplers, input_dimension_list))
+        test_list = zip(self.samplers, input_dimension_list)
 
         for sampler, input_dim in test_list:
             for num_samples_per_dim in [None, 10]:
@@ -781,8 +781,8 @@ class Test_basic_sampler(unittest.TestCase):
         input_domain_list = [self.input_domain1, self.input_domain1,
                              self.input_domain3, self.input_domain3, self.input_domain10]
 
-        test_list = list(zip(self.models, self.samplers, input_domain_list,
-                        self.savefiles))
+        test_list = zip(self.models, self.samplers, input_domain_list,
+                        self.savefiles)
 
         for model, sampler, input_domain, savefile in test_list:
             for sample_type in ["random", "r", "lhs"]:

@@ -122,7 +122,7 @@ class Test_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -153,7 +153,7 @@ class Test_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -816,7 +816,7 @@ class TestEstimateVolume(unittest.TestCase):
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
-        print(util.meshgrid_ndim(d1_arrays).shape)
+        print util.meshgrid_ndim(d1_arrays).shape
         self.volume_exact = 1.0/self.s_set._values.shape[0]
         self.s_set.estimate_volume(n_mc_points= 1001)
         self.lam_vol = self.s_set._volumes
@@ -824,7 +824,7 @@ class TestEstimateVolume(unittest.TestCase):
         """
         Check the dimension.
         """
-        print(self.lam_vol.shape, self.s_set._values.shape)
+        print self.lam_vol.shape, self.s_set._values.shape
         nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
        
     def test_volumes(self):
@@ -864,7 +864,7 @@ class TestEstimateVolumeEmulated(unittest.TestCase):
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
-        print(util.meshgrid_ndim(d1_arrays).shape)
+        print util.meshgrid_ndim(d1_arrays).shape
         self.volume_exact = 1.0/self.s_set._values.shape[0]
         emulated_samples = self.s_set.copy()
         emulated_samples.update_bounds_local(1001)
@@ -877,7 +877,7 @@ class TestEstimateVolumeEmulated(unittest.TestCase):
         """
         Check the dimension.
         """
-        print(self.lam_vol.shape, self.s_set._values.shape)
+        print self.lam_vol.shape, self.s_set._values.shape
         nptest.assert_array_equal(self.lam_vol.shape, (len(self.s_set._values), ))
        
     def test_volumes(self):
@@ -1157,7 +1157,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -1187,7 +1187,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -1276,7 +1276,7 @@ class Test_ball_sample_set(unittest.TestCase):
         else:
             local_file_name = file_name
 
-        print(os.path.exists(local_file_name))
+        print os.path.exists(local_file_name)
 
         sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
         comm.barrier()
@@ -1289,7 +1289,7 @@ class Test_ball_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -1320,7 +1320,7 @@ class Test_ball_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -1409,7 +1409,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
         else:
             local_file_name = file_name
 
-        print(os.path.exists(local_file_name))
+        print os.path.exists(local_file_name)
 
         sample.save_sample_set(self.sam_set, file_name, "TEST", globalize)
         comm.barrier()
@@ -1428,7 +1428,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)
@@ -1458,7 +1458,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
         for attrname in sample.sample_set.vector_names+sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
-            print(attrname)
+            print attrname
             if curr_attr is not None:
                 nptest.assert_array_equal(getattr(self.sam_set, attrname),
                         curr_attr)

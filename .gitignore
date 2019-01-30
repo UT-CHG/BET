@@ -4,5 +4,4 @@ hershel_bin
 gh-pages/
 *.pyc
 *~
-*.bak
 build/
