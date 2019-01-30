@@ -134,7 +134,7 @@ def verify_samples(QoI_range, sampler, input_domain,
         print("COLD", comm.rank)
     else:
         # cold start
-        sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
+        sampler1 = asam.sampler(sampler.num_samples // 2, sampler.chain_length // 2,
                 sampler.lb_model)
         (my_discretization, all_step_ratios) = sampler1.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
@@ -901,7 +901,7 @@ class transition_set(object):
         # define step_ratio from output_set
         local_num = self.output_set._values_local.shape[0] 
         step_ratio = 0.5*np.ones(local_num,)
-        step_ratio[local_num/2:] = .1
+        step_ratio[local_num//2:] = .1
         step_size = np.repeat([step_ratio], self.output_set.get_dim(),
                 0).transpose()*self.output_set._width_local
         # take a step

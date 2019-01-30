@@ -452,7 +452,7 @@ class sampler(bsam.sampler):
 
             # Determine how many batches have been run
             start_ind = disc._input_sample_set.get_values_local().\
-                    shape[0]/self.num_chains_pproc
+                    shape[0] // self.num_chains_pproc
         
         mdat = dict()
         self.update_mdict(mdat)
