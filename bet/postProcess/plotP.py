@@ -204,7 +204,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     lam_domain = sample_obj.get_domain()
 
     if comm.rank == 0:
-        index = copy.deepcopy(marginals.keys())
+        index = copy.deepcopy(list(marginals.keys()))
         index.sort()
         for i in index:
             x_range = np.linspace(lam_domain[i, 0], lam_domain[i, 1],
@@ -284,7 +284,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
         from mpl_toolkits.mplot3d import Axes3D
         from matplotlib.ticker import LinearLocator, FormatStrFormatter
     if comm.rank == 0:
-        pairs = copy.deepcopy(marginals.keys())
+        pairs = copy.deepcopy(list(marginals.keys()))
         pairs.sort()
         for k, (i, j) in enumerate(pairs):
             fig = plt.figure(k)
@@ -367,7 +367,7 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
     if isinstance(sigma, float):
         sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
-    index = copy.deepcopy(marginals.keys())
+    index = copy.deepcopy(list(marginals.keys()))
     index.sort()
     for i in index:    
         nx = len(bins[i])-1
@@ -408,7 +408,7 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
     if isinstance(sigma, float):
         sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
-    pairs = copy.deepcopy(marginals.keys())
+    pairs = copy.deepcopy(list(marginals.keys()))
     pairs.sort()
     for (i, j) in pairs:   
         nx = len(bins[i])-1
@@ -498,7 +498,7 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
     matplotlib.rcParams.update({'figure.autolayout': True})
     
     if comm.rank == 0:
-        pairs = copy.deepcopy(marginals.keys())
+        pairs = copy.deepcopy(list(marginals.keys()))
         pairs.sort()
         for k, (i, j) in enumerate(pairs):
             fig = plt.figure(k)

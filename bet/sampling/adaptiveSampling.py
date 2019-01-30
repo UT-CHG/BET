@@ -44,7 +44,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         ``kern_old``)
     
     """
-    print hot_start
+    print(hot_start)
     if hot_start is None:
         hot_start = 1
    # LOAD FILES
@@ -180,7 +180,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
             0)[comm.rank], (num_chains_pproc,), 'F')
     else:
         all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
-    print chain_length*num_chains, chain_length, lb_model
+    print(chain_length*num_chains, chain_length, lb_model)
     new_sampler = sampler(chain_length*num_chains, chain_length, lb_model) 
     return (new_sampler, disc, all_step_ratios, kern_old)
 
@@ -216,7 +216,7 @@ class sampler(bsam.sampler):
         #:    ndim), and returns data (N, mdim)
         self.lb_model = lb_model
         #: batch number for this particular chain 
-        self.sample_batch_no = np.repeat(range(self.num_chains), chain_length,
+        self.sample_batch_no = np.repeat(list(range(self.num_chains)), chain_length,
                 0)
 
     def update_mdict(self, mdict):
@@ -458,7 +458,7 @@ class sampler(bsam.sampler):
         self.update_mdict(mdat)
         input_old.update_bounds_local()
 
-        for batch in xrange(start_ind, self.chain_length):
+        for batch in range(start_ind, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples input_new.
             input_new = t_set.step(step_ratio, input_old)
@@ -759,7 +759,7 @@ class maxima_kernel(kernel):
         # Evaluate kernel for new data.
         kern_new = np.zeros((output_new.shape[0]))
 
-        for i in xrange(output_new.shape[0]):
+        for i in range(output_new.shape[0]):
             # calculate distance from each of the maxima
             vec_from_maxima = np.repeat([output_new[i, :]], self.num_maxima, 0)
             vec_from_maxima = vec_from_maxima - self.MAXIMA
@@ -850,7 +850,7 @@ class maxima_mean_kernel(maxima_kernel):
         kern_new = np.zeros((output_new.shape[0]))
         self.current_clength = self.current_clength + 1
 
-        for i in xrange(output_new.shape[0]):
+        for i in range(output_new.shape[0]):
             # calculate distance from each of the maxima
             vec_from_maxima = np.repeat([output_new[i, :]], self.num_maxima, 0)
             vec_from_maxima = vec_from_maxima - self.MAXIMA
