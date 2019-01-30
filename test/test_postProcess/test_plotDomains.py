@@ -22,7 +22,6 @@ import bet.sample as sample
 
 local_path = '.'
 
-@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  
@@ -33,6 +32,9 @@ class test_plotDomains(unittest.TestCase):
         """
         Set up problem.
         """
+        if comm.size > 1:
+            self.skipTest('Test skipped in parallel mode.')
+
         # Create sample_set object for input_samples
         input_samples = sample.sample_set(4)
 
