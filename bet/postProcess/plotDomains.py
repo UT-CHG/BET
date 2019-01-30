@@ -606,14 +606,13 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     # set them to be the the counting numbers.
     if Q_nums is None:
         Q_nums = list(range(data_obj.get_dim()))
-
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim is None:
         showdim = 0
 
     # Create a folder for these figures if it doesn't already exist
-    if not os.path.exists(img_folder):
+    if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
 
     # Make sure the shape of Q_ref is correct
@@ -807,16 +806,13 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
     """
     if not isinstance(sample_obj, sample.sample_set_base):
         raise bad_object("Improper sample object")
-
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim is None:
         showdim = 0
-
     # Create a folder for these figures if it doesn't already exist
-    if not os.path.exists(img_folder):
+    if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
-
     # Create list of all the parameter coordinates
     p_nums = list(range(sample_obj.get_dim()))
 
