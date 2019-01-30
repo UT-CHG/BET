@@ -22,6 +22,7 @@ import bet.sample as sample
 
 local_path = '.'
 
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  
@@ -32,9 +33,6 @@ class test_plotDomains(unittest.TestCase):
         """
         Set up problem.
         """
-        if comm.size > 1:
-            self.skipTest('Test skipped in parallel mode.')
-
         # Create sample_set object for input_samples
         input_samples = sample.sample_set(4)
 
@@ -267,13 +265,13 @@ class test_plotDomains(unittest.TestCase):
                         None, None, qnums, None, showdim, save, False) 
             go = True
         except (RuntimeError, TypeError, NameError):
-            print("ERROR")
-            print(data.shape)
-            print(q_ref)
-            print(sample_nos)
-            print(save)
-            print(qnums)
-            print(showdim)
+            print "ERROR"
+            print data.shape
+            print q_ref
+            print sample_nos
+            print save
+            print qnums
+            print showdim
             go = False
         nptest.assert_equal(go, True)
 

@@ -71,7 +71,7 @@ of QoI.)
 '''
 indexstart = 0
 indexstop = 20
-qoiIndices = list(range(indexstart, indexstop))
+qoiIndices = range(indexstart, indexstop)
 
 # Initialize the necessary sample objects
 input_samples = sample.sample_set(2)
@@ -104,8 +104,8 @@ index2 = 4
 (specific_skewness, _) = cqoi.calculate_avg_skewness(input_samples_centers,
         qoi_set=[index1, index2])
 if comm.rank == 0:
-    print('The average skewness of the QoI map defined by indices ' + str(index1) + \
-        ' and ' + str(index2) + ' is ' + str(specific_skewness))
+    print 'The average skewness of the QoI map defined by indices ' + str(index1) + \
+        ' and ' + str(index2) + ' is ' + str(specific_skewness)
 
 # Compute the skewness for each of the possible QoI maps determined by choosing
 # any two QoI from the set defined by the indices selected by the
@@ -117,7 +117,7 @@ qoi1 = skewness_indices_mat[0, 1]
 qoi2 = skewness_indices_mat[0, 2]
 
 if comm.rank == 0:
-    print('The 10 smallest condition numbers are in the first column, the \
-corresponding sets of QoIs are in the following columns.')
-    print(skewness_indices_mat[:10, :])
+    print 'The 10 smallest condition numbers are in the first column, the \
+corresponding sets of QoIs are in the following columns.'
+    print skewness_indices_mat[:10, :]
 

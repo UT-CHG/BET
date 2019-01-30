@@ -119,5 +119,5 @@ percentile = 1.0
 # Print the number of samples that make up the highest percentile percent
 # samples and ratio of the volume of the parameter domain they take up
 if comm.rank == 0:
-    print((num_samples, np.sum(input_samples.get_volumes()[indices_in_inverse])))
+    print (num_samples, np.sum(input_samples.get_volumes()[indices_in_inverse]))
 

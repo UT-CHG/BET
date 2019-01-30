@@ -186,10 +186,10 @@ class uniform_partition_uniform_distribution_rectangle_scaled(prob_uniform):
             np.all(np.less_equal(self.d_distr_samples,
             self.rect_domain[:, 1]), axis=1)) 
         msg = "Due to the inherent randomness of this method, this may fail."
-        print(msg)
-        print(np.sum(self.rho_D_M[inside] >= 0.0))
+        print msg
+        print np.sum(self.rho_D_M[inside] >= 0.0)
         assert np.sum(self.rho_D_M[inside] >= 0.0)<100
-        print(np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0))
+        print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
         assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)<100
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_01D(data_01D,
@@ -1033,10 +1033,10 @@ class uniform_partition_uniform_distribution_rectangle_size(prob_uniform):
                                 np.all(np.less_equal(self.d_distr_samples,
                                                      self.rect_domain[:, 1]), axis=1))
         msg = "Due to the inherent randomness of this method, this may fail."
-        print(msg)
-        print(np.sum(self.rho_D_M[inside] >= 0.0))
+        print msg
+        print np.sum(self.rho_D_M[inside] >= 0.0)
         assert np.sum(self.rho_D_M[inside] >= 0.0) < 100
-        print(np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0))
+        print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
         assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0) < 100
 
 
@@ -1144,10 +1144,10 @@ class uniform_partition_uniform_distribution_rectangle_domain(prob_uniform):
                                 np.all(np.less_equal(self.d_distr_samples,
                                                      self.rect_domain[:, 1]), axis=1))
         msg = "Due to the inherent randomness of this method, this may fail."
-        print(msg)
-        print(np.sum(self.rho_D_M[inside] >= 0.0))
+        print msg
+        print np.sum(self.rho_D_M[inside] >= 0.0)
         assert np.sum(self.rho_D_M[inside] >= 0.0) < 100
-        print(np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0))
+        print np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0)
         assert np.sum(self.rho_D_M[np.logical_not(inside)] == 0.0) < 100
 
 
