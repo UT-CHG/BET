@@ -4,4 +4,11 @@ hershel_bin
 gh-pages/
 *.pyc
 *~
+*.ipynb_checkpoints/
+*.bak
 build/
+*.png
+*.eps
+*.mat
+dist/
+bet.egg-info/
