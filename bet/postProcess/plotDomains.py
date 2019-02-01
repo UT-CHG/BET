@@ -98,9 +98,10 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
 
     markersize = 75
     color = color[sample_nos]
+    color = np.reshape(color, -1) # handle scalar scatterplots in in matplotlib>=3.0
     # create the scatter plot for the samples specified by sample_nos
-    plt.scatter(sample_obj.get_values()[sample_nos, 0],
-                sample_obj.get_values()[sample_nos, 1],
+    plt.scatter(np.reshape(sample_obj.get_values()[sample_nos, 0], -1),
+                np.reshape(sample_obj.get_values()[sample_nos, 1], -1),
                 c=color, s=markersize, alpha=.75, linewidth=.1, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
@@ -297,13 +298,13 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     else:
         cmap = plt.cm.PuBu
     markersize = 75
-    color = color[sample_nos]
+    color = np.reshape(color[sample_nos],-1) 
     # create the scatter plot for the samples specified by sample_nos
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    p = ax.scatter(sample_obj.get_values()[sample_nos, 0],
-                   sample_obj.get_values()[sample_nos, 1],
-                   sample_obj.get_values()[sample_nos, 2],
+    p = ax.scatter(np.reshape(sample_obj.get_values()[sample_nos, 0], -1),
+                   np.reshape(sample_obj.get_values()[sample_nos, 1], -1),
+                   np.reshape(sample_obj.get_values()[sample_nos, 2], -1),
                    alpha=.75, linewidth=.1, c=color, s=markersize, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
