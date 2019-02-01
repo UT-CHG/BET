@@ -1,8 +1,6 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# -*- coding: utf-8 -*-
-# Lindley Graham 3/10/2014
-"""
+r"""
 This module contains functions for adaptive random sampling. We assume we are
 given access to a model, a parameter space, and a data space. The model is a
 map from the paramter space to the data space. We desire to build up a set of

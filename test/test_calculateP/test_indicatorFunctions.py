@@ -1,7 +1,5 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# -*- coding: utf-8 -*-
-# Lindley Graham 10/16/2015
 """
 Test methods in :mod:`bet.calculateP.indicatorFunctions`. We only test for
 dimensions 1, 2, 3.

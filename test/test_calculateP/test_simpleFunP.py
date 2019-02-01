@@ -1,6 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
-
-# Lindley Graham 04/09/2015
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module contains tests for :module:`bet.calculateP.simpleFunP`

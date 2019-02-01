@@ -1,6 +1,5 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# Lindley Graham 04/07/2015
 """
 This module contains unittests for :mod:`~bet.sampling.basicSampling:`
 """

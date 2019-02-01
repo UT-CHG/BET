@@ -1,6 +1,5 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# Lindley Graham 4/15/2014
 """
 This module contains functions for sampling. We assume we are given access to a
 model, a parameter space, and a data space. The model is a map from the

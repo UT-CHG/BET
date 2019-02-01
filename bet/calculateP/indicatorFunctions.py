@@ -1,6 +1,5 @@
-# Copyright (C) 2015-2016 The BET Development Team
+# Copyright (C) 2015-2019 The BET Development Team
 
-# Lindley Graham 04/27/2015
 r"""
 This module provides various indicator functions, :math:`\mathbf{1}_A` for
 various sets :math:`A \subset \mathbb{R}^n` where given a set of points in

@@ -1,9 +1,7 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# -*- coding: utf-8 -*-
-# Lindley Graham 04/07/2015
 
-"""
+r"""
 This module contains unittests for :mod:`~bet.sampling.adaptiveSampling`
 """
 
