@@ -20,7 +20,7 @@ before_install:
 
 install:
 #  - conda install --yes python==$TRAVIS_PYTHON_VERSION pip nose numpy 
-  - conda conda create -y -n py python=$TRAVIS_PYTHON_VERSION && source activate py
+  - conda create -y -n py python=$TRAVIS_PYTHON_VERSION && source activate py
   - pip install pyDOE mpi4py scipy matplotlib nose numpy
   - python setup.py install
 
