@@ -10,5 +10,6 @@ build/
 *.png
 *.eps
 *.mat
+*.swp
 dist/
 bet.egg-info/
