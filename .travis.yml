@@ -1,19 +1,22 @@
 language: python
 python:
     - "2.7"
+    - "3.4"
+    - "3.5"
     - "3.6"
 
 before_install:
   - "export DISPLAY=:99.0"
   - "sh -e /etc/init.d/xvfb start"
   - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev
-#  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-#  - bash miniconda.sh -b -p $HOME/miniconda
-#  - export PATH="$HOME/miniconda/bin:$PATH"
-#  - conda update --yes conda
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - bash miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  - conda update --yes conda
 
 install:
 #  - conda install --yes python==$TRAVIS_PYTHON_VERSION pip nose numpy 
+  - conda create -y -n py python=$TRAVIS_PYTHON_VERSION pip && source activate py
   - pip install pyDOE mpi4py scipy matplotlib nose numpy
   - python setup.py install
 
@@ -27,10 +30,10 @@ script:
 notifications:
     email:
         recipients:
-            - steve.a.mattis@gmail.com
-            - lichgraham@gmail.com
-            - scottw13@gmail.com
-            - michael.pilosov@ucdenver.edu
+#            - steve.a.mattis@gmail.com
+#            - lichgraham@gmail.com
+#            - scottw13@gmail.com
+#            - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
 # whitelist
