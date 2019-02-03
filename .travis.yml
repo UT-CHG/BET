@@ -1,6 +1,7 @@
 language: python
 python:
     - "2.7"
+    - "3.5"
     - "3.6"
 
 before_install:
@@ -28,10 +29,10 @@ script:
 notifications:
     email:
         recipients:
-#            - steve.a.mattis@gmail.com
+            - steve.a.mattis@gmail.com
 #            - lichgraham@gmail.com
 #            - scottw13@gmail.com
-#            - michael.pilosov@ucdenver.edu
+            - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
 # whitelist
