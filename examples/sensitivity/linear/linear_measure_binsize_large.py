@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This example generates uniform random samples in the unit hypercube and
@@ -10,7 +10,7 @@ Every real world problem requires special attention regarding how we choose
 *optimal QoIs*.  This set of examples (examples/sensitivity/linear) covers
 some of the more common scenarios using easy to understand linear maps.
 
-In this *volume_binsize_large* example we choose *optimal QoIs* to be the set of 
+In this *measure_binsize_large* example we choose *optimal QoIs* to be the set of 
 QoIs of size input_dim that produces the smallest support of the inverse 
 solution, assuming we define the uncertainty in our data to be fixed, i.e.,
 independent of the range of data maesured for each QoI (bin_size).
@@ -94,7 +94,7 @@ QoI_indices = [0, 1]
 QoI_indices = [0, 7, 34, 39, 90]
 #QoI_indices = [0, 1, 2, 3, 4]
 
-# Choose some QoI indices to solve the ivnerse problem with
+# Choose some QoI indices to solve the inverse problem with
 output_samples._dim = len(QoI_indices)
 output_samples.set_values(output_samples.get_values()[:, QoI_indices])
 
@@ -126,7 +126,10 @@ percentile = 1.0
     postTools.sample_highest_prob(top_percentile=percentile,
     sample_set=input_samples, sort=True)
 
-# Print the number of samples that make up the highest percentile percent
-# samples and ratio of the volume of the parameter domain they take up
+# Print the approximate proportion of the measure of the parameter space defined
+# by the support of the inverse density
 if comm.rank == 0:
-    print((num_samples, np.sum(input_samples.get_volumes()[indices_in_inverse])))
+    print('The approximate proportion of the measure of the parameter space defined')
+    print('by the support of the inverse density associated with the choice of QoI map is')
+    print(np.sum(input_samples.get_volumes()[indices_in_inverse]), 
+              ' with ', num_samples, ' samples.')
