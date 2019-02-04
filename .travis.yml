@@ -16,11 +16,11 @@ before_install:
 install:
 #  - conda install --yes python==$TRAVIS_PYTHON_VERSION pip nose numpy 
   - conda create -y -n py python=$TRAVIS_PYTHON_VERSION pip && source activate py
-  - pip install pyDOE mpi4py scipy matplotlib nose numpy
+  - pip install pyDOE mpi4py scipy matplotlib nose numpy codecov coverage
   - python setup.py install
 
 script:
-  - nosetests
+  - nosetests --with-coverage --cover-package=bet --cover-erase --cover-html
   - mpirun -n 2 nosetests
   - pip uninstall -y mpi4py
   - nosetests
@@ -40,3 +40,6 @@ branches:
     only:
         - master
         - v2_master
+
+after_success:
+    - codecov
