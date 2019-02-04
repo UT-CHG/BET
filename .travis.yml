@@ -13,13 +13,12 @@ before_install:
   - conda update --yes conda
 
 install:
-#  - conda install --yes python==$TRAVIS_PYTHON_VERSION pip nose numpy 
-  - conda create -y -n py python=$TRAVIS_PYTHON_VERSION pip && source activate py
-  - pip install pyDOE mpi4py scipy matplotlib nose numpy
+  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip 
+  - pip install numpy scipy matplotlib pyDOE mpi4py nose
   - python setup.py install
 
 script:
-  - nosetests 
+  - nosetests --with-coverage --cover-package=bet --cover-erase --cover-html
   - mpirun -n 2 nosetests
   - pip uninstall -y mpi4py
   - nosetests
@@ -29,14 +28,18 @@ notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
-#            - lichgraham@gmail.com
-#            - scottw13@gmail.com
+            - lichgraham@gmail.com
+            - scottw13@gmail.com
             - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
+
 # whitelist
 branches:
     only:
         - master
         - v2_master
 
+# Push the results back to codecov
+after_success:
+  - codecov
