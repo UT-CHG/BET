@@ -13,7 +13,7 @@ before_install:
   - conda update --yes conda
 
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip 
+  - conda create -y -n travispy python=$TRAVIS_PYTHON_VERSION pip && source activate travispy
   - pip install numpy scipy matplotlib pyDOE mpi4py nose codecov
   - python setup.py install
 
