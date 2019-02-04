@@ -52,4 +52,4 @@ Dependencies
 4. [pyDOE](https://pythonhosted.org/pyDOE/)
 5. [matplotlib](http://matplotlib.org/)
 
-(Note: you may need to set `~/.config/matplotlib/matplotlibrc` to include `backend:agg` if there is no `display` port in your environment). 
+(Note: you may need to set `~/.config/matplotlib/matplotlibrc` to include `backend:agg` if there is no `DISPLAY` port in your environment). 
