@@ -37,7 +37,7 @@ import bet.postProcess.postTools as postTools
 import bet.Comm as comm
 import bet.sample as sample
 
-# Setup the info for the spaces
+# Set up the info for the spaces
 input_dim = 5
 QoI_scalar_map_num = 10
 num_samples = 1E5

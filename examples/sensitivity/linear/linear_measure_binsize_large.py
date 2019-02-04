@@ -25,7 +25,7 @@ import bet.postProcess.postTools as postTools
 import bet.Comm as comm
 import bet.sample as sample
 
-# Let Lambda be a 5 dimensional hypercube
+# Set up the info for the spaces
 input_dim = 10
 output_dim = 100
 num_samples = 1E5
@@ -78,7 +78,7 @@ see inverse solutions that have a smaller support (expected volume ratio < 1)
 than the original volume of the hypercube in the data space.
 
 This interpretation of the expected volume ratios is only valid for inverting
-from a data space that has the same dimensions as the paramter space.  When
+from a data space that has the same dimensions as the parameter space.  When
 inverting into a higher dimensional space, this expected volume ratio is the
 expected volume of the cross section of the inverse solution.
 '''
