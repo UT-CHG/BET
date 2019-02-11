@@ -225,6 +225,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
             ax.set_ylabel(r'PDF', fontsize=30)
             ax.tick_params(axis='both', which='major', 
                            labelsize=20)
+            plt.tight_layout()
             fig.savefig(filename + "_1D_" + str(i) + file_extension,
                     transparent=True) 
             if interactive:
@@ -314,6 +315,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
             cb.set_label(label_cbar, size=20)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
                 lam_domain[j][1]]) 
+            plt.tight_layout()
             fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) +\
                     file_extension, transparent=True)
             if interactive:
@@ -338,6 +340,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
+                plt.tight_layout()
                 fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) + \
                         file_extension, transparent=True)
 
@@ -541,6 +544,7 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
             else:
                 plt.axis([plot_domain[i][0], plot_domain[i][1], 
                           plot_domain[j][0], plot_domain[j][1]]) 
+            plt.tight_layout()
             fig.savefig(filename + "_2D_contours_" + str(i) + "_" + str(j) +\
                     file_extension, transparent=True)
             if interactive:
