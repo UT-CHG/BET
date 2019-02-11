@@ -240,6 +240,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
     :type vertices: list of tuples
     :rtype: tuple
     :returns (regions, vertices) 
+
     """
 
     if vor.points.shape[1] != 2:
