@@ -1456,7 +1456,7 @@ class voronoi_sample_set(sample_set_base):
 
         # Make Voronoi diagram and calculate volumes
         vor = spatial.Voronoi(new_samp)
-        local_index = list(range(0+comm.rank, num, comm.size))
+        local_index = np.arange(0+comm.rank, num, comm.size)
         local_array = np.array(local_index, dtype='int64')
         lam_vol_local = np.zeros(local_array.shape)
         for I,i in enumerate(local_index):

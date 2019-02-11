@@ -165,7 +165,7 @@ class projectKL(object):
         x_real = PETSc.Vec().create()
         x_real.setSizes(self.domain.getNodes())
         x_real.setUp()
-        x_real.setValues(list(range(0,self.domain.getNodes())), np.zeros(self.domain.getNodes()))
+        x_real.setValues(np.arange(0,self.domain.getNodes()), np.zeros(self.domain.getNodes()))
 #        for i in range(0, self.domain.getNodes()):
 #            x_real.setValue(i, 0, 0.)
 

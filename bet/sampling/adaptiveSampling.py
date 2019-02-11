@@ -214,8 +214,8 @@ class sampler(bsam.sampler):
         #:    ndim), and returns data (N, mdim)
         self.lb_model = lb_model
         #: batch number for this particular chain 
-        self.sample_batch_no = np.repeat(list(range(self.num_chains)), chain_length,
-                0)
+        self.sample_batch_no = np.repeat(np.arange(self.num_chains), 
+                        chain_length, 0)
 
     def update_mdict(self, mdict):
         """

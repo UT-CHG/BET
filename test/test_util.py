@@ -70,7 +70,7 @@ def compare_get_global_values(i, provide_shape):
         original_array = None
     original_array = comm.bcast(original_array)
     my_len = original_array.shape[0]//comm.size
-    my_index = list(range(0+comm.rank*my_len, (comm.rank+1)*my_len))
+    my_index = np.arange(0+comm.rank*my_len, (comm.rank+1)*my_len)
     if i == 0:
         my_array = original_array[my_index]
     else:
@@ -86,8 +86,7 @@ def test_fix_dimensions_vector():
     """
     Tests :meth:`bet.util.fix_dimensions_vector`
     """
-    values = [1, [1], list(range(5)), np.array(list(range(5))), np.ones((5,1)),
-            np.ones((5,5))]
+    values = [1, [1], np.arange(5), np.arange(5), np.ones((5,1)), np.ones((5,5))]
     shapes = [(1,), (1,), (5,), (5,), (5,), (25,)]
     for value, shape in zip(values, shapes):
         vector = util.fix_dimensions_vector(value)
@@ -97,8 +96,7 @@ def test_fix_dimensions_vector_2darray():
     """
     Tests :meth:`bet.util.fix_dimensions_vector_2darray`
     """
-    values = [1, [1], np.empty((1,1)), list(range(5)), np.array(list(range(5))),
-            np.empty((5,1))]
+    values = [1, [1], np.empty((1,1)), np.arange(5), np.arange(5), np.empty((5,1))]
     shapes = [(1,1), (1,1), (1,1), (5,1), (5,1), (5,1)]
     for value, shape in zip(values, shapes):
         vector = util.fix_dimensions_vector_2darray(value)
@@ -108,7 +106,7 @@ def test_fix_dimensions_domain():
     """
     Tests :meth:`bet.util.fix_dimensions_domain`
     """
-    values = [list(range(2)), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
+    values = [np.arange(2), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
             np.empty((5,2)), np.empty((2,5))]
     shapes = [(1,2), (1,2), (1,2), (1,2), (5,2), (5,2)]
     for value, shape in zip(values, shapes):
@@ -119,7 +117,7 @@ def test_fix_dimensions_data_nodim():
     """
     Tests :meth`bet.util.fix_dimensions_domain` when `dim` is not specified
     """
-    values = [1, [1], list(range(2)), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
+    values = [1, [1], np.arange(2), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
             np.empty((5,2)), np.empty((2,5))]
     shapes = [(1,1), (1,1), (2,1), (2,1), (2,1), (1,2), (5,2), (2,5)]
     print(len(values), len(shapes))
@@ -133,7 +131,7 @@ def test_fix_dimensions_data_dim():
     """
     Tests :meth`bet.util.fix_dimensions_domain` when `dim` is specified
     """
-    values = [1, [1], list(range(2)), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
+    values = [1, [1], np.arange(2), np.empty((2,)), np.empty((2,1)), np.empty((1,2)),
             np.empty((5,2)), np.empty((2,5)), np.empty((5,2)), np.empty((2,5))]
     shapes = [(1,1), (1,1), (1,2), (1,2), (1,2), (1,2), (5,2), (5,2), (2,5),
             (2,5)]

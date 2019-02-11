@@ -74,7 +74,7 @@ def test_loadmat_init():
     assert loaded_sampler1.chain_length == chain_length
     assert loaded_sampler1.num_chains_pproc == num_chains_pproc1
     assert loaded_sampler1.num_chains == num_chains1
-    nptest.assert_array_equal(np.repeat(list(range(num_chains1)), chain_length, 0),
+    nptest.assert_array_equal(np.repeat(np.arange(num_chains1), chain_length, 0),
             loaded_sampler1.sample_batch_no)
     assert loaded_sampler1.lb_model == None
 
@@ -86,7 +86,7 @@ def test_loadmat_init():
     assert loaded_sampler2.chain_length == chain_length
     assert loaded_sampler2.num_chains_pproc == num_chains_pproc2
     assert loaded_sampler2.num_chains == num_chains2
-    nptest.assert_array_equal(np.repeat(list(range(num_chains2)), chain_length, 0),
+    nptest.assert_array_equal(np.repeat(np.arange(num_chains2), chain_length, 0),
             loaded_sampler2.sample_batch_no)
     nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
             my_output2.get_values())
@@ -262,7 +262,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         assert self.samplers[0].chain_length == mdict["chain_length"]
         assert self.samplers[0].num_chains == mdict["num_chains"]
         nptest.assert_array_equal(self.samplers[0].sample_batch_no,
-                np.repeat(list(range(self.samplers[0].num_chains)),
+                np.repeat(np.arange(self.samplers[0].num_chains),
                     self.samplers[0].chain_length, 0))
     def test_run_gen(self):
         """

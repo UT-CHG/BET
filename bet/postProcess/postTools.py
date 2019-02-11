@@ -270,7 +270,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
     raise PendingDeprecationWarning
     if sample_nos is None:
-        sample_nos = list(range(data.shape[0]))
+        sample_nos = np.arange(data.shape[0])
     if len(data.shape) == 1:
         rD = rho_D(data[sample_nos])
     else:

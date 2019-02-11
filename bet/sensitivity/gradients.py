@@ -508,8 +508,8 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
         1])
 
     # Construct indices for CFD gradient approxiation
-    inds = np.repeat(list(range(0, 2 * input_dim * num_centers, 2 * input_dim)),
-        input_dim) + np.tile(list(range(0, input_dim)), num_centers)
+    inds = np.repeat(np.arange(0, 2 * input_dim * num_centers, 2 * input_dim),
+        input_dim) + np.tile(np.arange(0, input_dim), num_centers)
     inds = np.array([inds, inds+input_dim]).transpose()
 
     gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / radii_vec)

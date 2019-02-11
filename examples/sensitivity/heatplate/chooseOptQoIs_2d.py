@@ -71,7 +71,7 @@ of QoI.)
 '''
 indexstart = 0
 indexstop = 20
-qoiIndices = list(range(indexstart, indexstop))
+qoiIndices = np.arange(indexstart, indexstop)
 
 # Initialize the necessary sample objects
 input_samples = sample.sample_set(2)
