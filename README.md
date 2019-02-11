@@ -11,37 +11,33 @@ Please note that we are using continuous integration and issues for bug tracking
 
 This code has been documented with sphinx. the documentation is available online ta http://ut-chg.github.io/bet. to build documentation run 
 ``make html`` in the ``doc/`` folder.
-
-To build/update the documentation use the following commands::
+to build/update the documentation use the following commands::
 
     sphinx-apidoc -f -o doc bet
     cd doc/
     make html
     make html
 
-This creates the relevant documentation at ``bet/gh-pages/html``. 
-To change the build location of the documentation you will need to update ``doc/makefile``.
+this creates the relevant documentation at ``bet/gh-pages/html``. to change the build location of the documentation you will need to update ``doc/makefile``.
 
-You will need to run sphinx-apidoc and reinstall bet anytime a new module or method in the source code has been added. 
-If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
+you will need to run sphinx-apidoc and reinstall bet anytime a new module or method in the source code has been added. if only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
 
-Useful scripts and Jupyter Notebooks are contained in ``examples/``
+useful scripts are contained in ``examples/``
 
-Tests
+tests
 -----
 
-To run tests in serial call::
+to run tests in serial call::
 
     nosetests
 
-To run tests in parallel call::
+to run tests in parallel call::
 
     mpirun -np nproc nosetests
 
-Make you to have a working MPI environment (we recommend [mpich](http://www.mpich.org/downloads/)).
+(make sure to have run `apt-get install mpich libmpich-dev`)
 
-
-Dependencies
+dependencies
 ------------
 
 `bet` requires the following packages:
@@ -49,7 +45,7 @@ Dependencies
 1. [numpy](http://www.numpy.org/)
 2. [scipy](http://www.scipy.org/)
 3. [nose](https://nose.readthedocs.org/en/latest/)
-4. [pyDOE](https://pythonhosted.org/pyDOE/)
+4. [pydoe](https://pythonhosted.org/pydoe/)
 5. [matplotlib](http://matplotlib.org/)
 
 (Note: you may need to set `~/.config/matplotlib/matplotlibrc` to include `backend:agg` if there is no `DISPLAY` port in your environment). 

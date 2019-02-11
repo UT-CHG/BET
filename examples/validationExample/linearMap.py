@@ -37,7 +37,7 @@ Try with and without random sampling.
 
 If using random sampling, try num_samples = 1E3 and 1E4.
 What happens when num_samples = 1E2?
-Try using 'lhs' instead of 'random' in the 'random_sample_set'.
+Try using 'lhs' instead of 'random' in the random_sample_set.
 
 If using regular sampling, try different numbers of samples
 per dimension.
