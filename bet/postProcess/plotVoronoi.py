@@ -108,10 +108,10 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
             label1 = lambda_label[0]
         plt.xlabel(label1, fontsize=20)
 
+        plt.tight_layout()
+        fig.savefig(filename + file_extension)
         if interactive:
             plt.show()
-
-        fig.savefig(filename + file_extension)
 
 def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn', 
                     filename="file", 
@@ -206,7 +206,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
             label1 = lambda_label[1]
         plt.xlabel(label1, fontsize=20)
         plt.ylabel(label2, fontsize=20)
-
+        
         # plot colorbar
         ax, _ = matplotlib.colorbar.make_axes(plt.gca(), shrink=0.9)
         if density:
@@ -218,10 +218,12 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         text = cbar.ax.yaxis.label
         font = matplotlib.font_manager.FontProperties(size=20)
         text.set_font_properties(font)
+        
+        plt.tight_layout()
+        fig.savefig(filename + file_extension)
         if interactive:
             plt.show()
 
-        fig.savefig(filename + file_extension)
     
 def voronoi_finite_polygons_2d(vor, radius=None):
     """

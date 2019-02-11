@@ -121,6 +121,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
             full_filename = filename+file_extension
         else:
             full_filename = filename
+        plt.tight_layout()
         plt.savefig(full_filename, bbox_inches='tight', transparent=True,
                     pad_inches=0)
     if interactive:
@@ -326,6 +327,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
             full_filename = filename+file_extension
         else:
             full_filename = filename
+        plt.tight_layout()
         plt.savefig(full_filename, bbox_inches='tight', transparent=True,
                     pad_inches=0)
     if interactive:
@@ -766,6 +768,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
         for i in range(Q_ref.shape[0]):
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
+    plt.tight_layout()
     if save:
         plt.savefig(full_filenames1, bbox_inches='tight', transparent=True,
                     pad_inches=.2)
