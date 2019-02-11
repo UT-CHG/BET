@@ -20,6 +20,14 @@ bet.postProcess.plotP module
     :undoc-members:
     :show-inheritance:
 
+bet.postProcess.plotVoronoi module
+----------------------------------
+
+.. automodule:: bet.postProcess.plotVoronoi
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 bet.postProcess.postTools module
 --------------------------------
 
