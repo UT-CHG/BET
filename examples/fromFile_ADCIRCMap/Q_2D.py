@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
@@ -19,7 +19,7 @@ lam_domain = np.array([[0.07, .15], [0.1, 0.2]])
 input_sample_set = sample.sample_set(points.shape[0])
 input_sample_set.set_values(points.transpose())
 input_sample_set.set_domain(lam_domain)
-print "Finished loading data"
+print("Finished loading data")
 
 def postprocess(station_nums, ref_num):
     
@@ -45,24 +45,24 @@ def postprocess(station_nums, ref_num):
     my_disc = sample.discretization(input_sample_set, output_sample_set,
             output_probability_set, emulated_input_sample_set=set_emulated)
 
-    print "Finished emulating lambda samples"
+    print("Finished emulating lambda samples")
 
     # Calculate P on lambda emulate
-    print "Calculating prob_on_emulated_samples"
+    print("Calculating prob_on_emulated_samples")
     calcP.prob_on_emulated_samples(my_disc)
     sample.save_discretization(my_disc, filename, "prob_on_emulated_samples_solution")
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
     input_sample_set.estimate_volume_mc()
-    print "Calculating prob"
+    print("Calculating prob")
     calcP.prob(my_disc)
     sample.save_discretization(my_disc, filename, "prob_solution")
 
     # Calculate P on the actual samples estimating voronoi cell volume with MC
     # integration
     calcP.prob_with_emulated_volumes(my_disc)
-    print "Calculating prob_with_emulated_volumes"
+    print("Calculating prob_with_emulated_volumes")
     sample.save_discretization(my_disc, filename, "prob_with_emulated_volumes_solution")
 
 # Post-process and save P and emulated points

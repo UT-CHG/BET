@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module contains tests for :module:`bet.postProcess.plotDomains`.
@@ -265,13 +265,13 @@ class test_plotDomains(unittest.TestCase):
                         None, None, qnums, None, showdim, save, False) 
             go = True
         except (RuntimeError, TypeError, NameError):
-            print "ERROR"
-            print data.shape
-            print q_ref
-            print sample_nos
-            print save
-            print qnums
-            print showdim
+            print("ERROR")
+            print(data.shape)
+            print(q_ref)
+            print(sample_nos)
+            print(save)
+            print(qnums)
+            print(showdim)
             go = False
         nptest.assert_equal(go, True)
 

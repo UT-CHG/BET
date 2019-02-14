@@ -1,6 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
-
-# Lindley Graham 05/19/2016
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 

@@ -1,9 +1,7 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# -*- coding: utf-8 -*-
-# Lindley Graham 04/07/2015
 
-"""
+r"""
 This module contains unittests for :mod:`~bet.sampling.adaptiveSampling`
 """
 
@@ -76,7 +74,7 @@ def test_loadmat_init():
     assert loaded_sampler1.chain_length == chain_length
     assert loaded_sampler1.num_chains_pproc == num_chains_pproc1
     assert loaded_sampler1.num_chains == num_chains1
-    nptest.assert_array_equal(np.repeat(range(num_chains1), chain_length, 0),
+    nptest.assert_array_equal(np.repeat(np.arange(num_chains1), chain_length, 0),
             loaded_sampler1.sample_batch_no)
     assert loaded_sampler1.lb_model == None
 
@@ -88,7 +86,7 @@ def test_loadmat_init():
     assert loaded_sampler2.chain_length == chain_length
     assert loaded_sampler2.num_chains_pproc == num_chains_pproc2
     assert loaded_sampler2.num_chains == num_chains2
-    nptest.assert_array_equal(np.repeat(range(num_chains2), chain_length, 0),
+    nptest.assert_array_equal(np.repeat(np.arange(num_chains2), chain_length, 0),
             loaded_sampler2.sample_batch_no)
     nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
             my_output2.get_values())
@@ -126,25 +124,25 @@ def verify_samples(QoI_range, sampler, input_domain,
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
     if comm.rank == 0:
-        print "dim", input_domain.shape
+        print("dim", input_domain.shape)
     if not hot_start:
         # run generalized chains
         (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
-        print "COLD", comm.rank
+        print("COLD", comm.rank)
     else:
         # cold start
-        sampler1 = asam.sampler(sampler.num_samples/2, sampler.chain_length/2,
+        sampler1 = asam.sampler(sampler.num_samples // 2, sampler.chain_length // 2,
                 sampler.lb_model)
         (my_discretization, all_step_ratios) = sampler1.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type)
-        print "COLD then", comm.rank
+        print("COLD then", comm.rank)
         comm.barrier()
         # hot start 
         (my_discretization, all_step_ratios) = sampler.generalized_chains(\
                 input_domain, t_set, kernel_rD, savefile, initial_sample_type,
                 hot_start=hot_start)
-        print "HOT", comm.rank
+        print("HOT", comm.rank)
     comm.barrier()
     # check dimensions of input and output
     assert my_discretization.check_nums()
@@ -239,8 +237,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         self.input_domain_list = [self.input_domain1, self.input_domain1,
                 self.input_domain3, self.input_domain3, self.input_domain10]
 
-        self.test_list = zip(self.models, self.QoI_range, self.samplers,
-                self.input_domain_list, self.savefiles)
+        self.test_list = list(zip(self.models, self.QoI_range, self.samplers,
+                self.input_domain_list, self.savefiles))
 
 
     def tearDown(self):
@@ -264,7 +262,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         assert self.samplers[0].chain_length == mdict["chain_length"]
         assert self.samplers[0].num_chains == mdict["num_chains"]
         nptest.assert_array_equal(self.samplers[0].sample_batch_no,
-                np.repeat(range(self.samplers[0].num_chains),
+                np.repeat(np.arange(self.samplers[0].num_chains),
                     self.samplers[0].chain_length, 0))
     def test_run_gen(self):
         """
@@ -901,7 +899,7 @@ class transition_set(object):
         # define step_ratio from output_set
         local_num = self.output_set._values_local.shape[0] 
         step_ratio = 0.5*np.ones(local_num,)
-        step_ratio[local_num/2:] = .1
+        step_ratio[local_num//2:] = .1
         step_size = np.repeat([step_ratio], self.output_set.get_dim(),
                 0).transpose()*self.output_set._width_local
         # take a step

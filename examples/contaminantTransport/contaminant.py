@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This example takes uniformly distributed samples of parameters and
@@ -107,7 +107,7 @@ percentile = 1.0
 
 # print the number of samples that make up the  highest percentile percent samples and
 # ratio of the volume of the parameter domain they take up
-print (num_samples, np.sum(my_discretization_highP._input_sample_set.get_volumes()))
+print((num_samples, np.sum(my_discretization_highP._input_sample_set.get_volumes())))
 
 # Choose unused QoI as prediction QoI and propagate measure onto predicted QoI data space
 QoI_indices_predict = np.array([7])

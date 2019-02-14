@@ -26,7 +26,7 @@ def my_model(io_file_name):
         sio.savemat(io_file_name, io_mdat)
 
 def usage():
-    print "usage: [io_file]"
+    print("usage: [io_file]")
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:

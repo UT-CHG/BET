@@ -1,4 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module contains data structure/storage classes for BET. Notably:
@@ -88,13 +88,13 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             new_mdat[sample_set_name+attrname] = curr_attr
-        elif new_mdat.has_key(sample_set_name+attrname):
+        elif sample_set_name+attrname in new_mdat:
             new_mdat.pop(sample_set_name+attrname)
     for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
             new_mdat[sample_set_name+attrname] = curr_attr
-        elif new_mdat.has_key(sample_set_name+attrname):
+        elif sample_set_name+attrname in new_mdat:
             new_mdat.pop(sample_set_name+attrname)
     new_mdat[sample_set_name + '_sample_set_type'] = \
             str(type(save_set)).split("'")[1]
@@ -137,7 +137,7 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
     if sample_set_name is None:
         sample_set_name = 'default'
     
-    if sample_set_name+"_dim" in mdat.keys():
+    if sample_set_name+"_dim" in list(mdat.keys()):
         loaded_set = eval(mdat[sample_set_name + '_sample_set_type'][0])(
             np.squeeze(mdat[sample_set_name+"_dim"]))
     else:
@@ -147,11 +147,11 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
 
     for attrname in loaded_set.vector_names:
         if attrname is not '_dim':
-            if sample_set_name+attrname in mdat.keys():
+            if sample_set_name+attrname in list(mdat.keys()):
                 setattr(loaded_set, attrname,
                     np.squeeze(mdat[sample_set_name+attrname]))
     for attrname in loaded_set.all_ndarray_names:
-        if sample_set_name+attrname in mdat.keys():
+        if sample_set_name+attrname in list(mdat.keys()):
             setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
 
     if localize:
@@ -209,7 +209,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         for mlist in mdat_list: 
             mdat_global.extend(mlist)
         
-        if sample_set_name+"_dim" in mdat_global[0].keys():
+        if sample_set_name+"_dim" in list(mdat_global[0].keys()):
             loaded_set = eval(mdat_global[0][sample_set_name + \
                     '_sample_set_type'][0])(
                     np.squeeze(mdat_global[0][sample_set_name+"_dim"]))
@@ -221,7 +221,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         # load attributes
         for attrname in loaded_set.vector_names:
             if attrname is not '_dim':
-                if sample_set_name+attrname in mdat_global[0].keys():
+                if sample_set_name+attrname in list(mdat_global[0].keys()):
                     # create lists of local data
                     if attrname.endswith('_local'): 
                         temp_input = []
@@ -235,7 +235,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
                                 [sample_set_name+attrname])
                     setattr(loaded_set, attrname, temp_input) 
         for attrname in loaded_set.all_ndarray_names:
-            if sample_set_name+attrname in mdat_global[0].keys():
+            if sample_set_name+attrname in list(mdat_global[0].keys()):
                 if attrname.endswith('_local'): 
                     # create lists of local data
                     temp_input = []
@@ -1018,14 +1018,15 @@ class sample_set_base(object):
         :param int n_mc_points: If estimate is True, number of MC points to use
         """
         num = self.check_num()
-        n_mc_points_local = (n_mc_points/comm.size) + \
-                            (comm.rank < n_mc_points%comm.size)
+        n_mc_points = int(n_mc_points)
+        n_mc_points_local = int(n_mc_points/comm.size) + \
+                            int(comm.rank < n_mc_points%comm.size)
         width = self._domain[:, 1] - self._domain[:, 0]
         mc_points = width*np.random.random((n_mc_points_local,
             self._domain.shape[0])) + self._domain[:, 0]
         (_, emulate_ptr) = self.query(mc_points)
         vol = np.zeros((num,))
-        for i in xrange(num):
+        for i in range(num):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
@@ -1057,7 +1058,7 @@ class sample_set_base(object):
         (_, emulate_ptr) = self.query(emulated_sample_set._values_local)
 
         vol = np.zeros((num,))
-        for i in xrange(num):
+        for i in range(num):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
@@ -1205,7 +1206,7 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
             new_mdat[discretization_name+attrname] = curr_attr
-        elif new_mdat.has_key(discretization_name+attrname):
+        elif discretization_name+attrname in new_mdat:
             new_mdat.pop(discretization_name+attrname)
     comm.barrier()
 
@@ -1273,7 +1274,7 @@ def load_discretization_parallel(file_name, discretization_name=None):
         
         # load attributes
         for attrname in discretization.vector_names:
-            if discretization_name+attrname in mdat_global[0].keys():
+            if discretization_name+attrname in list(mdat_global[0].keys()):
                 if attrname.endswith('_local') and comm.size != \
                         len(mdat_list): 
                     # create lists of local data
@@ -1346,7 +1347,7 @@ def load_discretization(file_name, discretization_name=None):
                     discretization_name+attrname))
     
     for attrname in discretization.vector_names:
-        if discretization_name+attrname in mdat.keys():
+        if discretization_name+attrname in list(mdat.keys()):
             setattr(loaded_disc, attrname,
                         np.squeeze(mdat[discretization_name+attrname]))
     
@@ -1455,7 +1456,7 @@ class voronoi_sample_set(sample_set_base):
 
         # Make Voronoi diagram and calculate volumes
         vor = spatial.Voronoi(new_samp)
-        local_index = range(0+comm.rank, num, comm.size)
+        local_index = np.arange(0+comm.rank, num, comm.size)
         local_array = np.array(local_index, dtype='int64')
         lam_vol_local = np.zeros(local_array.shape)
         for I,i in enumerate(local_index):
@@ -1497,10 +1498,10 @@ class voronoi_sample_set(sample_set_base):
 
         """
         num = self.check_num()
-
+        n_mc_points = int(n_mc_points)
         samples = np.copy(self.get_values())
-        n_mc_points_local = (n_mc_points/comm.size) + \
-                            (comm.rank < n_mc_points%comm.size)
+        n_mc_points_local = int(n_mc_points/comm.size) + \
+                            int(comm.rank < n_mc_points%comm.size)
 
         # normalize the samples
         if normalize:
@@ -1527,7 +1528,7 @@ class voronoi_sample_set(sample_set_base):
 
         rad = np.zeros((num,))
 
-        for i in xrange(num):
+        for i in range(num):
             rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
                 :] - samples[i, :], ord=self._p_norm, axis=1))
 
@@ -1559,10 +1560,10 @@ class voronoi_sample_set(sample_set_base):
 
         """
         num = self.check_num()
-
+        n_mc_points = int(n_mc_points)
         samples = np.copy(self.get_values())
-        n_mc_points_local = (n_mc_points/comm.size) + \
-                            (comm.rank < n_mc_points%comm.size)
+        n_mc_points_local = int(n_mc_points/comm.size) + \
+                            int(comm.rank < n_mc_points%comm.size)
 
         # normalize the samples
         if normalize:
@@ -1586,7 +1587,7 @@ class voronoi_sample_set(sample_set_base):
 
         vol = np.zeros((num,))
         rad = np.zeros((num,))
-        for i in xrange(num):
+        for i in range(num):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
             rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),\
                 :] - samples[i, :], ord=self._p_norm, axis=1))
@@ -1647,7 +1648,8 @@ class voronoi_sample_set(sample_set_base):
         self.update_bounds()
         samples = samples - self._left
         samples = samples/self._width
-
+        num_emulate_local = int(num_emulate_local)
+        max_num_emulate = int(max_num_emulate)
         kdtree = spatial.KDTree(samples)
 
         # for each sample determine the appropriate radius of the Lp ball (this
@@ -1803,15 +1805,15 @@ class rectangle_sample_set(sample_set_base):
         # Check dimensions
         if len(maxes) != len(mins):
             raise length_not_matching("Different number of maxes and mins")
-        for i in xrange(len(maxes)):
+        for i in range(len(maxes)):
             if (len(maxes[i]) != self._dim) or (len(mins[i]) != self._dim):
-                msg = "Rectangle " + `i` + " has the wrong number of entries."
+                msg = "Rectangle " + repr(i) + " has the wrong number of entries."
                 raise length_not_matching(msg)
                 
         values = np.zeros((len(maxes)+1, self._dim))
         self._right = np.zeros((len(maxes)+1, self._dim))
         self._left = np.zeros((len(mins)+1, self._dim))
-        for i in xrange(len(maxes)):
+        for i in range(len(maxes)):
             values[i, :] = 0.5*(np.array(maxes[i]) + np.array(mins[i]))
             self._right[i, :] = maxes[i]
             self._left[i, :] = mins[i]
@@ -1926,11 +1928,11 @@ class rectangle_sample_set(sample_set_base):
         num = self.check_num()
         dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
         pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
-        for i in xrange(num - 1):
+        for i in range(num - 1):
             in_r = np.all(np.less_equal(x, self._right[i, :]), axis=1)
             in_l = np.all(np.greater(x, self._left[i, :]), axis=1)
             in_rec = np.logical_and(in_r, in_l)
-            for j in xrange(k):
+            for j in range(k):
                 if j == 0:
                     in_rec_now = np.logical_and(np.equal(pt[:, j], num-1),
                             in_rec) 
@@ -1982,9 +1984,9 @@ class ball_sample_set(sample_set_base):
         """
         if len(centers) != len(radii):
             raise length_not_matching("Different number of centers and radii.")
-        for i in xrange(len(centers)):
+        for i in range(len(centers)):
             if len(centers[i]) != self._dim:
-                msg = "Center " + `i` + " has the wrong number of entries."
+                msg = "Center " + repr(i) + " has the wrong number of entries."
                 raise length_not_matching(msg)
         values = np.zeros((len(centers)+1, self._dim))
         values[0:-1, :] = centers
@@ -2096,10 +2098,10 @@ class ball_sample_set(sample_set_base):
         num = self.check_num()
         dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
         pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
-        for i in xrange(num - 1):
+        for i in range(num - 1):
             in_rec = np.less(linalg.norm(x-self._values[i, :], self._p_norm,
                 axis=1), self._radii[i]) 
-            for j in xrange(k):
+            for j in range(k):
                 if j == 0:
                     in_rec_now = np.logical_and(np.equal(pt[:, j], num-1),
                             in_rec) 

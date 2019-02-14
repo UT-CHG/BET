@@ -1,7 +1,5 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# -*- coding: utf-8 -*-
-# Lindley Graham 10/16/2015
 """
 Test methods in :mod:`bet.calculateP.indicatorFunctions`. We only test for
 dimensions 1, 2, 3.
@@ -84,7 +82,7 @@ class check_inside(object):
         self.outcoords_sphere = util.meshgrid_ndim(outcoords_sphere)
         self.oncoords_sphere = np.row_stack((-np.eye(dim),
             np.eye(dim).transpose()))*self.radius+self.center 
-        print "SPHERE", self.center, self.radius, self.oncoords_sphere
+        print("SPHERE", self.center, self.radius, self.oncoords_sphere)
 
     def test_hyperrectangle(self):
         """

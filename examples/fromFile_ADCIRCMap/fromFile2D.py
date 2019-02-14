@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 # import necessary modules
 import numpy as np
@@ -27,7 +27,7 @@ bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
 points = mdat['points']
 def model(inputs):
     interp_values = np.empty((inputs.shape[0], Q.shape[1])) 
-    for i in xrange(Q.shape[1]):
+    for i in range(Q.shape[1]):
         interp_values[:, i] = griddata(points.transpose(), Q[:, i],
                 inputs)
     return interp_values 

@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module provides methods used to plot two-dimensional domains and/or
@@ -98,9 +98,10 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
 
     markersize = 75
     color = color[sample_nos]
+    color = np.reshape(color, -1) # handle scalar scatterplots in in matplotlib>=3.0
     # create the scatter plot for the samples specified by sample_nos
-    plt.scatter(sample_obj.get_values()[sample_nos, 0],
-                sample_obj.get_values()[sample_nos, 1],
+    plt.scatter(np.reshape(sample_obj.get_values()[sample_nos, 0], -1),
+                np.reshape(sample_obj.get_values()[sample_nos, 1], -1),
                 c=color, s=markersize, alpha=.75, linewidth=.1, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
@@ -297,13 +298,13 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     else:
         cmap = plt.cm.PuBu
     markersize = 75
-    color = color[sample_nos]
+    color = np.reshape(color[sample_nos],-1) 
     # create the scatter plot for the samples specified by sample_nos
     fig = plt.figure()
     ax = fig.add_subplot(111, projection='3d')
-    p = ax.scatter(sample_obj.get_values()[sample_nos, 0],
-                   sample_obj.get_values()[sample_nos, 1],
-                   sample_obj.get_values()[sample_nos, 2],
+    p = ax.scatter(np.reshape(sample_obj.get_values()[sample_nos, 0], -1),
+                   np.reshape(sample_obj.get_values()[sample_nos, 1], -1),
+                   np.reshape(sample_obj.get_values()[sample_nos, 2], -1),
                    alpha=.75, linewidth=.1, c=color, s=markersize, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
@@ -527,7 +528,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     # (e.g. i, where \lambda_i is a coordinate in the parameter space), then
     # set them to be the the counting numbers.
     if dim_nums is None:
-        dim_nums = 1 + np.array(range(sample_obj.get_values().shape[1]))
+        dim_nums = 1 + np.array(np.arange(sample_obj.get_values().shape[1]))
     # Create the labels based on the user selected parameter coordinates
     xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
     ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
@@ -605,7 +606,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
     if Q_nums is None:
-        Q_nums = range(data_obj.get_dim())
+        Q_nums = np.arange(data_obj.get_dim())
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim is None:
@@ -648,8 +649,8 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
             else:
                 show_data_domain_2D(sample_disc_temp, None, ref_markers,
                                     ref_colors, xlabel=xlabel, ylabel=ylabel,
-                                    triangles=triangles, save=True, interactive=False,
-                                    filenames=filenames)
+                                    triangles=triangles, save=True, 
+                                    interactive=False, filenames=filenames)
     # Create plots of all combinations of QoI in 2D
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(Q_nums, 2):
@@ -762,7 +763,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
                 pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
-        for i in xrange(Q_ref.shape[0]):
+        for i in range(Q_ref.shape[0]):
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
     if save:
@@ -814,7 +815,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
     # Create list of all the parameter coordinates
-    p_nums = range(sample_obj.get_dim())
+    p_nums = np.arange(sample_obj.get_dim())
 
     # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
     # other parameters

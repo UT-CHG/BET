@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 r""" 
 This module provides methods for calulating the probability measure
@@ -51,7 +51,7 @@ def prob_on_emulated_samples(discretization, globalize=True):
             _values_local.shape[0],))
     d_distr_emu_ptr = discretization._io_ptr[discretization.\
             _emulated_ii_ptr_local]
-    for i in xrange(op_num):
+    for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(d_distr_emu_ptr, i)
             Itemp_sum = np.sum(Itemp)
@@ -90,7 +90,7 @@ def prob(discretization, globalize=True):
     if discretization._input_sample_set._values_local is None:
         discretization._input_sample_set.global_to_local()
     P_local = np.zeros((len(discretization._io_ptr_local),))
-    for i in xrange(op_num):
+    for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(discretization._io_ptr_local, i)
             Itemp_sum = np.sum(discretization._input_sample_set.\
@@ -173,7 +173,7 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
 
     # Loop over old cells and divide probability over emulated cells
     warn = False
-    for i in xrange(num_old):
+    for i in range(num_old):
         if set_old._probabilities[i] > 0.0:
             Itemp = np.equal(ptr1, i)
             Itemp_sum = np.sum(Itemp)
@@ -191,7 +191,7 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
         total_prob = comm.allreduce(total_prob, op=MPI.SUM)
         prob_em = prob_em/total_prob
     # Loop over new cells and distribute probability from emulated cells
-    for i in xrange(num_new):
+    for i in range(num_new):
         Itemp = np.equal(ptr2, i)
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
@@ -232,7 +232,7 @@ def prob_from_sample_set(set_old, set_new):
     prob_new = np.zeros((num_new,))
 
     # Loop over new cells and distribute probability from old
-    for i in xrange(num_new):
+    for i in range(num_new):
         Itemp = np.equal(ptr, i)
         Itemp_sum = np.sum(set_old._probabilities_local[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
@@ -281,7 +281,7 @@ def prob_from_discretization_input(disc, set_new):
     prob_new = np.zeros((num_new,))
     prob_em = em_set._probabilities_local
 
-    for i in xrange(num_new):
+    for i in range(num_new):
         Itemp = np.equal(ptr, i)
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)

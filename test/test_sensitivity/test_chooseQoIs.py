@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module contains tests for :module:`bet.sensitivity.chooseQoIs`.
@@ -22,7 +22,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.calculate_avg_measure`.
         """
-        self.qoi_set = range(0, self.input_dim)
+        self.qoi_set = np.arange(0, self.input_dim)
         (self.measure, self.singvals) = cQoIs.calculate_avg_measure(\
             self.input_set_centers, self.qoi_set)
 
@@ -41,7 +41,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.calculate_avg_skewness`.
         """
-        self.qoi_set = range(0, self.input_dim)
+        self.qoi_set = np.arange(0, self.input_dim)
         (self.skewness, self.skewnessgi) = cQoIs.calculate_avg_skewness(\
             self.input_set_centers, self.qoi_set)
 
@@ -60,9 +60,9 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.calculate_avg_condnum`.
         """
-        self.qoi_set = range(0, self.input_dim)
-        print self.input_set_centers.get_jacobians()
-        print self.center_disc._input_sample_set.get_jacobians()
+        self.qoi_set = np.arange(0, self.input_dim)
+        print(self.input_set_centers.get_jacobians())
+        print(self.center_disc._input_sample_set.get_jacobians())
         (self.condnum, self.singvals) = cQoIs.calculate_avg_condnum(\
             self.input_set_centers, self.qoi_set)
 
@@ -81,7 +81,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs`.
         """
-        self.qoiIndices = range(0, self.output_dim)
+        self.qoiIndices = np.arange(0, self.output_dim)
         self.condnum_indices_mat = cQoIs.chooseOptQoIs(self.input_set_centers,
             self.qoiIndices, self.output_dim_return, self.num_optsets_return)
         self.condnum_indices_mat_vol = cQoIs.chooseOptQoIs(self.input_set_centers,
@@ -119,8 +119,8 @@ class ChooseQoIsMethods:
         ##########
         # Test the method for a set of QoIs rather than all possible.  Choose
         # this set so that the optimal choice is not removed.
-        self.qoiIndices = np.concatenate([range(1, 3, 2),
-            range(4, self.output_dim)])
+        self.qoiIndices = np.concatenate([np.arange(1, 3, 2),
+            np.arange(4, self.output_dim)])
         self.condnum_indices_mat = cQoIs.chooseOptQoIs(self.input_set_centers,
             self.qoiIndices, self.output_dim_return, self.num_optsets_return)
 
@@ -160,7 +160,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose`.
         """
-        self.qoiIndices = range(0, self.output_dim)
+        self.qoiIndices = np.arange(0, self.output_dim)
         [self.condnum_indices_mat, self.optsingvals] = \
             cQoIs.chooseOptQoIs_verbose(self.input_set_centers, self.qoiIndices,
             self.output_dim_return, self.num_optsets_return)
@@ -173,7 +173,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.find_unique_vecs`.
         """
-        self.qoiIndices = range(0, self.output_dim)
+        self.qoiIndices = np.arange(0, self.output_dim)
         unique_indices = cQoIs.find_unique_vecs(self.input_set_centers,
             self.inner_prod_tol, self.qoiIndices)
 
@@ -190,7 +190,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_large`.
         """
-        self.qoiIndices = range(0, self.output_dim)
+        self.qoiIndices = np.arange(0, self.output_dim)
         best_sets = cQoIs.chooseOptQoIs_large(self.input_set_centers,
             qoiIndices=self.qoiIndices, inner_prod_tol=self.inner_prod_tol,
             measskew_tol=self.measskew_tol)
@@ -207,7 +207,7 @@ class ChooseQoIsMethods:
         """
         Test :meth:`bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose`.
         """
-        self.qoiIndices = range(0, self.output_dim)
+        self.qoiIndices = np.arange(0, self.output_dim)
         [best_sets, optsingvals_list] = cQoIs.chooseOptQoIs_large_verbose(\
             self.input_set_centers, qoiIndices=self.qoiIndices,
             num_optsets_return=self.num_optsets_return,

@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
@@ -20,7 +20,7 @@ points = mdat['points']
 input_sample_set = sample.sample_set(points.shape[0])
 input_sample_set.set_values(points.transpose())
 input_sample_set.set_domain(lam_domain)
-print "Finished loading data"
+print("Finished loading data")
 
 def postprocess(station_nums, ref_num):
     
@@ -47,7 +47,7 @@ def postprocess(station_nums, ref_num):
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
     input_sample_set.estimate_volume_mc()
-    print "Calculating prob"
+    print("Calculating prob")
     calcP.prob(my_disc)
     sample.save_discretization(my_disc, filename, "prob_solution")
 

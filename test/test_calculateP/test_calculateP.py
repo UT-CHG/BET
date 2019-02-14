@@ -1,8 +1,6 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# Steven Mattis and Lindley Graham 04/06/2015
-# Steven Mattis 03/24/2016
-"""
+r"""
 This module contains tests for :module:`bet.calculateP.calculateP`.
 
 

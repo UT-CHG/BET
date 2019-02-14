@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 r"""
 
@@ -83,21 +83,21 @@ sur_disc_lin = sur.generate_for_input_set(emulated_inputs, order=1)
                                                          regions=[0])
 P_true = Pt[0]
 if comm.rank == 0:
-    print "True probability: ",  P_true
+    print("True probability: ",  P_true)
 
 # Approximate probabilty
 P_approx  = calculateP.prob_from_sample_set(my_disc._input_sample_set,
                                              s_set)[0]
 if comm.rank == 0:
-    print "Approximate probability: ",  P_approx
+    print("Approximate probability: ",  P_approx)
 
 # Calculate sampling error
 samp_er = calculateError.sampling_error(my_disc)
 (up, low) = samp_er.calculate_for_sample_set_region(s_set, 
                                                     region=0, emulated_set=emulated_inputs)
 if comm.rank == 0:
-    print "Sampling error upper bound: ", up
-    print "Sampling error lower bound: ", low
+    print("Sampling error upper bound: ", up)
+    print("Sampling error lower bound: ", low)
 
 
 # Calculate modeling error
@@ -105,7 +105,7 @@ mod_er = calculateError.model_error(my_disc)
 er_est = mod_er.calculate_for_sample_set_region(s_set, 
                     region=0, emulated_set=emulated_inputs)
 if comm.rank == 0:
-    print "Modeling error estimate: ", er_est
+    print("Modeling error estimate: ", er_est)
 
 # Make piecewise constant surrogate of discretization
 sur = surrogates.piecewise_polynomial_surrogate(my_disc)
@@ -114,10 +114,10 @@ sur_disc_constant = sur.generate_for_input_set(emulated_inputs, order=0)
 (P2, er_est2) = sur.calculate_prob_for_sample_set_region(s_set, 
                                                          regions=[0])
 if comm.rank == 0:
-    print "Piecewise constant surrogate probability: ", P2[0]
-    print "Piecewise constant error estimate ",  er_est2[0]
-    print "Piecewise constant corrected probability: ", P2[0]-er_est2[0]
-    print "Piecewise constant effectivity ratio: ", er_est2[0]/(P2[0]-P_true)
+    print("Piecewise constant surrogate probability: ", P2[0])
+    print("Piecewise constant error estimate ",  er_est2[0])
+    print("Piecewise constant corrected probability: ", P2[0]-er_est2[0])
+    print("Piecewise constant effectivity ratio: ", er_est2[0]/(P2[0]-P_true))
 
 # Make piecewise linear surrogate of discretization
 sur_disc_linear = sur.generate_for_input_set(emulated_inputs, order=1)
@@ -125,8 +125,8 @@ sur_disc_linear = sur.generate_for_input_set(emulated_inputs, order=1)
 (P3, er_est3) = sur.calculate_prob_for_sample_set_region(s_set, 
                                                          regions=[0])
 if comm.rank == 0:
-    print "Piecewise constant surrogate probability: ", P3[0]
-    print "Piecewise constant error estimate ",  er_est3[0]
-    print "Piecewise constant corrected probability: ", P3[0]-er_est3[0]
-    print "Piecewise constant effectivity ratio: ", er_est3[0]/(P3[0]-P_true)
+    print("Piecewise constant surrogate probability: ", P3[0])
+    print("Piecewise constant error estimate ",  er_est3[0])
+    print("Piecewise constant corrected probability: ", P3[0]-er_est3[0])
+    print("Piecewise constant effectivity ratio: ", er_est3[0]/(P3[0]-P_true))
 

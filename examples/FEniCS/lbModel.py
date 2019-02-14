@@ -18,9 +18,9 @@ def lb_model(input_data):
     # Setup the job file for Launcher.
     f = open('launcher_runs.txt', 'w')
     for i in range(0, num_runs):
-        output_str = sys.executable + ' myModel_serial.py '  + `i` + ' '
+        output_str = sys.executable + ' myModel_serial.py '  + repr(i) + ' '
         for j in range(0, num_runs_dim):
-            output_str = output_str + `input_data[i,j]` + ' '
+            output_str = output_str + repr(input_data[i,j]) + ' '
         output_str += '\n'
         f.write(output_str)
     f.close()
@@ -36,7 +36,7 @@ def lb_model(input_data):
     # Read in data from files and cleanup files.
     QoI_samples = np.zeros((num_runs, 2))
     for i in range(0, num_runs):
-        io_file_name = 'QoI_sample' + `i`
+        io_file_name = 'QoI_sample' + repr(i)
         io_mdat = sio.loadmat(io_file_name)
         QoI_samples[i,:] = io_mdat['output']
         io_file_str = io_file_name + '.mat'

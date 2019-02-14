@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module contains functions for approximating jacobians of QoI maps.
@@ -46,7 +46,7 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
         cluster_set.set_domain(input_domain)
     cluster_set.set_values(centers)
 
-    for i in xrange(num_centers):
+    for i in range(num_centers):
         in_bounds = 0
         inflate = 1.0
         while in_bounds < num_close:
@@ -318,7 +318,7 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
     # If centers is None we assume the user chose clusters of size
     # input_dim + 2
     if num_centers is None:
-        num_centers = num_model_samples / (input_dim + 2)
+        num_centers = num_model_samples // (input_dim + 2)
     centers = samples[:num_centers, :]
 
     rbf_tensor = np.zeros([num_centers, num_model_samples, input_dim])
@@ -412,7 +412,7 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
 
     num_model_samples = cluster_discretization.check_nums()
     input_dim = cluster_discretization._input_sample_set.get_dim()
-    num_centers = num_model_samples / (input_dim + 1)
+    num_centers = num_model_samples // (input_dim + 1)
 
     # Find radii_vec from the first cluster of samples
     radii_vec = samples[num_centers:num_centers + input_dim, :] - samples[0, :]
@@ -494,7 +494,7 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
     num_model_samples = cluster_discretization.check_nums()
     input_dim = cluster_discretization._input_sample_set.get_dim()
 
-    num_centers = num_model_samples / (2*input_dim + 1)
+    num_centers = num_model_samples // (2*input_dim + 1)
 
     # Find radii_vec from the first cluster of samples
     radii_vec = samples[num_centers:num_centers + input_dim, :] - samples[0, :]
@@ -508,8 +508,8 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
         1])
 
     # Construct indices for CFD gradient approxiation
-    inds = np.repeat(range(0, 2 * input_dim * num_centers, 2 * input_dim),
-        input_dim) + np.tile(range(0, input_dim), num_centers)
+    inds = np.repeat(np.arange(0, 2 * input_dim * num_centers, 2 * input_dim),
+        input_dim) + np.tile(np.arange(0, input_dim), num_centers)
     inds = np.array([inds, inds+input_dim]).transpose()
 
     gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / radii_vec)

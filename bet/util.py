@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2015 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module contains general tools for BET.
@@ -75,7 +75,7 @@ def get_global_values(array, shape=None):
         # Figure out the subtype of the elements of the array
         dtype = array.dtype
         mpi_dtype = False
-        for ptype in possible_types.iterkeys():
+        for ptype in possible_types.keys():
             if np.issubdtype(dtype, ptype):
                 mpi_dtype = True
                 dtype = ptype

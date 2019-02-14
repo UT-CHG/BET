@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This module provides methods for Voronoi plots. 
@@ -192,7 +192,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         # plot each cell
         for i,region in enumerate(regions):
             polygon = vertices[region]
-            plt.fill(*zip(*polygon),color=cmap(P[i]/P_max), edgecolor = 'k', linewidth = 0.005)
+            plt.fill(*list(zip(*polygon)),color=cmap(P[i]/P_max), edgecolor = 'k', linewidth = 0.005)
 
         plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1], sample_obj._domain[1][0], sample_obj._domain[1][1]])
         if lam_ref is not None:

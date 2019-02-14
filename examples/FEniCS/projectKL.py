@@ -39,11 +39,11 @@ class projectKL(object):
         cov_ij = np.empty((1),dtype=float) # scalar valued function is evaluated in this variable 
         xycor = np.empty((4),dtype=float) # the points to evalute the expression
 
-	print '---------------------------'
-        print '---------------------------'
-        print ' Building Covariance Matrix'
-        print '---------------------------'
-        print '---------------------------'
+	print('---------------------------')
+        print('---------------------------')
+        print(' Building Covariance Matrix')
+        print('---------------------------')
+        print('---------------------------')
         # Loop through global nodes and build the matrix for i < j because of symmetric nature.
         for node_i in range(0,self.domain.getNodes()):
             # global node node_i
@@ -75,11 +75,11 @@ class projectKL(object):
                             cov_mat.setValue(node_j,node_i,temp_cov_ij)
         cov_mat.assemblyBegin()
         cov_mat.assemblyEnd()
-        print '---------------------------'
-        print '---------------------------'
-        print ' Finished Covariance Matrix'
-        print '---------------------------'
-        print '---------------------------'
+        print('---------------------------')
+        print('---------------------------')
+        print(' Finished Covariance Matrix')
+        print('---------------------------')
+        print('---------------------------')
         
         return cov_mat
 
@@ -110,11 +110,11 @@ class projectKL(object):
 	 
         v_to_d_map = vertex_to_dof_map(V)
         
-        print '---------------------------'
-        print '---------------------------'
-        print ' Building Mass Matrix '
-        print '---------------------------'
-        print '---------------------------'
+        print('---------------------------')
+        print('---------------------------')
+        print(' Building Mass Matrix ')
+        print('---------------------------')
+        print('---------------------------')
         for node_i in range(0, self.domain.getNodes()):
             for node_j in range(node_i, self.domain.getNodes()):
                 B_ij_nodes = B_ij[v_to_d_map[node_i],v_to_d_map[node_j]]
@@ -124,11 +124,11 @@ class projectKL(object):
 	
 	B.assemblyBegin()
 	B.assemblyEnd()
-	print '---------------------------'
-	print '---------------------------'
-	print ' Finished Mass Matrix '
-	print '---------------------------'
-	print '---------------------------'
+	print('---------------------------')
+	print('---------------------------')
+	print(' Finished Mass Matrix ')
+	print('---------------------------')
+	print('---------------------------')
         return B
 
     def projectCovToMesh(self,num_kl,cov_expr):
@@ -165,7 +165,7 @@ class projectKL(object):
         x_real = PETSc.Vec().create()
         x_real.setSizes(self.domain.getNodes())
         x_real.setUp()
-        x_real.setValues(range(0,self.domain.getNodes()), np.zeros(self.domain.getNodes()))
+        x_real.setValues(np.arange(0,self.domain.getNodes()), np.zeros(self.domain.getNodes()))
 #        for i in range(0, self.domain.getNodes()):
 #            x_real.setValue(i, 0, 0.)
 

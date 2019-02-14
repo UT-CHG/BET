@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
 """
 This example solves a stochastic inverse problem for a
@@ -9,9 +9,10 @@ or just a QoI. We refer to the range of the QoI map as
 the data space.
 The 3-D input space is discretized with i.i.d. uniform
 random samples or a regular grid of samples.
-We refer to the input space as the
-parameter space, and use parameter to refer to a particular
+We refer to the input space as the parameter space, 
+and use parameter to refer to a particular
 point (e.g., a particular random sample) in this space.
+
 A reference parameter is used to define a reference QoI datum
 and a uniform probability measure is defined on a small box
 centered at this datum.

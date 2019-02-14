@@ -1,8 +1,6 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2019 The BET Development Team
 
-# -*- coding: utf-8 -*-
-# Lindley Graham 3/10/2014
-"""
+r"""
 This module contains functions for adaptive random sampling. We assume we are
 given access to a model, a parameter space, and a data space. The model is a
 map from the paramter space to the data space. We desire to build up a set of
@@ -44,7 +42,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         ``kern_old``)
     
     """
-    print hot_start
+    print(hot_start)
     if hot_start is None:
         hot_start = 1
    # LOAD FILES
@@ -68,11 +66,11 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
             mdat = sio.loadmat(save_file)
             if num_chains is None: 
                 num_chains = np.squeeze(mdat['num_chains'])
-            num_chains_pproc = num_chains / comm.size
+            num_chains_pproc = num_chains // comm.size
             disc = sample.load_discretization(save_file)
             kern_old = np.squeeze(mdat['kern_old'])
             all_step_ratios = np.squeeze(mdat['step_ratios'])
-            chain_length = disc.check_nums()/num_chains
+            chain_length = disc.check_nums() // num_chains
             if all_step_ratios.shape == (num_chains,
                                                 chain_length):
                 msg = "Serial file, from completed"
@@ -115,9 +113,9 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
                 disc_global.extend(dlist)
             # get num_proc and num_chains_pproc for previous run
             old_num_proc = max((len(mdat_list), 1))
-            old_num_chains_pproc = num_chains/old_num_proc
+            old_num_chains_pproc = num_chains // old_num_proc
             # get batch size and/or number of dimensions
-            chain_length = disc_global[0].check_nums()/\
+            chain_length = disc_global[0].check_nums() // \
                     old_num_chains_pproc
             disc = disc_global[0].copy()
             # create lists of local data
@@ -148,11 +146,11 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         mdat = sio.loadmat(save_file)
         if num_chains is None: 
             num_chains = np.squeeze(mdat['num_chains'])
-        num_chains_pproc = num_chains / comm.size
+        num_chains_pproc = num_chains // comm.size
         disc = sample.load_discretization(save_file)
         kern_old = np.squeeze(mdat['kern_old'])
         all_step_ratios = np.squeeze(mdat['step_ratios'])
-        chain_length = disc.check_nums()/num_chains
+        chain_length = disc.check_nums() // num_chains
         # reshape if parallel
         if comm.size > 1:
             temp_input = np.reshape(disc._input_sample_set.\
@@ -180,7 +178,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
             0)[comm.rank], (num_chains_pproc,), 'F')
     else:
         all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
-    print chain_length*num_chains, chain_length, lb_model
+    print(chain_length*num_chains, chain_length, lb_model)
     new_sampler = sampler(chain_length*num_chains, chain_length, lb_model) 
     return (new_sampler, disc, all_step_ratios, kern_old)
 
@@ -216,8 +214,8 @@ class sampler(bsam.sampler):
         #:    ndim), and returns data (N, mdim)
         self.lb_model = lb_model
         #: batch number for this particular chain 
-        self.sample_batch_no = np.repeat(range(self.num_chains), chain_length,
-                0)
+        self.sample_batch_no = np.repeat(np.arange(self.num_chains), 
+                        chain_length, 0)
 
     def update_mdict(self, mdict):
         """
@@ -452,13 +450,13 @@ class sampler(bsam.sampler):
 
             # Determine how many batches have been run
             start_ind = disc._input_sample_set.get_values_local().\
-                    shape[0]/self.num_chains_pproc
+                    shape[0] // self.num_chains_pproc
         
         mdat = dict()
         self.update_mdict(mdat)
         input_old.update_bounds_local()
 
-        for batch in xrange(start_ind, self.chain_length):
+        for batch in range(start_ind, self.chain_length):
             # For each of N samples_old, create N new parameter samples using
             # transition set and step_ratio. Call these samples input_new.
             input_new = t_set.step(step_ratio, input_old)
@@ -759,7 +757,7 @@ class maxima_kernel(kernel):
         # Evaluate kernel for new data.
         kern_new = np.zeros((output_new.shape[0]))
 
-        for i in xrange(output_new.shape[0]):
+        for i in range(output_new.shape[0]):
             # calculate distance from each of the maxima
             vec_from_maxima = np.repeat([output_new[i, :]], self.num_maxima, 0)
             vec_from_maxima = vec_from_maxima - self.MAXIMA
@@ -850,7 +848,7 @@ class maxima_mean_kernel(maxima_kernel):
         kern_new = np.zeros((output_new.shape[0]))
         self.current_clength = self.current_clength + 1
 
-        for i in xrange(output_new.shape[0]):
+        for i in range(output_new.shape[0]):
             # calculate distance from each of the maxima
             vec_from_maxima = np.repeat([output_new[i, :]], self.num_maxima, 0)
             vec_from_maxima = vec_from_maxima - self.MAXIMA
