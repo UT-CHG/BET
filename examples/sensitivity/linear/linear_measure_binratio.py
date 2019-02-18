@@ -5,7 +5,6 @@ Here, we consider a simple example where a parameter space is given
 by a 5-dimensional hypercube and the goal is to choose an optimal QoI
 map from a space of possible QoI maps, denoted by :math:`\mathcal{Q}`,
 where each QoI map is linear.
-
 We use this simple example to demonstrate the use of the code to
 optimally choose which possible QoI map does the best job of "scaling"
 inverse sets to smaller sets.
@@ -13,7 +12,6 @@ The idea is that if we generally consider a set of high probability
 in a particular data space defined by the range of a QoI map, we would
 prefer that the inverse of this set is as small as possible in order to
 try and identify the parameter responsible for the data.
-
 This only makes sense for stochastic inverse problems framed within the
 context of parameter identification under uncertainty.
 In other words, when the problem is that the data are uncertain due to
