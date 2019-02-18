@@ -649,12 +649,13 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
                                     ref_markers, ref_colors, xlabel=xlabel,
                                     ylabel=ylabel, triangles=triangles,
                                     save=True, interactive=False,
-                                    filenames=filenames)
+                                    filenames=filenames, file_extension=file_extension)
             else:
                 show_data_domain_2D(sample_disc_temp, None, ref_markers,
                                     ref_colors, xlabel=xlabel, ylabel=ylabel,
                                     triangles=triangles, save=True, 
-                                    interactive=False, filenames=filenames)
+                                    interactive=False, 
+                                    filenames=filenames, file_extension=file_extension)
     # Create plots of all combinations of QoI in 2D
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(Q_nums, 2):
