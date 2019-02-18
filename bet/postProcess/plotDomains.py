@@ -42,7 +42,7 @@ class bad_object(Exception):
 
 
 def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
+        save=True, interactive=False, xlabel=r'$x$', ylabel=r'$y$', cbar_label=None,
         filename='scatter2d', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the samples within the sample
@@ -130,7 +130,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         plt.close()
 
 def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
+        save=True, interactive=False, xlabel=r'$\lambda_1$', ylabel=r'$\lambda_2$', cbar_label=None,
         filename='scatter2d_input', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the input samples within the
@@ -188,8 +188,8 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
             file_extension)
 
 def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
-        filename='scatter2d_input', file_extension=".png"):
+        save=True, interactive=False, xlabel=r'$q_1$', ylabel=r'$q_2$', cbar_label=None,
+        filename='scatter2d_output', file_extension=".png"):
     r"""
     Creates a two-dimensional scatter plot of the output samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -336,8 +336,9 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         plt.close()
 
 def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        cbar_label=None, filename="scatter3d", file_extension=".png"):
+        save=True, interactive=False, 
+        xlabel=r'$\lambda_1$', ylabel=r'$\lambda_2$', zlabel=r'$\lambda_3$',
+        cbar_label=None, filename="scatter3d_input", file_extension=".png"):
     r"""
     Creates a three-dimensional scatter plot of input samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -395,8 +396,9 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
             filename, file_extension)
 
 def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        cbar_label=None, filename="scatter3d", file_extension=".png"):
+        save=True, interactive=False, 
+        xlabel=r'$q_1$', ylabel=r'$q_2$', zlabel=r'$q_3$',
+        cbar_label=None, filename="scatter3d_output", file_extension=".png"):
     r"""
     Creates a three-dimensional scatter plot of output samples within the
     discretization object colored by ``color`` (usually an array of pointwise
