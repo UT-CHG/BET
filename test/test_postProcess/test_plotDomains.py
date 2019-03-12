@@ -222,7 +222,14 @@ class test_plotDomains(unittest.TestCase):
             plotDomains.scatter_rhoD(disc_obj_temp, p_ref, sample_nos, 'input',
                     self.rho_D, lnums, None, showdim, save, False)
             go = True
-        except (RuntimeError, TypeError, NameError):
+        except (RuntimeError, TypeError, NameError) as error:
+            print("ERROR:", error)
+            print("samples shape:", samples.shape)
+            print("param ref:", p_ref)
+            print("samples nums:", sample_nos)
+            print("save:", save)
+            print("lnums:", lnums)
+            print("showdim:", showdim)
             go = False
 
         nptest.assert_equal(go, True)
@@ -266,12 +273,12 @@ class test_plotDomains(unittest.TestCase):
             go = True
         except (RuntimeError, TypeError, NameError):
             print("ERROR")
-            print(data.shape)
-            print(q_ref)
-            print(sample_nos)
-            print(save)
-            print(qnums)
-            print(showdim)
+            print("data shape:", data.shape)
+            print("data ref:", q_ref)
+            print("samples nums:", sample_nos)
+            print("save:", save)
+            print("qnums:", qnums)
+            print("showdim:", showdim)
             go = False
         nptest.assert_equal(go, True)
 
