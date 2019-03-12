@@ -93,7 +93,8 @@ output_samples.set_values(output_samples.get_values()[:, QoI_indices])
 
 # Define the reference point in the output space to correspond to the center of
 # the input space.
-Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(input_dim))
+param_ref = 0.5 * np.ones(input_dim)
+Q_ref = Q[QoI_indices, :].dot(param_ref)
 
 # bin_ratio defines the uncertainty in our data
 bin_ratio = 0.25
