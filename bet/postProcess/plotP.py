@@ -367,7 +367,7 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
     from scipy.fftpack import fftshift, ifft, fft 
 
-    if isinstance(sigma, float):
+    if isinstance(sigma, float) or isinstance(sigma, int):
         sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
     index = copy.deepcopy(list(marginals.keys()))
@@ -408,7 +408,7 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
     """
     from scipy.fftpack import fftshift, ifft2, fft2 
 
-    if isinstance(sigma, float):
+    if isinstance(sigma, float) or isinstance(sigma, int):
         sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
     pairs = copy.deepcopy(list(marginals.keys()))
