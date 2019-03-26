@@ -11,6 +11,7 @@ Please note that we are using continuous integration and issues for bug tracking
 
 This code has been documented with sphinx. the documentation is available online ta http://ut-chg.github.io/bet. to build documentation run 
 ``make html`` in the ``doc/`` folder.
+
 To build/update the documentation use the following commands::
 
     sphinx-apidoc -f -o doc bet
@@ -18,11 +19,23 @@ To build/update the documentation use the following commands::
     make html
     make html
 
-This creates the relevant documentation at ``bet/gh-pages/html``. to change the build location of the documentation you will need to update ``doc/makefile``.
+This creates the relevant documentation at ``bet/gh-pages/html``. 
+To change the build location of the documentation you will need to update ``doc/makefile``.
 
-You will need to run sphinx-apidoc and reinstall bet anytime a new module or method in the source code has been added. if only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
+You will need to run sphinx-apidoc and reinstall bet anytime a new module or method in the source code has been added. 
+If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
 
-Useful scripts are contained in ``examples/``
+Useful scripts are contained in ``examples/``, as are the following sets of example Jupyter Notebooks:
+
+- [Plotting](./examples/plotting/Plotting_Examples.ipynb)
+    (this allows execution any of the following examples and plots the associated results)
+- [Contaminant Transport](./examples/contaminantTransport/contaminant.ipynb)
+- [Validation Example](./examples/validationExample/linearMap.ipynb)
+- [Linear (QoI) Sensitivity](./examples/sensitivity/linear_sensitivity.ipynb)
+- [Linear Map](./examples/linearMap/linearMapUniformSampling.ipynb)
+
+Furthermore, the `examples/templates` directory contains a [notebook](./examples/templates/Example_Notebook_Template.ipynb) that serves as a template for the examples.
+
 
 Tests
 -----
@@ -34,6 +47,8 @@ To run tests in serial call::
 To run tests in parallel call::
 
     mpirun -np nproc nosetests
+
+Make you to have a working MPI environment (we recommend [mpich](http://www.mpich.org/downloads/)).
 
 
 Dependencies
