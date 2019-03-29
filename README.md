@@ -1,8 +1,6 @@
 BET
 ===
-[![Build Status](https://travis-ci.org/UT-CHG/BET.svg?branch=master)](https://travis-ci.org/UT-CHG/BET) [![DOI](https://zenodo.org/badge/18813599.svg)](https://zenodo.org/badge/latestdoi/18813599) [![codecov](https://codecov.io/gh/UT-CHG/BET/branch/master/graph/badge.svg)](https://codecov.io/gh/UT-CHG/BET)
-
-Try it out without installing: [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UT-CHG/BET/master)
+[![Build Status](https://travis-ci.org/UT-CHG/BET.svg?branch=master)](https://travis-ci.org/UT-CHG/BET) [![DOI](https://zenodo.org/badge/18813599.svg)](https://zenodo.org/badge/latestdoi/18813599) [![codecov](https://codecov.io/gh/UT-CHG/BET/branch/master/graph/badge.svg)](https://codecov.io/gh/UT-CHG/BET) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UT-CHG/BET/master)
 
 
 BET is in active development. Hence, some features are still being added and you may find bugs we have overlooked. If you find something please report these problems to us through GitHub so that we can fix them. Thanks! 
@@ -37,7 +35,7 @@ Useful scripts are contained in ``examples/``, as are the following sets of exam
 - [Linear Map](./examples/linearMap/linearMapUniformSampling.ipynb)
 
 Furthermore, the `examples/templates` directory contains a [notebook](./examples/templates/Example_Notebook_Template.ipynb) that serves as a template for the examples.
-
+You can also try out BET in your browser using [Binder](https://mybinder.org/v2/gh/UT-CHG/BET/master).
 
 Tests
 -----
