@@ -22,6 +22,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set = sample.sample_set(dim=self.dim)
         self.sam_set.set_values(self.values)
         self.domain = np.array([[0, 1],[0, 1]], dtype=np.float)
+    
     def test_merge(self):
         """
         Test merge.
@@ -54,6 +55,7 @@ class Test_sample_set(unittest.TestCase):
         nptest.assert_array_almost_equal(self.sam_set._values, 1.0)
         nptest.assert_array_almost_equal(self.sam_set._error_estimates, 1.0)
         nptest.assert_array_almost_equal(self.sam_set._jacobians, 1.0)
+    
     def test_clip(self):
         """
         Test clipping of sample set.
@@ -74,18 +76,21 @@ class Test_sample_set(unittest.TestCase):
                                   sam_set_clipped._error_estimates)
         nptest.assert_array_equal(self.sam_set._jacobians[0:cnum,:],
                                   sam_set_clipped._jacobians)
+    
     def test_set_domain(self):
         """
         Test set domain.
         """
         self.sam_set.set_domain(self.domain)
         nptest.assert_array_equal(self.sam_set._domain, self.domain)
+    
     def test_get_domain(self):
         """
         Test get domain.
         """
         self.sam_set.set_domain(self.domain)
         nptest.assert_array_equal(self.sam_set.get_domain(), self.domain)
+    
     def test_save_load(self):
         """
         Check save_sample_set and load_sample_set.
@@ -190,6 +195,7 @@ class Test_sample_set(unittest.TestCase):
                         curr_attr)
 
         assert copied_set._kdtree is not None
+    
     def test_update_bounds(self):
         """
         Check update_bounds
@@ -210,6 +216,7 @@ class Test_sample_set(unittest.TestCase):
             np.repeat([self.domain[:, 1]], o_num, 0))
         nptest.assert_array_equal(self.sam_set._width,
             np.repeat([self.domain[:, 1] - self.domain[:, 0]], o_num, 0))
+    
     def test_update_bounds_local(self):
         """
         Check update_bounds_local
@@ -239,6 +246,7 @@ class Test_sample_set(unittest.TestCase):
         Check set_dim
         """
         self.assertEqual(self.dim, self.sam_set.get_dim())
+    
     def test_set_values(self):
         """
         Check set_values.
@@ -247,6 +255,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_values(values)
         nptest.assert_array_equal(util.fix_dimensions_data(values),
             self.sam_set.get_values())
+    
     def test_set_values_local(self):
         """
         Check set_values_local.
@@ -255,18 +264,21 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_values_local(values)
         nptest.assert_array_equal(util.fix_dimensions_data(values),
             self.sam_set.get_values_local()) 
+    
     def test_get_values(self):
         """
         Check get_samples.
         """
         nptest.assert_array_equal(util.fix_dimensions_data(self.values),
             self.sam_set.get_values()) 
+    
     def test_get_shape(self):
         """
         Check get_samples.
         """
         nptest.assert_array_equal(util.fix_dimensions_data(self.values).shape,
                 self.sam_set.shape())
+    
     def test_append_values(self):
         """
         Check appending of values.
@@ -275,6 +287,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.append_values(new_values)
         nptest.assert_array_equal(util.fix_dimensions_data(new_values),
             self.sam_set.get_values()[self.num::, :]) 
+    
     def test_append_values_local(self):
         """
         Check appending of local values.
@@ -292,6 +305,7 @@ class Test_sample_set(unittest.TestCase):
         Check to see if dimensions are correct.
         """
         self.assertEqual(self.dim, self.sam_set.get_dim())
+    
     def test_probabilities(self):
         """
         Check probability methods
@@ -300,6 +314,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_probabilities(prob)
         self.sam_set.check_num()
         nptest.assert_array_equal(prob, self.sam_set.get_probabilities())
+    
     def test_volumes(self):
         """
         Check volume methods
@@ -457,14 +472,14 @@ class Test_discretization_simple(unittest.TestCase):
                                           output_sample_set=self.output_set,
                                           output_probability_set=self.output_probability_set)
         
-    def Test_check_nums(self):
+    def test_check_nums(self):
         """
         Test number checking.
         """
         num = self.disc.check_nums()
         self.assertEqual(num, self.num)
     
-    def Test_clip(self):
+    def test_clip(self):
         """
         Test clipping of discretization.
         """
@@ -474,7 +489,8 @@ class Test_discretization_simple(unittest.TestCase):
                                   disc_clipped._input_sample_set._values)
         nptest.assert_array_equal(self.disc._output_sample_set._values[0:cnum,:],
                                   disc_clipped._output_sample_set._values)
-    def Test_slicing(self):
+    
+    def test_slicing(self):
         """
         Test `bet.sample.discretization.choose_inputs_outputs`
         """
@@ -489,7 +505,8 @@ class Test_discretization_simple(unittest.TestCase):
         nptest.assert_array_equal(self.disc._output_sample_set._error_estimates[:,[0]],
                                    disc_new._output_sample_set._error_estimates)
         self.assertEqual(disc_new._input_sample_set._jacobians.shape, (self.num, 1, 2))
-    def Test_set_io_ptr(self):
+    
+    def test_set_io_ptr(self):
         """
         Test setting io ptr
         """
@@ -500,7 +517,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.get_io_ptr()
         self.disc.globalize_ptrs()
 
-    def Test_set_emulated_ii_ptr(self):
+    def test_set_emulated_ii_ptr(self):
         """
         Test setting emulated ii ptr
         """
@@ -517,7 +534,7 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.globalize_ptrs()
 
         
-    def Test_set_emulated_oo_ptr(self):
+    def test_set_emulated_oo_ptr(self):
         """
         Test setting emulated oo ptr
         """
@@ -532,72 +549,72 @@ class Test_discretization_simple(unittest.TestCase):
         self.disc.get_emulated_oo_ptr()
         self.disc.globalize_ptrs()
 
-    def Test_set_input_sample_set(self):
+    def test_set_input_sample_set(self):
         """
         Test setting input sample set
         """
         test_set = sample.sample_set(dim=self.dim1)
         self.disc.set_input_sample_set(test_set)
 
-    def Test_get_input_sample_set(self):
+    def test_get_input_sample_set(self):
         """
         Test getting input sample set
         """
         self.disc.get_input_sample_set()
 
-    def Test_set_emulated_input_sample_set(self):
+    def test_set_emulated_input_sample_set(self):
         """
         Test setting emulated input sample set
         """
         test_set = sample.sample_set(dim=self.dim1)
         self.disc.set_emulated_input_sample_set(test_set)
 
-    def Test_get_emulated_input_sample_set(self):
+    def test_get_emulated_input_sample_set(self):
         """
         Test getting emulated input sample set
         """
         self.disc.get_emulated_input_sample_set()
 
-    def Test_set_output_sample_set(self):
+    def test_set_output_sample_set(self):
         """
         Test setting output sample set
         """
         test_set = sample.sample_set(dim=self.dim2)
         self.disc.set_output_sample_set(test_set)
 
-    def Test_get_output_sample_set(self):
+    def test_get_output_sample_set(self):
         """
         Test getting output sample set
         """
         self.disc.get_output_sample_set()
 
-    def Test_set_output_probability_set(self):
+    def test_set_output_probability_set(self):
         """
         Test setting output probability sample set
         """
         test_set = sample.sample_set(dim=self.dim2)
         self.disc.set_output_probability_set(test_set)
 
-    def Test_get_output_probability_set(self):
+    def test_get_output_probability_set(self):
         """
         Test getting output probability sample set
         """
         self.disc.get_output_probability_set()
 
-    def Test_set_emulated_output_sample_set(self):
+    def test_set_emulated_output_sample_set(self):
         """
         Test setting emulated output sample set
         """
         test_set = sample.sample_set(dim=self.dim2)
         self.disc.set_emulated_output_sample_set(test_set)
 
-    def Test_get_emulated_output_sample_set(self):
+    def test_get_emulated_output_sample_set(self):
         """
         Test getting emulated output sample set
         """
         self.disc.get_emulated_output_sample_set()
 
-    def Test_save_load_discretization(self):
+    def test_save_load_discretization(self):
         """
         Test saving and loading of discretization
         """
@@ -667,8 +684,7 @@ class Test_discretization_simple(unittest.TestCase):
         elif not globalize:
             os.remove(local_file_name)
 
-
-    def Test_copy_discretization(self):
+    def test_copy_discretization(self):
         """
         Test copying of discretization
         """
@@ -690,7 +706,7 @@ class Test_discretization_simple(unittest.TestCase):
                         nptest.assert_array_equal(curr_attr, getattr(\
                                 curr_set, set_attrname))
 
-    def Test_estimate_input_volume_emulated(self):
+    def test_estimate_input_volume_emulated(self):
         """
 
         Testing :meth:`bet.discretization.estimate_input_volume_emulated`
@@ -738,7 +754,7 @@ class Test_discretization_simple(unittest.TestCase):
         nptest.assert_array_almost_equal(lam_vol, volume_exact, 1)
         nptest.assert_almost_equal(np.sum(lam_vol), 1.0)
 
-    def Test_estimate_output_volume_emulated(self):
+    def test_estimate_output_volume_emulated(self):
         """
 
         Testing :meth:`bet.discretization.estimate_output_volume_emulated`
@@ -820,6 +836,7 @@ class TestEstimateVolume(unittest.TestCase):
         self.volume_exact = 1.0/self.s_set._values.shape[0]
         self.s_set.estimate_volume(n_mc_points= 1001)
         self.lam_vol = self.s_set._volumes
+    
     def test_dimension(self):
         """
         Check the dimension.
@@ -873,6 +890,7 @@ class TestEstimateVolumeEmulated(unittest.TestCase):
                 emulated_samples._left_local)
         self.s_set.estimate_volume_emulated(emulated_samples)
         self.lam_vol = self.s_set._volumes
+    
     def test_dimension(self):
         """
         Check the dimension.
