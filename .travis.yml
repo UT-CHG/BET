@@ -10,7 +10,7 @@ services:
 
 before_install:
   - "export DISPLAY=:99.0"
-  - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev
+  - sudo apt-get install gfortran libblas-dev liblapack-dev mpich libmpich-dev
   - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
   - bash miniconda.sh -b -p $HOME/miniconda
   - export PATH="$HOME/miniconda/bin:$PATH"
