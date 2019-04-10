@@ -17,6 +17,7 @@ before_install:
   - conda update --yes conda
 
 install:
+  - pip install --upgrade setuptools
   - pip install numpy scipy matplotlib pyDOE mpi4py nose codecov
   - python setup.py install
 
