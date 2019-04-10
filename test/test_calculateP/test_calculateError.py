@@ -73,12 +73,12 @@ class calculate_error(object):
                                                             1,
                                                             emulated_set=self.disc._input_sample_set)
         if np.isnan(up):
-            self.assertEqual(isnan(upper[0]), True)
+            self.assertEqual(np.isnan(upper[0]), True)
         else:
             self.assertAlmostEqual(up, upper[0])
 
         if np.isnan(low):
-            self.assertEqual(isnan(lower[0]), True)
+            self.assertEqual(np.isnan(lower[0]), True)
         else:
             self.assertAlmostEqual(low, lower[0])
 
@@ -86,12 +86,12 @@ class calculate_error(object):
         (up, low) = s_error.calculate_for_sample_set_region(s_set,
                                                             1)
         if np.isnan(up):
-            self.assertEqual(isnan(upper[0]), True)
+            self.assertEqual(np.isnan(upper[0]), True)
         else:
             self.assertAlmostEqual(up, upper[0])
 
         if np.isnan(low):
-            self.assertEqual(isnan(lower[0]), True)
+            self.assertEqual(np.isnan(lower[0]), True)
         else:
             self.assertAlmostEqual(low, lower[0])
 
