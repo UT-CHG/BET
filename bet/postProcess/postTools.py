@@ -7,15 +7,18 @@ import logging
 import numpy as np
 import bet.sample as sample
 
+
 class dim_not_matching(Exception):
     """
     Exception for when the dimension is inconsistent.
     """
 
+
 class bad_object(Exception):
     """
     Exception for when the wrong type of object is used.
     """
+
 
 def sort_by_rho(sample_set):
     """
@@ -78,6 +81,7 @@ def sort_by_rho(sample_set):
         sample_set_out.set_volumes(lam_vol)
 
     return (sample_set_out, indices)
+
 
 def sample_prob(percentile, sample_set, sort=True, descending=False):
     """
@@ -166,8 +170,9 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
         sample_set_out.set_probabilities(P_samples)
         sample_set_out.set_volumes(lam_vol)
 
-    return  (num_samples, sample_set_out,
+    return (num_samples, sample_set_out,
             indices[0:num_samples])
+
 
 def sample_highest_prob(top_percentile, sample_set, sort=True):
     """
@@ -195,6 +200,7 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
     """
     return sample_prob(top_percentile, sample_set, sort)
 
+
 def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     """
     This calculates the lowest probability samples whose probability sum to a
@@ -220,7 +226,8 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
 
     """
     return sample_prob(bottom_percentile, sample_set,
-            sort, descending=True)
+                       sort, descending=True)
+
 
 def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     """
@@ -244,9 +251,10 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
     raise PendingDeprecationWarning
     if column_headings is None:
         column_headings = "Run parameters"
-    logging.info("Sample Set No., Quality, "+ str(column_headings))
+    logging.info("Sample Set No., Quality, " + str(column_headings))
     for i in reversed(sort_ind):
         logging.info(i, sample_quality[i], np.round(run_param[i], 3))
+
 
 def in_high_prob(data, rho_D, maximum, sample_nos=None):
     """
@@ -279,6 +287,7 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
     logging.info("Samples in box "+str(adjusted_total_prob))
     return adjusted_total_prob
 
+
 def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     """
     .. todo::
@@ -304,11 +313,8 @@ def in_high_prob_multi(results_list, rho_D, maximum, sample_nos_list=None):
     if sample_nos_list:
         for result, sample_nos in zip(results_list, sample_nos_list):
             adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum,
-                sample_nos))
+                                                    sample_nos))
     else:
         for result in results_list:
             adjusted_total_prob.append(in_high_prob(result[1], rho_D, maximum))
     return adjusted_total_prob
-
-
-       
