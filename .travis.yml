@@ -38,7 +38,8 @@ notifications:
 branches:
     only:
         - master
-        - v2_master
+        - metrics
+        - linting
 
 # Push the results back to codecov
 after_success:
