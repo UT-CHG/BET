@@ -7,7 +7,7 @@ class metrization(object):
 
     A data structure containing :class:`~bet.sample.sample_set_base` objects and
     associated methods for computing measures of distance between pairs of them.
-
+    
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
@@ -60,6 +60,18 @@ class metrization(object):
                 and right ({}) sample sets not matching that of integration \
                 sample set ({})".format(dim_L[1], dim_R[1], dim_I[1])))
     
+    # method for checking that pointers have been set that will be 
+    # called by the distance function
+    
+    # set density functions, maybe print a message if MC assumption is used to estimate volumes 
+    
+    # evaluate density functions at integration points, store for re-use
+    
+    
+    # metric - wrapper around scipy now that passes density values with proper shapes. 
+    
+    
+    
     def globalize_ptrs(self):
         """
         Globalizes metrization pointers.
@@ -86,8 +98,6 @@ class metrization(object):
             
         :param bool globalize: flag whether or not to globalize
             ``self._io_ptr_left``
-        :param int p: Which Minkowski p-norm to use. (1 <= p <= infinity)
-
         """
         if self._integration_sample_set._values_local is None:
             self._integration_sample_set.global_to_local()
@@ -126,7 +136,6 @@ class metrization(object):
             
         :param bool globalize: flag whether or not to globalize
             ``self._io_ptr_right``
-        :param int p: Which Minkowski p-norm to use. (1 <= p <= infinity)
 
         """
         if self._integration_sample_set._values_local is None:
