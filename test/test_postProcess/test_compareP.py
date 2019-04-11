@@ -51,10 +51,10 @@ class Test_metrization_simple(unittest.TestCase):
         except:
             pass
         try:
-            self.mtrc = comP.metrization(None, test_set)
+            self.mtrc = compP.metrization(None, test_set)
         except:
             pass
-    
+
     def test_set_ptr_left(self):
         """
         Test setting left io ptr
