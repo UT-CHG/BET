@@ -2,7 +2,9 @@
 
 import numpy as np
 import numpy.testing as nptest
-import unittest, os, glob
+import unittest
+import os
+import glob
 import bet.sample as sample
 import bet.postProcess.compareP as compP
 #import bet.util as util
@@ -10,6 +12,7 @@ import bet.postProcess.compareP as compP
 
 #local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
 local_path = ''
+
 
 class Test_metrization_simple(unittest.TestCase):
     def setUp(self):
@@ -27,8 +30,7 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc = compP.metrization(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
                                       integration_sample_set=self.integration_set)
-        
-     
+
     def test_dimension(self):
         """
         Check that improperly setting dimension raises warning.
@@ -37,15 +39,15 @@ class Test_metrization_simple(unittest.TestCase):
         values = np.ones((200, dim))
         integration_set = sample.sample_set(dim=dim)
         integration_set.set_values(values)
-        try: 
+        try:
             self.mtrc = compP.metrization(sample_set_left=self.left_set,
-                                      sample_set_right=self.right_set,
-                                      integration_sample_set=self.integration_set)
-        except ValueError as e: # setting wrong shapes should raise this error
+                                          sample_set_right=self.right_set,
+                                          integration_sample_set=self.integration_set)
+        except ValueError as e:  # setting wrong shapes should raise this error
             pass
- 
+
     def test_no_sample_set(self):
-        test_set  = sample.sample_set(dim=self.dim)
+        test_set = sample.sample_set(dim=self.dim)
         try:
             self.mtrc = compP.metrization(test_set, None)
         except:
@@ -59,22 +61,20 @@ class Test_metrization_simple(unittest.TestCase):
         """
         Test setting left io ptr
         """
-        #TODO be careful if we change Kdtree
+        # TODO be careful if we change Kdtree
         self.mtrc.set_io_ptr_left(globalize=True)
         self.mtrc.get_io_ptr_left()
         self.mtrc.set_io_ptr_left(globalize=False)
         self.mtrc.get_io_ptr_left()
         self.mtrc.globalize_ptrs()
-    
+
     def test_set_ptr_right(self):
         """
         Test setting right io ptr
         """
-        #TODO be careful if we change Kdtree
+        # TODO be careful if we change Kdtree
         self.mtrc.set_io_ptr_right(globalize=True)
         self.mtrc.get_io_ptr_right()
         self.mtrc.set_io_ptr_right(globalize=False)
         self.mtrc.get_io_ptr_right()
         self.mtrc.globalize_ptrs()
-
-
