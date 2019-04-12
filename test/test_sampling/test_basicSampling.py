@@ -4,16 +4,18 @@
 This module contains unittests for :mod:`~bet.sampling.basicSampling:`
 """
 
-import unittest, os, pyDOE
+import unittest
+import os
+import pyDOE
 import numpy.testing as nptest
 import numpy as np
 import scipy.io as sio
 import bet
 import bet.sampling.basicSampling as bsam
-from bet.Comm import comm 
+from bet.Comm import comm
 import bet.sample
 from bet.sample import sample_set
-from bet.sample import discretization as disc 
+from bet.sample import discretization as disc
 import collections
 
 local_path = os.path.join(".")
@@ -25,40 +27,38 @@ def test_loadmat():
     Tests :meth:`bet.sampling.basicSampling.loadmat`
     """
     np.random.seed(1)
-    mdat1 = {'num_samples':5}
-    mdat2 = {'num_samples':6}
+    mdat1 = {'num_samples': 5}
+    mdat2 = {'num_samples': 6}
     model = "this is not a model"
 
     my_input1 = sample_set(1)
-    my_input1.set_values(np.random.random((5,1)))
+    my_input1.set_values(np.random.random((5, 1)))
     my_output = sample_set(1)
-    my_output.set_values(np.random.random((5,1)))
+    my_output.set_values(np.random.random((5, 1)))
     my_input2 = sample_set(1)
-    my_input2.set_values(np.random.random((6,1)))
-
+    my_input2.set_values(np.random.random((6, 1)))
 
     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
     sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
-    
     bet.sample.save_discretization(disc(my_input1, my_output),
-            (os.path.join(local_path, 'testfile1')), globalize=True)
+                                   (os.path.join(local_path, 'testfile1')), globalize=True)
     bet.sample.save_discretization(disc(my_input2, None),
-            os.path.join(local_path, 'testfile2'), "NAME", globalize=True)
+                                   os.path.join(local_path, 'testfile2'), "NAME", globalize=True)
 
     (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
-        'testfile1'))
+                                                                   'testfile1'))
     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
-            my_input1.get_values())
+                              my_input1.get_values())
     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
-            my_output.get_values())
+                              my_output.get_values())
     assert loaded_sampler1.num_samples == 5
     assert loaded_sampler1.lb_model is None
 
     (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
-        'testfile2'), disc_name="NAME", model=model)
+                                                                   'testfile2'), disc_name="NAME", model=model)
     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
-            my_input2.get_values())
+                              my_input2.get_values())
     assert discretization2._output_sample_set is None
     assert loaded_sampler2.num_samples == 6
     assert loaded_sampler2.lb_model == model
@@ -67,6 +67,7 @@ def test_loadmat():
     if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
         os.remove(os.path.join(local_path, 'testfile2.mat'))
 
+
 def test_loadmat_parallel():
     """
 
@@ -74,59 +75,58 @@ def test_loadmat_parallel():
 
     """
     np.random.seed(1)
-    mdat1 = {'num_samples':10}
-    mdat2 = {'num_samples':20}
+    mdat1 = {'num_samples': 10}
+    mdat2 = {'num_samples': 20}
     model = "this is not a model"
 
     my_input1 = sample_set(1)
-    my_input1.set_values_local(np.array_split(np.random.random((10,1)),
-        comm.size)[comm.rank])
+    my_input1.set_values_local(np.array_split(np.random.random((10, 1)),
+                                              comm.size)[comm.rank])
     my_output1 = sample_set(1)
-    my_output1.set_values_local(np.array_split(np.random.random((10,1)),
-        comm.size)[comm.rank]) 
+    my_output1.set_values_local(np.array_split(np.random.random((10, 1)),
+                                               comm.size)[comm.rank])
     my_input2 = sample_set(1)
-    my_input2.set_values_local(np.array_split(np.random.random((20,1)),
-        comm.size)[comm.rank])
+    my_input2.set_values_local(np.array_split(np.random.random((20, 1)),
+                                              comm.size)[comm.rank])
     my_output2 = sample_set(1)
-    my_output2.set_values_local(np.array_split(np.random.random((20,1)),
-        comm.size)[comm.rank]) 
+    my_output2.set_values_local(np.array_split(np.random.random((20, 1)),
+                                               comm.size)[comm.rank])
 
     file_name1 = 'testfile1.mat'
     file_name2 = 'testfile2.mat'
 
     if comm.size > 1:
         local_file_name1 = os.path.os.path.join(os.path.dirname(file_name1),
-            "proc{}_{}".format(comm.rank, os.path.basename(file_name1)))
+                                                "proc{}_{}".format(comm.rank, os.path.basename(file_name1)))
         local_file_name2 = os.path.os.path.join(os.path.dirname(file_name2),
-            "proc{}_{}".format(comm.rank, os.path.basename(file_name2)))
+                                                "proc{}_{}".format(comm.rank, os.path.basename(file_name2)))
     else:
         local_file_name1 = file_name1
         local_file_name2 = file_name2
 
-
     sio.savemat(local_file_name1, mdat1)
     sio.savemat(local_file_name2, mdat2)
     comm.barrier()
-    
+
     bet.sample.save_discretization(disc(my_input1, my_output1),
-            file_name1, globalize=False)
+                                   file_name1, globalize=False)
     bet.sample.save_discretization(disc(my_input2, my_output2),
-            file_name2, "NAME", globalize=False)
+                                   file_name2, "NAME", globalize=False)
 
     (loaded_sampler1, discretization1) = bsam.loadmat(file_name1)
     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
-            my_input1.get_values())
+                              my_input1.get_values())
     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
-            my_output1.get_values())
+                              my_output1.get_values())
     assert loaded_sampler1.num_samples == 10
     assert loaded_sampler1.lb_model is None
 
     (loaded_sampler2, discretization2) = bsam.loadmat(file_name2,
-        disc_name="NAME", model=model)
+                                                      disc_name="NAME", model=model)
     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
-            my_input2.get_values())
+                              my_input2.get_values())
     nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
-            my_output2.get_values())
+                              my_output2.get_values())
 
     assert loaded_sampler2.num_samples == 20
     assert loaded_sampler2.lb_model == model
@@ -136,6 +136,7 @@ def test_loadmat_parallel():
     else:
         os.remove(local_file_name1)
         os.remove(local_file_name2)
+
 
 def verify_compute_QoI_and_create_discretization(model, sampler,
                                                  input_sample_set,
@@ -154,57 +155,58 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
 
     # evaluate the model at the sample
     print(savefile, input_sample_set.get_dim())
-    my_discretization = sampler.compute_QoI_and_create_discretization(\
-        input_sample_set, savefile, globalize=True) 
-    #comm.barrier()
+    my_discretization = sampler.compute_QoI_and_create_discretization(
+        input_sample_set, savefile, globalize=True)
+    # comm.barrier()
 
-    my_num = my_discretization.check_nums() 
+    my_num = my_discretization.check_nums()
 
     # compare the samples
     nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
-            discretization._input_sample_set.get_values())
+                              discretization._input_sample_set.get_values())
     # compare the data
     nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
-            discretization._output_sample_set.get_values())
+                              discretization._output_sample_set.get_values())
 
     # did num_samples get updated?
     assert my_num == sampler.num_samples
-   
+
     # did the file get correctly saved?
     saved_disc = bet.sample.load_discretization(savefile)
     mdat = sio.loadmat(savefile)
     print("HERE HERE", mdat, my_num)
-    #comm.barrier()
+    # comm.barrier()
     # compare the samples
     nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
-        saved_disc._input_sample_set.get_values())
+                              saved_disc._input_sample_set.get_values())
     # compare the data
     nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
-       saved_disc._output_sample_set.get_values())
+                              saved_disc._output_sample_set.get_values())
+
 
 def verify_create_random_discretization(model, sampler, sample_type, input_domain,
-        num_samples, savefile):
+                                        num_samples, savefile):
 
     np.random.seed(1)
     # recreate the samples
     if num_samples is None:
         num_samples = sampler.num_samples
-    
+
     input_sample_set = sample_set(input_domain.shape[0])
     input_sample_set.set_domain(input_domain)
-    
+
     input_left = np.repeat([input_domain[:, 0]], num_samples, 0)
     input_right = np.repeat([input_domain[:, 1]], num_samples, 0)
-    
+
     input_values = (input_right-input_left)
     if sample_type == "lhs":
         input_values = input_values * pyDOE.lhs(input_sample_set.get_dim(),
-                num_samples, 'center') 
+                                                num_samples, 'center')
     elif sample_type == "random" or "r":
         input_values = input_values * np.random.random(input_left.shape)
     input_values = input_values + input_left
     input_sample_set.set_values(input_values)
-    
+
     # evalulate the model at the samples directly
     output_values = (model(input_sample_set._values))
     if len(output_values.shape) == 1:
@@ -218,45 +220,8 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     comm.barrier()
     # create the random discretization using a specified input domain
     my_discretization = sampler.create_random_discretization(sample_type,
-            input_domain, savefile, num_samples=num_samples, globalize=True)
-    #comm.barrier()
-    my_num = my_discretization.check_nums() 
-    
-    # make sure that the samples are within the boundaries
-    assert np.all(my_discretization._input_sample_set._values <= input_right)
-    assert np.all(my_discretization._input_sample_set._values >= input_left)
-
-    if comm.size == 0:
-        # compare the samples
-        nptest.assert_array_equal(input_sample_set._values,
-            my_discretization._input_sample_set._values)
-        # compare the data
-        nptest.assert_array_equal(output_sample_set._values,
-            my_discretization._output_sample_set._values)
-
-    # did num_samples get updated?
-    assert my_num == sampler.num_samples
-    
-    # did the file get correctly saved?
-    saved_disc = bet.sample.load_discretization(savefile)
-    
-    # compare the samples
-    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
-        saved_disc._input_sample_set.get_values())
-    # compare the data
-    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
-       saved_disc._output_sample_set.get_values())
-
-    # reset the random seed
-    np.random.seed(1)
-
-    my_sample_set = sample_set(input_domain.shape[0])
-    my_sample_set.set_domain(input_domain)
-    #comm.barrier()
-    # create the random discretization using an initialized sample_set
-    my_discretization = sampler.create_random_discretization(sample_type,
-                my_sample_set, savefile, num_samples=num_samples,
-                globalize=True)
+                                                             input_domain, savefile, num_samples=num_samples, globalize=True)
+    # comm.barrier()
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries
@@ -266,10 +231,47 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     if comm.size == 0:
         # compare the samples
         nptest.assert_array_equal(input_sample_set._values,
-                              my_discretization._input_sample_set._values)
+                                  my_discretization._input_sample_set._values)
         # compare the data
         nptest.assert_array_equal(output_sample_set._values,
-                              my_discretization._output_sample_set._values)
+                                  my_discretization._output_sample_set._values)
+
+    # did num_samples get updated?
+    assert my_num == sampler.num_samples
+
+    # did the file get correctly saved?
+    saved_disc = bet.sample.load_discretization(savefile)
+
+    # compare the samples
+    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
+                              saved_disc._input_sample_set.get_values())
+    # compare the data
+    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
+                              saved_disc._output_sample_set.get_values())
+
+    # reset the random seed
+    np.random.seed(1)
+
+    my_sample_set = sample_set(input_domain.shape[0])
+    my_sample_set.set_domain(input_domain)
+    # comm.barrier()
+    # create the random discretization using an initialized sample_set
+    my_discretization = sampler.create_random_discretization(sample_type,
+                                                             my_sample_set, savefile, num_samples=num_samples,
+                                                             globalize=True)
+    my_num = my_discretization.check_nums()
+
+    # make sure that the samples are within the boundaries
+    assert np.all(my_discretization._input_sample_set._values <= input_right)
+    assert np.all(my_discretization._input_sample_set._values >= input_left)
+
+    if comm.size == 0:
+        # compare the samples
+        nptest.assert_array_equal(input_sample_set._values,
+                                  my_discretization._input_sample_set._values)
+        # compare the data
+        nptest.assert_array_equal(output_sample_set._values,
+                                  my_discretization._output_sample_set._values)
 
     # reset the random seed
     np.random.seed(1)
@@ -298,8 +300,8 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     comm.barrier()
     # create the random discretization using a specified input_dim
     my_discretization = sampler.create_random_discretization(sample_type,
-            my_dim, savefile, num_samples=num_samples, globalize=True)
-    #comm.barrier()
+                                                             my_dim, savefile, num_samples=num_samples, globalize=True)
+    # comm.barrier()
     my_num = my_discretization.check_nums()
 
     # make sure that the samples are within the boundaries
@@ -309,14 +311,14 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     if comm.size == 0:
         # compare the samples
         nptest.assert_array_equal(input_sample_set._values,
-                              my_discretization._input_sample_set._values)
+                                  my_discretization._input_sample_set._values)
         # compare the data
         nptest.assert_array_equal(output_sample_set._values,
-                              my_discretization._output_sample_set._values)
+                                  my_discretization._output_sample_set._values)
 
 
 def verify_random_sample_set_domain(sampler, sample_type, input_domain,
-                                 num_samples):
+                                    num_samples):
     np.random.seed(1)
     # recreate the samples
     if num_samples is None:
@@ -343,7 +345,7 @@ def verify_random_sample_set_domain(sampler, sample_type, input_domain,
     # create the sample set from the domain
     print(sample_type)
     my_sample_set = sampler.random_sample_set(sample_type, input_domain,
-                                            num_samples=num_samples)
+                                              num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
     assert np.all(my_sample_set._values <= input_right)
@@ -352,10 +354,11 @@ def verify_random_sample_set_domain(sampler, sample_type, input_domain,
     # compare the samples
     if comm.size == 0:
         nptest.assert_array_equal(input_sample_set._values,
-                              my_sample_set._values)
+                                  my_sample_set._values)
+
 
 def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
-                                     num_samples):
+                                       num_samples):
 
     np.random.seed(1)
     # recreate the samples
@@ -383,7 +386,7 @@ def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
 
     # create the sample set from the domain
     my_sample_set = sampler.random_sample_set(sample_type, input_dim,
-                                                  num_samples=num_samples)
+                                              num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
     assert np.all(my_sample_set._values <= input_right)
@@ -392,10 +395,11 @@ def verify_random_sample_set_dimension(sampler, sample_type, input_dim,
     # compare the samples
     if comm.size == 0:
         nptest.assert_array_equal(input_sample_set._values,
-                              my_sample_set._values)
+                                  my_sample_set._values)
+
 
 def verify_random_sample_set(sampler, sample_type, input_sample_set,
-                                     num_samples):
+                             num_samples):
     test_sample_set = input_sample_set
     np.random.seed(1)
     # recreate the samples
@@ -424,7 +428,7 @@ def verify_random_sample_set(sampler, sample_type, input_sample_set,
     # create the sample set from the domain
     print(sample_type)
     my_sample_set = sampler.random_sample_set(sample_type, input_sample_set,
-                                                  num_samples=num_samples)
+                                              num_samples=num_samples)
 
     # make sure that the samples are within the boundaries
     assert np.all(my_sample_set._values <= input_right)
@@ -433,10 +437,11 @@ def verify_random_sample_set(sampler, sample_type, input_sample_set,
     # compare the samples
     if comm.size == 0:
         nptest.assert_array_equal(test_sample_set._values,
-                              my_sample_set._values)
+                                  my_sample_set._values)
+
 
 def verify_regular_sample_set(sampler, input_sample_set,
-                                 num_samples_per_dim):
+                              num_samples_per_dim):
 
     test_sample_set = input_sample_set
     dim = input_sample_set.get_dim()
@@ -445,7 +450,8 @@ def verify_regular_sample_set(sampler, input_sample_set,
         num_samples_per_dim = 5
 
     if not isinstance(num_samples_per_dim, collections.Iterable):
-        num_samples_per_dim = num_samples_per_dim * np.ones((dim,), dtype='int')
+        num_samples_per_dim = num_samples_per_dim * \
+            np.ones((dim,), dtype='int')
 
     sampler.num_samples = np.product(num_samples_per_dim)
 
@@ -458,30 +464,32 @@ def verify_regular_sample_set(sampler, input_sample_set,
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
         bin_width = (test_domain[i, 1] - test_domain[i, 0]) / \
-                    np.float(num_samples_per_dim[i])
+            np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
             test_domain[i, 0] - 0.5 * bin_width,
             test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     arrays_samples_dimension = np.meshgrid(
-            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+        *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
     for i in np.arange(0, dim):
-            test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+        test_values[:, i:i +
+                    1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
     test_sample_set.set_values(test_values)
 
     # create the sample set from sampler
     my_sample_set = sampler.regular_sample_set(input_sample_set,
-                                    num_samples_per_dim=num_samples_per_dim)
+                                               num_samples_per_dim=num_samples_per_dim)
 
     # compare the samples
     nptest.assert_array_equal(test_sample_set._values,
                               my_sample_set._values)
 
+
 def verify_regular_sample_set_domain(sampler, input_domain,
-                                  num_samples_per_dim):
+                                     num_samples_per_dim):
 
     input_sample_set = sample_set(input_domain.shape[0])
     input_sample_set.set_domain(input_domain)
@@ -493,7 +501,8 @@ def verify_regular_sample_set_domain(sampler, input_domain,
         num_samples_per_dim = 5
 
     if not isinstance(num_samples_per_dim, collections.Iterable):
-        num_samples_per_dim = num_samples_per_dim * np.ones((dim,), dtype='int')
+        num_samples_per_dim = num_samples_per_dim * \
+            np.ones((dim,), dtype='int')
 
     sampler.num_samples = np.product(num_samples_per_dim)
 
@@ -506,17 +515,18 @@ def verify_regular_sample_set_domain(sampler, input_domain,
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
         bin_width = (test_domain[i, 1] - test_domain[i, 0]) / \
-                    np.float(num_samples_per_dim[i])
+            np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
             test_domain[i, 0] - 0.5 * bin_width,
             test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     arrays_samples_dimension = np.meshgrid(
-            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+        *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
     for i in np.arange(0, dim):
-        test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+        test_values[:, i:i +
+                    1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
     test_sample_set.set_values(test_values)
 
@@ -528,8 +538,9 @@ def verify_regular_sample_set_domain(sampler, input_domain,
     nptest.assert_array_equal(test_sample_set._values,
                               my_sample_set._values)
 
+
 def verify_regular_sample_set_dimension(sampler, input_dim,
-                                         num_samples_per_dim):
+                                        num_samples_per_dim):
 
     input_domain = np.repeat([[0, 1]], input_dim, axis=0)
     input_sample_set = sample_set(input_dim)
@@ -542,7 +553,8 @@ def verify_regular_sample_set_dimension(sampler, input_dim,
         num_samples_per_dim = 5
 
     if not isinstance(num_samples_per_dim, collections.Iterable):
-        num_samples_per_dim = num_samples_per_dim * np.ones((dim,), dtype='int')
+        num_samples_per_dim = num_samples_per_dim * \
+            np.ones((dim,), dtype='int')
 
     sampler.num_samples = np.product(num_samples_per_dim)
 
@@ -555,23 +567,24 @@ def verify_regular_sample_set_dimension(sampler, input_dim,
     vec_samples_dimension = np.empty((dim), dtype=object)
     for i in np.arange(0, dim):
         bin_width = (test_domain[i, 1] - test_domain[i, 0]) / \
-                    np.float(num_samples_per_dim[i])
+            np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
             test_domain[i, 0] - 0.5 * bin_width,
             test_domain[i, 1] + 0.5 * bin_width,
             num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
 
     arrays_samples_dimension = np.meshgrid(
-            *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
+        *[vec_samples_dimension[i] for i in np.arange(0, dim)], indexing='ij')
 
     for i in np.arange(0, dim):
-        test_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i].flat[:])
+        test_values[:, i:i +
+                    1] = np.vstack(arrays_samples_dimension[i].flat[:])
 
     test_sample_set.set_values(test_values)
 
     # create the sample set from sampler
     my_sample_set = sampler.regular_sample_set(input_dim,
-                                            num_samples_per_dim=num_samples_per_dim)
+                                               num_samples_per_dim=num_samples_per_dim)
 
     # compare the samples
     nptest.assert_array_equal(test_sample_set._values,
@@ -586,17 +599,22 @@ class Test_basic_sampler(unittest.TestCase):
     def setUp(self):
         # create 1-1 map
         self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
+
         def map_1t1(x):
             return np.sin(x)
         # create 3-1 map
         self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
+
         def map_3t1(x):
             return np.sum(x, 1)
         # create 3-2 map
+
         def map_3t2(x):
             return np.vstack(([x[:, 0]+x[:, 1], x[:, 2]])).transpose()
         # create 10-4 map
-        self.input_domain10 = np.column_stack((np.zeros((10,)), np.ones((10,))))
+        self.input_domain10 = np.column_stack(
+            (np.zeros((10,)), np.ones((10,))))
+
         def map_10t4(x):
             x1 = x[:, 0] + x[:, 1]
             x2 = x[:, 2] + x[:, 3]
@@ -650,10 +668,10 @@ class Test_basic_sampler(unittest.TestCase):
         """
         Test :meth:`bet.sampling.basicSampling.sampler.save`
         """
-        mdict = {"frog":3, "moose":2}
+        mdict = {"frog": 3, "moose": 2}
         self.samplers[0].update_mdict(mdict)
         assert self.samplers[0].num_samples == mdict["num_samples"]
-    
+
     def test_compute_QoI_and_create_discretization(self):
         """
         Test :meth:`bet.sampling.basicSampling.sampler.user_samples`
@@ -661,33 +679,33 @@ class Test_basic_sampler(unittest.TestCase):
         """
         # create a list of different sets of samples
         list_of_samples = [np.ones((4, )), np.ones((4, 1)), np.ones((4, 3)),
-                np.ones((4, 3)), np.ones((4, 10))]
+                           np.ones((4, 3)), np.ones((4, 10))]
         list_of_dims = [1, 1, 3, 3, 10]
-        
+
         list_of_sample_sets = [None]*len(list_of_samples)
 
         for i, array in enumerate(list_of_samples):
             list_of_sample_sets[i] = sample_set(list_of_dims[i])
             list_of_sample_sets[i].set_values(array)
 
-        test_list = list(zip(self.models, self.samplers, list_of_sample_sets, 
-                self.savefiles))
+        test_list = list(zip(self.models, self.samplers, list_of_sample_sets,
+                             self.savefiles))
 
-        for model, sampler, input_sample_set, savefile in test_list: 
-                verify_compute_QoI_and_create_discretization(model, sampler,
-                    input_sample_set, savefile)
-   
+        for model, sampler, input_sample_set, savefile in test_list:
+            verify_compute_QoI_and_create_discretization(model, sampler,
+                                                         input_sample_set, savefile)
+
     def test_random_sample_set(self):
         """
         Test :meth:`bet.sampling.basicSampling.sampler.random_sample_set`
         for six different sample sets
         """
         input_sample_set_list = [self.input_sample_set1,
-                             self.input_sample_set2,
-                             self.input_sample_set3,
-                             self.input_sample_set4,
-                             self.input_sample_set5,
-                             self.input_sample_set6]
+                                 self.input_sample_set2,
+                                 self.input_sample_set3,
+                                 self.input_sample_set4,
+                                 self.input_sample_set5,
+                                 self.input_sample_set6]
 
         test_list = list(zip(self.samplers, input_sample_set_list))
 
@@ -695,7 +713,7 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     verify_random_sample_set(sampler, sample_type,
-                            input_sample_set, num_samples)
+                                             input_sample_set, num_samples)
 
     def test_random_sample_set_domain(self):
         """
@@ -711,7 +729,7 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     verify_random_sample_set_domain(sampler, sample_type,
-                            input_domain, num_samples)
+                                                    input_domain, num_samples)
 
     def test_random_sample_set_dim(self):
         """
@@ -726,7 +744,7 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     verify_random_sample_set_dimension(sampler, sample_type,
-                            input_dim, num_samples)
+                                                       input_dim, num_samples)
 
     def test_regular_sample_set(self):
         """
@@ -742,21 +760,23 @@ class Test_basic_sampler(unittest.TestCase):
 
         for sampler, input_sample_set in test_list:
             for num_samples_per_dim in [None, 10]:
-                verify_regular_sample_set(sampler, input_sample_set, num_samples_per_dim)
+                verify_regular_sample_set(
+                    sampler, input_sample_set, num_samples_per_dim)
 
     def test_regular_sample_set_domain(self):
         """
         Test :meth:`bet.sampling.basicSampling.sampler.regular_sample_set_domain`
         for six different sample sets
         """
-        input_domain_list= [self.input_domain1,
-                            self.input_domain3]
+        input_domain_list = [self.input_domain1,
+                             self.input_domain3]
 
         test_list = list(zip(self.samplers, input_domain_list))
 
         for sampler, input_domain in test_list:
             for num_samples_per_dim in [None, 10]:
-                verify_regular_sample_set_domain(sampler, input_domain, num_samples_per_dim)
+                verify_regular_sample_set_domain(
+                    sampler, input_domain, num_samples_per_dim)
 
     def test_regular_sample_set_dimension(self):
         """
@@ -764,13 +784,14 @@ class Test_basic_sampler(unittest.TestCase):
         for six different sample sets
         """
         input_dimension_list = [self.input_dim1,
-                             self.input_dim2]
+                                self.input_dim2]
 
         test_list = list(zip(self.samplers, input_dimension_list))
 
         for sampler, input_dim in test_list:
             for num_samples_per_dim in [None, 10]:
-                verify_regular_sample_set_dimension(sampler, input_dim, num_samples_per_dim)
+                verify_regular_sample_set_dimension(
+                    sampler, input_dim, num_samples_per_dim)
 
     def test_create_random_discretization(self):
         """
@@ -781,11 +802,11 @@ class Test_basic_sampler(unittest.TestCase):
                              self.input_domain3, self.input_domain3, self.input_domain10]
 
         test_list = list(zip(self.models, self.samplers, input_domain_list,
-                        self.savefiles))
+                             self.savefiles))
 
         for model, sampler, input_domain, savefile in test_list:
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
-                        verify_create_random_discretization(model, sampler,
-                                sample_type, input_domain, num_samples,
-                                savefile)
+                    verify_create_random_discretization(model, sampler,
+                                                        sample_type, input_domain, num_samples,
+                                                        savefile)
