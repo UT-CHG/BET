@@ -11,6 +11,7 @@ from scipy import stats
 from bet.Comm import comm
 import bet.util as util
 
+
 def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     r"""
     If you are using ``bin_ratio`` to define the hyperrectangle in the output
@@ -24,18 +25,18 @@ def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
     given a specific set of QoIs, calculate the expected measure of the
     inverse image of a box in the data space using local linear approximations
     of the map Q.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
     :param float bin_measure: The measure of the output_dim hyperrectangle to
         invert into the input space
-    
+
     :rtype: tuple
     :returns: (avg_measure, singvals) where avg_measure is a float and singvals
         has shape (num_centers, output_dim)
-    
+
     """
 
     if input_set._jacobians is None:
@@ -67,6 +68,7 @@ def calculate_avg_measure(input_set, qoi_set=None, bin_measure=None):
         avg_measure = bin_measure / avg_prod_singvals
 
     return avg_measure, singvals
+
 
 def calculate_avg_skewness(input_set, qoi_set=None):
     r"""
@@ -111,7 +113,7 @@ def calculate_avg_skewness(input_set, qoi_set=None):
     muGi = np.zeros([num_centers, output_dim])
     for i in range(G.shape[1]):
         muGi[:, i] = np.prod(np.linalg.svd(np.delete(G, i, axis=1),
-            compute_uv=False), axis=1)
+                                           compute_uv=False), axis=1)
 
     # Find the norm of each gradient vector
     normgi = np.linalg.norm(G, axis=2)
@@ -125,7 +127,7 @@ def calculate_avg_skewness(input_set, qoi_set=None):
 
     # The local skewness is calculated for nonzero giperp
     skewgi[normgiperp != 0] = normgi[normgiperp != 0] / \
-            normgiperp[normgiperp != 0]
+        normgiperp[normgiperp != 0]
 
     # If giperp is the zero vector, it is not GD from the rest of the gradient
     # vectors, so the skewness is infinity.
@@ -144,6 +146,7 @@ def calculate_avg_skewness(input_set, qoi_set=None):
 
     return hmean_skewG, skewgi
 
+
 def calculate_avg_condnum(input_set, qoi_set=None):
     r"""
     Given gradient vectors at some points (centers) in the input space and
@@ -154,11 +157,11 @@ def calculate_avg_condnum(input_set, qoi_set=None):
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param list qoi_set: List of QoI indices
-    
+
     :rtype: tuple
     :returns: (condnum, singvals) where condnum is a float and singvals
         has shape (num_centers, output_dim)
-    
+
     """
 
     if input_set._jacobians is None:
@@ -168,7 +171,7 @@ def calculate_avg_condnum(input_set, qoi_set=None):
     else:
         G = input_set._jacobians[:, qoi_set, :]
     if G.shape[1] > G.shape[2]:
-        msg = "Condition number is not defined for more outputs than inputs."  
+        msg = "Condition number is not defined for more outputs than inputs."
         msg += " Try adding a qoi_set to evaluate the condition number of."
         raise ValueError(msg)
 
@@ -187,9 +190,10 @@ def calculate_avg_condnum(input_set, qoi_set=None):
 
     return hmean_condnum, singvals
 
+
 def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
-        num_optsets_return=None, inner_prod_tol=1.0, measure=False,
-        remove_zeros=True):
+                  num_optsets_return=None, inner_prod_tol=1.0, measure=False,
+                  remove_zeros=True):
     r"""
     Given gradient vectors at some points (centers) in the parameter space, a
     set of QoIs to choose from, and the number of desired QoIs to return, this
@@ -201,7 +205,7 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
@@ -216,21 +220,22 @@ def chooseOptQoIs(input_set, qoiIndices=None, num_qois_return=None,
         to determine optimal QoIs, else use ``calculate_avg_skewness``
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient
-    
+
     :rtype: `np.ndarray` of shape (num_optsets_returned, num_qois_returned + 1)
     :returns: measure_skewness_indices_mat
-    
+
     """
 
     (measure_skewness_indices_mat, _) = chooseOptQoIs_verbose(input_set,
-        qoiIndices, num_qois_return, num_optsets_return, inner_prod_tol,
-        measure, remove_zeros)
+                                                              qoiIndices, num_qois_return, num_optsets_return, inner_prod_tol,
+                                                              measure, remove_zeros)
 
     return measure_skewness_indices_mat
 
+
 def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
-            num_optsets_return=None, inner_prod_tol=1.0, measure=False,
-            remove_zeros=True):
+                          num_optsets_return=None, inner_prod_tol=1.0, measure=False,
+                          remove_zeros=True):
     r"""
     Given gradient vectors at some points (centers) in the parameter space, a
     set of QoIs to choose from, and the number of desired QoIs to return, this
@@ -242,7 +247,7 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     given 10,000 QoIs and told to return the N best sets of 3, it will check all
     10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
     computationally expensive approach.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
@@ -257,10 +262,10 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
         to determine optimal QoIs, else use ``calculate_avg_skewness``
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient
-    
+
     :rtype: `np.ndarray` of shape (num_optsets_returned, num_qois_returned + 1)
     :returns: measure_skewness_indices_mat
-    
+
     """
 
     G = input_set._jacobians
@@ -278,12 +283,12 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
 
     # Remove QoIs that have zero gradients at any of the centers
     qoiIndices = find_unique_vecs(input_set, inner_prod_tol, qoiIndices,
-        remove_zeros)
+                                  remove_zeros)
 
     # Find all posible combinations of QoIs
     if comm.rank == 0:
         qoi_combs = np.array(list(combinations(list(qoiIndices),
-                        num_qois_return)))
+                                               num_qois_return)))
         logging.info('Possible sets of QoIs : {}'.format(qoi_combs.shape[0]))
         qoi_combs = np.array_split(qoi_combs, comm.size)
     else:
@@ -295,21 +300,21 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     # For each combination, check the skewness and keep the sets
     # that have the smallest skewness
     measure_skewness_indices_mat = np.zeros([num_optsets_return,
-        num_qois_return + 1])
+                                             num_qois_return + 1])
     measure_skewness_indices_mat[:, 0] = np.inf
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
-        num_optsets_return])
+                                   num_optsets_return])
     for qoi_set in range(len(qoi_combs)):
         if measure == False:
             (current_measskew, singvals) = calculate_avg_skewness(input_set,
-                qoi_combs[qoi_set])
+                                                                  qoi_combs[qoi_set])
         else:
             (current_measskew, singvals) = calculate_avg_measure(input_set,
-                qoi_combs[qoi_set])
+                                                                 qoi_combs[qoi_set])
 
         if current_measskew < measure_skewness_indices_mat[-1, 0]:
-            measure_skewness_indices_mat[-1, :] = np.append(np.array(\
-                    [current_measskew]), qoi_combs[qoi_set])
+            measure_skewness_indices_mat[-1, :] = np.append(np.array(
+                [current_measskew]), qoi_combs[qoi_set])
             order = measure_skewness_indices_mat[:, 0].argsort()
             measure_skewness_indices_mat = measure_skewness_indices_mat[order]
 
@@ -320,40 +325,41 @@ def chooseOptQoIs_verbose(input_set, qoiIndices=None, num_qois_return=None,
     comm.Barrier()
 
     # Gather the best sets and skewness values from each processor
-    measure_skewness_indices_mat = np.array(comm.gather(\
-            measure_skewness_indices_mat, root=0))
+    measure_skewness_indices_mat = np.array(comm.gather(
+        measure_skewness_indices_mat, root=0))
     optsingvals_tensor = np.array(comm.gather(optsingvals_tensor, root=0))
 
     # Find the num_optsets_return smallest skewness values from all processors
     if comm.rank == 0:
-        measure_skewness_indices_mat = measure_skewness_indices_mat.reshape(\
-                num_optsets_return * comm.size, num_qois_return + 1)
+        measure_skewness_indices_mat = measure_skewness_indices_mat.reshape(
+            num_optsets_return * comm.size, num_qois_return + 1)
         optsingvals_tensor = optsingvals_tensor.reshape(num_centers,
-            num_qois_return, num_optsets_return * comm.size)
+                                                        num_qois_return, num_optsets_return * comm.size)
         order = measure_skewness_indices_mat[:, 0].argsort()
 
         measure_skewness_indices_mat = measure_skewness_indices_mat[order]
-        measure_skewness_indices_mat = measure_skewness_indices_mat[\
-                :num_optsets_return, :]
+        measure_skewness_indices_mat = measure_skewness_indices_mat[
+            :num_optsets_return, :]
 
         optsingvals_tensor = optsingvals_tensor[:, :, order]
         optsingvals_tensor = optsingvals_tensor[:, :, :num_optsets_return]
 
-    measure_skewness_indices_mat = comm.bcast(measure_skewness_indices_mat, 
-            root=0)
+    measure_skewness_indices_mat = comm.bcast(measure_skewness_indices_mat,
+                                              root=0)
     optsingvals_tensor = comm.bcast(optsingvals_tensor, root=0)
 
     return (measure_skewness_indices_mat, optsingvals_tensor)
 
+
 def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
-        remove_zeros=True):
+                     remove_zeros=True):
     r"""
     Given gradient vectors at each center in the parameter space, sort throught
     them and remove any QoI that has a zero vector at any center, then remove
     one from any pair of QoIs that have an average inner product greater than
     some tolerance, i.e., an average angle between the two vectors smaller than
     some tolerance.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None
     :type input_set: :class:`~bet.sample.sample_set`
@@ -364,10 +370,10 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`
-    
+
     :rtype: `np.ndarray` of shape (num_unique_vecs, 1)
     :returns: unique_vecs
-    
+
     """
 
     if input_set._jacobians is None:
@@ -398,8 +404,8 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
 
     if comm.rank == 0:
         logging.info('*** find_unique_vecs ***')
-        logging.info('num_zerovec : {} of ({}) original QoIs'.\
-                format(len(indz), G.shape[1]))
+        logging.info('num_zerovec : {} of ({}) original QoIs'.
+                     format(len(indz), G.shape[1]))
         logging.info('Possible QoIs : {}'.format(len(qoiIndices)-len(indz)))
     qoiIndices = list(set(qoiIndices) - set(indz))
 
@@ -415,8 +421,8 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
 
         # If neither of the current QoIs are in the repeat_vec, test them
         if curr_set[0] not in repeat_vec and curr_set[1] not in repeat_vec:
-            curr_inner_prod = np.sum(G[:, curr_set[0], :] * \
-                G[:, curr_set[1], :]) / G.shape[0]
+            curr_inner_prod = np.sum(G[:, curr_set[0], :] *
+                                     G[:, curr_set[1], :]) / G.shape[0]
 
             # If the innerprod>tol, throw out the second QoI
             if np.abs(curr_inner_prod) > inner_prod_tol:
@@ -428,17 +434,18 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
 
     return unique_vecs
 
+
 def find_good_sets(input_set, good_sets_prev, unique_indices,
-        num_optsets_return, measskew_tol, measure):
+                   num_optsets_return, measskew_tol, measure):
     r"""
 
     .. todo::  Use the idea we only know vectors are with 10% accuracy to guide
         inner_prod tol and skewness_tol.
-    
+
     Given gradient vectors at each center in the parameter space and given
     good sets of size (n - 1), return good sets of size n.  That is, return
     sets of size n that have average measure(skewness) less than some tolerance.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
@@ -452,12 +459,12 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
         measure(skewness) number greater than this.
     :param boolean measure: If measure is True, use ``calculate_avg_measure``
         to determine optimal QoIs, else use ``calculate_avg_skewness``
-    
+
     :rtype: tuple
     :returns: (good_sets, best_sets, optsingvals_tensor) where good sets has
         size (num_good_sets, n), best sets has size (num_optsets_return,
         n + 1) and optsingvals_tensor has size (num_centers, n, input_dim)
-    
+
     """
 
     if input_set._jacobians is None:
@@ -473,7 +480,7 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
     good_sets = np.zeros([1, num_qois_return])
     count_qois = 0
     optsingvals_tensor = np.zeros([num_centers, num_qois_return,
-        num_optsets_return])
+                                   num_optsets_return])
 
     # For each good set of size (n - 1), find the possible sets of size n and
     # compute the average skewness of each
@@ -483,13 +490,13 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
         # Find all possible combinations of QoIs that include this set of
         # (n - 1)
         if comm.rank == 0:
-            inds_notin_set = util.fix_dimensions_vector_2darray(list(set(\
+            inds_notin_set = util.fix_dimensions_vector_2darray(list(set(
                 unique_indices) - set(good_sets_prev[i, :])))
 
             # Choose only the QoI indices > min_ind so we do not repeat sets
-            inds_notin_set = util.fix_dimensions_vector_2darray(inds_notin_set[\
+            inds_notin_set = util.fix_dimensions_vector_2darray(inds_notin_set[
                 inds_notin_set > min_ind])
-            qoi_combs = util.fix_dimensions_vector_2darray(np.append(np.tile(\
+            qoi_combs = util.fix_dimensions_vector_2darray(np.append(np.tile(
                 good_sets_prev[i, :], [inds_notin_set.shape[0], 1]),
                 inds_notin_set, axis=1))
             qoi_combs = np.array_split(qoi_combs, comm.size)
@@ -507,10 +514,10 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
                 .transpose()
             if measure is False:
                 (current_measskew, singvals) = calculate_avg_skewness(input_set,
-                    qoi_combs[qoi_set])
+                                                                      qoi_combs[qoi_set])
             else:
                 (current_measskew, singvals) = calculate_avg_measure(input_set,
-                    qoi_combs[qoi_set])
+                                                                     qoi_combs[qoi_set])
 
             # If its a good set, add it to good_sets
             if current_measskew < measskew_tol:
@@ -520,7 +527,7 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
                 # in our best_sets, add it to best_sets
                 if current_measskew < best_sets[-1, 0]:
                     best_sets[-1, :] = np.append(np.array([current_measskew]),
-                        qoi_combs[qoi_set])
+                                                 qoi_combs[qoi_set])
                     order = best_sets[:, 0].argsort()
                     best_sets = best_sets[order]
 
@@ -540,8 +547,8 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
     if comm.rank == 0:
 
         # Organize the best sets
-        best_sets = best_sets.reshape(num_optsets_return * \
-            comm.size, num_qois_return + 1)
+        best_sets = best_sets.reshape(num_optsets_return *
+                                      comm.size, num_qois_return + 1)
         [_, uniq_inds_best] = np.unique(best_sets[:, 0], return_index=True)
         best_sets = best_sets[uniq_inds_best, :]
         best_sets = best_sets[best_sets[:, 0].argsort()]
@@ -553,10 +560,10 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
             good_sets_new = np.append(good_sets_new, each[1:], axis=0)
         good_sets = good_sets_new
 
-        logging.info('Possible sets of QoIs of size {} : {}'.format(\
-                good_sets.shape[1], np.sum(count_qois)))
-        logging.info('Good sets of QoIs of size {} : {}'.format(\
-                good_sets.shape[1], good_sets.shape[0] - 1))
+        logging.info('Possible sets of QoIs of size {} : {}'.format(
+            good_sets.shape[1], np.sum(count_qois)))
+        logging.info('Good sets of QoIs of size {} : {}'.format(
+            good_sets.shape[1], good_sets.shape[0] - 1))
 
     comm.Barrier()
     best_sets = comm.bcast(best_sets, root=0)
@@ -564,16 +571,17 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
 
     return (good_sets[1:].astype(int), best_sets, optsingvals_tensor)
 
+
 def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
-        num_optsets_return=None, inner_prod_tol=None, measskew_tol=None,
-        measure=False, remove_zeros=True):
+                        num_optsets_return=None, inner_prod_tol=None, measskew_tol=None,
+                        measure=False, remove_zeros=True):
     r"""
     Given gradient vectors at some points (centers) in the input space, a large
     set of QoIs to choose from, and the number of desired QoIs to return, this
     method returns the set of optimal QoIs of size 2, 3, ...  max_qois_return
     to use in the inverse problem by choosing the sets with the smallest
     average measure(skewness).
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
@@ -593,23 +601,24 @@ def chooseOptQoIs_large(input_set, qoiIndices=None, max_qois_return=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
-    
+
     :rtype: tuple
     :returns: (measure_skewness_indices_mat, optsingvals) where
         measure_skewness_indices_mat has shape (num_optsets_return,
         num_qois_return+1) and optsingvals has shape (num_centers,
         num_qois_return, num_optsets_return)
-    
+
     """
     (best_sets, _) = chooseOptQoIs_large_verbose(input_set, qoiIndices,
-        max_qois_return, num_optsets_return, inner_prod_tol, measskew_tol, measure,
-        remove_zeros)
+                                                 max_qois_return, num_optsets_return, inner_prod_tol, measskew_tol, measure,
+                                                 remove_zeros)
 
     return best_sets
 
+
 def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
-        max_qois_return=None, num_optsets_return=None, inner_prod_tol=None,
-        measskew_tol=None, measure=False, remove_zeros=True):
+                                max_qois_return=None, num_optsets_return=None, inner_prod_tol=None,
+                                measskew_tol=None, measure=False, remove_zeros=True):
     r"""
     Given gradient vectors at some points (centers) in the parameter space, a
     large set of QoIs to choose from, and the number of desired QoIs to return,
@@ -618,7 +627,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     skewness.  Also a tensor that represents the singular values of the
     matrices formed by the gradient vectors of the optimal QoIs at each center
     is returned.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _jacobians
         is not None.
     :type input_set: :class:`~bet.sample.sample_set`
@@ -638,14 +647,14 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     :param boolean remove_zeros: If True, ``find_unique_vecs`` will remove any
         QoIs that have a zero gradient vector at atleast one point in
         :math:`\Lambda`.
-    
+
     :rtype: tuple
     :returns: (measure_skewness_indices_mat, optsingvals) where
         measure_skewness_indices_mat has shape (num_optsets_return,
         num_qois_return+1) and optsingvals is a list where each element has
         shape (num_centers, num_qois_return, num_optsets_return).
         num_qois_return will change for each element of the list.
-    
+
     """
     input_dim = input_set._dim
     if input_set._jacobians is None:
@@ -663,7 +672,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
 
     # Find the unique QoIs to consider
     unique_indices = find_unique_vecs(input_set, inner_prod_tol, qoiIndices,
-        remove_zeros)
+                                      remove_zeros)
     if comm.rank == 0:
         logging.info('Unique Indices are : {}'.format(unique_indices))
 
@@ -675,7 +684,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     for qois_return in range(2, max_qois_return + 1):
         (good_sets_curr, best_sets_curr, optsingvals_tensor_curr) = \
             find_good_sets(input_set, good_sets_curr, unique_indices,
-            num_optsets_return, measskew_tol, measure)
+                           num_optsets_return, measskew_tol, measure)
         best_sets.append(best_sets_curr)
         optsingvals_list.append(optsingvals_tensor_curr)
         if comm.rank == 0:

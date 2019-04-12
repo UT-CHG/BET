@@ -17,11 +17,12 @@ This module provides methods for calulating the probability measure
 """
 import logging
 import numpy as np
-from bet.Comm import comm, MPI 
+from bet.Comm import comm, MPI
 import bet.util as util
 import bet.sample as samp
 
-def prob_on_emulated_samples(discretization, globalize=True): 
+
+def prob_on_emulated_samples(discretization, globalize=True):
     r"""
 
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})`, the
@@ -47,10 +48,10 @@ def prob_on_emulated_samples(discretization, globalize=True):
         discretization.set_emulated_ii_ptr(globalize=False)
 
     # Calculate Probabilties
-    P = np.zeros((discretization._emulated_input_sample_set.\
-            _values_local.shape[0],))
-    d_distr_emu_ptr = discretization._io_ptr[discretization.\
-            _emulated_ii_ptr_local]
+    P = np.zeros((discretization._emulated_input_sample_set.
+                  _values_local.shape[0],))
+    d_distr_emu_ptr = discretization._io_ptr[discretization.
+                                             _emulated_ii_ptr_local]
     for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(d_distr_emu_ptr, i)
@@ -58,14 +59,15 @@ def prob_on_emulated_samples(discretization, globalize=True):
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:
                 P[Itemp] = discretization._output_probability_set.\
-                        _probabilities[i]/Itemp_sum
-    
+                    _probabilities[i]/Itemp_sum
+
     discretization._emulated_input_sample_set._probabilities_local = P
     if globalize:
         discretization._emulated_input_sample_set.local_to_global()
     pass
 
-def prob(discretization, globalize=True): 
+
+def prob(discretization, globalize=True):
     r"""
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability assoicated with a set of  cells defined by the model
@@ -93,21 +95,22 @@ def prob(discretization, globalize=True):
     for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(discretization._io_ptr_local, i)
-            Itemp_sum = np.sum(discretization._input_sample_set.\
-                    _volumes_local[Itemp])
+            Itemp_sum = np.sum(discretization._input_sample_set.
+                               _volumes_local[Itemp])
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
-            if Itemp_sum > 0:            
+            if Itemp_sum > 0:
                 P_local[Itemp] = discretization._output_probability_set.\
-                        _probabilities[i]*discretization._input_sample_set.\
-                        _volumes_local[Itemp]/Itemp_sum
+                    _probabilities[i]*discretization._input_sample_set.\
+                    _volumes_local[Itemp]/Itemp_sum
     if globalize:
         discretization._input_sample_set._probabilities = util.\
-                                        get_global_values(P_local)
+            get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
 
-def prob_with_emulated_volumes(discretization): 
+
+def prob_with_emulated_volumes(discretization):
     r"""
-    
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})`, the
     probability associated with a set of  cells defined by the model
     solves at :math:`(\lambda_{samples})` where the volumes are calculated
@@ -129,10 +132,11 @@ def prob_with_emulated_volumes(discretization):
     discretization.estimate_input_volume_emulated()
     return prob(discretization)
 
-def prob_from_sample_set_with_emulated_volumes(set_old, set_new, 
+
+def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
                                                set_emulate=None):
     r"""
-    
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
     from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` using
     a set of emulated points are distributed with respect to the 
@@ -196,14 +200,15 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
-    
+
     # Set probabilities
     set_new.set_probabilities(prob_new)
     return prob_new
 
+
 def prob_from_sample_set(set_old, set_new):
     r"""
-    
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
     from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` using
     the MC assumption with respect to set_old.
@@ -213,7 +218,7 @@ def prob_from_sample_set(set_old, set_new):
     :type set_old: :class:`~bet.sample.sample_set_base` 
     :param set_new: Sample set for which probabilities will be calculated.
     :type set_new: :class:`~bet.sample.sample_set_base` 
-    
+
     """
     # Check dimensions
     set_old.check_num()
@@ -237,14 +242,15 @@ def prob_from_sample_set(set_old, set_new):
         Itemp_sum = np.sum(set_old._probabilities_local[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
-    
+
     # Set probabilities
     set_new.set_probabilities(prob_new)
     return prob_new
 
+
 def prob_from_discretization_input(disc, set_new):
     r"""
-    
+
     Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
     from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` where
     :math:`\lambda_{samples_old}` come from an input discretization.
@@ -261,7 +267,7 @@ def prob_from_discretization_input(disc, set_new):
         em_set = disc._input_sample_set
     else:
         em_set = disc._emulated_input_sample_set
-    
+
     if em_set._values_local is None:
         em_set.global_to_local()
     if em_set._probabilities_local is None:
@@ -286,7 +292,7 @@ def prob_from_discretization_input(disc, set_new):
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
-    
+
     # Set probabilities
     set_new.set_probabilities(prob_new)
     return prob_new

@@ -10,6 +10,7 @@ various sets :math:`A \subset \mathbb{R}^n` where given a set of points in
 # import necessary modules
 import numpy as np
 
+
 def hyperrectangle(left, right):
     r"""
     Pointwise indicator function for a hyperrectangle defined by a leftmost and
@@ -28,15 +29,16 @@ def hyperrectangle(left, right):
         :param points: set of points in :math:`\{x_i\}_{i=0}^{N} \in
             \mathbf{R}^n` 
         :type points: :class:`np.ndarray` of shape (N, ndim)
-    
+
         :rtype: boolean :class:`np.ndarray` of shape (ndim,)
         :returns: :math:`\{ \mathbf{1}_A(x_i) \}_{i=0}^{N}`
         """
         return np.logical_and(np.all(np.logical_or(np.greater_equal(points,
-                              left), np.isclose(points, left)), axis=1),
+                                                                    left), np.isclose(points, left)), axis=1),
                               np.all(np.logical_or(np.less_equal(points,
-                              right), np.isclose(points, right)), axis=1))
+                                                                 right), np.isclose(points, right)), axis=1))
     return ifun
+
 
 def hyperrectangle_size(center, width):
     r"""
@@ -54,6 +56,7 @@ def hyperrectangle_size(center, width):
     left = center-.5*width
     right = center+.5*width
     return hyperrectangle(left, right)
+
 
 def boundary_hyperrectangle(left, right, boundary_width):
     r"""
@@ -80,16 +83,17 @@ def boundary_hyperrectangle(left, right, boundary_width):
         :param points: set of points in :math:`\{x_i\}_{i=0}^{N} \in
             \mathbf{R}^n` 
         :type points: :class:`np.ndarray` of shape (N, ndim)
-    
+
         :rtype: boolean :class:`np.ndarray` of shape (ndim,)
         :returns: :math:`\{ \mathbf{1}_{\partial A \plusminus \epsilon}(x_i)
             \}_{i=0}^{N}` 
-        
+
         """
         return np.logical_and(outer(points), np.logical_not(inner(points)))
 
     return ifun
-    
+
+
 def boundary_hyperrectangle_ratio(left, right, boundary_ratio):
     r"""
     Pointwise indicator function for the set of points within
@@ -110,6 +114,7 @@ def boundary_hyperrectangle_ratio(left, right, boundary_ratio):
     width = right-left
     boundary_width = width*boundary_ratio
     return boundary_hyperrectangle(left, right, boundary_width)
+
 
 def boundary_hyperrectangle_size(center, width, boundary_width):
     r"""
@@ -132,6 +137,7 @@ def boundary_hyperrectangle_size(center, width, boundary_width):
     right = center+.5*width
     return boundary_hyperrectangle(left, right, boundary_width)
 
+
 def boundary_hyperrectangle_size_ratio(center, width, boundary_ratio):
     r"""
     Pointwise indicator function for the set of points within
@@ -152,6 +158,7 @@ def boundary_hyperrectangle_size_ratio(center, width, boundary_ratio):
     """
     return boundary_hyperrectangle_size(center, width, width*boundary_ratio)
 
+
 def hypersphere(center, radius):
     r"""
     Pointwise indicator function for a hypersphere defined by a center and a
@@ -166,13 +173,14 @@ def hypersphere(center, radius):
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
-    
+
     """
     def ifun(points):
         # calculate distance from the center
         dist = np.linalg.norm(center-points, ord=2, axis=1)
         return dist <= radius
     return ifun
+
 
 def boundary_hypersphere(center, radius, boundary_width):
     r"""
@@ -189,14 +197,15 @@ def boundary_hypersphere(center, radius, boundary_width):
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
-    
+
     """
     def ifun(points):
         # calculate distance from the center
         dist = np.linalg.norm(center-points, ord=2, axis=1)
-        return np.logical_and(dist <= radius+boundary_width*.5, 
+        return np.logical_and(dist <= radius+boundary_width*.5,
                               dist >= radius-boundary_width*.5)
     return ifun
+
 
 def boundary_hypersphere_ratio(center, radius, boundary_ratio):
     r"""
@@ -213,7 +222,6 @@ def boundary_hypersphere_ratio(center, radius, boundary_ratio):
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
-    
+
     """
     return boundary_hypersphere(center, radius, radius*boundary_ratio)
-

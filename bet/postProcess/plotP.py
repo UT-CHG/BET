@@ -4,13 +4,14 @@
 This module provides methods for plotting probabilities. 
 """
 
-import copy, math
+import copy
+import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
 #plt.rc('font', family='serif')
-from bet.Comm import comm, MPI 
+from bet.Comm import comm, MPI
 import bet.sample as sample
 
 
@@ -19,18 +20,20 @@ class dim_not_matching(Exception):
     Exception for when the dimension is inconsistent.
     """
 
+
 class bad_object(Exception):
     """
     Exception for when the wrong type of object is used.
     """
+
 
 class missing_attribute(Exception):
     """
     Exception for missing attribute.
     """
 
+
 def calculate_1D_marginal_probs(sample_set, nbins=20):
-        
     r"""
     This calculates every single marginal of the probability measure
     described by the probabilities within the sample_set object.
@@ -70,27 +73,27 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     # Make list of bins if only an integer is given
     if isinstance(nbins, int):
         nbins = nbins*np.ones(sample_obj.get_dim(), dtype=np.int)
- 
+
     # Create bins
     bins = []
     for i in range(sample_obj.get_dim()):
         bins.append(np.linspace(sample_obj.get_domain()[i][0],
                                 sample_obj.get_domain()[i][1],
                                 nbins[i]+1))
-        
+
     # Calculate marginals
     marginals = {}
     for i in range(sample_obj.get_dim()):
         [marg, _] = np.histogram(sample_obj.get_values_local()[:, i],
-                bins=bins[i], weights=sample_obj.get_probabilities_local())
+                                 bins=bins[i], weights=sample_obj.get_probabilities_local())
         marg_temp = np.copy(marg)
         comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE], op=MPI.SUM)
         marginals[i] = marg_temp
 
     return (bins, marginals)
 
+
 def calculate_2D_marginal_probs(sample_set, nbins=20):
-        
     """
     This calculates every pair of marginals (or joint in 2d case) of
     input probability measure defined on a rectangular grid.
@@ -148,20 +151,20 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     for i in range(sample_obj.get_dim()):
         for j in range(i+1, sample_obj.get_dim()):
             (marg, _) = np.histogramdd(sample_obj.get_values_local()[:, [i, j]],
-                    bins=[bins[i], bins[j]],
-                    weights=sample_obj.get_probabilities_local())
+                                       bins=[bins[i], bins[j]],
+                                       weights=sample_obj.get_probabilities_local())
             marg = np.ascontiguousarray(marg)
             marg_temp = np.copy(marg)
             comm.Allreduce([marg, MPI.DOUBLE], [marg_temp, MPI.DOUBLE],
-                    op=MPI.SUM) 
+                           op=MPI.SUM)
             marginals[(i, j)] = marg_temp
 
     return (bins, marginals)
 
+
 def plot_1D_marginal_probs(marginals, bins, sample_set,
-        filename="file", lam_ref=None, interactive=False,
-        lambda_label=None, file_extension=".png"):
-        
+                           filename="file", lam_ref=None, interactive=False,
+                           lambda_label=None, file_extension=".png"):
     """
     This makes plots of every single marginal probability of
     input probability measure on a 1D  grid.
@@ -208,26 +211,26 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
         index.sort()
         for i in index:
             x_range = np.linspace(lam_domain[i, 0], lam_domain[i, 1],
-                    len(bins[i])-1) 
+                                  len(bins[i])-1)
             fig = plt.figure(i)
             ax = fig.add_subplot(111)
             ax.plot(x_range, marginals[i]/(bins[i][1]-bins[i][0]))
             ax.set_ylim([0, 1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0]))])
             if lam_ref is not None:
-                ax.plot(lam_ref[i], 
+                ax.plot(lam_ref[i],
                         0.02*1.05*np.max(marginals[i]/(bins[i][1]-bins[i][0])),
                         'ko', markersize=15)
             if lambda_label is None:
                 label1 = r'$\lambda_{' + str(i+1) + '}$'
             else:
                 label1 = lambda_label[i]
-            ax.set_xlabel(label1, fontsize=30) 
+            ax.set_xlabel(label1, fontsize=30)
             ax.set_ylabel(r'PDF', fontsize=30)
-            ax.tick_params(axis='both', which='major', 
+            ax.tick_params(axis='both', which='major',
                            labelsize=20)
             plt.tight_layout()
             fig.savefig(filename + "_1D_" + str(i) + file_extension,
-                    transparent=True) 
+                        transparent=True)
             if interactive:
                 plt.show()
             else:
@@ -235,10 +238,10 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
             plt.clf()
     comm.barrier()
 
+
 def plot_2D_marginal_probs(marginals, bins, sample_set,
-        filename="file", lam_ref=None, plot_surface=False, interactive=False,
-        lambda_label=None, file_extension=".png"):
-        
+                           filename="file", lam_ref=None, plot_surface=False, interactive=False,
+                           lambda_label=None, file_extension=".png"):
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
     input probability measure on a rectangular grid.
@@ -292,11 +295,11 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
             ax = fig.add_subplot(111)
             boxSize = (bins[i][1]-bins[i][0])*(bins[j][1]-bins[j][0])
             quadmesh = ax.imshow(marginals[(i, j)].transpose()/boxSize,
-                    interpolation='bicubic', cmap=cm.CMRmap_r, 
-                    extent=[lam_domain[i][0], lam_domain[i][1],
-                    lam_domain[j][0], lam_domain[j][1]], origin='lower',
-                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, 
-                    aspect='auto')
+                                 interpolation='bicubic', cmap=cm.CMRmap_r,
+                                 extent=[lam_domain[i][0], lam_domain[i][1],
+                                         lam_domain[j][0], lam_domain[j][1]], origin='lower',
+                                 vmax=marginals[(i, j)].max()/boxSize, vmin=0,
+                                 aspect='auto')
             if lam_ref is not None:
                 ax.plot(lam_ref[i], lam_ref[j], 'wo', markersize=10)
             if lambda_label is None:
@@ -305,44 +308,44 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
             else:
                 label1 = lambda_label[i]
                 label2 = lambda_label[j]
-            ax.set_xlabel(label1, fontsize=20) 
+            ax.set_xlabel(label1, fontsize=20)
             ax.set_ylabel(label2, fontsize=20)
             ax.tick_params(axis='both', which='major', labelsize=14)
-            label_cbar = r'$\rho_{\lambda_{' + str(i+1) + '}, ' 
+            label_cbar = r'$\rho_{\lambda_{' + str(i+1) + '}, '
             label_cbar += r'\lambda_{' + str(j+1) + '}' + '}$ (Lebesgue)'
             cb = fig.colorbar(quadmesh, ax=ax, label=label_cbar)
             cb.ax.tick_params(labelsize=14)
             cb.set_label(label_cbar, size=20)
             plt.axis([lam_domain[i][0], lam_domain[i][1], lam_domain[j][0],
-                lam_domain[j][1]]) 
+                      lam_domain[j][1]])
             plt.tight_layout()
-            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) +\
-                    file_extension, transparent=True)
+            fig.savefig(filename + "_2D_" + str(i) + "_" + str(j) +
+                        file_extension, transparent=True)
             if interactive:
                 plt.show()
             else:
                 plt.close()
- 
+
         if plot_surface:
             for k, (i, j) in enumerate(pairs):
                 fig = plt.figure(k)
                 ax = fig.gca(projection='3d')
-                X = bins[i][:-1] + np.diff(bins[i])/2 
+                X = bins[i][:-1] + np.diff(bins[i])/2
                 Y = bins[j][:-1] + np.diff(bins[j])/2
                 X, Y = np.meshgrid(X, Y, indexing='ij')
                 surf = ax.plot_surface(X, Y, marginals[(i, j)], rstride=1,
-                        cstride=1, cmap=cm.coolwarm, linewidth=0,
-                        antialiased=False)
+                                       cstride=1, cmap=cm.coolwarm, linewidth=0,
+                                       antialiased=False)
                 ax.zaxis.set_major_locator(LinearLocator(10))
                 ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
-                ax.set_xlabel(r'$\lambda_{' + str(i+1) + '}$') 
+                ax.set_xlabel(r'$\lambda_{' + str(i+1) + '}$')
                 ax.set_ylabel(r'$\lambda_{' + str(j+1) + '}$')
                 ax.set_zlabel(r'$P$')
                 plt.backgroundcolor = 'w'
                 fig.colorbar(surf, shrink=0.5, aspect=5, label=r'$P$')
                 plt.tight_layout()
-                fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) + \
-                        file_extension, transparent=True)
+                fig.savefig(filename + "_surf_" + str(i) + "_" + str(j) +
+                            file_extension, transparent=True)
 
                 if interactive:
                     plt.show()
@@ -350,7 +353,8 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                     plt.close()
                 plt.clf()
     comm.barrier()
-		
+
+
 def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
     This function smooths 1D marginal probabilities.
@@ -365,14 +369,14 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
     :rtype: dict
     :returns: marginals_smooth
     """
-    from scipy.fftpack import fftshift, ifft, fft 
+    from scipy.fftpack import fftshift, ifft, fft
 
     if isinstance(sigma, float) or isinstance(sigma, int):
         sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
     index = copy.deepcopy(list(marginals.keys()))
     index.sort()
-    for i in index:    
+    for i in index:
         nx = len(bins[i])-1
         dx = bins[i][1] - bins[i][0]
         augx = int(math.ceil(3*sigma[i]/dx))
@@ -384,13 +388,15 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
         aug_kernel[augx:augx+nx] = kernel
         aug_marginals[augx:augx+nx] = marginals[i]
 
-        aug_kernel = fftshift(aug_kernel)       
+        aug_kernel = fftshift(aug_kernel)
 
-        aug_marginals_smooth = np.real(ifft(fft(aug_kernel)*fft(aug_marginals)))
+        aug_marginals_smooth = np.real(
+            ifft(fft(aug_kernel)*fft(aug_marginals)))
         marginals_smooth[i] = aug_marginals_smooth[augx:augx+nx]
         marginals_smooth[i] = marginals_smooth[i]/np.sum(marginals_smooth[i])
 
     return marginals_smooth
+
 
 def smooth_marginals_2D(marginals, bins, sigma=10.0):
     """
@@ -406,14 +412,14 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
     :rtype: dict
     :returns: marginals_smooth
     """
-    from scipy.fftpack import fftshift, ifft2, fft2 
+    from scipy.fftpack import fftshift, ifft2, fft2
 
     if isinstance(sigma, float) or isinstance(sigma, int):
         sigma = sigma*np.ones(len(bins), dtype=np.int)
     marginals_smooth = {}
     pairs = copy.deepcopy(list(marginals.keys()))
     pairs.sort()
-    for (i, j) in pairs:   
+    for (i, j) in pairs:
         nx = len(bins[i])-1
         ny = len(bins[j])-1
         dx = bins[i][1] - bins[i][0]
@@ -433,28 +439,27 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
         aug_kernel[augx:augx+nx, augy:augy+ny] = kernel
         aug_marginals[augx:augx+nx, augy:augy+ny] = marginals[(i, j)]
 
-        aug_kernel = fftshift(aug_kernel, 0) 
+        aug_kernel = fftshift(aug_kernel, 0)
         aug_kernel = fftshift(aug_kernel, 1)
         aug_marginals_smooth = ifft2(fft2(aug_kernel)*fft2(aug_marginals))
         aug_marginals_smooth = np.real(aug_marginals_smooth)
-        marginals_smooth[(i, j)] = aug_marginals_smooth[augx:augx+nx, 
-                augy:augy+ny]
-        marginals_smooth[(i, j)] = marginals_smooth[(i, 
-            j)]/np.sum(marginals_smooth[(i, j)])
+        marginals_smooth[(i, j)] = aug_marginals_smooth[augx:augx+nx,
+                                                        augy:augy+ny]
+        marginals_smooth[(i, j)] = marginals_smooth[(i,
+                                                     j)]/np.sum(marginals_smooth[(i, j)])
 
     return marginals_smooth
 
 
 def plot_2D_marginal_contours(marginals, bins, sample_set,
-                              contour_num = 8, 
-                              lam_ref=None, lam_refs = None,
-                              plot_domain = None,
+                              contour_num=8,
+                              lam_ref=None, lam_refs=None,
+                              plot_domain=None,
                               interactive=False,
-                              lambda_label=None, 
-                              contour_font_size = 20,
-                              filename="file", 
+                              lambda_label=None,
+                              contour_font_size=20,
+                              filename="file",
                               file_extension=".png"):
-        
     """
     This makes contour plots of every pair of marginals (or joint in 2d case) 
     of input probability measure on a rectangular grid.
@@ -495,11 +500,11 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
         lam_ref = sample_obj._reference_value
 
     lam_domain = sample_obj.get_domain()
-  
+
     matplotlib.rcParams['xtick.direction'] = 'out'
     matplotlib.rcParams['ytick.direction'] = 'out'
     matplotlib.rcParams.update({'figure.autolayout': True})
-    
+
     if comm.rank == 0:
         pairs = copy.deepcopy(list(marginals.keys()))
         pairs.sort()
@@ -516,13 +521,13 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
             y_kernel = np.linspace(-ny*dy/2, ny*dy/2, ny)
             X, Y = np.meshgrid(x_kernel, y_kernel, indexing='ij')
             quadmesh = ax.contour(marginals[(i, j)].transpose()/boxSize,
-                    contour_num, colors='k', 
-                    extent=[lam_domain[i][0], lam_domain[i][1],
-                    lam_domain[j][0], lam_domain[j][1]], origin='lower',
-                    vmax=marginals[(i, j)].max()/boxSize, vmin=0, 
-                    aspect='auto')
+                                  contour_num, colors='k',
+                                  extent=[lam_domain[i][0], lam_domain[i][1],
+                                          lam_domain[j][0], lam_domain[j][1]], origin='lower',
+                                  vmax=marginals[(i, j)].max()/boxSize, vmin=0,
+                                  aspect='auto')
             if lam_refs is not None:
-                ax.plot(lam_refs[:,i], lam_refs[:,j], 'wo', markersize=20)
+                ax.plot(lam_refs[:, i], lam_refs[:, j], 'wo', markersize=20)
             if lam_ref is not None:
                 ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=20)
             if lambda_label is None:
@@ -531,26 +536,25 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
             else:
                 label1 = lambda_label[i]
                 label2 = lambda_label[j]
-            ax.set_xlabel(label1, fontsize=30) 
+            ax.set_xlabel(label1, fontsize=30)
             ax.set_ylabel(label2, fontsize=30)
-            ax.tick_params(axis='both', which='major', 
+            ax.tick_params(axis='both', which='major',
                            labelsize=20)
-            plt.clabel(quadmesh, fontsize=contour_font_size, 
+            plt.clabel(quadmesh, fontsize=contour_font_size,
                        inline=1, style='sci')
-            
+
             if plot_domain is None:
-                plt.axis([lam_domain[i][0], lam_domain[i][1], 
-                          lam_domain[j][0], lam_domain[j][1]]) 
+                plt.axis([lam_domain[i][0], lam_domain[i][1],
+                          lam_domain[j][0], lam_domain[j][1]])
             else:
-                plt.axis([plot_domain[i][0], plot_domain[i][1], 
-                          plot_domain[j][0], plot_domain[j][1]]) 
+                plt.axis([plot_domain[i][0], plot_domain[i][1],
+                          plot_domain[j][0], plot_domain[j][1]])
             plt.tight_layout()
-            fig.savefig(filename + "_2D_contours_" + str(i) + "_" + str(j) +\
-                    file_extension, transparent=True)
+            fig.savefig(filename + "_2D_contours_" + str(i) + "_" + str(j) +
+                        file_extension, transparent=True)
             if interactive:
                 plt.show()
             else:
                 plt.close()
- 
+
     comm.barrier()
-    
