@@ -12,9 +12,10 @@ https://github.com/fabiansinz/natter
 
 import numpy as np
 
+
 def Lp_generalized_normal(dim, num, p=2, scale=1.0, loc=None):
     r"""
-    
+
     Generate samples from an Lp generalized normal distribution.
 
     :param float p: :math:`0 < p \leq \infty`, p for the lp norm where
@@ -37,9 +38,10 @@ def Lp_generalized_normal(dim, num, p=2, scale=1.0, loc=None):
         samples = samples + loc
     return samples
 
+
 def Lp_generalized_uniform(dim, num, p=2, scale=1.0, loc=None):
     r"""
-    
+
     Generate samples from an Lp generalized uniform distribution.
 
     :param float p: :math:`0 < p \leq \infty`, p for the lp norm where
@@ -67,10 +69,11 @@ def Lp_generalized_uniform(dim, num, p=2, scale=1.0, loc=None):
     if loc is not None:
         samples = samples + loc
     return samples
-    
+
+
 def Lp_generalized_beta(dim, num, p=2, d=2, scale=1.0, loc=None):
     r"""
-    
+
     Generate samples from an Lp generalized beta distribution. When p=d then
     this is simly the Lp generalized uniform distribution.
 

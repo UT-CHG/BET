@@ -4,13 +4,14 @@
 This module provides methods for Voronoi plots. 
 """
 
-import copy, math
+import copy
+import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
 #plt.rc('font', family='serif')
-from bet.Comm import comm, MPI 
+from bet.Comm import comm, MPI
 import bet.sample as sample
 
 
@@ -19,17 +20,20 @@ class dim_not_matching(Exception):
     Exception for when the dimension is inconsistent.
     """
 
+
 class bad_object(Exception):
     """
     Exception for when the wrong type of object is used.
     """
+
 
 class missing_attribute(Exception):
     """
     Exception for missing attribute.
     """
 
-def plot_1D_voronoi(sample_set, density=True, filename="file", 
+
+def plot_1D_voronoi(sample_set, density=True, filename="file",
                     lam_ref=None, interactive=False,
                     lambda_label=None, file_extension=".png"):
     """
@@ -70,7 +74,7 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         raise bad_object("Improper sample object")
 
     if sample_obj._dim != 1:
-            raise dim_not_matching("Only applicable for 1D domains.")
+        raise dim_not_matching("Only applicable for 1D domains.")
 
     # Check for global probabilities
     if sample_obj._probabilities is None:
@@ -84,7 +88,8 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
 
     # Form 1D Voronoi
     ind_sort = np.argsort(sample_obj._values, axis=0)
-    ends = 0.5 * (sample_obj._values[ind_sort][1::] + sample_obj._values[ind_sort][0:-1])
+    ends = 0.5 * (sample_obj._values[ind_sort]
+                  [1::] + sample_obj._values[ind_sort][0:-1])
     ends = ends[:, 0, 0]
     mins = np.array([sample_obj._domain[0][0]] + list(ends))
     maxes = np.array(list(ends) + [sample_obj._domain[0][1]])
@@ -93,7 +98,8 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
     if comm.rank == 0:
         fig = plt.figure(0, constrained_layout=True)
         if density:
-            plt.hlines(sample_obj._probabilities[ind_sort]/(maxes-mins), mins, maxes)
+            plt.hlines(
+                sample_obj._probabilities[ind_sort]/(maxes-mins), mins, maxes)
             plt.ylabel(r'$\rho_{\lambda}$', fontsize=20)
         else:
             plt.hlines(sample_obj._probabilities[ind_sort], mins, maxes)
@@ -112,11 +118,11 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         if interactive:
             plt.show()
 
-def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn', 
-                    filename="file", 
+
+def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
+                    filename="file",
                     lam_ref=None, interactive=False,
                     lambda_label=None, file_extension=".png"):
-
     """
     This makes a 2D Voronoi plot of the input probability measure for a 
     2D Voronoi sample set. If the sample_set object is a discretization 
@@ -159,7 +165,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         raise bad_object("Improper sample object")
 
     if sample_obj._dim != 2:
-            raise dim_not_matching("Only applicable for 2D domains.")
+        raise dim_not_matching("Only applicable for 2D domains.")
 
     # Check for global probabilities
     if sample_obj._probabilities is None:
@@ -173,10 +179,10 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
     if lam_ref is None:
         lam_ref = sample_obj._reference_value
 
-    # Form Voronoi 
+    # Form Voronoi
     if comm.rank == 0:
         vor = Voronoi(sample_obj._values)
-        regions, vertices =  voronoi_finite_polygons_2d(vor)
+        regions, vertices = voronoi_finite_polygons_2d(vor)
         points = sample_obj._values
 
         # Make plot
@@ -189,11 +195,13 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         P_max = np.max(P)
 
         # plot each cell
-        for i,region in enumerate(regions):
+        for i, region in enumerate(regions):
             polygon = vertices[region]
-            plt.fill(*list(zip(*polygon)),color=cmap(P[i]/P_max), edgecolor = 'k', linewidth = 0.005)
+            plt.fill(*list(zip(*polygon)),
+                     color=cmap(P[i]/P_max), edgecolor='k', linewidth=0.005)
 
-        plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1], sample_obj._domain[1][0], sample_obj._domain[1][1]])
+        plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1],
+                  sample_obj._domain[1][0], sample_obj._domain[1][1]])
         if lam_ref is not None:
             plt.plot(lam_ref[0], lam_ref[1], 'ro', markersize=10)
 
@@ -205,7 +213,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
             label1 = lambda_label[1]
         plt.xlabel(label1, fontsize=20)
         plt.ylabel(label2, fontsize=20)
-        
+
         # plot colorbar
         ax, _ = matplotlib.colorbar.make_axes(plt.gca(), shrink=0.9)
         if density:
@@ -217,12 +225,12 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         text = cbar.ax.yaxis.label
         font = matplotlib.font_manager.FontProperties(size=20)
         text.set_font_properties(font)
-        
+
         fig.savefig(filename + file_extension)
         if interactive:
             plt.show()
 
-    
+
 def voronoi_finite_polygons_2d(vor, radius=None):
     """
     Reconstruct infinite voronoi regions in a 2D diagram to finite
@@ -281,7 +289,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
 
             # Compute the missing endpoint of an infinite ridge
 
-            t = vor.points[p2] - vor.points[p1] # tangent
+            t = vor.points[p2] - vor.points[p1]  # tangent
             t /= np.linalg.norm(t)
             n = np.array([-t[1], t[0]])  # normal
 
@@ -295,7 +303,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
         # sort region counterclockwise
         vs = np.asarray([new_vertices[v] for v in new_region])
         c = vs.mean(axis=0)
-        angles = np.arctan2(vs[:,1] - c[1], vs[:,0] - c[0])
+        angles = np.arctan2(vs[:, 1] - c[1], vs[:, 0] - c[0])
         new_region = np.array(new_region)[np.argsort(angles)]
 
         # finish

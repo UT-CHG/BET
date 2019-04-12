@@ -2219,6 +2219,7 @@ class discretization(object):
         self._emulated_ii_ptr_local = None
         #: local emulated oo ptr for parallelism
         self._emulated_oo_ptr_local = None
+        
         if output_sample_set is not None:
             self.check_nums()
         else:
