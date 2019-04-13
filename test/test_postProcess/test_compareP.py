@@ -37,7 +37,7 @@ local_path = ''
 
 class Test_metrization_simple(unittest.TestCase):
     def setUp(self):
-        self.dim = 2
+        self.dim = 3
         self.integration_set = sample.sample_set(dim=self.dim)
         self.left_set = sample.sample_set(dim=self.dim)
         self.right_set = sample.sample_set(dim=self.dim)
@@ -82,7 +82,8 @@ class Test_metrization_simple(unittest.TestCase):
         mm = self.mtrc.copy()
         mc = mm.clip(50)
         ms = self.mtrc.merge(mc)
-        ms.slice(np.arange(20), np.arange(30))
+        ms.slice([0,1], [1])
+        
 
     def test_missing_domain(self):
         r"""

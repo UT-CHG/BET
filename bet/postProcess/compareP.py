@@ -68,14 +68,23 @@ class metrization(object):
         self._io_ptr_left_local = None
         #: local integration right ptr for parallelism
         self._io_ptr_right_local = None
-
+        #: Domain
+        self._domain = None
+        
         # extract sample set
         if isinstance(sample_set_left, samp.sample_set_base):
             # left sample set
             self._sample_set_left = sample_set_left
+            self._domain = sample_set_left.get_domain()
         if isinstance(sample_set_right, samp.sample_set_base):
             # right sample set
             self._sample_set_right = sample_set_right
+            if self._domain is not None:
+                if not np.allclose(self._domain, sample_set_right.get_domain()):
+                    raise AttributeWarning("Left and Right domains do not match")
+            else:
+                self._domain = sample_set_right.get_domain()
+            
         # check dimension consistency
         if isinstance(integration_sample_set, samp.sample_set_base):
             self._num_samples = integration_sample_set.check_num()
@@ -90,17 +99,15 @@ class metrization(object):
             elif np.all(np.array(output_dims) == output_dims[0]):
                 self._integration_sample_set = integration_sample_set
             else:
-                raise dim_not_matching("dimension of values incorrect")
+                raise samp.dim_not_matching("dimension of values incorrect")
 
             if not isinstance(integration_sample_set.get_domain(), np.ndarray):
                 # domain can be missing if left/right sample sets present
-                if sample_set_left is not None:
-                    integration_sample_set.set_domain(
-                        sample_set_left.get_domain())
+                if self._sample_set_left is not None:
+                    integration_sample_set.set_domain(self._domain)
                 else:
-                    if sample_set_right is not None:
-                        integration_sample_set.set_domain(
-                            sample_set_right.get_domain())
+                    if self._sample_set_right is not None:
+                        integration_sample_set.set_domain(self._domain)
                     else:  # no sample sets provided
                         msg = "Must provide at least one set from\n"
                         msg += "\twhich a domain can be inferred."
@@ -436,7 +443,7 @@ class metrization(object):
             elif np.all(np.array(output_dims) == output_dims[0]):
                 self._integration_sample_set = integration_sample_set
             else:
-                raise dim_not_matching("dimension of values incorrect")
+                raise samp.dim_not_matching("dimension of values incorrect")
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
@@ -454,12 +461,19 @@ class metrization(object):
         """
         cl = self._sample_set_left.clip(cnum)
         cr = self._sample_set_right.clip(cnum)
-
+        if self._io_ptr_left is not None:
+            il = self._io_ptr_left[:cnum]
+        else:
+            il = None
+        if self._io_ptr_right is not None:
+            ir = self._io_ptr_right[:cnum]
+        else:
+            ir = None
         return metrization(sample_set_left=cl,
                            sample_set_right=cr,
                            integration_sample_set=self._integration_sample_set,
-                           io_ptr_left=self._io_ptr_left[:cnum],
-                           io_ptr_right=self._io_ptr_right[:cnum])
+                           io_ptr_left=il,
+                           io_ptr_right=ir)
 
     def merge(self, metr):
         r"""
@@ -472,8 +486,8 @@ class metrization(object):
         :rtype: :class:`bet.sample.metrization`
         :returns: Merged metrization
         """
-        ml = self._sample_set_left.merge(self._sample_set_left)
-        mr = self._sample_set_right.merge(self._sample_set_right)
+        ml = self._sample_set_left.merge(metr._sample_set_left)
+        mr = self._sample_set_right.merge(metr._sample_set_right)
         il, ir = self._io_ptr_left, self._io_ptr_right
         if metr._io_ptr_left is not None:
             il += metr._io_ptr_left
@@ -502,8 +516,8 @@ class metrization(object):
                       '_error_estimates', '_error_estimates_local']
         slice_list2 = ['_jacobians', '_jacobians_local']
 
-        left_ss = sample_set(len(left))
-        right_ss = sample_set(len(right))
+        left_ss = samp.sample_set(len(left))
+        right_ss = samp.sample_set(len(right))
         if self._sample_set_left._domain is not None:
             left_ss.set_domain(self._sample_set_left._domain[left, :])
         if self._sample_set_left._reference_value is not None:
