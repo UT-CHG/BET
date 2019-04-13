@@ -416,18 +416,6 @@ class metrization(object):
         """
         return self._integration_sample_set
 
-    def get_integration_sample_set(self):
-        r"""
-
-        Returns a reference to the integration_output sample set for this
-        metrization.
-
-        :rtype: :class:`~bet.sample.sample_set_base`
-        :returns: integration_output sample set
-
-        """
-        return self._integration_sample_set
-
     def set_integration_sample_set(self, integration_sample_set):
         r"""
 
@@ -454,6 +442,25 @@ class metrization(object):
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
 
+    def get_int(self):
+        r"""
+
+        Wrapper for `get_integration_sample_set`.
+
+        """
+        return self.get_integration_sample_set()
+
+    def set_int(self, sample_set):
+        r"""
+
+        Wrapper for `set_integration_sample_set`.
+
+        :param sample_set: sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        return self.set_integration_sample_set(sample_set)
+    
     def clip(self, cnum):
         r"""
         Creates and returns a metrization with the the first `cnum`
