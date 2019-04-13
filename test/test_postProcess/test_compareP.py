@@ -4,7 +4,7 @@ import numpy as np
 # import numpy.testing as nptest
 import unittest
 # import os
-import glob
+# import glob
 import bet.sample as sample
 import bet.postProcess.compareP as compP
 # import bet.util as util
@@ -53,9 +53,12 @@ class Test_metrization_simple(unittest.TestCase):
         self.left_set.set_domain(self.domain)
         self.right_set.set_domain(self.domain)
 
-        self.mtrc = compP.metrization(sample_set_left=self.left_set,
-                                      sample_set_right=self.right_set,
-                                      integration_sample_set=self.integration_set)
+        self.mtrc = compP.metrization(sample_set_left=\
+                                      self.left_set,
+                                      sample_set_right=\
+                                      self.right_set, 
+                                      integration_sample_set=\
+                                      self.integration_set)
 
     def test_dimension(self):
         r"""
@@ -68,9 +71,12 @@ class Test_metrization_simple(unittest.TestCase):
         integration_set.set_domain(np.tile([0, 1], [dim, 1]))
 
         try:
-            compP.metrization(sample_set_left=self.left_set,
-                              sample_set_right=self.right_set,
-                              integration_sample_set=self.integration_set)
+            compP.metrization(sample_set_left=\
+                              self.left_set,
+                              sample_set_right=\
+                              self.right_set,
+                              integration_sample_set=\
+                              self.integration_set)
         except sample.dim_not_matching:
             # setting wrong shapes should raise this error
             print('caught')
