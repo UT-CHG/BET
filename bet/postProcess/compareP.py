@@ -4,6 +4,7 @@ import bet.util as util
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 
+
 def distance(left_set, right_set, num_mc_points=100):
     r"""
     Creates and returns a `~bet.postProcess.metrization` object
@@ -22,12 +23,13 @@ def distance(left_set, right_set, num_mc_points=100):
         right_set = right_set.get_input_sample_set()
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
-    
+
     # to be generating a new random sample set pass an integer argument
     metrc = metrization(num_mc_points, left_set, right_set)
-    
+
     return metrc
-    
+
+
 class metrization(object):
     """
 
@@ -64,51 +66,53 @@ class metrization(object):
         self._io_ptr_left_local = None
         #: local integration right ptr for parallelism
         self._io_ptr_right_local = None
-        
+
         # extract sample set
         if isinstance(sample_set_left, samp.discretization):
             left_set = sample_set_left.get_input_sample_set()
         if isinstance(sample_set_right, samp.discretization):
             right_set = sample_set_right.get_input_sample_set()
-        
+
         if isinstance(sample_set_left, samp.sample_set_base):
             left_set = sample_set_left
         else:
-            raise TypeError("Please specify a `~bet.sample.samp.sample_set_base` object.")
+            raise TypeError(
+                "Please specify a `~bet.sample.samp.sample_set_base` object.")
         if isinstance(sample_set_right, samp.sample_set_base):
             right_set = sample_set_right
         else:
-            raise TypeError("Please specify a `~bet.sample.samp.sample_set_base` object.")
-        
+            raise TypeError(
+                "Please specify a `~bet.sample.samp.sample_set_base` object.")
+
         # assert dimensions match
         if left_set._dim != right_set._dim:
-                msg = "These sample sets must have the same dimension."
-                raise samp.dim_not_matching(msg)
+            msg = "These sample sets must have the same dimension."
+            raise samp.dim_not_matching(msg)
         else:
             dim = left_set.get_dim()
-            
+
         # assert domains match
         if left_set._domain is not None and right_set._domain is not None:
-                if not np.allclose(left_set._domain, right_set._domain):
-                    msg = "These sample sets have different domains."
-                    raise samp.domain_not_matching(msg)
+            if not np.allclose(left_set._domain, right_set._domain):
+                msg = "These sample sets have different domains."
+                raise samp.domain_not_matching(msg)
         if left_set._domain is None or right_set._domain is None:
             msg = "One or more of your sets is missing a domain."
             raise samp.domain_not_matching(msg)
-        else: # since the domains match, we can choose either.
+        else:  # since the domains match, we can choose either.
             domain = left_set._domain
-        
-        
+
         if integration_sample_set is None:
             logging.info("No integration set defined. Constructing one with MC \
                         assumption with 100 samples. You can add more later using \
                         the returned compareP.metrization object.")
             integration_sample_set = 100
-        else:    
+        else:
             if isinstance(integration_sample_set, samp.sample_set_base):
                 dim_I = integration_sample_set._values.shape[1]
                 if dim_I != dim:
-                    raise samp.dim_not_matching("Dimension of integration set incorrect.")
+                    raise samp.dim_not_matching(
+                        "Dimension of integration set incorrect.")
             # If integration set given as number, we create one using `~bet.sampling.basicSampler`
             if isinstance(integration_sample_set, float):
                 integration_sample_set = int(integration_sample_set)
@@ -116,9 +120,10 @@ class metrization(object):
         if isinstance(integration_sample_set, int):
             num_mc_samples = integration_sample_set
             integration_sample_set = samp.sample_set(dim)
-            self._integration_sample_set = bsam.random_sample_set('r', integration_sample_set, 
-                                                            num_samples=num_mc_samples)
-            logging.info("Created integration set with {} MC samples".format(num_mc_samples))
+            self._integration_sample_set = bsam.random_sample_set('r', integration_sample_set,
+                                                                  num_samples=num_mc_samples)
+            logging.info(
+                "Created integration set with {} MC samples".format(num_mc_samples))
 
     # method for checking that pointers have been set that will be
     # called by the distance function
@@ -268,7 +273,8 @@ class metrization(object):
         if isinstance(sample_set_left, sample.samp.sample_set_base):
             self._sample_set_left = sample_set_left
         else:
-            raise AttributeError("Wrong Type: Should be samp.sample_set_base type")
+            raise AttributeError(
+                "Wrong Type: Should be samp.sample_set_base type")
 
     def get_sample_set_right(self):
         """
@@ -293,7 +299,8 @@ class metrization(object):
         if isinstance(sample_set_right, sample.samp.sample_set_base):
             self._sample_set_right = sample_set_right
         else:
-            raise AttributeError("Wrong Type: Should be samp.sample_set_base type")
+            raise AttributeError(
+                "Wrong Type: Should be samp.sample_set_base type")
 
     def get_integration_sample_set(self):
         """
@@ -343,7 +350,8 @@ class metrization(object):
             else:
                 raise dim_not_matching("dimension of values incorrect")
         else:
-            raise AttributeError("Wrong Type: Should be samp.sample_set_base type")
+            raise AttributeError(
+                "Wrong Type: Should be samp.sample_set_base type")
 
 #    def estimate_output_volume_integration(self):
 #        """

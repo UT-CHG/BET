@@ -32,7 +32,8 @@ local_path = ''
 #         Ensure passing identical sets returns 0 distance.
 #         """
 #         compP.distance(self.left_set, self.left_set)
-        
+
+
 class Test_metrization_simple(unittest.TestCase):
     def setUp(self):
         self.dim = 2
@@ -46,11 +47,11 @@ class Test_metrization_simple(unittest.TestCase):
         self.integration_set.set_values(values)
         self.left_set.set_values(values1)
         self.right_set.set_values(values2)
-        self.domain = np.tile([0,1],[self.dim,1])
+        self.domain = np.tile([0, 1], [self.dim, 1])
         self.integration_set.set_domain(self.domain)
         self.left_set.set_domain(self.domain)
         self.right_set.set_domain(self.domain)
-        
+
         self.mtrc = compP.metrization(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
                                       integration_sample_set=self.integration_set)
@@ -63,12 +64,12 @@ class Test_metrization_simple(unittest.TestCase):
         values = np.ones((200, dim))
         integration_set = sample.sample_set(dim=dim)
         integration_set.set_values(values)
-        integration_set.set_domain(np.tile([0,1],[dim,1]))
-        
+        integration_set.set_domain(np.tile([0, 1], [dim, 1]))
+
         try:
             compP.metrization(sample_set_left=self.left_set,
-                                          sample_set_right=self.right_set,
-                                          integration_sample_set=self.integration_set)
+                              sample_set_right=self.right_set,
+                              integration_sample_set=self.integration_set)
         except sample.dim_not_matching:  # setting wrong shapes should raise this error
             print('caught')
             pass
@@ -105,5 +106,3 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc.set_io_ptr_right(globalize=False)
         self.mtrc.get_io_ptr_right()
         self.mtrc.globalize_ptrs()
-        
-        
