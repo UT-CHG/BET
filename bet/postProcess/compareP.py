@@ -470,14 +470,14 @@ class metrization(object):
                           io_ptr_left=il,
                           io_ptr_right=ir)
 
-    def choose_inputs_outputs(self,
-                         inputs=None,
-                         outputs=None):
-        """
-        Slices the inputs and outputs of the metrization.
+    def choose_left_right(self,
+                         left=None,
+                         right=None):
+        r"""
+        Slices the left and right of the metrization.
 
-        :param list inputs: list of indices of input sample set to include
-        :param list outputs: list of indices of output sample set to include
+        :param list left: list of indices of left sample set to include
+        :param list right: list of indices of right sample set to include
 
         :rtype: :class:`~bet.sample.metrization`
         :returns: sliced metrization
@@ -485,45 +485,45 @@ class metrization(object):
         """
         slice_list = ['_values', '_values_local',
                      '_error_estimates', '_error_estimates_local']
-        # 
         slice_list2 = ['_jacobians', '_jacobians_local']
 
-        left_ss = sample_set(len(inputs))
-        right_ss = sample_set(len(outputs))
+        left_ss = sample_set(len(left))
+        right_ss = sample_set(len(right))
         if self._sample_set_left._domain is not None:
-            left_ss.set_domain(self._sample_set_left._domain[inputs, :])
+            left_ss.set_domain(self._sample_set_left._domain[left, :])
         if self._sample_set_left._reference_value is not None:
-            left_ss.set_reference_value(self._sample_set_left._reference_value[inputs])
+            left_ss.set_reference_value(self._sample_set_left._reference_value[left])
 
         right_ss.set_p_norm(self._sample_set_right._p_norm)
         if self._sample_set_right._domain is not None:
-            right_ss.set_domain(self._sample_set_right._domain[outputs, :])
+            right_ss.set_domain(self._sample_set_right._domain[right, :])
         if self._sample_set_right._reference_value is not None:
-            right_ss.set_reference_value(self._sample_set_right._reference_value[outputs])
+            right_ss.set_reference_value(self._sample_set_right._reference_value[right])
 
         for obj in slice_list:
             val = getattr(self._sample_set_left, obj)
             if val is not None:
-                setattr(left_ss, obj, val[:, inputs])
+                setattr(left_ss, obj, val[:, left])
             val = getattr(self._sample_set_right, obj)
             if val is not None:
-                setattr(right_ss, obj, val[:, outputs])
+                setattr(right_ss, obj, val[:, right])
         for obj in slice_list2:
             val = getattr(self._sample_set_left, obj)
             if val is not None:
                 nval = np.copy(val)
-                nval = nval.take(outputs, axis=1)
-                nval = nval.take(inputs, axis=2)
+                nval = nval.take(right, axis=1)
+                nval = nval.take(left, axis=2)
                 setattr(left_ss, obj, nval)
             val = getattr(self._sample_set_right, obj)
             if val is not None:
                 nval = np.copy(val)
-                nval = nval.take(outputs, axis=1)
-                nval = nval.take(inputs, axis=2)
+                nval = nval.take(right, axis=1)
+                nval = nval.take(left, axis=2)
                 setattr(right_ss, obj, nval)
         metr = metrization(sample_set_left=left_ss,
-                           sample_set_right=right_ss)
-        # additional attributes to copy over here.
+                           sample_set_right=right_ss,
+                           integration_sample_set=self._integration_sample_set)
+        # additional attributes to copy over here. TODO: maybe slice through 
         return metr
 
     def local_to_global(self):
