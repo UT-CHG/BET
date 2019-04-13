@@ -17,9 +17,9 @@ def distance(left_set, right_set, num_mc_points=100):
     :class:`sample.sample_set_base`
     """
     # extract sample set
-    if isinstance(left_set, samp.discretization):
+    if isinstance(left_set, samp.metrretization):
         left_set = left_set.get_input_sample_set()
-    if isinstance(right_set, samp.discretization):
+    if isinstance(right_set, samp.metrretization):
         right_set = right_set.get_input_sample_set()
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
@@ -70,9 +70,9 @@ class metrization(object):
         self._io_ptr_right_local = None
 
         # extract sample set
-        if isinstance(sample_set_left, samp.discretization):
+        if isinstance(sample_set_left, samp.metrretization):
             self._sample_set_left = sample_set_left.get_input_sample_set()
-        if isinstance(sample_set_right, samp.discretization):
+        if isinstance(sample_set_right, samp.metrretization):
             self._sample_set_right = sample_set_right.get_input_sample_set()
         # check dimension consistency
         if isinstance(integration_sample_set, samp.sample_set_base):
@@ -450,8 +450,8 @@ class metrization(object):
         Merges a given metrization with this one by merging the input and
         output sample sets.
 
-        :param disc: Discretization object to merge with.
-        :type disc: :class:`bet.sample.metrization`
+        :param metr: metrretization object to merge with.
+        :type metr: :class:`bet.sample.metrization`
 
         :rtype: :class:`bet.sample.metrization`
         :returns: Merged metrization
@@ -470,55 +470,62 @@ class metrization(object):
                           io_ptr_left=il,
                           io_ptr_right=ir)
 
-#    def choose_inputs_outputs(self,
-#                              inputs=None,
-#                              outputs=None):
-#        """
-#        Slices the inputs and outputs of the metrization.
-#
-#        :param list inputs: list of indices of input sample set to include
-#        :param list outputs: list of indices of output sample set to include
-#
-#        :rtype: :class:`~bet.sample.metrization`
-#        :returns: sliced metrization
-#
-#        """
-#        slice_list = ['_values', '_values_local',
-#                      '_error_estimates', '_error_estimates_local']
-#        slice_list2 = ['_jacobians', '_jacobians_local']
-#
-#        input_ss = sample_set(len(inputs))
-#        output_ss = sample_set(len(outputs))
-#        input_ss.set_p_norm(self._sample_set_left._p_norm)
-#        if self._sample_set_left._domain is not None:
-#            input_ss.set_domain(self._sample_set_left._domain[inputs, :])
-#        if self._sample_set_left._reference_value is not None:
-#            input_ss.set_reference_value(self._sample_set_left._reference_value[inputs])
-#
-#        output_ss.set_p_norm(self._sample_set_right._p_norm)
-#        if self._sample_set_right._domain is not None:
-#            output_ss.set_domain(self._sample_set_right._domain[outputs, :])
-#        if self._sample_set_right._reference_value is not None:
-#            output_ss.set_reference_value(self._sample_set_right._reference_value[outputs])
-#
-#        for obj in slice_list:
-#            val = getattr(self._sample_set_left, obj)
-#            if val is not None:
-#                setattr(input_ss, obj, val[:, inputs])
-#            val = getattr(self._sample_set_right, obj)
-#            if val is not None:
-#                setattr(output_ss, obj, val[:, outputs])
-#        for obj in slice_list2:
-#            val = getattr(self._sample_set_left, obj)
-#            if val is not None:
-#                nval = np.copy(val)
-#                nval = nval.take(outputs, axis=1)
-#                nval = nval.take(inputs, axis=2)
-#                setattr(input_ss, obj, nval)
-#        disc = metrization(sample_set_left=input_ss,
-#                              sample_set_right=output_ss)
-#        return disc
-#
+    def choose_inputs_outputs(self,
+                         inputs=None,
+                         outputs=None):
+        """
+        Slices the inputs and outputs of the metrization.
+
+        :param list inputs: list of indices of input sample set to include
+        :param list outputs: list of indices of output sample set to include
+
+        :rtype: :class:`~bet.sample.metrization`
+        :returns: sliced metrization
+
+        """
+        slice_list = ['_values', '_values_local',
+                     '_error_estimates', '_error_estimates_local']
+        # 
+        slice_list2 = ['_jacobians', '_jacobians_local']
+
+        left_ss = sample_set(len(inputs))
+        right_ss = sample_set(len(outputs))
+        if self._sample_set_left._domain is not None:
+            left_ss.set_domain(self._sample_set_left._domain[inputs, :])
+        if self._sample_set_left._reference_value is not None:
+            left_ss.set_reference_value(self._sample_set_left._reference_value[inputs])
+
+        right_ss.set_p_norm(self._sample_set_right._p_norm)
+        if self._sample_set_right._domain is not None:
+            right_ss.set_domain(self._sample_set_right._domain[outputs, :])
+        if self._sample_set_right._reference_value is not None:
+            right_ss.set_reference_value(self._sample_set_right._reference_value[outputs])
+
+        for obj in slice_list:
+            val = getattr(self._sample_set_left, obj)
+            if val is not None:
+                setattr(left_ss, obj, val[:, inputs])
+            val = getattr(self._sample_set_right, obj)
+            if val is not None:
+                setattr(right_ss, obj, val[:, outputs])
+        for obj in slice_list2:
+            val = getattr(self._sample_set_left, obj)
+            if val is not None:
+                nval = np.copy(val)
+                nval = nval.take(outputs, axis=1)
+                nval = nval.take(inputs, axis=2)
+                setattr(left_ss, obj, nval)
+            val = getattr(self._sample_set_right, obj)
+            if val is not None:
+                nval = np.copy(val)
+                nval = nval.take(outputs, axis=1)
+                nval = nval.take(inputs, axis=2)
+                setattr(right_ss, obj, nval)
+        metr = metrization(sample_set_left=left_ss,
+                           sample_set_right=right_ss)
+        # additional attributes to copy over here.
+        return metr
+
     def local_to_global(self):
         """
         Call local_to_global for ``sample_set_left`` and
@@ -528,3 +535,6 @@ class metrization(object):
             self._sample_set_left.local_to_global()
         if self._sample_set_right is not None:
             self._sample_set_right.local_to_global()
+        if self._integration_sample_set is not None:
+            self._integration_sample_set.local_to_global()
+        
