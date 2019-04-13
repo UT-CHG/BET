@@ -533,7 +533,7 @@ class metrization(object):
             right_ss.set_domain(self._sample_set_right._domain[dims, :])
         if self._sample_set_right._reference_value is not None:
             right_ss.set_reference_value(
-                self._sample_set_right._reference_value[right])
+                self._sample_set_right._reference_value[dims])
 
         for obj in slice_list:
             val = getattr(self._sample_set_left, obj)
