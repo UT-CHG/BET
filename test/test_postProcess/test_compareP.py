@@ -7,11 +7,12 @@ import os
 import glob
 import bet.sample as sample
 import bet.postProcess.compareP as compP
-#import bet.util as util
-#from bet.Comm import comm, MPI
+# import bet.util as util
+# from bet.Comm import comm, MPI
 
-#local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
+# local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
 local_path = ''
+
 
 # class Test_distance(unittest.TestCase):
 #     def setUp(self):
@@ -76,14 +77,9 @@ class Test_metrization_simple(unittest.TestCase):
 
     def test_no_sample_set(self):
         test_set = sample.sample_set(dim=self.dim)
-        try:
-            self.mtrc = compP.metrization(test_set, None)
-        except:
-            pass
-        try:
-            self.mtrc = compP.metrization(None, test_set)
-        except:
-            pass
+        self.mtrc = compP.metrization(test_set, None)
+        self.mtrc = compP.metrization(None, test_set)
+        self.mtrc = compP.metrization(None, None)
 
     def test_set_ptr_left(self):
         """
@@ -106,3 +102,19 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc.set_io_ptr_right(globalize=False)
         self.mtrc.get_io_ptr_right()
         self.mtrc.globalize_ptrs()
+
+    def test_set_right(self):
+        self.mtrc.set_right(self.right_set)
+        assert self.right_set == self.right_set
+        
+    def test_set_left(self):
+        self.mtrc.set_left(self.left_set)
+        assert self.left_set == self.left_set
+        
+    def test_get_right(self):
+        set_right = self.mtrc.get_right()
+        assert set_right == self.right_set
+        
+    def test_get_left(self):
+        set_left = self.mtrc.get_left()
+        assert set_left == self.left_set

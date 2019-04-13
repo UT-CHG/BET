@@ -24,6 +24,8 @@ def distance(left_set, right_set, num_mc_points=100):
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
 
+    # make integration sample set
+
     # to be generating a new random sample set pass an integer argument
     metrc = metrization(num_mc_points, left_set, right_set)
 
@@ -40,7 +42,7 @@ class metrization(object):
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
     vector_names = ['_io_ptr_left', '_io_ptr_left_local',
-                    '_io_ptr_right', '_io_ptr_right_local']
+                    '_io_ptr_right', '_io_ptr_right_local', '_domain']
 
     #: List of attribute names for attributes that are
     #: :class:`sample.sample_set_base`
@@ -48,7 +50,7 @@ class metrization(object):
                         '_integration_sample_set']
 
     def __init__(self, integration_sample_set,
-                 sample_set_left, sample_set_right,
+                 sample_set_left=None, sample_set_right=None,
                  io_ptr_left=None, io_ptr_right=None):
         #: Input sample set :class:`~bet.sample.sample_set_base`
         self._sample_set_left = sample_set_left
@@ -58,10 +60,10 @@ class metrization(object):
         self._integration_sample_set = integration_sample_set
         #: Pointer from ``self._integration_sample_set`` to
         #: ``self._sample_set_left``
-        self._io_ptr_left = None
+        self._io_ptr_left = io_ptr_left
         #: Pointer from ``self._integration_sample_set`` to
         #: ``self._sample_set_right``
-        self._io_ptr_right = None
+        self._io_ptr_right = io_ptr_right
         #: local integration left ptr for parallelsim
         self._io_ptr_left_local = None
         #: local integration right ptr for parallelism
@@ -69,70 +71,101 @@ class metrization(object):
 
         # extract sample set
         if isinstance(sample_set_left, samp.discretization):
-            left_set = sample_set_left.get_input_sample_set()
+            self._sample_set_left = sample_set_left.get_input_sample_set()
         if isinstance(sample_set_right, samp.discretization):
-            right_set = sample_set_right.get_input_sample_set()
-
-        if isinstance(sample_set_left, samp.sample_set_base):
-            left_set = sample_set_left
+            self._sample_set_right = sample_set_right.get_input_sample_set()
+        # check dimension consistency
+        if isinstance(integration_sample_set, samp.sample_set_base):
+            self._num_samples = integration_sample_set.check_num()
+            output_dims = []
+            output_dims.append(integration_sample_set.get_dim())
+            if self._sample_set_right is not None:
+                output_dims.append(self._sample_set_right.get_dim())
+            if self._sample_set_left is not None:
+                output_dims.append(self._sample_set_left.get_dim())
+            if len(output_dims) == 1:
+                self._integration_sample_set = integration_sample_set
+            elif np.all(np.array(output_dims) == output_dims[0]):
+                self._integration_sample_set = integration_sample_set
+            else:
+                raise dim_not_matching("dimension of values incorrect")
+                
+            if not isinstance(integration_sample_set.get_domain(), np.ndarray):
+                # domain can be missing if left/right sample sets present
+                if sample_set_left is not None:
+                    integration_sample_set.set_domain(sample_set_left.get_domain())
+                else:
+                    if sample_set_right is not None:
+                        integration_sample_set.set_domain(sample_set_right.get_domain())
+                    else: # no sample sets provided
+                        raise AttributeError("Must provide at least one set from \
+                            which a domain can be inferred.")
         else:
-            raise TypeError(
-                "Please specify a `~bet.sample.sample_set_base` object.")
-        if isinstance(sample_set_right, samp.sample_set_base):
-            right_set = sample_set_right
-        else:
-            raise TypeError(
-                "Please specify a `~bet.sample.sample_set_base` object.")
+            raise AttributeError(
+                "Wrong Type: Should be samp.sample_set_base type")
+        
+        if (io_ptr_left is not None):
+            if len(io_ptr_left) != self._num_samples:
+                raise ShapeError(
+                    "Left pointer length must match integration set.")
+            if (io_ptr_right is not None):
+                if not np.allclose(io_ptr_left.shape, io_ptr_right.shape):
+                    raise ShapeError("Pointers must be of same length.")
+        if (io_ptr_right is not None):
+            if len(io_ptr_right) != self._num_samples:
+                raise ShapeError(
+                    "Right pointer length must match integration set.")
 
-        # assert dimensions match
-        if left_set._dim != right_set._dim:
-            msg = "These sample sets must have the same dimension."
-            raise samp.dim_not_matching(msg)
-        else:
-            dim = left_set.get_dim()
 
-        # assert domains match
-        if left_set._domain is not None and right_set._domain is not None:
-            if not np.allclose(left_set._domain, right_set._domain):
-                msg = "These sample sets have different domains."
-                raise samp.domain_not_matching(msg)
-        if left_set._domain is None or right_set._domain is None:
-            msg = "One or more of your sets is missing a domain."
-            raise samp.domain_not_matching(msg)
-        else:  # since the domains match, we can choose either.
-            domain = left_set._domain
-
-        if integration_sample_set is None:
-            logging.info("No integration set defined. Constructing one with MC \
-                        assumption with 100 samples. You can add more later using \
-                        the returned compareP.metrization object.")
-            integration_sample_set = 100
-        else:
-            if isinstance(integration_sample_set, samp.sample_set_base):
-                dim_I = integration_sample_set._values.shape[1]
-                if dim_I != dim:
-                    raise samp.dim_not_matching(
-                        "Dimension of integration set incorrect.")
-            # If integration set given as number, we create one using `~bet.sampling.basicSampler`
-            if isinstance(integration_sample_set, float):
-                integration_sample_set = int(integration_sample_set)
-        # if integration_sample_set is given as a number, generate set.
-        if isinstance(integration_sample_set, int):
-            num_mc_samples = integration_sample_set
-            integration_sample_set = samp.sample_set(dim)
-            self._integration_sample_set = bsam.random_sample_set('r', integration_sample_set,
-                                                                  num_samples=num_mc_samples)
-            logging.info(
-                "Created integration set with {} MC samples".format(num_mc_samples))
-
-    # method for checking that pointers have been set that will be
-    # called by the distance function
 
     # set density functions, maybe print a message if MC assumption is used to estimate volumes
 
     # evaluate density functions at integration points, store for re-use
 
     # metric - wrapper around scipy now that passes density values with proper shapes.
+
+    def check_num(self):
+        r"""
+        Checks that the sizes of all pointers are consistent
+        """
+        pass
+    
+    def check_dim(self):
+        r"""
+        Checks that dimensions of left and right sample sets match.
+        """
+        left_set = self.get_left()
+        right_set = self.get_right()
+        if left_set._dim != right_set._dim:
+            msg = "These sample sets must have the same dimension."
+            raise samp.dim_not_matching(msg)
+        else:
+            dim = left_set.get_dim()
+        return dim
+
+    def check_domain(self):
+        r"""
+        Checks that all domains match.
+        """
+        left_set = self.get_left()
+        right_set = self.get_right()
+        if left_set._domain is not None and right_set._domain is not None:
+            if not np.allclose(left_set._domain, right_set._domain):
+                msg = "These sample sets have different domains."
+                raise samp.domain_not_matching(msg)
+            else:
+                domain = left_set.get_domain()
+        else:
+            if left_set._domain is None or right_set._domain is None:
+                msg = "One or more of your sets is missing a domain."
+                raise samp.domain_not_matching(msg)
+            else:  # since the domains match, we can choose either.
+                domain = left_set.get_domain()
+        if not np.allclose(self._integration_sample_set.get_domain(), domain):
+            msg = "Integration domain mismatch."
+            raise samp.domain_not_matching(msg)
+        self._domain = domain
+        return domain
 
     def globalize_ptrs(self):
         """
@@ -261,6 +294,14 @@ class metrization(object):
         """
         return self._sample_set_left
 
+    def get_left(self):
+        r"""
+
+        Wrapper for `get_sample_set_left`.
+
+        """
+        return self.get_sample_set_left()
+
     def set_sample_set_left(self, sample_set_left):
         """
 
@@ -270,11 +311,22 @@ class metrization(object):
         :type sample_set_left: :class:`~bet.sample.sample_set_base`
 
         """
-        if isinstance(sample_set_left, sample.sample_set_base):
+        if isinstance(sample_set_left, samp.sample_set_base):
             self._sample_set_left = sample_set_left
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
+
+    def set_left(self, sample_set):
+        r"""
+
+        Wrapper for `set_sample_set_left`.
+
+        :param sample_set: sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        return self.set_sample_set_left(sample_set)
 
     def get_sample_set_right(self):
         """
@@ -287,6 +339,25 @@ class metrization(object):
         """
         return self._sample_set_right
 
+    def get_right(self):
+        r"""
+
+        Wrapper for `get_sample_set_right`.
+
+        """
+        return self.get_sample_set_right()
+
+    def set_right(self, sample_set):
+        r"""
+
+        Wrapper for `set_sample_set_right`.
+
+        :param sample_set: sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        return self.set_sample_set_right(sample_set)
+
     def set_sample_set_right(self, sample_set_right):
         """
 
@@ -296,14 +367,14 @@ class metrization(object):
         :type sample_set_right: :class:`~bet.sample.sample_set_base`
 
         """
-        if isinstance(sample_set_right, sample.sample_set_base):
+        if isinstance(sample_set_right, samp.sample_set_base):
             self._sample_set_right = sample_set_right
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
 
     def get_integration_sample_set(self):
-        """
+        r"""
 
         Returns a reference to the output probability sample set for this
         metrization.
@@ -315,7 +386,7 @@ class metrization(object):
         return self._integration_sample_set
 
     def get_integration_sample_set(self):
-        """
+        r"""
 
         Returns a reference to the integration_output sample set for this
         metrization.
@@ -326,13 +397,12 @@ class metrization(object):
         """
         return self._integration_sample_set
 
-# TO DO: FIX THE CHECKS HERE
     def set_integration_sample_set(self, integration_sample_set):
-        """
+        r"""
 
         Sets the integration_output sample set for this metrization.
 
-        :param integration_sample_set: emupated output sample set.
+        :param integration_sample_set: integration sample set.
         :type integration_sample_set: :class:`~bet.sample.sample_set_base`
 
         """
@@ -341,8 +411,8 @@ class metrization(object):
             output_dims.append(integration_sample_set.get_dim())
             if self._sample_set_right is not None:
                 output_dims.append(self._sample_set_right.get_dim())
-            if self._integration_sample_set is not None:
-                output_dims.append(self._integration_sample_set.get_dim())
+            if self._sample_set_left is not None:
+                output_dims.append(self._sample_set_left.get_dim())
             if len(output_dims) == 1:
                 self._integration_sample_set = integration_sample_set
             elif np.all(np.array(output_dims) == output_dims[0]):
@@ -353,72 +423,53 @@ class metrization(object):
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
 
-#    def estimate_output_volume_integration(self):
-#        """
-#        Calculate the volume faction of cells approximately using Monte
-#        Carlo integration.
-#
-#        .. note ::
-#
-#            This could be re-written to just use ``io_ptr_right`` instead
-#            of ``_integration_sample_set``.
-#
-#
-#        """
-#        if self._integration_sample_set is None:
-#            raise AttributeError("Required: _integration_sample_set")
-#        else:
-#            self._sample_set_right.estimate_volume_integration(\
-#                    self._integration_sample_set)
 
-#    def clip(self, cnum):
-#        """
-#        Creates and returns a metrization with the the first `cnum`
-#        entries of the input and output sample sets.
-#
-#        :param int cnum: number of values of sample set to return
-#
-#        :rtype: :class:`~bet.sample.metrization`
-#        :returns: clipped metrization
-#
-#        """
-#        ci = self._sample_set_left.clip(cnum)
-#        co = self._sample_set_right.clip(cnum)
-#
-#        return metrization(sample_set_left=ci,
-#                              sample_set_right=co,
-#                              integration_sample_set=\
-#                                      self._integration_sample_set,
-#                              integration_sample_set=\
-#                                      self._integration_sample_set,
-#                              integration_sample_set=\
-#                                      self._integration_sample_set)
-#
-#    def merge(self, disc):
-#        """
-#        Merges a given metrization with this one by merging the input and
-#        output sample sets.
-#
-#        :param disc: Discretization object to merge with.
-#        :type disc: :class:`bet.sample.metrization`
-#
-#        :rtype: :class:`bet.sample.metrization`
-#        :returns: Merged metrization
-#        """
-#        mi = self._sample_set_left.merge(disc._sample_set_left)
-#        mo = self._sample_set_right.merge(disc._sample_set_right)
-#        mei = self._integration_sample_set.merge(disc.\
-#                _integration_sample_set)
-#        meo = self._integration_sample_set.merge(disc.\
-#                _integration_sample_set)
-#
-#        return metrization(sample_set_left=mi,
-#                              sample_set_right=mo,
-#                              integration_sample_set=\
-#                                      self._integration_sample_set,
-#                              integration_sample_set=mei,
-#                              integration_sample_set=meo)
-#
+    def clip(self, cnum):
+        r"""
+        Creates and returns a metrization with the the first `cnum`
+        entries of the left and right sample sets.
+
+        :param int cnum: number of values of sample set to return
+
+        :rtype: :class:`~bet.sample.metrization`
+        :returns: clipped metrization
+
+        """
+        cl = self._sample_set_left.clip(cnum)
+        cr = self._sample_set_right.clip(cnum)
+        
+        return metrization(sample_set_left=cl,
+                                sample_set_right=cr,\
+                                integration_sample_set=\
+                                self._integration_sample_set,
+                                io_ptr_left=self._io_ptr_left[:cnum],
+                                io_ptr_right=self._io_ptr_right[:cnum])
+
+    def merge(self, metr):
+        r"""
+        Merges a given metrization with this one by merging the input and
+        output sample sets.
+
+        :param disc: Discretization object to merge with.
+        :type disc: :class:`bet.sample.metrization`
+
+        :rtype: :class:`bet.sample.metrization`
+        :returns: Merged metrization
+        """
+        ml = self._sample_set_left.merge(self._sample_set_left)
+        mr = self._sample_set_right.merge(self._sample_set_right)
+        il, ir = self._io_ptr_left, self._io_ptr_right
+        if metr._io_ptr_left is not None:
+            il += metr._io_ptr_left
+        if metr._io_ptr_right is not None:
+            ir += metr._io_ptr_right
+        return metrization(sample_set_left=ml,
+                          sample_set_right=mr,
+                          integration_sample_set=\
+                          self._integration_sample_set,
+                          io_ptr_left=il,
+                          io_ptr_right=ir)
+
 #    def choose_inputs_outputs(self,
 #                              inputs=None,
 #                              outputs=None):
