@@ -1,9 +1,9 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
 import numpy as np
-import numpy.testing as nptest
+# import numpy.testing as nptest
 import unittest
-import os
+# import os
 import glob
 import bet.sample as sample
 import bet.postProcess.compareP as compP
@@ -71,7 +71,8 @@ class Test_metrization_simple(unittest.TestCase):
             compP.metrization(sample_set_left=self.left_set,
                               sample_set_right=self.right_set,
                               integration_sample_set=self.integration_set)
-        except sample.dim_not_matching:  # setting wrong shapes should raise this error
+        except sample.dim_not_matching:
+            # setting wrong shapes should raise this error
             print('caught')
             pass
 

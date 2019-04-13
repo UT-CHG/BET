@@ -1,8 +1,8 @@
 import numpy as np
-import logging
+# import logging
 import bet.util as util
 import bet.sample as samp
-import bet.sampling.basicSampling as bsam
+# import bet.sampling.basicSampling as bsam
 
 
 def distance(left_set, right_set, num_mc_points=100):
@@ -37,7 +37,7 @@ class metrization(object):
 
     A data structure containing :class:`~bet.sample.sample_set_base` objects and
     associated methods for computing measures of distance between pairs of them.
-    Distances have two slots, hence the language for left/right. 
+    Distances have two slots, hence the language for left/right.
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
@@ -114,7 +114,8 @@ class metrization(object):
                         msg += "\twhich a domain can be inferred."
                         raise AttributeError(msg)
         else:
-            if (self._sample_set_left is not None) or (self._sample_set_right is not None):
+            if (self._sample_set_left is not None) or \
+               (self._sample_set_right is not None):
                 pass
             else:
                 raise AttributeError(
@@ -132,11 +133,13 @@ class metrization(object):
                 raise AttributeError(
                     "Right pointer length must match integration set.")
 
-    # set density functions, maybe print a message if MC assumption is used to estimate volumes
+    # set density functions, maybe print a
+    # message if MC assumption is used to estimate volumes
 
     # evaluate density functions at integration points, store for re-use
 
-    # metric - wrapper around scipy now that passes density values with proper shapes.
+    # metric - wrapper around scipy now that
+    # passes density values with proper shapes.
 
     def check_num(self):
         r"""
@@ -334,7 +337,8 @@ class metrization(object):
             self._integration_sample_set.set_domain(
                 sample_set_left.get_domain())
         else:
-            if not np.allclose(self._integration_sample_set._domain, sample_set_left._domain):
+            if not np.allclose(self._integration_sample_set._domain,
+                               sample_set_left._domain):
                 raise AttributeError("Domain does not match integration set.")
 
     def set_left(self, sample_set):
@@ -396,7 +400,8 @@ class metrization(object):
             self._integration_sample_set.set_domain(
                 sample_set_right.get_domain())
         else:
-            if not np.allclose(self._integration_sample_set._domain, sample_set_right._domain):
+            if not np.allclose(self._integration_sample_set._domain,
+                               sample_set_right._domain):
                 raise AttributeError("Domain does not match integration set.")
 
     def get_integration_sample_set(self):
