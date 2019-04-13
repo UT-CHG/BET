@@ -56,7 +56,7 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc = compP.metrization(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
                                       integration_sample_set=self.integration_set)
-
+    
     def test_dimension(self):
         r"""
         Check that improperly setting dimension raises warning.
