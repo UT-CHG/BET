@@ -17,9 +17,9 @@ def distance(left_set, right_set, num_mc_points=100):
     :class:`sample.sample_set_base`
     """
     # extract sample set
-    if isinstance(left_set, samp.metrretization):
+    if isinstance(left_set, samp.metrization):
         left_set = left_set.get_input_sample_set()
-    if isinstance(right_set, samp.metrretization):
+    if isinstance(right_set, samp.metrization):
         right_set = right_set.get_input_sample_set()
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
@@ -454,7 +454,7 @@ class metrization(object):
         Merges a given metrization with this one by merging the input and
         output sample sets.
 
-        :param metr: metrretization object to merge with.
+        :param metr: metrization object to merge with.
         :type metr: :class:`bet.sample.metrization`
 
         :rtype: :class:`bet.sample.metrization`
