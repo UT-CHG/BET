@@ -76,6 +76,28 @@ class Test_metrization_simple(unittest.TestCase):
             print('caught')
             pass
 
+    def test_domain(self):
+        r"""
+        Check that improperly setting domain raises warning.
+        """
+        test_set = self.integration_set.copy()
+        test_set.set_domain(test_set.get_domain()+0.01)
+        test_metr = [compP.metrization(integration_sample_set=self.integration_set),
+                     compP.metrization(
+                         None, sample_set_right=self.integration_set),
+                     compP.metrization(
+                         None, sample_set_left=self.integration_set)
+                     ]
+        for mm in test_metr:
+            test_funs = [mm.set_right,
+                         mm.set_left,
+                         mm.set_int]
+            for fun in test_funs:
+                try:
+                    fun(test_set)
+                except AttributeError:
+                    pass
+
     def test_copy_clip_merge_slice(self):
         r"""
         Test copying, clipping, merging, slicing

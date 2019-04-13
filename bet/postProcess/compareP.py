@@ -460,7 +460,7 @@ class metrization(object):
 
         """
         return self.set_integration_sample_set(sample_set)
-    
+
     def clip(self, cnum):
         r"""
         Creates and returns a metrization with the the first `cnum`
