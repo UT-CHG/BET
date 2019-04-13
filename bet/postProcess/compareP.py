@@ -37,7 +37,7 @@ class metrization(object):
 
     A data structure containing :class:`~bet.sample.sample_set_base` objects and
     associated methods for computing measures of distance between pairs of them.
-
+    Distances have two slots, hence the language for left/right. 
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
@@ -52,10 +52,6 @@ class metrization(object):
     def __init__(self, integration_sample_set,
                  sample_set_left=None, sample_set_right=None,
                  io_ptr_left=None, io_ptr_right=None):
-        #: Input sample set :class:`~bet.sample.sample_set_base`
-        self._sample_set_left = sample_set_left
-        #: Output sample set :class:`~bet.sample.sample_set_base`
-        self._sample_set_right = sample_set_right
         #: Integration/Emulation set :class:`~bet.sample.sample_set_base`
         self._integration_sample_set = integration_sample_set
         #: Pointer from ``self._integration_sample_set`` to
@@ -71,9 +67,11 @@ class metrization(object):
 
         # extract sample set
         if isinstance(sample_set_left, samp.sample_set_base):
-            self._sample_set_left = sample_set_left.get_input_sample_set()
+            # left sample set
+            self._sample_set_left = sample_set_left
         if isinstance(sample_set_right, samp.sample_set_base):
-            self._sample_set_right = sample_set_right.get_input_sample_set()
+            # right sample set
+            self._sample_set_right = sample_set_right
         # check dimension consistency
         if isinstance(integration_sample_set, samp.sample_set_base):
             self._num_samples = integration_sample_set.check_num()
