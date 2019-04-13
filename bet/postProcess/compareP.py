@@ -80,7 +80,7 @@ class metrization(object):
             # right sample set
             self._sample_set_right = sample_set_right
             if self._domain is not None:
-                if not np.allclose(self._domain, sample_set_right.get_domain()):
+                if not np.allclose(self._domain, sample_set_right._domain):
                     raise AttributeError(
                         "Left and Right domains do not match")
             else:
