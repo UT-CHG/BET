@@ -99,7 +99,7 @@ class Test_metrization_simple(unittest.TestCase):
             self.mtrc = compP.metrization(test_set, None, other_set)
         except AttributeError:
             pass
-    
+
     def test_no_sample_set(self):
         r"""
         Make sure we can initialize the function in several permutations
@@ -139,15 +139,15 @@ class Test_metrization_simple(unittest.TestCase):
     def test_set_right(self):
         self.mtrc.set_right(self.right_set)
         assert self.right_set == self.right_set
-        
+
     def test_set_left(self):
         self.mtrc.set_left(self.left_set)
         assert self.left_set == self.left_set
-        
+
     def test_get_right(self):
         set_right = self.mtrc.get_right()
         assert set_right == self.right_set
-        
+
     def test_get_left(self):
         set_left = self.mtrc.get_left()
         assert set_left == self.left_set

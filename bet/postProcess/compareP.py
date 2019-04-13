@@ -91,15 +91,17 @@ class metrization(object):
                 self._integration_sample_set = integration_sample_set
             else:
                 raise dim_not_matching("dimension of values incorrect")
-                
+
             if not isinstance(integration_sample_set.get_domain(), np.ndarray):
                 # domain can be missing if left/right sample sets present
                 if sample_set_left is not None:
-                    integration_sample_set.set_domain(sample_set_left.get_domain())
+                    integration_sample_set.set_domain(
+                        sample_set_left.get_domain())
                 else:
                     if sample_set_right is not None:
-                        integration_sample_set.set_domain(sample_set_right.get_domain())
-                    else: # no sample sets provided
+                        integration_sample_set.set_domain(
+                            sample_set_right.get_domain())
+                    else:  # no sample sets provided
                         msg = "Must provide at least one set from\n"
                         msg += "\twhich a domain can be inferred."
                         raise AttributeError(msg)
@@ -108,8 +110,8 @@ class metrization(object):
                 pass
             else:
                 raise AttributeError(
-                        "Wrong Type: Should be samp.sample_set_base type")
-        
+                    "Wrong Type: Should be samp.sample_set_base type")
+
         if (io_ptr_left is not None):
             if len(io_ptr_left) != self._num_samples:
                 raise ShapeError(
@@ -122,8 +124,6 @@ class metrization(object):
                 raise ShapeError(
                     "Right pointer length must match integration set.")
 
-
-
     # set density functions, maybe print a message if MC assumption is used to estimate volumes
 
     # evaluate density functions at integration points, store for re-use
@@ -135,7 +135,7 @@ class metrization(object):
         Checks that the sizes of all pointers are consistent
         """
         pass
-    
+
     def check_dim(self):
         r"""
         Checks that dimensions of left and right sample sets match.
@@ -429,7 +429,6 @@ class metrization(object):
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
 
-
     def clip(self, cnum):
         r"""
         Creates and returns a metrization with the the first `cnum`
@@ -443,13 +442,12 @@ class metrization(object):
         """
         cl = self._sample_set_left.clip(cnum)
         cr = self._sample_set_right.clip(cnum)
-        
+
         return metrization(sample_set_left=cl,
-                                sample_set_right=cr,\
-                                integration_sample_set=\
-                                self._integration_sample_set,
-                                io_ptr_left=self._io_ptr_left[:cnum],
-                                io_ptr_right=self._io_ptr_right[:cnum])
+                           sample_set_right=cr,
+                           integration_sample_set=self._integration_sample_set,
+                           io_ptr_left=self._io_ptr_left[:cnum],
+                           io_ptr_right=self._io_ptr_right[:cnum])
 
     def merge(self, metr):
         r"""
@@ -470,15 +468,14 @@ class metrization(object):
         if metr._io_ptr_right is not None:
             ir += metr._io_ptr_right
         return metrization(sample_set_left=ml,
-                          sample_set_right=mr,
-                          integration_sample_set=\
-                          self._integration_sample_set,
-                          io_ptr_left=il,
-                          io_ptr_right=ir)
+                           sample_set_right=mr,
+                           integration_sample_set=self._integration_sample_set,
+                           io_ptr_left=il,
+                           io_ptr_right=ir)
 
     def choose_left_right(self,
-                         left=None,
-                         right=None):
+                          left=None,
+                          right=None):
         r"""
         Slices the left and right of the metrization.
 
@@ -490,7 +487,7 @@ class metrization(object):
 
         """
         slice_list = ['_values', '_values_local',
-                     '_error_estimates', '_error_estimates_local']
+                      '_error_estimates', '_error_estimates_local']
         slice_list2 = ['_jacobians', '_jacobians_local']
 
         left_ss = sample_set(len(left))
@@ -498,13 +495,15 @@ class metrization(object):
         if self._sample_set_left._domain is not None:
             left_ss.set_domain(self._sample_set_left._domain[left, :])
         if self._sample_set_left._reference_value is not None:
-            left_ss.set_reference_value(self._sample_set_left._reference_value[left])
+            left_ss.set_reference_value(
+                self._sample_set_left._reference_value[left])
 
         right_ss.set_p_norm(self._sample_set_right._p_norm)
         if self._sample_set_right._domain is not None:
             right_ss.set_domain(self._sample_set_right._domain[right, :])
         if self._sample_set_right._reference_value is not None:
-            right_ss.set_reference_value(self._sample_set_right._reference_value[right])
+            right_ss.set_reference_value(
+                self._sample_set_right._reference_value[right])
 
         for obj in slice_list:
             val = getattr(self._sample_set_left, obj)
@@ -529,7 +528,7 @@ class metrization(object):
         metr = metrization(sample_set_left=left_ss,
                            sample_set_right=right_ss,
                            integration_sample_set=self._integration_sample_set)
-        # additional attributes to copy over here. TODO: maybe slice through 
+        # additional attributes to copy over here. TODO: maybe slice through
         return metr
 
     def local_to_global(self):
@@ -543,4 +542,3 @@ class metrization(object):
             self._sample_set_right.local_to_global()
         if self._integration_sample_set is not None:
             self._integration_sample_set.local_to_global()
-        
