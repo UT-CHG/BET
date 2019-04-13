@@ -14,7 +14,7 @@ def distance(left_set, right_set, num_mc_points=100):
     :rtype: :class:`~bet.postProcess.metrization`
     :returns: metrization object
 
-    :class:`sample.samp.sample_set_base`
+    :class:`sample.sample_set_base`
     """
     # extract sample set
     if isinstance(left_set, samp.discretization):
@@ -33,7 +33,7 @@ def distance(left_set, right_set, num_mc_points=100):
 class metrization(object):
     """
 
-    A data structure containing :class:`~bet.sample.samp.sample_set_base` objects and
+    A data structure containing :class:`~bet.sample.sample_set_base` objects and
     associated methods for computing measures of distance between pairs of them.
 
     """
@@ -43,18 +43,18 @@ class metrization(object):
                     '_io_ptr_right', '_io_ptr_right_local']
 
     #: List of attribute names for attributes that are
-    #: :class:`sample.samp.sample_set_base`
+    #: :class:`sample.sample_set_base`
     sample_set_names = ['_sample_set_left', '_sample_set_right',
                         '_integration_sample_set']
 
     def __init__(self, integration_sample_set,
                  sample_set_left, sample_set_right,
                  io_ptr_left=None, io_ptr_right=None):
-        #: Input sample set :class:`~bet.sample.samp.sample_set_base`
+        #: Input sample set :class:`~bet.sample.sample_set_base`
         self._sample_set_left = sample_set_left
-        #: Output sample set :class:`~bet.sample.samp.sample_set_base`
+        #: Output sample set :class:`~bet.sample.sample_set_base`
         self._sample_set_right = sample_set_right
-        #: Integration/Emulation set :class:`~bet.sample.samp.sample_set_base`
+        #: Integration/Emulation set :class:`~bet.sample.sample_set_base`
         self._integration_sample_set = integration_sample_set
         #: Pointer from ``self._integration_sample_set`` to
         #: ``self._sample_set_left``
@@ -77,12 +77,12 @@ class metrization(object):
             left_set = sample_set_left
         else:
             raise TypeError(
-                "Please specify a `~bet.sample.samp.sample_set_base` object.")
+                "Please specify a `~bet.sample.sample_set_base` object.")
         if isinstance(sample_set_right, samp.sample_set_base):
             right_set = sample_set_right
         else:
             raise TypeError(
-                "Please specify a `~bet.sample.samp.sample_set_base` object.")
+                "Please specify a `~bet.sample.sample_set_base` object.")
 
         # assert dimensions match
         if left_set._dim != right_set._dim:
@@ -255,7 +255,7 @@ class metrization(object):
 
         Returns a reference to the left/input sample set for this metrization.
 
-        :rtype: :class:`~bet.sample.samp.sample_set_base`
+        :rtype: :class:`~bet.sample.sample_set_base`
         :returns: left sample set
 
         """
@@ -267,10 +267,10 @@ class metrization(object):
         Sets the left/input sample set for this metrization.
 
         :param sample_set_left: left sample set
-        :type sample_set_left: :class:`~bet.sample.samp.sample_set_base`
+        :type sample_set_left: :class:`~bet.sample.sample_set_base`
 
         """
-        if isinstance(sample_set_left, sample.samp.sample_set_base):
+        if isinstance(sample_set_left, sample.sample_set_base):
             self._sample_set_left = sample_set_left
         else:
             raise AttributeError(
@@ -281,7 +281,7 @@ class metrization(object):
 
         Returns a reference to the right/output sample set for this metrization.
 
-        :rtype: :class:`~bet.sample.samp.sample_set_base`
+        :rtype: :class:`~bet.sample.sample_set_base`
         :returns: right sample set
 
         """
@@ -293,10 +293,10 @@ class metrization(object):
         Sets the right/output sample set for this metrization.
 
         :param sample_set_right: right sample set
-        :type sample_set_right: :class:`~bet.sample.samp.sample_set_base`
+        :type sample_set_right: :class:`~bet.sample.sample_set_base`
 
         """
-        if isinstance(sample_set_right, sample.samp.sample_set_base):
+        if isinstance(sample_set_right, sample.sample_set_base):
             self._sample_set_right = sample_set_right
         else:
             raise AttributeError(
@@ -308,7 +308,7 @@ class metrization(object):
         Returns a reference to the output probability sample set for this
         metrization.
 
-        :rtype: :class:`~bet.sample.samp.sample_set_base`
+        :rtype: :class:`~bet.sample.sample_set_base`
         :returns: output probability sample set
 
         """
@@ -320,7 +320,7 @@ class metrization(object):
         Returns a reference to the integration_output sample set for this
         metrization.
 
-        :rtype: :class:`~bet.sample.samp.sample_set_base`
+        :rtype: :class:`~bet.sample.sample_set_base`
         :returns: integration_output sample set
 
         """
@@ -333,7 +333,7 @@ class metrization(object):
         Sets the integration_output sample set for this metrization.
 
         :param integration_sample_set: emupated output sample set.
-        :type integration_sample_set: :class:`~bet.sample.samp.sample_set_base`
+        :type integration_sample_set: :class:`~bet.sample.sample_set_base`
 
         """
         if isinstance(integration_sample_set, samp.sample_set_base):
