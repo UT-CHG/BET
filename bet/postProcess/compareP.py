@@ -70,9 +70,9 @@ class metrization(object):
         self._io_ptr_right_local = None
 
         # extract sample set
-        if isinstance(sample_set_left, samp.metrretization):
+        if isinstance(sample_set_left, samp.sample_set_base):
             self._sample_set_left = sample_set_left.get_input_sample_set()
-        if isinstance(sample_set_right, samp.metrretization):
+        if isinstance(sample_set_right, samp.sample_set_base):
             self._sample_set_right = sample_set_right.get_input_sample_set()
         # check dimension consistency
         if isinstance(integration_sample_set, samp.sample_set_base):
