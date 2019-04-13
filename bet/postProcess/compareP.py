@@ -323,7 +323,8 @@ class metrization(object):
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
         if self._integration_sample_set._domain is None:
-            self._integration_sample_set.set_domain(sample_set_left.get_domain())
+            self._integration_sample_set.set_domain(
+                sample_set_left.get_domain())
         else:
             if not np.allclose(self._integration_sample_set._domain, sample_set_left._domain):
                 raise AttributeError("Domain does not match integration set.")
@@ -384,11 +385,12 @@ class metrization(object):
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
         if self._integration_sample_set._domain is None:
-            self._integration_sample_set.set_domain(sample_set_right.get_domain())
+            self._integration_sample_set.set_domain(
+                sample_set_right.get_domain())
         else:
             if not np.allclose(self._integration_sample_set._domain, sample_set_right._domain):
                 raise AttributeError("Domain does not match integration set.")
-                
+
     def get_integration_sample_set(self):
         r"""
 
@@ -483,9 +485,9 @@ class metrization(object):
                            io_ptr_left=il,
                            io_ptr_right=ir)
 
-    def choose_left_right(self,
-                          left=None,
-                          right=None):
+    def slice(self,
+              left=None,
+              right=None):
         r"""
         Slices the left and right of the metrization.
 

@@ -75,6 +75,15 @@ class Test_metrization_simple(unittest.TestCase):
             print('caught')
             pass
 
+    def test_copy_clip_merge_slice(self):
+        r"""
+        Test copying, clipping, merging, slicing
+        """
+        mm = self.mtrc.copy()
+        mc = mm.clip(50)
+        ms = self.mtrc.merge(mc)
+        ms.slice(np.arange(20), np.arange(30))
+
     def test_missing_domain(self):
         r"""
         Make sure we can initialize the function in several permutations
@@ -89,13 +98,13 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc = compP.metrization(test_set, None, other_set)
         self.mtrc = compP.metrization(test_set, None, None)
         self.mtrc.set_left(other_set)
-        try: # we are missing a set, so this should fail
+        try:  # we are missing a set, so this should fail
             self.mtrc.check_domain()
         except AttributeError:
             pass
         self.mtrc.set_right(other_set)
-        self.mtrc.check_domain() # now we expect it to pass
-        
+        self.mtrc.check_domain()  # now we expect it to pass
+
         # the following should error out
         try:
             self.mtrc = compP.metrization(None)
