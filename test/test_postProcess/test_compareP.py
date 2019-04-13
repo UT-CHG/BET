@@ -83,13 +83,13 @@ class Test_metrization_simple(unittest.TestCase):
         mc = mm.clip(50)
         ms = self.mtrc.merge(mc)
         ms.slice([0])
-        ms.slice([1,0])
-        ms.slice([1,0,1]) # can repeat dimensions if you want?
+        ms.slice([1, 0])
+        ms.slice([1, 0, 1])  # can repeat dimensions if you want?
         if self.dim > 2:
-            ms.slice([2,0,1])
-            ms.slice([1,2,0,0])
-            ms.slice([1,2])
-            ms.slice([0,1])
+            ms.slice([2, 0, 1])
+            ms.slice([1, 2, 0, 0])
+            ms.slice([1, 2])
+            ms.slice([0, 1])
 
     def test_missing_domain(self):
         r"""

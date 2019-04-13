@@ -70,7 +70,7 @@ class metrization(object):
         self._io_ptr_right_local = None
         #: Domain
         self._domain = None
-        
+
         # extract sample set
         if isinstance(sample_set_left, samp.sample_set_base):
             # left sample set
@@ -81,10 +81,11 @@ class metrization(object):
             self._sample_set_right = sample_set_right
             if self._domain is not None:
                 if not np.allclose(self._domain, sample_set_right.get_domain()):
-                    raise AttributeWarning("Left and Right domains do not match")
+                    raise AttributeWarning(
+                        "Left and Right domains do not match")
             else:
                 self._domain = sample_set_right.get_domain()
-            
+
         # check dimension consistency
         if isinstance(integration_sample_set, samp.sample_set_base):
             self._num_samples = integration_sample_set.check_num()
@@ -518,16 +519,16 @@ class metrization(object):
         int_ss = samp.sample_set(len(dims))
         left_ss = samp.sample_set(len(dims))
         right_ss = samp.sample_set(len(dims))
-        
+
         if self._integration_sample_set._domain is not None:
             int_ss.set_domain(self._integration_sample_set._domain[dims, :])
-            
+
         if self._sample_set_left._domain is not None:
             left_ss.set_domain(self._sample_set_left._domain[dims, :])
         if self._sample_set_left._reference_value is not None:
             left_ss.set_reference_value(
                 self._sample_set_left._reference_value[dims])
-            
+
         if self._sample_set_right._domain is not None:
             right_ss.set_domain(self._sample_set_right._domain[dims, :])
         if self._sample_set_right._reference_value is not None:
