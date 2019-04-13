@@ -322,6 +322,11 @@ class metrization(object):
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
+        if self._integration_sample_set._domain is None:
+            self._integration_sample_set.set_domain(sample_set_left.get_domain())
+        else:
+            if not np.allclose(self._integration_sample_set._domain, sample_set_left._domain):
+                raise AttributeError("Domain does not match integration set.")
 
     def set_left(self, sample_set):
         r"""
@@ -378,7 +383,12 @@ class metrization(object):
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
-
+        if self._integration_sample_set._domain is None:
+            self._integration_sample_set.set_domain(sample_set_right.get_domain())
+        else:
+            if not np.allclose(self._integration_sample_set._domain, sample_set_right._domain):
+                raise AttributeError("Domain does not match integration set.")
+                
     def get_integration_sample_set(self):
         r"""
 

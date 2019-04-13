@@ -84,15 +84,25 @@ class Test_metrization_simple(unittest.TestCase):
         other_set = test_set.copy()
         other_set.set_domain(self.domain)
         self.mtrc = compP.metrization(None, other_set)
+        self.mtrc = compP.metrization(None, None, other_set)
         self.mtrc = compP.metrization(test_set, other_set, None)
+        self.mtrc = compP.metrization(test_set, None, other_set)
         self.mtrc = compP.metrization(test_set, None, None)
+        self.mtrc.set_left(other_set)
+        try: # we are missing a set, so this should fail
+            self.mtrc.check_domain()
+        except AttributeError:
+            pass
+        self.mtrc.set_right(other_set)
+        self.mtrc.check_domain() # now we expect it to pass
+        
         # the following should error out
         try:
             self.mtrc = compP.metrization(None)
         except AttributeError:
             pass
         try:
-            self.mtrc = compP.metrization(None, None, other_set)
+            self.mtrc = compP.metrization(None, None, test_set)
         except AttributeError:
             pass
         try:
