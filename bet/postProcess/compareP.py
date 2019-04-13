@@ -52,6 +52,10 @@ class metrization(object):
     def __init__(self, integration_sample_set,
                  sample_set_left=None, sample_set_right=None,
                  io_ptr_left=None, io_ptr_right=None):
+        #: Left sample set
+        self._sample_set_left = None
+        #: Right sample set
+        self._sample_set_right = None
         #: Integration/Emulation set :class:`~bet.sample.sample_set_base`
         self._integration_sample_set = integration_sample_set
         #: Pointer from ``self._integration_sample_set`` to
@@ -96,11 +100,15 @@ class metrization(object):
                     if sample_set_right is not None:
                         integration_sample_set.set_domain(sample_set_right.get_domain())
                     else: # no sample sets provided
-                        raise AttributeError("Must provide at least one set from \
-                            which a domain can be inferred.")
+                        msg = "Must provide at least one set from\n"
+                        msg += "\twhich a domain can be inferred."
+                        raise AttributeError(msg)
         else:
-            raise AttributeError(
-                "Wrong Type: Should be samp.sample_set_base type")
+            if (self._sample_set_left is not None) or (self._sample_set_right is not None):
+                pass
+            else:
+                raise AttributeError(
+                        "Wrong Type: Should be samp.sample_set_base type")
         
         if (io_ptr_left is not None):
             if len(io_ptr_left) != self._num_samples:

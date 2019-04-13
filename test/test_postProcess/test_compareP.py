@@ -58,7 +58,7 @@ class Test_metrization_simple(unittest.TestCase):
                                       integration_sample_set=self.integration_set)
 
     def test_dimension(self):
-        """
+        r"""
         Check that improperly setting dimension raises warning.
         """
         dim = self.dim+1
@@ -75,14 +75,47 @@ class Test_metrization_simple(unittest.TestCase):
             print('caught')
             pass
 
-    def test_no_sample_set(self):
-        test_set = sample.sample_set(dim=self.dim)
-        self.mtrc = compP.metrization(test_set, None)
-        self.mtrc = compP.metrization(None, test_set)
-        self.mtrc = compP.metrization(None, None)
-
-    def test_set_ptr_left(self):
+    def test_missing_domain(self):
+        r"""
+        Make sure we can initialize the function in several permutations
+        if the domain is missing from the integration set
         """
+        test_set = sample.sample_set(dim=self.dim)
+        other_set = test_set.copy()
+        other_set.set_domain(self.domain)
+        self.mtrc = compP.metrization(None, other_set)
+        self.mtrc = compP.metrization(test_set, other_set, None)
+        self.mtrc = compP.metrization(test_set, None, None)
+        # the following should error out
+        try:
+            self.mtrc = compP.metrization(None)
+        except AttributeError:
+            pass
+        try:
+            self.mtrc = compP.metrization(None, None, other_set)
+        except AttributeError:
+            pass
+        try:
+            self.mtrc = compP.metrization(test_set, None, other_set)
+        except AttributeError:
+            pass
+    
+    def test_no_sample_set(self):
+        r"""
+        Make sure we can initialize the function in several permutations
+        """
+        test_set = sample.sample_set(dim=self.dim)
+        test_set.set_domain(self.domain)
+        other_set = test_set.copy()
+        self.mtrc = compP.metrization(test_set)
+        self.mtrc = compP.metrization(test_set, None)
+        self.mtrc = compP.metrization(test_set, None, other_set)
+        self.mtrc = compP.metrization(test_set, other_set, None)
+        self.mtrc = compP.metrization(test_set, None, None)
+
+    # TO DO: test left and right missing domains, inferred from others.
+    def test_set_ptr_left(self):
+        r"""
         Test setting left io ptr
         """
         # TODO be careful if we change Kdtree
