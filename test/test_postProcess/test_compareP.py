@@ -82,12 +82,13 @@ class Test_metrization_simple(unittest.TestCase):
         """
         test_set = self.integration_set.copy()
         test_set.set_domain(test_set.get_domain()+0.01)
-        test_metr = [compP.metrization(integration_sample_set=self.integration_set),
-                     compP.metrization(
-                         None, sample_set_right=self.integration_set),
-                     compP.metrization(
-                         None, sample_set_left=self.integration_set)
-                     ]
+        test_metr = [compP.metrization(
+            integration_sample_set=self.integration_set),
+            compP.metrization(
+            None, sample_set_right=self.integration_set),
+            compP.metrization(
+            None, sample_set_left=self.integration_set)
+        ]
         for mm in test_metr:
             test_funs = [mm.set_right,
                          mm.set_left,
