@@ -114,14 +114,14 @@ class metrization(object):
 
         if (io_ptr_left is not None):
             if len(io_ptr_left) != self._num_samples:
-                raise ShapeError(
+                raise AttributeError(
                     "Left pointer length must match integration set.")
             if (io_ptr_right is not None):
                 if not np.allclose(io_ptr_left.shape, io_ptr_right.shape):
-                    raise ShapeError("Pointers must be of same length.")
+                    raise AttributeError("Pointers must be of same length.")
         if (io_ptr_right is not None):
             if len(io_ptr_right) != self._num_samples:
-                raise ShapeError(
+                raise AttributeError(
                     "Right pointer length must match integration set.")
 
     # set density functions, maybe print a message if MC assumption is used to estimate volumes
