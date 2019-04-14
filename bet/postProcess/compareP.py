@@ -1,9 +1,9 @@
 import numpy as np
-# import logging
+import logging
 import bet.util as util
 import bet.sample as samp
 # import bet.sampling.basicSampling as bsam
-
+import scipy.spatial.distance as ds
 
 def distance(left_set, right_set, num_mc_points=100):
     r"""
@@ -153,11 +153,18 @@ class metrization(object):
         """
         left_set = self.get_left()
         right_set = self.get_right()
-        if left_set._dim != right_set._dim:
+        if left_set.get_dim() != right_set.get_dim():
             msg = "These sample sets must have the same dimension."
             raise samp.dim_not_matching(msg)
         else:
             dim = left_set.get_dim()
+
+        il, ir = self.get_io_ptr_left(), self.get_io_ptr_right()
+        if (il is not None) and (ir is not None):
+            if len(il) != len(ir):
+                msg = "The pointers have inconsistent sizees."
+                msg += "\nTry running set_io_ptr_left() [or _right()]"
+                raise samp.dim_not_matching(msg)
         return dim
 
     def check_domain(self):
@@ -213,10 +220,14 @@ class metrization(object):
         """
         if self._integration_sample_set._values_local is None:
             self._integration_sample_set.global_to_local()
+
         (_, self._io_ptr_left_local) = self._sample_set_left.query(
             self._integration_sample_set._values_local)
+
         if globalize:
-            self._io_ptr_left = util.get_global_values(self._io_ptr_left_local)
+            self._io_ptr_left = util.get_global_values(
+                self._io_ptr_left_local)
+        assert self._sample_set_left.check_num() >= max(self._io_ptr_left)
 
     def get_io_ptr_left(self):
         """
@@ -251,12 +262,14 @@ class metrization(object):
         """
         if self._integration_sample_set._values_local is None:
             self._integration_sample_set.global_to_local()
+
         (_, self._io_ptr_right_local) = self._sample_set_right.query(
             self._integration_sample_set._values_local)
 
         if globalize:
             self._io_ptr_right = util.get_global_values(
                 self._io_ptr_right_local)
+        assert self._sample_set_right.check_num() >= max(self._io_ptr_right)
 
     def get_io_ptr_right(self):
         """
@@ -303,7 +316,7 @@ class metrization(object):
     def get_sample_set_left(self):
         """
 
-        Returns a reference to the left/input sample set for this metrization.
+        Returns a reference to the left sample set for this metrization.
 
         :rtype: :class:`~bet.sample.sample_set_base`
         :returns: left sample set
@@ -322,7 +335,7 @@ class metrization(object):
     def set_sample_set_left(self, sample_set_left):
         """
 
-        Sets the left/input sample set for this metrization.
+        Sets the left sample set for this metrization.
 
         :param sample_set_left: left sample set
         :type sample_set_left: :class:`~bet.sample.sample_set_base`
@@ -355,7 +368,7 @@ class metrization(object):
     def get_sample_set_right(self):
         """
 
-        Returns a reference to the right/output sample set for this metrization.
+        Returns a reference to the right sample set for this metrization.
 
         :rtype: :class:`~bet.sample.sample_set_base`
         :returns: right sample set
@@ -385,7 +398,7 @@ class metrization(object):
     def set_sample_set_right(self, sample_set_right):
         """
 
-        Sets the right/output sample set for this metrization.
+        Sets the right sample set for this metrization.
 
         :param sample_set_right: right sample set
         :type sample_set_right: :class:`~bet.sample.sample_set_base`
@@ -396,6 +409,7 @@ class metrization(object):
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
+
         if self._integration_sample_set._domain is None:
             self._integration_sample_set.set_domain(
                 sample_set_right.get_domain())
@@ -461,10 +475,10 @@ class metrization(object):
         """
         return self.set_integration_sample_set(sample_set)
 
-    def clip(self, cnum):
+    def clip(self, lnum, rnum=None):
         r"""
-        Creates and returns a metrization with the the first `cnum`
-        entries of the left and right sample sets.
+        Creates and returns a metrization with the the first `lnum`
+        and `rnum` entries of the left and right sample sets, resp.
 
         :param int cnum: number of values of sample set to return
 
@@ -472,21 +486,20 @@ class metrization(object):
         :returns: clipped metrization
 
         """
-        cl = self._sample_set_left.clip(cnum)
-        cr = self._sample_set_right.clip(cnum)
-        if self._io_ptr_left is not None:
-            il = self._io_ptr_left[:cnum]
+        if rnum is None:  # can clip by same amount
+            rnum = lnum
+        if lnum > 0:
+            cl = self._sample_set_left.clip(lnum)
         else:
-            il = None
-        if self._io_ptr_right is not None:
-            ir = self._io_ptr_right[:cnum]
+            cl = self._sample_set_left.copy()
+        if rnum > 0:
+            cr = self._sample_set_right.clip(rnum)
         else:
-            ir = None
+            cr = self._sample_set_right.copy()
+
         return metrization(sample_set_left=cl,
                            sample_set_right=cr,
-                           integration_sample_set=self._integration_sample_set,
-                           io_ptr_left=il,
-                           io_ptr_right=ir)
+                           integration_sample_set=self._integration_sample_set.copy())
 
     def merge(self, metr):
         r"""
@@ -581,7 +594,18 @@ class metrization(object):
                            integration_sample_set=int_ss)
         # additional attributes to copy over here. TODO: maybe slice through
         return metr
-
+    def global_to_local(self):
+        """
+        Call local_to_global for ``sample_set_left`` and
+        ``sample_set_right``.
+        """
+        if self._sample_set_left is not None:
+            self._sample_set_left.global_to_local()
+        if self._sample_set_right is not None:
+            self._sample_set_right.global_to_local()
+        if self._integration_sample_set is not None:
+            self._integration_sample_set.global_to_local()
+            
     def local_to_global(self):
         """
         Call local_to_global for ``sample_set_left`` and
@@ -593,3 +617,132 @@ class metrization(object):
             self._sample_set_right.local_to_global()
         if self._integration_sample_set is not None:
             self._integration_sample_set.local_to_global()
+
+    def estimate_volume_mc(self):
+        r"""
+        Applies MC assumption to volumes of both sets.
+        """
+        self._sample_set_left.estimate_volume_mc()
+        self._sample_set_right.estimate_volume_mc()
+
+        
+    def set_left_probabilities(self, probabilities):
+        assert self.get_left().check_num() == len(probabilities)
+        self._sample_set_left._probabilities = probabilities
+        self._sample_set_left.global_to_local()
+    
+    def set_right_probabilities(self, probabilities):
+        assert self.get_right().check_num() == len(probabilities)
+        self._sample_set_right._probabilities = probabilities
+        self._sample_set_right.global_to_local()
+        
+    def get_left_probabilities(self):
+        return self._sample_set_left._probabilities
+    
+    def get_right_probabilities(self):
+        return self._sample_set_right._probabilities
+            
+    def estimate_density(self, globalize=True,
+                         emulated_sample_set=None):
+        r"""
+        # emulation set describes 
+        """
+        if globalize: # in case probabilities were re-set but not local
+            self.global_to_local()
+        self.check_domain()
+
+        # set pointers if they have not already been set
+        if self.get_io_ptr_left() is None:
+            self.set_io_ptr_left(globalize)
+        if self.get_io_ptr_right() is None:
+            self.set_io_ptr_right(globalize)
+        self.check_dim()
+
+        int_set = self.get_int()
+        left_set, right_set = self.get_left(), self.get_right()
+        il, ir = self.get_io_ptr_left(), self.get_io_ptr_right()
+
+        if emulated_sample_set is not None:
+            if not isinstance(emulated_sample_set, samp.sample_set_base):
+                msg = "Wrong type specified for `emulation_set`.\n"
+                msg += "Please specify a `~bet.sample.sample_set_base`."
+                raise AttributeError(msg)
+            else:
+                left_set.estimate_volume_emulated(emulated_sample_set)
+                right_set.estimate_volume_emulated(emulated_sample_set)
+                
+        if left_set._volumes is None:
+            if emulated_sample_set is None:
+                msg = " Volumes missing from left. Using MC assumption."
+                logging.warn(msg)
+                left_set.estimate_volume_mc()
+        if right_set._volumes is None:
+            if emulated_sample_set is None:
+                msg = " Volumes missing from right. Using MC assumption."
+                logging.warn(msg)
+                right_set.estimate_volume_mc()
+                right_set.estimate_volume_emulated(emulated_sample_set)
+
+        if right_set._probabilities is None:
+            raise AttributeError("Missing right-probabilities.")
+        if left_set._probabilities is None:
+            raise AttributeError("Missing left-probabilities.")
+        if int_set is None:
+            raise AttributeError("Missing integration set.")
+
+        if left_set is None:
+            raise AttributeError("Missing left sample set.")
+        elif hasattr(left_set, '_density'):
+            # this is our way of checking if sample set object.
+            den_left = left_set._density[il]
+            left_set._emulated_density = den_left
+        else:
+            den_left = np.divide(left_set._probabilities[il], 
+                            left_set._volumes[il])
+            left_set._emulated_density = den_left
+#             left_set._emulated_density = util.get_global_values(den)
+        left_set._den = left_set._emulated_density
+        self._den_left = left_set._den
+        if right_set is None:
+            raise AttributeError("Missing left sample set.")
+        elif hasattr(right_set, '_density'):
+            # this is our way of checking if sample set object.
+            den_right = right_set._density[ir]
+            right_set._emulated_density = den_right
+        else:
+            den_right = np.divide(right_set._probabilities[ir], 
+                            right_set._volumes[ir])
+            right_set._emulated_density = den_right
+#             right_set._emulated_density = util.get_global_values(den)
+        right_set._den = right_set._emulated_density
+        self._den_right = right_set._den
+        if len(right_set._emulated_density) != len(left_set._emulated_density):
+            msg = "Length of pointers "
+            raise samp.dim_not_matching(msg)
+
+        if globalize:
+            self.local_to_global()
+#         return den_left, den_right
+    
+    def get_left_density(self):
+        return self._den_left
+    
+    def get_right_density(self):
+        return self._den_right
+    
+    def distance(self, metric='tv', 
+                 globalize=True,
+                 emulated_sample_set=None, **kwargs):
+        left_den, right_den = self.get_left_density(), self.get_right_density()
+        if metric in ['tv', 'totvar', 'total variation', 'total-variation', '1']:
+            return ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
+        if metric in ['norm']:
+            return ds.norm(left_den-right_den, **kwargs)
+        elif metric in ['euclidean', '2-norm', '2']:
+            return ds.minkowski(left_den, right_den, 2, **kwargs)
+        elif metric in ['sqhell', 'sqhellinger']:
+            return ds.norm(np.sqrt(left_den) - np.sqrt(right_den))/2.0
+        elif metric in ['hell', 'hellinger']:
+            return ds.norm(np.sqrt(left_den) - np.sqrt(right_den))/np.sqrt(2)
+        else:
+            return metric(left_den, right_den, **kwargs)

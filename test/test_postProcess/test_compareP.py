@@ -120,23 +120,24 @@ class Test_metrization_simple(unittest.TestCase):
         Make sure we can initialize the function in several permutations
         if the domain is missing from the integration set
         """
-        test_set = sample.sample_set(dim=self.dim)
-        other_set = test_set.copy()
+        test_set = sample.sample_set(dim=self.dim)  # no domain info
+        other_set = test_set.copy()  # has domain info
         other_set.set_domain(self.domain)
-        self.mtrc = compP.metrization(None, other_set)
-        self.mtrc = compP.metrization(None, None, other_set)
-        self.mtrc = compP.metrization(test_set, other_set, None)
-        self.mtrc = compP.metrization(test_set, None, other_set)
-        self.mtrc = compP.metrization(test_set, None, None)
-        self.mtrc.set_left(other_set)
+        mm = compP.metrization(None, other_set)
+        mm = compP.metrization(None, None, other_set)
+        mm = compP.metrization(test_set, other_set, None)
+        mm = compP.metrization(test_set, None, other_set)
+        mm = compP.metrization(test_set, None, None)
+        mm.set_left(other_set)
         try:  # we are missing a set, so this should fail
-            self.mtrc.check_domain()
+            mm.check_domain()
         except AttributeError:
             pass
+
         self.mtrc.set_right(other_set)
         self.mtrc.check_domain()  # now we expect it to pass
 
-        # the following should error out
+        # the following should error out because not enough information
         try:
             self.mtrc = compP.metrization(None)
         except AttributeError:
