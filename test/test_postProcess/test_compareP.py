@@ -7,12 +7,20 @@ import unittest
 # import glob
 import bet.sample as sample
 import bet.postProcess.compareP as compP
+import bet.sampling.basicSampler as bsam
 # import bet.util as util
 # from bet.Comm import comm, MPI
 
 # local_path = os.path.join(os.path.dirname(bet.__file__), "/test")
 local_path = ''
 
+def set_unit_probs(num_samples=100,
+                   dim=2,
+                   bounds = [0,1]):
+    s_set = sample.sample_set(dim)
+    s_set.set_domain(np.array([[0,1] for _ in range(dim)]))
+    s = bsam.random_sample_set('r',s_set,num_samples)
+    
 
 # class Test_distance(unittest.TestCase):
 #     def setUp(self):
