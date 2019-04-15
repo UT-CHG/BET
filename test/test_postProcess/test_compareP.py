@@ -7,7 +7,7 @@ import unittest
 # import glob
 import bet.sample as sample
 import bet.postProcess.compareP as compP
-import bet.sampling.basicSampler as bsam
+import bet.sampling.basicSampling as bsam
 # import bet.util as util
 # from bet.Comm import comm, MPI
 
