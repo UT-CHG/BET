@@ -18,13 +18,14 @@ def set_unit_probs(num_samples=100,
                    dim=2,
                    delta=0.1):
     s_set = sample.sample_set(dim)
-    s_set.set_domain(np.array([[0,1]*dim]))
+    s_set.set_domain(np.array([[0,1]]*dim))
     s = bsam.random_sample_set('r', s_set, num_samples)
     dd = delta/2.0
     probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd), 
                       s._values >= (0.5-dd)),axis=1) >= dim-1) 
     s.set_probabilities(probs)/np.sum(probs) # uniform probabilities
     s.global_to_local()
+    return s
 
 def check_densities(s_set, dim=2, delta=0.1, tol=1e-4):
     # density values should be reciprocal of delta^dim
