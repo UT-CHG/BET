@@ -1750,7 +1750,7 @@ class voronoi_sample_set(sample_set_base):
             msg = "These sample sets must have the same dimension."
             raise dim_not_matching(msg)
         # check domain
-        if self._domain is not None and sset_._domain is not None:
+        if self._domain is not None and sset._domain is not None:
             if not np.allclose(self._domain, sset._domain):
                 msg = "These sample sets have different domains."
                 raise domain_not_matching(msg)
