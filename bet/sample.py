@@ -404,7 +404,7 @@ class sample_set_base(object):
         """
 
         Undoes normalization of the domain and attributes if they have been
-        normailized.
+        normalized.
 
         """
         if self._domain is None:
