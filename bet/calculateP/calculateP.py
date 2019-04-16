@@ -272,7 +272,9 @@ def prob_from_discretization_input(disc, set_new):
         em_set.global_to_local()
     if em_set._probabilities_local is None:
         raise AttributeError("Probabilities must be pre-calculated.")
-
+    if em_set._volumes_local is None:
+        raise AttributeError("Volumes must be pre-calculated.")
+    
     # Check dimensions
     disc.check_nums()
     num_new = set_new.check_num()
@@ -286,13 +288,36 @@ def prob_from_discretization_input(disc, set_new):
     # Set up probability vectors
     prob_new = np.zeros((num_new,))
     prob_em = em_set._probabilities_local
-
+    vol_em = em_set._volumes_local
+    den_new = np.zeros((num_new,))
     for i in range(num_new):
         Itemp = np.equal(ptr, i)
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
-
+        
+        
     # Set probabilities
     set_new.set_probabilities(prob_new)
     return prob_new
+
+def den_from_discretization_input(disc, set_new):
+    prob_new = prob_from_discretization_input(disc, set_new)
+    num_new = set_new.check_num()
+    den_new = np.zeros((num_new,))
+    if disc._emulated_input_sample_set is None:
+        em_set = disc._input_sample_set
+    else:
+        em_set = disc._emulated_input_sample_set
+    
+    (_, ptr) = set_new.query(em_set._values_local)
+    ptr = ptr.flat[:]
+    
+    for i in range(num_new):
+        Itemp = np.equal(ptr, i)
+        Itemp_sum = np.sum(vol_em[Itemp])
+        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
+        prob_new[i] = Itemp_sum
+        den_new[i] = prob_new[i]/Itemp_sum
+    set_new._density = den_new
+    return den_new
