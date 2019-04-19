@@ -288,8 +288,6 @@ def prob_from_discretization_input(disc, set_new):
     # Set up probability vectors
     prob_new = np.zeros((num_new,))
     prob_em = em_set._probabilities_local
-    vol_em = em_set._volumes_local
-    den_new = np.zeros((num_new,))
     for i in range(num_new):
         Itemp = np.equal(ptr, i)
         Itemp_sum = np.sum(prob_em[Itemp])
@@ -301,23 +299,105 @@ def prob_from_discretization_input(disc, set_new):
     set_new.set_probabilities(prob_new)
     return prob_new
 
-def den_from_discretization_input(disc, set_new):
-    prob_new = prob_from_discretization_input(disc, set_new)
-    num_new = set_new.check_num()
-    den_new = np.zeros((num_new,))
+
+def density_from_discretization_input(disc, set_new):
+    r"""
+
+    Calculates :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
+    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` where
+    :math:`\lambda_{samples_old}` come from an input discretization.
+
+    :param disc: Discretiztion on which probabilities have already been
+        calculated
+    :type disc: :class:`~bet.sample.discretization` 
+    :param set_new: Sample set for which probabilities will be calculated.
+    :type set_new: :class:`~bet.sample.sample_set_base` 
+
+    """
     if disc._emulated_input_sample_set is None:
+        logging.warning("Using MC assumption because no emulated points given")
         em_set = disc._input_sample_set
     else:
         em_set = disc._emulated_input_sample_set
+
+    if em_set._values_local is None:
+        em_set.global_to_local()
+    if em_set._probabilities_local is None:
+        raise AttributeError("Probabilities must be pre-calculated.")
+    if em_set._volumes_local is None:
+        raise AttributeError("Volumes must be pre-calculated.")
     
+    # Check dimensions
+    disc.check_nums()
+    num_new = set_new.check_num()
+
+    if (disc._input_sample_set._dim != set_new._dim):
+        raise samp.dim_not_matching("Dimensions of sets are not equal.")
+
     (_, ptr) = set_new.query(em_set._values_local)
     ptr = ptr.flat[:]
-    
+
+    # Set up probability vectors
+    prob_new = np.zeros((num_new,))
+    prob_em = em_set._probabilities_local
+    vol_em = em_set._volumes_local
+    den_new = np.zeros((num_new,))
     for i in range(num_new):
         Itemp = np.equal(ptr, i)
-        Itemp_sum = np.sum(vol_em[Itemp])
-        Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
-        prob_new[i] = Itemp_sum
-        den_new[i] = prob_new[i]/Itemp_sum
+        Itemp_prob_sum = np.sum(prob_em[Itemp])
+        Itemp_prob_sum = comm.allreduce(Itemp_prob_sum, op=MPI.SUM)
+        prob_new[i] = Itemp_prob_sum
+        Itemp_vol_sum = np.sum(vol_em[Itemp])
+        Itemp_vol_sum = comm.allreduce(Itemp_vol_sum, op=MPI.SUM)
+        den_new[i] = prob_new[i]/Itemp_vol_sum
+        
+    # Set probabilities and densities
+    set_new.set_probabilities(prob_new)
+    set_new._density = den_new
+    return den_new
+
+def density_from_sample_set(set_old, set_new):
+    r"""
+
+    Calculates :math:`\rho_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})`
+    from :math:`P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})` using
+    the MC assumption with respect to set_old. The volumes in set_old are
+    used to compute the density :math:`\rho`.
+
+    :param set_old: Sample set on which probabilities have already been
+        calculated
+    :type set_old: :class:`~bet.sample.sample_set_base` 
+    :param set_new: Sample set for which probabilities will be calculated.
+    :type set_new: :class:`~bet.sample.sample_set_base` 
+
+    """
+    # Check dimensions
+    set_old.check_num()
+    num_new = set_new.check_num()
+
+    if (set_old._dim != set_new._dim):
+        raise samp.dim_not_matching("Dimensions of sets are not equal.")
+
+    # Map old points new sets
+    if set_old._values_local is None:
+        set_old.global_to_local()
+    (_, ptr) = set_new.query(set_old._values_local)
+    ptr = ptr.flat[:]
+
+    # Set up probability vector
+    prob_new = np.zeros((num_new,))
+    den_new = np.zeros((num_new,))
+    # Loop over new cells and distribute probability from old
+    for i in range(num_new):
+        Itemp = np.equal(ptr, i)
+        Itemp_prob_sum = np.sum(set_old._probabilities_local[Itemp])
+        Itemp_prob_sum = comm.allreduce(Itemp_prob_sum, op=MPI.SUM)
+        prob_new[i] = Itemp_prob_sum
+        Itemp_vol_sum = np.sum(set_old._volumes_local[Itemp])
+        Itemp_vol_sum = comm.allreduce(Itemp_vol_sum, op=MPI.SUM)
+        den_new[i] = prob_new[i]/Itemp_vol_sum
+        
+    # Set probabilities and densities
+    set_new.set_probabilities(prob_new)
     set_new._density = den_new
     return den_new
