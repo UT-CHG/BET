@@ -349,8 +349,10 @@ def density_from_discretization_input(disc, set_new):
         prob_new[i] = Itemp_prob_sum
         Itemp_vol_sum = np.sum(vol_em[Itemp])
         Itemp_vol_sum = comm.allreduce(Itemp_vol_sum, op=MPI.SUM)
-        den_new[i] = prob_new[i]/Itemp_vol_sum
-        
+        if Itemp_vol_sum > 0:
+            den_new[i] = prob_new[i]/Itemp_vol_sum
+        else:
+            den_new[i] = 0
     # Set probabilities and densities
     set_new.set_probabilities(prob_new)
     set_new._density = den_new
@@ -395,8 +397,10 @@ def density_from_sample_set(set_old, set_new):
         prob_new[i] = Itemp_prob_sum
         Itemp_vol_sum = np.sum(set_old._volumes_local[Itemp])
         Itemp_vol_sum = comm.allreduce(Itemp_vol_sum, op=MPI.SUM)
-        den_new[i] = prob_new[i]/Itemp_vol_sum
-        
+        if Itemp_vol_sum > 0:
+            den_new[i] = prob_new[i]/Itemp_vol_sum
+        else:
+            den_new[i] = 0
     # Set probabilities and densities
     set_new.set_probabilities(prob_new)
     set_new._density = den_new
