@@ -95,8 +95,8 @@ def get_global_values(array, shape=None):
         else:
             # do an uppercase Allgather
             whole_a = np.empty(shape, dtype=dtype)
-            comm.Allgather([array.ravel(), possible_types[dtype]], [whole_a,
-                                                                    possible_types[dtype]])
+            comm.Allgather([array.ravel(), possible_types[dtype]], 
+                           [whole_a, possible_types[dtype]])
             return whole_a
 
 
@@ -213,8 +213,8 @@ def clean_data(data):
 def unit_center_set(dim=1, num_samples=100,
                     delta=1, reg=False):
     r"""
-    Make a unit hyper-rectangle sample set with positive probability 
-    inside an inscribed hyper-rectangle that has sidelengths delta, 
+    Make a unit hyper-rectangle sample set with positive probability
+    inside an inscribed hyper-rectangle that has sidelengths delta,
     with its center at `np.array([[0.5]]*dim).
     (Useful for testing).
 
@@ -235,7 +235,8 @@ def unit_center_set(dim=1, num_samples=100,
     dd = delta/2.0
     if dim > 1:
         probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd),
-                                         s._values >= (0.5-dd)), axis=1) >= dim)
+                                         s._values >= (0.5-dd)), 
+                                         axis = 1) >= dim)
     else:
         probs = 1*(np.logical_and(s._values <= (0.5+dd),
                                   s._values >= (0.5-dd)))

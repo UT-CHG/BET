@@ -597,7 +597,8 @@ class metrization(object):
 
         return metrization(sample_set_left=cl,
                            sample_set_right=cr,
-                           emulated_sample_set=self._emulated_sample_set.copy())
+                           emulated_sample_set=self.
+                           _emulated_sample_set.copy())
 
     def merge(self, metr):
         r"""
@@ -894,11 +895,11 @@ class metrization(object):
 
         if globalize:
             self.local_to_global()
-        return den_left, den_right
+        return self._den_left, self._den_right
 
     def distance(self, metric='tv', **kwargs):
         r"""
-        Compute a metric using the evaluated densities on the shared emulated set.
+        Compute a metric using the evaluated densities on a shared emulated set.
         If either density evaluation is missing, re-compute it.
         """
         left_den, right_den = self.get_left_density(), self.get_right_density()
