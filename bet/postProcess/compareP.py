@@ -18,7 +18,10 @@ def density(sample_set, ptr=None):
         raise AttributeError("Missing sample set.")
     elif hasattr(sample_set, '_density'):
         # this is our way of checking if sample set object.
-        den = sample_set._density[ptr]
+        if ptr is not None:
+            den = sample_set._density[ptr]
+        else:
+            den = sample_set._density
         sample_set._emulated_density = den
     else:
         if ptr is None:
