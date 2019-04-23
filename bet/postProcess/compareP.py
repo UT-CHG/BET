@@ -490,6 +490,17 @@ class metrization(object):
         """
         return self.set_emulated_sample_set(sample_set)
 
+    def set_em(self, sample_set):
+        r"""
+
+        Wrapper for `set_emulated_sample_set`.
+
+        :param sample_set: sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        return self.set_emulated_sample_set(sample_set)
+
     def clip(self, lnum, rnum=None):
         r"""
         Creates and returns a metrization with the the first `lnum`
