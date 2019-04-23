@@ -470,7 +470,15 @@ class metrization(object):
 
         """
         return self.get_emulated_sample_set()
+    
+    def get_int(self):
+        r"""
 
+        Wrapper for `get_emulated_sample_set`.
+
+        """
+        return self.get_emulated_sample_set()
+    
     def get_emulated(self):
         r"""
 
