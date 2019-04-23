@@ -6,7 +6,38 @@ import bet.sample as samp
 import scipy.spatial.distance as ds
 
 
-def distance(left_set, right_set, num_mc_points=100):
+def density(sample_set, ptr=None):
+    if sample_set._probabilities is None:
+        raise AttributeError("Missing probabilities from sample set.")
+    if sample_set._volumes is None:
+        raise AttributeError("Missing volumes from sample set.")
+    if sample_set._probabilities_local is None:
+        sample_set.global_to_local()
+
+    if sample_set is None:
+        raise AttributeError("Missing sample set.")
+    elif hasattr(sample_set, '_density'):
+        # this is our way of checking if sample set object.
+        den = sample_set._density[ptr]
+        sample_set._emulated_density = den
+    else:
+        if ptr is None:
+            den = np.divide(sample_set._probabilities_local.ravel(),
+                            sample_set._volumes_local.ravel())
+        else:
+            den = np.divide(sample_set._probabilities_local[ptr].ravel(),
+                            sample_set._volumes_local[ptr].ravel())
+        sample_set._emulated_density = den
+        sample_set._emulated_density = util.get_global_values(den)
+    if ptr is None:
+        sample_set._density = sample_set._emulated_density
+    else:
+        sample_set._prob = sample_set._probabilities_local[ptr].ravel()
+    sample_set.local_to_global()
+    return den
+
+
+def metric(left_set, right_set, num_mc_points=100):
     r"""
     Creates and returns a `~bet.postProcess.metrization` object
 
@@ -889,34 +920,3 @@ class metrization(object):
             dist = metric(left_den, right_den, **kwargs)
 
         return dist/self.check_num()
-
-
-def density(sample_set, ptr=None):
-    if sample_set._probabilities is None:
-        raise AttributeError("Missing probabilities from sample set.")
-    if sample_set._volumes is None:
-        raise AttributeError("Missing volumes from sample set.")
-    if sample_set._probabilities_local is None:
-        sample_set.global_to_local()
-
-    if sample_set is None:
-        raise AttributeError("Missing sample set.")
-    elif hasattr(sample_set, '_density'):
-        # this is our way of checking if sample set object.
-        den = sample_set._density[ptr]
-        sample_set._emulated_density = den
-    else:
-        if ptr is None:
-            den = np.divide(sample_set._probabilities_local.ravel(),
-                            sample_set._volumes_local.ravel())
-        else:
-            den = np.divide(sample_set._probabilities_local[ptr].ravel(),
-                            sample_set._volumes_local[ptr].ravel())
-        sample_set._emulated_density = den
-        sample_set._emulated_density = util.get_global_values(den)
-    if ptr is None:
-        sample_set._density = sample_set._emulated_density
-    else:
-        sample_set._prob = sample_set._probabilities_local[ptr].ravel()
-    sample_set.local_to_global()
-    return den
