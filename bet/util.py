@@ -95,7 +95,7 @@ def get_global_values(array, shape=None):
         else:
             # do an uppercase Allgather
             whole_a = np.empty(shape, dtype=dtype)
-            comm.Allgather([array.ravel(), possible_types[dtype]], 
+            comm.Allgather([array.ravel(), possible_types[dtype]],
                            [whole_a, possible_types[dtype]])
             return whole_a
 
@@ -235,8 +235,8 @@ def unit_center_set(dim=1, num_samples=100,
     dd = delta/2.0
     if dim > 1:
         probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd),
-                                         s._values >= (0.5-dd)), 
-                                         axis = 1) >= dim)
+                                         s._values >= (0.5-dd)), axis=1)\
+                   >= dim)
     else:
         probs = 1*(np.logical_and(s._values <= (0.5+dd),
                                   s._values >= (0.5-dd)))
