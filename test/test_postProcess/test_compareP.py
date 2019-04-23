@@ -83,7 +83,7 @@ class Test_metrization_simple(unittest.TestCase):
 
         self.mtrc = compP.metrization(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
-                                      integration_sample_set=self.integration_set)
+                                      emulated_sample_set=self.integration_set)
 
     def test_dimension(self):
         r"""
@@ -98,7 +98,7 @@ class Test_metrization_simple(unittest.TestCase):
         try:
             compP.metrization(sample_set_left=self.left_set,
                               sample_set_right=self.right_set,
-                              integration_sample_set=self.integration_set)
+                              emulated_sample_set=self.integration_set)
         except sample.dim_not_matching:
             # setting wrong shapes should raise this error
             print('caught')
@@ -111,7 +111,7 @@ class Test_metrization_simple(unittest.TestCase):
         test_set = self.integration_set.copy()
         test_set.set_domain(test_set.get_domain()+0.01)
         test_metr = [compP.metrization(
-            integration_sample_set=self.integration_set),
+            emulated_sample_set=self.integration_set),
             compP.metrization(
             None, sample_set_right=self.integration_set),
             compP.metrization(
@@ -198,10 +198,10 @@ class Test_metrization_simple(unittest.TestCase):
         Test setting left io ptr
         """
         # TODO be careful if we change Kdtree
-        self.mtrc.set_io_ptr_left(globalize=True)
-        self.mtrc.get_io_ptr_left()
-        self.mtrc.set_io_ptr_left(globalize=False)
-        self.mtrc.get_io_ptr_left()
+        self.mtrc.set_ptr_left(globalize=True)
+        self.mtrc.get_ptr_left()
+        self.mtrc.set_ptr_left(globalize=False)
+        self.mtrc.get_ptr_left()
         self.mtrc.globalize_ptrs()
 
     def test_set_ptr_right(self):
@@ -209,10 +209,10 @@ class Test_metrization_simple(unittest.TestCase):
         Test setting right io ptr
         """
         # TODO be careful if we change Kdtree
-        self.mtrc.set_io_ptr_right(globalize=True)
-        self.mtrc.get_io_ptr_right()
-        self.mtrc.set_io_ptr_right(globalize=False)
-        self.mtrc.get_io_ptr_right()
+        self.mtrc.set_ptr_right(globalize=True)
+        self.mtrc.get_ptr_right()
+        self.mtrc.set_ptr_right(globalize=False)
+        self.mtrc.get_ptr_right()
         self.mtrc.globalize_ptrs()
 
     def test_set_right(self):

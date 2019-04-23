@@ -344,6 +344,9 @@ class metrization(object):
         """
         if isinstance(sample_set_left, samp.sample_set_base):
             self._sample_set_left = sample_set_left
+            self._ptr_left = None
+            self._ptr_left_local = None
+            self._den_left = None
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
@@ -407,6 +410,9 @@ class metrization(object):
         """
         if isinstance(sample_set_right, samp.sample_set_base):
             self._sample_set_right = sample_set_right
+            self._ptr_right = None
+            self._ptr_right_local = None
+            self._den_right = None
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
@@ -464,7 +470,7 @@ class metrization(object):
 
         """
         return self.get_emulated_sample_set()
-    
+
     def get_emulated(self):
         r"""
 
@@ -606,7 +612,7 @@ class metrization(object):
 
     def global_to_local(self):
         """
-        Call local_to_global for ``sample_set_left`` and
+        Call global_to_local for ``sample_set_left`` and
         ``sample_set_right``.
         """
         if self._sample_set_left is not None:
@@ -642,6 +648,8 @@ class metrization(object):
         assert self.get_left().check_num() == len(probabilities)
         self._sample_set_left._probabilities = probabilities
         self._sample_set_left.global_to_local()
+        self._sample_set_left._emulated_density = None
+        self._den_left = None
 
     def set_right_probabilities(self, probabilities):
         r"""
@@ -650,6 +658,8 @@ class metrization(object):
         assert self.get_right().check_num() == len(probabilities)
         self._sample_set_right._probabilities = probabilities
         self._sample_set_right.global_to_local()
+        self._sample_set_right._emulated_density = None
+        self._den_right = None
 
     def get_left_probabilities(self):
         r"""
@@ -678,18 +688,20 @@ class metrization(object):
         else:
             # if not defined, use existing emulated set for volumes.
             sample_set.estimate_volume_emulated(self._emulated_sample_set)
-    
+
     def set_left_volume_emulated(self, emulated_sample_set=None):
         r"""
         Use an emulated sample set to define volumes for the left set.
         """
         self.set_volume_emulated(self.get_left(), emulated_sample_set)
+        self._den_left = None  # if volumes change, so will densities.
 
     def set_right_volume_emulated(self, emulated_sample_set=None):
         r"""
         Use an emulated sample set to define volumes for the right set.
         """
         self.set_volume_emulated(self.get_right(), emulated_sample_set)
+        self._den_right = None  # if volumes change, so will densities.
 
     def estimate_density_left(self):
         r"""
@@ -697,6 +709,8 @@ class metrization(object):
         at the set of samples defined in `emulated_sample_set`.
         """
         s_set = self.get_left()
+        if self.get_ptr_left() is None:
+            self.set_ptr_left()
         s_set = density(s_set, self.get_ptr_left())
         self._den_left = s_set._emulated_density
 
@@ -706,6 +720,8 @@ class metrization(object):
         at the set of samples defined in ``emulated_sample_set``.
         """
         s_set = self.get_right()
+        if self.get_ptr_right() is None:
+            self.set_ptr_right()
         s_set = density(s_set, self.get_ptr_right())
         self._den_right = s_set._emulated_density
 
@@ -714,13 +730,13 @@ class metrization(object):
         Wrapper for ``bet.postProcess.compareP.estimate_density_right``.
         """
         return self.estimate_density_right()
-    
+
     def estimate_left_density(self):
         r"""
         Wrapper for ``bet.postProcess.compareP.estimate_density_left``.
         """
         return self.estimate_density_right()
-    
+
     def get_density_right(self):
         r"""
         Returns right emulated density.
@@ -748,7 +764,8 @@ class metrization(object):
     def estimate_density(self, globalize=True,
                          emulated_sample_set=None):
         r"""
-        # emulation set describes 
+        Evaluate density functions for both left and right sets using
+        the set of samples defined in ``self._emulated_sample_set``.
         """
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
@@ -794,10 +811,19 @@ class metrization(object):
 
         if globalize:
             self.local_to_global()
-#         return den_left, den_right
+        return den_left, den_right
 
     def distance(self, metric='tv', **kwargs):
+        r"""
+        Compute a metric using the evaluated densities on the shared emulated set.
+        If either density evaluation is missing, re-compute it.
+        """
         left_den, right_den = self.get_left_density(), self.get_right_density()
+        if left_den is None:
+            self.estimate_density_left()
+        if right_den is None:
+            self.estimate_density_right()
+
         if metric in ['tv', 'totvar', 'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
         elif metric in ['mink', 'minkowski']:
@@ -814,7 +840,8 @@ class metrization(object):
             dist = metric(left_den, right_den, **kwargs)
 
         return dist/self.check_num()
-    
+
+
 def density(sample_set, ptr=None):
     if sample_set._probabilities is None:
         raise AttributeError("Missing probabilities from sample set.")
@@ -822,7 +849,7 @@ def density(sample_set, ptr=None):
         raise AttributeError("Missing volumes from sample set.")
     if sample_set._probabilities_local is None:
         sample_set.global_to_local()
-    
+
     if sample_set is None:
         raise AttributeError("Missing sample set.")
     elif hasattr(sample_set, '_density'):

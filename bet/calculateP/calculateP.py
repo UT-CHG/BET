@@ -274,7 +274,7 @@ def prob_from_discretization_input(disc, set_new):
         raise AttributeError("Probabilities must be pre-calculated.")
     if em_set._volumes_local is None:
         raise AttributeError("Volumes must be pre-calculated.")
-    
+
     # Check dimensions
     disc.check_nums()
     num_new = set_new.check_num()
@@ -293,8 +293,7 @@ def prob_from_discretization_input(disc, set_new):
         Itemp_sum = np.sum(prob_em[Itemp])
         Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
         prob_new[i] = Itemp_sum
-        
-        
+
     # Set probabilities
     set_new.set_probabilities(prob_new)
     return prob_new
@@ -326,7 +325,7 @@ def density_from_discretization_input(disc, set_new):
         raise AttributeError("Probabilities must be pre-calculated.")
     if em_set._volumes_local is None:
         raise AttributeError("Volumes must be pre-calculated.")
-    
+
     # Check dimensions
     disc.check_nums()
     num_new = set_new.check_num()
@@ -357,6 +356,7 @@ def density_from_discretization_input(disc, set_new):
     set_new.set_probabilities(prob_new)
     set_new._density = den_new
     return den_new
+
 
 def density_from_sample_set(set_old, set_new):
     r"""
