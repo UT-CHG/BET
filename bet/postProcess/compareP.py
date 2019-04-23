@@ -18,9 +18,9 @@ def distance(left_set, right_set, num_mc_points=100):
     :class:`sample.sample_set_base`
     """
     # extract sample set
-    if isinstance(left_set, samp.metrization):
+    if isinstance(left_set, samp.discretization):
         left_set = left_set.get_input_sample_set()
-    if isinstance(right_set, samp.metrization):
+    if isinstance(right_set, samp.discretization):
         right_set = right_set.get_input_sample_set()
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
@@ -472,6 +472,14 @@ class metrization(object):
         return self.get_emulated_sample_set()
 
     def get_int(self):
+        r"""
+
+        Wrapper for `get_emulated_sample_set`.
+
+        """
+        return self.get_emulated_sample_set()
+
+    def get_integration_sample_set(self):
         r"""
 
         Wrapper for `get_emulated_sample_set`.
