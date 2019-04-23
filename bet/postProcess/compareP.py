@@ -470,7 +470,7 @@ class metrization(object):
 
         """
         return self.get_emulated_sample_set()
-    
+
     def get_int(self):
         r"""
 
@@ -478,7 +478,7 @@ class metrization(object):
 
         """
         return self.get_emulated_sample_set()
-    
+
     def get_emulated(self):
         r"""
 
