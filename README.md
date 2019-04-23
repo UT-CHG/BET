@@ -9,7 +9,7 @@ Please note that we are using continuous integration and issues for bug tracking
 
 ## Butler, Estep, Tavener method
 
-This code has been documented with sphinx. the documentation is available online ta http://ut-chg.github.io/bet. to build documentation run 
+This code has been documented with sphinx. the documentation is available online at http://ut-chg.github.io/BET. to build documentation run 
 ``make html`` in the ``doc/`` folder.
 
 To build/update the documentation use the following commands::

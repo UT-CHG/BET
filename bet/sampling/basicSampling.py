@@ -182,7 +182,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     if np.any(np.less_equal(num_samples_per_dim, 0)):
         warnings.warn('Warning: num_samples_per_dim must be greater than 0')
 
-    num_samples = np.product(num_samples_per_dim)
+    num_samples = int(np.product(num_samples_per_dim))
 
     if input_sample_set.get_domain() is None:
         # create the domain
@@ -194,19 +194,19 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     input_values = np.zeros((num_samples, dim))
 
     vec_samples_dimension = np.empty((dim), dtype=object)
-    for i in np.arange(0, dim):
+    for i in range(dim):
         bin_width = (input_domain[i, 1] - input_domain[i, 0]) / \
             np.float(num_samples_per_dim[i])
         vec_samples_dimension[i] = list(np.linspace(
             input_domain[i, 0] - 0.5 * bin_width,
             input_domain[i, 1] + 0.5 * bin_width,
-            num_samples_per_dim[i] + 2))[1:num_samples_per_dim[i] + 1]
+            num_samples_per_dim[i] + 2))[1:int(num_samples_per_dim[i] + 1)]
 
     arrays_samples_dimension = np.meshgrid(
         *[vec_samples_dimension[i] for i in np.arange(0, dim)],
         indexing='ij')
 
-    for i in np.arange(0, dim):
+    for i in range(dim):
         input_values[:, i:i+1] = np.vstack(arrays_samples_dimension[i]
                                            .flat[:])
 
