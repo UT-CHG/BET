@@ -2,7 +2,7 @@ import numpy as np
 import logging
 import bet.util as util
 import bet.sample as samp
-# import bet.sampling.basicSampling as bsam
+import bet.sampling.basicSampling as bsam
 import scipy.spatial.distance as ds
 
 
@@ -37,10 +37,10 @@ def density(sample_set, ptr=None):
     else:
         sample_set._prob = sample_set._probabilities_local[ptr].ravel()
     sample_set.local_to_global()
-    return den
+    return sample_set
 
 
-def metric(left_set, right_set, num_mc_points=100):
+def metric(left_set, right_set, num_mc_points=1000):
     r"""
     Creates and returns a `~bet.postProcess.metrization` object
 
@@ -60,9 +60,14 @@ def metric(left_set, right_set, num_mc_points=100):
         raise ValueError("Please specify positive num_mc_points")
 
     # make integration sample set
-
+    assert left_set.get_dim() == right_set.get_dim()
+    assert np.array_equal(left_set.get_domain(), right_set.get_domain())
+    int_set = samp.sample_set(left_set.get_dim())
+    int_set.set_domain(right_set.get_domain())
+    int_set = bsam.random_sample_set('r', int_set, num_mc_points)
+    
     # to be generating a new random sample set pass an integer argument
-    metrc = metrization(num_mc_points, left_set, right_set)
+    metrc = metrization(int_set, left_set, right_set)
 
     return metrc
 
@@ -105,7 +110,11 @@ class metrization(object):
         self._ptr_right_local = None
         #: Domain
         self._domain = None
-
+        #: Left sample set density evaluated on emulation set.
+        self._den_left = None
+        #: Right sample set density evaluated on emulation set.
+        self._den_right = None
+        
         # extract sample set
         if isinstance(sample_set_left, samp.sample_set_base):
             # left sample set
@@ -227,7 +236,7 @@ class metrization(object):
         return domain
 
     def globalize_ptrs(self):
-        """
+        r"""
         Globalizes metrization pointers.
 
         """
@@ -797,7 +806,8 @@ class metrization(object):
             self.set_ptr_left()
         s_set = density(s_set, self.get_ptr_left())
         self._den_left = s_set._emulated_density
-
+        return self._den_left
+    
     def estimate_density_right(self):
         r"""
         Evaluates density function for the right probability measure
@@ -808,7 +818,8 @@ class metrization(object):
             self.set_ptr_right()
         s_set = density(s_set, self.get_ptr_right())
         self._den_right = s_set._emulated_density
-
+        return self._den_right 
+    
     def estimate_right_density(self):
         r"""
         Wrapper for ``bet.postProcess.compareP.estimate_density_right``.
@@ -904,10 +915,13 @@ class metrization(object):
         """
         left_den, right_den = self.get_left_density(), self.get_right_density()
         if left_den is None:
-            self.estimate_density_left()
+            #logging.log(20,"Left density missing. Estimating now.")
+            left_den = self.estimate_density_left()
         if right_den is None:
-            self.estimate_density_right()
-
+            #logging.log(20,"Right density missing. Estimating now.")
+            right_den = self.estimate_density_right()
+        
+        
         if metric in ['tv', 'totvar', 'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
         elif metric in ['mink', 'minkowski']:

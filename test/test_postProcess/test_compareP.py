@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
 import numpy as np
-# import numpy.testing as nptest
+import numpy.testing as nptest
 import unittest
 # import os
 # import glob
@@ -15,19 +15,36 @@ import bet.sampling.basicSampling as bsam
 local_path = ''
 
 
-def set_unit_probs(num_samples=100,
-                   dim=2,
-                   delta=0.1):
+def unit_center_set(dim=1, num_samples=100,
+                    delta=1, reg=False):
     r"""
-    Make unit square domain, create a hyperrectangle with sidelengths
-    delta centered around `np.array([[0.5]]*dim)
+    Make a unit hyper-rectangle sample set with positive probability
+    inside an inscribed hyper-rectangle that has sidelengths delta,
+    with its center at `np.array([[0.5]]*dim).
+    (Useful for testing).
+
+    :param int dim: dimension
+    :param int num_samples: number of samples
+    :param float delta: sidelength of region with positive probability
+    :param bool reg: regular sampling (`num_samples` = per dimension)
+    :rtype: :class:`bet.sample.sample_set`
+    :returns: sample set object
+
     """
     s_set = sample.sample_set(dim)
     s_set.set_domain(np.array([[0, 1]]*dim))
-    s = bsam.random_sample_set('r', s_set, num_samples)
+    if reg:
+        s = bsam.regular_sample_set(s_set, num_samples)
+    else:
+        s = bsam.random_sample_set('r', s_set, num_samples)
     dd = delta/2.0
-    probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd),
-                                     s._values >= (0.5-dd)), axis=1) >= dim-1)
+    if dim > 1:
+        probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd),
+                                         s._values >= (0.5-dd)), axis=1)\
+                   >= dim)
+    else:
+        probs = 1*(np.logical_and(s._values <= (0.5+dd),
+                                  s._values >= (0.5-dd)))
     s.set_probabilities(probs/np.sum(probs))  # uniform probabilities
     s.estimate_volume_mc()
     s.global_to_local()
@@ -42,27 +59,67 @@ def check_densities(s_set, dim=2, delta=0.1, tol=1e-4):
     else:
         return 0
 
-# class Test_distance(unittest.TestCase):
-#     def setUp(self):
-#         self.dim = 1
-#         self.integration_set = sample.sample_set(dim=self.dim)
-#         self.left_set = sample.sample_set(dim=self.dim)
-#         self.right_set = sample.sample_set(dim=self.dim)
-#         self.num1, self.num2, self.num = 100, 100, 500
-#         values = np.ones((self.num, self.dim))
-#         values1 = np.ones((self.num1, self.dim))
-#         values2 = np.ones((self.num2, self.dim))
-#         self.integration_set.set_values(values)
-#         self.left_set.set_values(values1)
-#         self.right_set.set_values(values2)
+class Test_distance(unittest.TestCase):
+    def setUp(self):
+        self.dim = 1
+        self.int_set = sample.sample_set(dim=self.dim)
+        self.num1, self.num2, self.num = 100, 100, 500
+        self.left_set = unit_center_set(self.dim, self.num1, 0.5)
+        self.right_set = unit_center_set(self.dim, self.num2, 0.5)
+        self.domain = np.array([[0,1]]*self.dim)
+        values = np.random.rand(self.num, self.dim)
+        self.int_set.set_values(values)
+        self.int_set.set_domain(self.domain)
 
-#     def test_identity(self):
-#         r"""
-#         Ensure passing identical sets returns 0 distance.
-#         """
-#         compP.distance(self.left_set, self.left_set)
-
-
+        
+    def test_identity(self):
+        r"""
+        Ensure passing identical sets returns 0 distance.
+        """
+        m = compP.metric(self.left_set, self.left_set)
+        d = m.distance()
+        nptest.assert_equal(d,0,'Distance not definite.')
+        m = compP.metric(self.left_set, self.left_set)
+        d = m.distance()
+        nptest.assert_equal(d,0,'Distance not definite.')
+    
+    def test_aprox_symmetry(self):
+        r"""
+        Error up to approximation in emulation. We know the expected variance
+        given a sample size to be 1/sqrt(N).
+        """
+        n = 1000
+        m1 = compP.metric(self.left_set, self.right_set, n)
+        d1 = m1.distance()
+        m2 = compP.metric(self.right_set, self.left_set, n)
+        d2 = m2.distance()
+        nptest.assert_almost_equal(d1-d2,0,1,'Distance not symmetric.')
+        
+    def test_exact_symmetry(self):
+        r"""
+        If two metrization objects are defined with swapped names of 
+        left and right sample sets, the distance should still be identical
+        """
+        m1 = compP.metrization(self.int_set, self.left_set, self.right_set)
+        m2 = compP.metrization(self.int_set, self.right_set, self.left_set)
+        d1 = m1.distance()
+        d2 = m2.distance()
+        nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+        # should be able to overwrite and still get correct answer.
+        m = compP.metric(self.left_set, self.right_set)
+        d1 = m.distance()
+        m.set_right(self.left_set)
+        m.set_left(self.right_set) 
+        d2 = m.distance()
+        nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+        # grabbing copies like this should also work.
+        ll = m.get_left().copy()
+        m.set_left(m.get_right())
+        m.set_right(ll)
+        d2 = m.distance()
+        nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+        
+        
 class Test_metrization_simple(unittest.TestCase):
     def setUp(self):
         self.dim = 3
@@ -85,6 +142,17 @@ class Test_metrization_simple(unittest.TestCase):
                                       sample_set_right=self.right_set,
                                       emulated_sample_set=self.integration_set)
 
+    def test_metric(self):
+        r"""
+        There are a few ways these functions can get initialized.
+        Here we test the varying permutations
+        """
+        self.int_set = self.integration_set
+        md = compP.metric(self.left_set, self.right_set)
+        m10 = compP.metric(self.left_set, self.right_set, 10)
+        mm = compP.metrization(self.int_set, self.left_set, self.right_set)
+        mi = compP.metrization(self.int_set)
+        
     def test_dimension(self):
         r"""
         Check that improperly setting dimension raises warning.
