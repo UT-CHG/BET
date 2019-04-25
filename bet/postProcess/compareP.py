@@ -25,17 +25,17 @@ def density(sample_set, ptr=None):
         sample_set._emulated_density = den
     else:
         if ptr is None:
-            den = np.divide(sample_set._probabilities_local.ravel(),
-                            sample_set._volumes_local.ravel())
+            den = np.divide(sample_set._probabilities.ravel(),
+                            sample_set._volumes.ravel())
         else:
-            den = np.divide(sample_set._probabilities_local[ptr].ravel(),
-                            sample_set._volumes_local[ptr].ravel())
+            den = np.divide(sample_set._probabilities[ptr].ravel(),
+                            sample_set._volumes[ptr].ravel())
         sample_set._emulated_density = den
-        sample_set._emulated_density = util.get_global_values(den)
+        #sample_set._emulated_density = util.get_global_values(den)
     if ptr is None:
         sample_set._density = sample_set._emulated_density
     else:
-        sample_set._prob = sample_set._probabilities_local[ptr].ravel()
+        sample_set._prob = sample_set._probabilities[ptr].ravel()
     sample_set.local_to_global()
     return sample_set
 
@@ -271,7 +271,7 @@ class metrization(object):
         if globalize:
             self._ptr_left = util.get_global_values(
                 self._ptr_left_local)
-        assert self._sample_set_left.check_num() >= max(self._ptr_left)
+        assert self._sample_set_left.check_num() >= max(self._ptr_left_local)
 
     def get_ptr_left(self):
         """
@@ -313,7 +313,7 @@ class metrization(object):
         if globalize:
             self._ptr_right = util.get_global_values(
                 self._ptr_right_local)
-        assert self._sample_set_right.check_num() >= max(self._ptr_right)
+        assert self._sample_set_right.check_num() >= max(self._ptr_right_local)
 
     def get_ptr_right(self):
         """
@@ -802,9 +802,9 @@ class metrization(object):
         at the set of samples defined in `emulated_sample_set`.
         """
         s_set = self.get_left()
-        if self.get_ptr_left() is None:
+        if self._ptr_left_local is None:
             self.set_ptr_left()
-        s_set = density(s_set, self.get_ptr_left())
+        s_set = density(s_set, self._ptr_left_local)
         self._den_left = s_set._emulated_density
         return self._den_left
     
@@ -814,9 +814,9 @@ class metrization(object):
         at the set of samples defined in ``emulated_sample_set``.
         """
         s_set = self.get_right()
-        if self.get_ptr_right() is None:
+        if self._ptr_right_local is None:
             self.set_ptr_right()
-        s_set = density(s_set, self.get_ptr_right())
+        s_set = density(s_set, self._ptr_right_local)
         self._den_right = s_set._emulated_density
         return self._den_right 
     
@@ -867,9 +867,9 @@ class metrization(object):
         self.check_domain()
 
         # set pointers if they have not already been set
-        if self.get_ptr_left() is None:
+        if self._ptr_left_local is None:
             self.set_ptr_left(globalize)
-        if self.get_ptr_right() is None:
+        if self._ptr_right_local is None:
             self.set_ptr_right(globalize)
         self.check_dim()
 
