@@ -31,7 +31,6 @@ def density(sample_set, ptr=None):
             den = np.divide(sample_set._probabilities[ptr].ravel(),
                             sample_set._volumes[ptr].ravel())
         sample_set._emulated_density = den
-        #sample_set._emulated_density = util.get_global_values(den)
     if ptr is None:
         sample_set._density = sample_set._emulated_density
     else:

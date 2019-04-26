@@ -64,7 +64,7 @@ class Test_distance(unittest.TestCase):
     def setUp(self):
         self.dim = 1
         self.int_set = sample.sample_set(dim=self.dim)
-        self.num1, self.num2, self.num = 100, 100, 500
+        self.num1, self.num2, self.num = 100, 100, 250
         self.left_set = unit_center_set(self.dim, self.num1, 0.5)
         self.right_set = unit_center_set(self.dim, self.num2, 0.5)
         self.domain = np.array([[0, 1]]*self.dim)
