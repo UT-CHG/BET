@@ -212,8 +212,14 @@ class Test_metrization_simple(unittest.TestCase):
         Test copying, clipping, merging, slicing
         """
         mm = self.mtrc.copy()
+        mm.get_left().set_reference_value(np.array([0.5]*self.dim))
+        mm.get_right().set_reference_value(np.array([0.5]*self.dim))
+        mm.get_left()._jacobians = np.ones((self.num1, self.dim, 1))
+        mm.get_right()._jacobians = np.ones((self.num2, self.dim, 1))
+
+        mm.slice([0])
         mc = mm.clip(50)
-        ms = self.mtrc.merge(mc)
+        ms = mm.merge(mc)
         ms.slice([0])
         ms.slice([1, 0])
         ms.slice([1, 0, 1])  # can repeat dimensions if you want?

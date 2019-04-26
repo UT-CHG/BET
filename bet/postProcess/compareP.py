@@ -646,7 +646,8 @@ class metrization(object):
 
         """
         slice_list = ['_values', '_values_local',
-                      '_error_estimates', '_error_estimates_local']
+                      '_error_estimates', '_error_estimates_local',
+                      ]
         slice_list2 = ['_jacobians', '_jacobians_local']
 
         int_ss = samp.sample_set(len(dims))
@@ -691,12 +692,7 @@ class metrization(object):
                 nval = nval.take(dims, axis=1)
                 nval = nval.take(dims, axis=2)
                 setattr(right_ss, obj, nval)
-            val = getattr(self._emulated_sample_set, obj)
-            if val is not None:
-                nval = np.copy(val)
-                nval = nval.take(dims, axis=1)
-                nval = nval.take(dims, axis=2)
-                setattr(int_ss, obj, nval)
+
         metr = metrization(sample_set_left=left_ss,
                            sample_set_right=right_ss,
                            emulated_sample_set=int_ss)
