@@ -40,7 +40,7 @@ def unit_center_set(dim=1, num_samples=100,
     dd = delta/2.0
     if dim > 1:
         probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd),
-                                         s._values >= (0.5-dd)), axis=1)\
+                                         s._values >= (0.5-dd)), axis=1)
                    >= dim)
     else:
         probs = 1*(np.logical_and(s._values <= (0.5+dd),
@@ -59,6 +59,7 @@ def check_densities(s_set, dim=2, delta=0.1, tol=1e-4):
     else:
         return 0
 
+
 class Test_distance(unittest.TestCase):
     def setUp(self):
         self.dim = 1
@@ -66,12 +67,11 @@ class Test_distance(unittest.TestCase):
         self.num1, self.num2, self.num = 100, 100, 500
         self.left_set = unit_center_set(self.dim, self.num1, 0.5)
         self.right_set = unit_center_set(self.dim, self.num2, 0.5)
-        self.domain = np.array([[0,1]]*self.dim)
+        self.domain = np.array([[0, 1]]*self.dim)
         values = np.random.rand(self.num, self.dim)
         self.int_set.set_values(values)
         self.int_set.set_domain(self.domain)
 
-        
     def test_identity(self):
         r"""
         Ensure passing identical sets returns 0 distance.
@@ -79,11 +79,11 @@ class Test_distance(unittest.TestCase):
         for dist in ['tv', 'mink', 'norm', '2-norm', 'sqhell']:
             m = compP.metric(self.left_set, self.left_set)
             d = m.distance(dist)
-            nptest.assert_equal(d,0,'Distance not definite.')
+            nptest.assert_equal(d, 0, 'Distance not definite.')
             m = compP.metric(self.left_set, self.left_set)
             d = m.distance(dist)
-            nptest.assert_equal(d,0,'Distance not definite.')
-    
+            nptest.assert_equal(d, 0, 'Distance not definite.')
+
     def test_aprox_symmetry(self):
         r"""
         Error up to approximation in emulation. We know the expected variance
@@ -94,38 +94,39 @@ class Test_distance(unittest.TestCase):
         d1 = m1.distance()
         m2 = compP.metric(self.right_set, self.left_set, n)
         d2 = m2.distance()
-        nptest.assert_almost_equal(d1-d2,0,1,'Distance not symmetric.')
-        
+        nptest.assert_almost_equal(d1-d2, 0, 1, 'Distance not symmetric.')
+
     def test_exact_symmetry(self):
         r"""
         If two metrization objects are defined with swapped names of 
         left and right sample sets, the distance should still be identical
         """
-        
+
         m1 = compP.metrization(self.int_set, self.left_set, self.right_set)
         m2 = compP.metrization(self.int_set, self.right_set, self.left_set)
         for dist in ['tv', 'mink', '2-norm', 'sqhell']:
             d1 = m1.distance(dist)
             d2 = m2.distance(dist)
-            nptest.assert_almost_equal(d1-d2,0,12,'Distance %s not symmetric.'%dist)
+            nptest.assert_almost_equal(
+                d1-d2, 0, 12, 'Distance %s not symmetric.' % dist)
         import scipy.spatial.distance as ds
-        
+
         # should be able to overwrite and still get correct answer.
         for dist in ['tv', 'hell', ds.cityblock]:
             m = compP.metric(self.left_set, self.right_set)
             d1 = m.distance(dist)
             m.set_right(self.left_set)
-            m.set_left(self.right_set) 
+            m.set_left(self.right_set)
             d2 = m.distance(dist)
-            nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+            nptest.assert_almost_equal(d1-d2, 0, 12, 'Distance not symmetric.')
             # grabbing copies like this should also work.
             ll = m.get_left().copy()
             m.set_left(m.get_right())
             m.set_right(ll)
             d2 = m.distance(dist)
-            nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
-        
-        
+            nptest.assert_almost_equal(d1-d2, 0, 12, 'Distance not symmetric.')
+
+
 class Test_metrization_simple(unittest.TestCase):
     def setUp(self):
         self.dim = 3
@@ -141,19 +142,18 @@ class Test_metrization_simple(unittest.TestCase):
         self.right_set.set_domain(self.domain)
         self.mtrc = compP.metrization(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
-                                      emulated_sample_set=
-                                      self.integration_set)
+                                      emulated_sample_set=self.integration_set)
 
     def test_domain(self):
         r"""
         """
         self.mtrc.check_domain()
-        
+
     def test_dim(self):
         r"""
         """
-        self.mtrc.check_dim()    
-    
+        self.mtrc.check_dim()
+
     def test_metric(self):
         r"""
         There are a few ways these functions can get initialized.
@@ -164,7 +164,7 @@ class Test_metrization_simple(unittest.TestCase):
         m10 = compP.metric(self.left_set, self.right_set, 10)
         mm = compP.metrization(self.int_set, self.left_set, self.right_set)
         mi = compP.metrization(self.int_set)
-        
+
     def test_dimension(self):
         r"""
         Check that improperly setting dimension raises warning.
@@ -206,7 +206,7 @@ class Test_metrization_simple(unittest.TestCase):
                     fun(test_set)
                 except AttributeError:
                     pass
-        
+
     def test_copy_clip_merge_slice(self):
         r"""
         Test copying, clipping, merging, slicing
@@ -315,7 +315,7 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         """
         self.mtrc.estimate_density()
-        
+
     def test_get(self):
         r"""
         """
@@ -325,7 +325,7 @@ class Test_metrization_simple(unittest.TestCase):
         mm.get_integration_sample_set()
         mm.get_emulated()
         mm.get_emulated_sample_set()
-        
+
     def test_estimate(self):
         r"""
         """
@@ -342,7 +342,7 @@ class Test_metrization_simple(unittest.TestCase):
         mm.get_left().set_volumes(None)
         mm.get_right().set_volumes(None)
         mm.estimate_density(emulated_sample_set=self.integration_set)
-        try: # the following should raise an error
+        try:  # the following should raise an error
             mm.set_int(None)
             mm.estimate_density()
         except AttributeError:

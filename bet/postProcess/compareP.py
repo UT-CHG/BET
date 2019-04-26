@@ -65,7 +65,7 @@ def metric(left_set, right_set, num_mc_points=1000):
     int_set = samp.sample_set(left_set.get_dim())
     int_set.set_domain(right_set.get_domain())
     int_set = bsam.random_sample_set('r', int_set, num_mc_points)
-    
+
     # to be generating a new random sample set pass an integer argument
     metrc = metrization(int_set, left_set, right_set)
 
@@ -114,7 +114,7 @@ class metrization(object):
         self._den_left = None
         #: Right sample set density evaluated on emulation set.
         self._den_right = None
-        
+
         # extract sample set
         if isinstance(sample_set_left, samp.sample_set_base):
             # left sample set
@@ -807,7 +807,7 @@ class metrization(object):
         s_set = density(s_set, self._ptr_left_local)
         self._den_left = s_set._emulated_density
         return self._den_left
-    
+
     def estimate_density_right(self):
         r"""
         Evaluates density function for the right probability measure
@@ -818,8 +818,8 @@ class metrization(object):
             self.set_ptr_right()
         s_set = density(s_set, self._ptr_right_local)
         self._den_right = s_set._emulated_density
-        return self._den_right 
-    
+        return self._den_right
+
     def estimate_right_density(self):
         r"""
         Wrapper for ``bet.postProcess.compareP.estimate_density_right``.
@@ -876,20 +876,19 @@ class metrization(object):
         int_set = self.get_int()
         left_set, right_set = self.get_left(), self.get_right()
 
-
         if left_set._volumes is None:
             if emulated_sample_set is None:
                 msg = " Volumes missing from left. Using MC assumption."
                 logging.log(20, msg)
                 left_set.estimate_volume_mc()
-            else: 
+            else:
                 self.set_left_volume_emulated(emulated_sample_set)
         else:  # volumes present and emulated passed
             if emulated_sample_set is not None:
                 msg = " Overwriting left volumes with emulated ones."
                 logging.log(20, msg)
                 self.set_left_volume_emulated(emulated_sample_set)
-                
+
         if right_set._volumes is None:
             if emulated_sample_set is None:
                 msg = " Volumes missing from right. Using MC assumption."
@@ -902,7 +901,7 @@ class metrization(object):
         else:  # volumes present and emulated passed
             if emulated_sample_set is not None:
                 self.set_right_volume_emulated(emulated_sample_set)
-        
+
         if int_set is None:
             raise AttributeError("Missing integration set.")
 
@@ -930,8 +929,7 @@ class metrization(object):
         if right_den is None:
             #logging.log(20,"Right density missing. Estimating now.")
             right_den = self.estimate_density_right()
-        
-        
+
         if metric in ['tv', 'totvar', 'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
         elif metric in ['mink', 'minkowski']:
