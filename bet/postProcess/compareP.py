@@ -830,7 +830,7 @@ class metrization(object):
         r"""
         Wrapper for ``bet.postProcess.compareP.estimate_density_left``.
         """
-        return self.estimate_density_right()
+        return self.estimate_density_left()
 
     def get_density_right(self):
         r"""
@@ -876,24 +876,33 @@ class metrization(object):
         int_set = self.get_int()
         left_set, right_set = self.get_left(), self.get_right()
 
-        if emulated_sample_set is not None:
-            self.set_left_volume_emulated(emulated_sample_set)
-            self.set_right_volume_emulated(emulated_sample_set)
 
         if left_set._volumes is None:
             if emulated_sample_set is None:
                 msg = " Volumes missing from left. Using MC assumption."
-                logging.warn(msg)
+                logging.log(20, msg)
                 left_set.estimate_volume_mc()
-
+            else: 
+                self.set_left_volume_emulated(emulated_sample_set)
+        else:  # volumes present and emulated passed
+            if emulated_sample_set is not None:
+                msg = " Overwriting left volumes with emulated ones."
+                logging.log(20, msg)
+                self.set_left_volume_emulated(emulated_sample_set)
+                
         if right_set._volumes is None:
             if emulated_sample_set is None:
                 msg = " Volumes missing from right. Using MC assumption."
-                logging.warn(msg)
+                logging.log(20, msg)
                 right_set.estimate_volume_mc()
             else:
-                right_set.estimate_volume_emulated(emulated_sample_set)
-
+                msg = " Overwriting right volumes with emulated ones."
+                logging.log(20, msg)
+                self.set_right_volume_emulated(emulated_sample_set)
+        else:  # volumes present and emulated passed
+            if emulated_sample_set is not None:
+                self.set_right_volume_emulated(emulated_sample_set)
+        
         if int_set is None:
             raise AttributeError("Missing integration set.")
 

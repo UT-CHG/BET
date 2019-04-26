@@ -315,3 +315,35 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         """
         self.mtrc.estimate_density()
+        
+    def test_get(self):
+        r"""
+        """
+        mm = self.mtrc
+        mm.get_int()
+        mm.get_em()
+        mm.get_integration_sample_set()
+        mm.get_emulated()
+        mm.get_emulated_sample_set()
+        
+    def test_estimate(self):
+        r"""
+        """
+        mm = self.mtrc
+        rd = mm.estimate_right_density()
+        ld = mm.estimate_left_density()
+        msg = "Get/set density mismatch."
+        nptest.assert_array_equal(mm.get_density_left(), ld, msg)
+        nptest.assert_array_equal(mm.get_density_right(), rd, msg)
+        mm.estimate_density(emulated_sample_set=self.integration_set)
+        mm.get_left().set_volumes(None)
+        mm.get_right().set_volumes(None)
+        mm.estimate_density()
+        mm.get_left().set_volumes(None)
+        mm.get_right().set_volumes(None)
+        mm.estimate_density(emulated_sample_set=self.integration_set)
+        try: # the following should raise an error
+            mm.set_int(None)
+            mm.estimate_density()
+        except AttributeError:
+            pass
