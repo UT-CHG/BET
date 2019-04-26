@@ -891,6 +891,7 @@ class metrization(object):
                 msg = " Volumes missing from right. Using MC assumption."
                 logging.warn(msg)
                 right_set.estimate_volume_mc()
+            else:
                 right_set.estimate_volume_emulated(emulated_sample_set)
 
         if int_set is None:

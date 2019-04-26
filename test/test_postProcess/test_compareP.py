@@ -76,12 +76,13 @@ class Test_distance(unittest.TestCase):
         r"""
         Ensure passing identical sets returns 0 distance.
         """
-        m = compP.metric(self.left_set, self.left_set)
-        d = m.distance()
-        nptest.assert_equal(d,0,'Distance not definite.')
-        m = compP.metric(self.left_set, self.left_set)
-        d = m.distance()
-        nptest.assert_equal(d,0,'Distance not definite.')
+        for dist in ['tv', 'mink', 'norm', '2-norm', 'sqhell']:
+            m = compP.metric(self.left_set, self.left_set)
+            d = m.distance(dist)
+            nptest.assert_equal(d,0,'Distance not definite.')
+            m = compP.metric(self.left_set, self.left_set)
+            d = m.distance(dist)
+            nptest.assert_equal(d,0,'Distance not definite.')
     
     def test_aprox_symmetry(self):
         r"""
@@ -100,48 +101,59 @@ class Test_distance(unittest.TestCase):
         If two metrization objects are defined with swapped names of 
         left and right sample sets, the distance should still be identical
         """
+        
         m1 = compP.metrization(self.int_set, self.left_set, self.right_set)
         m2 = compP.metrization(self.int_set, self.right_set, self.left_set)
-        d1 = m1.distance()
-        d2 = m2.distance()
-        nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+        for dist in ['tv', 'mink', '2-norm', 'sqhell']:
+            d1 = m1.distance(dist)
+            d2 = m2.distance(dist)
+            nptest.assert_almost_equal(d1-d2,0,12,'Distance %s not symmetric.'%dist)
+        import scipy.spatial.distance as ds
+        
         # should be able to overwrite and still get correct answer.
-        m = compP.metric(self.left_set, self.right_set)
-        d1 = m.distance()
-        m.set_right(self.left_set)
-        m.set_left(self.right_set) 
-        d2 = m.distance()
-        nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
-        # grabbing copies like this should also work.
-        ll = m.get_left().copy()
-        m.set_left(m.get_right())
-        m.set_right(ll)
-        d2 = m.distance()
-        nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+        for dist in ['tv', 'hell', ds.cityblock]:
+            m = compP.metric(self.left_set, self.right_set)
+            d1 = m.distance(dist)
+            m.set_right(self.left_set)
+            m.set_left(self.right_set) 
+            d2 = m.distance(dist)
+            nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
+            # grabbing copies like this should also work.
+            ll = m.get_left().copy()
+            m.set_left(m.get_right())
+            m.set_right(ll)
+            d2 = m.distance(dist)
+            nptest.assert_almost_equal(d1-d2,0,12,'Distance not symmetric.')
         
         
 class Test_metrization_simple(unittest.TestCase):
     def setUp(self):
         self.dim = 3
-        self.integration_set = sample.sample_set(dim=self.dim)
-        self.left_set = sample.sample_set(dim=self.dim)
-        self.right_set = sample.sample_set(dim=self.dim)
         self.num1, self.num2, self.num = 100, 100, 500
+        self.integration_set = sample.sample_set(dim=self.dim)
+        self.left_set = unit_center_set(self.dim, self.num1, 0.5)
+        self.right_set = unit_center_set(self.dim, self.num2, 0.5)
         values = np.ones((self.num, self.dim))
-        values1 = np.ones((self.num1, self.dim))
-        values2 = np.ones((self.num2, self.dim))
         self.integration_set.set_values(values)
-        self.left_set.set_values(values1)
-        self.right_set.set_values(values2)
         self.domain = np.tile([0, 1], [self.dim, 1])
         self.integration_set.set_domain(self.domain)
         self.left_set.set_domain(self.domain)
         self.right_set.set_domain(self.domain)
-
         self.mtrc = compP.metrization(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
-                                      emulated_sample_set=self.integration_set)
+                                      emulated_sample_set=
+                                      self.integration_set)
 
+    def test_domain(self):
+        r"""
+        """
+        self.mtrc.check_domain()
+        
+    def test_dim(self):
+        r"""
+        """
+        self.mtrc.check_dim()    
+    
     def test_metric(self):
         r"""
         There are a few ways these functions can get initialized.
@@ -172,7 +184,7 @@ class Test_metrization_simple(unittest.TestCase):
             print('caught')
             pass
 
-    def test_domain(self):
+    def test_set_domain(self):
         r"""
         Check that improperly setting domain raises warning.
         """
@@ -194,7 +206,7 @@ class Test_metrization_simple(unittest.TestCase):
                     fun(test_set)
                 except AttributeError:
                     pass
-
+        
     def test_copy_clip_merge_slice(self):
         r"""
         Test copying, clipping, merging, slicing
@@ -298,3 +310,8 @@ class Test_metrization_simple(unittest.TestCase):
     def test_get_left(self):
         set_left = self.mtrc.get_left()
         assert set_left == self.left_set
+
+    def test_estimate_density(self):
+        r"""
+        """
+        self.mtrc.estimate_density()
