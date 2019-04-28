@@ -396,8 +396,9 @@ class Test_metrization_simple(unittest.TestCase):
         mm.estimate_density()
         mm.slice([0])
         mc = mm.clip(50)
-        mc.estimate_density()
+        mc.estimate_density()  # make sure function still works!
         ms = mm.merge(mc)
+        ms = ms.clip(0)  # this should just return an identical copy
         ms.slice([0])
         ms.slice([1, 0])
         ms.slice([1, 0, 1])  # can repeat dimensions if you want?
@@ -500,8 +501,31 @@ class Test_metrization_simple(unittest.TestCase):
         """
         self.mtrc.estimate_density()
 
+    def test_set_emulation(self):
+        r"""
+        Different ways to set emulation set.
+        """
+        mm = compP.metrization(None, self.left_set, None)
+        integration_set = self.integration_set.copy()
+        mm.set_int(integration_set)
+        nptest.assert_array_equal(mm.get_int()._values,
+                                  self.integration_set._values)
+        mm.set_integration_sample_set(integration_set)
+        nptest.assert_array_equal(mm.get_int()._values,
+                                  self.integration_set._values)
+        mm.set_emulated_sample_set(integration_set)
+        nptest.assert_array_equal(mm.get_int()._values,
+                                  self.integration_set._values)
+        mm.set_em(integration_set)
+        nptest.assert_array_equal(mm.get_int()._values,
+                                  self.integration_set._values)
+        mm.set_emulated(integration_set)
+        nptest.assert_array_equal(mm.get_int()._values,
+                                  self.integration_set._values)
+
     def test_get(self):
         r"""
+        Different ways to get emulated set.
         """
         mm = self.mtrc
         mm.get_int()
@@ -531,3 +555,15 @@ class Test_metrization_simple(unittest.TestCase):
             mm.estimate_density()
         except AttributeError:
             pass
+
+    def test_discretization(self):
+        r"""
+        Support for passing discretization objects.
+        """
+        dl = sample.discretization(self.left_set, self.right_set)
+        dr = sample.discretization(self.right_set, self.left_set)
+        mm = compP.metric(dl, dr)
+        nptest.assert_array_equal(self.mtrc.get_left()._values,
+                                  mm.get_left()._values)
+        nptest.assert_array_equal(self.mtrc.get_right()._values,
+                                  mm.get_right()._values)
