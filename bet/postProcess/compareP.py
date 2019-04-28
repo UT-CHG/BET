@@ -633,7 +633,7 @@ class metrization(object):
             cr = self._sample_set_right.copy()
         
         if copy:
-            em_set = self.emulated_sample_set.copy()
+            em_set = self._emulated_sample_set.copy()
         else:
             em_set = emulated_sample_set
         return metrization(sample_set_left=cl,
