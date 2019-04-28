@@ -568,3 +568,9 @@ class Test_metrization_simple(unittest.TestCase):
                                   mm.get_left()._values)
         nptest.assert_array_equal(self.mtrc.get_right()._values,
                                   mm.get_right()._values)
+        mm.set_right(dr) # assuming input sample set
+        mm.set_left(dl)
+        nptest.assert_array_equal(self.mtrc.get_left()._values,
+                                  mm.get_left()._values)
+        nptest.assert_array_equal(self.mtrc.get_right()._values,
+                                  mm.get_right()._values)

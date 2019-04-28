@@ -57,8 +57,10 @@ def metric(left_set, right_set, num_mc_points=1000):
     """
     # extract sample set
     if isinstance(left_set, samp.discretization):
+        logging.log(20, "Discretization passed. Assuming input set.")
         left_set = left_set.get_input_sample_set()
     if isinstance(right_set, samp.discretization):
+        logging.log(20, "Discretization passed. Assuming input set.")
         right_set = right_set.get_input_sample_set()
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
@@ -380,17 +382,24 @@ class metrization(object):
         """
         return self.get_sample_set_left()
 
-    def set_sample_set_left(self, sample_set_left):
+    def set_sample_set_left(self, sample_set):
         """
 
         Sets the left sample set for this metrization.
 
-        :param sample_set_left: left sample set
-        :type sample_set_left: :class:`~bet.sample.sample_set_base`
+        :param sample_set: left sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
 
         """
-        if isinstance(sample_set_left, samp.sample_set_base):
-            self._sample_set_left = sample_set_left
+        if isinstance(sample_set, samp.sample_set_base):
+            self._sample_set_left = sample_set
+            self._ptr_left = None
+            self._ptr_left_local = None
+            self._den_left = None
+        elif isinstance(sample_set, samp.discretization):
+            logging.log(20, "Discretization passed. Assuming input set.")
+            sample_set = sample_set.get_input_sample_set()
+            self._sample_set_left = sample_set
             self._ptr_left = None
             self._ptr_left_local = None
             self._den_left = None
@@ -399,10 +408,10 @@ class metrization(object):
                 "Wrong Type: Should be samp.sample_set_base type")
         if self._emulated_sample_set._domain is None:
             self._emulated_sample_set.set_domain(
-                sample_set_left.get_domain())
+                sample_set.get_domain())
         else:
             if not np.allclose(self._emulated_sample_set._domain,
-                               sample_set_left._domain):
+                               sample_set._domain):
                 raise samp.domain_not_matching(
                     "Domain does not match integration set.")
 
@@ -447,30 +456,36 @@ class metrization(object):
         """
         return self.set_sample_set_right(sample_set)
 
-    def set_sample_set_right(self, sample_set_right):
+    def set_sample_set_right(self, sample_set):
         """
 
         Sets the right sample set for this metrization.
 
-        :param sample_set_right: right sample set
-        :type sample_set_right: :class:`~bet.sample.sample_set_base`
+        :param sample_set: left sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
 
         """
-        if isinstance(sample_set_right, samp.sample_set_base):
-            self._sample_set_right = sample_set_right
+        if isinstance(sample_set, samp.sample_set_base):
+            self._sample_set_right = sample_set
+            self._ptr_right = None
+            self._ptr_right_local = None
+            self._den_right = None
+        elif isinstance(sample_set, samp.discretization):
+            logging.log(20, "Discretization passed. Assuming input set.")
+            sample_set = sample_set.get_input_sample_set()
+            self._sample_set_right = sample_set
             self._ptr_right = None
             self._ptr_right_local = None
             self._den_right = None
         else:
             raise TypeError(
                 "Wrong Type: Should be samp.sample_set_base type")
-
         if self._emulated_sample_set._domain is None:
             self._emulated_sample_set.set_domain(
-                sample_set_right.get_domain())
+                sample_set.get_domain())
         else:
             if not np.allclose(self._emulated_sample_set._domain,
-                               sample_set_right._domain):
+                               sample_set._domain):
                 raise samp.domain_not_matching(
                     "Domain does not match integration set.")
 
