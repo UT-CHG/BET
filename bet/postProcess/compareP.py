@@ -81,9 +81,11 @@ def metric(left_set, right_set, num_mc_points=1000):
 class metrization(object):
     """
 
-    A data structure containing :class:`~bet.sample.sample_set_base` objects and
-    associated methods for computing measures of distance between pairs of them.
-    Distances have two slots, hence the language for left/right.
+    A data structure containing three :class:`~bet.sample.sample_set_base`
+    objects and associated methods for computing measures of distance
+    between pairs of them. Distances have two slots, which is reflected
+    in the language of left/right. The third set is an emulation set 
+    against which the two probability measures will be compared.
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
