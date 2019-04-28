@@ -610,7 +610,7 @@ class metrization(object):
         """
         return self.set_emulated_sample_set(sample_set)
 
-    def clip(self, lnum, rnum=None):
+    def clip(self, lnum, rnum=None, copy=True):
         r"""
         Creates and returns a metrization with the the first `lnum`
         and `rnum` entries of the left and right sample sets, resp.
@@ -631,11 +631,14 @@ class metrization(object):
             cr = self._sample_set_right.clip(rnum)
         else:
             cr = self._sample_set_right.copy()
-
+        
+        if copy:
+            em_set = self.emulated_sample_set.copy()
+        else:
+            em_set = emulated_sample_set
         return metrization(sample_set_left=cl,
                            sample_set_right=cr,
-                           emulated_sample_set=self.
-                           _emulated_sample_set.copy())
+                           emulated_sample_set=em_set)
 
     def merge(self, metr):
         r"""
