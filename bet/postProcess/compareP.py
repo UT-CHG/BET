@@ -928,7 +928,7 @@ class metrization(object):
 
     def distance(self, metric='tv', **kwargs):
         r"""
-        Compute distance using the evaluated densities on a shared emulated set.
+        Compute distance using evaluated densities on a shared emulated set.
         If either density evaluation is missing, re-compute it.
         """
         left_den, right_den = self.get_left_density(), self.get_right_density()
