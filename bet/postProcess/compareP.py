@@ -933,13 +933,14 @@ class metrization(object):
         """
         left_den, right_den = self.get_left_density(), self.get_right_density()
         if left_den is None:
-            #logging.log(20,"Left density missing. Estimating now.")
+            # logging.log(20,"Left density missing. Estimating now.")
             left_den = self.estimate_density_left()
         if right_den is None:
-            #logging.log(20,"Right density missing. Estimating now.")
+            # logging.log(20,"Right density missing. Estimating now.")
             right_den = self.estimate_density_right()
 
-        if metric in ['tv', 'totvar', 'total variation', 'total-variation', '1']:
+        if metric in ['tv', 'totvar',
+                      'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
         elif metric in ['mink', 'minkowski']:
             dist = ds.minkowski(left_den, right_den, **kwargs)

@@ -98,7 +98,7 @@ class Test_distance(unittest.TestCase):
 
     def test_exact_symmetry(self):
         r"""
-        If two metrization objects are defined with swapped names of 
+        If two metrization objects are defined with swapped names of
         left and right sample sets, the distance should still be identical
         """
 
@@ -182,8 +182,7 @@ class Test_density(unittest.TestCase):
 
     def test_existing_density(self):
         r"""
-        If using a sampling approach, or existing evaluation, do not re-compute.
-        If a new emulation set is provided, do re-compute.
+        Test intelligent evaluation of density (when to skip).
         """
         ll = self.left_set
         ll._density = ll._probabilities.flatten()/ll._volumes.flatten()
@@ -238,10 +237,10 @@ class Test_metrization_simple(unittest.TestCase):
         Here we test the varying permutations
         """
         self.int_set = self.integration_set
-        md = compP.metric(self.left_set, self.right_set)
-        m10 = compP.metric(self.left_set, self.right_set, 10)
-        mm = compP.metrization(self.int_set, self.left_set, self.right_set)
-        mi = compP.metrization(self.int_set)
+        compP.metric(self.left_set, self.right_set)
+        compP.metric(self.left_set, self.right_set, 10)
+        compP.metrization(self.int_set, self.left_set, self.right_set)
+        compP.metrization(self.int_set)
 
     def test_dimension(self):
         r"""
@@ -353,12 +352,14 @@ class Test_metrization_simple(unittest.TestCase):
             pass
         try:
             compP.metrization(self.integration_set,
-                              self.left_set, self.right_set, ptr, np.ones(self.num))
+                              self.left_set, self.right_set,
+                              ptr, np.ones(self.num))
         except AttributeError:
             pass
         try:
             compP.metrization(self.integration_set,
-                              self.left_set, self.right_set, np.ones(self.num), ptr)
+                              self.left_set, self.right_set,
+                              np.ones(self.num), ptr)
         except AttributeError:
             pass
 
