@@ -7,23 +7,28 @@ import scipy.spatial.distance as ds
 
 
 def density(sample_set, ptr=None):
-    if sample_set._probabilities is None:
-        raise AttributeError("Missing probabilities from sample set.")
-    if sample_set._volumes is None:
-        raise AttributeError("Missing volumes from sample set.")
-    if sample_set._probabilities_local is None:
-        sample_set.global_to_local()
-
+    r"""
+    Compute density for a sample set and write it to the `_emulated_density`
+    attribute.
+    """
     if sample_set is None:
         raise AttributeError("Missing sample set.")
     elif hasattr(sample_set, '_density'):
-        # this is our way of checking if sample set object.
+        # this is our way of checking if we used sampling-approach
+        # if already computed, avoid re-computation.
         if ptr is not None:
             den = sample_set._density[ptr]
         else:
             den = sample_set._density
         sample_set._emulated_density = den
-    else:
+    else:  # not none
+        if sample_set._probabilities is None:
+            raise AttributeError("Missing probabilities from sample set.")
+        if sample_set._volumes is None:
+            raise AttributeError("Missing volumes from sample set.")
+        if sample_set._probabilities_local is None:
+            sample_set.global_to_local()
+
         if ptr is None:
             den = np.divide(sample_set._probabilities.ravel(),
                             sample_set._volumes.ravel())
@@ -31,7 +36,7 @@ def density(sample_set, ptr=None):
             den = np.divide(sample_set._probabilities[ptr].ravel(),
                             sample_set._volumes[ptr].ravel())
         sample_set._emulated_density = den
-    if ptr is None:
+    if ptr is None:  # create pointer to density to avoid re-run
         sample_set._density = sample_set._emulated_density
     else:
         sample_set._prob = sample_set._probabilities[ptr].ravel()
@@ -124,7 +129,7 @@ class metrization(object):
             self._sample_set_right = sample_set_right
             if self._domain is not None:
                 if not np.allclose(self._domain, sample_set_right._domain):
-                    raise AttributeError(
+                    raise samp.domain_not_matching(
                         "Left and Right domains do not match")
             else:
                 self._domain = sample_set_right.get_domain()
@@ -205,7 +210,7 @@ class metrization(object):
         il, ir = self.get_ptr_left(), self.get_ptr_right()
         if (il is not None) and (ir is not None):
             if len(il) != len(ir):
-                msg = "The pointers have inconsistent sizees."
+                msg = "The pointers have inconsistent sizes."
                 msg += "\nTry running set_ptr_left() [or _right()]"
                 raise samp.dim_not_matching(msg)
         return dim
@@ -390,7 +395,7 @@ class metrization(object):
             self._ptr_left_local = None
             self._den_left = None
         else:
-            raise AttributeError(
+            raise TypeError(
                 "Wrong Type: Should be samp.sample_set_base type")
         if self._emulated_sample_set._domain is None:
             self._emulated_sample_set.set_domain(
@@ -398,7 +403,8 @@ class metrization(object):
         else:
             if not np.allclose(self._emulated_sample_set._domain,
                                sample_set_left._domain):
-                raise AttributeError("Domain does not match integration set.")
+                raise samp.domain_not_matching(
+                    "Domain does not match integration set.")
 
     def set_left(self, sample_set):
         r"""
@@ -456,7 +462,7 @@ class metrization(object):
             self._ptr_right_local = None
             self._den_right = None
         else:
-            raise AttributeError(
+            raise TypeError(
                 "Wrong Type: Should be samp.sample_set_base type")
 
         if self._emulated_sample_set._domain is None:
@@ -465,7 +471,8 @@ class metrization(object):
         else:
             if not np.allclose(self._emulated_sample_set._domain,
                                sample_set_right._domain):
-                raise AttributeError("Domain does not match integration set.")
+                raise samp.domain_not_matching(
+                    "Domain does not match integration set.")
 
     def get_emulated_sample_set(self):
         r"""
@@ -504,6 +511,11 @@ class metrization(object):
         else:
             raise AttributeError(
                 "Wrong Type: Should be samp.sample_set_base type")
+        # if a new emulation set is provided, forget the emulated evaluation.
+        if self._sample_set_left is not None:
+            self._sample_set_left._emulated_density = None
+        if self._sample_set_right is not None:
+            self._sample_set_right._emulated_density = None
 
     def get_em(self):
         r"""
@@ -733,7 +745,8 @@ class metrization(object):
         r"""
         Allow overwriting of probabilities for the left set.
         """
-        assert self.get_left().check_num() == len(probabilities)
+        if self.get_left().check_num() != len(probabilities):
+            raise AttributeError("Length of probabilities incorrect.")
         self._sample_set_left._probabilities = probabilities
         self._sample_set_left.global_to_local()
         self._sample_set_left._emulated_density = None
@@ -743,7 +756,8 @@ class metrization(object):
         r"""
         Allow overwriting of probabilities for the right set.
         """
-        assert self.get_right().check_num() == len(probabilities)
+        if self.get_right().check_num() != len(probabilities):
+            raise AttributeError("Length of probabilities incorrect.")
         self._sample_set_right._probabilities = probabilities
         self._sample_set_right.global_to_local()
         self._sample_set_right._emulated_density = None

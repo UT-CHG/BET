@@ -76,7 +76,7 @@ class Test_distance(unittest.TestCase):
         r"""
         Ensure passing identical sets returns 0 distance.
         """
-        for dist in ['tv', 'mink', 'norm', '2-norm', 'sqhell']:
+        for dist in ['tv', 'norm', '2-norm', 'hell']:
             m = compP.metric(self.left_set, self.left_set)
             d = m.distance(dist)
             nptest.assert_equal(d, 0, 'Distance not definite.')
@@ -89,7 +89,7 @@ class Test_distance(unittest.TestCase):
         Error up to approximation in emulation. We know the expected variance
         given a sample size to be 1/sqrt(N).
         """
-        n = 1000
+        n = 100
         m1 = compP.metric(self.left_set, self.right_set, n)
         d1 = m1.distance()
         m2 = compP.metric(self.right_set, self.left_set, n)
@@ -112,7 +112,7 @@ class Test_distance(unittest.TestCase):
         import scipy.spatial.distance as ds
 
         # should be able to overwrite and still get correct answer.
-        for dist in ['tv', 'hell', ds.cityblock]:
+        for dist in ['tv', ds.cityblock]:
             m = compP.metric(self.left_set, self.right_set)
             d1 = m.distance(dist)
             m.set_right(self.left_set)
@@ -125,6 +125,70 @@ class Test_distance(unittest.TestCase):
             m.set_right(ll)
             d2 = m.distance(dist)
             nptest.assert_almost_equal(d1-d2, 0, 12, 'Distance not symmetric.')
+
+
+class Test_density(unittest.TestCase):
+    def setUp(self):
+        self.dim = 1
+        self.int_set = sample.sample_set(dim=self.dim)
+        self.num1, self.num2, self.num = 100, 100, 250
+        self.left_set = unit_center_set(self.dim, self.num1, 0.5)
+        self.right_set = unit_center_set(self.dim, self.num2, 0.5)
+        self.domain = np.array([[0, 1]]*self.dim)
+        values = np.random.rand(self.num, self.dim)
+        self.int_set.set_values(values)
+        self.int_set.set_domain(self.domain)
+
+    def test_missing_probs(self):
+        r"""
+        Check that correct errors get raised
+        """
+        mm = compP.metrization(
+            self.int_set, self.left_set.copy(), self.right_set)
+        try:
+            mm.get_left().set_probabilities(None)
+            mm.estimate_left_density()
+        except AttributeError:
+            pass
+        mm.set_left(self.left_set)
+        # if local probs go missing, we should still be fine
+        mm.get_left()._probabilities_local = None
+        mm.estimate_left_density()
+
+    def test_missing_vols(self):
+        r"""
+        Check that correct errors get raised
+        """
+        mm = compP.metrization(self.int_set, self.left_set, self.right_set)
+        try:
+            mm.get_left().set_volumes(None)
+            mm.estimate_left_density()
+        except AttributeError:
+            pass
+
+    def test_missing(self):
+        r"""
+        Check that correct errors get raised if sample set is None.
+        Check behavior of second argument not being provided.
+        """
+        try:
+            compP.density(None)
+        except AttributeError:
+            pass
+        ll = self.left_set
+        dd = ll._probabilities.flatten()/ll._volumes.flatten()
+        compP.density(ll, None)
+        nptest.assert_array_equal(ll._density, dd)
+
+    def test_existing_density(self):
+        r"""
+        If using a sampling approach, or existing evaluation, do not re-compute.
+        If a new emulation set is provided, do re-compute.
+        """
+        ll = self.left_set
+        ll._density = ll._probabilities.flatten()/ll._volumes.flatten()
+        compP.density(ll)
+        compP.density(ll, [1, 2, 3])
 
 
 class Test_metrization_simple(unittest.TestCase):
@@ -153,6 +217,20 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         """
         self.mtrc.check_dim()
+        try:
+            self.mtrc._sample_set_right._dim = 15
+            self.mtrc.check_dim()
+        except sample.dim_not_matching:
+            self.mtrc._sample_set_right._dim = self.dim
+            pass
+        # force inconsistent sizes
+        try:
+            self.mtrc.set_ptr_right()
+            self.mtrc.set_ptr_left()
+            self.mtrc._ptr_left = self.mtrc._ptr_left[1:]
+            self.mtrc.check_dim()
+        except sample.dim_not_matching:
+            pass
 
     def test_metric(self):
         r"""
@@ -178,10 +256,33 @@ class Test_metrization_simple(unittest.TestCase):
         try:
             compP.metrization(sample_set_left=self.left_set,
                               sample_set_right=self.right_set,
-                              emulated_sample_set=self.integration_set)
+                              emulated_sample_set=integration_set)
         except sample.dim_not_matching:
-            # setting wrong shapes should raise this error
-            print('caught')
+            pass
+        try:
+            compP.metrization(sample_set_left=self.left_set,
+                              sample_set_right=None,
+                              emulated_sample_set=integration_set)
+        except sample.dim_not_matching:
+            pass
+        try:
+            compP.metrization(sample_set_left=self.left_set,
+                              sample_set_right=None,
+                              emulated_sample_set=integration_set)
+        except sample.dim_not_matching:
+            pass
+        # if missing domain info, should be able to infer
+        self.integration_set._domain = None
+        compP.metrization(sample_set_left=None,
+                          sample_set_right=self.right_set,
+                          emulated_sample_set=self.integration_set)
+
+        try:  # if not enough info, raise error
+            self.integration_set._domain = None
+            compP.metrization(sample_set_left=None,
+                              sample_set_right=None,
+                              emulated_sample_set=self.integration_set)
+        except AttributeError:
             pass
 
     def test_set_domain(self):
@@ -190,22 +291,98 @@ class Test_metrization_simple(unittest.TestCase):
         """
         test_set = self.integration_set.copy()
         test_set.set_domain(test_set.get_domain()+0.01)
-        test_metr = [compP.metrization(
-            emulated_sample_set=self.integration_set),
-            compP.metrization(
-            None, sample_set_right=self.integration_set),
-            compP.metrization(
-            None, sample_set_left=self.integration_set)
-        ]
+        # all the ways to initialize the class
+        test_metr = [compP.metrization(self.integration_set),
+                     compP.metrization(self.integration_set,
+                                       sample_set_right=self.right_set),
+                     compP.metrization(self.integration_set,
+                                       sample_set_left=self.left_set)
+                     ]
+        # setting one of the missing properties
         for mm in test_metr:
             test_funs = [mm.set_right,
-                         mm.set_left,
-                         mm.set_int]
+                         mm.set_left]
             for fun in test_funs:
                 try:
                     fun(test_set)
-                except AttributeError:
+                except sample.domain_not_matching:
                     pass
+
+        # overwriting integration sample set
+        test_metr = [
+            compP.metrization(
+                None, sample_set_right=self.right_set),
+            compP.metrization(
+                None, sample_set_left=self.left_set),
+            compP.metrization(self.integration_set,
+                              self.left_set, self.right_set)
+        ]
+
+        # setting one of the missing properties
+        for mm in test_metr:
+            try:
+                mm.set_int(test_set)
+            except sample.domain_not_matching:
+                pass
+
+        try:  # should catch problems on initialization too
+            mm = compP.metrization(self.integration_set,
+                                   self.left_set, test_set)
+        except sample.domain_not_matching:
+            pass
+        try:  # should catch problems on initialization too
+            mm = compP.metrization(self.integration_set,
+                                   test_set, self.right_set)
+        except sample.domain_not_matching:
+            pass
+
+    def test_passed_ptrs(self):
+        r"""
+        Passing incorrect pointer shape raises errors
+        """
+        ptr = np.ones(self.num+1)
+        try:
+            compP.metrization(self.integration_set,
+                              self.left_set, self.right_set, ptr, None)
+        except AttributeError:
+            pass
+        try:
+            compP.metrization(self.integration_set,
+                              self.left_set, self.right_set, None, ptr)
+        except AttributeError:
+            pass
+        try:
+            compP.metrization(self.integration_set,
+                              self.left_set, self.right_set, ptr, np.ones(self.num))
+        except AttributeError:
+            pass
+        try:
+            compP.metrization(self.integration_set,
+                              self.left_set, self.right_set, np.ones(self.num), ptr)
+        except AttributeError:
+            pass
+
+    def test_probabilities(self):
+        r"""
+        Setting/getting probabilities
+        """
+        self.mtrc.set_left_probabilities(np.ones(self.num1))
+        self.mtrc.set_right_probabilities(np.ones(self.num2))
+        try:
+            self.mtrc.set_left_probabilities(np.ones(self.num1+1))
+        except AttributeError:
+            pass
+        try:
+            self.mtrc.set_right_probabilities(np.ones(self.num2+1))
+        except AttributeError:
+            pass
+        ll = self.mtrc.get_left_probabilities()
+        rr = self.mtrc.get_right_probabilities()
+        assert len(ll) == self.num1
+        assert len(rr) == self.num2
+
+    def test_set_volume_mc(self):
+        self.mtrc.estimate_volume_mc()
 
     def test_copy_clip_merge_slice(self):
         r"""
@@ -216,9 +393,10 @@ class Test_metrization_simple(unittest.TestCase):
         mm.get_right().set_reference_value(np.array([0.5]*self.dim))
         mm.get_left()._jacobians = np.ones((self.num1, self.dim, 1))
         mm.get_right()._jacobians = np.ones((self.num2, self.dim, 1))
-
+        mm.estimate_density()
         mm.slice([0])
         mc = mm.clip(50)
+        mc.estimate_density()
         ms = mm.merge(mc)
         ms.slice([0])
         ms.slice([1, 0])
