@@ -7,6 +7,7 @@ to run BET.
 
 import collections
 
+
 class comm_for_no_mpi4py(object):
 
     """
@@ -26,29 +27,29 @@ class comm_for_no_mpi4py(object):
 
     def Get_size(self):
         """
-        
+
         :rtype: int
         :returns: 1
-        
+
         """
         return 1
 
     def Get_rank(self):
         """
-        
+
         :rtype: int
         :returns: 0
-        
+
         """
         return 0
 
     def allgather(self, val):
         """
         :param object val: object to allgather
-        
+
         :rtype: object
         :returns: val
-        
+
         """
         return [val]
 
@@ -56,20 +57,20 @@ class comm_for_no_mpi4py(object):
         """
         :param object val1: object to gather
         :param int root: 0
-        
+
         :rtype: object
         :returns: val1
-        
+
         """
         return [val1]
 
     def allreduce(self, val1, op=None):
         """
         :param object val1: object to allreduce
-        
+
         :rtype: object
         :returns: val1
-        
+
         """
         return val1
 
@@ -77,10 +78,10 @@ class comm_for_no_mpi4py(object):
         """
         :param object val: object to broadcast
         :param int root: 0
-        
+
         :rtype: object
         :returns: val
-        
+
         """
         return val
 
@@ -88,10 +89,10 @@ class comm_for_no_mpi4py(object):
         """
         :param object val1: object to scatter
         :param int root: 0
-        
+
         :rtype: object
         :returns: val1
-        
+
         """
         if isinstance(val1, collections.Iterable) and len(val1) == 1:
             val1 = val1[0]
@@ -100,10 +101,10 @@ class comm_for_no_mpi4py(object):
     def Allgather(self, val, val2=None):
         """
         :param object val: object to Allgather
-        
+
         :rtype: object
         :returns: val
-        
+
         """
         return val
 
@@ -112,10 +113,10 @@ class comm_for_no_mpi4py(object):
         :param object val1: object to Allreduce
         :param object val2: object to Allreduce
         :param op: None
-        
+
         :rtype: object
         :returns: val1
-        
+
         """
         return val1
 
@@ -123,10 +124,10 @@ class comm_for_no_mpi4py(object):
         """
         :param object val: object to gather
         :param int root: 0
-        
+
         :rtype: object
         :returns: val
-        
+
         """
         return val
 
@@ -135,13 +136,13 @@ class comm_for_no_mpi4py(object):
         :param object val1: object to Scatter
         :param object val2: object to Scatter
         :param int root: 0
-        
+
         :rtype: object
         :returns: val1
-        
+
         """
         return val1
-    
+
     def Barrier(self):
         """
         Does nothing in serial.
@@ -154,6 +155,7 @@ class comm_for_no_mpi4py(object):
         """
         pass
 
+
 class MPI_for_no_mpi4py(object):
 
     """
@@ -165,7 +167,7 @@ class MPI_for_no_mpi4py(object):
         """
         Initialization
         """
-        #: fake sum 
+        #: fake sum
         self.SUM = None
         self.MAX = None
         #: float type
@@ -174,6 +176,7 @@ class MPI_for_no_mpi4py(object):
         self.INT = int
         #: bool type
         self.BOOL = bool
+
 
 try:
     from mpi4py import MPI
