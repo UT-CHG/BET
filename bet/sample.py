@@ -2486,6 +2486,8 @@ class discretization(object):
                 raise dim_not_matching("dimension of values incorrect")
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
+        if self._input_sample_set is not None:
+            self.set_io_ptr(globalize=False)
 
     def get_emulated_output_sample_set(self):
         """
