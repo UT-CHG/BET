@@ -211,6 +211,25 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         """
         self.mtrc.check_domain()
+        self.mtrc.get_left()._domain = self.domain*1.05
+        # alter domain to raise errors
+        try:
+            self.mtrc.check_domain()
+        except sample.domain_not_matching:
+            pass
+        # mess up integration set to trigger error
+        self.mtrc.get_left()._domain = self.domain
+        self.mtrc.get_int()._domain = self.domain*1.05
+        try:
+            self.mtrc.check_domain()
+        except sample.domain_not_matching:
+            pass
+        # missing domain
+        self.mtrc.get_left()._domain = None
+        try:
+            self.mtrc.check_domain()
+        except sample.domain_not_matching:
+            pass
 
     def test_dim(self):
         r"""
@@ -469,6 +488,8 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc.set_ptr_left(globalize=False)
         self.mtrc.get_ptr_left()
         self.mtrc.globalize_ptrs()
+        self.mtrc._ptr_left = None
+        self.mtrc.globalize_ptrs()
 
     def test_set_ptr_right(self):
         """
@@ -479,6 +500,8 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc.get_ptr_right()
         self.mtrc.set_ptr_right(globalize=False)
         self.mtrc.get_ptr_right()
+        self.mtrc.globalize_ptrs()
+        self.mtrc._ptr_right = None
         self.mtrc.globalize_ptrs()
 
     def test_set_right(self):
@@ -523,6 +546,14 @@ class Test_metrization_simple(unittest.TestCase):
         mm.set_emulated(integration_set)
         nptest.assert_array_equal(mm.get_int()._values,
                                   self.integration_set._values)
+        try:  # None should trigger error
+            mm._emulated_sample_set = None
+            mm.estimate_density()
+        except AttributeError:
+            pass
+        mm.set_int(integration_set)
+        mm.set_right(self.right_set)
+        mm.estimate_density()
 
     def test_get(self):
         r"""

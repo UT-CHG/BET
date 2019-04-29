@@ -231,12 +231,11 @@ class metrization(object):
                 raise samp.domain_not_matching(msg)
             else:
                 domain = left_set.get_domain()
-        else:
+        else:  # since the domains match, we can choose either.
             if left_set._domain is None or right_set._domain is None:
                 msg = "One or more of your sets is missing a domain."
                 raise samp.domain_not_matching(msg)
-            else:  # since the domains match, we can choose either.
-                domain = left_set.get_domain()
+
         if not np.allclose(self._emulated_sample_set.get_domain(), domain):
             msg = "Integration domain mismatch."
             raise samp.domain_not_matching(msg)
@@ -894,6 +893,10 @@ class metrization(object):
         """
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
+
+        int_set = self.get_int()
+        if int_set is None:
+            raise AttributeError("Missing integration set.")
         self.check_domain()
 
         # set pointers if they have not already been set
@@ -903,7 +906,6 @@ class metrization(object):
             self.set_ptr_right(globalize)
         self.check_dim()
 
-        int_set = self.get_int()
         left_set, right_set = self.get_left(), self.get_right()
 
         if left_set._volumes is None:
@@ -932,16 +934,9 @@ class metrization(object):
             if emulated_sample_set is not None:
                 self.set_right_volume_emulated(emulated_sample_set)
 
-        if int_set is None:
-            raise AttributeError("Missing integration set.")
-
         # compute densities
         self.estimate_density_left()
         self.estimate_density_right()
-
-        if len(right_set._emulated_density) != len(left_set._emulated_density):
-            msg = "Length of pointers "
-            raise samp.dim_not_matching(msg)
 
         if globalize:
             self.local_to_global()
