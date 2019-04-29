@@ -70,7 +70,8 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     # create processor specific file name
     if comm.size > 1 and not globalize:
         local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+                                       "proc{}_{}".format(comm.rank,
+                                       os.path.basename(file_name)))
     else:
         local_file_name = file_name
 
@@ -199,7 +200,8 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         # be the one with the matching processor number (doesn't
         # really matter)
         local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+                                       "proc{}_{}".format(comm.rank,
+                                       os.path.basename(file_name)))
         return load_sample_set(local_file_name, sample_set_name)
     else:
         logging.info("Loading {} sample set using parallel files (diff nproc)"
@@ -1185,7 +1187,8 @@ def save_discretization(save_disc, file_name, discretization_name=None,
     # create processor specific file name
     if comm.size > 1 and not globalize:
         local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank, os.path.basename(file_name)))
+                                       "proc{}_{}".format(comm.rank,
+                                       os.path.basename(file_name)))
     else:
         local_file_name = file_name
 
@@ -1335,8 +1338,8 @@ def load_discretization(file_name, discretization_name=None):
     if file_name.startswith('proc_'):
         pass
     elif not os.path.exists(file_name) and os.path.exists(os.path.join(
-            os.path.dirname(file_name), "proc{}_{}".format(comm.rank,
-                                                           os.path.basename(file_name)))):
+            os.path.dirname(file_name), 
+            "proc{}_{}".format(comm.rank, os.path.basename(file_name)))):
         return load_discretization_parallel(file_name, discretization_name)
 
     mdat = sio.loadmat(file_name)
@@ -1344,18 +1347,20 @@ def load_discretization(file_name, discretization_name=None):
         discretization_name = 'default'
 
     input_sample_set = load_sample_set(file_name,
-                                       discretization_name+'_input_sample_set')
+                                       discretization_name+\
+                                       '_input_sample_set')
 
     output_sample_set = load_sample_set(file_name,
-                                        discretization_name+'_output_sample_set')
+                                        discretization_name+\
+                                        '_output_sample_set')
 
     loaded_disc = discretization(input_sample_set, output_sample_set)
 
     for attrname in discretization.sample_set_names:
         if attrname is not '_input_sample_set' and \
                 attrname is not '_output_sample_set':
-            setattr(loaded_disc, attrname, load_sample_set(file_name,
-                                                           discretization_name+attrname))
+            setattr(loaded_disc, attrname,
+                    load_sample_set(file_name, discretization_name+attrname))
 
     for attrname in discretization.vector_names:
         if discretization_name+attrname in list(mdat.keys()):
@@ -1415,12 +1420,13 @@ class voronoi_sample_set(sample_set_base):
         sorted_samples = self._values[sort_ind]
         domain_width = self._domain[:, 1] - self._domain[:, 0]
 
-        # determine the mid_points which are the edges of the associated voronoi
-        # cells and bound the cells by the domain
-        edges = np.concatenate(([self._domain[:, 0]], (sorted_samples[:-1, :] +
-                                                       sorted_samples[1:, :])*.5, [self._domain[:, 1]]))
-        # calculate difference between right and left of each cell and
-        # renormalize
+        # determine the mid_points which are the edges of the associated 
+        # voronoi cells and bound the cells by the domain
+        edges = np.concatenate(([self._domain[:, 0]],
+                (sorted_samples[:-1, :] + sorted_samples[1:, :])*.5,
+                [self._domain[:, 1]]))
+        # calculate difference between right and left of each cell
+        # and renormalize
         sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
         lam_vol = np.zeros(sorted_lam_vol.shape)
         lam_vol[sort_ind] = sorted_lam_vol
@@ -1445,29 +1451,37 @@ class voronoi_sample_set(sample_set_base):
         new_samp = np.copy(self._values)
 
         # Add points around boundary
-        add_points = np.less(self._values[:, 0], self._domain[0]
-                             [0]+side_ratio*(self._domain[0][1] - self._domain[0][0]))
+        add_points = np.less(self._values[:, 0], 
+                             self._domain[0][0]+\
+                             side_ratio*(self._domain[0][1] -\
+                             self._domain[0][0]))
         points_new = self._values[add_points, :]
         points_new[:, 0] = self._domain[0][0] - \
             (points_new[:, 0]-self._domain[0][0])
         new_samp = np.vstack((new_samp, points_new))
 
-        add_points = np.greater(
-            self._values[:, 0], self._domain[0][1]-side_ratio*(self._domain[0][1] - self._domain[0][0]))
+        add_points = np.greater(self._values[:, 0], 
+                                self._domain[0][1]-\
+                                side_ratio*(self._domain[0][1] -\
+                                self._domain[0][0]))
         points_new = self._values[add_points, :]
         points_new[:, 0] = self._domain[0][1] + \
             (-points_new[:, 0]+self._domain[0][1])
         new_samp = np.vstack((new_samp, points_new))
 
-        add_points = np.less(self._values[:, 1], self._domain[1]
-                             [0]+side_ratio*(self._domain[1][1] - self._domain[1][0]))
+        add_points = np.less(self._values[:, 1],
+                             self._domain[1][0]+\
+                             side_ratio*(self._domain[1][1] -\
+                             self._domain[1][0]))
         points_new = self._values[add_points, :]
         points_new[:, 1] = self._domain[1][0] - \
             (points_new[:, 1]-self._domain[1][0])
         new_samp = np.vstack((new_samp, points_new))
 
-        add_points = np.greater(
-            self._values[:, 1], self._domain[1][1]-side_ratio*(self._domain[1][1] - self._domain[1][0]))
+        add_points = np.greater(self._values[:, 1],
+                                self._domain[1][1]-\
+                                side_ratio*(self._domain[1][1] -\
+                                self._domain[1][0]))
         points_new = self._values[add_points, :]
         points_new[:, 1] = self._domain[1][1] + \
             (-points_new[:, 1]+self._domain[1][1])
@@ -1534,7 +1548,8 @@ class voronoi_sample_set(sample_set_base):
 
         width = self._domain[:, 1] - self._domain[:, 0]
         mc_points = width*np.random.random((n_mc_points_local,
-                                            self._domain.shape[0])) + self._domain[:, 0]
+                                            self._domain.shape[0])) +\
+                                            self._domain[:, 0]
 
         (_, emulate_ptr) = self.query(mc_points)
 
@@ -1549,8 +1564,9 @@ class voronoi_sample_set(sample_set_base):
         rad = np.zeros((num,))
 
         for i in range(num):
-            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),
-                                                     :] - samples[i, :], ord=self._p_norm, axis=1))
+            rad[i] = np.max(np.linalg.norm(
+                            mc_points[np.equal(emulate_ptr, i),:] -\
+                            samples[i, :], ord=self._p_norm, axis=1))
 
         crad = np.copy(rad)
         comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
@@ -1593,7 +1609,8 @@ class voronoi_sample_set(sample_set_base):
 
         width = self._domain[:, 1] - self._domain[:, 0]
         mc_points = width*np.random.random((n_mc_points_local,
-                                            self._domain.shape[0])) + self._domain[:, 0]
+                                            self._domain.shape[0])) +\
+                                            self._domain[:, 0]
 
         (_, emulate_ptr) = self.query(mc_points)
 
@@ -1609,8 +1626,9 @@ class voronoi_sample_set(sample_set_base):
         rad = np.zeros((num,))
         for i in range(num):
             vol[i] = np.sum(np.equal(emulate_ptr, i))
-            rad[i] = np.max(np.linalg.norm(mc_points[np.equal(emulate_ptr, i),
-                                                     :] - samples[i, :], ord=self._p_norm, axis=1))
+            rad[i] = np.max(np.linalg.norm(
+                            mc_points[np.equal(emulate_ptr, i),:] -\
+                            samples[i, :], ord=self._p_norm, axis=1))
 
         crad = np.copy(rad)
         comm.Allreduce([rad, MPI.DOUBLE], [crad, MPI.DOUBLE], op=MPI.MAX)
@@ -1724,20 +1742,24 @@ class voronoi_sample_set(sample_set_base):
                 total_samples = total_samples*10
                 # Sample within an Lp ball until num_emulate_local samples are
                 # present in the Voronoi cell
-                local_lambda_emulate = lp.Lp_generalized_uniform(self._dim,
-                                                                 total_samples, self._p_norm,
-                                                                 scale=sample_radii[iglobal], loc=samples[iglobal])
+                local_lambda_emulate = \
+                        lp.Lp_generalized_uniform(self._dim, total_samples,
+                                                  self._p_norm,
+                                                  scale=sample_radii[iglobal],
+                                                  loc=samples[iglobal])
 
                 # determine the number of samples in the Voronoi cell
                 # (intersected with the input_domain)
                 if self._domain is not None:
-                    inside = np.all(np.logical_and(local_lambda_emulate >= 0.0,
-                                                   local_lambda_emulate <= 1.0), 1)
+                    inside = np.all(np.logical_and(
+                                 local_lambda_emulate >= 0.0,
+                                 local_lambda_emulate <= 1.0), 1)
                     local_lambda_emulate = local_lambda_emulate[inside]
 
                 (_, emulate_ptr) = kdtree.query(local_lambda_emulate,
                                                 p=self._p_norm,
-                                                distance_upper_bound=sample_radii[iglobal])
+                                                distance_upper_bound=\
+                                                sample_radii[iglobal])
 
                 samples_in_cell = np.sum(np.equal(emulate_ptr, iglobal))
 
@@ -1960,8 +1982,9 @@ class rectangle_sample_set(sample_set_base):
                     in_rec_now = np.logical_and(np.equal(pt[:, j], num-1),
                                                 in_rec)
                 else:
-                    in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,
-                                                                           j], num-1), in_rec), np.not_equal(pt[:, j-1], i))
+                    in_rec_now = np.logical_and(np.logical_and(
+                                            np.equal(pt[:, j], num-1), in_rec),
+                                            np.not_equal(pt[:, j-1], i))
                 pt[:, j][in_rec_now] = i
                 dist[:, j][in_rec_now] = 0.0
         if k == 1:
@@ -2132,8 +2155,9 @@ class ball_sample_set(sample_set_base):
                     in_rec_now = np.logical_and(np.equal(pt[:, j], num-1),
                                                 in_rec)
                 else:
-                    in_rec_now = np.logical_and(np.logical_and(np.equal(pt[:,
-                                                                           j], num-1), in_rec), np.not_equal(pt[:, j-1], i))
+                    in_rec_now = np.logical_and(np.logical_and(
+                                            np.equal(pt[:,j], num-1), in_rec),
+                                            np.not_equal(pt[:, j-1], i))
                 pt[:, j][in_rec_now] = i
                 dist[:, j][in_rec_now] = 0.0
         if k == 1:
@@ -2599,8 +2623,8 @@ class discretization(object):
         if self._emulated_input_sample_set is None:
             raise AttributeError("Required: _emulated_input_sample_set")
         else:
-            self._input_sample_set.estimate_volume_emulated(self.
-                                                            _emulated_input_sample_set)
+            self._input_sample_set.estimate_volume_emulated(
+                self._emulated_input_sample_set)
 
     def estimate_output_volume_emulated(self):
         """
@@ -2635,10 +2659,13 @@ class discretization(object):
         co = self._output_sample_set.clip(cnum)
 
         return discretization(input_sample_set=ci,
-                              output_sample_set=co,
-                              output_probability_set=self._output_probability_set,
-                              emulated_input_sample_set=self._emulated_input_sample_set,
-                              emulated_output_sample_set=self._emulated_output_sample_set)
+                                output_sample_set=co,
+                                output_probability_set=
+                                self._output_probability_set,
+                                emulated_input_sample_set=
+                                self._emulated_input_sample_set,
+                                emulated_output_sample_set=
+                                self._emulated_output_sample_set)
 
     def merge(self, disc):
         """
