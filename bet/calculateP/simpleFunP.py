@@ -19,6 +19,13 @@ class wrong_argument_type(Exception):
     types.
     """
 
+def infer_Q(data_set):
+    if isinstance(data_set, samp.sample_set_base):
+            return data_set.get_reference_value()
+        elif isinstance(data_set, samp.discretization):
+            return data_set._output_sample_set.get_reference_value()
+        else:
+            return None
 
 def check_inputs(data_set, Q_ref):
     """
@@ -130,12 +137,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     :returns: sample_set object defininng simple function approximation
     """
     if Q_ref is None:
-        if isinstance(data_set, samp.sample_set_base):
-            Q_ref = data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            Q_ref = data_set._output_sample_set.get_reference_value()
-        else:
-            pass
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
 
     if rect_size is None:
@@ -266,12 +268,7 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set,
     :returns: sample_set object defininng simple function approximation
     """
     if Q_ref is None:
-        if isinstance(data_set, samp.sample_set_base):
-            Q_ref = data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            Q_ref = data_set._output_sample_set.get_reference_value()
-        else:
-            pass
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
     rect_size = (np.max(values, 0) - np.min(values, 0))*rect_scale
 
@@ -355,12 +352,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
     """
     if Q_ref is None:
-        if isinstance(data_set, samp.sample_set_base):
-            Q_ref = data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            Q_ref = data_set._output_sample_set.get_reference_value()
-        else:
-            pass
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
 
     data = values
@@ -471,12 +463,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set,
 
     """
     if Q_ref is None:
-        if isinstance(data_set, samp.sample_set_base):
-            Q_ref = data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            Q_ref = data_set._output_sample_set.get_reference_value()
-        else:
-            pass
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
 
     data = values
@@ -563,12 +550,7 @@ def normal_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
 
     """
     if Q_ref is None:
-        if isinstance(data_set, samp.sample_set_base):
-            Q_ref = data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            Q_ref = data_set._output_sample_set.get_reference_value()
-        else:
-            pass
+        Q_ref = infer_Q(data_set)
     import scipy.stats as stats
     r'''Create M smaples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
@@ -670,12 +652,7 @@ def uniform_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
     if Q_ref is None:
-        if isinstance(data_set, samp.sample_set_base):
-            Q_ref = data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            Q_ref = data_set._output_sample_set.get_reference_value()
-        else:
-            pass
+        Q_ref = infer_Q(data_set)
     if not isinstance(Q_ref, collections.Iterable):
         Q_ref = np.array([Q_ref])
     if not isinstance(std, collections.Iterable):
