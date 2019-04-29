@@ -377,6 +377,7 @@ class sampler(object):
         # Solve the model at the samples
         if input_sample_set._values_local is None:
             input_sample_set.global_to_local()
+
         local_output = self.lb_model(
             input_sample_set.get_values_local())
         if isinstance(local_output, np.ndarray):
@@ -401,6 +402,22 @@ class sampler(object):
             output_dim = local_output_values.shape[1]
         output_sample_set = sample.sample_set(output_dim)
         output_sample_set.set_values_local(local_output_values)
+        lam_ref = input_sample_set._reference_value 
+        if lam_ref is not None:
+            try:
+                if not isinstance(lam_ref, collections.Iterable):
+                    lam_ref = np.array([lam_ref])
+                Q_ref = self.lb_model(lam_ref)
+                output_sample_set.set_reference_value(Q_ref)
+            except ValueError:
+                try:
+                    msg = "Model not mapping reference value as expected."
+                    msg += "Attempting reshape..."
+                    logging.log(20, msg)
+                    Q_ref = self.lb_model(lam_ref.reshape(-1,1))
+                    output_sample_set.set_reference_value(Q_ref)
+                except ValueError:
+                    logging.log(20, 'Unable to map reference value.')
         if self.error_estimates:
             output_sample_set.set_error_estimates_local(local_output_ee)
         if self.jacobians:
