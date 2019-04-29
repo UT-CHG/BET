@@ -19,13 +19,15 @@ class wrong_argument_type(Exception):
     types.
     """
 
+
 def infer_Q(data_set):
     if isinstance(data_set, samp.sample_set_base):
-            return data_set.get_reference_value()
-        elif isinstance(data_set, samp.discretization):
-            return data_set._output_sample_set.get_reference_value()
-        else:
-            return None
+        return data_set.get_reference_value()
+    elif isinstance(data_set, samp.discretization):
+        return data_set._output_sample_set.get_reference_value()
+    else:
+        return None
+
 
 def check_inputs(data_set, Q_ref):
     """
