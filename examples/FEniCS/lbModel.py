@@ -11,6 +11,7 @@ import scipy.io as sio
 import sys
 import numpy as np
 
+
 def lb_model(input_data):
     num_runs = input_data.shape[0]
     num_runs_dim = input_data.shape[1]
@@ -18,9 +19,9 @@ def lb_model(input_data):
     # Setup the job file for Launcher.
     f = open('launcher_runs.txt', 'w')
     for i in range(0, num_runs):
-        output_str = sys.executable + ' myModel_serial.py '  + repr(i) + ' '
+        output_str = sys.executable + ' myModel_serial.py ' + repr(i) + ' '
         for j in range(0, num_runs_dim):
-            output_str = output_str + repr(input_data[i,j]) + ' '
+            output_str = output_str + repr(input_data[i, j]) + ' '
         output_str += '\n'
         f.write(output_str)
     f.close()
@@ -38,7 +39,7 @@ def lb_model(input_data):
     for i in range(0, num_runs):
         io_file_name = 'QoI_sample' + repr(i)
         io_mdat = sio.loadmat(io_file_name)
-        QoI_samples[i,:] = io_mdat['output']
+        QoI_samples[i, :] = io_mdat['output']
         io_file_str = io_file_name + '.mat'
         os.remove(io_file_str)
 

@@ -54,18 +54,19 @@ def computeSaveKL(numKL):
              ex=etaX,ey=etaY, C=C)
     '''
     # An Exponential Covariance
-    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)",ex=etaX,ey=etaY, C=C, \
-	degree = 10)
+    cov = Expression("C*exp(-fabs(x[0]-x[1])/ex - fabs(x[2]-x[3])/ey)", ex=etaX, ey=etaY, C=C,
+                     degree=10)
 
     # Solve the discrete covariance relation on the mesh
-    Lmesh.projectCovToMesh(numKL,cov)
+    Lmesh.projectCovToMesh(numKL, cov)
 
     # Get the eigenfunctions and eigenvalues
     eigen_val = Lmesh.eigen_vals
 
-    eigen_func_mat = np.zeros((numKL, Lmesh.eigen_funcs[0].vector().array().size))
-    for i in range(0,numKL):
-        eigen_func_mat[i,:] = Lmesh.eigen_funcs[i].vector().array()
+    eigen_func_mat = np.zeros(
+        (numKL, Lmesh.eigen_funcs[0].vector().array().size))
+    for i in range(0, numKL):
+        eigen_func_mat[i, :] = Lmesh.eigen_funcs[i].vector().array()
 
     kl_mdat = dict()
     kl_mdat['KL_eigen_funcs'] = eigen_func_mat
