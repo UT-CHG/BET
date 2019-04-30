@@ -685,15 +685,8 @@ def uniform_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     distribution with mean Q_ref and standard deviation std.'''
     if Q_ref is None:
         Q_ref = infer_Q(data_set)
-<<<<<<< HEAD
-    if not isinstance(Q_ref, collections.Iterable):
-        Q_ref = np.array([Q_ref])
-    if not isinstance(std, collections.Iterable):
-        std = np.array([std])
-=======
     Q_ref = check_type(Q_ref, data_set)
     std = check_type(std, data_set)
->>>>>>> master
 
     bin_size = 4.0 * std
     d_distr_samples = np.zeros((M, len(Q_ref)))
