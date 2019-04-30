@@ -609,6 +609,7 @@ class sample_set_base(object):
                 setattr(sset, array_name, new_array)
         if sset._values_local is not None:
             sset.global_to_local()
+        sset.set_kdtree()
         return sset
 
     def check_num(self):
