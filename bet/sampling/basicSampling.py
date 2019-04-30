@@ -417,7 +417,7 @@ class sampler(object):
                     msg = "Model not mapping reference value as expected."
                     msg += "Attempting reshape..."
                     logging.log(20, msg)
-                    Q_ref = self.lb_model(lam_ref.reshape(-1, 1))
+                    Q_ref = self.lb_model(lam_ref.reshape(1, -1))
                     output_sample_set.set_reference_value(Q_ref)
                 except ValueError:
                     logging.log(20, 'Unable to map reference value.')
