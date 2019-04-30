@@ -20,7 +20,35 @@ class wrong_argument_type(Exception):
     """
 
 
+def check_type(val, data_set=None):
+    """
+    Add support for different data types that can be passed as keyword
+    arguments. Attempt to infer dimension and set it correctly.
+    """
+    if isinstance(data_set, samp.discretization):
+        dim = data_set._output_sample_set.get_dim()
+    elif isinstance(data_set, samp.sample_set_base):
+        dim = data_set.get_dim()
+    else:
+        dim = 1
+    if isinstance(val, float) or isinstance(val, int):
+        val = np.array([val]*dim)
+    elif isinstance(val, list) or isinstance(val, tuple):
+        if len(val) != dim:
+            raise samp.dim_not_matching("Dimension mismatch.")
+        else:
+            val = np.array(val)
+    elif not isinstance(val, collections.Iterable):
+        val = np.array([val])
+    else:
+        pass
+    return val
+
+
 def infer_Q(data_set):
+    """
+    Attempt to infer reference value around which to define a sample set.
+    """
     if isinstance(data_set, samp.sample_set_base):
         return data_set.get_reference_value()
     elif isinstance(data_set, samp.discretization):
@@ -222,6 +250,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     '''
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
@@ -392,6 +421,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
@@ -522,6 +552,7 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
@@ -557,10 +588,8 @@ def normal_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     r'''Create M smaples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
-    if not isinstance(Q_ref, collections.Iterable):
-        Q_ref = np.array([Q_ref])
-    if not isinstance(std, collections.Iterable):
-        std = np.array([std])
+    Q_ref = check_type(Q_ref, data_set)
+    std = check_type(std, data_set)
 
     covariance = std ** 2
 
@@ -620,6 +649,7 @@ def normal_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     # solving the model EVER! This can be done "offline" so to speak.
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
@@ -655,10 +685,15 @@ def uniform_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     distribution with mean Q_ref and standard deviation std.'''
     if Q_ref is None:
         Q_ref = infer_Q(data_set)
+<<<<<<< HEAD
     if not isinstance(Q_ref, collections.Iterable):
         Q_ref = np.array([Q_ref])
     if not isinstance(std, collections.Iterable):
         std = np.array([std])
+=======
+    Q_ref = check_type(Q_ref, data_set)
+    std = check_type(std, data_set)
+>>>>>>> master
 
     bin_size = 4.0 * std
     d_distr_samples = np.zeros((M, len(Q_ref)))
@@ -706,6 +741,7 @@ def uniform_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     # solving the model EVER! This can be done "offline" so to speak.
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
@@ -812,4 +848,5 @@ def user_partition_user_distribution(data_set, data_partition_set,
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
