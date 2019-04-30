@@ -21,6 +21,10 @@ class wrong_argument_type(Exception):
 
 
 def check_type(val, data_set=None):
+    """
+    Add support for different data types that can be passed as keyword
+    arguments. Attempt to infer dimension and set it correctly.
+    """
     if isinstance(data_set, samp.discretization):
         dim = data_set._output_sample_set.get_dim()
     elif isinstance(data_set, samp.sample_set_base):
@@ -42,6 +46,9 @@ def check_type(val, data_set=None):
 
 
 def infer_Q(data_set):
+    """
+    Attempt to infer reference value around which to define a sample set.
+    """
     if isinstance(data_set, samp.sample_set_base):
         return data_set.get_reference_value()
     elif isinstance(data_set, samp.discretization):
