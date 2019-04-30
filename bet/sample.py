@@ -2487,7 +2487,8 @@ class discretization(object):
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
         if self._output_sample_set._values_local is not None:
-            self.set_io_ptr(globalize=False)
+            if output_probability_set._values is not None:
+                self.set_io_ptr(globalize=False)
 
     def get_emulated_output_sample_set(self):
         """
