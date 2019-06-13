@@ -614,24 +614,24 @@ class comparison(object):
                           sample_set_right=cr,
                           emulated_sample_set=em_set)
 
-    def merge(self, metr):
+    def merge(self, comp):
         r"""
         Merges a given comparison with this one by merging the input and
         output sample sets.
 
-        :param metr: comparison object to merge with.
-        :type metr: :class:`bet.sample.comparison`
+        :param comp: comparison object to merge with.
+        :type comp: :class:`bet.sample.comparison`
 
         :rtype: :class:`bet.sample.comparison`
         :returns: Merged comparison
         """
-        ml = self._sample_set_left.merge(metr._sample_set_left)
-        mr = self._sample_set_right.merge(metr._sample_set_right)
+        ml = self._sample_set_left.merge(comp._sample_set_left)
+        mr = self._sample_set_right.merge(comp._sample_set_right)
         il, ir = self._ptr_left, self._ptr_right
-        if metr._ptr_left is not None:
-            il += metr._ptr_left
-        if metr._ptr_right is not None:
-            ir += metr._ptr_right
+        if comp._ptr_left is not None:
+            il += comp._ptr_left
+        if comp._ptr_right is not None:
+            ir += comp._ptr_right
         return comparison(sample_set_left=ml,
                           sample_set_right=mr,
                           emulated_sample_set=self._emulated_sample_set,
@@ -698,11 +698,11 @@ class comparison(object):
                 nval = nval.take(dims, axis=2)
                 setattr(right_ss, obj, nval)
 
-        metr = comparison(sample_set_left=left_ss,
+        comp = comparison(sample_set_left=left_ss,
                           sample_set_right=right_ss,
                           emulated_sample_set=int_ss)
         # additional attributes to copy over here. TODO: maybe slice through
-        return metr
+        return comp
 
     def global_to_local(self):
         """
