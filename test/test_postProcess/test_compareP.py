@@ -77,11 +77,11 @@ class Test_distance(unittest.TestCase):
         Ensure passing identical sets returns 0 distance.
         """
         for dist in ['tv', 'norm', '2-norm', 'hell']:
-            m = compP.metric(self.left_set, self.left_set)
-            d = m.distance(dist)
+            m = compP.compare(self.left_set, self.left_set)
+            d = m.value(dist)
             nptest.assert_equal(d, 0, 'Distance not definite.')
-            m = compP.metric(self.left_set, self.left_set)
-            d = m.distance(dist)
+            m = compP.compare(self.left_set, self.left_set)
+            d = m.value(dist)
             nptest.assert_equal(d, 0, 'Distance not definite.')
 
     def test_aprox_symmetry(self):
@@ -90,41 +90,41 @@ class Test_distance(unittest.TestCase):
         given a sample size to be 1/sqrt(N).
         """
         n = 100
-        m1 = compP.metric(self.left_set, self.right_set, n)
-        d1 = m1.distance()
-        m2 = compP.metric(self.right_set, self.left_set, n)
-        d2 = m2.distance()
+        m1 = compP.compare(self.left_set, self.right_set, n)
+        d1 = m1.value()
+        m2 = compP.compare(self.right_set, self.left_set, n)
+        d2 = m2.value()
         nptest.assert_almost_equal(d1 - d2, 0, 1, 'Distance not symmetric.')
 
     def test_exact_symmetry(self):
         r"""
-        If two metrization objects are defined with swapped names of
+        If two comparison objects are defined with swapped names of
         left and right sample sets, the distance should still be identical
         """
 
-        m1 = compP.metrization(self.int_set, self.left_set, self.right_set)
-        m2 = compP.metrization(self.int_set, self.right_set, self.left_set)
+        m1 = compP.comparison(self.int_set, self.left_set, self.right_set)
+        m2 = compP.comparison(self.int_set, self.right_set, self.left_set)
         for dist in ['tv', 'mink', '2-norm', 'sqhell']:
-            d1 = m1.distance(dist)
-            d2 = m2.distance(dist)
+            d1 = m1.value(dist)
+            d2 = m2.value(dist)
             nptest.assert_almost_equal(
                 d1 - d2, 0, 12, 'Distance %s not symmetric.' % dist)
         import scipy.spatial.distance as ds
 
         # should be able to overwrite and still get correct answer.
         for dist in ['tv', ds.cityblock]:
-            m = compP.metric(self.left_set, self.right_set)
-            d1 = m.distance(dist)
+            m = compP.compare(self.left_set, self.right_set)
+            d1 = m.value(dist)
             m.set_right(self.left_set)
             m.set_left(self.right_set)
-            d2 = m.distance(dist)
+            d2 = m.value(dist)
             nptest.assert_almost_equal(
                 d1 - d2, 0, 12, 'Distance not symmetric.')
             # grabbing copies like this should also work.
             ll = m.get_left().copy()
             m.set_left(m.get_right())
             m.set_right(ll)
-            d2 = m.distance(dist)
+            d2 = m.value(dist)
             nptest.assert_almost_equal(
                 d1 - d2, 0, 12, 'Distance not symmetric.')
 
@@ -145,7 +145,7 @@ class Test_density(unittest.TestCase):
         r"""
         Check that correct errors get raised
         """
-        mm = compP.metrization(
+        mm = compP.comparison(
             self.int_set, self.left_set.copy(), self.right_set)
         try:
             mm.get_left().set_probabilities(None)
@@ -161,7 +161,7 @@ class Test_density(unittest.TestCase):
         r"""
         Check that correct errors get raised
         """
-        mm = compP.metrization(self.int_set, self.left_set, self.right_set)
+        mm = compP.comparison(self.int_set, self.left_set, self.right_set)
         try:
             mm.get_left().set_volumes(None)
             mm.estimate_left_density()
@@ -192,7 +192,7 @@ class Test_density(unittest.TestCase):
         compP.density(ll, [1, 2, 3])
 
 
-class Test_metrization_simple(unittest.TestCase):
+class Test_comparison_simple(unittest.TestCase):
     def setUp(self):
         self.dim = 3
         self.num1, self.num2, self.num = 100, 100, 500
@@ -205,7 +205,7 @@ class Test_metrization_simple(unittest.TestCase):
         self.integration_set.set_domain(self.domain)
         self.left_set.set_domain(self.domain)
         self.right_set.set_domain(self.domain)
-        self.mtrc = compP.metrization(sample_set_left=self.left_set,
+        self.mtrc = compP.comparison(sample_set_left=self.left_set,
                                       sample_set_right=self.right_set,
                                       emulated_sample_set=self.integration_set)
 
@@ -258,10 +258,10 @@ class Test_metrization_simple(unittest.TestCase):
         Here we test the varying permutations
         """
         self.int_set = self.integration_set
-        compP.metric(self.left_set, self.right_set)
-        compP.metric(self.left_set, self.right_set, 10)
-        compP.metrization(self.int_set, self.left_set, self.right_set)
-        compP.metrization(self.int_set)
+        compP.compare(self.left_set, self.right_set)
+        compP.compare(self.left_set, self.right_set, 10)
+        compP.comparison(self.int_set, self.left_set, self.right_set)
+        compP.comparison(self.int_set)
 
     def test_dimension(self):
         r"""
@@ -274,32 +274,32 @@ class Test_metrization_simple(unittest.TestCase):
         integration_set.set_domain(np.tile([0, 1], [dim, 1]))
 
         try:
-            compP.metrization(sample_set_left=self.left_set,
+            compP.comparison(sample_set_left=self.left_set,
                               sample_set_right=self.right_set,
                               emulated_sample_set=integration_set)
         except sample.dim_not_matching:
             pass
         try:
-            compP.metrization(sample_set_left=self.left_set,
+            compP.comparison(sample_set_left=self.left_set,
                               sample_set_right=None,
                               emulated_sample_set=integration_set)
         except sample.dim_not_matching:
             pass
         try:
-            compP.metrization(sample_set_left=self.left_set,
+            compP.comparison(sample_set_left=self.left_set,
                               sample_set_right=None,
                               emulated_sample_set=integration_set)
         except sample.dim_not_matching:
             pass
         # if missing domain info, should be able to infer
         self.integration_set._domain = None
-        compP.metrization(sample_set_left=None,
+        compP.comparison(sample_set_left=None,
                           sample_set_right=self.right_set,
                           emulated_sample_set=self.integration_set)
 
         try:  # if not enough info, raise error
             self.integration_set._domain = None
-            compP.metrization(sample_set_left=None,
+            compP.comparison(sample_set_left=None,
                               sample_set_right=None,
                               emulated_sample_set=self.integration_set)
         except AttributeError:
@@ -312,10 +312,10 @@ class Test_metrization_simple(unittest.TestCase):
         test_set = self.integration_set.copy()
         test_set.set_domain(test_set.get_domain() + 0.01)
         # all the ways to initialize the class
-        test_metr = [compP.metrization(self.integration_set),
-                     compP.metrization(self.integration_set,
+        test_metr = [compP.comparison(self.integration_set),
+                     compP.comparison(self.integration_set,
                                        sample_set_right=self.right_set),
-                     compP.metrization(self.integration_set,
+                     compP.comparison(self.integration_set,
                                        sample_set_left=self.left_set)
                      ]
         # setting one of the missing properties
@@ -330,11 +330,11 @@ class Test_metrization_simple(unittest.TestCase):
 
         # overwriting integration sample set
         test_metr = [
-            compP.metrization(
+            compP.comparison(
                 None, sample_set_right=self.right_set),
-            compP.metrization(
+            compP.comparison(
                 None, sample_set_left=self.left_set),
-            compP.metrization(self.integration_set,
+            compP.comparison(self.integration_set,
                               self.left_set, self.right_set)
         ]
 
@@ -346,12 +346,12 @@ class Test_metrization_simple(unittest.TestCase):
                 pass
 
         try:  # should catch problems on initialization too
-            mm = compP.metrization(self.integration_set,
+            mm = compP.comparison(self.integration_set,
                                    self.left_set, test_set)
         except sample.domain_not_matching:
             pass
         try:  # should catch problems on initialization too
-            mm = compP.metrization(self.integration_set,
+            mm = compP.comparison(self.integration_set,
                                    test_set, self.right_set)
         except sample.domain_not_matching:
             pass
@@ -362,23 +362,23 @@ class Test_metrization_simple(unittest.TestCase):
         """
         ptr = np.ones(self.num + 1)
         try:
-            compP.metrization(self.integration_set,
+            compP.comparison(self.integration_set,
                               self.left_set, self.right_set, ptr, None)
         except AttributeError:
             pass
         try:
-            compP.metrization(self.integration_set,
+            compP.comparison(self.integration_set,
                               self.left_set, self.right_set, None, ptr)
         except AttributeError:
             pass
         try:
-            compP.metrization(self.integration_set,
+            compP.comparison(self.integration_set,
                               self.left_set, self.right_set,
                               ptr, np.ones(self.num))
         except AttributeError:
             pass
         try:
-            compP.metrization(self.integration_set,
+            compP.comparison(self.integration_set,
                               self.left_set, self.right_set,
                               np.ones(self.num), ptr)
         except AttributeError:
@@ -438,11 +438,11 @@ class Test_metrization_simple(unittest.TestCase):
         test_set = sample.sample_set(dim=self.dim)  # no domain info
         other_set = test_set.copy()  # has domain info
         other_set.set_domain(self.domain)
-        mm = compP.metrization(None, other_set)
-        mm = compP.metrization(None, None, other_set)
-        mm = compP.metrization(test_set, other_set, None)
-        mm = compP.metrization(test_set, None, other_set)
-        mm = compP.metrization(test_set, None, None)
+        mm = compP.comparison(None, other_set)
+        mm = compP.comparison(None, None, other_set)
+        mm = compP.comparison(test_set, other_set, None)
+        mm = compP.comparison(test_set, None, other_set)
+        mm = compP.comparison(test_set, None, None)
         mm.set_left(other_set)
         try:  # we are missing a set, so this should fail
             mm.check_domain()
@@ -454,15 +454,15 @@ class Test_metrization_simple(unittest.TestCase):
 
         # the following should error out because not enough information
         try:
-            self.mtrc = compP.metrization(None)
+            self.mtrc = compP.comparison(None)
         except AttributeError:
             pass
         try:
-            self.mtrc = compP.metrization(None, None, test_set)
+            self.mtrc = compP.comparison(None, None, test_set)
         except AttributeError:
             pass
         try:
-            self.mtrc = compP.metrization(test_set, None, other_set)
+            self.mtrc = compP.comparison(test_set, None, other_set)
         except AttributeError:
             pass
 
@@ -473,11 +473,11 @@ class Test_metrization_simple(unittest.TestCase):
         test_set = sample.sample_set(dim=self.dim)
         test_set.set_domain(self.domain)
         other_set = test_set.copy()
-        self.mtrc = compP.metrization(test_set)
-        self.mtrc = compP.metrization(test_set, None)
-        self.mtrc = compP.metrization(test_set, None, other_set)
-        self.mtrc = compP.metrization(test_set, other_set, None)
-        self.mtrc = compP.metrization(test_set, None, None)
+        self.mtrc = compP.comparison(test_set)
+        self.mtrc = compP.comparison(test_set, None)
+        self.mtrc = compP.comparison(test_set, None, other_set)
+        self.mtrc = compP.comparison(test_set, other_set, None)
+        self.mtrc = compP.comparison(test_set, None, None)
 
     # TO DO: test left and right missing domains, inferred from others.
     def test_set_ptr_left(self):
@@ -531,7 +531,7 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         Different ways to set emulation set.
         """
-        mm = compP.metrization(None, self.left_set, None)
+        mm = compP.comparison(None, self.left_set, None)
         integration_set = self.integration_set.copy()
         mm.set_int(integration_set)
         nptest.assert_array_equal(mm.get_int()._values,
@@ -596,7 +596,7 @@ class Test_metrization_simple(unittest.TestCase):
         """
         dl = sample.discretization(self.left_set, self.right_set)
         dr = sample.discretization(self.right_set, self.left_set)
-        mm = compP.metric(dl, dr)
+        mm = compP.compare(dl, dr)
         nptest.assert_array_equal(self.mtrc.get_left()._values,
                                   mm.get_left()._values)
         nptest.assert_array_equal(self.mtrc.get_right()._values,
