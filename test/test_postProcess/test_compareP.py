@@ -32,20 +32,20 @@ def unit_center_set(dim=1, num_samples=100,
 
     """
     s_set = sample.sample_set(dim)
-    s_set.set_domain(np.array([[0, 1]]*dim))
+    s_set.set_domain(np.array([[0, 1]] * dim))
     if reg:
         s = bsam.regular_sample_set(s_set, num_samples)
     else:
         s = bsam.random_sample_set('r', s_set, num_samples)
-    dd = delta/2.0
+    dd = delta / 2.0
     if dim > 1:
-        probs = 1*(np.sum(np.logical_and(s._values <= (0.5+dd),
-                                         s._values >= (0.5-dd)), axis=1)
-                   >= dim)
+        probs = 1 * (np.sum(np.logical_and(s._values <= (0.5 + dd),
+                                           s._values >= (0.5 - dd)), axis=1)
+                     >= dim)
     else:
-        probs = 1*(np.logical_and(s._values <= (0.5+dd),
-                                  s._values >= (0.5-dd)))
-    s.set_probabilities(probs/np.sum(probs))  # uniform probabilities
+        probs = 1 * (np.logical_and(s._values <= (0.5 + dd),
+                                    s._values >= (0.5 - dd)))
+    s.set_probabilities(probs / np.sum(probs))  # uniform probabilities
     s.estimate_volume_mc()
     s.global_to_local()
     return s
@@ -53,7 +53,7 @@ def unit_center_set(dim=1, num_samples=100,
 
 def check_densities(s_set, dim=2, delta=0.1, tol=1e-4):
     # density values should be reciprocal of delta^dim
-    true_den_val = 1.0/(delta**dim)
+    true_den_val = 1.0 / (delta**dim)
     if np.mean(np.abs(s_set._den - true_den_val)) < tol:
         return 1
     else:
@@ -67,7 +67,7 @@ class Test_distance(unittest.TestCase):
         self.num1, self.num2, self.num = 100, 100, 250
         self.left_set = unit_center_set(self.dim, self.num1, 0.5)
         self.right_set = unit_center_set(self.dim, self.num2, 0.5)
-        self.domain = np.array([[0, 1]]*self.dim)
+        self.domain = np.array([[0, 1]] * self.dim)
         values = np.random.rand(self.num, self.dim)
         self.int_set.set_values(values)
         self.int_set.set_domain(self.domain)
@@ -94,7 +94,7 @@ class Test_distance(unittest.TestCase):
         d1 = m1.distance()
         m2 = compP.metric(self.right_set, self.left_set, n)
         d2 = m2.distance()
-        nptest.assert_almost_equal(d1-d2, 0, 1, 'Distance not symmetric.')
+        nptest.assert_almost_equal(d1 - d2, 0, 1, 'Distance not symmetric.')
 
     def test_exact_symmetry(self):
         r"""
@@ -108,7 +108,7 @@ class Test_distance(unittest.TestCase):
             d1 = m1.distance(dist)
             d2 = m2.distance(dist)
             nptest.assert_almost_equal(
-                d1-d2, 0, 12, 'Distance %s not symmetric.' % dist)
+                d1 - d2, 0, 12, 'Distance %s not symmetric.' % dist)
         import scipy.spatial.distance as ds
 
         # should be able to overwrite and still get correct answer.
@@ -118,13 +118,15 @@ class Test_distance(unittest.TestCase):
             m.set_right(self.left_set)
             m.set_left(self.right_set)
             d2 = m.distance(dist)
-            nptest.assert_almost_equal(d1-d2, 0, 12, 'Distance not symmetric.')
+            nptest.assert_almost_equal(
+                d1 - d2, 0, 12, 'Distance not symmetric.')
             # grabbing copies like this should also work.
             ll = m.get_left().copy()
             m.set_left(m.get_right())
             m.set_right(ll)
             d2 = m.distance(dist)
-            nptest.assert_almost_equal(d1-d2, 0, 12, 'Distance not symmetric.')
+            nptest.assert_almost_equal(
+                d1 - d2, 0, 12, 'Distance not symmetric.')
 
 
 class Test_density(unittest.TestCase):
@@ -134,7 +136,7 @@ class Test_density(unittest.TestCase):
         self.num1, self.num2, self.num = 100, 100, 250
         self.left_set = unit_center_set(self.dim, self.num1, 0.5)
         self.right_set = unit_center_set(self.dim, self.num2, 0.5)
-        self.domain = np.array([[0, 1]]*self.dim)
+        self.domain = np.array([[0, 1]] * self.dim)
         values = np.random.rand(self.num, self.dim)
         self.int_set.set_values(values)
         self.int_set.set_domain(self.domain)
@@ -176,7 +178,7 @@ class Test_density(unittest.TestCase):
         except AttributeError:
             pass
         ll = self.left_set
-        dd = ll._probabilities.flatten()/ll._volumes.flatten()
+        dd = ll._probabilities.flatten() / ll._volumes.flatten()
         compP.density(ll, None)
         nptest.assert_array_equal(ll._density, dd)
 
@@ -185,7 +187,7 @@ class Test_density(unittest.TestCase):
         Test intelligent evaluation of density (when to skip).
         """
         ll = self.left_set
-        ll._density = ll._probabilities.flatten()/ll._volumes.flatten()
+        ll._density = ll._probabilities.flatten() / ll._volumes.flatten()
         compP.density(ll)
         compP.density(ll, [1, 2, 3])
 
@@ -211,7 +213,7 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         """
         self.mtrc.check_domain()
-        self.mtrc.get_left()._domain = self.domain*1.05
+        self.mtrc.get_left()._domain = self.domain * 1.05
         # alter domain to raise errors
         try:
             self.mtrc.check_domain()
@@ -219,7 +221,7 @@ class Test_metrization_simple(unittest.TestCase):
             pass
         # mess up integration set to trigger error
         self.mtrc.get_left()._domain = self.domain
-        self.mtrc.get_int()._domain = self.domain*1.05
+        self.mtrc.get_int()._domain = self.domain * 1.05
         try:
             self.mtrc.check_domain()
         except sample.domain_not_matching:
@@ -265,7 +267,7 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         Check that improperly setting dimension raises warning.
         """
-        dim = self.dim+1
+        dim = self.dim + 1
         values = np.ones((200, dim))
         integration_set = sample.sample_set(dim=dim)
         integration_set.set_values(values)
@@ -308,7 +310,7 @@ class Test_metrization_simple(unittest.TestCase):
         Check that improperly setting domain raises warning.
         """
         test_set = self.integration_set.copy()
-        test_set.set_domain(test_set.get_domain()+0.01)
+        test_set.set_domain(test_set.get_domain() + 0.01)
         # all the ways to initialize the class
         test_metr = [compP.metrization(self.integration_set),
                      compP.metrization(self.integration_set,
@@ -358,7 +360,7 @@ class Test_metrization_simple(unittest.TestCase):
         r"""
         Passing incorrect pointer shape raises errors
         """
-        ptr = np.ones(self.num+1)
+        ptr = np.ones(self.num + 1)
         try:
             compP.metrization(self.integration_set,
                               self.left_set, self.right_set, ptr, None)
@@ -389,11 +391,11 @@ class Test_metrization_simple(unittest.TestCase):
         self.mtrc.set_left_probabilities(np.ones(self.num1))
         self.mtrc.set_right_probabilities(np.ones(self.num2))
         try:
-            self.mtrc.set_left_probabilities(np.ones(self.num1+1))
+            self.mtrc.set_left_probabilities(np.ones(self.num1 + 1))
         except AttributeError:
             pass
         try:
-            self.mtrc.set_right_probabilities(np.ones(self.num2+1))
+            self.mtrc.set_right_probabilities(np.ones(self.num2 + 1))
         except AttributeError:
             pass
         ll = self.mtrc.get_left_probabilities()
@@ -409,8 +411,8 @@ class Test_metrization_simple(unittest.TestCase):
         Test copying, clipping, merging, slicing
         """
         mm = self.mtrc.copy()
-        mm.get_left().set_reference_value(np.array([0.5]*self.dim))
-        mm.get_right().set_reference_value(np.array([0.5]*self.dim))
+        mm.get_left().set_reference_value(np.array([0.5] * self.dim))
+        mm.get_right().set_reference_value(np.array([0.5] * self.dim))
         mm.get_left()._jacobians = np.ones((self.num1, self.dim, 1))
         mm.get_right()._jacobians = np.ones((self.num2, self.dim, 1))
         mm.estimate_density()

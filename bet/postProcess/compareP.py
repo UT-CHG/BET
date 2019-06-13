@@ -15,11 +15,11 @@ def density(sample_set, ptr=None):
     :type sample_set: :class:`bet.sample.sample_set_base`
     :param ptr: pointer to a reference set against which densities are
         being compared.
-    :type ptr: ``list``, ``tuple``, or ``np.ndarray`` 
-    
+    :type ptr: ``list``, ``tuple``, or ``np.ndarray``
+
     :rtype: :class:`bet.sample.sample_set_base`
-    :returns: sample set object with additional attribute ``_emulated_density`` 
-    
+    :returns: sample set object with additional attribute ``_emulated_density``
+
     """
     if sample_set is None:
         raise AttributeError("Missing sample set.")
@@ -971,14 +971,14 @@ class metrization(object):
         elif metric in ['mink', 'minkowski']:
             dist = ds.minkowski(left_den, right_den, **kwargs)
         elif metric in ['norm']:
-            dist = ds.norm(left_den-right_den, **kwargs)
+            dist = ds.norm(left_den - right_den, **kwargs)
         elif metric in ['euclidean', '2-norm', '2']:
             dist = ds.minkowski(left_den, right_den, 2, **kwargs)
         elif metric in ['sqhell', 'sqhellinger']:
-            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den))/2.0
+            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den)) / 2.0
         elif metric in ['hell', 'hellinger']:
             return np.sqrt(self.distance('sqhell'))
         else:
             dist = metric(left_den, right_den, **kwargs)
 
-        return dist/self.check_num()
+        return dist / self.check_num()
