@@ -60,9 +60,9 @@ def compare(left_set, right_set, num_mc_points=1000):
     a `~bet.postProcess.comparison` object. See the docstring for
     this class for more details.
 
-    :param left set:
+    :param left set: sample set in left position
     :type left set: :class:`bet.sample.sample_set_base`
-    :param right set:
+    :param right set: sample set in right position
     :type right set: :class:`bet.sample.sample_set_base`
     :param int num_mc_points: number of values of sample set to return
 
@@ -287,6 +287,7 @@ class comparison(object):
         r"""
         Globalizes comparison pointers by caling ``get_global_values``
         for both the left and right sample sets.
+
         """
         if (self._ptr_left_local is not None) and\
                 (self._ptr_left is None):
@@ -309,6 +310,7 @@ class comparison(object):
 
         :param bool globalize: flag whether or not to globalize
             ``self._ptr_left``
+
         """
         if self._emulated_sample_set._values_local is None:
             self._emulated_sample_set.global_to_local()
@@ -407,7 +409,6 @@ class comparison(object):
 
     def get_sample_set_left(self):
         """
-
         Returns a reference to the left sample set for this comparison.
 
         :rtype: :class:`~bet.sample.sample_set_base`
@@ -418,9 +419,7 @@ class comparison(object):
 
     def get_left(self):
         r"""
-
         Wrapper for `get_sample_set_left`.
-
         """
         return self.get_sample_set_left()
 
@@ -481,9 +480,7 @@ class comparison(object):
 
     def get_right(self):
         r"""
-
         Wrapper for `get_sample_set_right`.
-
         """
         return self.get_sample_set_right()
 
@@ -500,10 +497,9 @@ class comparison(object):
 
     def set_sample_set_right(self, sample_set):
         """
-
         Sets the right sample set for this comparison.
 
-        :param sample_set: left sample set
+        :param sample_set: right sample set
         :type sample_set: :class:`~bet.sample.sample_set_base`
 
         """
@@ -533,9 +529,7 @@ class comparison(object):
 
     def get_emulated_sample_set(self):
         r"""
-
-        Returns a reference to the output probability sample set for this
-        comparison.
+        Returns a reference to the emulated sample set for this comparison.
 
         :rtype: :class:`~bet.sample.sample_set_base`
         :returns: output probability sample set
@@ -545,10 +539,9 @@ class comparison(object):
 
     def set_emulated_sample_set(self, emulated_sample_set):
         r"""
+        Sets the emulated sample set for this comparison.
 
-        Sets the integration_output sample set for this comparison.
-
-        :param emulated_sample_set: integration sample set.
+        :param emulated_sample_set: emulated sample set
         :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
 
         """
