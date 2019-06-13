@@ -16,6 +16,10 @@ def density(sample_set, ptr=None):
     :param ptr: pointer to a reference set against which densities are
         being compared.
     :type ptr: ``list``, ``tuple``, or ``np.ndarray`` 
+    
+    :rtype: :class:`bet.sample.sample_set_base`
+    :returns: sample set object with additional attribute ``_emulated_density`` 
+    
     """
     if sample_set is None:
         raise AttributeError("Missing sample set.")
