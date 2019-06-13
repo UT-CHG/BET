@@ -196,18 +196,18 @@ class Test_comparison_simple(unittest.TestCase):
     def setUp(self):
         self.dim = 3
         self.num1, self.num2, self.num = 100, 100, 500
-        self.integration_set = sample.sample_set(dim=self.dim)
+        self.emulation_set = sample.sample_set(dim=self.dim)
         self.left_set = unit_center_set(self.dim, self.num1, 0.5)
         self.right_set = unit_center_set(self.dim, self.num2, 0.5)
         values = np.ones((self.num, self.dim))
-        self.integration_set.set_values(values)
+        self.emulation_set.set_values(values)
         self.domain = np.tile([0, 1], [self.dim, 1])
-        self.integration_set.set_domain(self.domain)
+        self.emulation_set.set_domain(self.domain)
         self.left_set.set_domain(self.domain)
         self.right_set.set_domain(self.domain)
         self.mtrc = compP.comparison(sample_set_left=self.left_set,
                                      sample_set_right=self.right_set,
-                                     emulated_sample_set=self.integration_set)
+                                     emulated_sample_set=self.emulation_set)
 
     def test_domain(self):
         r"""
@@ -221,7 +221,7 @@ class Test_comparison_simple(unittest.TestCase):
             pass
         # mess up integration set to trigger error
         self.mtrc.get_left()._domain = self.domain
-        self.mtrc.get_int()._domain = self.domain * 1.05
+        self.mtrc.get_emulated()._domain = self.domain * 1.05
         try:
             self.mtrc.check_domain()
         except sample.domain_not_matching:
@@ -257,7 +257,7 @@ class Test_comparison_simple(unittest.TestCase):
         There are a few ways these functions can get initialized.
         Here we test the varying permutations
         """
-        self.int_set = self.integration_set
+        self.int_set = self.emulation_set
         compP.compare(self.left_set, self.right_set)
         compP.compare(self.left_set, self.right_set, 10)
         compP.comparison(self.int_set, self.left_set, self.right_set)
@@ -269,39 +269,39 @@ class Test_comparison_simple(unittest.TestCase):
         """
         dim = self.dim + 1
         values = np.ones((200, dim))
-        integration_set = sample.sample_set(dim=dim)
-        integration_set.set_values(values)
-        integration_set.set_domain(np.tile([0, 1], [dim, 1]))
+        emulation_set = sample.sample_set(dim=dim)
+        emulation_set.set_values(values)
+        emulation_set.set_domain(np.tile([0, 1], [dim, 1]))
 
         try:
             compP.comparison(sample_set_left=self.left_set,
                              sample_set_right=self.right_set,
-                             emulated_sample_set=integration_set)
+                             emulated_sample_set=emulation_set)
         except sample.dim_not_matching:
             pass
         try:
             compP.comparison(sample_set_left=self.left_set,
                              sample_set_right=None,
-                             emulated_sample_set=integration_set)
+                             emulated_sample_set=emulation_set)
         except sample.dim_not_matching:
             pass
         try:
             compP.comparison(sample_set_left=self.left_set,
                              sample_set_right=None,
-                             emulated_sample_set=integration_set)
+                             emulated_sample_set=emulation_set)
         except sample.dim_not_matching:
             pass
         # if missing domain info, should be able to infer
-        self.integration_set._domain = None
+        self.emulation_set._domain = None
         compP.comparison(sample_set_left=None,
                          sample_set_right=self.right_set,
-                         emulated_sample_set=self.integration_set)
+                         emulated_sample_set=self.emulation_set)
 
         try:  # if not enough info, raise error
-            self.integration_set._domain = None
+            self.emulation_set._domain = None
             compP.comparison(sample_set_left=None,
                              sample_set_right=None,
-                             emulated_sample_set=self.integration_set)
+                             emulated_sample_set=self.emulation_set)
         except AttributeError:
             pass
 
@@ -309,13 +309,13 @@ class Test_comparison_simple(unittest.TestCase):
         r"""
         Check that improperly setting domain raises warning.
         """
-        test_set = self.integration_set.copy()
+        test_set = self.emulation_set.copy()
         test_set.set_domain(test_set.get_domain() + 0.01)
         # all the ways to initialize the class
-        test_metr = [compP.comparison(self.integration_set),
-                     compP.comparison(self.integration_set,
+        test_metr = [compP.comparison(self.emulation_set),
+                     compP.comparison(self.emulation_set,
                                       sample_set_right=self.right_set),
-                     compP.comparison(self.integration_set,
+                     compP.comparison(self.emulation_set,
                                       sample_set_left=self.left_set)
                      ]
         # setting one of the missing properties
@@ -334,24 +334,24 @@ class Test_comparison_simple(unittest.TestCase):
                 None, sample_set_right=self.right_set),
             compP.comparison(
                 None, sample_set_left=self.left_set),
-            compP.comparison(self.integration_set,
+            compP.comparison(self.emulation_set,
                              self.left_set, self.right_set)
         ]
 
         # setting one of the missing properties
         for mm in test_metr:
             try:
-                mm.set_int(test_set)
+                mm.set_emulated(test_set)
             except sample.domain_not_matching:
                 pass
 
         try:  # should catch problems on initialization too
-            mm = compP.comparison(self.integration_set,
+            mm = compP.comparison(self.emulation_set,
                                   self.left_set, test_set)
         except sample.domain_not_matching:
             pass
         try:  # should catch problems on initialization too
-            mm = compP.comparison(self.integration_set,
+            mm = compP.comparison(self.emulation_set,
                                   test_set, self.right_set)
         except sample.domain_not_matching:
             pass
@@ -362,23 +362,23 @@ class Test_comparison_simple(unittest.TestCase):
         """
         ptr = np.ones(self.num + 1)
         try:
-            compP.comparison(self.integration_set,
+            compP.comparison(self.emulation_set,
                              self.left_set, self.right_set, ptr, None)
         except AttributeError:
             pass
         try:
-            compP.comparison(self.integration_set,
+            compP.comparison(self.emulation_set,
                              self.left_set, self.right_set, None, ptr)
         except AttributeError:
             pass
         try:
-            compP.comparison(self.integration_set,
+            compP.comparison(self.emulation_set,
                              self.left_set, self.right_set,
                              ptr, np.ones(self.num))
         except AttributeError:
             pass
         try:
-            compP.comparison(self.integration_set,
+            compP.comparison(self.emulation_set,
                              self.left_set, self.right_set,
                              np.ones(self.num), ptr)
         except AttributeError:
@@ -532,29 +532,23 @@ class Test_comparison_simple(unittest.TestCase):
         Different ways to set emulation set.
         """
         mm = compP.comparison(None, self.left_set, None)
-        integration_set = self.integration_set.copy()
-        mm.set_int(integration_set)
-        nptest.assert_array_equal(mm.get_int()._values,
-                                  self.integration_set._values)
-        mm.set_integration_sample_set(integration_set)
-        nptest.assert_array_equal(mm.get_int()._values,
-                                  self.integration_set._values)
-        mm.set_emulated_sample_set(integration_set)
-        nptest.assert_array_equal(mm.get_int()._values,
-                                  self.integration_set._values)
-        mm.set_em(integration_set)
-        nptest.assert_array_equal(mm.get_int()._values,
-                                  self.integration_set._values)
-        mm.set_emulated(integration_set)
-        nptest.assert_array_equal(mm.get_int()._values,
-                                  self.integration_set._values)
+        emulation_set = self.emulation_set.copy()
+        mm.set_emulated(emulation_set)
+        nptest.assert_array_equal(mm.get_emulated()._values,
+                                  self.emulation_set._values)
+        mm.set_emulated_sample_set(emulation_set)
+        nptest.assert_array_equal(mm.get_emulated()._values,
+                                  self.emulation_set._values)
         try:  # None should trigger error
             mm._emulated_sample_set = None
             mm.estimate_density()
         except AttributeError:
             pass
-        mm.set_int(integration_set)
+        # the following syntax to should be able to run
+        mm.set_emulated(emulation_set)
         mm.set_right(self.right_set)
+        mm.estimate_density()
+        mm.set_left(self.left_set)
         mm.estimate_density()
 
     def test_get(self):
@@ -562,9 +556,6 @@ class Test_comparison_simple(unittest.TestCase):
         Different ways to get emulated set.
         """
         mm = self.mtrc
-        mm.get_int()
-        mm.get_em()
-        mm.get_integration_sample_set()
         mm.get_emulated()
         mm.get_emulated_sample_set()
 
@@ -577,15 +568,15 @@ class Test_comparison_simple(unittest.TestCase):
         msg = "Get/set density mismatch."
         nptest.assert_array_equal(mm.get_density_left(), ld, msg)
         nptest.assert_array_equal(mm.get_density_right(), rd, msg)
-        mm.estimate_density(emulated_sample_set=self.integration_set)
+        mm.estimate_density(emulated_sample_set=self.emulation_set)
         mm.get_left().set_volumes(None)
         mm.get_right().set_volumes(None)
         mm.estimate_density()
         mm.get_left().set_volumes(None)
         mm.get_right().set_volumes(None)
-        mm.estimate_density(emulated_sample_set=self.integration_set)
+        mm.estimate_density(emulated_sample_set=self.emulation_set)
         try:  # the following should raise an error
-            mm.set_int(None)
+            mm.set_emulated_sample_set(None)
             mm.estimate_density()
         except AttributeError:
             pass

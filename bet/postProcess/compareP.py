@@ -83,14 +83,14 @@ def compare(left_set, right_set, num_mc_points=1000):
     # make integration sample set
     assert left_set.get_dim() == right_set.get_dim()
     assert np.array_equal(left_set.get_domain(), right_set.get_domain())
-    int_set = samp.sample_set(left_set.get_dim())
-    int_set.set_domain(right_set.get_domain())
-    int_set = bsam.random_sample_set('r', int_set, num_mc_points)
+    em_set = samp.sample_set(left_set.get_dim())
+    em_set.set_domain(right_set.get_domain())
+    em_set = bsam.random_sample_set('r', em_set, num_mc_points)
 
     # to be generating a new random sample set pass an integer argument
-    metrc = comparison(int_set, left_set, right_set)
+    comp = comparison(em_set, left_set, right_set)
 
-    return metrc
+    return comp
 
 
 class comparison(object):
@@ -567,74 +567,14 @@ class comparison(object):
         if self._sample_set_right is not None:
             self._sample_set_right._emulated_density = None
 
-    def get_em(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
-    def get_int(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
-    def get_integration_sample_set(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
     def get_emulated(self):
         r"""
-
         Wrapper for `get_emulated_sample_set`.
-
         """
         return self.get_emulated_sample_set()
 
     def set_emulated(self, sample_set):
         r"""
-
-        Wrapper for `set_emulated_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_emulated_sample_set(sample_set)
-
-    def set_em(self, sample_set):
-        r"""
-
-        Wrapper for `set_emulated_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_emulated_sample_set(sample_set)
-
-    def set_int(self, sample_set):
-        r"""
-
-        Wrapper for `set_emulated_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_emulated_sample_set(sample_set)
-
-    def set_integration_sample_set(self, sample_set):
-        r"""
-
         Wrapper for `set_emulated_sample_set`.
 
         :param sample_set: sample set
@@ -928,8 +868,8 @@ class comparison(object):
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
 
-        int_set = self.get_int()
-        if int_set is None:
+        em_set = self.get_emulated_sample_set()
+        if em_set is None:
             raise AttributeError("Missing integration set.")
         self.check_domain()
 
