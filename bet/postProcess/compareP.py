@@ -300,7 +300,6 @@ class comparison(object):
 
     def set_ptr_left(self, globalize=True):
         """
-
         Creates the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_left``
 
@@ -325,7 +324,6 @@ class comparison(object):
 
     def get_ptr_left(self):
         """
-
         Returns the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_left``
 
@@ -342,7 +340,6 @@ class comparison(object):
 
     def set_ptr_right(self, globalize=True):
         """
-
         Creates the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_right``
 
@@ -367,7 +364,6 @@ class comparison(object):
 
     def get_ptr_right(self):
         """
-
         Returns the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_right``
 
@@ -532,10 +528,16 @@ class comparison(object):
         Returns a reference to the emulated sample set for this comparison.
 
         :rtype: :class:`~bet.sample.sample_set_base`
-        :returns: output probability sample set
+        :returns: emulated sample set
 
         """
         return self._emulated_sample_set
+
+    def get_emulated(self):
+        r"""
+        Wrapper for `get_emulated_sample_set`.
+        """
+        return self.get_emulated_sample_set()
 
     def set_emulated_sample_set(self, emulated_sample_set):
         r"""
@@ -567,12 +569,6 @@ class comparison(object):
         if self._sample_set_right is not None:
             self._sample_set_right._emulated_density = None
 
-    def get_emulated(self):
-        r"""
-        Wrapper for `get_emulated_sample_set`.
-        """
-        return self.get_emulated_sample_set()
-
     def set_emulated(self, sample_set):
         r"""
         Wrapper for `set_emulated_sample_set`.
@@ -586,9 +582,13 @@ class comparison(object):
     def clip(self, lnum, rnum=None, copy=True):
         r"""
         Creates and returns a comparison with the the first `lnum`
-        and `rnum` entries of the left and right sample sets, resp.
+        and `rnum` entries of the left and right sample sets, respectively.
 
-        :param int cnum: number of values of sample set to return
+        :param int lnum: number of values in left sample set to return.
+        :param int rnum: number of values in right sample set to return.
+            If ``rnum==None``, set ``rnum=lnum``.
+        :param bool copy: Pass emulated_sample_set by value instead of pass 
+            by reference (use same pointer to sample set object).
 
         :rtype: :class:`~bet.sample.comparison`
         :returns: clipped comparison
