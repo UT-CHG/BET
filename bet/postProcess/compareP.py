@@ -8,8 +8,14 @@ import scipy.spatial.distance as ds
 
 def density(sample_set, ptr=None):
     r"""
-    Compute density for a sample set and write it to the `_emulated_density`
-    attribute.
+    Compute density for a sample set and write it to the ``_emulated_density``
+    attribute inside of ``sample_set``
+
+    :param sample_set: sample set with existing probabilities stored
+    :type sample_set: :class:`bet.sample.sample_set_base`
+    :param ptr: pointer to a reference set against which densities are
+        being compared.
+    :type ptr: ``list``, ``tuple``, or ``np.ndarray`` 
     """
     if sample_set is None:
         raise AttributeError("Missing sample set.")
