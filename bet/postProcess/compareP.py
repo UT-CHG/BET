@@ -56,19 +56,19 @@ def density(sample_set, ptr=None):
 
 def compare(left_set, right_set, num_mc_points=1000):
     r"""
-    This is a convience function to quickly instantiate and return 
+    This is a convience function to quickly instantiate and return
     a `~bet.postProcess.comparison` object. See the docstring for
     this class for more details.
-    
-    :param left set: 
+
+    :param left set:
     :type left set: :class:`bet.sample.sample_set_base`
-    :param right set: 
+    :param right set:
     :type right set: :class:`bet.sample.sample_set_base`
     :param int num_mc_points: number of values of sample set to return
 
     :rtype: :class:`~bet.postProcess.compareP.comparison`
     :returns: comparison object
-    
+
     """
     # extract sample set
     if isinstance(left_set, samp.discretization):
@@ -103,34 +103,34 @@ class comparison(object):
     object is introduced as a reference for comparison. It is referred
     to as an ``emulated_sample_set`` and is required to instantiate a
     ``comparison`` object since the dimensions will be used to enforce
-    properly setting the left and right sample set positions. 
-    
+    properly setting the left and right sample set positions.
+
     This object is an abstraction of a metric, a measure of distance
     between two probability measures. A metric ``d(x,y)`` has two
     arguments, one to the left (``x``), and one to the right (``y``).
-    
+
     The number of samples in this third (reference) sample set is
-    given by the argument ``num_mc_points``, and pointers between this 
+    given by the argument ``num_mc_points``, and pointers between this
     set and the left/right sets are built on-demand. Methods in this
     class allow for over-writing of any of the three sample set objects
     involved, and pointers are re-built either by explictly, or they
     are computed when the a measure of similarity (such as distance) is
     requested to be evaluated.
-    
+
     Technically, any function can be passed for evaluation, including
-    ones that fail to satisfy symmetry, so we refrain from reffering 
+    ones that fail to satisfy symmetry, so we refrain from reffering
     to measures of similarity as metrics, though this is the usual case
     (with the exception of the frequently used KL-Divergence).
     Several common measures of similarity are accessible with keywords.
-    
+
     .. seealso::
 
         :meth:`bet.compareP.comparison.value``
-    
+
     :param emulated_sample_set: Reference set against which comparisons
         will be made.
     :type emulated_sample_set: :class:`bet.sample.sample_set_base`
-    
+
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
@@ -234,10 +234,10 @@ class comparison(object):
         r"""
         Checks that dimensions of left and right sample sets match
         the dimension of the emulated sample set.
-        
+
         :rtype: int
         :returns: dimension
-        
+
         """
         left_set = self.get_left()
         right_set = self.get_right()
@@ -259,10 +259,10 @@ class comparison(object):
         r"""
         Checks that all domains match so that the comparisons
         are being made on measures defined on the same underlying space.
-        
+
         :rtype: ``np.ndarray`` of shape (ndim, 2)
         :returns: domain bounds
-        
+
         """
         left_set = self.get_left()
         right_set = self.get_right()
@@ -389,8 +389,8 @@ class comparison(object):
 
         """
         my_copy = comparison(self._emulated_sample_set.copy(),
-                              self._sample_set_left.copy(),
-                              self._sample_set_right.copy())
+                             self._sample_set_left.copy(),
+                             self._sample_set_right.copy())
 
         for attrname in comparison.sample_set_names:
             if attrname is not '_sample_set_left' and \
@@ -678,8 +678,8 @@ class comparison(object):
             em_set = self._emulated_sample_set
 
         return comparison(sample_set_left=cl,
-                           sample_set_right=cr,
-                           emulated_sample_set=em_set)
+                          sample_set_right=cr,
+                          emulated_sample_set=em_set)
 
     def merge(self, metr):
         r"""
@@ -700,10 +700,10 @@ class comparison(object):
         if metr._ptr_right is not None:
             ir += metr._ptr_right
         return comparison(sample_set_left=ml,
-                           sample_set_right=mr,
-                           emulated_sample_set=self._emulated_sample_set,
-                           ptr_left=il,
-                           ptr_right=ir)
+                          sample_set_right=mr,
+                          emulated_sample_set=self._emulated_sample_set,
+                          ptr_left=il,
+                          ptr_right=ir)
 
     def slice(self,
               dims=None):
@@ -766,8 +766,8 @@ class comparison(object):
                 setattr(right_ss, obj, nval)
 
         metr = comparison(sample_set_left=left_ss,
-                           sample_set_right=right_ss,
-                           emulated_sample_set=int_ss)
+                          sample_set_right=right_ss,
+                          emulated_sample_set=int_ss)
         # additional attributes to copy over here. TODO: maybe slice through
         return metr
 
@@ -985,7 +985,7 @@ class comparison(object):
 
     def value(self, metric='tv', **kwargs):
         r"""
-        Compute value capturing some meaure of similarity using the 
+        Compute value capturing some meaure of similarity using the
         evaluated densities on a shared emulated set.
         If either density evaluation is missing, re-compute it.
         """

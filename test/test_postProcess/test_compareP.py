@@ -206,8 +206,8 @@ class Test_comparison_simple(unittest.TestCase):
         self.left_set.set_domain(self.domain)
         self.right_set.set_domain(self.domain)
         self.mtrc = compP.comparison(sample_set_left=self.left_set,
-                                      sample_set_right=self.right_set,
-                                      emulated_sample_set=self.integration_set)
+                                     sample_set_right=self.right_set,
+                                     emulated_sample_set=self.integration_set)
 
     def test_domain(self):
         r"""
@@ -275,33 +275,33 @@ class Test_comparison_simple(unittest.TestCase):
 
         try:
             compP.comparison(sample_set_left=self.left_set,
-                              sample_set_right=self.right_set,
-                              emulated_sample_set=integration_set)
+                             sample_set_right=self.right_set,
+                             emulated_sample_set=integration_set)
         except sample.dim_not_matching:
             pass
         try:
             compP.comparison(sample_set_left=self.left_set,
-                              sample_set_right=None,
-                              emulated_sample_set=integration_set)
+                             sample_set_right=None,
+                             emulated_sample_set=integration_set)
         except sample.dim_not_matching:
             pass
         try:
             compP.comparison(sample_set_left=self.left_set,
-                              sample_set_right=None,
-                              emulated_sample_set=integration_set)
+                             sample_set_right=None,
+                             emulated_sample_set=integration_set)
         except sample.dim_not_matching:
             pass
         # if missing domain info, should be able to infer
         self.integration_set._domain = None
         compP.comparison(sample_set_left=None,
-                          sample_set_right=self.right_set,
-                          emulated_sample_set=self.integration_set)
+                         sample_set_right=self.right_set,
+                         emulated_sample_set=self.integration_set)
 
         try:  # if not enough info, raise error
             self.integration_set._domain = None
             compP.comparison(sample_set_left=None,
-                              sample_set_right=None,
-                              emulated_sample_set=self.integration_set)
+                             sample_set_right=None,
+                             emulated_sample_set=self.integration_set)
         except AttributeError:
             pass
 
@@ -314,9 +314,9 @@ class Test_comparison_simple(unittest.TestCase):
         # all the ways to initialize the class
         test_metr = [compP.comparison(self.integration_set),
                      compP.comparison(self.integration_set,
-                                       sample_set_right=self.right_set),
+                                      sample_set_right=self.right_set),
                      compP.comparison(self.integration_set,
-                                       sample_set_left=self.left_set)
+                                      sample_set_left=self.left_set)
                      ]
         # setting one of the missing properties
         for mm in test_metr:
@@ -335,7 +335,7 @@ class Test_comparison_simple(unittest.TestCase):
             compP.comparison(
                 None, sample_set_left=self.left_set),
             compP.comparison(self.integration_set,
-                              self.left_set, self.right_set)
+                             self.left_set, self.right_set)
         ]
 
         # setting one of the missing properties
@@ -347,12 +347,12 @@ class Test_comparison_simple(unittest.TestCase):
 
         try:  # should catch problems on initialization too
             mm = compP.comparison(self.integration_set,
-                                   self.left_set, test_set)
+                                  self.left_set, test_set)
         except sample.domain_not_matching:
             pass
         try:  # should catch problems on initialization too
             mm = compP.comparison(self.integration_set,
-                                   test_set, self.right_set)
+                                  test_set, self.right_set)
         except sample.domain_not_matching:
             pass
 
@@ -363,24 +363,24 @@ class Test_comparison_simple(unittest.TestCase):
         ptr = np.ones(self.num + 1)
         try:
             compP.comparison(self.integration_set,
-                              self.left_set, self.right_set, ptr, None)
+                             self.left_set, self.right_set, ptr, None)
         except AttributeError:
             pass
         try:
             compP.comparison(self.integration_set,
-                              self.left_set, self.right_set, None, ptr)
+                             self.left_set, self.right_set, None, ptr)
         except AttributeError:
             pass
         try:
             compP.comparison(self.integration_set,
-                              self.left_set, self.right_set,
-                              ptr, np.ones(self.num))
+                             self.left_set, self.right_set,
+                             ptr, np.ones(self.num))
         except AttributeError:
             pass
         try:
             compP.comparison(self.integration_set,
-                              self.left_set, self.right_set,
-                              np.ones(self.num), ptr)
+                             self.left_set, self.right_set,
+                             np.ones(self.num), ptr)
         except AttributeError:
             pass
 
