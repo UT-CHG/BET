@@ -13,7 +13,7 @@ before_install:
   - sudo apt-get install gfortran libblas-dev liblapack-dev mpich libmpich-dev
 
 install:
-  - pip install numpy scipy matplotlib pyDOE mpi4py nose codecov
+  - pip install mpi4py nose codecov
   - python setup.py install
 
 script:

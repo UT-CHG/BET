@@ -22,5 +22,5 @@ setup(name='bet',
                 'bet.calculateP',
                 'bet.postProcess',
                 'bet.sensitivity'],
-      install_requires=['matplotlib', 'pyDOE', 'scipy',
+      install_requires=['matplotlib', 'pyDOE', 'scipy<=1.2.1',
                         'numpy', 'nose'])
