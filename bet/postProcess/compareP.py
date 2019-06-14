@@ -105,9 +105,17 @@ class comparison(object):
     ``comparison`` object since the dimensions will be used to enforce
     properly setting the left and right sample set positions.
 
-    This object is an abstraction of a metric, a measure of distance
-    between two probability measures. A metric ``d(x,y)`` has two
-    arguments, one to the left (``x``), and one to the right (``y``).
+    This object can be thought of as a more flexible version of an abstraction
+    of a metric, a measure of distance between two probability measures.
+    A metric ``d(x,y)`` has two arguments, one to the left (``x``),
+    and one to the right (``y``). However, we do not enforce the properties
+    that define a formal metric, instead we use the language of "comparisons".
+
+    Technically, any function can be passed for evaluation, including
+    ones that fail to satisfy symmetry, so we refrain from reffering
+    to measures of similarity as metrics, though this is the usual case
+    (with the exception of the frequently used KL-Divergence).
+    Several common measures of similarity are accessible with keywords.
 
     The number of samples in this third (reference) sample set is
     given by the argument ``num_mc_points``, and pointers between this
@@ -116,12 +124,6 @@ class comparison(object):
     involved, and pointers are re-built either by explictly, or they
     are computed when the a measure of similarity (such as distance) is
     requested to be evaluated.
-
-    Technically, any function can be passed for evaluation, including
-    ones that fail to satisfy symmetry, so we refrain from reffering
-    to measures of similarity as metrics, though this is the usual case
-    (with the exception of the frequently used KL-Divergence).
-    Several common measures of similarity are accessible with keywords.
 
     .. seealso::
 
@@ -644,7 +646,6 @@ class comparison(object):
         Slices the left and right of the comparison.
 
         :param list dims: list of indices (dimensions) of sample set to include
-        :param list right: list of indices of right sample set to include
 
         :rtype: :class:`~bet.sample.comparison`
         :returns: sliced comparison
@@ -708,6 +709,7 @@ class comparison(object):
         """
         Call global_to_local for ``sample_set_left`` and
         ``sample_set_right``.
+
         """
         if self._sample_set_left is not None:
             self._sample_set_left.global_to_local()
@@ -720,6 +722,7 @@ class comparison(object):
         """
         Call local_to_global for ``sample_set_left``,
         ``sample_set_right``, and ``emulated_sample_set``.
+
         """
         if self._sample_set_left is not None:
             self._sample_set_left.local_to_global()
@@ -737,18 +740,28 @@ class comparison(object):
 
     def set_left_probabilities(self, probabilities):
         r"""
-        Allow overwriting of probabilities for the left set.
+        Allow overwriting of probabilities for the left sample set.
+
+        :param probabilities: probabilities to overwrite the ones in the
+            left sample set.
+        :type probabilities: list, tuple, or `numpy.ndarray`
+
         """
         if self.get_left().check_num() != len(probabilities):
             raise AttributeError("Length of probabilities incorrect.")
-        self._sample_set_left._probabilities = probabilities
+        self._sample_set_left.set_probabilities(probabilities)
         self._sample_set_left.global_to_local()
         self._sample_set_left._emulated_density = None
         self._den_left = None
 
     def set_right_probabilities(self, probabilities):
         r"""
-        Allow overwriting of probabilities for the right set.
+        Allow overwriting of probabilities for the right sample set.
+
+        :param probabilities: probabilities to overwrite the ones in the
+            right sample set.
+        :type probabilities: list, tuple, or `numpy.ndarray`
+
         """
         if self.get_right().check_num() != len(probabilities):
             raise AttributeError("Length of probabilities incorrect.")
@@ -759,20 +772,34 @@ class comparison(object):
 
     def get_left_probabilities(self):
         r"""
-        Return probabilities for the left set.
+        Wrapper for ``get_probabilities`` for the left sample set.
         """
-        return self._sample_set_left._probabilities
+        return self._sample_set_left.get_probabilities()
 
     def get_right_probabilities(self):
         r"""
-        Return probabilities for the right set.
+        Wrapper for ``get_probabilities`` for the right sample set.
         """
-        return self._sample_set_right._probabilities
+        return self._sample_set_right.get_probabilities()
 
     def set_volume_emulated(self, sample_set, emulated_sample_set=None):
         r"""
         Wrapper to use the emulated sample set for the
-        calculation of volumes on the sample sets.
+        calculation of volumes on the sample sets (as opposed to using the 
+        Monte-Carlo assumption or setting volumes manually.)
+        
+        .. seealso::
+        
+            :meth:`bet.compareP.comparison.estimate_volume_mc``    
+            :meth:`bet.compareP.comparison.set_left_volume_emulated``
+            :meth:`bet.compareP.comparison.set_right_volume_emulated``    
+
+        :param sample_set: sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
+        :param emulated_sample_set: emulated sample set
+        :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
+
+
         """
         if emulated_sample_set is not None:
             if not isinstance(emulated_sample_set, samp.sample_set_base):
@@ -795,6 +822,10 @@ class comparison(object):
     def set_right_volume_emulated(self, emulated_sample_set=None):
         r"""
         Use an emulated sample set to define volumes for the right set.
+
+        :param emulated_sample_set: emulated sample set
+        :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
+
         """
         self.set_volume_emulated(self.get_right(), emulated_sample_set)
         self._den_right = None  # if volumes change, so will densities.
@@ -803,6 +834,7 @@ class comparison(object):
         r"""
         Evaluates density function for the left probability measure
         at the set of samples defined in `emulated_sample_set`.
+        
         """
         s_set = self.get_left()
         if self._ptr_left_local is None:
@@ -815,6 +847,7 @@ class comparison(object):
         r"""
         Evaluates density function for the right probability measure
         at the set of samples defined in ``emulated_sample_set``.
+        
         """
         s_set = self.get_right()
         if self._ptr_right_local is None:
@@ -849,13 +882,13 @@ class comparison(object):
 
     def get_left_density(self):
         r"""
-        Wrapper. Returns left emulated density.
+        Wrapper for ``bet.postProcess.compareP.get_density_left``.
         """
         return self.get_density_left()
 
     def get_right_density(self):
         r"""
-        Wrapper. Returns right emulated density.
+        Wrapper for ``bet.postProcess.compareP.get_density_right``.
         """
         return self.get_density_right()
 
@@ -864,6 +897,14 @@ class comparison(object):
         r"""
         Evaluate density functions for both left and right sets using
         the set of samples defined in ``self._emulated_sample_set``.
+        
+        :param bool globalize: globalize left/right sample sets
+        :param emulated_sample_set: emulated sample set
+        :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
+
+        :rtype: ``numpy.ndarray``, ``numpy.ndarray``
+        :returns: left and right density values
+        
         """
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
@@ -916,11 +957,20 @@ class comparison(object):
             self.local_to_global()
         return self._den_left, self._den_right
 
-    def value(self, metric='tv', **kwargs):
+    def value(self, functional='tv', **kwargs):
         r"""
         Compute value capturing some meaure of similarity using the
         evaluated densities on a shared emulated set.
         If either density evaluation is missing, re-compute it.
+        
+        :param funtional: a function representing a measure of similarity
+        :type functional: method that takes in two lists/arrays and returns 
+            a scalar value (measure of similarity)
+
+        :rtype: float
+        :returns: value representing a measurement between the left and right
+            sample sets, ideally a measure of similarity, a distance, a metric.
+
         """
         left_den, right_den = self.get_left_density(), self.get_right_density()
         if left_den is None:
@@ -930,20 +980,20 @@ class comparison(object):
             # logging.log(20,"Right density missing. Estimating now.")
             right_den = self.estimate_density_right()
 
-        if metric in ['tv', 'totvar',
+        if functional in ['tv', 'totvar',
                       'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
-        elif metric in ['mink', 'minkowski']:
+        elif functional in ['mink', 'minkowski']:
             dist = ds.minkowski(left_den, right_den, **kwargs)
-        elif metric in ['norm']:
+        elif functional in ['norm']:
             dist = ds.norm(left_den - right_den, **kwargs)
-        elif metric in ['euclidean', '2-norm', '2']:
+        elif functional in ['euclidean', '2-norm', '2']:
             dist = ds.minkowski(left_den, right_den, 2, **kwargs)
-        elif metric in ['sqhell', 'sqhellinger']:
+        elif functional in ['sqhell', 'sqhellinger']:
             dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den)) / 2.0
-        elif metric in ['hell', 'hellinger']:
+        elif functional in ['hell', 'hellinger']:
             return np.sqrt(self.value('sqhell'))
         else:
-            dist = metric(left_den, right_den, **kwargs)
+            dist = functional(left_den, right_den, **kwargs)
 
         return dist / self._emulated_sample_set.check_num()
