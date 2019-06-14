@@ -17,14 +17,10 @@ setup(name='bet',
       author_email='steve.a.mattis@gmail.com',
       license='GNU LGPL',
       url='https://github.com/UT-CHG/BET',
-<<<<<<< HEAD
       packages=['bet',
                 'bet.sampling',
                 'bet.calculateP',
                 'bet.postProcess',
                 'bet.sensitivity'],
-      install_requires=['matplotlib',
-                        'pyDOE',
-                        'scipy<=1.2.1',
-                        'numpy',
-                        'nose'])
+      install_requires=['matplotlib', 'pyDOE', 'scipy',
+                        'numpy', 'nose'])
