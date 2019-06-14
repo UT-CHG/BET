@@ -589,7 +589,7 @@ class comparison(object):
         :param int lnum: number of values in left sample set to return.
         :param int rnum: number of values in right sample set to return.
             If ``rnum==None``, set ``rnum=lnum``.
-        :param bool copy: Pass emulated_sample_set by value instead of pass 
+        :param bool copy: Pass emulated_sample_set by value instead of pass
             by reference (use same pointer to sample set object).
 
         :rtype: :class:`~bet.sample.comparison`
@@ -785,14 +785,14 @@ class comparison(object):
     def set_volume_emulated(self, sample_set, emulated_sample_set=None):
         r"""
         Wrapper to use the emulated sample set for the
-        calculation of volumes on the sample sets (as opposed to using the 
+        calculation of volumes on the sample sets (as opposed to using the
         Monte-Carlo assumption or setting volumes manually.)
-        
+
         .. seealso::
-        
-            :meth:`bet.compareP.comparison.estimate_volume_mc``    
+
+            :meth:`bet.compareP.comparison.estimate_volume_mc``
             :meth:`bet.compareP.comparison.set_left_volume_emulated``
-            :meth:`bet.compareP.comparison.set_right_volume_emulated``    
+            :meth:`bet.compareP.comparison.set_right_volume_emulated``
 
         :param sample_set: sample set
         :type sample_set: :class:`~bet.sample.sample_set_base`
@@ -834,7 +834,7 @@ class comparison(object):
         r"""
         Evaluates density function for the left probability measure
         at the set of samples defined in `emulated_sample_set`.
-        
+
         """
         s_set = self.get_left()
         if self._ptr_left_local is None:
@@ -847,7 +847,7 @@ class comparison(object):
         r"""
         Evaluates density function for the right probability measure
         at the set of samples defined in ``emulated_sample_set``.
-        
+
         """
         s_set = self.get_right()
         if self._ptr_right_local is None:
@@ -897,14 +897,14 @@ class comparison(object):
         r"""
         Evaluate density functions for both left and right sets using
         the set of samples defined in ``self._emulated_sample_set``.
-        
+
         :param bool globalize: globalize left/right sample sets
         :param emulated_sample_set: emulated sample set
         :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
 
         :rtype: ``numpy.ndarray``, ``numpy.ndarray``
         :returns: left and right density values
-        
+
         """
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
@@ -962,9 +962,9 @@ class comparison(object):
         Compute value capturing some meaure of similarity using the
         evaluated densities on a shared emulated set.
         If either density evaluation is missing, re-compute it.
-        
+
         :param funtional: a function representing a measure of similarity
-        :type functional: method that takes in two lists/arrays and returns 
+        :type functional: method that takes in two lists/arrays and returns
             a scalar value (measure of similarity)
 
         :rtype: float
@@ -981,7 +981,7 @@ class comparison(object):
             right_den = self.estimate_density_right()
 
         if functional in ['tv', 'totvar',
-                      'total variation', 'total-variation', '1']:
+                          'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
         elif functional in ['mink', 'minkowski']:
             dist = ds.minkowski(left_den, right_den, **kwargs)
