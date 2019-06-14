@@ -37,7 +37,6 @@ notifications:
 branches:
     only:
         - master
-        - metrics
 
 # Push the results back to codecov
 after_success:
