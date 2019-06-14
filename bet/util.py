@@ -9,7 +9,8 @@ import collections
 import numpy as np
 from bet.Comm import comm, MPI
 
-possible_types = {int:MPI.INT, float:MPI.DOUBLE}
+possible_types = {int: MPI.INT, float: MPI.DOUBLE}
+
 
 def meshgrid_ndim(X):
     """
@@ -60,6 +61,7 @@ def meshgrid_ndim(X):
 
     return X_new
 
+
 def get_global_values(array, shape=None):
     """
     Concatenates local arrays into global array using :meth:`np.vstack`.
@@ -92,8 +94,9 @@ def get_global_values(array, shape=None):
             # do an uppercase Allgather
             whole_a = np.empty(shape, dtype=dtype)
             comm.Allgather([array.ravel(), possible_types[dtype]], [whole_a,
-                possible_types[dtype]])
+                                                                    possible_types[dtype]])
             return whole_a
+
 
 def fix_dimensions_vector(vector):
     """
@@ -108,6 +111,7 @@ def fix_dimensions_vector(vector):
     elif not isinstance(vector, np.ndarray):
         vector = np.array(vector)
     return vector.flat[:]
+
 
 def fix_dimensions_vector_2darray(vector):
     """
@@ -126,6 +130,7 @@ def fix_dimensions_vector_2darray(vector):
     if len(vector.shape) <= 1:
         vector = np.expand_dims(vector, axis=1)
     return vector
+
 
 def fix_dimensions_domain(domain):
     """
@@ -146,18 +151,19 @@ def fix_dimensions_domain(domain):
     elif len(domain.shape) == 1 and domain.shape[0] == 2:
         domain = np.expand_dims(domain, axis=0)
     elif len(domain.shape) == 2 and domain.shape[1] == 2:
-        pass # The shape is already correct!
+        pass  # The shape is already correct!
     elif len(domain.shape) == 2 and domain.shape[0] == 2:
         domain = domain.transpose()
     else:
         raise TypeError("At least one dimension must have a length of 2.")
     return domain
 
+
 def fix_dimensions_data(data, dim=None):
     """
     Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
     shape (N, dim). 
-    
+
     If ``dim`` is non-specified:
     If ``data`` is a non-iterable number assumes that ``dim==1``.
     If ``data`` is a numpy array with len(shape) == 1 assumes that ``dim==1``.
@@ -169,7 +175,7 @@ def fix_dimensions_data(data, dim=None):
     :param int dim: The dimension of the "data" space.
     :rtype: :class:`numpy.ndarray`
     :returns: array of shape (N, dim)
-    
+
     """
     if dim is None:
         if not isinstance(data, np.ndarray):
@@ -185,6 +191,7 @@ def fix_dimensions_data(data, dim=None):
     else:
         return data
 
+
 def clean_data(data):
     """
     Clean data so that NaN->0, inf-> maxfloat, -inf-> -maxfloat
@@ -193,12 +200,9 @@ def clean_data(data):
     :type data: :class:`numpy.ndarray`
     :rtype: :class:`numpy.ndarray`
     :returns: array of shape (data.shape)
-    
+
     """
     data[np.isnan(data)] = 0.0
     data[np.isinf(data)] = np.sign(data[np.isinf(data)])*sys.float_info[0]
 
     return data
-
-
-

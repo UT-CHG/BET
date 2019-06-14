@@ -8,6 +8,7 @@ from projectKL import projectKL
 from poissonRandField import solvePoissonRandomField
 import scipy.io as sio
 
+
 def my_model(parameter_samples):
 
     # We proceed by loading the mesh and defining the function space for which
@@ -56,7 +57,7 @@ def my_model(parameter_samples):
 
     # Create Boundary Conditions -- Dirichlet on left and bottom boundary.
     # Left Dirichlet Bc
-    def left_boundary(x,on_boundary):
+    def left_boundary(x, on_boundary):
         """TODO: Docstring for left_boundary.
 
         :x: TODO
@@ -66,9 +67,9 @@ def my_model(parameter_samples):
         """
         tol = 1e-14
         return on_boundary and abs(x[0]) < tol
-    Gamma_0 = DirichletBC(V,Constant(0.0),left_boundary)
+    Gamma_0 = DirichletBC(V, Constant(0.0), left_boundary)
 
-    def bottom_boundary(x,on_boundary):
+    def bottom_boundary(x, on_boundary):
         """TODO: Docstring for left_boundary.
 
         :x: TODO
@@ -78,32 +79,33 @@ def my_model(parameter_samples):
         """
         tol = 1e-14
         return on_boundary and abs(x[1]) < tol
-    Gamma_1 = DirichletBC(V,Constant(0.0),bottom_boundary)
-    bcs = [Gamma_0,Gamma_1]
+    Gamma_1 = DirichletBC(V, Constant(0.0), bottom_boundary)
+    bcs = [Gamma_0, Gamma_1]
 
     # Setup the QoI class
     class CharFunc(Expression):
-      def __init__(self, **kwargs):
-        region = kwargs["region"]
-        self.a = region[0]
-        self.b = region[1]
-        self.c = region[2]
-        self.d = region[3]
-      def eval(self, v, x):
-        v[0] = 0
-        if (x[0] >= self.a) and (x[0] <= self.b) and (x[1] >= self.c)\
-            and (x[1] <= self.d):
-          v[0] = 1
-        return v
+        def __init__(self, **kwargs):
+            region = kwargs["region"]
+            self.a = region[0]
+            self.b = region[1]
+            self.c = region[2]
+            self.d = region[3]
+
+        def eval(self, v, x):
+            v[0] = 0
+            if (x[0] >= self.a) and (x[0] <= self.b) and (x[1] >= self.c)\
+                    and (x[1] <= self.d):
+                v[0] = 1
+            return v
 
     # Define the QoI maps
     Chi_1 = CharFunc(degree=1, region=[0.75, 1.25, 7.75, 8.25])
     Chi_2 = CharFunc(degree=1, region=[7.75, 8.25, 0.75, 1.25])
 
-    QoI_samples = np.zeros([numSamples,2])
+    QoI_samples = np.zeros([numSamples, 2])
 
     # For each sample solve the PDE
-    f = Constant(-1.0) # forcing of Poisson
+    f = Constant(-1.0)  # forcing of Poisson
 
     for i in range(0, numSamples):
 
@@ -114,7 +116,7 @@ def my_model(parameter_samples):
         logPerm = np.zeros((mesh.num_vertices()), dtype=float)
         for kl in range(0, numKL):
             logPerm += xi_k[i, kl] * \
-                       np.sqrt(KL_eigen_vals[0,kl]) * KL_eigen_funcs[kl,:]
+                np.sqrt(KL_eigen_vals[0, kl]) * KL_eigen_funcs[kl, :]
 
         # permiability is the exponential of log permeability logPerm
         perm_k_array = 0.1 + np.exp(logPerm)
@@ -129,6 +131,4 @@ def my_model(parameter_samples):
         QoI_samples[i, 0] = assemble(u * Chi_1 * dx)
         QoI_samples[i, 1] = assemble(u * Chi_2 * dx)
 
-
     return QoI_samples
-    
