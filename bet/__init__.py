@@ -31,5 +31,5 @@ surrogates :mod:`~bet.surrogates` provides methods for generating and using
 
 """
 
-__all__ = ['sampling', 'calculateP', 'postProcess', 'sensitivity', 'util', 
+__all__ = ['sampling', 'calculateP', 'postProcess', 'sensitivity', 'util',
            'Comm', 'sample', 'surrogates']
