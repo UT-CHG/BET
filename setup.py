@@ -17,6 +17,7 @@ setup(name='bet',
       author_email='steve.a.mattis@gmail.com',
       license='GNU LGPL',
       url='https://github.com/UT-CHG/BET',
+<<<<<<< HEAD
       packages=['bet',
                 'bet.sampling',
                 'bet.calculateP',
