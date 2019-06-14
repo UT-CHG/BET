@@ -8,8 +8,18 @@ import scipy.spatial.distance as ds
 
 def density(sample_set, ptr=None):
     r"""
-    Compute density for a sample set and write it to the `_emulated_density`
-    attribute.
+    Compute density for a sample set and write it to the ``_emulated_density``
+    attribute inside of ``sample_set``
+
+    :param sample_set: sample set with existing probabilities stored
+    :type sample_set: :class:`bet.sample.sample_set_base`
+    :param ptr: pointer to a reference set against which densities are
+        being compared. If ``None``, use samples as they are.
+    :type ptr: list, tuple, or ``np.ndarray``
+
+    :rtype: :class:`bet.sample.sample_set_base`
+    :returns: sample set object with additional attribute ``_emulated_density``
+
     """
     if sample_set is None:
         raise AttributeError("Missing sample set.")
@@ -44,16 +54,21 @@ def density(sample_set, ptr=None):
     return sample_set
 
 
-def metric(left_set, right_set, num_mc_points=1000):
+def compare(left_set, right_set, num_mc_points=1000):
     r"""
-    Creates and returns a `~bet.postProcess.metrization` object
+    This is a convience function to quickly instantiate and return
+    a `~bet.postProcess.comparison` object. See the docstring for
+    this class for more details.
 
-    :param int cnum: number of values of sample set to return
+    :param left set: sample set in left position
+    :type left set: :class:`bet.sample.sample_set_base`
+    :param right set: sample set in right position
+    :type right set: :class:`bet.sample.sample_set_base`
+    :param int num_mc_points: number of values of sample set to return
 
-    :rtype: :class:`~bet.postProcess.metrization`
-    :returns: metrization object
+    :rtype: :class:`~bet.postProcess.compareP.comparison`
+    :returns: comparison object
 
-    :class:`sample.sample_set_base`
     """
     # extract sample set
     if isinstance(left_set, samp.discretization):
@@ -68,24 +83,56 @@ def metric(left_set, right_set, num_mc_points=1000):
     # make integration sample set
     assert left_set.get_dim() == right_set.get_dim()
     assert np.array_equal(left_set.get_domain(), right_set.get_domain())
-    int_set = samp.sample_set(left_set.get_dim())
-    int_set.set_domain(right_set.get_domain())
-    int_set = bsam.random_sample_set('r', int_set, num_mc_points)
+    em_set = samp.sample_set(left_set.get_dim())
+    em_set.set_domain(right_set.get_domain())
+    em_set = bsam.random_sample_set('r', em_set, num_mc_points)
 
     # to be generating a new random sample set pass an integer argument
-    metrc = metrization(int_set, left_set, right_set)
+    comp = comparison(em_set, left_set, right_set)
 
-    return metrc
+    return comp
 
 
-class metrization(object):
+class comparison(object):
     """
+    This class allows for analytically-sound comparisons between
+    probability measures defined on different sigma-algebras. In order
+    to compare the similarity of two measures defined on different
+    sigma-algebras (induced by the voronoi-cell tesselations implicitly
+    defined by the ``_values`` in each sample set), a third sample set
+    object is introduced as a reference for comparison. It is referred
+    to as an ``emulated_sample_set`` and is required to instantiate a
+    ``comparison`` object since the dimensions will be used to enforce
+    properly setting the left and right sample set positions.
 
-    A data structure containing three :class:`~bet.sample.sample_set_base`
-    objects and associated methods for computing measures of distance
-    between pairs of them. Distances have two slots, which is reflected
-    in the language of left/right. The third set is an emulation set
-    against which the two probability measures will be compared.
+    This object can be thought of as a more flexible version of an abstraction
+    of a metric, a measure of distance between two probability measures.
+    A metric ``d(x,y)`` has two arguments, one to the left (``x``),
+    and one to the right (``y``). However, we do not enforce the properties
+    that define a formal metric, instead we use the language of "comparisons".
+
+    Technically, any function can be passed for evaluation, including
+    ones that fail to satisfy symmetry, so we refrain from reffering
+    to measures of similarity as metrics, though this is the usual case
+    (with the exception of the frequently used KL-Divergence).
+    Several common measures of similarity are accessible with keywords.
+
+    The number of samples in this third (reference) sample set is
+    given by the argument ``num_mc_points``, and pointers between this
+    set and the left/right sets are built on-demand. Methods in this
+    class allow for over-writing of any of the three sample set objects
+    involved, and pointers are re-built either by explictly, or they
+    are computed when the a measure of similarity (such as distance) is
+    requested to be evaluated.
+
+    .. seealso::
+
+        :meth:`bet.compareP.comparison.value``
+
+    :param emulated_sample_set: Reference set against which comparisons
+        will be made.
+    :type emulated_sample_set: :class:`bet.sample.sample_set_base`
+
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
@@ -185,23 +232,14 @@ class metrization(object):
                 raise AttributeError(
                     "Right pointer length must match integration set.")
 
-    # set density functions, maybe print a
-    # message if MC assumption is used to estimate volumes
-
-    # evaluate density functions at integration points, store for re-use
-
-    # metric - wrapper around scipy now that
-    # passes density values with proper shapes.
-
-    def check_num(self):
-        r"""
-        Checks that the sizes of all pointers are consistent
-        """
-        return self._emulated_sample_set.check_num()
-
     def check_dim(self):
         r"""
-        Checks that dimensions of left and right sample sets match.
+        Checks that dimensions of left and right sample sets match
+        the dimension of the emulated sample set.
+
+        :rtype: int
+        :returns: dimension
+
         """
         left_set = self.get_left()
         right_set = self.get_right()
@@ -221,7 +259,12 @@ class metrization(object):
 
     def check_domain(self):
         r"""
-        Checks that all domains match.
+        Checks that all domains match so that the comparisons
+        are being made on measures defined on the same underlying space.
+
+        :rtype: ``np.ndarray`` of shape (ndim, 2)
+        :returns: domain bounds
+
         """
         left_set = self.get_left()
         right_set = self.get_right()
@@ -231,12 +274,11 @@ class metrization(object):
                 raise samp.domain_not_matching(msg)
             else:
                 domain = left_set.get_domain()
-        else:
+        else:  # since the domains match, we can choose either.
             if left_set._domain is None or right_set._domain is None:
                 msg = "One or more of your sets is missing a domain."
                 raise samp.domain_not_matching(msg)
-            else:  # since the domains match, we can choose either.
-                domain = left_set.get_domain()
+
         if not np.allclose(self._emulated_sample_set.get_domain(), domain):
             msg = "Integration domain mismatch."
             raise samp.domain_not_matching(msg)
@@ -245,7 +287,8 @@ class metrization(object):
 
     def globalize_ptrs(self):
         r"""
-        Globalizes metrization pointers.
+        Globalizes comparison pointers by caling ``get_global_values``
+        for both the left and right sample sets.
 
         """
         if (self._ptr_left_local is not None) and\
@@ -259,7 +302,6 @@ class metrization(object):
 
     def set_ptr_left(self, globalize=True):
         """
-
         Creates the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_left``
 
@@ -269,6 +311,7 @@ class metrization(object):
 
         :param bool globalize: flag whether or not to globalize
             ``self._ptr_left``
+
         """
         if self._emulated_sample_set._values_local is None:
             self._emulated_sample_set.global_to_local()
@@ -283,7 +326,6 @@ class metrization(object):
 
     def get_ptr_left(self):
         """
-
         Returns the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_left``
 
@@ -300,7 +342,6 @@ class metrization(object):
 
     def set_ptr_right(self, globalize=True):
         """
-
         Creates the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_right``
 
@@ -325,7 +366,6 @@ class metrization(object):
 
     def get_ptr_right(self):
         """
-
         Returns the pointer from ``self._emulated_sample_set`` to
         ``self._sample_set_right``
 
@@ -344,22 +384,22 @@ class metrization(object):
         """
         Makes a copy using :meth:`numpy.copy`.
 
-        :rtype: :class:`~bet.sample.metrization`
-        :returns: Copy of this :class:`~bet.sample.metrization`
+        :rtype: :class:`~bet.postProcess.compareP.comparison`
+        :returns: Copy of a comparison object.
 
         """
-        my_copy = metrization(self._emulated_sample_set.copy(),
-                              self._sample_set_left.copy(),
-                              self._sample_set_right.copy())
+        my_copy = comparison(self._emulated_sample_set.copy(),
+                             self._sample_set_left.copy(),
+                             self._sample_set_right.copy())
 
-        for attrname in metrization.sample_set_names:
+        for attrname in comparison.sample_set_names:
             if attrname is not '_sample_set_left' and \
                     attrname is not '_sample_set_right':
                 curr_sample_set = getattr(self, attrname)
                 if curr_sample_set is not None:
                     setattr(my_copy, attrname, curr_sample_set.copy())
 
-        for array_name in metrization.vector_names:
+        for array_name in comparison.vector_names:
             current_array = getattr(self, array_name)
             if current_array is not None:
                 setattr(my_copy, array_name, np.copy(current_array))
@@ -367,8 +407,7 @@ class metrization(object):
 
     def get_sample_set_left(self):
         """
-
-        Returns a reference to the left sample set for this metrization.
+        Returns a reference to the left sample set for this comparison.
 
         :rtype: :class:`~bet.sample.sample_set_base`
         :returns: left sample set
@@ -378,16 +417,14 @@ class metrization(object):
 
     def get_left(self):
         r"""
-
         Wrapper for `get_sample_set_left`.
-
         """
         return self.get_sample_set_left()
 
     def set_sample_set_left(self, sample_set):
         """
 
-        Sets the left sample set for this metrization.
+        Sets the left sample set for this comparison.
 
         :param sample_set: left sample set
         :type sample_set: :class:`~bet.sample.sample_set_base`
@@ -431,7 +468,7 @@ class metrization(object):
     def get_sample_set_right(self):
         """
 
-        Returns a reference to the right sample set for this metrization.
+        Returns a reference to the right sample set for this comparison.
 
         :rtype: :class:`~bet.sample.sample_set_base`
         :returns: right sample set
@@ -441,9 +478,7 @@ class metrization(object):
 
     def get_right(self):
         r"""
-
         Wrapper for `get_sample_set_right`.
-
         """
         return self.get_sample_set_right()
 
@@ -460,10 +495,9 @@ class metrization(object):
 
     def set_sample_set_right(self, sample_set):
         """
+        Sets the right sample set for this comparison.
 
-        Sets the right sample set for this metrization.
-
-        :param sample_set: left sample set
+        :param sample_set: right sample set
         :type sample_set: :class:`~bet.sample.sample_set_base`
 
         """
@@ -493,22 +527,25 @@ class metrization(object):
 
     def get_emulated_sample_set(self):
         r"""
-
-        Returns a reference to the output probability sample set for this
-        metrization.
+        Returns a reference to the emulated sample set for this comparison.
 
         :rtype: :class:`~bet.sample.sample_set_base`
-        :returns: output probability sample set
+        :returns: emulated sample set
 
         """
         return self._emulated_sample_set
 
+    def get_emulated(self):
+        r"""
+        Wrapper for `get_emulated_sample_set`.
+        """
+        return self.get_emulated_sample_set()
+
     def set_emulated_sample_set(self, emulated_sample_set):
         r"""
+        Sets the emulated sample set for this comparison.
 
-        Sets the integration_output sample set for this metrization.
-
-        :param emulated_sample_set: integration sample set.
+        :param emulated_sample_set: emulated sample set
         :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
 
         """
@@ -534,41 +571,8 @@ class metrization(object):
         if self._sample_set_right is not None:
             self._sample_set_right._emulated_density = None
 
-    def get_em(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
-    def get_int(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
-    def get_integration_sample_set(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
-    def get_emulated(self):
-        r"""
-
-        Wrapper for `get_emulated_sample_set`.
-
-        """
-        return self.get_emulated_sample_set()
-
     def set_emulated(self, sample_set):
         r"""
-
         Wrapper for `set_emulated_sample_set`.
 
         :param sample_set: sample set
@@ -577,48 +581,19 @@ class metrization(object):
         """
         return self.set_emulated_sample_set(sample_set)
 
-    def set_em(self, sample_set):
+    def clip(self, lnum, rnum=None, copy=True):
         r"""
+        Creates and returns a comparison with the the first `lnum`
+        and `rnum` entries of the left and right sample sets, respectively.
 
-        Wrapper for `set_emulated_sample_set`.
+        :param int lnum: number of values in left sample set to return.
+        :param int rnum: number of values in right sample set to return.
+            If ``rnum==None``, set ``rnum=lnum``.
+        :param bool copy: Pass emulated_sample_set by value instead of pass
+            by reference (use same pointer to sample set object).
 
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_emulated_sample_set(sample_set)
-
-    def set_int(self, sample_set):
-        r"""
-
-        Wrapper for `set_emulated_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_emulated_sample_set(sample_set)
-
-    def set_integration_sample_set(self, sample_set):
-        r"""
-
-        Wrapper for `set_emulated_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_emulated_sample_set(sample_set)
-
-    def clip(self, lnum, rnum=None):
-        r"""
-        Creates and returns a metrization with the the first `lnum`
-        and `rnum` entries of the left and right sample sets, resp.
-
-        :param int cnum: number of values of sample set to return
-
-        :rtype: :class:`~bet.sample.metrization`
-        :returns: clipped metrization
+        :rtype: :class:`~bet.sample.comparison`
+        :returns: clipped comparison
 
         """
         if rnum is None:  # can clip by same amount
@@ -632,45 +607,48 @@ class metrization(object):
         else:
             cr = self._sample_set_right.copy()
 
-        return metrization(sample_set_left=cl,
-                           sample_set_right=cr,
-                           emulated_sample_set=self.
-                           _emulated_sample_set.copy())
+        if copy:
+            em_set = self._emulated_sample_set.copy()
+        else:
+            em_set = self._emulated_sample_set
 
-    def merge(self, metr):
+        return comparison(sample_set_left=cl,
+                          sample_set_right=cr,
+                          emulated_sample_set=em_set)
+
+    def merge(self, comp):
         r"""
-        Merges a given metrization with this one by merging the input and
+        Merges a given comparison with this one by merging the input and
         output sample sets.
 
-        :param metr: metrization object to merge with.
-        :type metr: :class:`bet.sample.metrization`
+        :param comp: comparison object to merge with.
+        :type comp: :class:`bet.sample.comparison`
 
-        :rtype: :class:`bet.sample.metrization`
-        :returns: Merged metrization
+        :rtype: :class:`bet.sample.comparison`
+        :returns: Merged comparison
         """
-        ml = self._sample_set_left.merge(metr._sample_set_left)
-        mr = self._sample_set_right.merge(metr._sample_set_right)
+        ml = self._sample_set_left.merge(comp._sample_set_left)
+        mr = self._sample_set_right.merge(comp._sample_set_right)
         il, ir = self._ptr_left, self._ptr_right
-        if metr._ptr_left is not None:
-            il += metr._ptr_left
-        if metr._ptr_right is not None:
-            ir += metr._ptr_right
-        return metrization(sample_set_left=ml,
-                           sample_set_right=mr,
-                           emulated_sample_set=self._emulated_sample_set,
-                           ptr_left=il,
-                           ptr_right=ir)
+        if comp._ptr_left is not None:
+            il += comp._ptr_left
+        if comp._ptr_right is not None:
+            ir += comp._ptr_right
+        return comparison(sample_set_left=ml,
+                          sample_set_right=mr,
+                          emulated_sample_set=self._emulated_sample_set,
+                          ptr_left=il,
+                          ptr_right=ir)
 
     def slice(self,
               dims=None):
         r"""
-        Slices the left and right of the metrization.
+        Slices the left and right of the comparison.
 
         :param list dims: list of indices (dimensions) of sample set to include
-        :param list right: list of indices of right sample set to include
 
-        :rtype: :class:`~bet.sample.metrization`
-        :returns: sliced metrization
+        :rtype: :class:`~bet.sample.comparison`
+        :returns: sliced comparison
 
         """
         slice_list = ['_values', '_values_local',
@@ -721,16 +699,17 @@ class metrization(object):
                 nval = nval.take(dims, axis=2)
                 setattr(right_ss, obj, nval)
 
-        metr = metrization(sample_set_left=left_ss,
-                           sample_set_right=right_ss,
-                           emulated_sample_set=int_ss)
+        comp = comparison(sample_set_left=left_ss,
+                          sample_set_right=right_ss,
+                          emulated_sample_set=int_ss)
         # additional attributes to copy over here. TODO: maybe slice through
-        return metr
+        return comp
 
     def global_to_local(self):
         """
         Call global_to_local for ``sample_set_left`` and
         ``sample_set_right``.
+
         """
         if self._sample_set_left is not None:
             self._sample_set_left.global_to_local()
@@ -742,7 +721,8 @@ class metrization(object):
     def local_to_global(self):
         """
         Call local_to_global for ``sample_set_left``,
-        ``sample_set_right``, and ``emulation_sample_set``.
+        ``sample_set_right``, and ``emulated_sample_set``.
+
         """
         if self._sample_set_left is not None:
             self._sample_set_left.local_to_global()
@@ -760,18 +740,28 @@ class metrization(object):
 
     def set_left_probabilities(self, probabilities):
         r"""
-        Allow overwriting of probabilities for the left set.
+        Allow overwriting of probabilities for the left sample set.
+
+        :param probabilities: probabilities to overwrite the ones in the
+            left sample set.
+        :type probabilities: list, tuple, or `numpy.ndarray`
+
         """
         if self.get_left().check_num() != len(probabilities):
             raise AttributeError("Length of probabilities incorrect.")
-        self._sample_set_left._probabilities = probabilities
+        self._sample_set_left.set_probabilities(probabilities)
         self._sample_set_left.global_to_local()
         self._sample_set_left._emulated_density = None
         self._den_left = None
 
     def set_right_probabilities(self, probabilities):
         r"""
-        Allow overwriting of probabilities for the right set.
+        Allow overwriting of probabilities for the right sample set.
+
+        :param probabilities: probabilities to overwrite the ones in the
+            right sample set.
+        :type probabilities: list, tuple, or `numpy.ndarray`
+
         """
         if self.get_right().check_num() != len(probabilities):
             raise AttributeError("Length of probabilities incorrect.")
@@ -782,20 +772,34 @@ class metrization(object):
 
     def get_left_probabilities(self):
         r"""
-        Return probabilities for the left set.
+        Wrapper for ``get_probabilities`` for the left sample set.
         """
-        return self._sample_set_left._probabilities
+        return self._sample_set_left.get_probabilities()
 
     def get_right_probabilities(self):
         r"""
-        Return probabilities for the right set.
+        Wrapper for ``get_probabilities`` for the right sample set.
         """
-        return self._sample_set_right._probabilities
+        return self._sample_set_right.get_probabilities()
 
     def set_volume_emulated(self, sample_set, emulated_sample_set=None):
         r"""
         Wrapper to use the emulated sample set for the
-        calculation of volumes on the sample sets.
+        calculation of volumes on the sample sets (as opposed to using the
+        Monte-Carlo assumption or setting volumes manually.)
+
+        .. seealso::
+
+            :meth:`bet.compareP.comparison.estimate_volume_mc``
+            :meth:`bet.compareP.comparison.set_left_volume_emulated``
+            :meth:`bet.compareP.comparison.set_right_volume_emulated``
+
+        :param sample_set: sample set
+        :type sample_set: :class:`~bet.sample.sample_set_base`
+        :param emulated_sample_set: emulated sample set
+        :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
+
+
         """
         if emulated_sample_set is not None:
             if not isinstance(emulated_sample_set, samp.sample_set_base):
@@ -818,6 +822,10 @@ class metrization(object):
     def set_right_volume_emulated(self, emulated_sample_set=None):
         r"""
         Use an emulated sample set to define volumes for the right set.
+
+        :param emulated_sample_set: emulated sample set
+        :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
+
         """
         self.set_volume_emulated(self.get_right(), emulated_sample_set)
         self._den_right = None  # if volumes change, so will densities.
@@ -826,6 +834,7 @@ class metrization(object):
         r"""
         Evaluates density function for the left probability measure
         at the set of samples defined in `emulated_sample_set`.
+
         """
         s_set = self.get_left()
         if self._ptr_left_local is None:
@@ -838,6 +847,7 @@ class metrization(object):
         r"""
         Evaluates density function for the right probability measure
         at the set of samples defined in ``emulated_sample_set``.
+
         """
         s_set = self.get_right()
         if self._ptr_right_local is None:
@@ -872,13 +882,13 @@ class metrization(object):
 
     def get_left_density(self):
         r"""
-        Wrapper. Returns left emulated density.
+        Wrapper for ``bet.postProcess.compareP.get_density_left``.
         """
         return self.get_density_left()
 
     def get_right_density(self):
         r"""
-        Wrapper. Returns right emulated density.
+        Wrapper for ``bet.postProcess.compareP.get_density_right``.
         """
         return self.get_density_right()
 
@@ -887,9 +897,21 @@ class metrization(object):
         r"""
         Evaluate density functions for both left and right sets using
         the set of samples defined in ``self._emulated_sample_set``.
+
+        :param bool globalize: globalize left/right sample sets
+        :param emulated_sample_set: emulated sample set
+        :type emulated_sample_set: :class:`~bet.sample.sample_set_base`
+
+        :rtype: ``numpy.ndarray``, ``numpy.ndarray``
+        :returns: left and right density values
+
         """
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
+
+        em_set = self.get_emulated_sample_set()
+        if em_set is None:
+            raise AttributeError("Missing integration set.")
         self.check_domain()
 
         # set pointers if they have not already been set
@@ -899,7 +921,6 @@ class metrization(object):
             self.set_ptr_right(globalize)
         self.check_dim()
 
-        int_set = self.get_int()
         left_set, right_set = self.get_left(), self.get_right()
 
         if left_set._volumes is None:
@@ -928,25 +949,28 @@ class metrization(object):
             if emulated_sample_set is not None:
                 self.set_right_volume_emulated(emulated_sample_set)
 
-        if int_set is None:
-            raise AttributeError("Missing integration set.")
-
         # compute densities
         self.estimate_density_left()
         self.estimate_density_right()
-
-        if len(right_set._emulated_density) != len(left_set._emulated_density):
-            msg = "Length of pointers "
-            raise samp.dim_not_matching(msg)
 
         if globalize:
             self.local_to_global()
         return self._den_left, self._den_right
 
-    def distance(self, metric='tv', **kwargs):
+    def value(self, functional='tv', **kwargs):
         r"""
-        Compute distance using evaluated densities on a shared emulated set.
+        Compute value capturing some meaure of similarity using the
+        evaluated densities on a shared emulated set.
         If either density evaluation is missing, re-compute it.
+
+        :param funtional: a function representing a measure of similarity
+        :type functional: method that takes in two lists/arrays and returns
+            a scalar value (measure of similarity)
+
+        :rtype: float
+        :returns: value representing a measurement between the left and right
+            sample sets, ideally a measure of similarity, a distance, a metric.
+
         """
         left_den, right_den = self.get_left_density(), self.get_right_density()
         if left_den is None:
@@ -956,20 +980,20 @@ class metrization(object):
             # logging.log(20,"Right density missing. Estimating now.")
             right_den = self.estimate_density_right()
 
-        if metric in ['tv', 'totvar',
-                      'total variation', 'total-variation', '1']:
+        if functional in ['tv', 'totvar',
+                          'total variation', 'total-variation', '1']:
             dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
-        elif metric in ['mink', 'minkowski']:
+        elif functional in ['mink', 'minkowski']:
             dist = ds.minkowski(left_den, right_den, **kwargs)
-        elif metric in ['norm']:
-            dist = ds.norm(left_den-right_den, **kwargs)
-        elif metric in ['euclidean', '2-norm', '2']:
+        elif functional in ['norm']:
+            dist = ds.norm(left_den - right_den, **kwargs)
+        elif functional in ['euclidean', '2-norm', '2']:
             dist = ds.minkowski(left_den, right_den, 2, **kwargs)
-        elif metric in ['sqhell', 'sqhellinger']:
-            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den))/2.0
-        elif metric in ['hell', 'hellinger']:
-            return np.sqrt(self.distance('sqhell'))
+        elif functional in ['sqhell', 'sqhellinger']:
+            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den)) / 2.0
+        elif functional in ['hell', 'hellinger']:
+            return np.sqrt(self.value('sqhell'))
         else:
-            dist = metric(left_den, right_den, **kwargs)
+            dist = functional(left_den, right_den, **kwargs)
 
-        return dist/self.check_num()
+        return dist / self._emulated_sample_set.check_num()
