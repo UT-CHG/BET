@@ -27,9 +27,6 @@ script:
 notifications:
     email:
         recipients:
-            - steve.a.mattis@gmail.com
-            - lichgraham@gmail.com
-            - scottw13@gmail.com
             - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
