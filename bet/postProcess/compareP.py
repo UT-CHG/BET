@@ -54,45 +54,6 @@ def density(sample_set, ptr=None):
     return sample_set
 
 
-def compare(left_set, right_set, num_mc_points=1000):
-    r"""
-    This is a convience function to quickly instantiate and return
-    a `~bet.postProcess.comparison` object. See the docstring for
-    this class for more details.
-
-    :param left set: sample set in left position
-    :type left set: :class:`bet.sample.sample_set_base`
-    :param right set: sample set in right position
-    :type right set: :class:`bet.sample.sample_set_base`
-    :param int num_mc_points: number of values of sample set to return
-
-    :rtype: :class:`~bet.postProcess.compareP.comparison`
-    :returns: comparison object
-
-    """
-    # extract sample set
-    if isinstance(left_set, samp.discretization):
-        logging.log(20, "Discretization passed. Assuming input set.")
-        left_set = left_set.get_input_sample_set()
-    if isinstance(right_set, samp.discretization):
-        logging.log(20, "Discretization passed. Assuming input set.")
-        right_set = right_set.get_input_sample_set()
-    if not num_mc_points > 0:
-        raise ValueError("Please specify positive num_mc_points")
-
-    # make integration sample set
-    assert left_set.get_dim() == right_set.get_dim()
-    assert np.array_equal(left_set.get_domain(), right_set.get_domain())
-    em_set = samp.sample_set(left_set.get_dim())
-    em_set.set_domain(right_set.get_domain())
-    em_set = bsam.random_sample_set('r', em_set, num_mc_points)
-
-    # to be generating a new random sample set pass an integer argument
-    comp = comparison(em_set, left_set, right_set)
-
-    return comp
-
-
 class comparison(object):
     """
     This class allows for analytically-sound comparisons between
@@ -997,3 +958,111 @@ class comparison(object):
             dist = functional(left_den, right_den, **kwargs)
 
         return dist / self._emulated_sample_set.check_num()
+
+
+def compare(left_set, right_set, num_mc_points=1000, choice='input'):
+    r"""
+    This is a convience function to quickly instantiate and return
+    a `~bet.postProcess.comparison` object.
+
+    .. seealso::
+
+        :class:`bet.compareP.comparison`
+        :meth:`bet.compareP.compare_inputs`
+        :meth:`bet.compareP.compare_outputs`
+
+    :param left set: sample set in left position
+    :type left set: :class:`bet.sample.sample_set_base`
+    :param right set: sample set in right position
+    :type right set: :class:`bet.sample.sample_set_base`
+    :param int num_mc_points: number of values of sample set to return
+    :param choice: If discretization, choose 'input' (default) or 'output'
+    :type choice: string
+
+    :rtype: :class:`~bet.postProcess.compareP.comparison`
+    :returns: comparison object
+
+    """
+    # extract sample set
+    if isinstance(left_set, samp.discretization):
+        msg = 'Discretization passed. '
+        if choice == 'input':
+            msg += 'Using input sample set.'
+            left_set = left_set.get_input_sample_set()
+        else:
+            msg += 'Using output sample set.'
+            left_set = left_set.get_output_sample_set()
+        logging.info(msg)
+        
+    if isinstance(right_set, samp.discretization):
+        msg = 'Discretization passed. '
+        if choice == 'input':
+            msg += 'Using input sample set.'
+            right_set = right_set.get_input_sample_set()
+        else:
+            msg += 'Using output sample set.'
+            right_set = right_set.get_output_sample_set()
+        logging.info(msg)
+        
+    if not num_mc_points > 0:
+        raise ValueError("Please specify positive num_mc_points")
+
+    # make integration sample set
+    assert left_set.get_dim() == right_set.get_dim()
+    assert np.array_equal(left_set.get_domain(), right_set.get_domain())
+    em_set = samp.sample_set(left_set.get_dim())
+    em_set.set_domain(right_set.get_domain())
+    em_set = bsam.random_sample_set('r', em_set, num_mc_points)
+
+    # to be generating a new random sample set pass an integer argument
+    comp = comparison(em_set, left_set, right_set)
+
+    return comp
+
+
+def compare_inputs(left_set, right_set, num_mc_points=1000):
+    r"""
+    This is a convience function to quickly instantiate and return
+    a `~bet.postProcess.comparison` object. If discretizations are passed,
+    the respective input sample sets will be compared.
+
+    .. seealso::
+
+        :class:`bet.compareP.comparison`
+        :meth:`bet.compareP.compare`
+
+    :param left set: sample set in left position
+    :type left set: :class:`bet.sample.sample_set_base`
+    :param right set: sample set in right position
+    :type right set: :class:`bet.sample.sample_set_base`
+    :param int num_mc_points: number of values of sample set to return
+
+    :rtype: :class:`~bet.postProcess.compareP.comparison`
+    :returns: comparison object
+
+    """
+    return compare(left_set, right_set, num_mc_points, 'input')
+
+
+def compare_outputs(left_set, right_set, num_mc_points=1000):
+    r"""
+    This is a convience function to quickly instantiate and return
+    a `~bet.postProcess.comparison` object. If discretizations are passed,
+    the respective output sample sets will be compared.
+
+    .. seealso::
+
+        :class:`bet.compareP.comparison`
+        :meth:`bet.compareP.compare`
+
+    :param left set: sample set in left position
+    :type left set: :class:`bet.sample.sample_set_base`
+    :param right set: sample set in right position
+    :type right set: :class:`bet.sample.sample_set_base`
+    :param int num_mc_points: number of values of sample set to return
+
+    :rtype: :class:`~bet.postProcess.compareP.comparison`
+    :returns: comparison object
+
+    """
+    return compare(left_set, right_set, num_mc_points, 'output')
