@@ -993,7 +993,7 @@ def compare(left_set, right_set, num_mc_points=1000, choice='input'):
             msg += 'Using output sample set.'
             left_set = left_set.get_output_sample_set()
         logging.info(msg)
-        
+
     if isinstance(right_set, samp.discretization):
         msg = 'Discretization passed. '
         if choice == 'input':
@@ -1003,7 +1003,7 @@ def compare(left_set, right_set, num_mc_points=1000, choice='input'):
             msg += 'Using output sample set.'
             right_set = right_set.get_output_sample_set()
         logging.info(msg)
-        
+
     if not num_mc_points > 0:
         raise ValueError("Please specify positive num_mc_points")
 
