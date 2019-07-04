@@ -8,8 +8,8 @@ import scipy.spatial.distance as ds
 
 def density(sample_set, ptr=None):
     r"""
-    Compute density for a sample set and write it to the ``_comparison_densities``
-    attribute inside of ``sample_set``
+    Compute density for a sample set and write it to the 
+    ``_comparison_densities`` attribute inside of ``sample_set``
 
     :param sample_set: sample set with existing probabilities stored
     :type sample_set: :class:`bet.sample.sample_set_base`
@@ -18,11 +18,11 @@ def density(sample_set, ptr=None):
     :type ptr: list, tuple, or ``np.ndarray``
 
     :rtype: :class:`bet.sample.sample_set_base`
-    :returns: sample set object with additional attribute ``_comparison_densities``
+    :returns: sample set object with attribute ``_comparison_densities``
 
     """
     if sample_set is None:
-        raise AttributeError("Missing sample set.")
+        raise AttributeError("Required: sample_set object")
     elif sample_set._densities is not None:
         # this is our way of checking if we used sampling-approach
         # if already computed, avoid re-computation.
@@ -33,9 +33,15 @@ def density(sample_set, ptr=None):
         sample_set._comparison_densities = den
     else:  # missing densities, use probabilities
         if sample_set._probabilities is None:
-            raise AttributeError("Missing probabilities from sample set.")
+            if sample_set._probabilities_local is not None:
+                sample_set.local_to_global()
+            else:
+                msg = "Required: _probabilities in sample_set"
+                msg += "to construct density"
+                raise AttributeError(msg)
         if sample_set._volumes is None:
-            raise AttributeError("Missing volumes from sample set.")
+            msg = "Required: _volumes in sample_set to construct density"
+            raise AttributeError(msg)
         if sample_set._probabilities_local is None:
             sample_set.global_to_local()
 
@@ -61,10 +67,11 @@ class comparison(object):
     to compare the similarity of two measures defined on different
     sigma-algebras (induced by the voronoi-cell tesselations implicitly
     defined by the ``_values`` in each sample set), a third sample set
-    object is introduced as a reference for comparison. It is referred
-    to as an ``comparison_sample_set`` and is required to instantiate a
-    ``comparison`` object since the dimensions will be used to enforce
-    properly setting the left and right sample set positions.
+    object contains the set of samples on which the measures will
+    be compared. It is referred to as an ``comparison_sample_set`` 
+    and is the only set that is actually required to instantiate a
+    ``comparison`` object; the dimension and domain of it will be 
+    used to enforce proper setting of the left and right sample sets.
 
     This object can be thought of as a more flexible version of an abstraction
     of a metric, a measure of distance between two probability measures.
@@ -73,7 +80,7 @@ class comparison(object):
     that define a formal metric, instead we use the language of "comparisons".
 
     Technically, any function can be passed for evaluation, including
-    ones that fail to satisfy symmetry, so we refrain from reffering
+    ones that fail to satisfy symmetry, so we refrain from referring
     to measures of similarity as metrics, though this is the usual case
     (with the exception of the frequently used KL-Divergence).
     Several common measures of similarity are accessible with keywords.
@@ -82,9 +89,9 @@ class comparison(object):
     given by the argument ``num_mc_points``, and pointers between this
     set and the left/right sets are built on-demand. Methods in this
     class allow for over-writing of any of the three sample set objects
-    involved, and pointers are re-built either by explictly, or they
-    are computed when the a measure of similarity (such as distance) is
-    requested to be evaluated.
+    involved, and pointers are either re-built explictly, or they
+    are constructed when a measure of similarity (such as distance)
+    is requested to be evaluated.
 
     .. seealso::
 

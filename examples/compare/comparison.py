@@ -13,13 +13,13 @@ The hypercube can be in three locations:
 and the number of samples will determine the fidelity of the
 approximation since we are using voronoi-cell approximations.
 """
-num_samples_left = 50
-num_samples_right = 50
+num_left_samples = 50
+num_right_samples = 50
 delta = 0.5 # width of measure's support per dimension
 dim = 2
 # define two sets that will be compared
-L = unit_center_set(dim, num_samples_left, delta)
-R = unit_center_set(dim, num_samples_right, delta)
+L = unit_center_set(dim, num_left_samples, delta)
+R = unit_center_set(dim, num_right_samples, delta)
 
 # choose a reference sigma-algebra to compare both solutions
 # against (using nearest-neighbor query).

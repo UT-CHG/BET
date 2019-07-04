@@ -1,6 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
-
-# Steve Mattis 03/23/2016
+# Copyright (C) 2014-2019 The BET Development Team
 
 import unittest
 import os
@@ -317,6 +315,21 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_probabilities(prob)
         self.sam_set.check_num()
         nptest.assert_array_equal(prob, self.sam_set.get_probabilities())
+
+    def test_densiities(self):
+        """
+        Check density methods
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        self.sam_set.estimate_volume_mc()
+        self.sam_set.set_densities()
+        self.sam_set.check_num()
+        vol = self.sam_set.get_volumes()
+        nptest.assert_array_equal(prob/vol, self.sam_set.get_densities())
+        den = np.ones((self.num,))
+        self.sam_set.set_densities(den)
+        nptest.assert_array_equal(den, self.sam_set.get_densities())
 
     def test_volumes(self):
         """

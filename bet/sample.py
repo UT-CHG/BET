@@ -821,7 +821,7 @@ class sample_set_base(object):
         if densities is not None:
             self._densities = densities
         else:
-            logging.log("Setting densities with probability/volume.")
+            logging.warn("Setting densities with probability/volume.")
             probs = self._probabilities
             vols = self._volumes
             self._densities = probs/vols
@@ -1005,7 +1005,7 @@ class sample_set_base(object):
         if densities_local is not None:
             self._densities_local = densities_local
         else:
-            logging.log("Setting densities with probability/volume.")
+            logging.warn("Setting densities with probability/volume.")
             probs = self._probabilities_local
             vols = self._volumes_local
             self._densities_local = probs/vols
