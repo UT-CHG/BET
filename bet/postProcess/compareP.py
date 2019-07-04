@@ -8,7 +8,7 @@ import scipy.spatial.distance as ds
 
 def density(sample_set, ptr=None):
     r"""
-    Compute density for a sample set and write it to the ``_comparison_density``
+    Compute density for a sample set and write it to the ``_comparison_densities``
     attribute inside of ``sample_set``
 
     :param sample_set: sample set with existing probabilities stored
@@ -18,20 +18,20 @@ def density(sample_set, ptr=None):
     :type ptr: list, tuple, or ``np.ndarray``
 
     :rtype: :class:`bet.sample.sample_set_base`
-    :returns: sample set object with additional attribute ``_comparison_density``
+    :returns: sample set object with additional attribute ``_comparison_densities``
 
     """
     if sample_set is None:
         raise AttributeError("Missing sample set.")
-    elif hasattr(sample_set, '_density'):
+    elif sample_set._densities is not None:
         # this is our way of checking if we used sampling-approach
         # if already computed, avoid re-computation.
         if ptr is not None:
-            den = sample_set._density[ptr]
+            den = sample_set._densities[ptr]
         else:
-            den = sample_set._density
-        sample_set._comparison_density = den
-    else:  # not none
+            den = sample_set._densities
+        sample_set._comparison_densities = den
+    else:  # missing densities, use probabilities
         if sample_set._probabilities is None:
             raise AttributeError("Missing probabilities from sample set.")
         if sample_set._volumes is None:
@@ -45,9 +45,9 @@ def density(sample_set, ptr=None):
         else:
             den = np.divide(sample_set._probabilities[ptr].ravel(),
                             sample_set._volumes[ptr].ravel())
-        sample_set._comparison_density = den
+        sample_set._comparison_densities = den
     if ptr is None:  # create pointer to density to avoid re-run
-        sample_set._density = sample_set._comparison_density
+        sample_set._densities = sample_set._comparison_densities
     else:
         sample_set._prob = sample_set._probabilities[ptr].ravel()
     sample_set.local_to_global()
@@ -160,7 +160,7 @@ class comparison(object):
             elif np.all(np.array(output_dims) == output_dims[0]):
                 self._comparison_sample_set = comparison_sample_set
             else:
-                raise samp.dim_not_matching("dimension of values incorrect")
+                raise samp.dim_not_matching("Dimension of values incorrect")
 
             if not isinstance(comparison_sample_set.get_domain(), np.ndarray):
                 # domain can be missing if left/right sample sets present
@@ -528,9 +528,9 @@ class comparison(object):
                 "Wrong Type: Should be samp.sample_set_base type")
         # if a new emulation set is provided, forget the comparison evaluation.
         if self._left_sample_set is not None:
-            self._left_sample_set._comparison_density = None
+            self._left_sample_set._comparison_densities = None
         if self._right_sample_set is not None:
-            self._right_sample_set._comparison_density = None
+            self._right_sample_set._comparison_densities = None
 
     def set_comparison(self, sample_set):
         r"""
@@ -712,7 +712,7 @@ class comparison(object):
             raise AttributeError("Length of probabilities incorrect.")
         self._left_sample_set.set_probabilities(probabilities)
         self._left_sample_set.global_to_local()
-        self._left_sample_set._comparison_density = None
+        self._left_sample_set._comparison_densities = None
         self._den_left = None
 
     def set_right_probabilities(self, probabilities):
@@ -728,7 +728,7 @@ class comparison(object):
             raise AttributeError("Length of probabilities incorrect.")
         self._right_sample_set._probabilities = probabilities
         self._right_sample_set.global_to_local()
-        self._right_sample_set._comparison_density = None
+        self._right_sample_set._comparison_densities = None
         self._den_right = None
 
     def get_left_probabilities(self):
@@ -791,7 +791,7 @@ class comparison(object):
         self.set_volume_comparison(self.get_right(), comparison_sample_set)
         self._den_right = None  # if volumes change, so will densities.
 
-    def estimate_density_left(self):
+    def estimate_densities_left(self):
         r"""
         Evaluates density function for the left probability measure
         at the set of samples defined in `comparison_sample_set`.
@@ -801,10 +801,10 @@ class comparison(object):
         if self._ptr_left_local is None:
             self.set_ptr_left()
         s_set = density(s_set, self._ptr_left_local)
-        self._den_left = s_set._comparison_density
+        self._den_left = s_set._comparison_densities
         return self._den_left
 
-    def estimate_density_right(self):
+    def estimate_densities_right(self):
         r"""
         Evaluates density function for the right probability measure
         at the set of samples defined in ``comparison_sample_set``.
@@ -814,46 +814,46 @@ class comparison(object):
         if self._ptr_right_local is None:
             self.set_ptr_right()
         s_set = density(s_set, self._ptr_right_local)
-        self._den_right = s_set._comparison_density
+        self._den_right = s_set._comparison_densities
         return self._den_right
 
-    def estimate_right_density(self):
+    def estimate_right_densities(self):
         r"""
-        Wrapper for ``bet.postProcess.compareP.estimate_density_right``.
+        Wrapper for ``bet.postProcess.compareP.estimate_densities_right``.
         """
-        return self.estimate_density_right()
+        return self.estimate_densities_right()
 
-    def estimate_left_density(self):
+    def estimate_left_densities(self):
         r"""
-        Wrapper for ``bet.postProcess.compareP.estimate_density_left``.
+        Wrapper for ``bet.postProcess.compareP.estimate_densities_left``.
         """
-        return self.estimate_density_left()
+        return self.estimate_densities_left()
 
-    def get_density_right(self):
+    def get_densities_right(self):
         r"""
         Returns right comparison density.
         """
         return self._den_right
 
-    def get_density_left(self):
+    def get_densities_left(self):
         r"""
         Returns left comparison density.
         """
         return self._den_left
 
-    def get_left_density(self):
+    def get_left_densities(self):
         r"""
-        Wrapper for ``bet.postProcess.compareP.get_density_left``.
+        Wrapper for ``bet.postProcess.compareP.get_densities_left``.
         """
-        return self.get_density_left()
+        return self.get_densities_left()
 
-    def get_right_density(self):
+    def get_right_densities(self):
         r"""
-        Wrapper for ``bet.postProcess.compareP.get_density_right``.
+        Wrapper for ``bet.postProcess.compareP.get_densities_right``.
         """
-        return self.get_density_right()
+        return self.get_densities_right()
 
-    def estimate_density(self, globalize=True,
+    def estimate_densities(self, globalize=True,
                          comparison_sample_set=None):
         r"""
         Evaluate density functions for both left and right sets using
@@ -911,8 +911,8 @@ class comparison(object):
                 self.set_right_volume_comparison(comparison_sample_set)
 
         # compute densities
-        self.estimate_density_left()
-        self.estimate_density_right()
+        self.estimate_densities_left()
+        self.estimate_densities_right()
 
         if globalize:
             self.local_to_global()
@@ -933,13 +933,13 @@ class comparison(object):
             sample sets, ideally a measure of similarity, a distance, a metric.
 
         """
-        left_den, right_den = self.get_left_density(), self.get_right_density()
+        left_den, right_den = self.get_left_densities(), self.get_right_densities()
         if left_den is None:
             # logging.log(20,"Left density missing. Estimating now.")
-            left_den = self.estimate_density_left()
+            left_den = self.estimate_densities_left()
         if right_den is None:
             # logging.log(20,"Right density missing. Estimating now.")
-            right_den = self.estimate_density_right()
+            right_den = self.estimate_densities_right()
 
         if functional in ['tv', 'totvar',
                           'total variation', 'total-variation', '1']:
@@ -1066,3 +1066,4 @@ def compare_outputs(left_set, right_set, num_mc_points=1000):
 
     """
     return compare(left_set, right_set, num_mc_points, 'output')
+

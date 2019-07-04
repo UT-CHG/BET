@@ -267,18 +267,22 @@ class sample_set_base(object):
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
-    vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-                    '_volumes_local', '_local_index', '_dim', '_p_norm',
+    vector_names = ['_probabilities', '_probabilities_local',
+                    '_volumes', '_volumes_local',
+                    '_densities', '_densities_local',
+                    '_local_index', '_dim', '_p_norm',
                     '_radii', '_normalized_radii', '_region', '_region_local',
                     '_error_id', '_error_id_local', '_reference_value',
                     '_domain_original']
 
     #: List of global attribute names for attributes that are
     #: :class:`numpy.ndarray`
-    array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
+    array_names = ['_values', '_volumes', '_probabilities', 
+                   '_densities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
                    '_kdtree_values', '_radii', '_normalized_radii',
                    '_region', '_error_id']
+
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -303,6 +307,8 @@ class sample_set_base(object):
         self._volumes = None
         #: :class:`numpy.ndarray` of sample probabilities of shape (num,)
         self._probabilities = None
+        #: :class:`numpy.ndarray` of sample densities of shape (num,)
+        self._densities = None
         #: :class:`numpy.ndarray` of Jacobians at samples of shape (num,
         #: other_dim, dim)
         self._jacobians = None
@@ -324,6 +330,9 @@ class sample_set_base(object):
         #: Local probabilities for parallelism, :class:`numpy.ndarray` of shape
         #: (local_num,)
         self._probabilities_local = None
+        #: Local densities for parallelism, :class:`numpy.ndarray` of shape
+        #: (local_num,)
+        self._densities_local = None
         #: Local Jacobians for parallelism, :class:`numpy.ndarray` of shape
         #: (local_num, other_dim, dim)
         self._jacobians_local = None
@@ -789,6 +798,7 @@ class sample_set_base(object):
 
         """
         self._probabilities = probabilities
+        pass
 
     def get_probabilities(self):
         """
@@ -799,6 +809,33 @@ class sample_set_base(object):
 
         """
         return self._probabilities
+
+    def set_densities(self, densities=None):
+        """
+        Set sample densities.
+
+        :type densities: :class:`numpy.ndarray` of shape (num,)
+        :param densities: sample densities
+
+        """
+        if densities is not None:
+            self._densities = densities
+        else:
+            logging.log("Setting densities with probability/volume.")
+            probs = self._probabilities
+            vols = self._volumes
+            self._densities = probs/vols
+        pass
+
+    def get_densities(self):
+        """
+        Returns sample densities.
+
+        :rtype: :class:`numpy.ndarray` of shape (num,)
+        :returns: sample densities
+
+        """
+        return self._densities
 
     def set_jacobians(self, jacobians):
         """
@@ -948,14 +985,42 @@ class sample_set_base(object):
 
     def get_probabilities_local(self):
         """
-        Returns sample local probablities.
+        Returns sample local probabilities.
 
         :rtype: :class:`numpy.ndarray`
-        :returns: sample local probablities
+        :returns: sample local probabilities
 
         """
 
         return self._probabilities_local
+
+    def set_densities_local(self, densities_local=None):
+        """
+        Set sample local densities.
+
+        :type densities_local: :class:`numpy.ndarray` of shape (num,)
+        :param densities_local: local sample densities
+
+        """
+        if densities_local is not None:
+            self._densities_local = densities_local
+        else:
+            logging.log("Setting densities with probability/volume.")
+            probs = self._probabilities_local
+            vols = self._volumes_local
+            self._densities_local = probs/vols
+        pass
+
+    def get_densities_local(self):
+        """
+        Returns sample local densities.
+
+        :rtype: :class:`numpy.ndarray`
+        :returns: sample local densities
+
+        """
+
+        return self._densities_local
 
     def set_jacobians_local(self, jacobians_local):
         """
