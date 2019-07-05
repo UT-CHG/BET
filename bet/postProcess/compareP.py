@@ -6,9 +6,11 @@ import bet.sampling.basicSampling as bsam
 import scipy.spatial.distance as ds
 
 
-def density(sample_set, ptr=None):
+def density_estimates(sample_set, ptr=None):
     r"""
-    Compute density for a sample set and write it to the 
+    Evaluate an approximate density on a comparison sample set into
+    which the pointer variable ``ptr`` points. This function
+    computes density estimates for a sample set and write it to the 
     ``_comparison_densities`` attribute inside of ``sample_set``
 
     :param sample_set: sample set with existing probabilities stored
@@ -37,10 +39,11 @@ def density(sample_set, ptr=None):
                 sample_set.local_to_global()
             else:
                 msg = "Required: _probabilities in sample_set"
-                msg += "to construct density"
+                msg += "to construct density estimates."
                 raise AttributeError(msg)
         if sample_set._volumes is None:
-            msg = "Required: _volumes in sample_set to construct density"
+            msg = "Required: _volumes in sample_set"
+            msg += "to construct density estimates."
             raise AttributeError(msg)
         if sample_set._probabilities_local is None:
             sample_set.global_to_local()
@@ -52,7 +55,7 @@ def density(sample_set, ptr=None):
             den = np.divide(sample_set._probabilities[ptr].ravel(),
                             sample_set._volumes[ptr].ravel())
         sample_set._comparison_densities = den
-    if ptr is None:  # create pointer to density to avoid re-run
+    if ptr is None:  # create pointer to density estimates to avoid re-run
         sample_set._densities = sample_set._comparison_densities
     else:
         sample_set._prob = sample_set._probabilities[ptr].ravel()

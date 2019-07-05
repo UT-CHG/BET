@@ -23,9 +23,9 @@ R = unit_center_set(dim, num_right_samples, delta)
 
 # choose a reference sigma-algebra to compare both solutions
 # against (using nearest-neighbor query).
-num_emulation_samples = 2000 
+num_comparison_samples = 2000 
 # the compP.compare method instantiates the compP.comparison class.
-mm = compP.compare(L, R, num_emulation_samples) # initialize metric
+mm = compP.compare(L, R, num_comparison_samples) # initialize metric
 
 # Use existing common library functions
 from scipy.stats import entropy as kl_div
