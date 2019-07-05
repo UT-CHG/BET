@@ -9,8 +9,8 @@ import scipy.spatial.distance as ds
 def density_estimates(sample_set, ptr=None):
     r"""
     Evaluate an approximate density on a comparison sample set into
-    which the pointer variable ``ptr`` points. This function
-    computes density estimates for a sample set and write it to the 
+    which the pointer variable ``ptr`` points. This function returns
+    the density estimates for a sample set object and write it to the 
     ``_comparison_densities`` attribute inside of ``sample_set``
 
     :param sample_set: sample set with existing probabilities stored
