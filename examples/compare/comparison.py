@@ -27,11 +27,20 @@ num_emulation_samples = 2000
 # the compP.compare method instantiates the compP.comparison class.
 mm = compP.compare(L, R, num_emulation_samples) # initialize metric
 
+# Use existing common library functions
 from scipy.stats import entropy as kl_div
+
+# Use a function of your own!
+def inftynorm(x,y):
+    """
+    Infinity norm between two vectors.
+    """
+    return np.max(np.abs(x-y))
 
 mm.set_left(unit_center_set(2, 1000, delta/2))
 mm.set_right(unit_center_set(2, 1000, delta))
 print([mm.value(kl_div),
+       mm.value(inftynorm),
        mm.value('tv'),
        mm.value('totvar'),
        mm.value('mink', w=0.5, p=1),
