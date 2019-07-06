@@ -174,12 +174,12 @@ class Test_densities(unittest.TestCase):
         Check behavior of second argument not being provided.
         """
         try:
-            compP.density(None)
+            compP.density_estimate(None)
         except AttributeError:
             pass
         ll = self.left_set
         dd = ll._probabilities.flatten() / ll._volumes.flatten()
-        compP.density(ll, None)
+        compP.density_estimate(ll, None)
         nptest.assert_array_equal(ll._densities, dd)
 
     def test_existing_densities(self):
@@ -188,8 +188,8 @@ class Test_densities(unittest.TestCase):
         """
         ll = self.left_set
         ll._densities = ll._probabilities.flatten() / ll._volumes.flatten()
-        compP.density(ll)
-        compP.density(ll, [1, 2, 3])
+        compP.density_estimate(ll)
+        compP.density_estimate(ll, [1, 2, 3])
 
 
 class Test_comparison_simple(unittest.TestCase):

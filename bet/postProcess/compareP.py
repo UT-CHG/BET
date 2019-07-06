@@ -6,7 +6,7 @@ import bet.sampling.basicSampling as bsam
 import scipy.spatial.distance as ds
 
 
-def density_estimates(sample_set, ptr=None):
+def density_estimate(sample_set, ptr=None):
     r"""
     Evaluate an approximate density on a comparison sample set into
     which the pointer variable ``ptr`` points. This function returns
@@ -810,7 +810,7 @@ class comparison(object):
         s_set = self.get_left()
         if self._ptr_left_local is None:
             self.set_ptr_left()
-        s_set = density(s_set, self._ptr_left_local)
+        s_set = density_estimate(s_set, self._ptr_left_local)
         self._den_left = s_set._comparison_densities
         return self._den_left
 
@@ -823,7 +823,7 @@ class comparison(object):
         s_set = self.get_right()
         if self._ptr_right_local is None:
             self.set_ptr_right()
-        s_set = density(s_set, self._ptr_right_local)
+        s_set = density_estimate(s_set, self._ptr_right_local)
         self._den_right = s_set._comparison_densities
         return self._den_right
 
