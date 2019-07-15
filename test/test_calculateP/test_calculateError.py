@@ -95,6 +95,20 @@ class calculate_error(object):
         else:
             self.assertAlmostEqual(low, lower[0])
 
+        # function should set pointer if missing.
+        self.disc._emulated_ii_ptr_local = None
+        (up, low) = s_error.calculate_for_sample_set_region(s_set,
+                                                            1)
+        if np.isnan(up):
+            self.assertEqual(np.isnan(upper[0]), True)
+        else:
+            self.assertAlmostEqual(up, upper[0])
+
+        if np.isnan(low):
+            self.assertEqual(np.isnan(lower[0]), True)
+        else:
+            self.assertAlmostEqual(low, lower[0])
+
     def Test_model_error(self):
         """
         Testing :meth:`bet.calculateP.calculateError.model_error`
