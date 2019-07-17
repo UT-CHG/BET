@@ -78,7 +78,13 @@ def get_global_values(array, shape=None):
         dtype = array.dtype
         mpi_dtype = False
         for ptype in possible_types.keys():
-            if np.issubdtype(dtype, ptype):
+            # suppress FutureWarning 
+            if ptype is int or ptype is MPI.INT:
+                comp_type = np.integer
+            elif ptype is float or ptype is MPI.FLOAT:
+                comp_type = np.floating
+
+            if np.issubdtype(dtype, comp_type):
                 mpi_dtype = True
                 dtype = ptype
 
