@@ -219,7 +219,7 @@ class Test_comparison_simple(unittest.TestCase):
             self.mtrc.check_domain()
         except sample.domain_not_matching:
             pass
-        # mess up integration set to trigger error
+        # mess up comparison set to trigger error
         self.mtrc.get_left()._domain = self.domain
         self.mtrc.get_comparison()._domain = self.domain * 1.05
         try:
@@ -433,7 +433,7 @@ class Test_comparison_simple(unittest.TestCase):
     def test_missing_domain(self):
         r"""
         Make sure we can initialize the function in several permutations
-        if the domain is missing from the integration set
+        if the domain is missing from the comparison set
         """
         test_set = sample.sample_set(dim=self.dim)  # no domain info
         other_set = test_set.copy()  # has domain info

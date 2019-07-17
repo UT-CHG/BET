@@ -194,14 +194,14 @@ class comparison(object):
         if (ptr_left is not None):
             if len(ptr_left) != self._num_samples:
                 raise AttributeError(
-                    "Left pointer length must match integration set.")
+                    "Left pointer length must match comparison set.")
             if (ptr_right is not None):
                 if not np.allclose(ptr_left.shape, ptr_right.shape):
                     raise AttributeError("Pointers must be of same length.")
         if (ptr_right is not None):
             if len(ptr_right) != self._num_samples:
                 raise AttributeError(
-                    "Right pointer length must match integration set.")
+                    "Right pointer length must match comparison set.")
 
     def check_dim(self):
         r"""
@@ -423,7 +423,7 @@ class comparison(object):
             if not np.allclose(self._comparison_sample_set._domain,
                                sample_set._domain):
                 raise samp.domain_not_matching(
-                    "Domain does not match integration set.")
+                    "Domain does not match comparison set.")
 
     def set_left(self, sample_set):
         r"""
@@ -494,7 +494,7 @@ class comparison(object):
             if not np.allclose(self._comparison_sample_set._domain,
                                sample_set._domain):
                 raise samp.domain_not_matching(
-                    "Domain does not match integration set.")
+                    "Domain does not match comparison set.")
 
     def get_comparison_sample_set(self):
         r"""
@@ -579,13 +579,13 @@ class comparison(object):
             cr = self._right_sample_set.copy()
 
         if copy:
-            em_set = self._comparison_sample_set.copy()
+            comp_set = self._comparison_sample_set.copy()
         else:
-            em_set = self._comparison_sample_set
+            comp_set = self._comparison_sample_set
 
         return comparison(sample_set_left=cl,
                           sample_set_right=cr,
-                          comparison_sample_set=em_set)
+                          comparison_sample_set=comp_set)
 
     def merge(self, comp):
         r"""
@@ -627,12 +627,12 @@ class comparison(object):
                       ]
         slice_list2 = ['_jacobians', '_jacobians_local']
 
-        int_ss = samp.sample_set(len(dims))
+        comp_ss = samp.sample_set(len(dims))
         left_ss = samp.sample_set(len(dims))
         right_ss = samp.sample_set(len(dims))
 
         if self._comparison_sample_set._domain is not None:
-            int_ss.set_domain(self._comparison_sample_set._domain[dims, :])
+            comp_ss.set_domain(self._comparison_sample_set._domain[dims, :])
 
         if self._left_sample_set._domain is not None:
             left_ss.set_domain(self._left_sample_set._domain[dims, :])
@@ -655,7 +655,7 @@ class comparison(object):
                 setattr(right_ss, obj, val[:, dims])
             val = getattr(self._comparison_sample_set, obj)
             if val is not None:
-                setattr(int_ss, obj, val[:, dims])
+                setattr(comp_ss, obj, val[:, dims])
         for obj in slice_list2:
             val = getattr(self._left_sample_set, obj)
             if val is not None:
@@ -672,7 +672,7 @@ class comparison(object):
 
         comp = comparison(sample_set_left=left_ss,
                           sample_set_right=right_ss,
-                          comparison_sample_set=int_ss)
+                          comparison_sample_set=comp_ss)
         # additional attributes to copy over here. TODO: maybe slice through
         return comp
 
@@ -880,9 +880,9 @@ class comparison(object):
         if globalize:  # in case probabilities were re-set but not local
             self.global_to_local()
 
-        em_set = self.get_comparison_sample_set()
-        if em_set is None:
-            raise AttributeError("Missing integration set.")
+        comp_set = self.get_comparison_sample_set()
+        if comp_set is None:
+            raise AttributeError("Missing comparison set.")
         self.check_domain()
 
         # set pointers if they have not already been set
@@ -1020,12 +1020,12 @@ def compare(left_set, right_set, num_mc_points=1000, choice='input'):
     # make integration sample set
     assert left_set.get_dim() == right_set.get_dim()
     assert np.array_equal(left_set.get_domain(), right_set.get_domain())
-    em_set = samp.sample_set(left_set.get_dim())
-    em_set.set_domain(right_set.get_domain())
-    em_set = bsam.random_sample_set('r', em_set, num_mc_points)
+    comp_set = samp.sample_set(left_set.get_dim())
+    comp_set.set_domain(right_set.get_domain())
+    comp_set = bsam.random_sample_set('r', comp_set, num_mc_points)
 
     # to be generating a new random sample set pass an integer argument
-    comp = comparison(em_set, left_set, right_set)
+    comp = comparison(comp_set, left_set, right_set)
 
     return comp
 
