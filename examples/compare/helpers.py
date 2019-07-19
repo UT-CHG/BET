@@ -6,9 +6,9 @@ import numpy as np
 def unit_center_set(dim=1, num_samples=100,
                     delta=1, reg=False):
     r"""
-    Make a unit hyper-rectangle sample set with positive probability
-    inside an inscribed hyper-rectangle that has sidelengths delta,
-    with its center at `np.array([[0.5]]*dim).
+    First define a unit hyper-box sample set. Then, construct a hyper-box
+    centered at ``np.array([[0.5]]*dim)`` with side-lengths ``delta``
+    of this domain that has probability 1.
     (Useful for testing).
 
     :param int dim: dimension
@@ -42,9 +42,9 @@ def unit_center_set(dim=1, num_samples=100,
 def unit_bottom_set(dim=1, num_samples=100,
                     delta=1, reg=False):
     r"""
-    Make a unit hyper-rectangle sample set with positive probability 
-    inside an inscribed hyper-rectangle that has sidelengths delta, 
-    with one corner at `np.array([[0.0]]*dim).
+    First define a unit hyper-box sample set. Then, construct a hyper-box
+    with a corner at ``np.array([[0.0]]*dim)`` with side-lengths ``delta`` 
+    inside of this domain that has probability 1.
     (Useful for testing).
 
     :param int dim: dimension
@@ -75,9 +75,9 @@ def unit_bottom_set(dim=1, num_samples=100,
 def unit_top_set(dim=1, num_samples=100,
                  delta=1, reg=False):
     r"""
-    Make a unit hyper-rectangle sample set with positive probability 
-    inside an inscribed hyper-rectangle that has sidelengths delta, 
-    with one corner at `np.array([[1.0]]*dim).
+    First define a unit hyper-box sample set. Then, construct a hyper-box
+    with a corner at ``np.array([[1.0]]*dim)`` with side-lengths ``delta`` 
+    inside of this domain that has probability 1.
     (Useful for testing).
 
     :param int dim: dimension

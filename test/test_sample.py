@@ -1,6 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
-
-# Steve Mattis 03/23/2016
+# Copyright (C) 2014-2019 The BET Development Team
 
 import unittest
 import os
@@ -246,7 +244,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_check_dim(self):
         """
-        Check set_dim
+        Check set_dim.
         """
         self.assertEqual(self.dim, self.sam_set.get_dim())
 
@@ -311,16 +309,31 @@ class Test_sample_set(unittest.TestCase):
 
     def test_probabilities(self):
         """
-        Check probability methods
+        Check probability methods.
         """
         prob = 1.0/float(self.num)*np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
         self.sam_set.check_num()
         nptest.assert_array_equal(prob, self.sam_set.get_probabilities())
 
+    def test_densities(self):
+        """
+        Check density methods.
+        """
+        prob = 1.0/float(self.num)*np.ones((self.num,))
+        self.sam_set.set_probabilities(prob)
+        self.sam_set.estimate_volume_mc()
+        self.sam_set.set_densities()
+        self.sam_set.check_num()
+        vol = self.sam_set.get_volumes()
+        nptest.assert_array_equal(prob/vol, self.sam_set.get_densities())
+        den = np.ones((self.num,))
+        self.sam_set.set_densities(den)
+        nptest.assert_array_equal(den, self.sam_set.get_densities())
+
     def test_volumes(self):
         """
-        Check volume methods
+        Check volume methods.
         """
         vol = 1.0/float(self.num)*np.ones((self.num,))
         self.sam_set.set_volumes(vol)
@@ -329,7 +342,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_error_estimates(self):
         """
-        Check error estimate methods
+        Check error estimate methods.
         """
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -338,7 +351,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_region(self):
         """
-        Check region methods
+        Check region methods.
         """
         region = np.ones((self.num,), dtype=np.int)
         self.sam_set.set_region(region)
@@ -347,7 +360,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_error_id(self):
         """
-        Check error identifier methods
+        Check error identifier methods.
         """
         error_id = np.ones((self.num,))
         self.sam_set.set_error_id(error_id)
