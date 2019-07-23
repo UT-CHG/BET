@@ -49,7 +49,6 @@ input_samples.set_domain(np.array([[3.0, 6.0],
                                    [1.0, 5.0]]))
 
 
-
 '''
 Suggested changes for user:
 
@@ -65,9 +64,11 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E4)
+    input_samples = sampler.random_sample_set(
+        'random', input_samples, num_samples=1E4)
 else:
-    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[50, 50])
+    input_samples = sampler.regular_sample_set(
+        input_samples, num_samples_per_dim=[50, 50])
 
 '''
 Suggested changes for user:
@@ -89,7 +90,7 @@ else:
 
 # Create the discretization object using the input samples
 my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
-                                               savefile = 'NonlinearExample.txt.gz')
+                                                                  savefile='NonlinearExample.txt.gz')
 
 '''
 Suggested changes for user:
@@ -102,14 +103,17 @@ param_ref = np.array([5.5, 4.5])
 #param_ref = np.array([3.5, 1.5])
 
 # Compute the reference QoI
-Q_ref =  my_model(param_ref)
+Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D(input_samples, ref_sample = param_ref,
-                 filename = 'nonlinearMapParameterSamples',
+plotD.scatter_2D(input_samples, ref_sample=param_ref,
+                 filename='nonlinearMapParameterSamples',
                  file_extension='.eps')
 if Q_ref.size == 2:
-    plotD.show_data_domain_2D(my_discretization, Q_ref = Q_ref, file_extension=".eps")
+    plotD.show_data_domain_2D(
+        my_discretization,
+        Q_ref=Q_ref,
+        file_extension=".eps")
 
 '''
 Suggested changes for user:
@@ -122,7 +126,7 @@ randomDataDiscretization = False
 if randomDataDiscretization is False:
     simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
         data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
-        cells_per_dimension = 3)
+        cells_per_dimension=3)
 else:
     simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(
         data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
@@ -150,19 +154,19 @@ the structure of a high dimensional non-parametric probability measure.
 '''
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
-                                                        nbins = [20, 20])
+                                                        nbins=[20, 20])
 # smooth 2d marginals probs (optional)
 marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.5)
 
 # plot 2d marginals probs
-plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename = "nomlinearMap",
-                             lam_ref = param_ref, file_extension = ".eps", plot_surface=False)
+plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename="nomlinearMap",
+                             lam_ref=param_ref, file_extension=".eps", plot_surface=False)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
-                                                        nbins = [20, 20])
+                                                        nbins=[20, 20])
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.5)
 # plot 2d marginal probs
-plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "nonlinearMap",
-                             lam_ref = param_ref, file_extension = ".eps")
+plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename="nonlinearMap",
+                             lam_ref=param_ref, file_extension=".eps")

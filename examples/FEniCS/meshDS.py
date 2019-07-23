@@ -11,7 +11,7 @@ class meshDS(object):
     def __init__(self, mesh):
         """TODO: to be defined1.
 
-        :mesh: reads a fenics mesh object 
+        :mesh: reads a fenics mesh object
 
         """
         self._mesh = mesh
@@ -34,14 +34,14 @@ class meshDS(object):
 
     def getElements(self):
         """TODO: Docstring for getElements.
-        :returns: number of elements in the mesh 
+        :returns: number of elements in the mesh
 
         """
         return self.num_elements
 
     def getEdges(self):
         """TODO: Docstring for getElements.
-        :returns: number of elements in the mesh 
+        :returns: number of elements in the mesh
 
         """
         return self.num_edges
@@ -65,7 +65,7 @@ class meshDS(object):
 
     def getElemVCArray(self):
         """TODO: Docstring for getElemVCArray.
-        :returns: array of element volume and and an array of element centroid object 
+        :returns: array of element volume and and an array of element centroid object
         Thus elem_centroid_array[i][0] means the x co-ordinate of the centroid for element number i
         Thus elem_centroid_array[i][1] means the y co-ordinate of the centroid for element number i
         """

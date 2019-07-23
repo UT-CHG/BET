@@ -3,13 +3,15 @@
 # -*- coding: utf-8 -*-
 
 import numpy as np
-import os, sys
+import os
+import sys
 import scipy.io as sio
 import bet.util as util
 from bet.Comm import comm
 
 # Parameter space is nD
 # Data space is n/2 D
+
 
 def my_model(io_file_name):
     # read in input from file
@@ -25,8 +27,10 @@ def my_model(io_file_name):
     if comm.rank == 0:
         sio.savemat(io_file_name, io_mdat)
 
+
 def usage():
     print("usage: [io_file]")
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2:

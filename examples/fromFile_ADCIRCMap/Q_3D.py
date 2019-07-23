@@ -22,12 +22,14 @@ input_sample_set.set_values(points.transpose())
 input_sample_set.set_domain(lam_domain)
 print("Finished loading data")
 
+
 def postprocess(station_nums, ref_num):
-    
-    filename = 'P_q'+str(station_nums[0]+1)+'_q'+str(station_nums[1]+1)
+
+    filename = 'P_q' + str(station_nums[0] + 1) + \
+        '_q' + str(station_nums[1] + 1)
     if len(station_nums) == 3:
-        filename += '_q'+str(station_nums[2]+1)
-    filename += '_ref_'+str(ref_num+1)
+        filename += '_q' + str(station_nums[2] + 1)
+    filename += '_ref_' + str(ref_num + 1)
 
     data = Q[:, station_nums]
     output_sample_set = sample.sample_set(data.shape[1])
@@ -37,12 +39,12 @@ def postprocess(station_nums, ref_num):
     # Create Simple function approximation
     # Save points used to parition D for simple function approximation and the
     # approximation itself (this can be used to make close comparisions...)
-    output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
-            output_sample_set, q_ref, rect_scale=0.15,
-            cells_per_dimension=np.ones((data.shape[1],)))
+    output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(
+        output_sample_set, q_ref, rect_scale=0.15,
+        cells_per_dimension=np.ones((data.shape[1],)))
 
     my_disc = sample.discretization(input_sample_set, output_sample_set,
-            output_probability_set)
+                                    output_probability_set)
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
@@ -51,11 +53,12 @@ def postprocess(station_nums, ref_num):
     calcP.prob(my_disc)
     sample.save_discretization(my_disc, filename, "prob_solution")
 
+
 # Post-process and save P and emulated points
 ref_num = 14
 
 # q1, q5, q2 ref 15
-station_nums = [0, 4, 1] # 1, 5, 2
+station_nums = [0, 4, 1]  # 1, 5, 2
 postprocess(station_nums, ref_num)
 
 """
@@ -76,4 +79,3 @@ postprocess(station_nums, ref_num)
 station_nums = [0, 8, 11] # 1, 5, 12
 postprocess(station_nums, ref_num)
 """
-
