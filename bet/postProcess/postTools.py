@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
 """
-This module provides methods for postprocessing probabilities and data. 
+This module provides methods for postprocessing probabilities and data.
 """
 import logging
 import numpy as np
@@ -30,11 +30,11 @@ def sort_by_rho(sample_set):
 
     :param sample_set: Object containing samples and probabilities
     :type sample_set: :class:`~bet.sample.sample_set_base` or
-        :class:`~bet.sample.discretization` 
+        :class:`~bet.sample.discretization`
     :param indices: sorting indices
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or 
+    :type sample_set_out: :class:`~bet.sample.sample_set` or
         :class:`~bet.sample.discretization`
 
     :rtype: tuple
@@ -58,7 +58,7 @@ def sort_by_rho(sample_set):
     if lam_vol is None:
         indices = np.argsort(P_samples)[::-1][0:nnz]
     else:
-        indices = np.argsort(P_samples/lam_vol)[::-1][0:nnz]
+        indices = np.argsort(P_samples / lam_vol)[::-1][0:nnz]
     P_samples = P_samples[indices]
     samples = samples[indices, :]
     if lam_vol is not None:
@@ -97,14 +97,14 @@ def sample_prob(percentile, sample_set, sort=True, descending=False):
     :param percentile: ratio of highest probability samples to select
     :type percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` or 
+    :type sample_set: :class:`~bet.sample.sample_set_base` or
         :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param bool descending: Flag order of sorting
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` or 
+    :type sample_set_out: :class:`~bet.sample.sample_set` or
         :class:`~bet.sample.discretization`
 
     :rtype: tuple
@@ -185,13 +185,13 @@ def sample_highest_prob(top_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` 
+    :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices
     :param bool sort: Flag whether or not to sort
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` 
+    :type sample_set_out: :class:`~bet.sample.sample_set`
         or :class:`~bet.sample.discretization`
 
     :rtype: tuple
@@ -212,13 +212,13 @@ def sample_lowest_prob(bottom_percentile, sample_set, sort=True):
     :param top_percentile: ratio of highest probability samples to select
     :type top_percentile: float
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` 
+    :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :type indices: :class:`numpy.ndarray` of shape (num_samples,)
     :param indices: sorting indices of unsorted ``P_samples``
     :param bool sort: Flag whether or not to sort
     :param sample_set_out: Object containing sorted samples and probabilities
-    :type sample_set_out: :class:`~bet.sample.sample_set` 
+    :type sample_set_out: :class:`~bet.sample.sample_set`
         or :class:`~bet.sample.discretization`
 
     :rtype: tuple
@@ -241,7 +241,7 @@ def compare_yield(sort_ind, sample_quality, run_param, column_headings=None):
 
     :param list sort_ind: indices that index ``sample_quality`` in sorted
         order
-    :param list sample_quality: a measure of quality by which the sets of 
+    :param list sample_quality: a measure of quality by which the sets of
         samples are sorted
     :param list run_param: zipped list of :class:`~numpy.ndarray` containing
         information used to generate the sets of samples to be displayed
@@ -283,8 +283,8 @@ def in_high_prob(data, rho_D, maximum, sample_nos=None):
         rD = rho_D(data[sample_nos])
     else:
         rD = rho_D(data[sample_nos, :])
-    adjusted_total_prob = int(sum(rD)/maximum)
-    logging.info("Samples in box "+str(adjusted_total_prob))
+    adjusted_total_prob = int(sum(rD) / maximum)
+    logging.info("Samples in box " + str(adjusted_total_prob))
     return adjusted_total_prob
 
 

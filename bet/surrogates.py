@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
 """
-This module provides methods for generating and using surrogate models. 
+This module provides methods for generating and using surrogate models.
 """
 import numpy as np
 import bet.sample as sample
@@ -18,10 +18,10 @@ class piecewise_polynomial_surrogate(object):
 
     def __init__(self, input_disc):
         """
-        Initializes a piecewise polynomial surrogate based on 
+        Initializes a piecewise polynomial surrogate based on
         existing input discretization.
 
-        :param discretization: An object containing the discretization 
+        :param discretization: An object containing the discretization
             information.
         :type discretization: :class:`bet.sample.discretization`
 
