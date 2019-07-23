@@ -26,7 +26,7 @@ class GradientsMethods:
                                                self.num_close, self.rvec)
 
         # Test the method returns the correct dimensions
-        self.assertEqual(self.cluster_set._values.shape, ((self.num_close+1) *
+        self.assertEqual(self.cluster_set._values.shape, ((self.num_close + 1) *
                                                           self.num_centers, self.input_dim))
 
         # Check the method returns centers followed by the clusters around the
@@ -53,7 +53,7 @@ class GradientsMethods:
                                                  self.num_close, self.rvec)
 
         # Test the method returns the correct dimensions
-        self.assertEqual(self.cluster_set._values.shape, ((self.num_close+1) *
+        self.assertEqual(self.cluster_set._values.shape, ((self.num_close + 1) *
                                                           self.num_centers, self.input_dim))
 
         # Check the method returns centers followed by the clusters around the
@@ -86,7 +86,7 @@ class GradientsMethods:
             np.max(self.rvec))
 
         # Test the method returns the correct dimensions
-        self.assertEqual(self.cluster_set._values.shape, ((self.num_close+1) *
+        self.assertEqual(self.cluster_set._values.shape, ((self.num_close + 1) *
                                                           self.num_centers, self.input_dim))
 
     # Test FD methods
@@ -124,14 +124,14 @@ class GradientsMethods:
             self.rvec = np.ones(self.input_dim) * self.rvec
 
         # Check the distance to the corresponding center is equal to rvec
-        self.centersrepeat = np.repeat(self.centers, 2*self.cluster_set._dim,
+        self.centersrepeat = np.repeat(self.centers, 2 * self.cluster_set._dim,
                                        axis=0)
         nptest.assert_array_almost_equal(np.linalg.norm(self.centersrepeat -
                                                         self.cluster_set._values[self.num_centers:], axis=1),
                                          np.tile(self.rvec, self.num_centers * 2))
 
         # Test the method returns the correct dimension
-        self.assertEqual(self.cluster_set._values.shape, ((2*self.input_dim + 1)
+        self.assertEqual(self.cluster_set._values.shape, ((2 * self.input_dim + 1)
                                                           * self.num_centers, self.cluster_set._dim))
 
     # Test RBF methods
@@ -187,7 +187,7 @@ class GradientsMethods:
         normG = np.linalg.norm(self.jacobians, ord=1, axis=2)
 
         # If its a zero vectors, make it the unit vector in input_dim
-        self.jacobians[normG == 0] = 1.0/self.input_dim
+        self.jacobians[normG == 0] = 1.0 / self.input_dim
         nptest.assert_array_almost_equal(np.linalg.norm(self.jacobians, ord=1,
                                                         axis=2), np.ones((self.jacobians.shape[0],
                                                                           self.jacobians.shape[1])))
@@ -215,7 +215,7 @@ class GradientsMethods:
         normG = np.linalg.norm(self.jacobians, ord=1, axis=2)
 
         # If its a zero vectors, make it the unit vector in input_dim
-        self.jacobians[normG == 0] = 1.0/self.input_dim
+        self.jacobians[normG == 0] = 1.0 / self.input_dim
         nptest.assert_array_almost_equal(np.linalg.norm(self.jacobians, ord=1,
                                                         axis=2), np.ones((self.jacobians.shape[0],
                                                                           self.jacobians.shape[1])))
@@ -244,7 +244,7 @@ class GradientsMethods:
                                ord=1, axis=2)
 
         # If its a zero vectors, make it the unit vector in input_dim
-        self.jacobians[normG == 0] = 1.0/self.input_dim
+        self.jacobians[normG == 0] = 1.0 / self.input_dim
         nptest.assert_array_almost_equal(np.linalg.norm(self.jacobians, ord=1,
                                                         axis=2), np.ones((self.jacobians.shape[0],
                                                                           self.jacobians.shape[1])))
@@ -328,7 +328,7 @@ class test_1to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
         # methods
         self.output_dim = 20
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
 
@@ -367,11 +367,12 @@ class test_2to20_1centers_unitsquare(GradientsMethods, unittest.TestCase):
         # methods
         self.output_dim = 20
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
 
-class test_4to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
+class test_4to20_100centers_randomhyperbox(
+        GradientsMethods, unittest.TestCase):
 
     def setUp(self):
         # Define the parameter space (Lambda)
@@ -406,11 +407,12 @@ class test_4to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
         # methods
         self.output_dim = 20
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
 
-class test_9to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
+class test_9to20_100centers_randomhyperbox(
+        GradientsMethods, unittest.TestCase):
 
     def setUp(self):
         # Define the parameter space (Lambda)
@@ -445,7 +447,7 @@ class test_9to20_100centers_randomhyperbox(GradientsMethods, unittest.TestCase):
         # methods
         self.output_dim = 20
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
 
@@ -460,8 +462,8 @@ class test_15to37_143centers_negrandomhyperbox(GradientsMethods,
 
         self.lam_domain = np.zeros((self.input_dim, 2))
         np.random.seed(0)
-        self.lam_domain[:, 0] = -1*np.random.random(self.input_dim) - 2
-        self.lam_domain[:, 1] = -1*np.random.random(self.input_dim)
+        self.lam_domain[:, 0] = -1 * np.random.random(self.input_dim) - 2
+        self.lam_domain[:, 1] = -1 * np.random.random(self.input_dim)
 
         self.input_set.set_domain(self.lam_domain)
         self.input_set_centers.set_domain(self.lam_domain)
@@ -485,7 +487,7 @@ class test_15to37_143centers_negrandomhyperbox(GradientsMethods,
         # methods
         self.output_dim = 37
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
 

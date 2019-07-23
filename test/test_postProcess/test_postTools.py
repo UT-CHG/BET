@@ -38,7 +38,7 @@ def test_in_high_prob_multi():
     """
 
     Tests :meth:`bet.postProcess.postTools.in_high_prob_multi`
-    
+
     """
     def rho_D(my_data):
         return my_data/4.0
@@ -111,9 +111,9 @@ class Test_PostTools(unittest.TestCase):
         num_samples = 1000
         input_samples.set_values(np.linspace(input_samples.get_domain()[0, 0],
                                              input_samples.get_domain()[0, 1],
-                                             num_samples+1))
+                                             num_samples + 1))
         #self.samples = np.linspace(self.lam_domain[0][0], self.lam_domain[0][1], num_samples+1)
-        input_samples.set_probabilities((1.0/float(input_samples.get_values().shape[0])) *
+        input_samples.set_probabilities((1.0 / float(input_samples.get_values().shape[0])) *
                                         np.ones((input_samples.get_values().shape[0],)))
         #self.P_samples = (1.0/float(self.samples.shape[0]))*np.ones((self.samples.shape[0],))
         input_samples._probabilities[0] = 0.0
