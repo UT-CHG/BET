@@ -167,7 +167,7 @@ class uniform_partition_uniform_distribution_rectangle_scaled(prob_uniform):
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
 
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             self.Q_ref = np.array([self.Q_ref])
         if len(self.data_domain.shape) == 1:
             self.data_domain = np.expand_dims(self.data_domain, axis=0)
@@ -280,7 +280,7 @@ class normal_partition_normal_distribution(prob):
         """
         Set up problem.
         """
-        if not isinstance(self.Q_ref, np.array) and not isinstance(
+        if not isinstance(self.Q_ref, np.ndarray) and not isinstance(
                 self.Q_ref, np.ndarray):
             std = 1.0
         else:
@@ -363,7 +363,7 @@ class uniform_partition_normal_distribution(prob):
         """
         Set up problem.
         """
-        if not isinstance(self.Q_ref, np.array) and not isinstance(
+        if not isinstance(self.Q_ref, np.ndarray) and not isinstance(
                 self.Q_ref, np.ndarray):
             std = 1.0
         else:
@@ -487,7 +487,7 @@ class regular_partition_uniform_distribution_rectangle_domain_int(
         super(
             regular_partition_uniform_distribution_rectangle_domain_int,
             self).setUp()
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -522,7 +522,7 @@ class regular_partition_uniform_distribution_rectangle_domain_list(
         super(
             regular_partition_uniform_distribution_rectangle_domain_list,
             self).setUp()
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -693,7 +693,7 @@ class regular_partition_uniform_distribution_rectangle_size_int(
         super(
             regular_partition_uniform_distribution_rectangle_size_int,
             self).setUp()
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -729,7 +729,7 @@ class regular_partition_uniform_distribution_rectangle_size_list(
         super(
             regular_partition_uniform_distribution_rectangle_size_list,
             self).setUp()
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -894,7 +894,7 @@ class regular_partition_uniform_distribution_rectangle_scaled_int(
         super(
             regular_partition_uniform_distribution_rectangle_scaled_int,
             self).setUp()
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -930,7 +930,7 @@ class regular_partition_uniform_distribution_rectangle_scaled_list(
         super(
             regular_partition_uniform_distribution_rectangle_scaled_list,
             self).setUp()
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -1103,7 +1103,7 @@ class uniform_partition_uniform_distribution_data_samples(prob_uniform):
         self.rho_D_M = self.data_prob.get_probabilities()
         self.data = self.data._values
 
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             self.Q_ref = np.array([self.Q_ref])
         if len(self.data_domain.shape) == 1:
             self.data_domain = np.expand_dims(self.data_domain, axis=0)
@@ -1199,7 +1199,7 @@ class uniform_partition_uniform_distribution_rectangle_size(prob_uniform):
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
 
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             self.Q_ref = np.array([self.Q_ref])
         if len(self.data_domain.shape) == 1:
             self.data_domain = np.expand_dims(self.data_domain, axis=0)
@@ -1315,7 +1315,7 @@ class uniform_partition_uniform_distribution_rectangle_domain(prob_uniform):
         """
         Set up problem.
         """
-        if not isinstance(self.Q_ref, np.array):
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
