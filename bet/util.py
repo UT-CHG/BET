@@ -162,7 +162,7 @@ def fix_dimensions_domain(domain):
 def fix_dimensions_data(data, dim=None):
     """
     Fix the dimensions of an input so that it is a :class:`numpy.ndarray` of
-    shape (N, dim). 
+    shape (N, dim).
 
     If ``dim`` is non-specified:
     If ``data`` is a non-iterable number assumes that ``dim==1``.
@@ -203,6 +203,6 @@ def clean_data(data):
 
     """
     data[np.isnan(data)] = 0.0
-    data[np.isinf(data)] = np.sign(data[np.isinf(data)])*sys.float_info[0]
+    data[np.isinf(data)] = np.sign(data[np.isinf(data)]) * sys.float_info[0]
 
     return data

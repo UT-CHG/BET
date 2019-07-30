@@ -1,13 +1,13 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
-r""" 
-This module provides methods for calulating error estimates of 
+r"""
+This module provides methods for calulating error estimates of
 the probability measure for calculate probability measures. See
 `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`.
 
-* :meth:`~bet.calculateErrors.cell_connectivity_exact` calculates 
+* :meth:`~bet.calculateErrors.cell_connectivity_exact` calculates
     the connectivity of cells.
-* :meth:`~bet.calculateErrors.boundary_sets` calculates which cells are 
+* :meth:`~bet.calculateErrors.boundary_sets` calculates which cells are
     on the boundary and strictly interior for contour events.
 * :class:`~bet.calculateErrors.sampling_error` is for calculating error
     estimates due to sampling
@@ -104,9 +104,9 @@ def boundary_sets(disc, nei_list):
     :type nei_list: list
 
     :rtype: tuple
-    :returns: (:math:`B_N, C_N`) where B_N are the cells strictly on the 
-        interior of a contour event and C_N are the cells on the boundary 
-        of a contour eventas defined in 
+    :returns: (:math:`B_N, C_N`) where B_N are the cells strictly on the
+        interior of a contour event and C_N are the cells on the boundary
+        of a contour eventas defined in
         `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`
 
 
@@ -228,12 +228,12 @@ class sampling_error(object):
                     # val4 = :math:`\mu_{\Lambda}(\mathcal{A} \cap C_{i,N})`
                     val4 = np.sum(lam_vol[self.C_N[i]])
 
-                    term1 = val2/val3 - 1.0
-                    term2 = val4/val1 - 1.0
+                    term1 = val2 / val3 - 1.0
+                    term2 = val4 / val1 - 1.0
                     up_list.append(self.disc._output_probability_set.
-                                   _probabilities[i]*max(term1, term2))
+                                   _probabilities[i] * max(term1, term2))
                     low_list.append(self.disc._output_probability_set.
-                                    _probabilities[i]*min(term1, term2))
+                                    _probabilities[i] * min(term1, term2))
                 else:
                     up_list.append(float('nan'))
                     low_list.append(float('nan'))
@@ -325,7 +325,7 @@ class sampling_error(object):
                 sum2 = comm.allreduce(sum2, op=MPI.SUM)
                 if sum2 == 0.0:
                     return (float('nan'), float('nan'))
-                E = float(sum1)/float(sum2)
+                E = float(sum1) / float(sum2)
 
                 in_B_N = np.zeros(in_A.shape, dtype=np.bool)
                 for j in self.B_N[i]:
@@ -344,7 +344,7 @@ class sampling_error(object):
                 sum4 = comm.allreduce(sum4, op=MPI.SUM)
                 if sum4 == 0.0:
                     return (float('nan'), float('nan'))
-                term1 = float(sum3)/float(sum4) - E
+                term1 = float(sum3) / float(sum4) - E
 
                 # sum5 :math:`\mu_{\Lambda}(A \cap C_N)`
                 sum5 = np.sum(np.logical_and(in_A, in_C_N))
@@ -354,12 +354,12 @@ class sampling_error(object):
                 sum6 = comm.allreduce(sum6, op=MPI.SUM)
                 if sum6 == 0.0:
                     return (float('nan'), float('nan'))
-                term2 = float(sum5)/float(sum6) - E
+                term2 = float(sum5) / float(sum6) - E
 
                 upper_bound += self.disc._output_probability_set.\
-                    _probabilities[i]*max(term1, term2)
+                    _probabilities[i] * max(term1, term2)
                 lower_bound += self.disc._output_probability_set.\
-                    _probabilities[i]*min(term1, term2)
+                    _probabilities[i] * min(term1, term2)
         return (upper_bound, lower_bound)
 
 
@@ -447,7 +447,7 @@ class model_error(object):
                 JiAe = comm.allreduce(JiAe, op=MPI.SUM)
                 Jie = comm.allreduce(Jie, op=MPI.SUM)
                 er_list.append(self.disc._output_probability_set.
-                               _probabilities[i] * ((JiA*Jie - JiAe*Ji)/(Ji*Jie)))
+                               _probabilities[i] * ((JiA * Jie - JiAe * Ji) / (Ji * Jie)))
             else:
                 er_list.append(0.0)
 
@@ -538,7 +538,7 @@ class model_error(object):
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
                 er_est += self.disc._output_probability_set._probabilities[i]\
-                    * ((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+                    * ((JiA * Jie - JiAe * Ji) / (Ji * Jie))
 
         return er_est
 
@@ -593,11 +593,11 @@ class model_error(object):
                 JiAe = comm.allreduce(JiAe_local, op=MPI.SUM)
                 Jie_local = float(np.sum(in_Ai2))
                 Jie = comm.allreduce(Jie_local, op=MPI.SUM)
-                if Ji*Jie == 0:
+                if Ji * Jie == 0:
                     er_cont = np.inf
                 else:
                     er_cont = self.disc._output_probability_set._probabilities[i]\
-                        * ((JiA*Jie - JiAe*Ji)/(Ji*Jie))
+                        * ((JiA * Jie - JiAe * Ji) / (Ji * Jie))
                 er_est += er_cont
                 error_cells1 = np.logical_and(np.logical_and(in_Ai1,
                                                              np.logical_not(in_A)), np.logical_and(in_Ai2, in_A))
@@ -612,5 +612,5 @@ class model_error(object):
                                                  op=MPI.SUM)
                 if error_cells_num != 0:
                     self.disc._input_sample_set._error_id_local[error_cells] \
-                        += er_cont/error_cells_num
+                        += er_cont / error_cells_num
         return er_est

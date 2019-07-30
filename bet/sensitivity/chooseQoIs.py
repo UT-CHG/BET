@@ -2,7 +2,7 @@
 
 """
 This module contains functions for choosing optimal sets of QoIs to use in the
-stochastic inverse problem.  
+stochastic inverse problem.
 """
 import logging
 from itertools import combinations
@@ -400,13 +400,13 @@ def find_unique_vecs(input_set, inner_prod_tol, qoiIndices=None,
     norm_G[norm_G == 0] = 1.0
 
     # Normalize each gradient vector
-    G = G/np.tile(norm_G, (input_dim, 1, 1)).transpose(1, 2, 0)
+    G = G / np.tile(norm_G, (input_dim, 1, 1)).transpose(1, 2, 0)
 
     if comm.rank == 0:
         logging.info('*** find_unique_vecs ***')
         logging.info('num_zerovec : {} of ({}) original QoIs'.
                      format(len(indz), G.shape[1]))
-        logging.info('Possible QoIs : {}'.format(len(qoiIndices)-len(indz)))
+        logging.info('Possible QoIs : {}'.format(len(qoiIndices) - len(indz)))
     qoiIndices = list(set(qoiIndices) - set(indz))
 
     # Find all num_qois choose 2 pairs of QoIs
@@ -451,7 +451,7 @@ def find_good_sets(input_set, good_sets_prev, unique_indices,
     :type input_set: :class:`~bet.sample.sample_set`
     :param good_sets_prev: Good sets of QoIs of size n - 1.
     :type good_sets_prev: :class:`np.ndarray` of size (num_good_sets_prev, n -
-        1) 
+        1)
     :param unique_indices: Unique QoIs to consider.
     :type unique_indices: :class:`np.ndarray` of size (num_unique_qois, 1)
     :param int num_optsets_return: Number of best sets to return
@@ -637,7 +637,7 @@ def chooseOptQoIs_large_verbose(input_set, qoiIndices=None,
     :param int max_qois_return: Maximum number of desired QoIs to use in the
         inverse problem.  Default is input_dim.
     :param int num_optsets_return: Number of best sets to return.  Default is
-        10.  
+        10.
     :param float inner_prod_tol: Throw out one vectors from each pair of
         QoIs that has average inner product greater than this.  Default is 0.9.
     :param float measskew_tol: Throw out all sets of QoIs with average

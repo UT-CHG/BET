@@ -9,7 +9,7 @@ or just a QoI. We refer to the range of the QoI map as
 the data space.
 The 3-D input space is discretized with i.i.d. uniform
 random samples or a regular grid of samples.
-We refer to the input space as the parameter space, 
+We refer to the input space as the parameter space,
 and use parameter to refer to a particular
 point (e.g., a particular random sample) in this space.
 
@@ -63,9 +63,11 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
+    input_samples = sampler.random_sample_set(
+        'random', input_samples, num_samples=1E3)
 else:
-    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[15, 15, 10])
+    input_samples = sampler.regular_sample_set(
+        input_samples, num_samples_per_dim=[15, 15, 10])
 
 '''
 Suggested changes for user:
@@ -87,7 +89,7 @@ else:
 
 # Create the discretization object using the input samples
 my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
-                                               savefile = '3to2_discretization.txt.gz')
+                                                                  savefile='3to2_discretization.txt.gz')
 
 '''
 Suggested changes for user:
@@ -101,13 +103,16 @@ param_ref = np.array([0.5, 0.5, 0.5])
 #param_ref = np.array([0.5, 0.5, 0.75])
 
 # Compute the reference QoI
-Q_ref =  my_model(param_ref)
+Q_ref = my_model(param_ref)
 
 # Create some plots of input and output discretizations
-plotD.scatter_2D_multi(input_samples, ref_sample= param_ref, showdim = 'all',
-                       filename = 'linearMap_ParameterSamples',
-                       file_extension = '.eps')
-plotD.show_data_domain_2D(my_discretization, Q_ref = Q_ref, file_extension='.eps')
+plotD.scatter_2D_multi(input_samples, ref_sample=param_ref, showdim='all',
+                       filename='linearMap_ParameterSamples',
+                       file_extension='.eps')
+plotD.show_data_domain_2D(
+    my_discretization,
+    Q_ref=Q_ref,
+    file_extension='.eps')
 
 '''
 Suggested changes for user:
@@ -120,7 +125,7 @@ randomDataDiscretization = False
 if randomDataDiscretization is False:
     simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
         data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
-        cells_per_dimension = 3)
+        cells_per_dimension=3)
 else:
     simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled(
         data_set=my_discretization, Q_ref=Q_ref, rect_scale=0.25,
@@ -148,20 +153,20 @@ the structure of a high dimensional non-parametric probability measure.
 '''
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
-                                                        nbins = [10, 10, 10])
+                                                        nbins=[10, 10, 10])
 
 # smooth 2d marginals probs (optional)
 marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.2)
 
 # plot 2d marginals probs
-plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename = "linearMap",
-                             lam_ref=param_ref, file_extension = ".eps", plot_surface=False)
+plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples, filename="linearMap",
+                             lam_ref=param_ref, file_extension=".eps", plot_surface=False)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
-                                                        nbins = [10, 10, 10])
+                                                        nbins=[10, 10, 10])
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.2)
 # plot 2d marginal probs
-plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename = "linearMap",
-                             lam_ref=param_ref, file_extension = ".eps")
+plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples, filename="linearMap",
+                             lam_ref=param_ref, file_extension=".eps")

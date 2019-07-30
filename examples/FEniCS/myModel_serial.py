@@ -17,7 +17,8 @@ def my_model(parameter_sample):
     KL_eigen_vals = KL_mdat['KL_eigen_vals']
 
     param_sample_num = parameter_sample[0]
-    # the samples are the coefficients of the KL expansion typically denoted by xi_k
+    # the samples are the coefficients of the KL expansion typically denoted
+    # by xi_k
     xi_k = np.array(parameter_sample[1:])
     xi_k = xi_k.astype(float)
 
@@ -106,7 +107,8 @@ def my_model(parameter_sample):
 
         def eval(self, v, x):
             v[0] = 0
-            if (x[0] >= self.a) & (x[0] <= self.b) & (x[1] >= self.c) & (x[1] <= self.d):
+            if (x[0] >= self.a) & (x[0] <= self.b) & (
+                    x[1] >= self.c) & (x[1] <= self.d):
                 v[0] = 1
             return v
 

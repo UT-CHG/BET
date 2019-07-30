@@ -14,7 +14,7 @@ some of the more common scenarios using easy to understand linear maps.
 In this *skewness_binratio* example we choose *optimal QoIs* to be the set of
 QoIs of size input_dim that has optimal skewness properties which will yield an
 inverse solution that can be approximated well.
-The uncertainty in our data is relative to the range 
+The uncertainty in our data is relative to the range
 of data measured in each QoI (bin_ratio).
 """
 
@@ -42,15 +42,16 @@ input_samples = sample.sample_set(input_dim)
 output_samples = sample.sample_set(output_dim)
 
 # Choose random samples in parameter space to solve the model
-input_samples.set_values(np.random.uniform(0, 1, [np.int(num_samples), input_dim]))
+input_samples.set_values(np.random.uniform(
+    0, 1, [np.int(num_samples), input_dim]))
 
 # Make the MC assumption and compute the volumes of each voronoi cell
 input_samples.estimate_volume_mc()
 
 
 # Compute the output values with the map Q
-output_samples.set_values(Q.dot(input_samples.get_values().transpose()).\
-        transpose())
+output_samples.set_values(Q.dot(input_samples.get_values().transpose()).
+                          transpose())
 
 # Calculate the gradient vectors at some subset of the samples.  Here the
 # *normalize* argument is set to *True* because we are using bin_ratio to
@@ -58,7 +59,7 @@ output_samples.set_values(Q.dot(input_samples.get_values().transpose()).\
 cluster_discretization = sample.discretization(input_samples, output_samples)
 # We will approximate the jacobian at each of the centers
 center_discretization = grad.calculate_gradients_rbf(cluster_discretization,
-    num_centers, normalize=True)
+                                                     num_centers, normalize=True)
 
 # With these gradient vectors, we are now ready to choose an optimal set of
 # QoIs to use in the inverse problem, based on optimal skewness properites of
@@ -78,7 +79,7 @@ best_sets = cqoi.chooseOptQoIs_large(input_samples_center, measure=False)
 # different sets of these QoIs.  We set Q_ref to correspond to the center of
 # the parameter space.  We choose the set of QoIs to consider.
 
-QoI_indices = [3, 4] # choose up to input_dim
+QoI_indices = [3, 4]  # choose up to input_dim
 #QoI_indices = [3, 6]
 #QoI_indices = [0, 3]
 #QoI_indices = [3, 5, 6, 8, 9]
@@ -101,7 +102,7 @@ bin_ratio = 0.25
 
 # Create discretization object
 my_discretization = sample.discretization(input_sample_set=input_samples,
-                                        output_sample_set=output_samples)
+                                          output_sample_set=output_samples)
 
 
 # Find the simple function approximation
@@ -118,12 +119,12 @@ percentile = 1.0
 # also tells us the approximate volume of this support.
 (num_samples, _, indices_in_inverse) =\
     postTools.sample_highest_prob(top_percentile=percentile,
-    sample_set=input_samples, sort=True)
+                                  sample_set=input_samples, sort=True)
 
 # Print the approximate proportion of the measure of the parameter space defined
 # by the support of the inverse density
 if comm.rank == 0:
     print('The approximate proportion of the measure of the parameter space defined')
     print('by the support of the inverse density associated with the choice of QoI map is')
-    print(np.sum(input_samples.get_volumes()[indices_in_inverse]), 
-              ' with ', num_samples, ' samples.')
+    print(np.sum(input_samples.get_volumes()[indices_in_inverse]),
+          ' with ', num_samples, ' samples.')

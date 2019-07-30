@@ -35,7 +35,7 @@ def linear_model3(parameter_samples):
 
 class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
     """
-    Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a 
+    Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a
     3 to 2 map.
 
     """
@@ -116,7 +116,7 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
 
 class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
     """
-    Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a 
+    Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a
     3 to 1 map.
 
     """
@@ -198,7 +198,7 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
 
 class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
     """
-    Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a 
+    Testing :meth:`bet.surrogates.piecewise_polynomial_surrogate` on a
     1 to 1 map.
 
     """

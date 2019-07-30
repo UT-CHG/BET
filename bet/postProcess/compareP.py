@@ -10,7 +10,7 @@ def density_estimate(sample_set, ptr=None):
     r"""
     Evaluate an approximate density on a comparison sample set into
     which the pointer variable ``ptr`` points. This function returns
-    the density estimates for a sample set object and write it to the 
+    the density estimates for a sample set object and write it to the
     ``_comparison_densities`` attribute inside of ``sample_set``
 
     :param sample_set: sample set with existing probabilities stored
@@ -71,9 +71,9 @@ class comparison(object):
     sigma-algebras (induced by the voronoi-cell tesselations implicitly
     defined by the ``_values`` in each sample set), a third sample set
     object contains the set of samples on which the measures will
-    be compared. It is referred to as an ``comparison_sample_set`` 
+    be compared. It is referred to as an ``comparison_sample_set``
     and is the only set that is actually required to instantiate a
-    ``comparison`` object; the dimension and domain of it will be 
+    ``comparison`` object; the dimension and domain of it will be
     used to enforce proper setting of the left and right sample sets.
 
     This object can be thought of as a more flexible version of an abstraction
@@ -864,7 +864,7 @@ class comparison(object):
         return self.get_densities_right()
 
     def estimate_densities(self, globalize=True,
-                         comparison_sample_set=None):
+                           comparison_sample_set=None):
         r"""
         Evaluate density functions for both left and right sets using
         the set of samples defined in ``self._comparison_sample_set``.
@@ -1076,4 +1076,3 @@ def compare_outputs(left_set, right_set, num_mc_points=1000):
 
     """
     return compare(left_set, right_set, num_mc_points, 'output')
-

@@ -5,7 +5,7 @@
 """
 This 2D linear example verifies that geometrically distinct QoI can
 recreate a probability measure on the input parameter space
-used to define the output probability measure. 
+used to define the output probability measure.
 """
 
 import numpy as np
@@ -45,9 +45,11 @@ per dimension.
 # Generate samples on the parameter space
 randomSampling = False
 if randomSampling is True:
-    input_samples = sampler.random_sample_set('random', input_samples, num_samples=1E3)
+    input_samples = sampler.random_sample_set(
+        'random', input_samples, num_samples=1E3)
 else:
-    input_samples = sampler.regular_sample_set(input_samples, num_samples_per_dim=[30, 30])
+    input_samples = sampler.regular_sample_set(
+        input_samples, num_samples_per_dim=[30, 30])
 
 '''
 Suggested changes for user:
@@ -69,7 +71,7 @@ else:
 
 # Create the discretization object using the input samples
 my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
-                                               savefile = 'Validation_discretization.txt.gz')
+                                                                  savefile='Validation_discretization.txt.gz')
 
 '''
 Compute the output distribution simple function approximation by
@@ -105,14 +107,15 @@ Partition_set.set_domain(np.repeat([[0.0, 1.0]], 2, axis=0))
 Monte_Carlo_set.set_domain(np.repeat([[0.0, 1.0]], 2, axis=0))
 
 Partition_discretization = sampler.create_random_discretization('random',
-                                                            Partition_set,
-                                                            num_samples=num_samples_discretize_D)
+                                                                Partition_set,
+                                                                num_samples=num_samples_discretize_D)
 
 Monte_Carlo_discretization = sampler.create_random_discretization('random',
-                                                            Monte_Carlo_set,
-                                                            num_samples=num_iid_samples)
+                                                                  Monte_Carlo_set,
+                                                                  num_samples=num_iid_samples)
 
-# Compute the simple function approximation to the distribution on the data space
+# Compute the simple function approximation to the distribution on the
+# data space
 simpleFunP.user_partition_user_distribution(my_discretization,
                                             Partition_discretization,
                                             Monte_Carlo_discretization)
@@ -125,14 +128,14 @@ calculateP.prob(my_discretization)
 ########################################
 # Show some plots of the different sample sets
 plotD.scatter_2D(my_discretization._input_sample_set,
-                 filename = 'Parameter_Samples',
-                 file_extension = '.eps')
+                 filename='Parameter_Samples',
+                 file_extension='.eps')
 plotD.scatter_2D(my_discretization._output_sample_set,
-                 filename = 'QoI_Samples',
-                 file_extension = '.eps')
+                 filename='QoI_Samples',
+                 file_extension='.eps')
 plotD.scatter_2D(my_discretization._output_probability_set,
-                 filename = 'Data_Space_Discretization',
-                 file_extension = '.eps')
+                 filename='Data_Space_Discretization',
+                 file_extension='.eps')
 '''
 Suggested changes for user:
 
@@ -149,38 +152,34 @@ the structure of a high dimensional non-parametric probability measure.
 '''
 # calculate 2d marginal probs
 (bins, marginals2D) = plotP.calculate_2D_marginal_probs(input_samples,
-                                                        nbins = [30, 30])
+                                                        nbins=[30, 30])
 
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
-                             filename = "validation_raw",
-                             file_extension = ".eps", plot_surface=False)
+                             filename="validation_raw",
+                             file_extension=".eps", plot_surface=False)
 
 # smooth 2d marginals probs (optional)
 marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.1)
 
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
-                             filename = "validation_smooth",
-                             file_extension = ".eps", plot_surface=False)
+                             filename="validation_smooth",
+                             file_extension=".eps", plot_surface=False)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
-                                                        nbins = [30, 30])
+                                                        nbins=[30, 30])
 
 # plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
-                             filename = "validation_raw",
-                             file_extension = ".eps")
+                             filename="validation_raw",
+                             file_extension=".eps")
 
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.1)
 
 # plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
-                             filename = "validation_smooth",
-                             file_extension = ".eps")
-
-
-
-
+                             filename="validation_smooth",
+                             file_extension=".eps")

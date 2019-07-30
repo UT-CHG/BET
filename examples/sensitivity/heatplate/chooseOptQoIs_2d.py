@@ -90,11 +90,13 @@ cluster_discretization = sample.discretization(input_samples, output_samples)
 # QoI maps
 if fd_scheme.upper() in ['RBF']:
     center_discretization = grad.calculate_gradients_rbf(cluster_discretization,
-        normalize=False)
+                                                         normalize=False)
 elif fd_scheme.upper() in ['FFD']:
-    center_discretization = grad.calculate_gradients_ffd(cluster_discretization)
+    center_discretization = grad.calculate_gradients_ffd(
+        cluster_discretization)
 else:
-    center_discretization = grad.calculate_gradients_cfd(cluster_discretization)
+    center_discretization = grad.calculate_gradients_cfd(
+        cluster_discretization)
 
 input_samples_centers = center_discretization.get_input_sample_set()
 
@@ -102,16 +104,16 @@ input_samples_centers = center_discretization.get_input_sample_set()
 index1 = 0
 index2 = 4
 (specific_skewness, _) = cqoi.calculate_avg_skewness(input_samples_centers,
-        qoi_set=[index1, index2])
+                                                     qoi_set=[index1, index2])
 if comm.rank == 0:
-    print('The average skewness of the QoI map defined by indices ' + str(index1) + \
-        ' and ' + str(index2) + ' is ' + str(specific_skewness))
+    print('The average skewness of the QoI map defined by indices ' + str(index1) +
+          ' and ' + str(index2) + ' is ' + str(specific_skewness))
 
 # Compute the skewness for each of the possible QoI maps determined by choosing
 # any two QoI from the set defined by the indices selected by the
 # ``indexstart`` and ``indexend`` values
 skewness_indices_mat = cqoi.chooseOptQoIs(input_samples_centers, qoiIndices,
-    num_optsets_return=10, measure=False)
+                                          num_optsets_return=10, measure=False)
 
 qoi1 = skewness_indices_mat[0, 1]
 qoi2 = skewness_indices_mat[0, 2]
@@ -120,4 +122,3 @@ if comm.rank == 0:
     print('The 10 smallest condition numbers are in the first column, the \
 corresponding sets of QoIs are in the following columns.')
     print(skewness_indices_mat[:10, :])
-

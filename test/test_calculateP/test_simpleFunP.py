@@ -4,7 +4,7 @@
 This module contains tests for :module:`bet.calculateP.simpleFunP`
 
 Some of these tests make sure certain values are within a tolerance rather than
-exact due to the stochastic nature of the algorithms being tested. 
+exact due to the stochastic nature of the algorithms being tested.
 
 The ouput of all the methods being tested is of the form (rho_D_M,
 d_distr_samples, d_Tree) where ``rho_D_M`` is (M,) and ``d_distr_samples`` are
@@ -91,7 +91,7 @@ class data_01D(object):
         Set up data.
         """
         self.data = samp.sample_set(1)
-        self.data.set_values(np.random.random((100,))*10.0)
+        self.data.set_values(np.random.random((100,)) * 10.0)
         self.Q_ref = 5.0
         self.data_domain = np.array([0.0, 10.0])
         self.mdim = 1
@@ -107,7 +107,7 @@ class data_1D(object):
         Set up data.
         """
         self.data = samp.sample_set(1)
-        self.data.set_values(np.random.random((100, 1))*10.0)
+        self.data.set_values(np.random.random((100, 1)) * 10.0)
         self.Q_ref = np.array([5.0])
         self.data_domain = np.expand_dims(np.array([0.0, 10.0]), axis=0)
         self.mdim = 1
@@ -123,7 +123,7 @@ class data_2D(object):
         Set up data.
         """
         self.data = samp.sample_set(2)
-        self.data.set_values(np.random.random((100, 2))*10.0)
+        self.data.set_values(np.random.random((100, 2)) * 10.0)
         self.Q_ref = np.array([5.0, 5.0])
         self.data_domain = np.array([[0.0, 10.0], [0.0, 10.0]])
         self.mdim = 2
@@ -139,7 +139,7 @@ class data_3D(object):
         Set up data.
         """
         self.data = samp.sample_set(3)
-        self.data.set_values(np.random.random((100, 3))*10.0)
+        self.data.set_values(np.random.random((100, 3)) * 10.0)
         self.data.set_reference_value(np.array([5.0, 5.0, 5.0]))
         self.Q_ref = np.array([5.0, 5.0, 5.0])
         self.data_domain = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
@@ -167,16 +167,16 @@ class uniform_partition_uniform_distribution_rectangle_scaled(prob_uniform):
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
 
-        if type(self.Q_ref) != np.array:
+        if not isinstance(self.Q_ref, np.ndarray):
             self.Q_ref = np.array([self.Q_ref])
         if len(self.data_domain.shape) == 1:
             self.data_domain = np.expand_dims(self.data_domain, axis=0)
 
         self.rect_domain = np.zeros((self.data_domain.shape[0], 2))
-        r_width = 0.1*self.data_domain[:, 1]
+        r_width = 0.1 * self.data_domain[:, 1]
 
-        self.rect_domain[:, 0] = self.Q_ref - .5*r_width
-        self.rect_domain[:, 1] = self.Q_ref + .5*r_width
+        self.rect_domain[:, 0] = self.Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = self.Q_ref + .5 * r_width
 
     def test_M(self):
         """
@@ -232,7 +232,9 @@ class test_uniform_partition_uniform_distribution_rectangle_scaled_1D(data_1D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_scaled_1D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_scaled_1D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_scaled_1D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_2D(data_2D,
@@ -247,7 +249,9 @@ class test_uniform_partition_uniform_distribution_rectangle_scaled_2D(data_2D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_scaled_2D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_scaled_2D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_scaled_2D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_3D(data_3D,
@@ -262,7 +266,9 @@ class test_uniform_partition_uniform_distribution_rectangle_scaled_3D(data_3D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_scaled_3D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_scaled_3D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_scaled_3D,
+            self).setUp()
 
 
 class normal_partition_normal_distribution(prob):
@@ -274,7 +280,8 @@ class normal_partition_normal_distribution(prob):
         """
         Set up problem.
         """
-        if type(self.Q_ref) != np.array and type(self.Q_ref) != np.ndarray:
+        if not isinstance(self.Q_ref, np.ndarray) and not isinstance(
+                self.Q_ref, np.ndarray):
             std = 1.0
         else:
             std = np.ones(self.Q_ref.shape)
@@ -291,7 +298,8 @@ class normal_partition_normal_distribution(prob):
         assert len(self.rho_D_M) == 67
 
 
-class test_normal_partition_normal_distribution_01D(data_01D, normal_partition_normal_distribution):
+class test_normal_partition_normal_distribution_01D(
+        data_01D, normal_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 01D data domain.
     """
@@ -304,7 +312,8 @@ class test_normal_partition_normal_distribution_01D(data_01D, normal_partition_n
         super(test_normal_partition_normal_distribution_01D, self).setUp()
 
 
-class test_normal_partition_normal_distribution_1D(data_1D, normal_partition_normal_distribution):
+class test_normal_partition_normal_distribution_1D(
+        data_1D, normal_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 1D data domain.
     """
@@ -317,7 +326,8 @@ class test_normal_partition_normal_distribution_1D(data_1D, normal_partition_nor
         super(test_normal_partition_normal_distribution_1D, self).setUp()
 
 
-class test_normal_partition_normal_distribution_2D(data_2D, normal_partition_normal_distribution):
+class test_normal_partition_normal_distribution_2D(
+        data_2D, normal_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 2D data domain.
     """
@@ -330,7 +340,8 @@ class test_normal_partition_normal_distribution_2D(data_2D, normal_partition_nor
         super(test_normal_partition_normal_distribution_2D, self).setUp()
 
 
-class test_normal_partition_normal_distribution_3D(data_3D, normal_partition_normal_distribution):
+class test_normal_partition_normal_distribution_3D(
+        data_3D, normal_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 3D data domain.
     """
@@ -352,7 +363,8 @@ class uniform_partition_normal_distribution(prob):
         """
         Set up problem.
         """
-        if type(self.Q_ref) != np.array and type(self.Q_ref) != np.ndarray:
+        if not isinstance(self.Q_ref, np.ndarray) and not isinstance(
+                self.Q_ref, np.ndarray):
             std = 1.0
         else:
             std = np.ones(self.Q_ref.shape)
@@ -369,7 +381,8 @@ class uniform_partition_normal_distribution(prob):
         assert len(self.rho_D_M) == 67
 
 
-class test_uniform_partition_normal_distribution_01D(data_01D, uniform_partition_normal_distribution):
+class test_uniform_partition_normal_distribution_01D(
+        data_01D, uniform_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 01D data domain.
     """
@@ -382,7 +395,8 @@ class test_uniform_partition_normal_distribution_01D(data_01D, uniform_partition
         super(test_uniform_partition_normal_distribution_01D, self).setUp()
 
 
-class test_uniform_partition_normal_distribution_1D(data_1D, uniform_partition_normal_distribution):
+class test_uniform_partition_normal_distribution_1D(
+        data_1D, uniform_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 1D data domain.
     """
@@ -395,7 +409,8 @@ class test_uniform_partition_normal_distribution_1D(data_1D, uniform_partition_n
         super(test_uniform_partition_normal_distribution_1D, self).setUp()
 
 
-class test_uniform_partition_normal_distribution_2D(data_2D, uniform_partition_normal_distribution):
+class test_uniform_partition_normal_distribution_2D(
+        data_2D, uniform_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 2D data domain.
     """
@@ -408,7 +423,8 @@ class test_uniform_partition_normal_distribution_2D(data_2D, uniform_partition_n
         super(test_uniform_partition_normal_distribution_2D, self).setUp()
 
 
-class test_uniform_partition_normal_distribution_3D(data_3D, uniform_partition_normal_distribution):
+class test_uniform_partition_normal_distribution_3D(
+        data_3D, uniform_partition_normal_distribution):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 3D data domain.
     """
@@ -457,7 +473,8 @@ class uniform_hyperrectangle_list(uniform_hyperrectangle_base):
         """
 
 
-class regular_partition_uniform_distribution_rectangle_domain_int(uniform_hyperrectangle_int):
+class regular_partition_uniform_distribution_rectangle_domain_int(
+        uniform_hyperrectangle_int):
     """
     Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain`.
 
@@ -467,8 +484,10 @@ class regular_partition_uniform_distribution_rectangle_domain_int(uniform_hyperr
         """
         Set up problem.
         """
-        super(regular_partition_uniform_distribution_rectangle_domain_int, self).setUp()
-        if type(self.Q_ref) != np.array:
+        super(
+            regular_partition_uniform_distribution_rectangle_domain_int,
+            self).setUp()
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -478,10 +497,10 @@ class regular_partition_uniform_distribution_rectangle_domain_int(uniform_hyperr
             data_domain = self.data_domain
 
         self.rect_domain = np.zeros((data_domain.shape[0], 2))
-        r_width = 0.1*data_domain[:, 1]
+        r_width = 0.1 * data_domain[:, 1]
 
-        self.rect_domain[:, 0] = Q_ref - .5*r_width
-        self.rect_domain[:, 1] = Q_ref + .5*r_width
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_domain(
             self.data, self.rect_domain.transpose())
@@ -489,7 +508,8 @@ class regular_partition_uniform_distribution_rectangle_domain_int(uniform_hyperr
         self.d_distr_samples = self.data_prob._values
 
 
-class regular_partition_uniform_distribution_rectangle_domain_list(uniform_hyperrectangle_list):
+class regular_partition_uniform_distribution_rectangle_domain_list(
+        uniform_hyperrectangle_list):
     """
     Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain`.
 
@@ -499,8 +519,10 @@ class regular_partition_uniform_distribution_rectangle_domain_list(uniform_hyper
         """
         Set up problem.
         """
-        super(regular_partition_uniform_distribution_rectangle_domain_list, self).setUp()
-        if type(self.Q_ref) != np.array:
+        super(
+            regular_partition_uniform_distribution_rectangle_domain_list,
+            self).setUp()
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -510,10 +532,10 @@ class regular_partition_uniform_distribution_rectangle_domain_list(uniform_hyper
             data_domain = self.data_domain
 
         self.rect_domain = np.zeros((data_domain.shape[0], 2))
-        r_width = 0.1*data_domain[:, 1]
+        r_width = 0.1 * data_domain[:, 1]
 
-        self.rect_domain[:, 0] = Q_ref - .5*r_width
-        self.rect_domain[:, 1] = Q_ref + .5*r_width
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_domain(
             self.data, self.rect_domain.transpose())
@@ -533,7 +555,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_int_01D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_int_01D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_int_01D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_int_01D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_int_1D(data_1D,
@@ -548,7 +572,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_int_1D(data_1
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_int_1D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_int_1D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_int_1D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_int_2D(data_2D,
@@ -563,7 +589,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_int_2D(data_2
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_int_2D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_int_2D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_int_2D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_int_3D(data_3D,
@@ -578,7 +606,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_int_3D(data_3
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_int_3D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_int_3D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_int_3D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_list_01D(data_01D,
@@ -593,7 +623,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_list_01D(data
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_list_01D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_list_01D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_list_01D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_list_1D(data_1D,
@@ -608,7 +640,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_list_1D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_list_1D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_list_1D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_list_1D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_list_2D(data_2D,
@@ -623,7 +657,9 @@ class test_regular_partition_uniform_distribution_rectangle_domain_list_2D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_list_2D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_list_2D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_list_2D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_domain_list_3D(data_3D,
@@ -638,10 +674,13 @@ class test_regular_partition_uniform_distribution_rectangle_domain_list_3D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_domain_list_3D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_domain_list_3D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_domain_list_3D,
+            self).setUp()
 
 
-class regular_partition_uniform_distribution_rectangle_size_int(uniform_hyperrectangle_int):
+class regular_partition_uniform_distribution_rectangle_size_int(
+        uniform_hyperrectangle_int):
     """
     Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size``
 
@@ -651,8 +690,10 @@ class regular_partition_uniform_distribution_rectangle_size_int(uniform_hyperrec
         """
         Set up problem.
         """
-        super(regular_partition_uniform_distribution_rectangle_size_int, self).setUp()
-        if type(self.Q_ref) != np.array:
+        super(
+            regular_partition_uniform_distribution_rectangle_size_int,
+            self).setUp()
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -663,10 +704,10 @@ class regular_partition_uniform_distribution_rectangle_size_int(uniform_hyperrec
 
         self.rect_domain = np.zeros((data_domain.shape[0], 2))
         binsize = 1.0
-        r_width = binsize*np.ones(data_domain[:, 1].shape)
+        r_width = binsize * np.ones(data_domain[:, 1].shape)
 
-        self.rect_domain[:, 0] = Q_ref - .5*r_width
-        self.rect_domain[:, 1] = Q_ref + .5*r_width
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_size(
             self.data, self.Q_ref, binsize)
@@ -674,9 +715,10 @@ class regular_partition_uniform_distribution_rectangle_size_int(uniform_hyperrec
         self.d_distr_samples = self.data_prob._values
 
 
-class regular_partition_uniform_distribution_rectangle_size_list(uniform_hyperrectangle_list):
+class regular_partition_uniform_distribution_rectangle_size_list(
+        uniform_hyperrectangle_list):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size` 
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size`
 
     """
 
@@ -684,8 +726,10 @@ class regular_partition_uniform_distribution_rectangle_size_list(uniform_hyperre
         """
         Set up problem.
         """
-        super(regular_partition_uniform_distribution_rectangle_size_list, self).setUp()
-        if type(self.Q_ref) != np.array:
+        super(
+            regular_partition_uniform_distribution_rectangle_size_list,
+            self).setUp()
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -695,11 +739,11 @@ class regular_partition_uniform_distribution_rectangle_size_list(uniform_hyperre
             data_domain = self.data_domain
 
         self.rect_domain = np.zeros((data_domain.shape[0], 2))
-        binsize = 1.0*np.ones((data_domain.shape[0],))
+        binsize = 1.0 * np.ones((data_domain.shape[0],))
         r_width = binsize
 
-        self.rect_domain[:, 0] = Q_ref - .5*r_width
-        self.rect_domain[:, 1] = Q_ref + .5*r_width
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_size(
             self.data, self.Q_ref, binsize)
@@ -783,7 +827,9 @@ class test_regular_partition_uniform_distribution_rectangle_size_list_01D(data_0
         """
         super(test_regular_partition_uniform_distribution_rectangle_size_list_01D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_size_list_01D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_size_list_01D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_size_list_1D(data_1D,
@@ -834,7 +880,8 @@ class test_regular_partition_uniform_distribution_rectangle_size_list_3D(data_3D
             test_regular_partition_uniform_distribution_rectangle_size_list_3D, self).setUp()
 
 
-class regular_partition_uniform_distribution_rectangle_scaled_int(uniform_hyperrectangle_int):
+class regular_partition_uniform_distribution_rectangle_scaled_int(
+        uniform_hyperrectangle_int):
     """
     Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled`
 
@@ -844,8 +891,10 @@ class regular_partition_uniform_distribution_rectangle_scaled_int(uniform_hyperr
         """
         Set up problem.
         """
-        super(regular_partition_uniform_distribution_rectangle_scaled_int, self).setUp()
-        if type(self.Q_ref) != np.array:
+        super(
+            regular_partition_uniform_distribution_rectangle_scaled_int,
+            self).setUp()
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -856,10 +905,10 @@ class regular_partition_uniform_distribution_rectangle_scaled_int(uniform_hyperr
 
         self.rect_domain = np.zeros((data_domain.shape[0], 2))
         binratio = 0.1
-        r_width = binratio*data_domain[:, 1]
+        r_width = binratio * data_domain[:, 1]
 
-        self.rect_domain[:, 0] = Q_ref - .5*r_width
-        self.rect_domain[:, 1] = Q_ref + .5*r_width
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_scaled(
             self.data, self.Q_ref, binratio)
@@ -867,9 +916,10 @@ class regular_partition_uniform_distribution_rectangle_scaled_int(uniform_hyperr
         self.d_distr_samples = self.data_prob._values
 
 
-class regular_partition_uniform_distribution_rectangle_scaled_list(uniform_hyperrectangle_list):
+class regular_partition_uniform_distribution_rectangle_scaled_list(
+        uniform_hyperrectangle_list):
     """
-    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled` 
+    Set up :met:`bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled`
 
     """
 
@@ -877,8 +927,10 @@ class regular_partition_uniform_distribution_rectangle_scaled_list(uniform_hyper
         """
         Set up problem.
         """
-        super(regular_partition_uniform_distribution_rectangle_scaled_list, self).setUp()
-        if type(self.Q_ref) != np.array:
+        super(
+            regular_partition_uniform_distribution_rectangle_scaled_list,
+            self).setUp()
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -888,11 +940,11 @@ class regular_partition_uniform_distribution_rectangle_scaled_list(uniform_hyper
             data_domain = self.data_domain
 
         self.rect_domain = np.zeros((data_domain.shape[0], 2))
-        binratio = 0.1*np.ones((data_domain.shape[0],))
-        r_width = binratio*data_domain[:, 1]
+        binratio = 0.1 * np.ones((data_domain.shape[0],))
+        r_width = binratio * data_domain[:, 1]
 
-        self.rect_domain[:, 0] = Q_ref - .5*r_width
-        self.rect_domain[:, 1] = Q_ref + .5*r_width
+        self.rect_domain[:, 0] = Q_ref - .5 * r_width
+        self.rect_domain[:, 1] = Q_ref + .5 * r_width
 
         self.data_prob = sFun.regular_partition_uniform_distribution_rectangle_scaled(
             self.data, self.Q_ref, binratio)
@@ -912,7 +964,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_int_01D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_int_01D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_int_01D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_int_01D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_int_1D(data_1D,
@@ -927,7 +981,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_int_1D(data_1
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_int_1D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_int_1D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_int_1D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_int_2D(data_2D,
@@ -942,7 +998,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_int_2D(data_2
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_int_2D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_int_2D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_int_2D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_int_3D(data_3D,
@@ -957,7 +1015,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_int_3D(data_3
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_int_3D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_int_3D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_int_3D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_list_01D(data_01D,
@@ -972,7 +1032,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_list_01D(data
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_list_01D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_list_01D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_list_01D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_list_1D(data_1D,
@@ -987,7 +1049,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_list_1D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_list_1D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_list_1D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_list_1D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_list_2D(data_2D,
@@ -1002,7 +1066,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_list_2D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_list_2D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_list_2D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_list_2D,
+            self).setUp()
 
 
 class test_regular_partition_uniform_distribution_rectangle_scaled_list_3D(data_3D,
@@ -1017,7 +1083,9 @@ class test_regular_partition_uniform_distribution_rectangle_scaled_list_3D(data_
         """
         super(test_regular_partition_uniform_distribution_rectangle_scaled_list_3D,
               self).createData()
-        super(test_regular_partition_uniform_distribution_rectangle_scaled_list_3D, self).setUp()
+        super(
+            test_regular_partition_uniform_distribution_rectangle_scaled_list_3D,
+            self).setUp()
 
 
 class uniform_partition_uniform_distribution_data_samples(prob_uniform):
@@ -1035,7 +1103,7 @@ class uniform_partition_uniform_distribution_data_samples(prob_uniform):
         self.rho_D_M = self.data_prob.get_probabilities()
         self.data = self.data._values
 
-        if type(self.Q_ref) != np.array:
+        if not isinstance(self.Q_ref, np.ndarray):
             self.Q_ref = np.array([self.Q_ref])
         if len(self.data_domain.shape) == 1:
             self.data_domain = np.expand_dims(self.data_domain, axis=0)
@@ -1061,7 +1129,9 @@ class test_uniform_partition_uniform_distribution_data_samples_01D(data_01D,
         """
         super(test_uniform_partition_uniform_distribution_data_samples_01D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_data_samples_01D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_data_samples_01D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_data_samples_1D(data_1D,
@@ -1076,7 +1146,9 @@ class test_uniform_partition_uniform_distribution_data_samples_1D(data_1D,
         """
         super(test_uniform_partition_uniform_distribution_data_samples_1D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_data_samples_1D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_data_samples_1D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_data_samples_2D(data_2D,
@@ -1091,7 +1163,9 @@ class test_uniform_partition_uniform_distribution_data_samples_2D(data_2D,
         """
         super(test_uniform_partition_uniform_distribution_data_samples_2D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_data_samples_2D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_data_samples_2D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_data_samples_3D(data_3D,
@@ -1106,7 +1180,9 @@ class test_uniform_partition_uniform_distribution_data_samples_3D(data_3D,
         """
         super(test_uniform_partition_uniform_distribution_data_samples_3D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_data_samples_3D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_data_samples_3D,
+            self).setUp()
 
 
 class uniform_partition_uniform_distribution_rectangle_size(prob_uniform):
@@ -1123,7 +1199,7 @@ class uniform_partition_uniform_distribution_rectangle_size(prob_uniform):
         self.d_distr_samples = self.data_prob.get_values()
         self.rho_D_M = self.data_prob.get_probabilities()
 
-        if type(self.Q_ref) != np.array:
+        if not isinstance(self.Q_ref, np.ndarray):
             self.Q_ref = np.array([self.Q_ref])
         if len(self.data_domain.shape) == 1:
             self.data_domain = np.expand_dims(self.data_domain, axis=0)
@@ -1174,7 +1250,9 @@ class test_uniform_partition_uniform_distribution_rectangle_size_01D(data_01D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_size_01D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_size_01D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_size_01D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_size_1D(data_1D,
@@ -1189,7 +1267,9 @@ class test_uniform_partition_uniform_distribution_rectangle_size_1D(data_1D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_size_1D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_size_1D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_size_1D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_size_2D(data_2D,
@@ -1204,7 +1284,9 @@ class test_uniform_partition_uniform_distribution_rectangle_size_2D(data_2D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_size_2D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_size_2D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_size_2D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_size_3D(data_3D,
@@ -1219,7 +1301,9 @@ class test_uniform_partition_uniform_distribution_rectangle_size_3D(data_3D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_size_3D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_size_3D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_size_3D,
+            self).setUp()
 
 
 class uniform_partition_uniform_distribution_rectangle_domain(prob_uniform):
@@ -1231,7 +1315,7 @@ class uniform_partition_uniform_distribution_rectangle_domain(prob_uniform):
         """
         Set up problem.
         """
-        if type(self.Q_ref) != np.array:
+        if not isinstance(self.Q_ref, np.ndarray):
             Q_ref = np.array([self.Q_ref])
         else:
             Q_ref = self.Q_ref
@@ -1305,7 +1389,9 @@ class test_uniform_partition_uniform_distribution_rectangle_domain_1D(data_1D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_domain_1D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_domain_1D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_domain_1D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_domain_2D(data_2D,
@@ -1320,7 +1406,9 @@ class test_uniform_partition_uniform_distribution_rectangle_domain_2D(data_2D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_domain_2D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_domain_2D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_domain_2D,
+            self).setUp()
 
 
 class test_uniform_partition_uniform_distribution_rectangle_domain_3D(data_3D,
@@ -1335,7 +1423,9 @@ class test_uniform_partition_uniform_distribution_rectangle_domain_3D(data_3D,
         """
         super(test_uniform_partition_uniform_distribution_rectangle_domain_3D,
               self).createData()
-        super(test_uniform_partition_uniform_distribution_rectangle_domain_3D, self).setUp()
+        super(
+            test_uniform_partition_uniform_distribution_rectangle_domain_3D,
+            self).setUp()
 
 
 class user_partition_user_distribution(prob):

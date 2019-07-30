@@ -39,19 +39,22 @@ else:
     x = np.array([x1, x2])
     y = np.array([y1, y2])
 
+
 class QoI_component(object):
     def __init__(self, x, y):
         self.x = x
         self.y = y
+
     def eval(self, parameter_samples):
         if parameter_samples.shape == (2,):
             lam1 = parameter_samples[0]
             lam2 = parameter_samples[1]
         else:
-            lam1 = parameter_samples[:,0]
-            lam2 = parameter_samples[:,1]
+            lam1 = parameter_samples[:, 0]
+            lam2 = parameter_samples[:, 1]
         z = np.sin(m.pi * self.x * lam1) * np.sin(m.pi * self.y * lam2)
         return z
+
 
 # Specify the QoI maps
 if QoI_num == 1:
@@ -62,9 +65,12 @@ else:
     def QoI_map(parameter_samples):
         Q1 = QoI_component(x[0], y[0])
         Q2 = QoI_component(x[1], y[1])
-        return np.array([Q1.eval(parameter_samples), Q2.eval(parameter_samples)]).transpose()
+        return np.array([Q1.eval(parameter_samples),
+                         Q2.eval(parameter_samples)]).transpose()
 
 # Define a model that is the QoI map
+
+
 def my_model(parameter_samples):
     QoI_samples = QoI_map(parameter_samples)
     return QoI_samples
