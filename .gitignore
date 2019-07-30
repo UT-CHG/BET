@@ -1,4 +1,5 @@
 bin/
+*.rst.txt
 doc/_build
 hershel_bin
 gh-pages/
