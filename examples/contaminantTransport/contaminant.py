@@ -82,7 +82,7 @@ else:
                                                                        M=50,
                                                                        num_d_emulate=1E5)
 
-# calculate probablities making Monte Carlo assumption
+# calculate probabilities making Monte Carlo assumption
 calculateP.prob(my_discretization)
 
 # calculate 2D marginal probabilities

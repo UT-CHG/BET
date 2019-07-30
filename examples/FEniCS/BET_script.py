@@ -124,7 +124,7 @@ else:
         data_set=my_discretization, Q_ref=Q_ref[0, :], rect_scale=0.1,
         M=50, num_d_emulate=1E5)
 
-# calculate probablities
+# calculate probabilities
 calculateP.prob(my_discretization)
 
 ########################################
