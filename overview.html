@@ -8,45 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Overview &mdash; BET 2.0.0 documentation</title>
+  <title>Overview &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="index.html"/>
-        <link rel="next" title="Parallel" href="parallel.html"/>
-        <link rel="prev" title="Welcome to BET’s documentation!" href="index.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parallel" href="parallel.html" />
+    <link rel="prev" title="Welcome to BET’s documentation!" href="index.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -81,18 +82,21 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#package-layout">Package Layout</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#code-overview">Code Overview</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sample"><code class="docutils literal"><span class="pre">bet.sample</span></code> module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.util"><code class="docutils literal"><span class="pre">bet.util</span></code> module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.Comm"><code class="docutils literal"><span class="pre">bet.Comm</span></code> module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.calculateP"><code class="docutils literal"><span class="pre">bet.calculateP</span></code> Sub-package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sampling"><code class="docutils literal"><span class="pre">bet.sampling</span></code> Sub-package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.postProcess"><code class="docutils literal"><span class="pre">bet.postProcess</span></code> Sub-package</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#module-bet.sensitivity"><code class="docutils literal"><span class="pre">bet.sensitivity</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sample</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.util</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.Comm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.Comm</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.calculateP</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.sampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sampling</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.postProcess"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.postProcess</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.sensitivity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sensitivity</span></code> Sub-package</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#internal-dependencies">Internal dependencies</a></li>
@@ -114,34 +118,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
-    <li>Overview</li>
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/overview.txt" rel="nofollow"> View page source</a>
+            
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -155,7 +179,7 @@
 If you have a
 <a class="reference external" href="https://github.com/UT-CHG/BET/archive/master.zip">zip file</a> you can install
 BET using:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span>
 </pre></div>
 </div>
 <p>from the package root directory. The BET package is currently NOT avaiable in
@@ -163,11 +187,11 @@ the <a class="reference external" href="http://pypi.python.org/pypi/Sphinx">Pyth
 change in the future. This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
 <p>If you have <a class="reference external" href="http://nose.readthedocs.org/en/latest/index.html">nose</a>
 installed you can run tests by typing:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">nosetests</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">nosetests</span>
 </pre></div>
 </div>
-<p>in <code class="docutils literal"><span class="pre">BET</span></code> to run the serial tests or</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="n">NPROC</span> <span class="n">nosetests</span>
+<p>in <code class="docutils literal notranslate"><span class="pre">BET</span></code> to run the serial tests or</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mpirun</span> <span class="o">-</span><span class="n">np</span> <span class="n">NPROC</span> <span class="n">nosetests</span>
 </pre></div>
 </div>
 <p>to run the parallel tests.</p>
@@ -175,7 +199,7 @@ installed you can run tests by typing:</p>
 <div class="section" id="package-layout">
 <h2>Package Layout<a class="headerlink" href="#package-layout" title="Permalink to this headline">¶</a></h2>
 <p>The package layout is as follows:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bet</span><span class="o">/</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bet</span><span class="o">/</span>
   <span class="n">util</span>
   <span class="n">Comm</span>
   <span class="n">sample</span>
@@ -203,121 +227,111 @@ installed you can run tests by typing:</p>
 <div class="section" id="code-overview">
 <h2>Code Overview<a class="headerlink" href="#code-overview" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="module-bet.sample">
-<span id="bet-sample-module"></span><h3><a class="reference internal" href="#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal"><span class="pre">bet.sample</span></code></a> module<a class="headerlink" href="#module-bet.sample" title="Permalink to this headline">¶</a></h3>
-<dl class="docutils">
-<dt>This module contains data structure/storage classes for BET. Notably:</dt>
-<dd><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set</span></code></a>
-<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>
-<a class="reference internal" href="bet.html#bet.sample.length_not_matching" title="bet.sample.length_not_matching"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.length_not_matching</span></code></a>
-<a class="reference internal" href="bet.html#bet.sample.dim_not_matching" title="bet.sample.dim_not_matching"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.dim_not_matching</span></code></a></dd>
+<span id="bet-sample-module"></span><h3><a class="reference internal" href="#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sample</span></code></a> module<a class="headerlink" href="#module-bet.sample" title="Permalink to this headline">¶</a></h3>
+<dl class="simple">
+<dt>This module contains data structure/storage classes for BET. Notably:</dt><dd><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set</span></code></a>
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a>
+<a class="reference internal" href="bet.html#bet.sample.length_not_matching" title="bet.sample.length_not_matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.length_not_matching</span></code></a>
+<a class="reference internal" href="bet.html#bet.sample.dim_not_matching" title="bet.sample.dim_not_matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.dim_not_matching</span></code></a></p>
+</dd>
 </dl>
 </div>
 <div class="section" id="module-bet.util">
-<span id="bet-util-module"></span><h3><a class="reference internal" href="#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal"><span class="pre">bet.util</span></code></a> module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h3>
+<span id="bet-util-module"></span><h3><a class="reference internal" href="#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.util</span></code></a> module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h3>
 <p>This module contains general tools for BET.</p>
 </div>
 <div class="section" id="module-bet.Comm">
-<span id="bet-comm-module"></span><h3><a class="reference internal" href="#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal"><span class="pre">bet.Comm</span></code></a> module<a class="headerlink" href="#module-bet.Comm" title="Permalink to this headline">¶</a></h3>
+<span id="bet-comm-module"></span><h3><a class="reference internal" href="#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.Comm</span></code></a> module<a class="headerlink" href="#module-bet.Comm" title="Permalink to this headline">¶</a></h3>
 <p>This module provides a workaround for people without mpi4py installed
 to run BET.</p>
 </div>
 <div class="section" id="module-bet.calculateP">
-<span id="bet-calculatep-sub-package"></span><h3><a class="reference internal" href="#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">bet.calculateP</span></code></a> Sub-package<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h3>
+<span id="bet-calculatep-sub-package"></span><h3><a class="reference internal" href="#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.calculateP</span></code></a> Sub-package<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h3>
 <p>This subpackage provides classes and methods for calulating the
-probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
-<ul>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides methods for approximating</dt>
-<dd><p class="first last">probability densities</p>
+probability measure <span class="math notranslate nohighlight">\(P_{\Lambda}\)</span>.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateP</span></code></a> provides methods for approximating</dt><dd><p>probability densities</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt>
-<dd><p class="first last">function approximations of probability densisties</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt><dd><p>function approximations of probability densisties</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.indicatorFunctions" title="bet.calculateP.indicatorFunctions"><code class="xref py py-mod docutils literal"><span class="pre">indicatorFunctions</span></code></a> provides methods for creating</dt>
-<dd><p class="first last">indicator functions for use by various other classes.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.indicatorFunctions" title="bet.calculateP.indicatorFunctions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">indicatorFunctions</span></code></a> provides methods for creating</dt><dd><p>indicator functions for use by various other classes.</p>
 </dd>
 </dl>
 </li>
 </ul>
 </div>
 <div class="section" id="module-bet.sampling">
-<span id="bet-sampling-sub-package"></span><h3><a class="reference internal" href="#module-bet.sampling" title="bet.sampling"><code class="xref py py-mod docutils literal"><span class="pre">bet.sampling</span></code></a> Sub-package<a class="headerlink" href="#module-bet.sampling" title="Permalink to this headline">¶</a></h3>
+<span id="bet-sampling-sub-package"></span><h3><a class="reference internal" href="#module-bet.sampling" title="bet.sampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sampling</span></code></a> Sub-package<a class="headerlink" href="#module-bet.sampling" title="Permalink to this headline">¶</a></h3>
 <p>This subpackage contains</p>
-<ul>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> a general class and associated set of</dt>
-<dd><p class="first last">methods that interogates a model through an interface.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">basicSampling</span></code></a> a general class and associated set of</dt><dd><p>methods that interogates a model through an interface.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> requests data(QoI) at a</dt>
-<dd><p class="first last">specified set of parameter samples.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">sampler</span></code></a> requests data(QoI) at a</dt><dd><p>specified set of parameter samples.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.adaptiveSampling" title="bet.sampling.adaptiveSampling"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling</span></code></a> inherits from</dt>
-<dd><p class="first last"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> adaptively generates samples.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.sampling.html#module-bet.sampling.adaptiveSampling" title="bet.sampling.adaptiveSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling</span></code></a> inherits from</dt><dd><p><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">basicSampling</span></code></a> adaptively generates samples.</p>
 </dd>
 </dl>
 </li>
 </ul>
 </div>
 <div class="section" id="module-bet.postProcess">
-<span id="bet-postprocess-sub-package"></span><h3><a class="reference internal" href="#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal"><span class="pre">bet.postProcess</span></code></a> Sub-package<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h3>
+<span id="bet-postprocess-sub-package"></span><h3><a class="reference internal" href="#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.postProcess</span></code></a> Sub-package<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h3>
 <p>This subpackage contains</p>
-<ul>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal"><span class="pre">plotP</span></code></a> plots <span class="math">\(P\)</span> and/or volumes (<span class="math">\(\mu\)</span>)</dt>
-<dd><p class="first last">of voronoi cells</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotP</span></code></a> plots <span class="math notranslate nohighlight">\(P\)</span> and/or volumes (<span class="math notranslate nohighlight">\(\mu\)</span>)</dt><dd><p>of voronoi cells</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal"><span class="pre">plotDomains</span></code></a> plots the data domain</dt>
-<dd><p class="first last"><span class="math">\(\mathcal{D}\)</span> in 2D</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotDomains</span></code></a> plots the data domain</dt><dd><p><span class="math notranslate nohighlight">\(\mathcal{D}\)</span> in 2D</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal"><span class="pre">postTools</span></code></a> has tools for postprocessing</p>
-</li>
+<li><p><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">postTools</span></code></a> has tools for postprocessing</p></li>
+<li><p><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.compareP" title="bet.postProcess.compareP"><code class="xref py py-class docutils literal notranslate"><span class="pre">compareP</span></code></a> has tools for comparing measures</p></li>
 </ul>
 </div>
 <div class="section" id="module-bet.sensitivity">
-<span id="bet-sensitivity-sub-package"></span><h3><a class="reference internal" href="#module-bet.sensitivity" title="bet.sensitivity"><code class="xref py py-mod docutils literal"><span class="pre">bet.sensitivity</span></code></a> Sub-package<a class="headerlink" href="#module-bet.sensitivity" title="Permalink to this headline">¶</a></h3>
+<span id="bet-sensitivity-sub-package"></span><h3><a class="reference internal" href="#module-bet.sensitivity" title="bet.sensitivity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sensitivity</span></code></a> Sub-package<a class="headerlink" href="#module-bet.sensitivity" title="Permalink to this headline">¶</a></h3>
 <p>This subpackage provides methods for approximating gradients of
 QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
-<ul>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal"><span class="pre">gradients</span></code></a> provides methods for approximating</dt>
-<dd><p class="first last">gradients of QoI maps.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gradients</span></code></a> provides methods for approximating</dt><dd><p>gradients of QoI maps.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal"><span class="pre">chooseQoIs</span></code></a> provides methods for choosing optimal</dt>
-<dd><p class="first last">QoIs to use in the inverse problem.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chooseQoIs</span></code></a> provides methods for choosing optimal</dt><dd><p>QoIs to use in the inverse problem.</p>
 </dd>
 </dl>
 </li>
 </ul>
 <div class="admonition seealso">
-<p class="first admonition-title">See also</p>
-<p class="last"><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
 </div>
 </div>
 </div>
 <div class="section" id="internal-dependencies">
 <h2>Internal dependencies<a class="headerlink" href="#internal-dependencies" title="Permalink to this headline">¶</a></h2>
-<p>Dependencies via <code class="xref std std-keyword docutils literal"><span class="pre">import</span></code> statements:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bet</span>
+<p>Dependencies via <a class="reference external" href="https://docs.python.org/2.7/reference/simple_stmts.html#import" title="(in Python v2.7)"><code class="xref std std-keyword docutils literal notranslate"><span class="pre">import</span></code></a> statements:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bet</span>
   \<span class="o">-</span><span class="n">Comm</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">adaptiveSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sensitivity</span><span class="o">.</span><span class="n">chooseQoIs</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">sampling</span><span class="o">.</span><span class="n">basicSampling</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">util</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">calculateError</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">calculateP</span><span class="o">.</span><span class="n">simpleFunP</span><span class="p">)</span>
   \<span class="o">-</span><span class="n">calculateP</span>
   <span class="o">|</span> \<span class="o">-</span><span class="n">calculateError</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">surrogates</span><span class="p">)</span>
@@ -334,7 +348,7 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
 <h2>External dependencies<a class="headerlink" href="#external-dependencies" title="Permalink to this headline">¶</a></h2>
 <p>This pacakge requires <a class="reference external" href="http://http://matplotlib.org">matplotlib</a>, <a class="reference external" href="scipy.org">scipy</a>, mpl_toolkits,  <a class="reference external" href="http://http://www.numpy.org">numpy</a>, and
 <a class="reference external" href="http://pythonhosted.org/pyDOE/">pyDOE</a>. This package is written in <a class="reference external" href="http://http://docs.python.org/2">Python</a>.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">matplotlib</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">matplotlib</span>
   \<span class="o">-</span><span class="n">cm</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">)</span>
   \<span class="o">-</span><span class="n">lines</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">)</span>
   \<span class="o">-</span><span class="n">pyplot</span> <span class="p">(</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotP</span><span class="p">,</span><span class="n">bet</span><span class="o">.</span><span class="n">postProcess</span><span class="o">.</span><span class="n">plotDomains</span><span class="p">)</span>
@@ -357,15 +371,16 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="parallel.html" class="btn btn-neutral float-right" title="Parallel" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="parallel.html" class="btn btn-neutral float-right" title="Parallel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="index.html" class="btn btn-neutral" title="Welcome to BET’s documentation!" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to BET’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -374,12 +389,14 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -392,36 +409,15 @@ QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

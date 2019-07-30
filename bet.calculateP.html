@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bet.calculateP package &mdash; BET 2.0.0 documentation</title>
+  <title>bet.calculateP package &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="index.html"/>
-        <link rel="up" title="bet package" href="bet.html"/>
-        <link rel="next" title="bet.postProcess package" href="bet.postProcess.html"/>
-        <link rel="prev" title="bet package" href="bet.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="bet.postProcess package" href="bet.postProcess.html" />
+    <link rel="prev" title="bet package" href="bet.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a></li>
@@ -100,7 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet.sample">bet.sample module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet.surrogates">bet.surrogates module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet.util">bet.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="bet.html#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -117,38 +120,58 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">bet</a> &raquo;</li>
-      
+        
           <li><a href="bet.html">bet package</a> &raquo;</li>
-      
-    <li>bet.calculateP package</li>
+        
+      <li>bet.calculateP package</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/bet.calculateP.txt" rel="nofollow"> View page source</a>
+            
+            <a href="_sources/bet.calculateP.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -161,211 +184,228 @@
 </div>
 <div class="section" id="module-bet.calculateP.calculateError">
 <span id="bet-calculatep-calculateerror-module"></span><h2>bet.calculateP.calculateError module<a class="headerlink" href="#module-bet.calculateP.calculateError" title="Permalink to this headline">¶</a></h2>
-<p>This module provides methods for calulating error estimates of 
+<p>This module provides methods for calulating error estimates of
 the probability measure for calculate probability measures. See
 <cite>Butler et al. 2015. &lt;http://arxiv.org/pdf/1407.3851&gt;</cite>.</p>
-<ul>
-<li><dl class="first docutils">
-<dt><code class="xref py py-meth docutils literal"><span class="pre">cell_connectivity_exact()</span></code> calculates </dt>
-<dd><p class="first last">the connectivity of cells.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="xref py py-meth docutils literal notranslate"><span class="pre">cell_connectivity_exact()</span></code> calculates</dt><dd><p>the connectivity of cells.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><code class="xref py py-meth docutils literal"><span class="pre">boundary_sets()</span></code> calculates which cells are </dt>
-<dd><p class="first last">on the boundary and strictly interior for contour events.</p>
+<li><dl class="simple">
+<dt><code class="xref py py-meth docutils literal notranslate"><span class="pre">boundary_sets()</span></code> calculates which cells are</dt><dd><p>on the boundary and strictly interior for contour events.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">sampling_error</span></code> is for calculating error</dt>
-<dd><p class="first last">estimates due to sampling</p>
+<li><dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">sampling_error</span></code> is for calculating error</dt><dd><p>estimates due to sampling</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><code class="xref py py-class docutils literal"><span class="pre">model_error</span></code> is for calculating error</dt>
-<dd><p class="first last">estimates due to error in solution of QoIs</p>
+<li><dl class="simple">
+<dt><code class="xref py py-class docutils literal notranslate"><span class="pre">model_error</span></code> is for calculating error</dt><dd><p>estimates due to error in solution of QoIs</p>
 </dd>
 </dl>
 </li>
 </ul>
 <dl class="function">
 <dt id="bet.calculateP.calculateError.boundary_sets">
-<code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">boundary_sets</code><span class="sig-paren">(</span><em>disc</em>, <em>nei_list</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.boundary_sets" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.calculateError.</code><code class="sig-name descname">boundary_sets</code><span class="sig-paren">(</span><em class="sig-param">disc</em>, <em class="sig-param">nei_list</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.boundary_sets" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates the the neighboring Voronoi cells for each cell.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; An object containing the discretization information.</li>
-<li><strong>nei_list</strong> (<em>list</em>) &#8211; list of lists defining contour events of neighboring cells.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a>) – An object containing the discretization information.</p></li>
+<li><p><strong>nei_list</strong> (<em>list</em>) – list of lists defining contour events of neighboring cells.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<span class="math">\(B_N, C_N\)</span>) where B_N are the cells strictly on the 
-interior of a contour event and C_N are the cells on the boundary 
-of a contour eventas defined in 
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(<span class="math notranslate nohighlight">\(B_N, C_N\)</span>) where B_N are the cells strictly on the
+interior of a contour event and C_N are the cells on the boundary
+of a contour eventas defined in
 <cite>Butler et al. 2015. &lt;http://arxiv.org/pdf/1407.3851&gt;</cite></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.calculateError.cell_connectivity_exact">
-<code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">cell_connectivity_exact</code><span class="sig-paren">(</span><em>disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.cell_connectivity_exact" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.calculateError.</code><code class="sig-name descname">cell_connectivity_exact</code><span class="sig-paren">(</span><em class="sig-param">disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.cell_connectivity_exact" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculates contour events of the cells and its neighbors.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; An object containing the discretization information.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">list of lists of neighboring cells</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a>) – An object containing the discretization information.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>list of lists of neighboring cells</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.calculateP.calculateError.model_error">
-<em class="property">class </em><code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">model_error</code><span class="sig-paren">(</span><em>disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.calculateP.calculateError.</code><code class="sig-name descname">model_error</code><span class="sig-paren">(</span><em class="sig-param">disc</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A class for calculating the error due to numerical error
 for a discretization.</p>
 <dl class="method">
 <dt id="bet.calculateP.calculateError.model_error.calculate_for_contour_events">
-<code class="descname">calculate_for_contour_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_contour_events" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate_for_contour_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_contour_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the numerical error for each contour event.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">list</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><code class="docutils literal"><span class="pre">er_list</span></code>, a list of the error estimates
-for each contour event.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>list</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="docutils literal notranslate"><span class="pre">er_list</span></code>, a list of the error estimates
+for each contour event.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.calculateP.calculateError.model_error.calculate_for_sample_set_region">
-<code class="descname">calculate_for_sample_set_region</code><span class="sig-paren">(</span><em>s_set</em>, <em>region</em>, <em>emulated_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate_for_sample_set_region</code><span class="sig-paren">(</span><em class="sig-param">s_set</em>, <em class="sig-param">region</em>, <em class="sig-param">emulated_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the numerical error estimate for a region of the input space
 defined by a sample set object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set for which to calculate error</li>
-<li><strong>region</strong> (<em>int</em>) &#8211; region of s_set for which to calculate error</li>
-<li><strong>emulated_set</strong> &#8211; sample set for volume emulation</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a>) – sample set for which to calculate error</p></li>
+<li><p><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – region of s_set for which to calculate error</p></li>
+<li><p><strong>emulated_set</strong> – sample set for volume emulation</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">float</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><code class="docutils literal"><span class="pre">er_est</span></code>, the numerical error estimate for the region</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><code class="docutils literal notranslate"><span class="pre">er_est</span></code>, the numerical error estimate for the region</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.calculateP.calculateError.model_error.calculate_for_sample_set_region_mc">
-<code class="descname">calculate_for_sample_set_region_mc</code><span class="sig-paren">(</span><em>s_set</em>, <em>region</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_sample_set_region_mc" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate_for_sample_set_region_mc</code><span class="sig-paren">(</span><em class="sig-param">s_set</em>, <em class="sig-param">region</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.model_error.calculate_for_sample_set_region_mc" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the numerical error estimate for a region of the input space
 defined by a sample set object, using the MC assumption.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set for which to calculate error</li>
-<li><strong>region</strong> (<em>int</em>) &#8211; region of s_set for which to calculate error</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a>) – sample set for which to calculate error</p></li>
+<li><p><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – region of s_set for which to calculate error</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 <p>:rtype float
-:returns: <code class="docutils literal"><span class="pre">er_est</span></code>, the numerical error estimate for the region</p>
+:returns: <code class="docutils literal notranslate"><span class="pre">er_est</span></code>, the numerical error estimate for the region</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.model_error.disc">
+<code class="sig-name descname">disc</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.model_error.disc" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretiztion</span></code> defining the problem</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.model_error.disc_new">
+<code class="sig-name descname">disc_new</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.model_error.disc_new" title="Permalink to this definition">¶</a></dt>
+<dd><p><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretiztion</span></code> from adding error estimates</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.model_error.num">
+<code class="sig-name descname">num</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.model_error.num" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of inputs and outputs</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.calculateP.calculateError.sampling_error">
-<em class="property">class </em><code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">sampling_error</code><span class="sig-paren">(</span><em>disc</em>, <em>exact=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.calculateP.calculateError.</code><code class="sig-name descname">sampling_error</code><span class="sig-paren">(</span><em class="sig-param">disc</em>, <em class="sig-param">exact=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>A class for calculating the error due to sampling for a discretization.</p>
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.sampling_error.B_N">
+<code class="sig-name descname">B_N</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.B_N" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionaries of interior and boundary sets</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.sampling_error.C_N">
+<code class="sig-name descname">C_N</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.C_N" title="Permalink to this definition">¶</a></dt>
+<dd><p>dictionaries of interior and boundary sets</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.calculateP.calculateError.sampling_error.calculate_for_contour_events">
-<code class="descname">calculate_for_contour_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.calculate_for_contour_events" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate_for_contour_events</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.calculate_for_contour_events" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the sampling error bounds for each contour event.  If volumes
 are already calculated these are used. If not, volume emulation is used
 if an emulated input set exists.  Otherwise the MC assumption is
 made.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body">tuple</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">(<code class="docutils literal"><span class="pre">up_list</span></code>, <code class="docutils literal"><span class="pre">low_list</span></code>) where <code class="docutils literal"><span class="pre">up_list</span></code> is a list of
-the upper bounds for each contour event and <code class="docutils literal"><span class="pre">low_list</span></code> is a list
-of the lower bounds.</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(<code class="docutils literal notranslate"><span class="pre">up_list</span></code>, <code class="docutils literal notranslate"><span class="pre">low_list</span></code>) where <code class="docutils literal notranslate"><span class="pre">up_list</span></code> is a list of
+the upper bounds for each contour event and <code class="docutils literal notranslate"><span class="pre">low_list</span></code> is a list
+of the lower bounds.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.calculateP.calculateError.sampling_error.calculate_for_sample_set_region">
-<code class="descname">calculate_for_sample_set_region</code><span class="sig-paren">(</span><em>s_set</em>, <em>region</em>, <em>emulated_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.calculate_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">calculate_for_sample_set_region</code><span class="sig-paren">(</span><em class="sig-param">s_set</em>, <em class="sig-param">region</em>, <em class="sig-param">emulated_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.calculate_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
 <dd><p>Calculate the sampling error bounds for a region of the input space
-defined by a sample set object which defines an event <span class="math">\(A\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set_base</span></code></a>) &#8211; sample set for which to calculate error</li>
-<li><strong>region</strong> (<em>int</em>) &#8211; region of s_set for which to calculate error</li>
-<li><strong>emulated_set</strong> (<code class="xref py py-class docutils literal"><span class="pre">bet.sample_set_base</span></code>) &#8211; sample set for volume emulation</li>
+defined by a sample set object which defines an event <span class="math notranslate nohighlight">\(A\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>s_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a>) – sample set for which to calculate error</p></li>
+<li><p><strong>region</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – region of s_set for which to calculate error</p></li>
+<li><p><strong>emulated_set</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample_set_base</span></code>) – sample set for volume emulation</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="docutils literal"><span class="pre">upper_bound</span></code>, <code class="docutils literal"><span class="pre">lower_bound</span></code>) the upper and lower bounds
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(<code class="docutils literal notranslate"><span class="pre">upper_bound</span></code>, <code class="docutils literal notranslate"><span class="pre">lower_bound</span></code>) the upper and lower bounds
 for the error.</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.sampling_error.disc">
+<code class="sig-name descname">disc</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.disc" title="Permalink to this definition">¶</a></dt>
+<dd><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a> that defines the problem</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.calculateP.calculateError.sampling_error.num">
+<code class="sig-name descname">num</code><em class="property"> = None</em><a class="headerlink" href="#bet.calculateP.calculateError.sampling_error.num" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of inputs and outputs</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="exception">
 <dt id="bet.calculateP.calculateError.wrong_argument_type">
-<em class="property">exception </em><code class="descclassname">bet.calculateP.calculateError.</code><code class="descname">wrong_argument_type</code><a class="headerlink" href="#bet.calculateP.calculateError.wrong_argument_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">bet.calculateP.calculateError.</code><code class="sig-name descname">wrong_argument_type</code><a class="headerlink" href="#bet.calculateP.calculateError.wrong_argument_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception for when the argument is not one of the acceptible
 types.</p>
 </dd></dl>
@@ -374,29 +414,25 @@ types.</p>
 <div class="section" id="module-bet.calculateP.calculateP">
 <span id="bet-calculatep-calculatep-module"></span><h2>bet.calculateP.calculateP module<a class="headerlink" href="#module-bet.calculateP.calculateP" title="Permalink to this headline">¶</a></h2>
 <p>This module provides methods for calulating the probability measure
-<span class="math">\(P_{\Lambda}\)</span>.</p>
-<ul>
-<li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_on_emulated_samples</span></code> provides a skeleton class and</dt>
-<dd><p class="first last">calculates the probability for a set of emulation points.</p>
+<span class="math notranslate nohighlight">\(P_{\Lambda}\)</span>.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><code class="xref py py-mod docutils literal notranslate"><span class="pre">prob_on_emulated_samples</span></code> provides a skeleton class and</dt><dd><p>calculates the probability for a set of emulation points.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><code class="xref py py-mod docutils literal"><span class="pre">prob</span></code></a> estimates the </dt>
-<dd><p class="first last">probability based on pre-defined volumes.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><code class="xref py py-mod docutils literal notranslate"><span class="pre">prob</span></code></a> estimates the</dt><dd><p>probability based on pre-defined volumes.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><code class="xref py py-mod docutils literal"><span class="pre">prob_with_emulated</span></code> estimates the </dt>
-<dd><p class="first last">probability using volume emulation.</p>
+<li><dl class="simple">
+<dt><code class="xref py py-mod docutils literal notranslate"><span class="pre">prob_with_emulated</span></code> estimates the</dt><dd><p>probability using volume emulation.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#bet.calculateP.calculateP.prob_from_sample_set" title="bet.calculateP.calculateP.prob_from_sample_set"><code class="xref py py-mod docutils literal"><span class="pre">prob_from_sample_set</span></code></a> estimates the </dt>
-<dd><p class="first last">probability based on probabilities from another sample set on the same
+<li><dl class="simple">
+<dt><a class="reference internal" href="#bet.calculateP.calculateP.prob_from_sample_set" title="bet.calculateP.calculateP.prob_from_sample_set"><code class="xref py py-mod docutils literal notranslate"><span class="pre">prob_from_sample_set</span></code></a> estimates the</dt><dd><p>probability based on probabilities from another sample set on the same
 space.</p>
 </dd>
 </dl>
@@ -404,780 +440,696 @@ space.</p>
 </ul>
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob</code><span class="sig-paren">(</span><em>discretization</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})\)</span>, the
+<code class="sig-prename descclassname">bet.calculateP.calculateP.</code><code class="sig-name descname">prob</code><span class="sig-paren">(</span><em class="sig-param">discretization</em>, <em class="sig-param">globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})\)</span>, the
 probability assoicated with a set of  cells defined by the model
-solves at <span class="math">\((\lambda_{samples})\)</span> where the volumes of these 
+solves at <span class="math notranslate nohighlight">\((\lambda_{samples})\)</span> where the volumes of these
 cells are provided.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) &#8211; An object containing the discretization information.</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) – An object containing the discretization information.</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob_from_discretization_input">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_discretization_input</code><span class="sig-paren">(</span><em>disc</em>, <em>set_new</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_discretization_input" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
-from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> where
-<span class="math">\(\lambda_{samples_old}\)</span> come from an input discretization.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a>) &#8211; Discretiztion on which probabilities have already been
-calculated</li>
-<li><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for which probabilities will be calculated.</li>
+<code class="sig-prename descclassname">bet.calculateP.calculateP.</code><code class="sig-name descname">prob_from_discretization_input</code><span class="sig-paren">(</span><em class="sig-param">disc</em>, <em class="sig-param">set_new</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_discretization_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
+from <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> where
+<span class="math notranslate nohighlight">\(\lambda_{samples_old}\)</span> come from an input discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Discretiztion on which probabilities have already been
+calculated</p></li>
+<li><p><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Sample set for which probabilities will be calculated.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob_from_sample_set">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_sample_set</code><span class="sig-paren">(</span><em>set_old</em>, <em>set_new</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
-from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
+<code class="sig-prename descclassname">bet.calculateP.calculateP.</code><code class="sig-name descname">prob_from_sample_set</code><span class="sig-paren">(</span><em class="sig-param">set_old</em>, <em class="sig-param">set_new</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
+from <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
 the MC assumption with respect to set_old.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>set_old</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set on which probabilities have already been
-calculated</li>
-<li><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for which probabilities will be calculated.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>set_old</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Sample set on which probabilities have already been
+calculated</p></li>
+<li><p><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Sample set for which probabilities will be calculated.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob_from_sample_set_with_emulated_volumes">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_from_sample_set_with_emulated_volumes</code><span class="sig-paren">(</span><em>set_old</em>, <em>set_new</em>, <em>set_emulate=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set_with_emulated_volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
-from <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
-a set of emulated points are distributed with respect to the 
+<code class="sig-prename descclassname">bet.calculateP.calculateP.</code><code class="sig-name descname">prob_from_sample_set_with_emulated_volumes</code><span class="sig-paren">(</span><em class="sig-param">set_old</em>, <em class="sig-param">set_new</em>, <em class="sig-param">set_emulate=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_from_sample_set_with_emulated_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_new}})\)</span>
+from <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples_old}})\)</span> using
+a set of emulated points are distributed with respect to the
 volume measure.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>set_old</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set on which probabilities have already been
-calculated</li>
-<li><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for which probabilities will be calculated.</li>
-<li><strong>set_emulate</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal"><span class="pre">sample_set_base</span></code></a>) &#8211; Sample set for volume emulation</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>set_old</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Sample set on which probabilities have already been
+calculated</p></li>
+<li><p><strong>set_new</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Sample set for which probabilities will be calculated.</p></li>
+<li><p><strong>set_emulate</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Sample set for volume emulation</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob_on_emulated_samples">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_on_emulated_samples</code><span class="sig-paren">(</span><em>discretization</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_on_emulated_samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})\)</span>, the
+<code class="sig-prename descclassname">bet.calculateP.calculateP.</code><code class="sig-name descname">prob_on_emulated_samples</code><span class="sig-paren">(</span><em class="sig-param">discretization</em>, <em class="sig-param">globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_on_emulated_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{emulate}})\)</span>, the
 probability assoicated with a set of voronoi cells defined by
-<code class="docutils literal"><span class="pre">num_l_emulate</span></code> iid samples <span class="math">\((\lambda_{emulate})\)</span>.
+<code class="docutils literal notranslate"><span class="pre">num_l_emulate</span></code> iid samples <span class="math notranslate nohighlight">\((\lambda_{emulate})\)</span>.
 This is added to the emulated input sample set object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) &#8211; An object containing the discretization information.</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) – An object containing the discretization information.</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.calculateP.prob_with_emulated_volumes">
-<code class="descclassname">bet.calculateP.calculateP.</code><code class="descname">prob_with_emulated_volumes</code><span class="sig-paren">(</span><em>discretization</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_with_emulated_volumes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Calculates <span class="math">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})\)</span>, the
+<code class="sig-prename descclassname">bet.calculateP.calculateP.</code><code class="sig-name descname">prob_with_emulated_volumes</code><span class="sig-paren">(</span><em class="sig-param">discretization</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.calculateP.prob_with_emulated_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculates <span class="math notranslate nohighlight">\(P_{\Lambda}(\mathcal{V}_{\lambda_{samples}})\)</span>, the
 probability associated with a set of  cells defined by the model
-solves at <span class="math">\((\lambda_{samples})\)</span> where the volumes are calculated
+solves at <span class="math notranslate nohighlight">\((\lambda_{samples})\)</span> where the volumes are calculated
 with the given emulated input points.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) &#8211; An object containing the discretization information.</li>
-<li><strong>globalize</strong> &#8211; Makes local variables global.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>discretization</strong> (class:<cite>bet.sample.discretization</cite>) – An object containing the discretization information.</p></li>
+<li><p><strong>globalize</strong> – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-bet.calculateP.indicatorFunctions">
 <span id="bet-calculatep-indicatorfunctions-module"></span><h2>bet.calculateP.indicatorFunctions module<a class="headerlink" href="#module-bet.calculateP.indicatorFunctions" title="Permalink to this headline">¶</a></h2>
-<p>This module provides various indicator functions, <span class="math">\(\mathbf{1}_A\)</span> for
-various sets <span class="math">\(A \subset \mathbb{R}^n\)</span> where given a set of points in
-<span class="math">\(\{x_i\}_{i=0}^{N} \in \mathbf{R}^n\)</span> returns <span class="math">\(\{ \mathbf{1}_A(x_i)
+<p>This module provides various indicator functions, <span class="math notranslate nohighlight">\(\mathbf{1}_A\)</span> for
+various sets <span class="math notranslate nohighlight">\(A \subset \mathbb{R}^n\)</span> where given a set of points in
+<span class="math notranslate nohighlight">\(\{x_i\}_{i=0}^{N} \in \mathbf{R}^n\)</span> returns <span class="math notranslate nohighlight">\(\{ \mathbf{1}_A(x_i)
 \}_{i=0}^{N}\)</span>.</p>
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.boundary_hyperrectangle">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">boundary_hyperrectangle</code><span class="sig-paren">(</span><em>left</em>, <em>right</em>, <em>boundary_width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">boundary_hyperrectangle</code><span class="sig-paren">(</span><em class="sig-param">left</em>, <em class="sig-param">right</em>, <em class="sig-param">boundary_width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for the set of points within
-<code class="docutils literal"><span class="pre">boundary_width</span></code> of the boundary of a hyperrectangle defined by a
+<code class="docutils literal notranslate"><span class="pre">boundary_width</span></code> of the boundary of a hyperrectangle defined by a
 leftmost and rightmost corner.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Leftmost(minimum) corner of the hyperrectangle.</li>
-<li><strong>right</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Rightmost(maximum) corner of the hyperrectangle.</li>
-<li><strong>boundary_width</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Width of the boundary</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Leftmost(minimum) corner of the hyperrectangle.</p></li>
+<li><p><strong>right</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Rightmost(maximum) corner of the hyperrectangle.</p></li>
+<li><p><strong>boundary_width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Width of the boundary</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>function</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.boundary_hyperrectangle_ratio">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">boundary_hyperrectangle_ratio</code><span class="sig-paren">(</span><em>left</em>, <em>right</em>, <em>boundary_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle_ratio" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">boundary_hyperrectangle_ratio</code><span class="sig-paren">(</span><em class="sig-param">left</em>, <em class="sig-param">right</em>, <em class="sig-param">boundary_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle_ratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for the set of points within
-<code class="docutils literal"><span class="pre">boundary_ratio*hyperrectanlge_width</span></code> of the boundary of a hyperrectangle
+<code class="docutils literal notranslate"><span class="pre">boundary_ratio*hyperrectanlge_width</span></code> of the boundary of a hyperrectangle
 defined by a leftmost and rightmost corner.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Leftmost(minimum) corner of the hyperrectangle.</li>
-<li><strong>right</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Rightmost(maximum) corner of the hyperrectangle.</li>
-<li><strong>boundary_ratio</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Ratio of the width of the boundary</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Leftmost(minimum) corner of the hyperrectangle.</p></li>
+<li><p><strong>right</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Rightmost(maximum) corner of the hyperrectangle.</p></li>
+<li><p><strong>boundary_ratio</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Ratio of the width of the boundary</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>function</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.boundary_hyperrectangle_size">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">boundary_hyperrectangle_size</code><span class="sig-paren">(</span><em>center</em>, <em>width</em>, <em>boundary_width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">boundary_hyperrectangle_size</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">width</em>, <em class="sig-param">boundary_width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for the set of points within
-<code class="docutils literal"><span class="pre">boundary_width</span></code> of the boundary of  a hyperrectangle defined by a center
+<code class="docutils literal notranslate"><span class="pre">boundary_width</span></code> of the boundary of  a hyperrectangle defined by a center
 point and the width of the hyperrectangle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; center of the hyperrectangle.</li>
-<li><strong>width</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; length of the size of the sides of the hyperrectangle.</li>
-<li><strong>boundary_width</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Width of the boundary</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – center of the hyperrectangle.</p></li>
+<li><p><strong>width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – length of the size of the sides of the hyperrectangle.</p></li>
+<li><p><strong>boundary_width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Width of the boundary</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>function</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.boundary_hyperrectangle_size_ratio">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">boundary_hyperrectangle_size_ratio</code><span class="sig-paren">(</span><em>center</em>, <em>width</em>, <em>boundary_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle_size_ratio" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">boundary_hyperrectangle_size_ratio</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">width</em>, <em class="sig-param">boundary_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hyperrectangle_size_ratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for the set of points within
-<code class="docutils literal"><span class="pre">boundary_ratio*hyperrectanlge_width</span></code> of the boundary of  a
+<code class="docutils literal notranslate"><span class="pre">boundary_ratio*hyperrectanlge_width</span></code> of the boundary of  a
 hyperrectangle defined by a center point and the width of the
 hyperrectangle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; center of the hyperrectangle.</li>
-<li><strong>width</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; length of the size of the sides of the hyperrectangle.</li>
-<li><strong>boundary_ratio</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Ratio of the width of the boundary</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – center of the hyperrectangle.</p></li>
+<li><p><strong>width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – length of the size of the sides of the hyperrectangle.</p></li>
+<li><p><strong>boundary_ratio</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Ratio of the width of the boundary</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>function</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_{\partial A \plusminus \epsilon}\)</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.boundary_hypersphere">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">boundary_hypersphere</code><span class="sig-paren">(</span><em>center</em>, <em>radius</em>, <em>boundary_width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hypersphere" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">boundary_hypersphere</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em>, <em class="sig-param">boundary_width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hypersphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for a hypersphere defined by a center and a
 radius.</p>
 <p>If radius is a vector and not a scalar this will work for an hyperellipse.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
-<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
-<li><strong>boundary_width</strong> &#8211; Width of the boundary</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – center of the hypersphere/ellipse</p></li>
+<li><p><strong>radius</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) – radius or radii of the hypereliipse</p></li>
+<li><p><strong>boundary_width</strong> – Width of the boundary</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">callable</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_A\)</span> where A is a hypersphere/ellipse</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>callable</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_A\)</span> where A is a hypersphere/ellipse</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.boundary_hypersphere_ratio">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">boundary_hypersphere_ratio</code><span class="sig-paren">(</span><em>center</em>, <em>radius</em>, <em>boundary_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hypersphere_ratio" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">boundary_hypersphere_ratio</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em>, <em class="sig-param">boundary_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.boundary_hypersphere_ratio" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for a hypersphere defined by a center and a
 radius.</p>
 <p>If radius is a vector and not a scalar this will work for an hyperellipse.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
-<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
-<li><strong>boundary_ratio</strong> &#8211; Ratio of the width of the boundary</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – center of the hypersphere/ellipse</p></li>
+<li><p><strong>radius</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) – radius or radii of the hypereliipse</p></li>
+<li><p><strong>boundary_ratio</strong> – Ratio of the width of the boundary</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">callable</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_A\)</span> where A is a hypersphere/ellipse</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>callable</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_A\)</span> where A is a hypersphere/ellipse</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.hyperrectangle">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">hyperrectangle</code><span class="sig-paren">(</span><em>left</em>, <em>right</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.hyperrectangle" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">hyperrectangle</code><span class="sig-paren">(</span><em class="sig-param">left</em>, <em class="sig-param">right</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.hyperrectangle" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for a hyperrectangle defined by a leftmost and
 rightmost corner.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Leftmost(minimum) corner of the hyperrectangle.</li>
-<li><strong>right</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; Rightmost(maximum) corner of the hyperrectangle.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Leftmost(minimum) corner of the hyperrectangle.</p></li>
+<li><p><strong>right</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – Rightmost(maximum) corner of the hyperrectangle.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_A\)</span></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>function</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_A\)</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.hyperrectangle_size">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">hyperrectangle_size</code><span class="sig-paren">(</span><em>center</em>, <em>width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.hyperrectangle_size" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">hyperrectangle_size</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">width</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.hyperrectangle_size" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for a hyperrectangle defined by a center point
 and the width of the hyperrectangle.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>left</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; center of the hyperrectangle.</li>
-<li><strong>width</strong> (<code class="xref py py-class docutils literal"><span class="pre">np.ndarray</span></code> of shape (ndim,)) &#8211; length of the size of the sides of the hyperrectangle.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>left</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – center of the hyperrectangle.</p></li>
+<li><p><strong>width</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of shape (ndim,)) – length of the size of the sides of the hyperrectangle.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">function</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_A\)</span></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>function</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_A\)</span></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.indicatorFunctions.hypersphere">
-<code class="descclassname">bet.calculateP.indicatorFunctions.</code><code class="descname">hypersphere</code><span class="sig-paren">(</span><em>center</em>, <em>radius</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.hypersphere" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.indicatorFunctions.</code><code class="sig-name descname">hypersphere</code><span class="sig-paren">(</span><em class="sig-param">center</em>, <em class="sig-param">radius</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.indicatorFunctions.hypersphere" title="Permalink to this definition">¶</a></dt>
 <dd><p>Pointwise indicator function for a hypersphere defined by a center and a
 radius.</p>
 <p>If radius is a vector and not a scalar this will work for an hyperellipse.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>center</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) &#8211; center of the hypersphere/ellipse</li>
-<li><strong>radius</strong> (<code class="docutils literal"><span class="pre">float</span></code> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) &#8211; radius or radii of the hypereliipse</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>center</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – center of the hypersphere/ellipse</p></li>
+<li><p><strong>radius</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape(ndim,)) – radius or radii of the hypereliipse</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">callable</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><span class="math">\(\mathbf{1}_A\)</span> where A is a hypersphere/ellipse</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>callable</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><span class="math notranslate nohighlight">\(\mathbf{1}_A\)</span> where A is a hypersphere/ellipse</p>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
 <div class="section" id="module-bet.calculateP.simpleFunP">
 <span id="bet-calculatep-simplefunp-module"></span><h2>bet.calculateP.simpleFunP module<a class="headerlink" href="#module-bet.calculateP.simpleFunP" title="Permalink to this headline">¶</a></h2>
 <p>This module provides methods for creating simple function approximations to be
-used by <a class="reference internal" href="#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a>. These simple function approximations
+used by <a class="reference internal" href="#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateP</span></code></a>. These simple function approximations
 are returned as <cite>bet.sample.sample_set</cite> objects.</p>
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.check_inputs">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">check_inputs</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_inputs" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">check_inputs</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_inputs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks inputs to methods.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.check_inputs_no_reference">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">check_inputs_no_reference</code><span class="sig-paren">(</span><em>data_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_inputs_no_reference" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">check_inputs_no_reference</code><span class="sig-paren">(</span><em class="sig-param">data_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_inputs_no_reference" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks inputs to methods.</p>
 </dd></dl>
 
 <dl class="function">
+<dt id="bet.calculateP.simpleFunP.check_type">
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">check_type</code><span class="sig-paren">(</span><em class="sig-param">val</em>, <em class="sig-param">data_set=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.check_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Add support for different data types that can be passed as keyword
+arguments. Attempt to infer dimension and set it correctly.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="bet.calculateP.simpleFunP.infer_Q">
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">infer_Q</code><span class="sig-paren">(</span><em class="sig-param">data_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.infer_Q" title="Permalink to this definition">¶</a></dt>
+<dd><p>Attempt to infer reference value around which to define a sample set.</p>
+</dd></dl>
+
+<dl class="function">
 <dt id="bet.calculateP.simpleFunP.normal_partition_normal_distribution">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">normal_partition_normal_distribution</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>std</em>, <em>M</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.normal_partition_normal_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
-where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a multivariate normal probability
-density centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> with standard deviation <code class="docutils literal"><span class="pre">std</span></code> using
-<code class="docutils literal"><span class="pre">M</span></code> bins sampled from the given normal distribution.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>M</strong> (<em>int</em>) &#8211; Defines number M samples in D used to define
-<span class="math">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an &#8220;art&#8221; -
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">normal_partition_normal_distribution</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref=None</em>, <em class="sig-param">std=1</em>, <em class="sig-param">M=1</em>, <em class="sig-param">num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.normal_partition_normal_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> is a multivariate normal probability
+density centered at <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> with standard deviation <code class="docutils literal notranslate"><span class="pre">std</span></code> using
+<code class="docutils literal notranslate"><span class="pre">M</span></code> bins sampled from the given normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Defines number M samples in D used to define
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an “art” -
 play around with it and you can get reasonable results with a
-relatively small number here like 50.</li>
-<li><strong>num_d_emulate</strong> (<em>int</em>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>std</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; The standard deviation of each QoI</li>
+relatively small number here like 50.</p></li>
+<li><p><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples used to emulate using an MC
+assumption</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\lambda_{reference})\)</span></p></li>
+<li><p><strong>std</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – The standard deviation of each QoI</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defining simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">regular_partition_uniform_distribution_rectangle_domain</code><span class="sig-paren">(</span><em>data_set</em>, <em>rect_domain</em>, <em>cells_per_dimension=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function appoximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
-where <span class="math">\(\rho{\mathcal{D}, M}\)</span> is a uniform probablity density over the
-hyperrectangular domain specified by <code class="docutils literal"><span class="pre">rect_domain</span></code>.</p>
-<p>Since <span class="math">\(\rho_\mathcal{D}\)</span> is a uniform distribution on a
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">regular_partition_uniform_distribution_rectangle_domain</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">rect_domain</em>, <em class="sig-param">cells_per_dimension=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function appoximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>
+where <span class="math notranslate nohighlight">\(\rho{\mathcal{D}, M}\)</span> is a uniform probablity density over the
+hyperrectangular domain specified by <code class="docutils literal notranslate"><span class="pre">rect_domain</span></code>.</p>
+<p>Since <span class="math notranslate nohighlight">\(\rho_\mathcal{D}\)</span> is a uniform distribution on a
 hyperrectangle we are able to represent it exactly.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>rect_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (2, mdim)) &#8211; The domain overwhich <span class="math">\(\rho_\mathcal{D}\)</span> is
-uniform.</li>
-<li><strong>cells_per_dimension</strong> (<em>list</em>) &#8211; number of cells per dimension</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>rect_domain</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (2, mdim)) – The domain overwhich <span class="math notranslate nohighlight">\(\rho_\mathcal{D}\)</span> is
+uniform.</p></li>
+<li><p><strong>cells_per_dimension</strong> (<em>list</em>) – number of cells per dimension</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">rectangle_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">rectangle_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defining simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">regular_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>rect_scale</em>, <em>cells_per_dimension=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
-where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
-centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> (or the <code class="docutils literal"><span class="pre">reference_value</span></code>
-of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used.) 
-with <code class="docutils literal"><span class="pre">rect_scale</span></code> of the width
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">regular_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref=None</em>, <em class="sig-param">rect_scale=1</em>, <em class="sig-param">cells_per_dimension=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
+centered at <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> (or the <code class="docutils literal notranslate"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> is not given the reference value is used.)
+with <code class="docutils literal notranslate"><span class="pre">rect_scale</span></code> of the width
 of D.</p>
 <p>Since rho_D is a uniform distribution on a hyperrectanlge we are able
 to represent it exactly.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>rect_scale</strong> (<em>double or list</em>) &#8211; The scale used to determine the width of the
-uniform distributiion as <code class="docutils literal"><span class="pre">rect_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*rect_scale</span></code></li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>cells_per_dimension</strong> (<em>list</em>) &#8211; number of cells per dimension</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>rect_scale</strong> (<em>double</em><em> or </em><em>list</em>) – The scale used to determine the width of the
+uniform distribution as <code class="docutils literal notranslate"><span class="pre">rect_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*rect_scale</span></code></p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\lambda_{reference})\)</span></p></li>
+<li><p><strong>cells_per_dimension</strong> (<em>list</em>) – number of cells per dimension</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">rectangle_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">rectangle_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defining simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">regular_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref=None</em>, <em>rect_size=None</em>, <em>cells_per_dimension=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
-where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
-centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> (or the <code class="docutils literal"><span class="pre">reference_value</span></code>
-of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used) 
-with <code class="docutils literal"><span class="pre">rect_size</span></code> of the width of a hyperrectangle.</p>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">regular_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref=None</em>, <em class="sig-param">rect_size=None</em>, <em class="sig-param">cells_per_dimension=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.regular_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density
+centered at <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> (or the <code class="docutils literal notranslate"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> is not given the reference value is used)
+with <code class="docutils literal notranslate"><span class="pre">rect_size</span></code> of the width of a hyperrectangle.</p>
 <p>Since rho_D is a uniform distribution on a hyperrectanlge we can represent
 it exactly.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>rect_size</strong> (<em>double or list</em>) &#8211; The size used to determine the width of the uniform
-distribution</li>
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>cells_per_dimension</strong> (<em>list</em>) &#8211; number of cells per dimension.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rect_size</strong> (<em>double</em><em> or </em><em>list</em>) – The size used to determine the width of the uniform
+distribution</p></li>
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\lambda_{reference})\)</span></p></li>
+<li><p><strong>cells_per_dimension</strong> (<em>list</em>) – number of cells per dimension.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal"><span class="pre">rectangle_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defining simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">rectangle_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defining simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_normal_distribution">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_normal_distribution</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref</em>, <em>std</em>, <em>M</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_normal_distribution" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
-where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a multivariate normal probability
-density centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> with standard deviation <code class="docutils literal"><span class="pre">std</span></code> using
-<code class="docutils literal"><span class="pre">M</span></code> bins sampled from a uniform distribution with a size 4 standard
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">uniform_partition_normal_distribution</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref=None</em>, <em class="sig-param">std=1</em>, <em class="sig-param">M=1</em>, <em class="sig-param">num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_normal_distribution" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> is a multivariate normal probability
+density centered at <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> with standard deviation <code class="docutils literal notranslate"><span class="pre">std</span></code> using
+<code class="docutils literal notranslate"><span class="pre">M</span></code> bins sampled from a uniform distribution with a size 4 standard
 deviations in each direction.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>M</strong> (<em>int</em>) &#8211; Defines number M samples in D used to define
-<span class="math">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an &#8220;art&#8221; -
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Defines number M samples in D used to define
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an “art” -
 play around with it and you can get reasonable results with a
-relatively small number here like 50.</li>
-<li><strong>num_d_emulate</strong> (<em>int</em>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\lambda_{reference})\)</span></li>
-<li><strong>std</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; The standard deviation of each QoI</li>
+relatively small number here like 50.</p></li>
+<li><p><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples used to emulate using an MC
+assumption</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\lambda_{reference})\)</span></p></li>
+<li><p><strong>std</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – The standard deviation of each QoI</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defininng simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_data_samples">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_data_samples</code><span class="sig-paren">(</span><em>data_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_data_samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D},M}\)</span>
-where <span class="math">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density over
-the entire <code class="docutils literal"><span class="pre">data_domain</span></code>. Here the <code class="docutils literal"><span class="pre">data_domain</span></code> is the union of
-voronoi cells defined by <code class="docutils literal"><span class="pre">data</span></code>. In other words we assign each sample the
-same probability, so <code class="docutils literal"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">len(data)</span></code> or rather <code class="docutils literal"><span class="pre">len(d_distr_samples)</span> <span class="pre">==</span>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">uniform_partition_uniform_distribution_data_samples</code><span class="sig-paren">(</span><em class="sig-param">data_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_data_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> is a uniform probability density over
+the entire <code class="docutils literal notranslate"><span class="pre">data_domain</span></code>. Here the <code class="docutils literal notranslate"><span class="pre">data_domain</span></code> is the union of
+voronoi cells defined by <code class="docutils literal notranslate"><span class="pre">data</span></code>. In other words we assign each sample the
+same probability, so <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">=</span> <span class="pre">len(data)</span></code> or rather <code class="docutils literal notranslate"><span class="pre">len(d_distr_samples)</span> <span class="pre">==</span>
 <span class="pre">len(data)</span></code>. The purpose of this method is to approximate uniform
 distributions over irregularly shaped domains.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> 
-or <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">sample_set object defininng simple function approximation</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defininng simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_domain</code><span class="sig-paren">(</span><em>data_set</em>, <em>rect_domain</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D}}\)</span>
-where <span class="math">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
-a generalized rectangle defined by <code class="docutils literal"><span class="pre">rect_domain</span></code>.
-The simple function approximation is then defined by determining <code class="docutils literal"><span class="pre">M</span></code>
-Voronoi cells (i.e., &#8220;bins&#8221;) partitioning <span class="math">\(\mathcal{D}\)</span>. These
-bins are only implicitly defined by <code class="docutils literal"><span class="pre">M</span> <span class="pre">``samples</span> <span class="pre">in</span> <span class="pre">:math:`\mathcal{D}`.</span>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">uniform_partition_uniform_distribution_rectangle_domain</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">rect_domain</em>, <em class="sig-param">M=50</em>, <em class="sig-param">num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D}}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
+a generalized rectangle defined by <code class="docutils literal notranslate"><span class="pre">rect_domain</span></code>.
+The simple function approximation is then defined by determining <code class="docutils literal notranslate"><span class="pre">M</span></code>
+Voronoi cells (i.e., “bins”) partitioning <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>. These
+bins are only implicitly defined by <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">``samples</span> <span class="pre">in</span> <span class="pre">:math:`\mathcal{D}`.</span>
 <span class="pre">Finally,</span> <span class="pre">the</span> <span class="pre">probabilities</span> <span class="pre">of</span> <span class="pre">each</span> <span class="pre">of</span> <span class="pre">these</span> <span class="pre">bins</span> <span class="pre">is</span> <span class="pre">computed</span> <span class="pre">by</span>
 <span class="pre">sampling</span> <span class="pre">from</span> <span class="pre">:math:`\rho{\mathcal{D}}`</span> <span class="pre">and</span> <span class="pre">using</span> <span class="pre">nearest</span> <span class="pre">neighbor</span>
 <span class="pre">searches</span> <span class="pre">to</span> <span class="pre">bin</span> <span class="pre">these</span> <span class="pre">samples</span> <span class="pre">in</span> <span class="pre">the</span> <span class="pre">``M</span></code> implicitly defined bins.
 The result is the simple function approximation denoted by
-<span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>.</p>
 <p>Note that all computations in the measure-theoretic framework that
 follow from this are for the fixed simple function approximation
-<span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>M</strong> (<em>int</em>) &#8211; Defines number M samples in D used to define
-<span class="math">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an &#8220;art&#8221; -
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Defines number M samples in D used to define
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an “art” -
 play around with it and you can get reasonable results with a
-relatively small number here like 50.</li>
-<li><strong>rect_domain</strong> (<em>double or list</em>) &#8211; The support of the density</li>
-<li><strong>num_d_emulate</strong> (<em>int</em>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\)</span>lambda_{reference})`</li>
+relatively small number here like 50.</p></li>
+<li><p><strong>rect_domain</strong> (<em>double</em><em> or </em><em>list</em>) – The support of the density</p></li>
+<li><p><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples used to emulate using an MC
+assumption</p></li>
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\)</span>lambda_{reference})`</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defininng simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref=None</em>, <em>rect_scale=0.2</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D}}\)</span>
-where <span class="math">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
-a generalized rectangle centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> or the <code class="docutils literal"><span class="pre">reference_value</span></code>
-of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used..
-The support of this density is defined by <code class="docutils literal"><span class="pre">rect_scale</span></code>, which determines
-the size of the generalized rectangle by scaling the circumscribing 
-generalized rectangle of <span class="math">\(\mathcal{D}\)</span>.
-The simple function approximation is then defined by determining <code class="docutils literal"><span class="pre">M</span> <span class="pre">``</span>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">uniform_partition_uniform_distribution_rectangle_scaled</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref=None</em>, <em class="sig-param">rect_scale=0.2</em>, <em class="sig-param">M=50</em>, <em class="sig-param">num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D}}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
+a generalized rectangle centered at <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> or the <code class="docutils literal notranslate"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> is not given the reference value is used..
+The support of this density is defined by <code class="docutils literal notranslate"><span class="pre">rect_scale</span></code>, which determines
+the size of the generalized rectangle by scaling the circumscribing
+generalized rectangle of <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.
+The simple function approximation is then defined by determining <code class="docutils literal notranslate"><span class="pre">M</span> <span class="pre">``</span>
 <span class="pre">Voronoi</span> <span class="pre">cells</span> <span class="pre">(i.e.,</span> <span class="pre">&quot;bins&quot;)</span> <span class="pre">partitioning</span> <span class="pre">:math:`\mathcal{D}`.</span> <span class="pre">These</span>
-<span class="pre">bins</span> <span class="pre">are</span> <span class="pre">only</span> <span class="pre">implicitly</span> <span class="pre">defined</span> <span class="pre">by</span> <span class="pre">``M</span></code> samples in <span class="math">\(\mathcal{D}\)</span>.
-Finally, the probabilities of each of these bins is computed by 
-sampling from <span class="math">\(\rho{\mathcal{D}}\)</span> and using nearest neighbor 
-searches to bin these samples in the <code class="docutils literal"><span class="pre">M</span></code> implicitly defined bins.
+<span class="pre">bins</span> <span class="pre">are</span> <span class="pre">only</span> <span class="pre">implicitly</span> <span class="pre">defined</span> <span class="pre">by</span> <span class="pre">``M</span></code> samples in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.
+Finally, the probabilities of each of these bins is computed by
+sampling from <span class="math notranslate nohighlight">\(\rho{\mathcal{D}}\)</span> and using nearest neighbor
+searches to bin these samples in the <code class="docutils literal notranslate"><span class="pre">M</span></code> implicitly defined bins.
 The result is the simple function approximation denoted by
-<span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>.</p>
 <p>Note that all computations in the measure-theoretic framework that
 follow from this are for the fixed simple function approximation
-<span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>M</strong> (<em>int</em>) &#8211; Defines number M samples in D used to define
-<span class="math">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an &#8220;art&#8221; -
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Defines number M samples in D used to define
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an “art” -
 play around with it and you can get reasonable results with a
-relatively small number here like 50.</li>
-<li><strong>rect_scale</strong> (<em>double or list</em>) &#8211; The scale used to determine the support of the
-uniform distribution as <code class="docutils literal"><span class="pre">rect_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*rect_scale</span></code></li>
-<li><strong>num_d_emulate</strong> (<em>int</em>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\)</span>lambda_{reference})`</li>
+relatively small number here like 50.</p></li>
+<li><p><strong>rect_scale</strong> (<em>double</em><em> or </em><em>list</em>) – The scale used to determine the support of the
+uniform distribution as <code class="docutils literal notranslate"><span class="pre">rect_size</span> <span class="pre">=</span> <span class="pre">(data_max-data_min)*rect_scale</span></code></p></li>
+<li><p><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples used to emulate using an MC
+assumption</p></li>
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\)</span>lambda_{reference})`</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defininng simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">uniform_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em>data_set</em>, <em>Q_ref=None</em>, <em>rect_size=None</em>, <em>M=50</em>, <em>num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a simple function approximation of <span class="math">\(\rho_{\mathcal{D}}\)</span>
-where <span class="math">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
-a generalized rectangle centered at <code class="docutils literal"><span class="pre">Q_ref</span></code> or the <code class="docutils literal"><span class="pre">reference_value</span></code>
-of a sample set. If <code class="docutils literal"><span class="pre">Q_ref</span></code> is not given the reference value is used.
-The support of this density is defined by <code class="docutils literal"><span class="pre">rect_size</span></code>, which determines
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">uniform_partition_uniform_distribution_rectangle_size</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">Q_ref=None</em>, <em class="sig-param">rect_size=None</em>, <em class="sig-param">M=50</em>, <em class="sig-param">num_d_emulate=1000000.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_size" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a simple function approximation of <span class="math notranslate nohighlight">\(\rho_{\mathcal{D}}\)</span>
+where <span class="math notranslate nohighlight">\(\rho_{\mathcal{D}}\)</span> is a uniform probability density on
+a generalized rectangle centered at <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> or the <code class="docutils literal notranslate"><span class="pre">reference_value</span></code>
+of a sample set. If <code class="docutils literal notranslate"><span class="pre">Q_ref</span></code> is not given the reference value is used.
+The support of this density is defined by <code class="docutils literal notranslate"><span class="pre">rect_size</span></code>, which determines
 the size of the generalized rectangle.
-The simple function approximation is then defined by determining <code class="docutils literal"><span class="pre">M</span></code>
-Voronoi cells (i.e., &#8220;bins&#8221;) partitioning <span class="math">\(\mathcal{D}\)</span>. These
-bins are only implicitly defined by <code class="docutils literal"><span class="pre">M</span></code> samples in <span class="math">\(\mathcal{D}\)</span>.
+The simple function approximation is then defined by determining <code class="docutils literal notranslate"><span class="pre">M</span></code>
+Voronoi cells (i.e., “bins”) partitioning <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>. These
+bins are only implicitly defined by <code class="docutils literal notranslate"><span class="pre">M</span></code> samples in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.
 Finally, the probabilities of each of these bins is computed by
-sampling from <span class="math">\(\rho{\mathcal{D}}\)</span> and using nearest neighbor
-searches to bin these samples in the <code class="docutils literal"><span class="pre">M</span></code> implicitly defined bins.
+sampling from <span class="math notranslate nohighlight">\(\rho{\mathcal{D}}\)</span> and using nearest neighbor
+searches to bin these samples in the <code class="docutils literal notranslate"><span class="pre">M</span></code> implicitly defined bins.
 The result is the simple function approximation denoted by
-<span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last"><code class="docutils literal"><span class="pre">data_set</span></code> is only used to determine dimension.</p>
+<p class="admonition-title">Note</p>
+<p><code class="docutils literal notranslate"><span class="pre">data_set</span></code> is only used to determine dimension.</p>
 </div>
 <p>Note that all computations in the measure-theoretic framework that
 follow from this are for the fixed simple function approximation
-<span class="math">\(\rho_{\mathcal{D},M}\)</span>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>M</strong> (<em>int</em>) &#8211; Defines number M samples in D used to define
-<span class="math">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an &#8220;art&#8221; -
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>M</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Defines number M samples in D used to define
+<span class="math notranslate nohighlight">\(\rho_{\mathcal{D},M}\)</span> The choice of M is something of an “art” -
 play around with it and you can get reasonable results with a
-relatively small number here like 50.</li>
-<li><strong>rect_size</strong> (<em>double or list</em>) &#8211; Determines the size of the support of the
-uniform distribution on a generalized rectangle</li>
-<li><strong>num_d_emulate</strong> (<em>int</em>) &#8211; Number of samples used to emulate using an MC
-assumption</li>
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> 
-or <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of size (mdim,)) &#8211; <span class="math">\(Q(\)</span>lambda_{reference})`</li>
+relatively small number here like 50.</p></li>
+<li><p><strong>rect_size</strong> (<em>double</em><em> or </em><em>list</em>) – Determines the size of the support of the
+uniform distribution on a generalized rectangle</p></li>
+<li><p><strong>num_d_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples used to emulate using an MC
+assumption</p></li>
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of size (mdim,)) – <span class="math notranslate nohighlight">\(Q(\)</span>lambda_{reference})`</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defininng simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.calculateP.simpleFunP.user_partition_user_distribution">
-<code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">user_partition_user_distribution</code><span class="sig-paren">(</span><em>data_set</em>, <em>data_partition_set</em>, <em>data_distribution_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.user_partition_user_distribution" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">user_partition_user_distribution</code><span class="sig-paren">(</span><em class="sig-param">data_set</em>, <em class="sig-param">data_partition_set</em>, <em class="sig-param">data_distribution_set</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.calculateP.simpleFunP.user_partition_user_distribution" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates a user defined simple function approximation of a user
 defined distribution. The simple function discretization is
-specified in the <code class="docutils literal"><span class="pre">data_partition_set</span></code>, and the set of i.i.d.
+specified in the <code class="docutils literal notranslate"><span class="pre">data_partition_set</span></code>, and the set of i.i.d.
 samples from the distribution is specified in the
-<code class="docutils literal"><span class="pre">data_distribution_set</span></code>.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set that the probability measure is defined for.</li>
-<li><strong>data_partition_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set defining the discretization
+<code class="docutils literal notranslate"><span class="pre">data_distribution_set</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set that the probability measure is defined for.</p></li>
+<li><p><strong>data_partition_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set defining the discretization
 of the data space into Voronoi cells for which a simple function
-is defined upon.</li>
-<li><strong>data_distribution_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> or
-<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a>) &#8211; Sample set containing the i.i.d. samples
+is defined upon.</p></li>
+<li><p><strong>data_distribution_set</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a>) – Sample set containing the i.i.d. samples
 from the distribution on the data space that are binned within the
-Voronoi cells implicitly defined by the data_discretization_set.</li>
+Voronoi cells implicitly defined by the data_discretization_set.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal"><span class="pre">voronoi_sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">sample_set object defininng simple function approximation</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sample_set object defininng simple function approximation</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="exception">
 <dt id="bet.calculateP.simpleFunP.wrong_argument_type">
-<em class="property">exception </em><code class="descclassname">bet.calculateP.simpleFunP.</code><code class="descname">wrong_argument_type</code><a class="headerlink" href="#bet.calculateP.simpleFunP.wrong_argument_type" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">bet.calculateP.simpleFunP.</code><code class="sig-name descname">wrong_argument_type</code><a class="headerlink" href="#bet.calculateP.simpleFunP.wrong_argument_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception for when the argument for data_set is not one of the acceptible
 types.</p>
 </dd></dl>
@@ -1186,23 +1138,20 @@ types.</p>
 <div class="section" id="module-bet.calculateP">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h2>
 <p>This subpackage provides classes and methods for calulating the
-probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
-<ul>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal"><span class="pre">calculateP</span></code></a> provides methods for approximating</dt>
-<dd><p class="first last">probability densities</p>
+probability measure <span class="math notranslate nohighlight">\(P_{\Lambda}\)</span>.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateP</span></code></a> provides methods for approximating</dt><dd><p>probability densities</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt>
-<dd><p class="first last">function approximations of probability densisties</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple</dt><dd><p>function approximations of probability densisties</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.calculateP.indicatorFunctions" title="bet.calculateP.indicatorFunctions"><code class="xref py py-mod docutils literal"><span class="pre">indicatorFunctions</span></code></a> provides methods for creating</dt>
-<dd><p class="first last">indicator functions for use by various other classes.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="#module-bet.calculateP.indicatorFunctions" title="bet.calculateP.indicatorFunctions"><code class="xref py py-mod docutils literal notranslate"><span class="pre">indicatorFunctions</span></code></a> provides methods for creating</dt><dd><p>indicator functions for use by various other classes.</p>
 </dd>
 </dl>
 </li>
@@ -1212,15 +1161,16 @@ probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="bet.postProcess.html" class="btn btn-neutral float-right" title="bet.postProcess package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="bet.postProcess.html" class="btn btn-neutral float-right" title="bet.postProcess package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bet.html" class="btn btn-neutral" title="bet package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="bet.html" class="btn btn-neutral float-left" title="bet package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1229,12 +1179,14 @@ probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1247,36 +1199,15 @@ probability measure <span class="math">\(P_{\Lambda}\)</span>.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

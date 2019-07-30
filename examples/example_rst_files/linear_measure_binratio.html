@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Linear Map Choose QoIs to minimize scale of inverses in measure &mdash; BET 2.0.0 documentation</title>
+  <title>Example: Linear Map Choose QoIs to minimize scale of inverses in measure &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="../../index.html"/>
-        <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Linear Map Choose QoIs (volume / bin_size / large)" href="linear_measure_binsize_large.html"/>
-        <link rel="prev" title="Example: Linear Map with Uniform Sampling" href="linearMapUniformSampling.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Example: Linear Map Choose QoIs (volume / bin_size / large)" href="linear_measure_binsize_large.html" />
+    <link rel="prev" title="Example: Linear Map with Uniform Sampling" href="linearMapUniformSampling.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
@@ -110,7 +113,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#step-0-setting-up-the-environment">Step (0): Setting up the environment</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-1-define-the-space-of-possible-qoi-maps">Step (1): Define the space of possible QoI maps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-2-create-the-discretization-object-from-the-input-and-output-samples">Step (2): Create the discretization object from the input and output samples</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-compute-the-gradients-of-all-the-maps-in">Step (3): Compute the gradients of all the maps in <span class="math">\(\mathcal{Q}\)</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q">Step (3): Compute the gradients of all the maps in <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-4-compute-scaling-properties-of-the-maps-and-choose-the-best-qoi">Step (4): Compute scaling properties of the maps and choose the best QoI</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-5-optional-seeing-the-effect-of-the-optimal-qoi-choice">Step (5)[Optional]: Seeing the effect of the optimal QoI choice</a></li>
 </ul>
@@ -136,36 +139,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../examples_overview.html">Some References and Examples</a> &raquo;</li>
-      
-    <li>Example: Linear Map Choose QoIs to minimize scale of inverses in measure</li>
+        
+      <li>Example: Linear Map Choose QoIs to minimize scale of inverses in measure</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../../_sources/examples/example_rst_files/linear_measure_binratio.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../../_sources/examples/example_rst_files/linear_measure_binratio.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -175,10 +198,10 @@
 <span id="linear-sensitivity"></span><h1>Example: Linear Map Choose QoIs to minimize scale of inverses in measure<a class="headerlink" href="#example-linear-map-choose-qois-to-minimize-scale-of-inverses-in-measure" title="Permalink to this headline">¶</a></h1>
 <p>Here, we consider a simple example where a parameter space is given
 by a 5-dimensional hypercube and the goal is to choose an optimal QoI
-map from a space of possible QoI maps, denoted by <span class="math">\(\mathcal{Q}\)</span>,
+map from a space of possible QoI maps, denoted by <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span>,
 where each QoI map is linear.
 We use this simple example to demonstrate the use of the code to
-optimally choose which possible QoI map does the best job of &#8220;scaling&#8221;
+optimally choose which possible QoI map does the best job of “scaling”
 inverse sets to smaller sets.
 The idea is that if we generally consider a set of high probability
 in a particular data space defined by the range of a QoI map, we would
@@ -194,15 +217,15 @@ for which this optimization criteria is most appropriate.</p>
 corresponding QoIs (data) generated by a linear map Q.
 We then calculate the
 gradients using an RBF scheme and use the gradient information to choose the
-optimal set of 2 (3, 4, ... input_dim) QoIs to use in the inverse problem.
-This example also demonstrates how we can define <span class="math">\(\mathcal{Q}\)</span> implicitly
-by creating a <a href="#id1"><span class="problematic" id="id2">``</span></a>larger&#8217;&#8217; vector-valued QoI map in the case where the
+optimal set of 2 (3, 4, … input_dim) QoIs to use in the inverse problem.
+This example also demonstrates how we can define <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> implicitly
+by creating a <a href="#id1"><span class="problematic" id="id2">``</span></a>larger’’ vector-valued QoI map in the case where the
 cardinality is finite and determined by selecting any arbitrary subset of
 a defined collection of scalar QoI.</p>
 <div class="section" id="step-0-setting-up-the-environment">
 <h2>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h2>
 <p>Import the necessary modules:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">bet.sensitivity.gradients</span> <span class="k">as</span> <span class="nn">grad</span>
 <span class="kn">import</span> <span class="nn">bet.sensitivity.chooseQoIs</span> <span class="k">as</span> <span class="nn">cqoi</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">simpleFunP</span>
@@ -216,22 +239,22 @@ a defined collection of scalar QoI.</p>
 <div class="section" id="step-1-define-the-space-of-possible-qoi-maps">
 <h2>Step (1): Define the space of possible QoI maps<a class="headerlink" href="#step-1-define-the-space-of-possible-qoi-maps" title="Permalink to this headline">¶</a></h2>
 <p>We have a 5 dimensional hypercube for the parameter space and we assume
-that the space of possible QoI, <span class="math">\(\mathcal{Q}\)</span>, is defined by some random linear maps.
+that the space of possible QoI, <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span>, is defined by some random linear maps.
 Specifically, we randomly generate 10 individual scalar linear QoI maps and
-then consider <span class="math">\(\mathcal{Q}\)</span> to be defined by any 2, 3, ..., <code class="docutils literal"><span class="pre">input_dim</span></code> dimensional
+then consider <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> to be defined by any 2, 3, …, <code class="docutils literal notranslate"><span class="pre">input_dim</span></code> dimensional
 vectors from this set of 10:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Setup the info for the spaces</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Setup the info for the spaces</span>
 <span class="n">input_dim</span> <span class="o">=</span> <span class="mi">5</span>
 <span class="n">QoI_scalar_map_num</span> <span class="o">=</span> <span class="mi">10</span>
-<span class="n">num_samples</span> <span class="o">=</span> <span class="mi">1</span><span class="n">E5</span>
+<span class="n">num_samples</span> <span class="o">=</span> <span class="mf">1E5</span>
 <span class="n">num_centers</span> <span class="o">=</span> <span class="mi">10</span>
 </pre></div>
 </div>
-<p>However, rather than define <span class="math">\(\mathcal{Q}\)</span> explicitly, we consider
-a larger vector-valued map defined by <code class="docutils literal"><span class="pre">Q</span></code> that contains all of the scalar
+<p>However, rather than define <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> explicitly, we consider
+a larger vector-valued map defined by <code class="docutils literal notranslate"><span class="pre">Q</span></code> that contains all of the scalar
 QoI maps. We later determine the optimal QoI maps in terms of the components
-of this larger map <code class="docutils literal"><span class="pre">Q</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Let the map Q be a random matrix of size (QoI_scalar_map_num, input_dim)</span>
+of this larger map <code class="docutils literal notranslate"><span class="pre">Q</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Let the map Q be a random matrix of size (QoI_scalar_map_num, input_dim)</span>
 <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">random</span><span class="p">([</span><span class="n">QoI_scalar_map_num</span><span class="p">,</span> <span class="n">input_dim</span><span class="p">])</span>
 </pre></div>
@@ -240,7 +263,7 @@ of this larger map <code class="docutils literal"><span class="pre">Q</span></co
 <div class="section" id="step-2-create-the-discretization-object-from-the-input-and-output-samples">
 <h2>Step (2): Create the discretization object from the input and output samples<a class="headerlink" href="#step-2-create-the-discretization-object-from-the-input-and-output-samples" title="Permalink to this headline">¶</a></h2>
 <p>We randomly sample the input space and generate the corresponding QoI values:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Initialize some sample objects we will need</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize some sample objects we will need</span>
 <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">input_dim</span><span class="p">)</span>
 <span class="n">output_samples</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">QoI_scalar_map_num</span><span class="p">)</span>
 
@@ -255,15 +278,15 @@ of this larger map <code class="docutils literal"><span class="pre">Q</span></co
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-3-compute-the-gradients-of-all-the-maps-in">
-<h2>Step (3): Compute the gradients of all the maps in <span class="math">\(\mathcal{Q}\)</span><a class="headerlink" href="#step-3-compute-the-gradients-of-all-the-maps-in" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q">
+<h2>Step (3): Compute the gradients of all the maps in <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span><a class="headerlink" href="#step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q" title="Permalink to this headline">¶</a></h2>
 <p>We calculate the gradients using an RBF-FD scheme.
-We set <code class="docutils literal"><span class="pre">normalize=True</span></code> because we assume that the sizes of the inverse sets to
+We set <code class="docutils literal notranslate"><span class="pre">normalize=True</span></code> because we assume that the sizes of the inverse sets to
 be inverted in the data space are scaled relative to the size of the circumsribing box
 of the data space.
 Thus, all uncertainties are in a sense relative to the sensitivity
 of the overall QoI map:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">center_discretization</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">cluster_discretization</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">center_discretization</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">cluster_discretization</span><span class="p">,</span>
         <span class="n">num_centers</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -275,12 +298,12 @@ QoIs to use in the inverse problem, based on minimizing the measures of
 inverse sets defined by the scaling effect of the map.
 The most robust method for this is
 :meth:~bet.sensitivity.chooseQoIs.chooseOptQoIs_large which returns the
-best set of 2, 3, 4 ... until input_dim.  This method returns a list of
+best set of 2, 3, 4 … until input_dim.  This method returns a list of
 matrices.  Each matrix has 10 rows, the first column representing the
 expected scaling of the cross-sections of the contour event associated
 with inverting a rectangular box, and the rest of the columns the corresponding
 QoI indices.:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_samples_center</span> <span class="o">=</span> <span class="n">center_discretization</span><span class="o">.</span><span class="n">get_input_sample_set</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_samples_center</span> <span class="o">=</span> <span class="n">center_discretization</span><span class="o">.</span><span class="n">get_input_sample_set</span><span class="p">()</span>
 <span class="n">best_sets</span> <span class="o">=</span> <span class="n">cqoi</span><span class="o">.</span><span class="n">chooseOptQoIs_large</span><span class="p">(</span><span class="n">input_samples_center</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
@@ -292,7 +315,7 @@ problem.
 Now we compare the support of the inverse solution using
 different sets of these QoIs.
 The user can select which QoI_indices to choose from each time:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QoI_indices</span> <span class="o">=</span> <span class="n">best_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="c1"># Chooses the optimal set of 2 QoI</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QoI_indices</span> <span class="o">=</span> <span class="n">best_sets</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">:]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span> <span class="c1"># Chooses the optimal set of 2 QoI</span>
 <span class="c1"># QoI_indices = best_sets[0][1,1:].astype(int) # Chooses the second most optimal set of 2 QoI</span>
 <span class="c1"># QoI_indices = best_sets[0][9,1:].astype(int) # Chooses the least optimal set of 2 QoI</span>
 <span class="c1"># QoI_indices = best_sets[3][0,1:].astype(int) # Chooses the optimal set of 5 QoI</span>
@@ -301,42 +324,42 @@ The user can select which QoI_indices to choose from each time:</p>
 </div>
 <p>Setup the associated set of output samples from the choice of QoI defined by the
 QoI_indices:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">output_samples</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">QoI_indices</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">output_samples</span><span class="o">.</span><span class="n">_dim</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">QoI_indices</span><span class="p">)</span>
 <span class="n">output_samples</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">output_samples</span><span class="o">.</span><span class="n">get_values</span><span class="p">()[:,</span> <span class="n">QoI_indices</span><span class="p">])</span>
 </pre></div>
 </div>
 <p>Define the reference datum in the output space to correspond to the center of
 the input space.
 Q_ref = Q[QoI_indices, :].dot(0.5 * np.ones(input_dim))</p>
-<p><code class="docutils literal"><span class="pre">rect_scale</span></code> defines the amount of uncertainty in the measured datum relative
+<p><code class="docutils literal notranslate"><span class="pre">rect_scale</span></code> defines the amount of uncertainty in the measured datum relative
 to the scale of a circumscribing box of the data space:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">rect_scale</span> <span class="o">=</span> <span class="mf">0.25</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">rect_scale</span> <span class="o">=</span> <span class="mf">0.25</span>
 </pre></div>
 </div>
 <p>Make the MC assumption and compute the volumes of each Voronoi cell:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
 </pre></div>
 </div>
 <p>Create the discretization object:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">discretization</span><span class="p">(</span><span class="n">input_sample_set</span><span class="o">=</span><span class="n">input_samples</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">discretization</span><span class="p">(</span><span class="n">input_sample_set</span><span class="o">=</span><span class="n">input_samples</span><span class="p">,</span>
                                     <span class="n">output_sample_set</span><span class="o">=</span><span class="n">output_samples</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Compute the simple function approximation:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
     <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="n">rect_scale</span><span class="p">,</span>
     <span class="n">cells_per_dimension</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Compute the solution to the stochastic inverse problem:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Determine which samples have non-zero probability, which, due to the MC assumption
 on the volumes, can be used to approximate the ratio of the measure of the parameter
 space defined by the support of the probability density function solving the inverse
 problem:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">indices_in_inverse</span><span class="p">)</span> <span class="o">=</span>\
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">_</span><span class="p">,</span> <span class="n">_</span><span class="p">,</span> <span class="n">indices_in_inverse</span><span class="p">)</span> <span class="o">=</span>\
     <span class="n">postTools</span><span class="o">.</span><span class="n">sample_highest_prob</span><span class="p">(</span><span class="n">top_percentile</span><span class="o">=</span><span class="mf">1.0</span><span class="p">,</span>
     <span class="n">sample_set</span><span class="o">=</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
@@ -353,15 +376,16 @@ problem:</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="linear_measure_binsize_large.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs (volume / bin_size / large)" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="linear_measure_binsize_large.html" class="btn btn-neutral float-right" title="Example: Linear Map Choose QoIs (volume / bin_size / large)" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="linearMapUniformSampling.html" class="btn btn-neutral" title="Example: Linear Map with Uniform Sampling" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="linearMapUniformSampling.html" class="btn btn-neutral float-left" title="Example: Linear Map with Uniform Sampling" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -370,12 +394,14 @@ problem:</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -388,36 +414,15 @@ problem:</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

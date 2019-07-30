@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Estimate the parameter space probabiliy density with a 1D data space &mdash; BET 2.0.0 documentation</title>
+  <title>Example: Estimate the parameter space probabiliy density with a 1D data space &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="../../index.html"/>
-        <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html"/>
-        <link rel="prev" title="Example: Multiple Serial FEniCS" href="FEniCSMultipleSerial.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 2D data space" href="Q_2D.html" />
+    <link rel="prev" title="Example: Multiple Serial FEniCS" href="FEniCSMultipleSerial.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
@@ -128,36 +131,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../examples_overview.html">Some References and Examples</a> &raquo;</li>
-      
-    <li>Example: Estimate the parameter space probabiliy density with  a 1D data space</li>
+        
+      <li>Example: Estimate the parameter space probabiliy density with  a 1D data space</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../../_sources/examples/example_rst_files/Q_1D.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../../_sources/examples/example_rst_files/Q_1D.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -165,16 +188,16 @@
             
   <div class="section" id="example-estimate-the-parameter-space-probabiliy-density-with-a-1d-data-space">
 <span id="q1d"></span><h1>Example: Estimate the parameter space probabiliy density with  a 1D data space<a class="headerlink" href="#example-estimate-the-parameter-space-probabiliy-density-with-a-1d-data-space" title="Permalink to this headline">¶</a></h1>
-<p>In this example the parameter space <span class="math">\(\Lambda \subset \mathbb{R}^2\)</span> is 2
+<p>In this example the parameter space <span class="math notranslate nohighlight">\(\Lambda \subset \mathbb{R}^2\)</span> is 2
 dimensional.
 This example demostrates three different methods to estimate
-<span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where</p>
-<div class="math">
+<span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> where</p>
+<div class="math notranslate nohighlight">
 \[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
-<p>These methods are distinguished primarily by the way <span class="math">\(\mathcal{V}_j\)</span> are
-defined and the approximation of the volume of <span class="math">\(\mathcal{V}_j\)</span>. See <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_1D.py">Q_1D.py</a> for the example source code.</p>
+<p>These methods are distinguished primarily by the way <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span> are
+defined and the approximation of the volume of <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span>. See <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_1D.py">Q_1D.py</a> for the example source code.</p>
 <p>First, import the necessary packages and modules:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="k">as</span> <span class="nn">bsam</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="k">as</span> <span class="nn">bsam</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="k">as</span> <span class="nn">calcP</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">sfun</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
@@ -183,94 +206,94 @@ defined and the approximation of the volume of <span class="math">\(\mathcal{V}_
 </pre></div>
 </div>
 <p>Load the data where our parameter space is 2-dimensional:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">points</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">points</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;points&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
 <p>Load a reference solution:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;../matfiles/Q_2D&#39;</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">mdat</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="s1">&#39;../matfiles/Q_2D&#39;</span><span class="p">)</span>
 <span class="n">Q</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;Q&#39;</span><span class="p">]</span>
 <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">mdat</span><span class="p">[</span><span class="s1">&#39;Q_true&#39;</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>We will use the to the <code class="docutils literal"><span class="pre">points</span></code>, <span class="math">\(\lambda_{samples} = \{ \lambda^{(j)
-} \}, j = 1, \ldots, N\)</span>, to create an input <a class="reference internal" href="../../bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a>
-object. These <code class="docutils literal"><span class="pre">points</span></code> are the points in parameter space where we solve the
-forward model to generate the data <code class="docutils literal"><span class="pre">Q</span></code> where <span class="math">\(Q_j =
+<p>We will use the to the <code class="docutils literal notranslate"><span class="pre">points</span></code>, <span class="math notranslate nohighlight">\(\lambda_{samples} = \{ \lambda^{(j)
+} \}, j = 1, \ldots, N\)</span>, to create an input <code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code>
+object. These <code class="docutils literal notranslate"><span class="pre">points</span></code> are the points in parameter space where we solve the
+forward model to generate the data <code class="docutils literal notranslate"><span class="pre">Q</span></code> where <span class="math notranslate nohighlight">\(Q_j =
 Q(\lambda^{(j)})\)</span>.</p>
-<p>Define the parameter domain <span class="math">\(\Lambda\)</span>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<p>Define the parameter domain <span class="math notranslate nohighlight">\(\Lambda\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
 </pre></div>
 </div>
 <p>Create input sample set objects:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">input_sample_set</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
 <span class="n">input_sample_set</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>For ease of use we have created a function, <code class="docutils literal"><span class="pre">postprocess(station_nums,</span>
+<p>For ease of use we have created a function, <code class="docutils literal notranslate"><span class="pre">postprocess(station_nums,</span>
 <span class="pre">ref_num)</span></code> so that we can loop through different QoI (maximum water surface
 height at various measurement stations) and reference solutions (point in data
 space around which we center a uniform probability solution. The function is
 defined as follows:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">):</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">postprocess</span><span class="p">(</span><span class="n">station_nums</span><span class="p">,</span> <span class="n">ref_num</span><span class="p">):</span>
 </pre></div>
 </div>
-<p>Define the filename to save <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_q&#39;</span>
+<p>Define the filename to save <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_q&#39;</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">station_nums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
     <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;_truth_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ref_num</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Define the data space <span class="math">\(\mathcal{D} \subset \mathbb{R}^d\)</span> where <span class="math">\(d\)</span>
+<p>Define the data space <span class="math notranslate nohighlight">\(\mathcal{D} \subset \mathbb{R}^d\)</span> where <span class="math notranslate nohighlight">\(d\)</span>
 is the dimension of the data space:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">station_nums</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">station_nums</span><span class="p">]</span>
 <span class="n">output_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">output_sample_set</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Define the refernce solution. We define a region of interest, <span class="math">\(R_{ref}
-\subset \mathcal{D}\)</span> centered at <span class="math">\(Q_{ref}\)</span> that is 15% the length of
-<span class="math">\(q_n\)</span> (the QoI for station <span class="math">\(n\)</span>). We set <span class="math">\(\rho_\mathcal{D}(q)
+<p>Define the refernce solution. We define a region of interest, <span class="math notranslate nohighlight">\(R_{ref}
+\subset \mathcal{D}\)</span> centered at <span class="math notranslate nohighlight">\(Q_{ref}\)</span> that is 15% the length of
+<span class="math notranslate nohighlight">\(q_n\)</span> (the QoI for station <span class="math notranslate nohighlight">\(n\)</span>). We set <span class="math notranslate nohighlight">\(\rho_\mathcal{D}(q)
 = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}\)</span> and then create a
 simple function approximation to this density:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="n">ref_num</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="n">ref_num</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span>
 <span class="n">output_probability_set</span> <span class="o">=</span> <span class="n">sfun</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>\
         <span class="n">output_sample_set</span><span class="p">,</span> <span class="n">q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
         <span class="n">cells_per_dimension</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],)))</span>
 </pre></div>
 </div>
-<p>We generate 1e6 uniformly distributed points in <span class="math">\(\Lambda\)</span>. We call these points <span class="math">\(\lambda_{emulate} = \{ \lambda_j \}_{j=1}^{10^6}\)</span>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">num_l_emulate</span> <span class="o">=</span> <span class="mi">1</span><span class="n">e4</span>
+<p>We generate 1e6 uniformly distributed points in <span class="math notranslate nohighlight">\(\Lambda\)</span>. We call these points <span class="math notranslate nohighlight">\(\lambda_{emulate} = \{ \lambda_j \}_{j=1}^{10^6}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">num_l_emulate</span> <span class="o">=</span> <span class="mf">1e4</span>
 <span class="n">set_emulated</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">lam_domain</span><span class="p">,</span> <span class="n">num_l_emulate</span><span class="p">)</span>
 <span class="n">my_disc</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">discretization</span><span class="p">(</span><span class="n">input_sample_set</span><span class="p">,</span> <span class="n">output_sample_set</span><span class="p">,</span>
         <span class="n">output_probability_set</span><span class="p">,</span> <span class="n">emulated_input_sample_set</span><span class="o">=</span><span class="n">set_emulated</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math">\(\mathcal{V}_j\)</span> are the
-voronoi cells defined by <span class="math">\(\lambda_{emulate}\)</span>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">calcP</span><span class="o">.</span><span class="n">prob_on_emulated_samples</span><span class="p">(</span><span class="n">my_disc</span><span class="p">)</span>
+<p>Calculate <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span> are the
+voronoi cells defined by <span class="math notranslate nohighlight">\(\lambda_{emulate}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calcP</span><span class="o">.</span><span class="n">prob_on_emulated_samples</span><span class="p">(</span><span class="n">my_disc</span><span class="p">)</span>
 <span class="n">sample</span><span class="o">.</span><span class="n">save_discretization</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;prob_on_emulated_samples_solution&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math">\(\mathcal{V}_j\)</span> are the
-voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> assume that <span class="math">\(\lambda_{samples}\)</span>
+<p>Calculate <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span> are the
+voronoi cells defined by <span class="math notranslate nohighlight">\(\lambda_{samples}\)</span> assume that <span class="math notranslate nohighlight">\(\lambda_{samples}\)</span>
 are uniformly distributed and therefore have approximately the same volume:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_sample_set</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_sample_set</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
 <span class="n">calcP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_disc</span><span class="p">)</span>
 <span class="n">sample</span><span class="o">.</span><span class="n">save_discretization</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;prob_solution&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math">\(\mathcal{V}_j\)</span> are the
-voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> and we approximate the volume of
-<span class="math">\(\mathcal{V}_j\)</span> using Monte Carlo integration. We use
-<span class="math">\(\lambda_{emulate}\)</span> to estimate the volume of <span class="math">\(\mathcal{V}_j\)</span></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">calcP</span><span class="o">.</span><span class="n">prob_with_emulated_volumes</span><span class="p">(</span><span class="n">my_disc</span><span class="p">)</span>
+<p>Calculate <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> where <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span> are the
+voronoi cells defined by <span class="math notranslate nohighlight">\(\lambda_{samples}\)</span> and we approximate the volume of
+<span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span> using Monte Carlo integration. We use
+<span class="math notranslate nohighlight">\(\lambda_{emulate}\)</span> to estimate the volume of <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calcP</span><span class="o">.</span><span class="n">prob_with_emulated_volumes</span><span class="p">(</span><span class="n">my_disc</span><span class="p">)</span>
 <span class="n">sample</span><span class="o">.</span><span class="n">save_discretization</span><span class="p">(</span><span class="n">my_disc</span><span class="p">,</span> <span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;prob_with_emulated_volumes_solution&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Finally, we calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> for three reference solutions and 3 QoI:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ref_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span> <span class="c1"># 7, 12, 16</span>
+<p>Finally, we calculate <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> for three reference solutions and 3 QoI:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ref_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span> <span class="c1"># 7, 12, 16</span>
 <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># 2, 5, 6</span>
 
 <span class="n">ref_nums</span><span class="p">,</span> <span class="n">stations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">ref_nums</span><span class="p">,</span> <span class="n">stations</span><span class="p">)</span>
@@ -285,15 +308,16 @@ voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> and we 
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Q_2D.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 2D data space" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Q_2D.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 2D data space" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="FEniCSMultipleSerial.html" class="btn btn-neutral" title="Example: Multiple Serial FEniCS" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="FEniCSMultipleSerial.html" class="btn btn-neutral float-left" title="Example: Multiple Serial FEniCS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -302,12 +326,14 @@ voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> and we 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -320,36 +346,15 @@ voronoi cells defined by <span class="math">\(\lambda_{samples}\)</span> and we 
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

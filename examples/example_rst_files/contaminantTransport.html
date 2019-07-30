@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Concentration of Contaminant in Wells Based on Transport Parameters &mdash; BET 2.0.0 documentation</title>
+  <title>Example: Concentration of Contaminant in Wells Based on Transport Parameters &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="../../index.html"/>
-        <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" href="domains2D.html"/>
-        <link rel="prev" title="Example: Optimizing space-time measurements of temperature on a thin plate" href="chooseOptQoIs_2d.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" href="domains2D.html" />
+    <link rel="prev" title="Example: Optimizing space-time measurements of temperature on a thin plate" href="chooseOptQoIs_2d.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
@@ -136,36 +139,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../examples_overview.html">Some References and Examples</a> &raquo;</li>
-      
-    <li>Example: Concentration of Contaminant in Wells Based on Transport Parameters</li>
+        
+      <li>Example: Concentration of Contaminant in Wells Based on Transport Parameters</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../../_sources/examples/example_rst_files/contaminantTransport.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../../_sources/examples/example_rst_files/contaminantTransport.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -187,7 +210,7 @@ calculated using the MC assumption.  1D and 2D marginals are calculated,
 smoothed, and plotted. The samples are then ranked by probability density
 and the volume of high-probability regions are calculated. Probabilistic predictions of other QoI are made.</p>
 <p>Import the necessary modules:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP</span> <span class="k">as</span> <span class="nn">calculateP</span>
 <span class="kn">import</span> <span class="nn">bet.postProcess</span> <span class="k">as</span> <span class="nn">postProcess</span>
 <span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">simpleFunP</span>
@@ -199,7 +222,7 @@ and the volume of high-probability regions are calculated. Probabilistic predict
 </pre></div>
 </div>
 <p>Import the samples, data, reference data, and reference parameters:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">parameter_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/lam_domain.txt.gz&quot;</span><span class="p">)</span> <span class="c1">#parameter domain</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">parameter_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/lam_domain.txt.gz&quot;</span><span class="p">)</span> <span class="c1">#parameter domain</span>
 <span class="n">parameter_dim</span> <span class="o">=</span> <span class="n">parameter_domain</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 <span class="c1"># Create input sample set</span>
 <span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">parameter_dim</span><span class="p">)</span>
@@ -209,7 +232,7 @@ and the volume of high-probability regions are calculated. Probabilistic predict
 </pre></div>
 </div>
 <p>Choose which subset of the 11 QoIs to use for inversion:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QoI_indices_observe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QoI_indices_observe</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">3</span><span class="p">])</span>
 <span class="n">output_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">QoI_indices_observe</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 <span class="n">output_samples</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/data.txt.gz&quot;</span><span class="p">)[:,</span><span class="n">QoI_indices_observe</span><span class="p">])</span>
 
@@ -219,36 +242,36 @@ and the volume of high-probability regions are calculated. Probabilistic predict
 </pre></div>
 </div>
 <p>Choose the bin ratio for the uniform output probability:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="c1">#ratio of length of data region to invert</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bin_ratio</span> <span class="o">=</span> <span class="mf">0.25</span> <span class="c1">#ratio of length of data region to invert</span>
 </pre></div>
 </div>
 <p>Load the reference parameter and QoI values:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/lam_ref.txt.gz&quot;</span><span class="p">)</span> <span class="c1">#reference parameter set</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/lam_ref.txt.gz&quot;</span><span class="p">)</span> <span class="c1">#reference parameter set</span>
 <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/Q_ref.txt.gz&quot;</span><span class="p">)[</span><span class="n">QoI_indices_observe</span><span class="p">]</span> <span class="c1">#reference QoI set</span>
 </pre></div>
 </div>
 <p>Plot 2D projections of the data domain:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_rhoD</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">io_flag</span><span class="o">=</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="n">showdim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_rhoD</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">io_flag</span><span class="o">=</span><span class="s1">&#39;output&#39;</span><span class="p">,</span> <span class="n">showdim</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
 </pre></div>
 </div>
 <div class="section" id="suggested-changes-for-user-1">
 <h2>Suggested changes for user (1)<a class="headerlink" href="#suggested-changes-for-user-1" title="Permalink to this headline">¶</a></h2>
-<p>Change the <code class="docutils literal"><span class="pre">QoI_indices</span></code> and note how it changes the plots of the data
+<p>Change the <code class="docutils literal notranslate"><span class="pre">QoI_indices</span></code> and note how it changes the plots of the data
 domain. The white points are ones with zero probability and the dark points
 are those with nonzero probability.</p>
 </div>
 <div class="section" id="suggested-changes-for-user-2">
 <h2>Suggested changes for user (2)<a class="headerlink" href="#suggested-changes-for-user-2" title="Permalink to this headline">¶</a></h2>
 <p>Try different ways of discretizing the probability measure on
-<span class="math">\(\mathcal{D}\)</span> defined as a uniform probability measure on a rectangle
-(since <span class="math">\(\mathcal{D}\)</span> is 2-dimensional).</p>
+<span class="math notranslate nohighlight">\(\mathcal{D}\)</span> defined as a uniform probability measure on a rectangle
+(since <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> is 2-dimensional).</p>
 <ul class="simple">
-<li>regular_partition_uniform_distribution_rectangle_scaled creates a uniform measure on a hyperbox with dimensions relative   to the size of the circumscribed hyperbox of the set <span class="math">\(\mathcal{D}\)</span>  using the bin_ratio. A total of M samples are drawn within a slightly larger  scaled hyperbox to discretize this measure defining M total generalized  contour events in Lambda.  The reason a slightly larger scaled hyperbox is  used to draw the samples to discretize <span class="math">\(\mathcal{D}\)</span> is because  otherwise every generalized contour event will have non-zero probability  which obviously defeats the purpose of &#8220;localizing&#8221; the probability within a  subset of <span class="math">\(\mathcal{D}\)</span>.</li>
-<li>uniform_partition_uniform_distribution_rectangle_scaled uses the same measure defined in the same way as  unif_unif, but the difference is in the discretization which is on a regular  grid defined by <code class="docutils literal"><span class="pre">cells_per_dimension</span></code>.  If <code class="docutils literal"><span class="pre">cells_per_dimension</span> <span class="pre">=</span> <span class="pre">1</span></code>,  then the contour event corresponding to the entire support of  <span class="math">\(\rho_\mathcal{D}\)</span> is approximated as a single event. This is done by  carefully placing a regular 3x3 grid (since <span class="math">\(dim(\mathcal{D})=2\)</span> in this  case) of points in <span class="math">\(\mathcal{D}\)</span> with the center point of the grid in  the center of the support of the measure and the other points placed outside  of the rectangle defining the support to define a total of 9 contour events  with 8 of them having exactly zero probability.</li>
+<li><p>regular_partition_uniform_distribution_rectangle_scaled creates a uniform measure on a hyperbox with dimensions relative   to the size of the circumscribed hyperbox of the set <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>  using the bin_ratio. A total of M samples are drawn within a slightly larger  scaled hyperbox to discretize this measure defining M total generalized  contour events in Lambda.  The reason a slightly larger scaled hyperbox is  used to draw the samples to discretize <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> is because  otherwise every generalized contour event will have non-zero probability  which obviously defeats the purpose of “localizing” the probability within a  subset of <span class="math notranslate nohighlight">\(\mathcal{D}\)</span>.</p></li>
+<li><p>uniform_partition_uniform_distribution_rectangle_scaled uses the same measure defined in the same way as  unif_unif, but the difference is in the discretization which is on a regular  grid defined by <code class="docutils literal notranslate"><span class="pre">cells_per_dimension</span></code>.  If <code class="docutils literal notranslate"><span class="pre">cells_per_dimension</span> <span class="pre">=</span> <span class="pre">1</span></code>,  then the contour event corresponding to the entire support of  <span class="math notranslate nohighlight">\(\rho_\mathcal{D}\)</span> is approximated as a single event. This is done by  carefully placing a regular 3x3 grid (since <span class="math notranslate nohighlight">\(dim(\mathcal{D})=2\)</span> in this  case) of points in <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> with the center point of the grid in  the center of the support of the measure and the other points placed outside  of the rectangle defining the support to define a total of 9 contour events  with 8 of them having exactly zero probability.</p></li>
 </ul>
 <p>Create a simple function approximation of the probablity measure on
-<span class="math">\(\mathcal{D}\)</span>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">deterministic_discretize_D</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="math notranslate nohighlight">\(\mathcal{D}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">deterministic_discretize_D</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">if</span> <span class="n">deterministic_discretize_D</span> <span class="o">==</span> <span class="kc">True</span><span class="p">:</span>
     <span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span><span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span>
                                                              <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span>
@@ -259,11 +282,11 @@ are those with nonzero probability.</p>
                                                              <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span>
                                                              <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
                                                              <span class="n">M</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span>
-                                                             <span class="n">num_d_emulate</span><span class="o">=</span><span class="mi">1</span><span class="n">E5</span><span class="p">)</span>
+                                                             <span class="n">num_d_emulate</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Calculate probablities using the MC assumption:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
 </pre></div>
 </div>
 </div>
@@ -274,20 +297,20 @@ should be either the nbins values or sigma (which influences the kernel
 density estimation with smaller values implying a density estimate that
 looks more like a histogram and larger values smoothing out the values
 more).</p>
-<p>There are ways to determine &#8220;optimal&#8221; smoothing parameters (e.g., see CV, GCV,
+<p>There are ways to determine “optimal” smoothing parameters (e.g., see CV, GCV,
 and other similar methods), but we have not incorporated these into the code
 as lower-dimensional marginal plots have limited value in understanding the
 structure of a high dimensional non-parametric probability measure.</p>
 <p>Plot the marginal probabilities:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Smooth 2d marginals probs (optional):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span><span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot 2d marginals probs:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">my_discretization</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;contaminant_map&quot;</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">my_discretization</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;contaminant_map&quot;</span><span class="p">,</span>
                          <span class="n">plot_surface</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                          <span class="n">lam_ref</span> <span class="o">=</span> <span class="n">param_ref</span><span class="p">,</span>
                          <span class="n">lambda_label</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
@@ -295,15 +318,15 @@ structure of a high dimensional non-parametric probability measure.</p>
 </pre></div>
 </div>
 <p>Calculate 1d marginal probs:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">nbins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Smooth 1d marginal probs (optional):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">1.0</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Plot 1d marginal probs:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">my_discretization</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">my_discretization</span><span class="p">,</span>
                          <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;contaminant_map&quot;</span><span class="p">,</span>
                          <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                          <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span>
@@ -311,33 +334,33 @@ structure of a high dimensional non-parametric probability measure.</p>
 </pre></div>
 </div>
 <p>Sort samples by highest probability density and take highest x percent:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">my_discretization_highP</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span><span class="o">=</span> <span class="n">postTools</span><span class="o">.</span><span class="n">sample_highest_prob</span><span class="p">(</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">my_discretization_highP</span><span class="p">,</span> <span class="n">indices</span><span class="p">)</span><span class="o">=</span> <span class="n">postTools</span><span class="o">.</span><span class="n">sample_highest_prob</span><span class="p">(</span>
   <span class="n">percentile</span><span class="p">,</span> <span class="n">my_discretization</span><span class="p">,</span> <span class="n">sort</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Print the number of these samples  and the ratio of the volume they take up:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">my_discretization_highP</span><span class="o">.</span><span class="n">_input_sample_set</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">()))</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span> <span class="p">(</span><span class="n">num_samples</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">my_discretization_highP</span><span class="o">.</span><span class="n">_input_sample_set</span><span class="o">.</span><span class="n">get_volumes</span><span class="p">()))</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="suggested-changes-for-user-4">
 <h2>Suggested changes for user (4):<a class="headerlink" href="#suggested-changes-for-user-4" title="Permalink to this headline">¶</a></h2>
-<p>Notice how the marginal probabilites change with different choices of  <code class="docutils literal"><span class="pre">QoI_indices</span></code>.
+<p>Notice how the marginal probabilites change with different choices of  <code class="docutils literal notranslate"><span class="pre">QoI_indices</span></code>.
 Try choosing only 2 or 3, instead of 4, indices and notice the higher-dimensionality of the structure in the 2d marginals. Notice how some QoI concentrate the probability into smaller regions. These QoI are more geometrically distinct.</p>
 <p>Notice that the volume that the high-probability samples take up is smaller with more geometrically distinct QoIs.</p>
 </div>
 <div class="section" id="suggested-changes-for-user-5">
 <h2>Suggested changes for user (5):<a class="headerlink" href="#suggested-changes-for-user-5" title="Permalink to this headline">¶</a></h2>
-<p>Change <code class="docutils literal"><span class="pre">percentile</span></code> to values between 1.0 and 0.0. Notice that while the region of nonzero probabibilty may have a significant volume, much of this volume contains relatively low probability. Change the value to 0.95, 0.9, 0.75, and 0.5 and notice the volume decrease significantly.</p>
+<p>Change <code class="docutils literal notranslate"><span class="pre">percentile</span></code> to values between 1.0 and 0.0. Notice that while the region of nonzero probabibilty may have a significant volume, much of this volume contains relatively low probability. Change the value to 0.95, 0.9, 0.75, and 0.5 and notice the volume decrease significantly.</p>
 <p>Propogate highest probability part of the probability measure through a different QoI map:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">QoI_indices_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">QoI_indices_predict</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">7</span><span class="p">])</span>
 <span class="n">output_samples_predict</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">QoI_indices_predict</span><span class="o">.</span><span class="n">size</span><span class="p">)</span>
 <span class="n">output_samples_predict</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">loadtxt</span><span class="p">(</span><span class="s2">&quot;files/data.txt.gz&quot;</span><span class="p">)[:,</span><span class="n">QoI_indices_predict</span><span class="p">])</span>
 <span class="n">output_samples_predict</span><span class="o">.</span><span class="n">set_probabilities</span><span class="p">(</span><span class="n">input_samples</span><span class="o">.</span><span class="n">get_probabilities</span><span class="p">())</span>
 </pre></div>
 </div>
 <p>Calculate and plot PDF of predicted QoI:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins_pred</span><span class="p">,</span> <span class="n">marginals1D_pred</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">output_samples_predict</span><span class="p">,</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins_pred</span><span class="p">,</span> <span class="n">marginals1D_pred</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">output_samples_predict</span><span class="p">,</span>
                                                                 <span class="n">nbins</span> <span class="o">=</span> <span class="mi">20</span><span class="p">)</span>
  <span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D_pred</span><span class="p">,</span> <span class="n">bins_pred</span><span class="p">,</span> <span class="n">output_samples_predict</span><span class="p">,</span>
                            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;contaminant_prediction&quot;</span><span class="p">,</span> <span class="n">interactive</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
@@ -352,15 +375,16 @@ Try choosing only 2 or 3, instead of 4, indices and notice the higher-dimensiona
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="domains2D.html" class="btn btn-neutral float-right" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="domains2D.html" class="btn btn-neutral float-right" title="Example: Generalized Chains with a 2,2-dimensional data,parameter space" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="chooseOptQoIs_2d.html" class="btn btn-neutral" title="Example: Optimizing space-time measurements of temperature on a thin plate" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="chooseOptQoIs_2d.html" class="btn btn-neutral float-left" title="Example: Optimizing space-time measurements of temperature on a thin plate" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -369,12 +393,14 @@ Try choosing only 2 or 3, instead of 4, indices and notice the higher-dimensiona
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -387,36 +413,15 @@ Try choosing only 2 or 3, instead of 4, indices and notice the higher-dimensiona
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

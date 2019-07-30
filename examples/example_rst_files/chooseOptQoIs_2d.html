@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Optimizing space-time measurements of temperature on a thin plate &mdash; BET 2.0.0 documentation</title>
+  <title>Example: Optimizing space-time measurements of temperature on a thin plate &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="../../index.html"/>
-        <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Concentration of Contaminant in Wells Based on Transport Parameters" href="contaminantTransport.html"/>
-        <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 3D data space" href="Q_3D.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Example: Concentration of Contaminant in Wells Based on Transport Parameters" href="contaminantTransport.html" />
+    <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 3D data space" href="Q_3D.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
@@ -104,7 +107,7 @@
 <li class="toctree-l4"><a class="reference internal" href="#step-0-understanding-your-data-and-computing-derivatives">Step (0*): Understanding your data and computing derivatives</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-1-define-the-space-of-possible-qoi-maps">Step (1): Define the space of possible QoI maps</a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-2-create-the-discretization-object-from-the-input-and-output-samples">Step (2): Create the discretization object from the input and output samples</a></li>
-<li class="toctree-l4"><a class="reference internal" href="#step-3-compute-the-gradients-of-all-the-maps-in">Step (3): Compute the gradients of all the maps in <span class="math">\(\mathcal{Q}\)</span></a></li>
+<li class="toctree-l4"><a class="reference internal" href="#step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q">Step (3): Compute the gradients of all the maps in <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span></a></li>
 <li class="toctree-l4"><a class="reference internal" href="#step-4-compute-skewness-properties-of-the-maps-and-display-information">Step (4): Compute skewness properties of the maps and display information</a></li>
 </ul>
 </li>
@@ -136,36 +139,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../examples_overview.html">Some References and Examples</a> &raquo;</li>
-      
-    <li>Example: Optimizing space-time measurements of temperature on a thin plate</li>
+        
+      <li>Example: Optimizing space-time measurements of temperature on a thin plate</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../../_sources/examples/example_rst_files/chooseOptQoIs_2d.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../../_sources/examples/example_rst_files/chooseOptQoIs_2d.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -210,7 +233,7 @@ where the concept was initially introduced).</p>
 <div class="section" id="step-0-setting-up-the-environment">
 <h2>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h2>
 <p>Import the necessary modules:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
 <span class="kn">import</span> <span class="nn">bet.sensitivity.gradients</span> <span class="k">as</span> <span class="nn">grad</span>
 <span class="kn">import</span> <span class="nn">bet.sensitivity.chooseQoIs</span> <span class="k">as</span> <span class="nn">cqoi</span>
 <span class="kn">import</span> <span class="nn">bet.Comm</span> <span class="k">as</span> <span class="nn">comm</span>
@@ -236,8 +259,8 @@ Understanding the code, derivative capabilities, and/or the types of sampling
 in the parameter space is crucial to setting up how the gradients of QoI are
 computed/loaded into this code.
 We provide data files for different types of sampling in the parameter space
-in <code class="docutils literal"><span class="pre">BET/examples/</span></code>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Select the type of finite difference scheme as either RBF, FFD, or CFD</span>
+in <code class="docutils literal notranslate"><span class="pre">BET/examples/</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the type of finite difference scheme as either RBF, FFD, or CFD</span>
 <span class="n">fd_scheme</span> <span class="o">=</span> <span class="s1">&#39;RBF&#39;</span>
 
 <span class="c1"># Import the data from the FEniCS simulation (RBF or FFD or CFD clusters)</span>
@@ -258,25 +281,26 @@ Reliably Reduce the Uncertainty in Model Input Parameters</a>, we see
 that there are 20 spatial points considered and 50 time steps for a total
 of 1000 different QoI.
 Since we assume we can only choose 2 of the possible QoI to define a particular
-QoI map, then we can define a space <span class="math">\(\mathcal{Q}\)</span> of possible QoI maps
+QoI map, then we can define a space <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> of possible QoI maps
 by this set of 1000 choose 2 possible combinations of measurements.</p>
-<p>However, we can define a <span class="math">\(\mathcal{Q}\)</span> of smaller cardinality by restricting
+<p>However, we can define a <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> of smaller cardinality by restricting
 the possible maps subject to certain considerations.
 The QoI are indexed so that the QoI corresponding to indices</p>
 <blockquote>
-<div>(i-1)*20 to i*20</div></blockquote>
+<div><p>(i-1)*20 to i*20</p>
+</div></blockquote>
 <p>for i between 1 and 50 corresponds to the 20 labeled QoI from Figure 6
 at time step i.</p>
 <p>Using this information, we can check QoI either across the entire range
-of all space-time locations (<code class="docutils literal"><span class="pre">indexstart</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal"><span class="pre">indexstop</span> <span class="pre">=</span> <span class="pre">1000</span></code>), or,
-we can check the QoI at a particular time (e.g., setting <code class="docutils literal"><span class="pre">indexstart=0</span></code> and
-<code class="docutils literal"><span class="pre">indexstop</span> <span class="pre">=</span> <span class="pre">20</span></code> considers all the spatial QoI only at the first time step).</p>
-<p>In general, <code class="docutils literal"><span class="pre">indexstart</span></code> can be any integer between 0 and 998  and
-<code class="docutils literal"><span class="pre">indexstop</span></code> must be at least 2 greater than <code class="docutils literal"><span class="pre">indexstart</span></code> (so between
-2 and 1000 subject to the additional constraint that <code class="docutils literal"><span class="pre">indexstop</span></code>
-<span class="math">\(\geq\)</span> <code class="docutils literal"><span class="pre">indexstart</span> <span class="pre">+</span> <span class="pre">2</span></code> to ensure that we check at least a single pair
+of all space-time locations (<code class="docutils literal notranslate"><span class="pre">indexstart</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">indexstop</span> <span class="pre">=</span> <span class="pre">1000</span></code>), or,
+we can check the QoI at a particular time (e.g., setting <code class="docutils literal notranslate"><span class="pre">indexstart=0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">indexstop</span> <span class="pre">=</span> <span class="pre">20</span></code> considers all the spatial QoI only at the first time step).</p>
+<p>In general, <code class="docutils literal notranslate"><span class="pre">indexstart</span></code> can be any integer between 0 and 998  and
+<code class="docutils literal notranslate"><span class="pre">indexstop</span></code> must be at least 2 greater than <code class="docutils literal notranslate"><span class="pre">indexstart</span></code> (so between
+2 and 1000 subject to the additional constraint that <code class="docutils literal notranslate"><span class="pre">indexstop</span></code>
+<span class="math notranslate nohighlight">\(\geq\)</span> <code class="docutils literal notranslate"><span class="pre">indexstart</span> <span class="pre">+</span> <span class="pre">2</span></code> to ensure that we check at least a single pair
 of QoI.):</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">indexstart</span> <span class="o">=</span> <span class="mi">0</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indexstart</span> <span class="o">=</span> <span class="mi">0</span>
 <span class="n">indexstop</span> <span class="o">=</span> <span class="mi">20</span>
 <span class="n">qoiIndices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">indexstart</span><span class="p">,</span> <span class="n">indexstop</span><span class="p">)</span>
 </pre></div>
@@ -285,7 +309,7 @@ of QoI.):</p>
 <div class="section" id="step-2-create-the-discretization-object-from-the-input-and-output-samples">
 <h2>Step (2): Create the discretization object from the input and output samples<a class="headerlink" href="#step-2-create-the-discretization-object-from-the-input-and-output-samples" title="Permalink to this headline">¶</a></h2>
 <p>Load the sampled parameter and QoI values:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Initialize the necessary sample objects</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the necessary sample objects</span>
 <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
 <span class="n">output_samples</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
 
@@ -300,12 +324,12 @@ of QoI.):</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="step-3-compute-the-gradients-of-all-the-maps-in">
-<h2>Step (3): Compute the gradients of all the maps in <span class="math">\(\mathcal{Q}\)</span><a class="headerlink" href="#step-3-compute-the-gradients-of-all-the-maps-in" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q">
+<h2>Step (3): Compute the gradients of all the maps in <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span><a class="headerlink" href="#step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q" title="Permalink to this headline">¶</a></h2>
 <p>Using whichever finite difference scheme we have chosen for our sample set based
 on Step (0*) above, we now compute the gradients of each component of the QoI maps
-defining <span class="math">\(\mathcal{Q}\)</span>:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="c1"># Calculate the gradient vectors at each of the 16 centers for each of the</span>
+defining <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the gradient vectors at each of the 16 centers for each of the</span>
 <span class="c1"># QoI maps</span>
 <span class="k">if</span> <span class="n">fd_scheme</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;RBF&#39;</span><span class="p">]:</span>
     <span class="n">center_discretization</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">cluster_discretization</span><span class="p">,</span>
@@ -320,11 +344,11 @@ defining <span class="math">\(\mathcal{Q}\)</span>:</p>
 <div class="section" id="step-4-compute-skewness-properties-of-the-maps-and-display-information">
 <h2>Step (4): Compute skewness properties of the maps and display information<a class="headerlink" href="#step-4-compute-skewness-properties-of-the-maps-and-display-information" title="Permalink to this headline">¶</a></h2>
 <p>We now examine the geometric property of average skewness on the possible QoI maps.
-The skewness defines an ordering on <span class="math">\(\mathcal{Q}\)</span> that is useful in selecting
+The skewness defines an ordering on <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> that is useful in selecting
 the optimal QoI map. We can also compute skewness properties for any particular QoI map
 we want individually. The first step is extracting the subset of samples for which we
 actually computed derivatives, which are the centers of the clusters determined above:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">input_samples_centers</span> <span class="o">=</span> <span class="n">center_discretization</span><span class="o">.</span><span class="n">get_input_sample_set</span><span class="p">()</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_samples_centers</span> <span class="o">=</span> <span class="n">center_discretization</span><span class="o">.</span><span class="n">get_input_sample_set</span><span class="p">()</span>
 
 <span class="c1"># Choose a specific set of QoIs to check the average skewness of</span>
 <span class="n">index1</span> <span class="o">=</span> <span class="mi">0</span>
@@ -355,15 +379,16 @@ actually computed derivatives, which are the centers of the clusters determined 
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="contaminantTransport.html" class="btn btn-neutral float-right" title="Example: Concentration of Contaminant in Wells Based on Transport Parameters" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="contaminantTransport.html" class="btn btn-neutral float-right" title="Example: Concentration of Contaminant in Wells Based on Transport Parameters" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Q_3D.html" class="btn btn-neutral" title="Example: Estimate the parameter space probabiliy density with a 3D data space" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Q_3D.html" class="btn btn-neutral float-left" title="Example: Estimate the parameter space probabiliy density with a 3D data space" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -372,12 +397,14 @@ actually computed derivatives, which are the centers of the clusters determined 
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -390,36 +417,15 @@ actually computed derivatives, which are the centers of the clusters determined 
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

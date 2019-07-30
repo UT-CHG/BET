@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Example: Estimate the parameter space probabiliy density with a 2D data space &mdash; BET 2.0.0 documentation</title>
+  <title>Example: Estimate the parameter space probabiliy density with a 2D data space &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="../../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../../_static/jquery.js"></script>
+        <script type="text/javascript" src="../../_static/underscore.js"></script>
+        <script type="text/javascript" src="../../_static/doctools.js"></script>
+        <script type="text/javascript" src="../../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="../../index.html"/>
-        <link rel="up" title="Some References and Examples" href="../examples_overview.html"/>
-        <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 3D data space" href="Q_3D.html"/>
-        <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 1D data space" href="Q_1D.html"/> 
-
-  
-  <script src="../../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" />
+    <link rel="next" title="Example: Estimate the parameter space probabiliy density with a 3D data space" href="Q_3D.html" />
+    <link rel="prev" title="Example: Estimate the parameter space probabiliy density with a 1D data space" href="Q_1D.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="reference internal" href="../examples_overview.html">Some References and Examples</a><ul class="current">
@@ -128,36 +131,56 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../../index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../../index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="../../index.html">Docs</a> &raquo;</li>
+        
           <li><a href="../examples_overview.html">Some References and Examples</a> &raquo;</li>
-      
-    <li>Example: Estimate the parameter space probabiliy density with  a 2D data space</li>
+        
+      <li>Example: Estimate the parameter space probabiliy density with  a 2D data space</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../../_sources/examples/example_rst_files/Q_2D.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../../_sources/examples/example_rst_files/Q_2D.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -165,65 +188,63 @@
             
   <div class="section" id="example-estimate-the-parameter-space-probabiliy-density-with-a-2d-data-space">
 <span id="q2d"></span><h1>Example: Estimate the parameter space probabiliy density with  a 2D data space<a class="headerlink" href="#example-estimate-the-parameter-space-probabiliy-density-with-a-2d-data-space" title="Permalink to this headline">¶</a></h1>
-<p>In this example the parameter space <span class="math">\(\Lambda \subset \mathbb{R}^2\)</span> is 2
+<p>In this example the parameter space <span class="math notranslate nohighlight">\(\Lambda \subset \mathbb{R}^2\)</span> is 2
 dimensional.
 This example demostrates three different methods to estimate
-<span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> where</p>
-<div class="math">
+<span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> where</p>
+<div class="math notranslate nohighlight">
 \[P_\Lambda \approx \sum_{\mathcal{V}_j \subset A} \hat{\rho}_{\Lambda, j}.\]</div>
-<p>These methods are distinguished primarily by the way <span class="math">\(\mathcal{V}_j\)</span> are
-defined and the approximation of the volume of <span class="math">\(\mathcal{V}_j\)</span>. See
+<p>These methods are distinguished primarily by the way <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span> are
+defined and the approximation of the volume of <span class="math notranslate nohighlight">\(\mathcal{V}_j\)</span>. See
 <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/fromFile_ADCIRCMap/Q_2D.py">Q_2D.py</a> for the example source code. Since
 this example is essentially the same as <a class="reference internal" href="Q_1D.html#q1d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a> we will only highlight the
 differences between the two.</p>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<ul class="last">
-<li><dl class="first docutils">
-<dt>reduce number of <code class="docutils literal"><span class="pre">ref_nums</span></code> to a single number so that we only</dt>
-<dd><p class="first last">examine a single set of QoI</p>
+<p class="admonition-title">Note</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt>reduce number of <code class="docutils literal notranslate"><span class="pre">ref_nums</span></code> to a single number so that we only</dt><dd><p>examine a single set of QoI</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt>add plotting of marginals using</dt>
-<dd><p class="first last"><a class="reference internal" href="../../bet.postProcess.html#bet.postProcess.plotP.plot_2D_marginal_probs" title="bet.postProcess.plotP.plot_2D_marginal_probs"><code class="xref py py-mod docutils literal"><span class="pre">bet.postProcess.plotP.plot_2D_marginal_probs</span></code></a></p>
+<li><dl class="simple">
+<dt>add plotting of marginals using</dt><dd><p><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.postProcess.plotP.plot_2D_marginal_probs</span></code></p>
 </dd>
 </dl>
 </li>
 </ul>
 </div>
-<p>Define the filename to save <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+<p>Define the filename to save <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> to:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;P_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span><span class="o">+</span><span class="s1">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">station_nums</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
     <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;_q&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">station_nums</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 <span class="n">filename</span> <span class="o">+=</span> <span class="s1">&#39;_truth_&#39;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">ref_num</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Define the input sample set, here it is 2D rather than 1D:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">lam_domain</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.07</span><span class="p">,</span> <span class="o">.</span><span class="mi">15</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">]])</span>
 <span class="n">input_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 <span class="n">input_sample_set</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">points</span><span class="o">.</span><span class="n">transpose</span><span class="p">())</span>
 <span class="n">input_sample_set</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">lam_domain</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Define the data space <span class="math">\(\mathcal{D} \subset \mathbb{R}^d\)</span> where <span class="math">\(d\)</span> is the dimension of the data space:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">station_nums</span><span class="p">]</span>
+<p>Define the data space <span class="math notranslate nohighlight">\(\mathcal{D} \subset \mathbb{R}^d\)</span> where <span class="math notranslate nohighlight">\(d\)</span> is the dimension of the data space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">data</span> <span class="o">=</span> <span class="n">Q</span><span class="p">[:,</span> <span class="n">station_nums</span><span class="p">]</span>
 <span class="n">output_sample_set</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 <span class="n">output_sample_set</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Define the refernce solution. We define a region of interest, <span class="math">\(R_{ref} \subset \mathcal{D}\)</span> centered at
-<span class="math">\(Q_{ref}\)</span>  with sides 15% the length of <span class="math">\(q_{station\_num[0]}\)</span> and
-<span class="math">\(q_{station\_num[1]}\)</span> (the QoI for stations <span class="math">\(n\)</span>). We set <span class="math">\(\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}\)</span> and then create a simple function approximation to this density:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="n">ref_num</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span>
+<p>Define the refernce solution. We define a region of interest, <span class="math notranslate nohighlight">\(R_{ref} \subset \mathcal{D}\)</span> centered at
+<span class="math notranslate nohighlight">\(Q_{ref}\)</span>  with sides 15% the length of <span class="math notranslate nohighlight">\(q_{station\_num[0]}\)</span> and
+<span class="math notranslate nohighlight">\(q_{station\_num[1]}\)</span> (the QoI for stations <span class="math notranslate nohighlight">\(n\)</span>). We set <span class="math notranslate nohighlight">\(\rho_\mathcal{D}(q) = \frac{\mathbf{1}_{R_{ref}}(q)}{||\mathbf{1}_{R_{ref}}||}\)</span> and then create a simple function approximation to this density:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">[</span><span class="n">ref_num</span><span class="p">,</span> <span class="n">station_nums</span><span class="p">]</span>
 <span class="n">output_probability_set</span> <span class="o">=</span> <span class="n">sfun</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>\
         <span class="n">output_sample_set</span><span class="p">,</span> <span class="n">q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.15</span><span class="p">,</span>
         <span class="n">cells_per_dimension</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="n">data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">1</span><span class="p">],)))</span>
 </pre></div>
 </div>
-<p>Finally, we calculate <span class="math">\(\hat{\rho}_{\Lambda, j}\)</span> for three reference solutions and the QoI <span class="math">\(( (q_1,q_2), (q_1, q_5)\)</span>, and <span class="math">\((q_1, q_6))\)</span></p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ref_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span> <span class="c1"># 7, 12, 16</span>
+<p>Finally, we calculate <span class="math notranslate nohighlight">\(\hat{\rho}_{\Lambda, j}\)</span> for three reference solutions and the QoI <span class="math notranslate nohighlight">\(( (q_1,q_2), (q_1, q_5)\)</span>, and <span class="math notranslate nohighlight">\((q_1, q_6))\)</span></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ref_nums</span> <span class="o">=</span> <span class="p">[</span><span class="mi">6</span><span class="p">,</span> <span class="mi">11</span><span class="p">,</span> <span class="mi">15</span><span class="p">]</span> <span class="c1"># 7, 12, 16</span>
 <span class="n">stations</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># 2, 5, 6</span>
 
 <span class="n">ref_nums</span><span class="p">,</span> <span class="n">stations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">ref_nums</span><span class="p">,</span> <span class="n">stations</span><span class="p">)</span>
@@ -238,15 +259,16 @@ differences between the two.</p>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="Q_3D.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 3D data space" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="Q_3D.html" class="btn btn-neutral float-right" title="Example: Estimate the parameter space probabiliy density with a 3D data space" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="Q_1D.html" class="btn btn-neutral" title="Example: Estimate the parameter space probabiliy density with a 1D data space" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="Q_1D.html" class="btn btn-neutral float-left" title="Example: Estimate the parameter space probabiliy density with a 1D data space" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -255,12 +277,14 @@ differences between the two.</p>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -273,36 +297,15 @@ differences between the two.</p>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../../',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../../_static/jquery.js"></script>
-      <script type="text/javascript" src="../../_static/underscore.js"></script>
-      <script type="text/javascript" src="../../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

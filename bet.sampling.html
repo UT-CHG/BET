@@ -8,46 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>bet.sampling package &mdash; BET 2.0.0 documentation</title>
+  <title>bet.sampling package &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="index.html"/>
-        <link rel="up" title="bet package" href="bet.html"/>
-        <link rel="next" title="bet.sensitivity package" href="bet.sensitivity.html"/>
-        <link rel="prev" title="bet.postProcess package" href="bet.postProcess.html"/> 
-
-  
-  <script src="_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="bet.sensitivity package" href="bet.sensitivity.html" />
+    <link rel="prev" title="bet.postProcess package" href="bet.postProcess.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -61,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -82,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
 <li class="toctree-l1"><a class="reference internal" href="examples/examples_overview.html">Some References and Examples</a></li>
@@ -100,7 +103,7 @@
 <li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet.sample">bet.sample module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet.surrogates">bet.surrogates module</a></li>
 <li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet.util">bet.util module</a></li>
-<li class="toctree-l3"><a class="reference internal" href="bet.html#module-contents">Module contents</a></li>
+<li class="toctree-l3"><a class="reference internal" href="bet.html#module-bet">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -117,38 +120,58 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="index.html">Docs</a> &raquo;</li>
-      
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
           <li><a href="modules.html">bet</a> &raquo;</li>
-      
+        
           <li><a href="bet.html">bet package</a> &raquo;</li>
-      
-    <li>bet.sampling package</li>
+        
+      <li>bet.sampling package</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="_sources/bet.sampling.txt" rel="nofollow"> View page source</a>
+            
+            <a href="_sources/bet.sampling.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -167,70 +190,58 @@ beta distributions on the nD ball.</p>
 <a class="reference external" href="https://github.com/fabiansinz/natter">https://github.com/fabiansinz/natter</a></p>
 <dl class="function">
 <dt id="bet.sampling.LpGeneralizedSamples.Lp_generalized_beta">
-<code class="descclassname">bet.sampling.LpGeneralizedSamples.</code><code class="descname">Lp_generalized_beta</code><span class="sig-paren">(</span><em>dim</em>, <em>num</em>, <em>p=2</em>, <em>d=2</em>, <em>scale=1.0</em>, <em>loc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_beta" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.sampling.LpGeneralizedSamples.</code><code class="sig-name descname">Lp_generalized_beta</code><span class="sig-paren">(</span><em class="sig-param">dim</em>, <em class="sig-param">num</em>, <em class="sig-param">p=2</em>, <em class="sig-param">d=2</em>, <em class="sig-param">scale=1.0</em>, <em class="sig-param">loc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_beta" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate samples from an Lp generalized beta distribution. When p=d then
 this is simly the Lp generalized uniform distribution.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>float</em>) &#8211; <span class="math">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
-infinity is <code class="docutils literal"><span class="pre">numpy.inf</span></code></li>
-<li><strong>d</strong> (<em>float</em>) &#8211; shape parameter</li>
-<li><strong>dim</strong> (<em>int</em>) &#8211; Dimension of the space</li>
-<li><strong>num</strong> (<em>int</em>) &#8211; Number of samples to generate</li>
-<li><strong>scale</strong> (<code class="docutils literal"><span class="pre">float</span></code>, <code class="docutils literal"><span class="pre">int</span></code>, or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Radius to scale the samples by</li>
-<li><strong>loc</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) &#8211; Location of the center of the samples</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+<li><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – shape parameter</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Dimension of the space</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples to generate</p></li>
+<li><p><strong>scale</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Radius to scale the samples by</p></li>
+<li><p><strong>loc</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – Location of the center of the samples</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.LpGeneralizedSamples.Lp_generalized_normal">
-<code class="descclassname">bet.sampling.LpGeneralizedSamples.</code><code class="descname">Lp_generalized_normal</code><span class="sig-paren">(</span><em>dim</em>, <em>num</em>, <em>p=2</em>, <em>scale=1.0</em>, <em>loc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_normal" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.sampling.LpGeneralizedSamples.</code><code class="sig-name descname">Lp_generalized_normal</code><span class="sig-paren">(</span><em class="sig-param">dim</em>, <em class="sig-param">num</em>, <em class="sig-param">p=2</em>, <em class="sig-param">scale=1.0</em>, <em class="sig-param">loc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_normal" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate samples from an Lp generalized normal distribution.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>float</em>) &#8211; <span class="math">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
-infinity is <code class="docutils literal"><span class="pre">numpy.inf</span></code></li>
-<li><strong>dim</strong> (<em>int</em>) &#8211; Dimension of the space</li>
-<li><strong>num</strong> (<em>int</em>) &#8211; Number of samples to generate</li>
-<li><strong>scale</strong> (<code class="docutils literal"><span class="pre">float</span></code>, <code class="docutils literal"><span class="pre">int</span></code>, or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Radius to scale the samples by</li>
-<li><strong>loc</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) &#8211; Location of the center of the samples</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Dimension of the space</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples to generate</p></li>
+<li><p><strong>scale</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Radius to scale the samples by</p></li>
+<li><p><strong>loc</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – Location of the center of the samples</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.LpGeneralizedSamples.Lp_generalized_uniform">
-<code class="descclassname">bet.sampling.LpGeneralizedSamples.</code><code class="descname">Lp_generalized_uniform</code><span class="sig-paren">(</span><em>dim</em>, <em>num</em>, <em>p=2</em>, <em>scale=1.0</em>, <em>loc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_uniform" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.sampling.LpGeneralizedSamples.</code><code class="sig-name descname">Lp_generalized_uniform</code><span class="sig-paren">(</span><em class="sig-param">dim</em>, <em class="sig-param">num</em>, <em class="sig-param">p=2</em>, <em class="sig-param">scale=1.0</em>, <em class="sig-param">loc=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_uniform" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generate samples from an Lp generalized uniform distribution.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>p</strong> (<em>float</em>) &#8211; <span class="math">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
-infinity is <code class="docutils literal"><span class="pre">numpy.inf</span></code></li>
-<li><strong>dim</strong> (<em>int</em>) &#8211; Dimension of the space</li>
-<li><strong>num</strong> (<em>int</em>) &#8211; Number of samples to generate</li>
-<li><strong>scale</strong> (<code class="docutils literal"><span class="pre">float</span></code>, <code class="docutils literal"><span class="pre">int</span></code>, or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; Radius to scale the samples by</li>
-<li><strong>loc</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) &#8211; Location of the center of the samples</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Dimension of the space</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples to generate</p></li>
+<li><p><strong>scale</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Radius to scale the samples by</p></li>
+<li><p><strong>loc</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – Location of the center of the samples</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 </div>
@@ -245,105 +256,111 @@ coordinate pairing. We assume the measure of both spaces is Lebesgue.
 We employ an approach based on using multiple sample chains.</p>
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.kernel">
-<em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">kernel</code><span class="sig-paren">(</span><em>tolerance=1e-08</em>, <em>increase=1.0</em>, <em>decrease=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">kernel</code><span class="sig-paren">(</span><em class="sig-param">tolerance=1e-08</em>, <em class="sig-param">increase=1.0</em>, <em class="sig-param">decrease=1.0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Parent class for kernels to determine change in step size. This class
 provides a method for determining the proposed change in step size. Since
 this is simply a skeleton parent class it does not change the step size at
 all.</p>
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.kernel.TOL">
+<code class="sig-name descname">TOL</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.TOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, Tolerance for comparing two values</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.kernel.decrease">
+<code class="sig-name descname">decrease</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.decrease" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, The multiple to decrease the step size by</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.kernel.delta_step">
-<code class="descname">delta_step</code><span class="sig-paren">(</span><em>output_new</em>, <em>kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.delta_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delta_step</code><span class="sig-paren">(</span><em class="sig-param">output_new</em>, <em class="sig-param">kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>output_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_new</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) – QoI for a given batch of samples</p></li>
+<li><p><strong>kern_old</strong> – kernel evaluated at previous step</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">typle</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>typle</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(kern_new, proposal)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.kernel.increase">
+<code class="sig-name descname">increase</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernel.increase" title="Permalink to this definition">¶</a></dt>
+<dd><p>float,  The multiple to increase the step size by</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.adaptiveSampling.kernels">
-<code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">kernels</code><span class="sig-paren">(</span><em>Q_ref</em>, <em>rho_D</em>, <em>maximum</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernels" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">kernels</code><span class="sig-paren">(</span><em class="sig-param">Q_ref</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">maximum</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.kernels" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates a list of kernstic objects.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>Q_ref</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; reference parameter value</li>
-<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
-returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>float</em>) &#8211; maximum value of rho_D</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – reference parameter value</p></li>
+<li><p><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> and
+returns a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – probability density on D</p></li>
+<li><p><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – maximum value of rho_D</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">list</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">[maxima_mean_kernel, rhoD_kernel, maxima_kernel]</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>list</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>[maxima_mean_kernel, rhoD_kernel, maxima_kernel]</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.adaptiveSampling.loadmat">
-<code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">loadmat</code><span class="sig-paren">(</span><em>save_file</em>, <em>lb_model=None</em>, <em>hot_start=None</em>, <em>num_chains=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.loadmat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads data from <code class="docutils literal"><span class="pre">save_file</span></code> into a
-<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>save_file</strong> (<em>string</em>) &#8211; file name</li>
-<li><strong>lb_model</strong> (<em>callable</em>) &#8211; runs the model at a given set of parameter samples, (N,
-ndim), and returns data (N, mdim)</li>
-<li><strong>hot_start</strong> (<em>int</em>) &#8211; Flag whether or not hot start the sampling
-chains from a previous set of chains. Note that <code class="docutils literal"><span class="pre">num_chains</span></code> must
-be the same, but <code class="docutils literal"><span class="pre">num_chains_pproc</span></code> need not be the same. 0 -
+<code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">loadmat</code><span class="sig-paren">(</span><em class="sig-param">save_file</em>, <em class="sig-param">lb_model=None</em>, <em class="sig-param">hot_start=None</em>, <em class="sig-param">num_chains=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.loadmat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data from <code class="docutils literal notranslate"><span class="pre">save_file</span></code> into a
+<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">sampler</span></code></a> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_file</strong> (<em>string</em>) – file name</p></li>
+<li><p><strong>lb_model</strong> (<em>callable</em>) – runs the model at a given set of parameter samples, (N,
+ndim), and returns data (N, mdim)</p></li>
+<li><p><strong>hot_start</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Flag whether or not hot start the sampling
+chains from a previous set of chains. Note that <code class="docutils literal notranslate"><span class="pre">num_chains</span></code> must
+be the same, but <code class="docutils literal notranslate"><span class="pre">num_chains_pproc</span></code> need not be the same. 0 -
 cold start, 1 - hot start from uncompleted run, 2 - hot
-start from finished run</li>
-<li><strong>num_chains</strong> (<em>int</em>) &#8211; total number of chains of samples</li>
-<li><strong>lb_model</strong> &#8211; runs the model at a given set of parameter
-samples, (N, ndim), and returns data (N, mdim)</li>
+start from finished run</p></li>
+<li><p><strong>num_chains</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – total number of chains of samples</p></li>
+<li><p><strong>lb_model</strong> – runs the model at a given set of parameter
+samples, (N, ndim), and returns data (N, mdim)</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple of (<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>,
-<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>, <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>,
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="docutils literal"><span class="pre">sampler</span></code>, <code class="docutils literal"><span class="pre">discretization</span></code>, <code class="docutils literal"><span class="pre">all_step_ratios</span></code>,
-<code class="docutils literal"><span class="pre">kern_old</span></code>)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple of (<a class="reference internal" href="#bet.sampling.adaptiveSampling.sampler" title="bet.sampling.adaptiveSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.sampler</span></code></a>,
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a>, <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>,
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(<code class="docutils literal notranslate"><span class="pre">sampler</span></code>, <code class="docutils literal notranslate"><span class="pre">discretization</span></code>, <code class="docutils literal notranslate"><span class="pre">all_step_ratios</span></code>,
+<code class="docutils literal notranslate"><span class="pre">kern_old</span></code>)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.maxima_kernel">
-<em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">maxima_kernel</code><span class="sig-paren">(</span><em>maxima</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">maxima_kernel</code><span class="sig-paren">(</span><em class="sig-param">maxima</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">tolerance=1e-08</em>, <em class="sig-param">increase=2.0</em>, <em class="sig-param">decrease=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a></p>
 <p>We assume we know the maxima of the distribution rho_D on the QoI and that
 the goal is to determine inverse regions of high probability accurately (in
 terms of getting the measure correct). This class provides a method for
@@ -351,36 +368,56 @@ determining the proposed change in step size as follows. We check if the
 QoI at each of the input_new(k) are closer or farther away from a region
 of high probability in D than the QoI at samples_old(k). For example, if
 they are closer, then we can reduce the step_size(k) by 1/2.</p>
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_kernel.MAXIMA">
+<code class="sig-name descname">MAXIMA</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.MAXIMA" title="Permalink to this definition">¶</a></dt>
+<dd><p>locations of the maxima of rho_D on D</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.maxima_kernel.delta_step">
-<code class="descname">delta_step</code><span class="sig-paren">(</span><em>output_new</em>, <em>kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delta_step</code><span class="sig-paren">(</span><em class="sig-param">output_new</em>, <em class="sig-param">kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>output_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_new</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) – QoI for a given batch of samples</p></li>
+<li><p><strong>kern_old</strong> – kernel evaluated at previous step</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(kern_new, proposal)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_kernel.num_maxima">
+<code class="sig-name descname">num_maxima</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.num_maxima" title="Permalink to this definition">¶</a></dt>
+<dd><p>int, number of maxima</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_kernel.rho_max">
+<code class="sig-name descname">rho_max</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.rho_max" title="Permalink to this definition">¶</a></dt>
+<dd><p>list of maximum values of rho_D</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_kernel.sort_ascending">
+<code class="sig-name descname">sort_ascending</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_kernel.sort_ascending" title="Permalink to this definition">¶</a></dt>
+<dd><p>bool, flag sort order</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel">
-<em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">maxima_mean_kernel</code><span class="sig-paren">(</span><em>maxima</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.maxima_kernel" title="bet.sampling.adaptiveSampling.maxima_kernel"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.maxima_kernel</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">maxima_mean_kernel</code><span class="sig-paren">(</span><em class="sig-param">maxima</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">tolerance=1e-08</em>, <em class="sig-param">increase=2.0</em>, <em class="sig-param">decrease=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.maxima_kernel" title="bet.sampling.adaptiveSampling.maxima_kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.maxima_kernel</span></code></a></p>
 <p>We assume we know the maxima of the distribution rho_D on the QoI and that
 the goal is to determine inverse regions of high probability accurately (in
 terms of getting the measure correct). This class provides a method for
@@ -388,33 +425,47 @@ determining the proposed change in step size as follows. We check if the
 QoI at each of the input_new(k) are closer or farther away from a region
 of high probability in D than the QoI at samples_old(k). For example, if
 they are closer, then we can reduce the step_size(k) by 1/2.</p>
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.current_clength">
+<code class="sig-name descname">current_clength</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.current_clength" title="Permalink to this definition">¶</a></dt>
+<dd><p>current number of estimates for approx. mean, radius</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.delta_step">
-<code class="descname">delta_step</code><span class="sig-paren">(</span><em>output_new</em>, <em>kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delta_step</code><span class="sig-paren">(</span><em class="sig-param">output_new</em>, <em class="sig-param">kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>output_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_new</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) – QoI for a given batch of samples</p></li>
+<li><p><strong>kern_old</strong> – kernel evaluated at previous step</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(kern_new, proposal)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.mean">
+<code class="sig-name descname">mean</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.mean" title="Permalink to this definition">¶</a></dt>
+<dd><p>approximate mean</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.radius">
+<code class="sig-name descname">radius</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.radius" title="Permalink to this definition">¶</a></dt>
+<dd><p>approximate radius</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.maxima_mean_kernel.reset">
-<code class="descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.reset" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">reset</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.maxima_mean_kernel.reset" title="Permalink to this definition">¶</a></dt>
 <dd><p>Resets the the batch number and the estimates of the mean and maximum
 distance from the mean.</p>
 </dd></dl>
@@ -423,8 +474,8 @@ distance from the mean.</p>
 
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.rhoD_kernel">
-<em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">rhoD_kernel</code><span class="sig-paren">(</span><em>maximum</em>, <em>rho_D</em>, <em>tolerance=1e-08</em>, <em>increase=2.0</em>, <em>decrease=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">rhoD_kernel</code><span class="sig-paren">(</span><em class="sig-param">maximum</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">tolerance=1e-08</em>, <em class="sig-param">increase=2.0</em>, <em class="sig-param">decrease=0.5</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a></p>
 <p>We assume we know the distribution rho_D on the QoI and that the goal is to
 determine inverse regions of high probability accurately (in terms of
 getting the measure correct). This class provides a method for determining
@@ -433,259 +484,306 @@ the input_new(k) are closer or farther away from a region of high
 probability in D than the QoI at samples_old(k).  For example, if they are
 closer, then we can reduce the step_size(k) by 1/2.
 Note: This only works well with smooth rho_D.</p>
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.rhoD_kernel.MAX">
+<code class="sig-name descname">MAX</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel.MAX" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, maximum value of rho_D</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.rhoD_kernel.delta_step">
-<code class="descname">delta_step</code><span class="sig-paren">(</span><em>output_new</em>, <em>kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">delta_step</code><span class="sig-paren">(</span><em class="sig-param">output_new</em>, <em class="sig-param">kern_old=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel.delta_step" title="Permalink to this definition">¶</a></dt>
 <dd><p>This method determines the proposed change in step size.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>output_new</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) &#8211; QoI for a given batch of samples</li>
-<li><strong>kern_old</strong> &#8211; kernel evaluated at previous step</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>output_new</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_chains, mdim)) – QoI for a given batch of samples</p></li>
+<li><p><strong>kern_old</strong> – kernel evaluated at previous step</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(kern_new, proposal)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(kern_new, proposal)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.rhoD_kernel.rho_D">
+<code class="sig-name descname">rho_D</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel.rho_D" title="Permalink to this definition">¶</a></dt>
+<dd><p>callable, function, probability density on D</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.rhoD_kernel.sort_ascending">
+<code class="sig-name descname">sort_ascending</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.rhoD_kernel.sort_ascending" title="Permalink to this definition">¶</a></dt>
+<dd><p>bool, flag sort order</p>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.sampler">
-<em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">sampler</code><span class="sig-paren">(</span><em>num_samples</em>, <em>chain_length</em>, <em>lb_model</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.basicSampling.sampler</span></code></a></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">sampler</code><span class="sig-paren">(</span><em class="sig-param">num_samples</em>, <em class="sig-param">chain_length</em>, <em class="sig-param">lb_model</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.basicSampling.sampler</span></code></a></p>
 <p>This class provides methods for adaptive sampling of parameter space to
 provide samples to be used by algorithms to solve inverse problems.</p>
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.sampler.chain_length">
+<code class="sig-name descname">chain_length</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.chain_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of batches of samples</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.generalized_chains">
-<code class="descname">generalized_chains</code><span class="sig-paren">(</span><em>input_obj</em>, <em>t_set</em>, <em>kern</em>, <em>savefile</em>, <em>initial_sample_type='random'</em>, <em>criterion='center'</em>, <em>hot_start=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">generalized_chains</code><span class="sig-paren">(</span><em class="sig-param">input_obj</em>, <em class="sig-param">t_set</em>, <em class="sig-param">kern</em>, <em class="sig-param">savefile</em>, <em class="sig-param">initial_sample_type='random'</em>, <em class="sig-param">criterion='center'</em>, <em class="sig-param">hot_start=0</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.generalized_chains" title="Permalink to this definition">¶</a></dt>
 <dd><p>Basic adaptive sampling algorithm using generalized chains.</p>
-<div class="admonition-todo admonition" id="index-0">
-<p class="first admonition-title">Todo</p>
-<p class="last">Test HOTSTART from parallel files using different num proc</p>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Test HOTSTART from parallel files using different num proc</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>initial_sample_type</strong> (<em>string</em>) &#8211; type of initial sample random (or r),
-latin hypercube(lhs), or space-filling curve(TBD)</li>
-<li><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a>,
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, 2), or :class: <cite>int</cite>) &#8211; Either a <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set</span></code></a> object for an
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>initial_sample_type</strong> (<em>string</em>) – type of initial sample random (or r),
+latin hypercube(lhs), or space-filling curve(TBD)</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>,
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, 2), or :class: <cite>int</cite>) – Either a <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set</span></code></a> object for an
 input space, an array of min and max bounds for the input values
-with <code class="docutils literal"><span class="pre">min</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">0]</span></code> and <code class="docutils literal"><span class="pre">max</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">1]</span></code>,
-or the dimension of an input space</li>
-<li><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) &#8211; method for creating new parameter steps using
-given a step size based on the paramter domain size</li>
-<li><strong>kern</strong> &#8211; functional that acts on the data used to
-determine the proposed change to the <code class="docutils literal"><span class="pre">step_size</span></code></li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save samples and data</li>
-<li><strong>hot_start</strong> (<em>int</em>) &#8211; Flag whether or not hot start the sampling
-chains from a previous set of chains. Note that <code class="docutils literal"><span class="pre">num_chains</span></code> must
-be the same, but <code class="docutils literal"><span class="pre">num_chains_pproc</span></code> need not be the same. 0 -
+with <code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">1]</span></code>,
+or the dimension of an input space</p></li>
+<li><p><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) – method for creating new parameter steps using
+given a step size based on the paramter domain size</p></li>
+<li><p><strong>kern</strong> – functional that acts on the data used to
+determine the proposed change to the <code class="docutils literal notranslate"><span class="pre">step_size</span></code></p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save samples and data</p></li>
+<li><p><strong>hot_start</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Flag whether or not hot start the sampling
+chains from a previous set of chains. Note that <code class="docutils literal notranslate"><span class="pre">num_chains</span></code> must
+be the same, but <code class="docutils literal notranslate"><span class="pre">num_chains_pproc</span></code> need not be the same. 0 -
 cold start, 1 - hot start from uncompleted run, 2 - hot
-start from finished run</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; latin hypercube criterion see 
-<a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></li>
+start from finished run</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – latin hypercube criterion see
+<a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(<code class="docutils literal"><span class="pre">discretization</span></code>, <code class="docutils literal"><span class="pre">all_step_ratios</span></code>) where
-<code class="docutils literal"><span class="pre">discretization</span></code> is a <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> object
-containing <code class="docutils literal"><span class="pre">num_samples</span></code>  and  <code class="docutils literal"><span class="pre">all_step_ratios</span></code> is np.ndarray
-of shape <code class="docutils literal"><span class="pre">(num_chains,</span> <span class="pre">chain_length)</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(<code class="docutils literal notranslate"><span class="pre">discretization</span></code>, <code class="docutils literal notranslate"><span class="pre">all_step_ratios</span></code>) where
+<code class="docutils literal notranslate"><span class="pre">discretization</span></code> is a <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> object
+containing <code class="docutils literal notranslate"><span class="pre">num_samples</span></code>  and  <code class="docutils literal notranslate"><span class="pre">all_step_ratios</span></code> is np.ndarray
+of shape <code class="docutils literal notranslate"><span class="pre">(num_chains,</span> <span class="pre">chain_length)</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.sampler.lb_model">
+<code class="sig-name descname">lb_model</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.lb_model" title="Permalink to this definition">¶</a></dt>
+<dd><p>runs the model at a given set of parameter samples, (N,
+ndim), and returns data (N, mdim)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.sampler.num_chains">
+<code class="sig-name descname">num_chains</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.num_chains" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of samples per batch (either a single int or a list of int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.sampler.num_chains_pproc">
+<code class="sig-name descname">num_chains_pproc</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.num_chains_pproc" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of samples per processor per batch (either a single int or a
+list of int)</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.sampler.num_samples">
+<code class="sig-name descname">num_samples</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.num_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Total number of samples</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.run_gen">
-<code class="descname">run_gen</code><span class="sig-paren">(</span><em>kern_list</em>, <em>rho_D</em>, <em>maximum</em>, <em>input_domain</em>, <em>t_set</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_gen" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_gen</code><span class="sig-paren">(</span><em class="sig-param">kern_list</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">maximum</em>, <em class="sig-param">input_domain</em>, <em class="sig-param">t_set</em>, <em class="sig-param">savefile</em>, <em class="sig-param">initial_sample_type='lhs'</em>, <em class="sig-param">criterion='center'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_gen" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using generalized chains and a list of different
 kernels.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>kern_list</strong> (<em>list</em>) &#8211; List of
-:class:~`bet.sampling.adaptiveSampling.kernel` objects.</li>
-<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
-returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>float</em>) &#8211; maximum value of rho_D</li>
-<li><strong>input_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim, 2)) &#8211; min, max value for each input dimension</li>
-<li><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) &#8211; method for creating new parameter steps using
-given a step size based on the paramter domain size</li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save samples and data</li>
-<li><strong>initial_sample_type</strong> (<em>string</em>) &#8211; type of initial sample random (or r),
-latin hypercube(lhs), or space-filling curve(TBD)</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; <p>latin hypercube criterion see 
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>kern_list</strong> (<em>list</em>) – List of
+:class:~`bet.sampling.adaptiveSampling.kernel` objects.</p></li>
+<li><p><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> and
+returns a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – probability density on D</p></li>
+<li><p><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – maximum value of rho_D</p></li>
+<li><p><strong>input_domain</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (ndim, 2)) – min, max value for each input dimension</p></li>
+<li><p><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) – method for creating new parameter steps using
+given a step size based on the paramter domain size</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save samples and data</p></li>
+<li><p><strong>initial_sample_type</strong> (<em>string</em>) – type of initial sample random (or r),
+latin hypercube(lhs), or space-filling curve(TBD)</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
-</li>
+</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(discretization, , num_high_prob_samples,
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(discretization, , num_high_prob_samples,
 sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.run_inc_dec">
-<code class="descname">run_inc_dec</code><span class="sig-paren">(</span><em>increase</em>, <em>decrease</em>, <em>tolerance</em>, <em>rho_D</em>, <em>maximum</em>, <em>input_domain</em>, <em>t_set</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_inc_dec" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_inc_dec</code><span class="sig-paren">(</span><em class="sig-param">increase</em>, <em class="sig-param">decrease</em>, <em class="sig-param">tolerance</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">maximum</em>, <em class="sig-param">input_domain</em>, <em class="sig-param">t_set</em>, <em class="sig-param">savefile</em>, <em class="sig-param">initial_sample_type='lhs'</em>, <em class="sig-param">criterion='center'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_inc_dec" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using generalized chains and
-<a class="reference internal" href="#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><code class="xref py py-class docutils literal"><span class="pre">rhoD_kernel</span></code></a> created using
+<a class="reference internal" href="#bet.sampling.adaptiveSampling.rhoD_kernel" title="bet.sampling.adaptiveSampling.rhoD_kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">rhoD_kernel</span></code></a> created using
 the <cite>increase</cite>, <cite>decrease</cite>, and <cite>tolerance</cite> parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>increase</strong> (<em>list</em>) &#8211; the multiple to increase the step size by</li>
-<li><strong>decrease</strong> (<em>list</em>) &#8211; the multiple to decrease the step size by</li>
-<li><strong>tolerance</strong> (<em>list</em>) &#8211; a tolerance used to determine if two
-different values are close</li>
-<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
-returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>float</em>) &#8211; maximum value of rho_D</li>
-<li><strong>input_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim, 2)) &#8211; min, max value for each input dimension</li>
-<li><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) &#8211; method for creating new parameter steps using
-given a step size based on the paramter domain size</li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save samples and data</li>
-<li><strong>initial_sample_type</strong> (<em>string</em>) &#8211; type of initial sample random (or r),
-latin hypercube(lhs), or space-filling curve(TBD)</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; <p>latin hypercube criterion see 
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>increase</strong> (<em>list</em>) – the multiple to increase the step size by</p></li>
+<li><p><strong>decrease</strong> (<em>list</em>) – the multiple to decrease the step size by</p></li>
+<li><p><strong>tolerance</strong> (<em>list</em>) – a tolerance used to determine if two
+different values are close</p></li>
+<li><p><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> and
+returns a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – probability density on D</p></li>
+<li><p><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – maximum value of rho_D</p></li>
+<li><p><strong>input_domain</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (ndim, 2)) – min, max value for each input dimension</p></li>
+<li><p><strong>t_set</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.transition_set" title="bet.sampling.adaptiveSampling.transition_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.transition_set</span></code></a>) – method for creating new parameter steps using
+given a step size based on the paramter domain size</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save samples and data</p></li>
+<li><p><strong>initial_sample_type</strong> (<em>string</em>) – type of initial sample random (or r),
+latin hypercube(lhs), or space-filling curve(TBD)</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
-</li>
+</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(discretization, , num_high_prob_samples,
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(discretization, , num_high_prob_samples,
 sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.run_tk">
-<code class="descname">run_tk</code><span class="sig-paren">(</span><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em>, <em>rho_D</em>, <em>maximum</em>, <em>input_domain</em>, <em>kernel</em>, <em>savefile</em>, <em>initial_sample_type='lhs'</em>, <em>criterion='center'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_tk" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">run_tk</code><span class="sig-paren">(</span><em class="sig-param">init_ratio</em>, <em class="sig-param">min_ratio</em>, <em class="sig-param">max_ratio</em>, <em class="sig-param">rho_D</em>, <em class="sig-param">maximum</em>, <em class="sig-param">input_domain</em>, <em class="sig-param">kernel</em>, <em class="sig-param">savefile</em>, <em class="sig-param">initial_sample_type='lhs'</em>, <em class="sig-param">criterion='center'</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.run_tk" title="Permalink to this definition">¶</a></dt>
 <dd><p>Generates samples using generalized chains and
-<code class="xref py py-class docutils literal"><span class="pre">transition_set</span></code> created using
+<code class="xref py py-class docutils literal notranslate"><span class="pre">transition_set</span></code> created using
 the <cite>init_ratio</cite>, <cite>min_ratio</cite>, and <cite>max_ratio</cite> parameters.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>init_ratio</strong> (<em>list</em>) &#8211; Initial step size ratio compared to the
-parameter domain.</li>
-<li><strong>min_ratio</strong> (<em>list</em>) &#8211; Minimum step size compared to the initial step
-size.</li>
-<li><strong>max_ratio</strong> (<em>list</em>) &#8211; Maximum step size compared to the maximum step
-size.</li>
-<li><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> and
-returns a <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>) &#8211; probability density on D</li>
-<li><strong>maximum</strong> (<em>float</em>) &#8211; maximum value of rho_D</li>
-<li><strong>input_domain</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> (ndim, 2)) &#8211; min, max value for each input dimension</li>
-<li><strong>kernel</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a> object.) &#8211; functional that acts on the data used to
-determine the proposed change to the <code class="docutils literal"><span class="pre">step_size</span></code></li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save samples and data</li>
-<li><strong>initial_sample_type</strong> (<em>string</em>) &#8211; type of initial sample random (or r),
-latin hypercube(lhs), or space-filling curve(TBD)</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; <p>latin hypercube criterion see 
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>init_ratio</strong> (<em>list</em>) – Initial step size ratio compared to the
+parameter domain.</p></li>
+<li><p><strong>min_ratio</strong> (<em>list</em>) – Minimum step size compared to the initial step
+size.</p></li>
+<li><p><strong>max_ratio</strong> (<em>list</em>) – Maximum step size compared to the maximum step
+size.</p></li>
+<li><p><strong>rho_D</strong> (callable function that takes a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> and
+returns a <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – probability density on D</p></li>
+<li><p><strong>maximum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – maximum value of rho_D</p></li>
+<li><p><strong>input_domain</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> (ndim, 2)) – min, max value for each input dimension</p></li>
+<li><p><strong>kernel</strong> (<a class="reference internal" href="#bet.sampling.adaptiveSampling.kernel" title="bet.sampling.adaptiveSampling.kernel"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling.kernel</span></code></a> object.) – functional that acts on the data used to
+determine the proposed change to the <code class="docutils literal notranslate"><span class="pre">step_size</span></code></p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save samples and data</p></li>
+<li><p><strong>initial_sample_type</strong> (<em>string</em>) – type of initial sample random (or r),
+latin hypercube(lhs), or space-filling curve(TBD)</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
-</li>
+</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(discretization, , num_high_prob_samples,
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(discretization, , num_high_prob_samples,
 sorted_incidices_of_num_high_prob_samples, average_step_ratio)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.sampler.sample_batch_no">
+<code class="sig-name descname">sample_batch_no</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.sample_batch_no" title="Permalink to this definition">¶</a></dt>
+<dd><p>batch number for this particular chain</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.sampler.update_mdict">
-<code class="descname">update_mdict</code><span class="sig-paren">(</span><em>mdict</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.update_mdict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set up references for <code class="docutils literal"><span class="pre">mdict</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdict</strong> (<em>dict</em>) &#8211; dictonary of sampler parameters</td>
-</tr>
-</tbody>
-</table>
+<code class="sig-name descname">update_mdict</code><span class="sig-paren">(</span><em class="sig-param">mdict</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.sampler.update_mdict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up references for <code class="docutils literal notranslate"><span class="pre">mdict</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – dictonary of sampler parameters</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.sampling.adaptiveSampling.transition_set">
-<em class="property">class </em><code class="descclassname">bet.sampling.adaptiveSampling.</code><code class="descname">transition_set</code><span class="sig-paren">(</span><em>init_ratio</em>, <em>min_ratio</em>, <em>max_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.adaptiveSampling.</code><code class="sig-name descname">transition_set</code><span class="sig-paren">(</span><em class="sig-param">init_ratio</em>, <em class="sig-param">min_ratio</em>, <em class="sig-param">max_ratio</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>Basic class that is used to create a step to move from samples_old to
 input_new based. This class generates steps for a random walk using a
 very basic algorithm. Future classes will inherit from this one with
 different implementations of the
 :meth:~`polysim.run_framework.apdative_sampling.step` method.
 This basic transition set is designed without a preferential direction.</p>
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.transition_set.init_ratio">
+<code class="sig-name descname">init_ratio</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.init_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, initial step ratio</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.transition_set.max_ratio">
+<code class="sig-name descname">max_ratio</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.max_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>float, maximum step_ratio</p>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.adaptiveSampling.transition_set.min_ratio">
+<code class="sig-name descname">min_ratio</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.min_ratio" title="Permalink to this definition">¶</a></dt>
+<dd><p>float,  minimum step_ratio</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="bet.sampling.adaptiveSampling.transition_set.step">
-<code class="descname">step</code><span class="sig-paren">(</span><em>step_ratio</em>, <em>input_old</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.step" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generate <code class="docutils literal"><span class="pre">num_samples</span></code> new steps using <code class="docutils literal"><span class="pre">step_ratio</span></code> and
-<code class="docutils literal"><span class="pre">input_width</span></code> to calculate the <code class="docutils literal"><span class="pre">step</span> <span class="pre">size</span></code>. Each step will have a
+<code class="sig-name descname">step</code><span class="sig-paren">(</span><em class="sig-param">step_ratio</em>, <em class="sig-param">input_old</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.adaptiveSampling.transition_set.step" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> new steps using <code class="docutils literal notranslate"><span class="pre">step_ratio</span></code> and
+<code class="docutils literal notranslate"><span class="pre">input_width</span></code> to calculate the <code class="docutils literal notranslate"><span class="pre">step</span> <span class="pre">size</span></code>. Each step will have a
 random direction.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>step_ratio</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) &#8211; define maximum step_size = <code class="docutils literal"><span class="pre">step_ratio*input_width</span></code></li>
-<li><strong>input_old</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of shape (num_samples,
-ndim)) &#8211; Input from the previous step.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>step_ratio</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) – define maximum step_size = <code class="docutils literal notranslate"><span class="pre">step_ratio*input_width</span></code></p></li>
+<li><p><strong>input_old</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (num_samples,
+ndim)) – Input from the previous step.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples, ndim)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">input_new</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples, ndim)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>input_new</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -701,333 +799,299 @@ Each sample consists for a paramter coordinate, data coordinate pairing. We
 assume the measure on both spaces in Lebesgue.</p>
 <dl class="exception">
 <dt id="bet.sampling.basicSampling.bad_object">
-<em class="property">exception </em><code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">bad_object</code><a class="headerlink" href="#bet.sampling.basicSampling.bad_object" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">exceptions.Exception</span></code></p>
+<em class="property">exception </em><code class="sig-prename descclassname">bet.sampling.basicSampling.</code><code class="sig-name descname">bad_object</code><a class="headerlink" href="#bet.sampling.basicSampling.bad_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
 <p>Exception for when the wrong type of object is used.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.basicSampling.loadmat">
-<code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">loadmat</code><span class="sig-paren">(</span><em>save_file</em>, <em>disc_name=None</em>, <em>model=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.loadmat" title="Permalink to this definition">¶</a></dt>
-<dd><p>Loads data from <code class="docutils literal"><span class="pre">save_file</span></code> into a
-<code class="xref py py-class docutils literal"><span class="pre">sampler</span></code> object.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>save_file</strong> (<em>string</em>) &#8211; file name</li>
-<li><strong>disc_name</strong> (<em>string</em>) &#8211; name of <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> in
-file</li>
-<li><strong>model</strong> (<em>callable</em>) &#8211; runs the model at a given set of parameter samples and
-returns data</li>
+<code class="sig-prename descclassname">bet.sampling.basicSampling.</code><code class="sig-name descname">loadmat</code><span class="sig-paren">(</span><em class="sig-param">save_file</em>, <em class="sig-param">disc_name=None</em>, <em class="sig-param">model=None</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.loadmat" title="Permalink to this definition">¶</a></dt>
+<dd><p>Loads data from <code class="docutils literal notranslate"><span class="pre">save_file</span></code> into a
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sampler</span></code> object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_file</strong> (<em>string</em>) – file name</p></li>
+<li><p><strong>disc_name</strong> (<em>string</em>) – name of <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> in
+file</p></li>
+<li><p><strong>model</strong> (<em>callable</em>) – runs the model at a given set of parameter samples and
+returns data</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first">tuple</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">(sampler, discretization)</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(sampler, discretization)</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.basicSampling.random_sample_set">
-<code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">random_sample_set</code><span class="sig-paren">(</span><em>sample_type</em>, <em>input_obj</em>, <em>num_samples</em>, <em>criterion='center'</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.random_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.sampling.basicSampling.</code><code class="sig-name descname">random_sample_set</code><span class="sig-paren">(</span><em class="sig-param">sample_type</em>, <em class="sig-param">input_obj</em>, <em class="sig-param">num_samples</em>, <em class="sig-param">criterion='center'</em>, <em class="sig-param">globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.random_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm with three basic options</p>
 <blockquote>
-<div><ul>
-<li><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">random</span></code> (or <code class="docutils literal"><span class="pre">r</span></code>) generates <code class="docutils literal"><span class="pre">num_samples</span></code> samples in</dt>
-<dd><p class="first last"><code class="docutils literal"><span class="pre">lam_domain</span></code> assuming a Lebesgue measure.</p>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">random</span></code> (or <code class="docutils literal notranslate"><span class="pre">r</span></code>) generates <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> samples in</dt><dd><p><code class="docutils literal notranslate"><span class="pre">lam_domain</span></code> assuming a Lebesgue measure.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">lhs</span></code> generates a latin hyper cube of samples.</p>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lhs</span></code> generates a latin hyper cube of samples.</p></li>
 </ul>
 </div></blockquote>
 <p>Note: This function is designed only for generalized rectangles and
 assumes a Lebesgue measure on the parameter space.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sample_type</strong> (<em>string</em>) &#8211; type sampling random (or r),
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_type</strong> (<em>string</em>) – type sampling random (or r),
 latin hypercube(lhs), regular grid (rg), or space-filling
-curve(TBD)</li>
-<li><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2) or <code class="docutils literal"><span class="pre">int</span></code>) &#8211; <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object containing
+curve(TBD)</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
 the dimension/domain to sample from, domain to sample from, or the
-dimension</li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save discretization</li>
-<li><strong>num_samples</strong> (<em>int</em>) &#8211; N, number of samples</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; <p>latin hypercube criterion see 
+dimension</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save discretization</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – N, number of samples</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
-</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global. Only applies if
-<code class="docutils literal"><span class="pre">parallel==True</span></code>.</li>
+</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global. Only applies if
+<code class="docutils literal notranslate"><span class="pre">parallel==True</span></code>.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object which contains
-input <code class="docutils literal"><span class="pre">num_samples</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object which contains
+input <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="function">
 <dt id="bet.sampling.basicSampling.regular_sample_set">
-<code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">regular_sample_set</code><span class="sig-paren">(</span><em>input_obj</em>, <em>num_samples_per_dim=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.regular_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">bet.sampling.basicSampling.</code><code class="sig-name descname">regular_sample_set</code><span class="sig-paren">(</span><em class="sig-param">input_obj</em>, <em class="sig-param">num_samples_per_dim=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.regular_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm for generating a regular grid of samples taken
-on the domain present with <code class="docutils literal"><span class="pre">input_obj</span></code> (a default unit hypercube
+on the domain present with <code class="docutils literal notranslate"><span class="pre">input_obj</span></code> (a default unit hypercube
 is used if no domain has been specified)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a>
-of shape (dim, 2) or <code class="docutils literal"><span class="pre">int</span></code>) &#8211; <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object containing
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
 the dimension or domain to sample from, the domain to sample from, or
-the dimension</li>
-<li><strong>num_samples_per_dim</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of dimension
-<code class="docutils literal"><span class="pre">(input_sample_set._dim,)</span></code>) &#8211; number of samples per dimension</li>
+the dimension</p></li>
+<li><p><strong>num_samples_per_dim</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of dimension
+<code class="docutils literal notranslate"><span class="pre">(input_sample_set._dim,)</span></code>) – number of samples per dimension</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object which contains
-input <code class="docutils literal"><span class="pre">num_samples</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object which contains
+input <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="class">
 <dt id="bet.sampling.basicSampling.sampler">
-<em class="property">class </em><code class="descclassname">bet.sampling.basicSampling.</code><code class="descname">sampler</code><span class="sig-paren">(</span><em>lb_model</em>, <em>num_samples=None</em>, <em>error_estimates=False</em>, <em>jacobians=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">object</span></code></p>
+<em class="property">class </em><code class="sig-prename descclassname">bet.sampling.basicSampling.</code><code class="sig-name descname">sampler</code><span class="sig-paren">(</span><em class="sig-param">lb_model</em>, <em class="sig-param">num_samples=None</em>, <em class="sig-param">error_estimates=False</em>, <em class="sig-param">jacobians=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
 <p>This class provides methods for adaptive sampling of parameter space to
 provide samples to be used by algorithms to solve inverse problems.</p>
-<dl class="docutils">
-<dt>num_samples</dt>
-<dd>total number of samples OR list of number of samples per dimension such
-that total number of samples is prob(num_samples)</dd>
-<dt>lb_model</dt>
-<dd>callable function that runs the model at a given set of input and
-returns output</dd>
+<dl class="simple">
+<dt>num_samples</dt><dd><p>total number of samples OR list of number of samples per dimension such
+that total number of samples is prob(num_samples)</p>
+</dd>
+<dt>lb_model</dt><dd><p>callable function that runs the model at a given set of input and
+returns output</p>
+</dd>
 </dl>
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization">
-<code class="descname">compute_QoI_and_create_discretization</code><span class="sig-paren">(</span><em>input_sample_set</em>, <em>savefile=None</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization" title="Permalink to this definition">¶</a></dt>
-<dd><p>Samples the model at <code class="docutils literal"><span class="pre">input_sample_set</span></code> and saves the results.</p>
+<code class="sig-name descname">compute_QoI_and_create_discretization</code><span class="sig-paren">(</span><em class="sig-param">input_sample_set</em>, <em class="sig-param">savefile=None</em>, <em class="sig-param">globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Samples the model at <code class="docutils literal notranslate"><span class="pre">input_sample_set</span></code> and saves the results.</p>
 <p>Note: There are many ways to generate samples on a regular grid in
 Numpy and other Python packages. Instead of reimplementing them here we
 provide sampler that utilizes user specified samples.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input_sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> with
-num_smaples) &#8211; samples to evaluate the model at</li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save samples and data</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global.</li>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> with
+num_smaples) – samples to evaluate the model at</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save samples and data</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> object which contains
-input and output of <code class="docutils literal"><span class="pre">num_samples</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> object which contains
+input and output of <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.create_random_discretization">
-<code class="descname">create_random_discretization</code><span class="sig-paren">(</span><em>sample_type</em>, <em>input_obj</em>, <em>savefile=None</em>, <em>num_samples=None</em>, <em>criterion='center'</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.create_random_discretization" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">create_random_discretization</code><span class="sig-paren">(</span><em class="sig-param">sample_type</em>, <em class="sig-param">input_obj</em>, <em class="sig-param">savefile=None</em>, <em class="sig-param">num_samples=None</em>, <em class="sig-param">criterion='center'</em>, <em class="sig-param">globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.create_random_discretization" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm with three basic options</p>
 <blockquote>
-<div><ul>
-<li><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">random</span></code> (or <code class="docutils literal"><span class="pre">r</span></code>) generates <code class="docutils literal"><span class="pre">num_samples</span></code> samples in</dt>
-<dd><p class="first last"><code class="docutils literal"><span class="pre">lam_domain</span></code> assuming a Lebesgue measure.</p>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">random</span></code> (or <code class="docutils literal notranslate"><span class="pre">r</span></code>) generates <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> samples in</dt><dd><p><code class="docutils literal notranslate"><span class="pre">lam_domain</span></code> assuming a Lebesgue measure.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">lhs</span></code> generates a latin hyper cube of samples.</p>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lhs</span></code> generates a latin hyper cube of samples.</p></li>
 </ul>
 </div></blockquote>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">This function is designed only for generalized rectangles and
+<p class="admonition-title">Note</p>
+<p>This function is designed only for generalized rectangles and
 assumes a Lebesgue measure on the parameter space.</p>
 </div>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sample_type</strong> (<em>string</em>) &#8211; type sampling random (or r),
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_type</strong> (<em>string</em>) – type sampling random (or r),
 latin hypercube(lhs), regular grid (rg), or space-filling
-curve(TBD)</li>
-<li><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a>,
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, 2), or :class: <cite>int</cite>) &#8211; Either a <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.sample_set</span></code></a> object for an
+curve(TBD)</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>,
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim, 2), or :class: <cite>int</cite>) – Either a <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set</span></code></a> object for an
 input space, an array of min and max bounds for the input values
-with <code class="docutils literal"><span class="pre">min</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">0]</span></code> and <code class="docutils literal"><span class="pre">max</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">1]</span></code>,
-or the dimension of an input space</li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save discretization</li>
-<li><strong>num_samples</strong> (<em>int</em>) &#8211; N, number of samples (optional)</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; <p>latin hypercube criterion see
+with <code class="docutils literal notranslate"><span class="pre">min</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">0]</span></code> and <code class="docutils literal notranslate"><span class="pre">max</span> <span class="pre">=</span> <span class="pre">input_domain[:,</span> <span class="pre">1]</span></code>,
+or the dimension of an input space</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save discretization</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – N, number of samples (optional)</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
-</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global.</li>
+</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">discretization</span></code></a> object which contains
-input and output sample sets with <code class="docutils literal"><span class="pre">num_samples</span></code> total samples</p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> object which contains
+input and output sample sets with <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> total samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="attribute">
+<dt id="bet.sampling.basicSampling.sampler.num_samples">
+<code class="sig-name descname">num_samples</code><em class="property"> = None</em><a class="headerlink" href="#bet.sampling.basicSampling.sampler.num_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>int, total number of samples OR list of number of samples per
+dimension such that total number of samples is prob(num_samples)</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.random_sample_set">
-<code class="descname">random_sample_set</code><span class="sig-paren">(</span><em>sample_type</em>, <em>input_obj</em>, <em>num_samples=None</em>, <em>criterion='center'</em>, <em>globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.random_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">random_sample_set</code><span class="sig-paren">(</span><em class="sig-param">sample_type</em>, <em class="sig-param">input_obj</em>, <em class="sig-param">num_samples=None</em>, <em class="sig-param">criterion='center'</em>, <em class="sig-param">globalize=True</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.random_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm with three basic options</p>
 <blockquote>
-<div><ul>
-<li><dl class="first docutils">
-<dt><code class="docutils literal"><span class="pre">random</span></code> (or <code class="docutils literal"><span class="pre">r</span></code>) generates <code class="docutils literal"><span class="pre">num_samples</span></code> samples in</dt>
-<dd><p class="first last"><code class="docutils literal"><span class="pre">lam_domain</span></code> assuming a Lebesgue measure.</p>
+<div><ul class="simple">
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">random</span></code> (or <code class="docutils literal notranslate"><span class="pre">r</span></code>) generates <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> samples in</dt><dd><p><code class="docutils literal notranslate"><span class="pre">lam_domain</span></code> assuming a Lebesgue measure.</p>
 </dd>
 </dl>
 </li>
-<li><p class="first"><code class="docutils literal"><span class="pre">lhs</span></code> generates a latin hyper cube of samples.</p>
-</li>
+<li><p><code class="docutils literal notranslate"><span class="pre">lhs</span></code> generates a latin hyper cube of samples.</p></li>
 </ul>
 </div></blockquote>
 <p>Note: This function is designed only for generalized rectangles and
 assumes a Lebesgue measure on the parameter space.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>sample_type</strong> (<em>string</em>) &#8211; type sampling random (or r),
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_type</strong> (<em>string</em>) – type sampling random (or r),
 latin hypercube(lhs), regular grid (rg), or space-filling
-curve(TBD)</li>
-<li><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2) or <code class="docutils literal"><span class="pre">int</span></code>) &#8211; <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object containing
+curve(TBD)</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
 the dimension/domain to sample from, domain to sample from, or the
-dimension</li>
-<li><strong>savefile</strong> (<em>string</em>) &#8211; filename to save discretization</li>
-<li><strong>num_samples</strong> (<em>int</em>) &#8211; N, number of samples (optional)</li>
-<li><strong>criterion</strong> (<em>string</em>) &#8211; <p>latin hypercube criterion see 
+dimension</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save discretization</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – N, number of samples (optional)</p></li>
+<li><p><strong>criterion</strong> (<em>string</em>) – <p>latin hypercube criterion see
 <a class="reference external" href="http://pythonhosted.org/pyDOE/randomized.html">PyDOE</a></p>
-</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global.</li>
+</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object which contains
-input <code class="docutils literal"><span class="pre">num_samples</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object which contains
+input <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.regular_sample_set">
-<code class="descname">regular_sample_set</code><span class="sig-paren">(</span><em>input_obj</em>, <em>num_samples_per_dim=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.regular_sample_set" title="Permalink to this definition">¶</a></dt>
+<code class="sig-name descname">regular_sample_set</code><span class="sig-paren">(</span><em class="sig-param">input_obj</em>, <em class="sig-param">num_samples_per_dim=1</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.regular_sample_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Sampling algorithm for generating a regular grid of samples taken
-on the domain present with <code class="docutils literal"><span class="pre">input_obj</span></code> (a default unit hypercube
+on the domain present with <code class="docutils literal notranslate"><span class="pre">input_obj</span></code> (a default unit hypercube
 is used if no domain has been specified)</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> or
-<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2) or <code class="docutils literal"><span class="pre">int</span></code>) &#8211; <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object containing
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or
+<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
 the dimension or domain to sample from, the domain to sample from,
-or the dimension</li>
-<li><strong>num_samples_per_dim</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.11)"><code class="xref py py-class docutils literal"><span class="pre">ndarray</span></code></a> of dimension
-(dim,)) &#8211; number of samples per dimension</li>
+or the dimension</p></li>
+<li><p><strong>num_samples_per_dim</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.17)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of dimension
+(dim,)) – number of samples per dimension</p></li>
 </ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a></p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last"><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal"><span class="pre">sample_set</span></code></a> object which contains
-input <code class="docutils literal"><span class="pre">num_samples</span></code></p>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object which contains
+input <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.save">
-<code class="descname">save</code><span class="sig-paren">(</span><em>mdict</em>, <em>save_file</em>, <em>discretization=None</em>, <em>globalize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.save" title="Permalink to this definition">¶</a></dt>
-<dd><p>Save matrices to a <code class="docutils literal"><span class="pre">*.mat</span></code> file for use by <code class="docutils literal"><span class="pre">MATLAB</span> <span class="pre">BET</span></code> code and
-<code class="xref py py-meth docutils literal"><span class="pre">loadmat()</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>mdict</strong> (<em>dict</em>) &#8211; dictonary of sampler parameters</li>
-<li><strong>save_file</strong> (<em>string</em>) &#8211; file name</li>
-<li><strong>discretization</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal"><span class="pre">bet.sample.discretization</span></code></a>) &#8211; input and output from sampling</li>
-<li><strong>globalize</strong> (<em>bool</em>) &#8211; Makes local variables global.</li>
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param">mdict</em>, <em class="sig-param">save_file</em>, <em class="sig-param">discretization=None</em>, <em class="sig-param">globalize=False</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save matrices to a <code class="docutils literal notranslate"><span class="pre">*.mat</span></code> file for use by <code class="docutils literal notranslate"><span class="pre">MATLAB</span> <span class="pre">BET</span></code> code and
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">loadmat()</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – dictonary of sampler parameters</p></li>
+<li><p><strong>save_file</strong> (<em>string</em>) – file name</p></li>
+<li><p><strong>discretization</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a>) – input and output from sampling</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
 </ul>
-</td>
-</tr>
-</tbody>
-</table>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="method">
 <dt id="bet.sampling.basicSampling.sampler.update_mdict">
-<code class="descname">update_mdict</code><span class="sig-paren">(</span><em>mdict</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.update_mdict" title="Permalink to this definition">¶</a></dt>
-<dd><p>Set up references for <code class="docutils literal"><span class="pre">mdict</span></code></p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>mdict</strong> (<em>dict</em>) &#8211; dictonary of sampler parameters</td>
-</tr>
-</tbody>
-</table>
+<code class="sig-name descname">update_mdict</code><span class="sig-paren">(</span><em class="sig-param">mdict</em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.update_mdict" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set up references for <code class="docutils literal notranslate"><span class="pre">mdict</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>mdict</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)"><em>dict</em></a>) – dictonary of sampler parameters</p>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>
@@ -1036,22 +1100,19 @@ input <code class="docutils literal"><span class="pre">num_samples</span></code>
 <div class="section" id="module-bet.sampling">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.sampling" title="Permalink to this headline">¶</a></h2>
 <p>This subpackage contains</p>
-<ul>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> a general class and associated set of</dt>
-<dd><p class="first last">methods that interogates a model through an interface.</p>
+<ul class="simple">
+<li><dl class="simple">
+<dt><a class="reference internal" href="#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">basicSampling</span></code></a> a general class and associated set of</dt><dd><p>methods that interogates a model through an interface.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal"><span class="pre">sampler</span></code></a> requests data(QoI) at a</dt>
-<dd><p class="first last">specified set of parameter samples.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">sampler</span></code></a> requests data(QoI) at a</dt><dd><p>specified set of parameter samples.</p>
 </dd>
 </dl>
 </li>
-<li><dl class="first docutils">
-<dt><a class="reference internal" href="#module-bet.sampling.adaptiveSampling" title="bet.sampling.adaptiveSampling"><code class="xref py py-class docutils literal"><span class="pre">bet.sampling.adaptiveSampling</span></code></a> inherits from</dt>
-<dd><p class="first last"><a class="reference internal" href="#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal"><span class="pre">basicSampling</span></code></a> adaptively generates samples.</p>
+<li><dl class="simple">
+<dt><a class="reference internal" href="#module-bet.sampling.adaptiveSampling" title="bet.sampling.adaptiveSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sampling.adaptiveSampling</span></code></a> inherits from</dt><dd><p><a class="reference internal" href="#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-class docutils literal notranslate"><span class="pre">basicSampling</span></code></a> adaptively generates samples.</p>
 </dd>
 </dl>
 </li>
@@ -1061,15 +1122,16 @@ input <code class="docutils literal"><span class="pre">num_samples</span></code>
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="bet.sensitivity.html" class="btn btn-neutral float-right" title="bet.sensitivity package" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="bet.sensitivity.html" class="btn btn-neutral float-right" title="bet.sensitivity package" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="bet.postProcess.html" class="btn btn-neutral" title="bet.postProcess package" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="bet.postProcess.html" class="btn btn-neutral float-left" title="bet.postProcess package" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -1078,12 +1140,14 @@ input <code class="docutils literal"><span class="pre">num_samples</span></code>
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -1096,36 +1160,15 @@ input <code class="docutils literal"><span class="pre">num_samples</span></code>
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'./',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="_static/jquery.js"></script>
-      <script type="text/javascript" src="_static/underscore.js"></script>
-      <script type="text/javascript" src="_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>

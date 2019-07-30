@@ -8,45 +8,46 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Some References and Examples &mdash; BET 2.0.0 documentation</title>
+  <title>Some References and Examples &mdash; BET 2.1.0 documentation</title>
   
 
   
   
+  
+  
 
   
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script type="text/javascript" src="../_static/jquery.js"></script>
+        <script type="text/javascript" src="../_static/underscore.js"></script>
+        <script type="text/javascript" src="../_static/doctools.js"></script>
+        <script type="text/javascript" src="../_static/language_data.js"></script>
+        <script async="async" type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
 
-  
-  
     
 
   
-
-  
-  
-    <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
-  
-
-  
-
-  
-    <link rel="top" title="BET 2.0.0 documentation" href="../index.html"/>
-        <link rel="next" title="Example: FEniCS" href="example_rst_files/FEniCS.html"/>
-        <link rel="prev" title="Parallel" href="../parallel.html"/> 
-
-  
-  <script src="../_static/js/modernizr.min.js"></script>
-
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Example: FEniCS" href="example_rst_files/FEniCS.html" />
+    <link rel="prev" title="Parallel" href="../parallel.html" /> 
 </head>
 
-<body class="wy-body-for-nav" role="document">
+<body class="wy-body-for-nav">
 
+   
   <div class="wy-grid-for-nav">
-
     
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
-        <div class="wy-side-nav-search">
+        <div class="wy-side-nav-search" >
           
 
           
@@ -60,7 +61,7 @@
             
             
               <div class="version">
-                2.0
+                2.1
               </div>
             
           
@@ -81,7 +82,10 @@
           
             
             
-                <ul class="current">
+              
+            
+            
+              <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="../overview.html">Overview</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../parallel.html">Parallel</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Some References and Examples</a><ul>
@@ -95,7 +99,7 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">ADCIRC on an Idealized Inlet Examples and Adaptive Sampling</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#batch-adaptive-sampling-examples">(Batch) Adaptive Sampling Examples</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#examples-estimating">Examples Estimating <span class="math">\(P_\Lambda\)</span></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#examples-estimating-p-lambda">Examples Estimating <span class="math notranslate nohighlight">\(P_\Lambda\)</span></a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#contaminant-transport-example">Contaminant Transport Example</a></li>
@@ -135,34 +139,54 @@
     <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
 
       
-      <nav class="wy-nav-top" role="navigation" aria-label="top navigation">
-        <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
-        <a href="../index.html">BET</a>
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">BET</a>
+        
       </nav>
 
 
-      
       <div class="wy-nav-content">
+        
         <div class="rst-content">
+        
           
 
- 
+
+
+
+
+
+
+
+
+
+
+
 
 
 
 <div role="navigation" aria-label="breadcrumbs navigation">
+
   <ul class="wy-breadcrumbs">
-    <li><a href="../index.html">Docs</a> &raquo;</li>
-      
-    <li>Some References and Examples</li>
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Some References and Examples</li>
+    
+    
       <li class="wy-breadcrumbs-aside">
         
-          
-            <a href="../_sources/examples/examples_overview.txt" rel="nofollow"> View page source</a>
+            
+            <a href="../_sources/examples/examples_overview.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
+    
   </ul>
+
+  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
@@ -179,7 +203,7 @@ and error analysis of the non-intrusive algorithm, and
 hydrodynamic models</a> for a less technical description
 of the method for engineers as well as application to a physically relevant problem
 in coastal ocean modeling.</p>
-<p>All of the example listed here and more are located in the <code class="docutils literal"><span class="pre">BET/examples/</span></code>
+<p>All of the example listed here and more are located in the <code class="docutils literal notranslate"><span class="pre">BET/examples/</span></code>
 directory.</p>
 <div class="section" id="validation-example">
 <h2>Validation example<a class="headerlink" href="#validation-example" title="Permalink to this headline">¶</a></h2>
@@ -208,7 +232,7 @@ launch multiple serial runs of the model in parallel.</p>
 </div>
 <div class="section" id="adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling">
 <h2>ADCIRC on an Idealized Inlet Examples and Adaptive Sampling<a class="headerlink" href="#adcirc-on-an-idealized-inlet-examples-and-adaptive-sampling" title="Permalink to this headline">¶</a></h2>
-<p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/fromADCIRC_FileMap</span></code>.</p>
+<p>The files for these examples can be found in <code class="docutils literal notranslate"><span class="pre">examples/fromADCIRC_FileMap</span></code>.</p>
 <p>For a description of the model, physical inlet domain, data space, and parameter
 space for the examples using the idealized inlet see <a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution
 of a stochastic inverse problem for the Manning’s n parameter field in
@@ -219,25 +243,25 @@ hydrodynamic models</a>.</p>
 adaptive sampling on a linear interpolant
 created from data read from file.
 We also show how several methods within the module
-<a class="reference internal" href="../bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-mod docutils literal"><span class="pre">plotDomains</span></code></a> can be used to
+<code class="xref py py-mod docutils literal notranslate"><span class="pre">plotDomains</span></code> can be used to
 plot 2D domains and/or 2D slices and projections of higher dimensional domains.</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="example_rst_files/fromfile2D.html#fromfile2dexample"><span class="std std-ref">Example: Batch Adaptive Sampling (2-to-2 example)</span></a></li>
-<li><a class="reference internal" href="example_rst_files/fromfile3D.html#fromfile3dexample"><span class="std std-ref">Example: Batch Adaptive Sampling (3-to-3 example)</span></a></li>
+<li><p><a class="reference internal" href="example_rst_files/fromfile2D.html#fromfile2dexample"><span class="std std-ref">Example: Batch Adaptive Sampling (2-to-2 example)</span></a></p></li>
+<li><p><a class="reference internal" href="example_rst_files/fromfile3D.html#fromfile3dexample"><span class="std std-ref">Example: Batch Adaptive Sampling (3-to-3 example)</span></a></p></li>
 </ul>
 </div></blockquote>
 </div>
-<div class="section" id="examples-estimating">
-<h3>Examples Estimating <span class="math">\(P_\Lambda\)</span><a class="headerlink" href="#examples-estimating" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="examples-estimating-p-lambda">
+<h3>Examples Estimating <span class="math notranslate nohighlight">\(P_\Lambda\)</span><a class="headerlink" href="#examples-estimating-p-lambda" title="Permalink to this headline">¶</a></h3>
 <p>These illustrate how to actually take a discretization object
 (loaded from file) and solve the stochastic inverse problem
 using different QoI maps.</p>
 <blockquote>
 <div><ul class="simple">
-<li><a class="reference internal" href="example_rst_files/Q_1D.html#q1d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a></li>
-<li><a class="reference internal" href="example_rst_files/Q_2D.html#q2d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a></li>
-<li><a class="reference internal" href="example_rst_files/Q_3D.html#q3d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 3D data space</span></a></li>
+<li><p><a class="reference internal" href="example_rst_files/Q_1D.html#q1d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 1D data space</span></a></p></li>
+<li><p><a class="reference internal" href="example_rst_files/Q_2D.html#q2d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 2D data space</span></a></p></li>
+<li><p><a class="reference internal" href="example_rst_files/Q_3D.html#q3d"><span class="std std-ref">Example: Estimate the parameter space probabiliy density with  a 3D data space</span></a></p></li>
 </ul>
 </div></blockquote>
 </div>
@@ -248,7 +272,7 @@ using different QoI maps.</p>
 </div>
 <div class="section" id="choosing-optimal-qois-examples">
 <h2>Choosing Optimal QoIs Examples<a class="headerlink" href="#choosing-optimal-qois-examples" title="Permalink to this headline">¶</a></h2>
-<p>The files for these examples can be found in <code class="docutils literal"><span class="pre">examples/sensitivity</span></code>.</p>
+<p>The files for these examples can be found in <code class="docutils literal notranslate"><span class="pre">examples/sensitivity</span></code>.</p>
 <p>See <a class="reference internal" href="example_rst_files/chooseOptQoIs_2d.html#chooseqois"><span class="std std-ref">Example: Optimizing space-time measurements of temperature on a thin plate</span></a> for an example based on optimizing the space-time
 locations of two temperature measurements on a thin metal plate with
 spatially variable thermal diffusivity. The goal is to optimize the QoI map with
@@ -285,15 +309,16 @@ a QoI map from a space of linear QoI maps under different optimization criteria.
 
 
            </div>
+           
           </div>
           <footer>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="example_rst_files/FEniCS.html" class="btn btn-neutral float-right" title="Example: FEniCS" accesskey="n">Next <span class="fa fa-arrow-circle-right"></span></a>
+        <a href="example_rst_files/FEniCS.html" class="btn btn-neutral float-right" title="Example: FEniCS" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
       
-        <a href="../parallel.html" class="btn btn-neutral" title="Parallel" accesskey="p"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="../parallel.html" class="btn btn-neutral float-left" title="Parallel" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
@@ -302,12 +327,14 @@ a QoI map from a space of linear QoI maps under different optimization criteria.
 
   <div role="contentinfo">
     <p>
-        &copy; Copyright 2014, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler).
-      Last updated on Sep 16, 2016.
+        &copy; Copyright 2019, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)
+      <span class="lastupdated">
+        Last updated on Jul 30, 2019.
+      </span>
 
     </p>
   </div>
-  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/snide/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
 
 </footer>
 
@@ -320,36 +347,15 @@ a QoI map from a space of linear QoI maps under different optimization criteria.
   
 
 
-  
-
-    <script type="text/javascript">
-        var DOCUMENTATION_OPTIONS = {
-            URL_ROOT:'../',
-            VERSION:'2.0.0',
-            COLLAPSE_INDEX:false,
-            FILE_SUFFIX:'.html',
-            HAS_SOURCE:  true
-        };
-    </script>
-      <script type="text/javascript" src="../_static/jquery.js"></script>
-      <script type="text/javascript" src="../_static/underscore.js"></script>
-      <script type="text/javascript" src="../_static/doctools.js"></script>
-      <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-
-  
-
-  
-  
-    <script type="text/javascript" src="../_static/js/theme.js"></script>
-  
-
-  
-  
   <script type="text/javascript">
       jQuery(function () {
-          SphinxRtdTheme.StickyNav.enable();
+          SphinxRtdTheme.Navigation.enable(true);
       });
   </script>
+
+  
+  
+    
    
 
 </body>
