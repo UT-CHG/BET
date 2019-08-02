@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
 """
-This module provides methods for Voronoi plots. 
+This module provides methods for Voronoi plots.
 """
 
 import copy
@@ -37,9 +37,9 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
                     lam_ref=None, interactive=False,
                     lambda_label=None, file_extension=".png"):
     """
-    This makes a 1d Voronoi plot of the input probability measure for a 
-    1D Voronoi sample set. If the sample_set object is a discretization 
-    object, we assume that the probabilities to be plotted are from 
+    This makes a 1d Voronoi plot of the input probability measure for a
+    1D Voronoi sample set. If the sample_set object is a discretization
+    object, we assume that the probabilities to be plotted are from
     the input space.
 
     .. note::
@@ -47,7 +47,7 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         Do not specify the file extension in the file name.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` 
+    :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :param density: Plot prob. density instead of prob. measure.
     :type density: bool
@@ -99,7 +99,7 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         fig = plt.figure(0, constrained_layout=True)
         if density:
             plt.hlines(
-                sample_obj._probabilities[ind_sort]/(maxes-mins), mins, maxes)
+                sample_obj._probabilities[ind_sort] / (maxes - mins), mins, maxes)
             plt.ylabel(r'$\rho_{\lambda}$', fontsize=20)
         else:
             plt.hlines(sample_obj._probabilities[ind_sort], mins, maxes)
@@ -124,9 +124,9 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
                     lam_ref=None, interactive=False,
                     lambda_label=None, file_extension=".png"):
     """
-    This makes a 2D Voronoi plot of the input probability measure for a 
-    2D Voronoi sample set. If the sample_set object is a discretization 
-    object, we assume that the probabilities to be plotted are from 
+    This makes a 2D Voronoi plot of the input probability measure for a
+    2D Voronoi sample set. If the sample_set object is a discretization
+    object, we assume that the probabilities to be plotted are from
     the input space.
 
     .. note::
@@ -134,7 +134,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         Do not specify the file extension in the file name.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` 
+    :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :param density: Plot prob. density instead of prob. measure.
     :type density: bool
@@ -189,7 +189,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         fig = plt.figure(0, constrained_layout=True)
         cmap = matplotlib.cm.get_cmap(colormap_type)
         if density:
-            P = sample_obj._probabilities/sample_obj._volumes
+            P = sample_obj._probabilities / sample_obj._volumes
         else:
             P = sample_obj._probabilities
         P_max = np.max(P)
@@ -198,7 +198,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         for i, region in enumerate(regions):
             polygon = vertices[region]
             plt.fill(*list(zip(*polygon)),
-                     color=cmap(P[i]/P_max), edgecolor='k', linewidth=0.005)
+                     color=cmap(P[i] / P_max), edgecolor='k', linewidth=0.005)
 
         plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1],
                   sample_obj._domain[1][0], sample_obj._domain[1][1]])
@@ -242,12 +242,12 @@ def voronoi_finite_polygons_2d(vor, radius=None):
     :type radius: float
     :param regions: Indices of vertices in each revised Voronoi regions.
     :type regions: list of tuples
-    :param vertices: Coordinates for revised Voronoi vertices. 
+    :param vertices: Coordinates for revised Voronoi vertices.
     Same as coordinates
     of input vertices, with 'points at infinity' appended to the end.
     :type vertices: list of tuples
     :rtype: tuple
-    :returns (regions, vertices) 
+    :returns (regions, vertices)
 
     """
 

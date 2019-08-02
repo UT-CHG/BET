@@ -35,7 +35,7 @@ def loadmat(save_file, disc_name=None, model=None):
     :param string disc_name: name of :class:`~bet.sample.discretization` in
         file
     :param model: runs the model at a given set of parameter samples and
-        returns data 
+        returns data
     :type model: callable
 
     :rtype: tuple
@@ -43,7 +43,7 @@ def loadmat(save_file, disc_name=None, model=None):
 
     """
     # check to see if parallel save
-    if not (os.path.exists(save_file) or os.path.exists(save_file+'.mat')):
+    if not (os.path.exists(save_file) or os.path.exists(save_file + '.mat')):
         save_dir = os.path.dirname(save_file)
         base_name = os.path.basename(save_file)
         mdat_files = glob.glob(os.path.join(save_dir,
@@ -81,15 +81,15 @@ def random_sample_set(sample_type, input_obj, num_samples,
     :type input_obj: :class:`~bet.sample.sample_set` or
         :class:`numpy.ndarray` of shape (dim, 2) or ``int``
     :param string savefile: filename to save discretization
-    :param int num_samples: N, number of samples 
-    :param string criterion: latin hypercube criterion see 
+    :param int num_samples: N, number of samples
+    :param string criterion: latin hypercube criterion see
         `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
     :param bool globalize: Makes local variables global. Only applies if
         ``parallel==True``.
 
     :rtype: :class:`~bet.sample.sample_set`
     :returns: :class:`~bet.sample.sample_set` object which contains
-        input ``num_samples`` 
+        input ``num_samples``
 
     """
 
@@ -109,7 +109,7 @@ def random_sample_set(sample_type, input_obj, num_samples,
 
     if input_sample_set.get_domain() is None:
         # create the domain
-        input_domain = np.array([[0., 1.]]*dim)
+        input_domain = np.array([[0., 1.]] * dim)
         input_sample_set.set_domain(input_domain)
 
     if sample_type == "lhs":
@@ -123,7 +123,7 @@ def random_sample_set(sample_type, input_obj, num_samples,
                                                          comm.size)[comm.rank])
     elif sample_type == "random" or "r":
         # define local number of samples
-        num_samples_local = int((num_samples/comm.size) +
+        num_samples_local = int((num_samples / comm.size) +
                                 (comm.rank < num_samples % comm.size))
         # update the bounds based on the number of samples
         input_sample_set.update_bounds_local(num_samples_local)
@@ -153,7 +153,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
         the dimension or domain to sample from, the domain to sample from, or
         the dimension
     :type input_obj: :class:`~bet.sample.sample_set` or :class:`numpy.ndarray`
-        of shape (dim, 2) or ``int`` 
+        of shape (dim, 2) or ``int``
     :param num_samples_per_dim: number of samples per dimension
     :type num_samples_per_dim: :class:`~numpy.ndarray` of dimension
         ``(input_sample_set._dim,)``
@@ -207,8 +207,8 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
         indexing='ij')
 
     for i in range(dim):
-        input_values[:, i:i+1] = np.vstack(arrays_samples_dimension[i]
-                                           .flat[:])
+        input_values[:, i:i + 1] = np.vstack(arrays_samples_dimension[i]
+                                             .flat[:])
 
     input_sample_set.set_values(input_values)
     input_sample_set.global_to_local()
@@ -219,7 +219,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
 class sampler(object):
     """
     This class provides methods for adaptive sampling of parameter space to
-    provide samples to be used by algorithms to solve inverse problems. 
+    provide samples to be used by algorithms to solve inverse problems.
 
     num_samples
         total number of samples OR list of number of samples per dimension such
@@ -239,7 +239,7 @@ class sampler(object):
         :type lb_model: callable function
         :param int num_samples: N, number of samples
         :param bool error_estimates: Whether or not the model returns error
-            estimates 
+            estimates
         :param bool jacobians: Whether or not the model returns Jacobians
 
         """
@@ -263,7 +263,7 @@ class sampler(object):
         :param string save_file: file name
         :param discretization: input and output from sampling
         :type discretization: :class:`bet.sample.discretization`
-        :param bool globalize: Makes local variables global. 
+        :param bool globalize: Makes local variables global.
 
         """
 
@@ -312,13 +312,13 @@ class sampler(object):
             :class:`numpy.ndarray` of shape (dim, 2) or ``int``
         :param string savefile: filename to save discretization
         :param int num_samples: N, number of samples (optional)
-        :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
-        :param bool globalize: Makes local variables global. 
+        :param bool globalize: Makes local variables global.
 
         :rtype: :class:`~bet.sample.sample_set`
         :returns: :class:`~bet.sample.sample_set` object which contains
-            input ``num_samples`` 
+            input ``num_samples``
 
         """
         if num_samples is None:
@@ -361,13 +361,13 @@ class sampler(object):
 
         :param input_sample_set: samples to evaluate the model at
         :type input_sample_set: :class:`~bet.sample.sample_set` with
-            num_smaples
+            num_samples
         :param string savefile: filename to save samples and data
-        :param bool globalize: Makes local variables global. 
+        :param bool globalize: Makes local variables global.
 
-        :rtype: :class:`~bet.sample.discretization` 
+        :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
-            input and output of ``num_samples`` 
+            input and output of ``num_samples``
 
         """
 
@@ -460,7 +460,7 @@ class sampler(object):
                 ``lam_domain`` assuming a Lebesgue measure.
             * ``lhs`` generates a latin hyper cube of samples.
 
-        .. note:: 
+        .. note::
 
             This function is designed only for generalized rectangles and
             assumes a Lebesgue measure on the parameter space.

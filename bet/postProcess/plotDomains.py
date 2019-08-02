@@ -120,7 +120,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         if "." not in filename:
-            full_filename = filename+file_extension
+            full_filename = filename + file_extension
         else:
             full_filename = filename
         plt.savefig(full_filename, bbox_inches='tight', transparent=True,
@@ -147,7 +147,7 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
         ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._input_sample_set``) to create
-        scatter plot 
+        scatter plot
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
@@ -206,7 +206,7 @@ def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
         ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
-        scatter plot 
+        scatter plot
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
@@ -326,7 +326,7 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     ax.set_zlabel(zlabel)
     if save:
         if "." not in filename:
-            full_filename = filename+file_extension
+            full_filename = filename + file_extension
         else:
             full_filename = filename
         plt.savefig(full_filename, bbox_inches='tight', transparent=True,
@@ -475,7 +475,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.discretization` 
+    :type sample_obj: :class:`~bet.sample.discretization`
         or :class:`~bet.sample.sample_set_base`
     :param ref_sample: reference parameter value
     :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
@@ -541,9 +541,9 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     if dim_nums is None:
         dim_nums = 1 + np.array(np.arange(sample_obj.get_values().shape[1]))
     # Create the labels based on the user selected parameter coordinates
-    xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
-    ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
-    savename = prefix+'samples_cs'
+    xlabel = label_char + r'{' + str(dim_nums[0]) + '}$'
+    ylabel = label_char + r'{' + str(dim_nums[1]) + '}$'
+    savename = prefix + 'samples_cs'
     # Plot 2 or 3 dimensional scatter plots of the samples colored by rD.
     if sample_obj.get_dim() == 2:
         scatter_2D(sample_obj, sample_nos, rD, ref_sample, save,
@@ -552,12 +552,12 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     elif sample_obj.get_dim() > 2 and showdim == 2:
         temp_obj = sample.sample_set(2)
         for x, y in combinations(dim_nums, 2):
-            xlabel = label_char+r'{' + str(x) + '}$'
-            ylabel = label_char+r'{' + str(y) + '}$'
-            savename = prefix+'samples_x' + str(x) + 'x' + str(y) + '_cs'
-            temp_obj.set_values(sample_obj.get_values()[:, [x-1, y-1]])
+            xlabel = label_char + r'{' + str(x) + '}$'
+            ylabel = label_char + r'{' + str(y) + '}$'
+            savename = prefix + 'samples_x' + str(x) + 'x' + str(y) + '_cs'
+            temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1]])
             if ref_sample is not None:
-                scatter_2D(temp_obj, sample_nos, rD, ref_sample[[x-1, y-1]], save,
+                scatter_2D(temp_obj, sample_nos, rD, ref_sample[[x - 1, y - 1]], save,
                            interactive, xlabel, ylabel, None, savename,
                            markersize=markersize)
             else:
@@ -565,22 +565,22 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
                            interactive, xlabel, ylabel, None, savename,
                            markersize=markersize)
     elif sample_obj.get_dim() == 3:
-        zlabel = label_char+r'{' + str(dim_nums[2]) + '}$'
+        zlabel = label_char + r'{' + str(dim_nums[2]) + '}$'
         scatter_3D(sample_obj, sample_nos, rD, ref_sample, save,
                    interactive, xlabel, ylabel, zlabel, None, savename,
                    markersize=markersize)
     elif sample_obj.get_dim() > 3 and showdim == 3:
         temp_obj = sample.sample_set(3)
         for x, y, z in combinations(dim_nums, 3):
-            xlabel = label_char+r'{' + str(x) + '}$'
-            ylabel = label_char+r'{' + str(y) + '}$'
-            zlabel = label_char+r'{' + str(z) + '}$'
-            savename = prefix+'samples_x' + str(x) + 'x' + str(y) + 'x' +\
+            xlabel = label_char + r'{' + str(x) + '}$'
+            ylabel = label_char + r'{' + str(y) + '}$'
+            zlabel = label_char + r'{' + str(z) + '}$'
+            savename = prefix + 'samples_x' + str(x) + 'x' + str(y) + 'x' +\
                 str(z) + '_cs'
             temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1,
                                                             z - 1]])
             if ref_sample is not None:
-                scatter_3D(temp_obj, sample_nos, rD, ref_sample[[x-1, y-1, z-1]], save,
+                scatter_3D(temp_obj, sample_nos, rD, ref_sample[[x - 1, y - 1, z - 1]], save,
                            interactive, xlabel, ylabel, zlabel, None, savename,
                            file_extension, markersize=markersize)
             else:
@@ -599,7 +599,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     :math:`Q_{ref}`.
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` 
+    :type sample_disc: :class:`~bet.sample.discretization`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
@@ -732,7 +732,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` 
+    :type sample_disc: :class:`~bet.sample.discretization`
         or :class:`~bet.sample.sample_set_base`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, 2)
@@ -786,12 +786,12 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     plt.ylabel(ylabel)
 
     if "." not in filenames[0]:
-        full_filenames0 = filenames[0]+file_extension
+        full_filenames0 = filenames[0] + file_extension
     else:
         full_filenames0 = filenames[0]
 
     if "." not in filenames[1]:
-        full_filenames1 = filenames[1]+file_extension
+        full_filenames1 = filenames[1] + file_extension
     else:
         full_filenames1 = filenames[1]
 

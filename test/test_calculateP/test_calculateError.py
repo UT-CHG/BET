@@ -143,7 +143,7 @@ class calculate_error(object):
 
 class Test_3_to_2(calculate_error, unittest.TestCase):
     """
-    Testing :meth:`bet.calculateP.calculateError` on a 
+    Testing :meth:`bet.calculateP.calculateError` on a
     3 to 2 map.
     """
 
@@ -172,7 +172,7 @@ class Test_3_to_2(calculate_error, unittest.TestCase):
 
 class Test_3_to_1(calculate_error, unittest.TestCase):
     """
-    Testing :meth:`bet.calculateP.calculateError` on a 
+    Testing :meth:`bet.calculateP.calculateError` on a
     3 to 1 map.
     """
 
@@ -200,7 +200,7 @@ class Test_3_to_1(calculate_error, unittest.TestCase):
 
 class Test_1_to_1(calculate_error, unittest.TestCase):
     """
-    Testing :meth:`bet.calculateP.calculateError` on a 
+    Testing :meth:`bet.calculateP.calculateError` on a
     1 to 1 map.
     """
 

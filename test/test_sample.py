@@ -38,7 +38,7 @@ class Test_sample_set(unittest.TestCase):
         """
         Test normalize and undo normalize domain.
         """
-        domain = 5.0*self.domain - 1.0
+        domain = 5.0 * self.domain - 1.0
         self.sam_set.set_domain(domain)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -66,7 +66,7 @@ class Test_sample_set(unittest.TestCase):
         jac = np.ones((self.num, 3, self.dim))
         self.sam_set.set_jacobians(jac)
 
-        cnum = int(0.5*self.num)
+        cnum = int(0.5 * self.num)
         sam_set_clipped = self.sam_set.clip(cnum)
 
         num = sam_set_clipped.check_num()
@@ -96,9 +96,9 @@ class Test_sample_set(unittest.TestCase):
         """
         Check save_sample_set and load_sample_set.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -125,7 +125,7 @@ class Test_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -156,7 +156,7 @@ class Test_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -173,9 +173,9 @@ class Test_sample_set(unittest.TestCase):
         """
         Check copy.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -188,7 +188,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(copied_set, attrname)
             if curr_attr is not None:
@@ -244,7 +244,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_check_dim(self):
         """
-        Check set_dim
+        Check set_dim.
         """
         self.assertEqual(self.dim, self.sam_set.get_dim())
 
@@ -309,40 +309,40 @@ class Test_sample_set(unittest.TestCase):
 
     def test_probabilities(self):
         """
-        Check probability methods
+        Check probability methods.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
         self.sam_set.check_num()
         nptest.assert_array_equal(prob, self.sam_set.get_probabilities())
 
-    def test_densiities(self):
+    def test_densities(self):
         """
-        Check density methods
+        Check density methods.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
         self.sam_set.estimate_volume_mc()
         self.sam_set.set_densities()
         self.sam_set.check_num()
         vol = self.sam_set.get_volumes()
-        nptest.assert_array_equal(prob/vol, self.sam_set.get_densities())
+        nptest.assert_array_equal(prob / vol, self.sam_set.get_densities())
         den = np.ones((self.num,))
         self.sam_set.set_densities(den)
         nptest.assert_array_equal(den, self.sam_set.get_densities())
 
     def test_volumes(self):
         """
-        Check volume methods
+        Check volume methods.
         """
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         self.sam_set.check_num()
         nptest.assert_array_equal(vol, self.sam_set.get_volumes())
 
     def test_error_estimates(self):
         """
-        Check error estimate methods
+        Check error estimate methods.
         """
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -351,7 +351,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_region(self):
         """
-        Check region methods
+        Check region methods.
         """
         region = np.ones((self.num,), dtype=np.int)
         self.sam_set.set_region(region)
@@ -360,7 +360,7 @@ class Test_sample_set(unittest.TestCase):
 
     def test_error_id(self):
         """
-        Check error identifier methods
+        Check error identifier methods.
         """
         error_id = np.ones((self.num,))
         self.sam_set.set_error_id(error_id)
@@ -380,9 +380,9 @@ class Test_sample_set(unittest.TestCase):
         """
         Check check_num.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -405,9 +405,9 @@ class Test_sample_set(unittest.TestCase):
         """
         Check parallel features.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -417,7 +417,7 @@ class Test_sample_set(unittest.TestCase):
         self.assertNotIn(None, self.sam_set._values_local)
         if comm.size > 1:
             for array_name in sample.sample_set.array_names:
-                current_array = getattr(self.sam_set, array_name+"_local")
+                current_array = getattr(self.sam_set, array_name + "_local")
                 if current_array is not None:
                     self.assertGreater(getattr(self.sam_set,
                                                array_name).shape[0], current_array.shape[0])
@@ -433,7 +433,7 @@ class Test_sample_set(unittest.TestCase):
                                                               self.dim)
         else:
             for array_name in sample.sample_set.array_names:
-                current_array = getattr(self.sam_set, array_name+"_local")
+                current_array = getattr(self.sam_set, array_name + "_local")
                 if current_array is not None:
                     nptest.assert_array_equal(getattr(self.sam_set,
                                                       array_name), current_array)
@@ -502,7 +502,7 @@ class Test_discretization_simple(unittest.TestCase):
         """
         Test clipping of discretization.
         """
-        cnum = int(0.5*self.num)
+        cnum = int(0.5 * self.num)
         disc_clipped = self.disc.clip(cnum)
         nptest.assert_array_equal(self.disc._input_sample_set._values[0:cnum, :],
                                   disc_clipped._input_sample_set._values)
@@ -735,15 +735,15 @@ class Test_discretization_simple(unittest.TestCase):
         """
         lam_left = np.array([0.0, .25, .4])
         lam_right = np.array([1.0, 4.0, .5])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         lam_domain = np.zeros((3, 2))
         lam_domain[:, 0] = lam_left
         lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -753,7 +753,7 @@ class Test_discretization_simple(unittest.TestCase):
         s_set.set_domain(lam_domain)
         s_set.set_values(util.meshgrid_ndim(d1_arrays))
 
-        volume_exact = 1.0/s_set._values.shape[0]
+        volume_exact = 1.0 / s_set._values.shape[0]
 
         emulated_samples = s_set.copy()
         emulated_samples.update_bounds_local(1001)
@@ -783,15 +783,15 @@ class Test_discretization_simple(unittest.TestCase):
         """
         lam_left = np.array([0.0])
         lam_right = np.array([1.0])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         lam_domain = np.zeros((1, 2))
         lam_domain[:, 0] = lam_left
         lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -801,7 +801,7 @@ class Test_discretization_simple(unittest.TestCase):
         s_set.set_domain(lam_domain)
         s_set.set_values(util.meshgrid_ndim(d1_arrays))
 
-        volume_exact = 1.0/s_set._values.shape[0]
+        volume_exact = 1.0 / s_set._values.shape[0]
 
         emulated_samples = s_set.copy()
         emulated_samples.update_bounds_local(1001)
@@ -836,15 +836,15 @@ class TestEstimateVolume(unittest.TestCase):
         """
         lam_left = np.array([0.0, .25, .4])
         lam_right = np.array([1.0, 4.0, .5])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         self.lam_domain = np.zeros((3, 2))
         self.lam_domain[:, 0] = lam_left
         self.lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -854,7 +854,7 @@ class TestEstimateVolume(unittest.TestCase):
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
         print(util.meshgrid_ndim(d1_arrays).shape)
-        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        self.volume_exact = 1.0 / self.s_set._values.shape[0]
         self.s_set.estimate_volume(n_mc_points=1001)
         self.lam_vol = self.s_set._volumes
 
@@ -887,15 +887,15 @@ class TestEstimateVolumeEmulated(unittest.TestCase):
         """
         lam_left = np.array([0.0, .25, .4])
         lam_right = np.array([1.0, 4.0, .5])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         self.lam_domain = np.zeros((3, 2))
         self.lam_domain[:, 0] = lam_left
         self.lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -905,7 +905,7 @@ class TestEstimateVolumeEmulated(unittest.TestCase):
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
         print(util.meshgrid_ndim(d1_arrays).shape)
-        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        self.volume_exact = 1.0 / self.s_set._values.shape[0]
         emulated_samples = self.s_set.copy()
         emulated_samples.update_bounds_local(1001)
         emulated_samples.set_values_local(emulated_samples._width_local
@@ -944,15 +944,15 @@ class TestEstimateLocalVolume(unittest.TestCase):
         """
         lam_left = np.array([0.0, .25, .4])
         lam_right = np.array([1.0, 4.0, .5])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         self.lam_domain = np.zeros((3, 2))
         self.lam_domain[:, 0] = lam_left
         self.lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -961,7 +961,7 @@ class TestEstimateLocalVolume(unittest.TestCase):
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
-        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        self.volume_exact = 1.0 / self.s_set._values.shape[0]
         self.s_set.estimate_local_volume()
         self.lam_vol = self.s_set._volumes
 
@@ -994,10 +994,10 @@ class TestExactVolume1D(unittest.TestCase):
         num_samples = 10
         self.lam_domain = np.array([[.0, .1]])
         edges = np.linspace(self.lam_domain[:, 0], self.lam_domain[:, 1],
-                            num_samples+1)
-        self.samples = (edges[1:]+edges[:-1])*.5
+                            num_samples + 1)
+        self.samples = (edges[1:] + edges[:-1]) * .5
         np.random.shuffle(self.samples)
-        self.volume_exact = 1./self.samples.shape[0]
+        self.volume_exact = 1. / self.samples.shape[0]
         self.volume_exact = self.volume_exact * np.ones((num_samples,))
         s_set = sample.voronoi_sample_set(dim=1)
         s_set.set_domain(self.lam_domain)
@@ -1062,15 +1062,15 @@ class TestEstimateRadii(unittest.TestCase):
         """
         lam_left = np.array([0.0, 0.5, 0.5])
         lam_right = np.array([1.0, 1.5, 1.5])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         self.lam_domain = np.zeros((3, 2))
         self.lam_domain[:, 0] = lam_left
         self.lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -1080,7 +1080,7 @@ class TestEstimateRadii(unittest.TestCase):
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
 
-        self.radii_exact = np.sqrt(3*.25**2)
+        self.radii_exact = np.sqrt(3 * .25**2)
 
         self.s_set.estimate_radii(normalize=False)
         self.s_set.estimate_radii()
@@ -1117,15 +1117,15 @@ class TestEstimateRadiiAndVolume(unittest.TestCase):
         """
         lam_left = np.array([0.0, 0.5, 0.5])
         lam_right = np.array([1.0, 1.5, 1.5])
-        lam_width = lam_right-lam_left
+        lam_width = lam_right - lam_left
 
         self.lam_domain = np.zeros((3, 2))
         self.lam_domain[:, 0] = lam_left
         self.lam_domain[:, 1] = lam_right
 
         num_samples_dim = 2
-        start = lam_left+lam_width/(2*num_samples_dim)
-        stop = lam_right-lam_width/(2*num_samples_dim)
+        start = lam_left + lam_width / (2 * num_samples_dim)
+        stop = lam_right - lam_width / (2 * num_samples_dim)
         d1_arrays = []
 
         for l, r in zip(start, stop):
@@ -1134,9 +1134,9 @@ class TestEstimateRadiiAndVolume(unittest.TestCase):
         self.s_set = sample.sample_set(util.meshgrid_ndim(d1_arrays).shape[1])
         self.s_set.set_domain(self.lam_domain)
         self.s_set.set_values(util.meshgrid_ndim(d1_arrays))
-        self.volume_exact = 1.0/self.s_set._values.shape[0]
+        self.volume_exact = 1.0 / self.s_set._values.shape[0]
 
-        self.radii_exact = np.sqrt(3*.25**2)
+        self.radii_exact = np.sqrt(3 * .25**2)
 
         self.s_set.estimate_radii_and_volume(normalize=False)
         self.s_set.estimate_radii_and_volume()
@@ -1180,9 +1180,9 @@ class Test_rectangle_sample_set(unittest.TestCase):
         """
         Check save_sample_set and load_sample_set.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1207,7 +1207,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -1237,7 +1237,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -1254,9 +1254,9 @@ class Test_rectangle_sample_set(unittest.TestCase):
         """
         Check copy.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1267,7 +1267,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(copied_set, attrname)
             if curr_attr is not None:
@@ -1308,9 +1308,9 @@ class Test_ball_sample_set(unittest.TestCase):
         """
         Check save_sample_set and load_sample_set.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1338,7 +1338,7 @@ class Test_ball_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -1369,7 +1369,7 @@ class Test_ball_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -1386,9 +1386,9 @@ class Test_ball_sample_set(unittest.TestCase):
         """
         Check copy.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1399,7 +1399,7 @@ class Test_ball_sample_set(unittest.TestCase):
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(copied_set, attrname)
             if curr_attr is not None:
@@ -1441,9 +1441,9 @@ class Test_cartesian_sample_set(unittest.TestCase):
         """
         Check save_sample_set and load_sample_set.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1476,7 +1476,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -1506,7 +1506,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
 
         assert loaded_set_none is None
 
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(loaded_set, attrname)
             print(attrname)
@@ -1523,9 +1523,9 @@ class Test_cartesian_sample_set(unittest.TestCase):
         """
         Check copy.
         """
-        prob = 1.0/float(self.num)*np.ones((self.num,))
+        prob = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_probabilities(prob)
-        vol = 1.0/float(self.num)*np.ones((self.num,))
+        vol = 1.0 / float(self.num) * np.ones((self.num,))
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1536,7 +1536,7 @@ class Test_cartesian_sample_set(unittest.TestCase):
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
-        for attrname in sample.sample_set.vector_names+sample.sample_set.\
+        for attrname in sample.sample_set.vector_names + sample.sample_set.\
                 all_ndarray_names:
             curr_attr = getattr(copied_set, attrname)
             if curr_attr is not None:

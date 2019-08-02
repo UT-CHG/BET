@@ -23,39 +23,45 @@ wall_height = -2.5
 
 
 # Select only the stations I care about this will lead to better sampling
-station_nums = [0, 4, 1] # 1, 5, 2
+station_nums = [0, 4, 1]  # 1, 5, 2
 
 # Create Transition Kernel
 transition_set = asam.transition_set(.5, .5**5, 0.5)
 
-# Read in Q_ref and Q to create the appropriate rho_D 
+# Read in Q_ref and Q to create the appropriate rho_D
 mdat = sio.loadmat('../matfiles/Q_3D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']
-Q_ref = Q_ref[14, station_nums] # 15th/20
+Q_ref = Q_ref[14, station_nums]  # 15th/20
 bin_ratio = 0.15
-bin_size = (np.max(Q, 0)-np.min(Q, 0))*bin_ratio
+bin_size = (np.max(Q, 0) - np.min(Q, 0)) * bin_ratio
 
 # Create experiment model
 points = mdat['points']
+
+
 def model(inputs):
-    interp_values = np.empty((inputs.shape[0], Q.shape[1])) 
+    interp_values = np.empty((inputs.shape[0], Q.shape[1]))
     for i in range(Q.shape[1]):
         interp_values[:, i] = griddata(points.transpose(), Q[:, i],
-                inputs)
-    return interp_values 
+                                       inputs)
+    return interp_values
+
 
 # Create kernel
-maximum = 1/np.product(bin_size)
+maximum = 1 / np.product(bin_size)
+
+
 def rho_D(outputs):
-    rho_left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
-    rho_right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
+    rho_left = np.repeat([Q_ref - .5 * bin_size], outputs.shape[0], 0)
+    rho_right = np.repeat([Q_ref + .5 * bin_size], outputs.shape[0], 0)
     rho_left = np.all(np.greater_equal(outputs, rho_left), axis=1)
     rho_right = np.all(np.less_equal(outputs, rho_right), axis=1)
     inside = np.logical_and(rho_left, rho_right)
     max_values = np.repeat(maximum, outputs.shape[0], 0)
-    return inside.astype('float64')*max_values
+    return inside.astype('float64') * max_values
+
 
 kernel_mm = asam.maxima_mean_kernel(np.array([Q_ref]), rho_D)
 kernel_rD = asam.rhoD_kernel(maximum, rho_D)
@@ -65,15 +71,15 @@ heur_list = [kernel_mm, kernel_rD, kernel_m]
 # Create sampler
 chain_length = 125
 num_chains = 80
-num_samples = num_chains*chain_length
+num_samples = num_chains * chain_length
 sampler = asam.sampler(num_samples, chain_length, model)
 inital_sample_type = "lhs"
 
 # Get samples
 # Run with varying kernels
 gen_results = sampler.run_gen(heur_list, rho_D, maximum, param_domain,
-        transition_set, sample_save_file) 
-#run_reseed_results = sampler.run_gen(heur_list, rho_D, maximum, param_domain,
+                              transition_set, sample_save_file)
+# run_reseed_results = sampler.run_gen(heur_list, rho_D, maximum, param_domain,
 #        t_kernel, sample_save_file, reseed=3)
 
 # Run with varying transition sets bounds
@@ -81,14 +87,14 @@ init_ratio = [0.1, 0.25, 0.5]
 min_ratio = [2e-3, 2e-5, 2e-8]
 max_ratio = [.5, .75, 1.0]
 tk_results = sampler.run_tk(init_ratio, min_ratio, max_ratio, rho_D,
-        maximum, param_domain, kernel_rD, sample_save_file)
+                            maximum, param_domain, kernel_rD, sample_save_file)
 
 # Run with varying increase/decrease ratios and tolerances for a rhoD_kernel
 increase = [1.0, 2.0, 4.0]
 decrease = [0.5, 0.5e2, 0.5e3]
 tolerance = [1e-4, 1e-6, 1e-8]
 incdec_results = sampler.run_inc_dec(increase, decrease, tolerance, rho_D,
-        maximum, param_domain, transition_set, sample_save_file)
+                                     maximum, param_domain, transition_set, sample_save_file)
 
 # Compare the quality of several sets of samples
 result_list = [gen_results, tk_results, incdec_results]
@@ -103,5 +109,3 @@ ptools.compare_yield(incdec_results[3], incdec_results[2], incdec_results[4])
 # Read in points_ref and plot results
 p_ref = mdat['points_true']
 p_ref = p_ref[:, 14]
-
-

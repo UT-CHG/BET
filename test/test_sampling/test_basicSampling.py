@@ -198,7 +198,7 @@ def verify_create_random_discretization(model, sampler, sample_type, input_domai
     input_left = np.repeat([input_domain[:, 0]], num_samples, 0)
     input_right = np.repeat([input_domain[:, 1]], num_samples, 0)
 
-    input_values = (input_right-input_left)
+    input_values = (input_right - input_left)
     if sample_type == "lhs":
         input_values = input_values * pyDOE.lhs(input_sample_set.get_dim(),
                                                 num_samples, 'center')
@@ -610,7 +610,7 @@ class Test_basic_sampler(unittest.TestCase):
         # create 3-2 map
 
         def map_3t2(x):
-            return np.vstack(([x[:, 0]+x[:, 1], x[:, 2]])).transpose()
+            return np.vstack(([x[:, 0] + x[:, 1], x[:, 2]])).transpose()
         # create 10-4 map
         self.input_domain10 = np.column_stack(
             (np.zeros((10,)), np.ones((10,))))
@@ -652,8 +652,8 @@ class Test_basic_sampler(unittest.TestCase):
         comm.barrier()
         if comm.rank == 0:
             for f in self.savefiles:
-                if os.path.exists(f+".mat"):
-                    os.remove(f+".mat")
+                if os.path.exists(f + ".mat"):
+                    os.remove(f + ".mat")
         comm.barrier()
 
     def test_init(self):
@@ -682,7 +682,7 @@ class Test_basic_sampler(unittest.TestCase):
                            np.ones((4, 3)), np.ones((4, 10))]
         list_of_dims = [1, 1, 3, 3, 10]
 
-        list_of_sample_sets = [None]*len(list_of_samples)
+        list_of_sample_sets = [None] * len(list_of_samples)
 
         for i, array in enumerate(list_of_samples):
             list_of_sample_sets[i] = sample_set(list_of_dims[i])

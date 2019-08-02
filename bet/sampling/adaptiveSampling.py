@@ -171,26 +171,26 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
         # Use split to split along num_chains and set *._values_local
         disc._input_sample_set.set_values_local(np.reshape(np.split(
             temp_input, comm.size, 0)[comm.rank],
-            (num_chains_pproc*chain_length, -1), 'F'))
+            (num_chains_pproc * chain_length, -1), 'F'))
         disc._output_sample_set.set_values_local(np.reshape(np.split(
             temp_output, comm.size, 0)[comm.rank],
-            (num_chains_pproc*chain_length, -1), 'F'))
+            (num_chains_pproc * chain_length, -1), 'F'))
         all_step_ratios = np.reshape(np.split(all_step_ratios,
                                               comm.size, 0)[comm.rank],
-                                     (num_chains_pproc*chain_length,), 'F')
+                                     (num_chains_pproc * chain_length,), 'F')
         kern_old = np.reshape(np.split(kern_old, comm.size,
                                        0)[comm.rank], (num_chains_pproc,), 'F')
     else:
         all_step_ratios = np.reshape(all_step_ratios, (-1,), 'F')
-    print(chain_length*num_chains, chain_length, lb_model)
-    new_sampler = sampler(chain_length*num_chains, chain_length, lb_model)
+    print(chain_length * num_chains, chain_length, lb_model)
+    new_sampler = sampler(chain_length * num_chains, chain_length, lb_model)
     return (new_sampler, disc, all_step_ratios, kern_old)
 
 
 class sampler(bsam.sampler):
     """
     This class provides methods for adaptive sampling of parameter space to
-    provide samples to be used by algorithms to solve inverse problems. 
+    provide samples to be used by algorithms to solve inverse problems.
 
     """
 
@@ -211,7 +211,7 @@ class sampler(bsam.sampler):
         #: number of samples per processor per batch (either a single int or a
         #:  list of int)
         self.num_chains_pproc = int(math.ceil(num_samples /
-                                              float(chain_length*comm.size)))
+                                              float(chain_length * comm.size)))
         #: number of samples per batch (either a single int or a list of int)
         self.num_chains = comm.size * self.num_chains_pproc
         #: Total number of samples
@@ -255,7 +255,7 @@ class sampler(bsam.sampler):
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-        :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
 
         :rtype: tuple
@@ -275,7 +275,7 @@ class sampler(bsam.sampler):
             results.append(discretization)
             r_step_size.append(step_sizes)
             results_rD.append(int(sum(rho_D(discretization._output_sample_set.
-                                            get_values())/maximum)))
+                                            get_values()) / maximum)))
             mean_ss.append(np.mean(step_sizes))
         sort_ind = np.argsort(results_rD)
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
@@ -306,7 +306,7 @@ class sampler(bsam.sampler):
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-        :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
 
         :rtype: tuple
@@ -326,7 +326,7 @@ class sampler(bsam.sampler):
             results.append(discretization)
             r_step_size.append(step_sizes)
             results_rD.append(int(sum(rho_D(discretization._output_sample_set.
-                                            get_values())/maximum)))
+                                            get_values()) / maximum)))
             mean_ss.append(np.mean(step_sizes))
         sort_ind = np.argsort(results_rD)
         return (results, r_step_size, results_rD, sort_ind, mean_ss)
@@ -355,7 +355,7 @@ class sampler(bsam.sampler):
         :param string savefile: filename to save samples and data
         :param string initial_sample_type: type of initial sample random (or r),
             latin hypercube(lhs), or space-filling curve(TBD)
-        :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
 
         :rtype: tuple
@@ -399,7 +399,7 @@ class sampler(bsam.sampler):
             be the same, but ``num_chains_pproc`` need not be the same. 0 -
             cold start, 1 - hot start from uncompleted run, 2 - hot
             start from finished run
-        :param string criterion: latin hypercube criterion see 
+        :param string criterion: latin hypercube criterion see
             `PyDOE <http://pythonhosted.org/pyDOE/randomized.html>`_
 
         :rtype: tuple
@@ -416,7 +416,7 @@ class sampler(bsam.sampler):
 
         if not hot_start:
             logging.info("COLD START")
-            step_ratio = t_set.init_ratio*np.ones(self.num_chains_pproc)
+            step_ratio = t_set.init_ratio * np.ones(self.num_chains_pproc)
 
             # Initiative first batch of N samples (maybe taken from latin
             # hypercube/space-filling curve to fully explore parameter space -
@@ -474,7 +474,7 @@ class sampler(bsam.sampler):
             # multiple ways to do this.
             # Determine step size
             (kern_old, proposal) = kern.delta_step(output_new_values, kern_old)
-            step_ratio = proposal*step_ratio
+            step_ratio = proposal * step_ratio
             # Is the ratio greater than max?
             step_ratio[step_ratio > max_ratio] = max_ratio
             # Is the ratio less than min?
@@ -483,9 +483,9 @@ class sampler(bsam.sampler):
             # Save and export concatentated arrays
             if self.chain_length < 4:
                 pass
-            elif comm.rank == 0 and (batch+1) % (self.chain_length/4) == 0:
+            elif comm.rank == 0 and (batch + 1) % (self.chain_length / 4) == 0:
                 logging.info("Current chain length: " +
-                             str(batch+1)+"/"+str(self.chain_length))
+                             str(batch + 1) + "/" + str(self.chain_length))
             disc._input_sample_set.append_values_local(input_new.
                                                        get_values_local())
             disc._output_sample_set.append_values_local(output_new_values)
@@ -585,11 +585,11 @@ class transition_set(object):
         """
         # calculate maximum step size
         step_size = np.repeat([step_ratio], input_old.get_dim(),
-                              0).transpose()*input_old._width_local
+                              0).transpose() * input_old._width_local
         # check to see if step will take you out of parameter space
         # calculate maximum proposed step
-        my_right = input_old.get_values_local() + 0.5*step_size
-        my_left = input_old.get_values_local() - 0.5*step_size
+        my_right = input_old.get_values_local() + 0.5 * step_size
+        my_left = input_old.get_values_local() - 0.5 * step_size
         # Is the new sample greaters than the right limit?
         far_right = my_right >= input_old._right_local
         far_left = my_left <= input_old._left_local
@@ -597,7 +597,7 @@ class transition_set(object):
         # the step_size
         my_right[far_right] = input_old._right_local[far_right]
         my_left[far_left] = input_old._left_local[far_left]
-        my_width = my_right-my_left
+        my_width = my_right - my_left
         #input_center = (input_right+input_left)/2.0
         input_new_values = my_width * np.random.random(input_old.shape_local())
         input_new_values = input_new_values + my_left
@@ -633,9 +633,9 @@ class kernel(object):
 
     def delta_step(self, output_new, kern_old=None):
         """
-        This method determines the proposed change in step size. 
+        This method determines the proposed change in step size.
 
-        :param output_new: QoI for a given batch of samples 
+        :param output_new: QoI for a given batch of samples
         :type output_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
 
@@ -681,9 +681,9 @@ class rhoD_kernel(kernel):
 
     def delta_step(self, output_new, kern_old=None):
         """
-        This method determines the proposed change in step size. 
+        This method determines the proposed change in step size.
 
-        :param output_new: QoI for a given batch of samples 
+        :param output_new: QoI for a given batch of samples
         :type output_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
 
@@ -697,7 +697,7 @@ class rhoD_kernel(kernel):
         if kern_old is None:
             return (kern_new, None)
         else:
-            kern_diff = (kern_new-kern_old)/self.MAX
+            kern_diff = (kern_new - kern_old) / self.MAX
             # Compare to kernel for old data.
             # Is the kernel NOT close?
             kern_close = np.logical_not(np.isclose(kern_diff, 0,
@@ -732,7 +732,7 @@ class maxima_kernel(kernel):
         """
         Initialization
 
-        :param maxima: locations of the maxima of rho_D on D 
+        :param maxima: locations of the maxima of rho_D on D
         :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`numpy.ndarray` and
@@ -754,9 +754,9 @@ class maxima_kernel(kernel):
 
     def delta_step(self, output_new, kern_old=None):
         """
-        This method determines the proposed change in step size. 
+        This method determines the proposed change in step size.
 
-        :param output_new: QoI for a given batch of samples 
+        :param output_new: QoI for a given batch of samples
         :type output_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
 
@@ -773,14 +773,14 @@ class maxima_kernel(kernel):
             vec_from_maxima = vec_from_maxima - self.MAXIMA
             # weight distances by 1/rho_D(maxima)
             dist_from_maxima = np.linalg.norm(vec_from_maxima, 2,
-                                              1)/self.rho_max
+                                              1) / self.rho_max
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
 
         if kern_old is None:
             return (kern_new, None)
         else:
-            kern_diff = (kern_new-kern_old)
+            kern_diff = (kern_new - kern_old)
             # Compare to kernel for old data.
             # Is the kernel NOT close?
             kern_close = np.logical_not(np.isclose(kern_diff, 0,
@@ -814,7 +814,7 @@ class maxima_mean_kernel(maxima_kernel):
         """
         Initialization
 
-        :param maxima: locations of the maxima of rho_D on D 
+        :param maxima: locations of the maxima of rho_D on D
         :type maxima: :class:`numpy.ndarray` of chape (num_maxima, mdim)
         :param rho_D: probability density on D
         :type rho_D: callable function that takes a :class:`numpy.ndarray` and
@@ -844,9 +844,9 @@ class maxima_mean_kernel(maxima_kernel):
 
     def delta_step(self, output_new, kern_old=None):
         """
-        This method determines the proposed change in step size. 
+        This method determines the proposed change in step size.
 
-        :param output_new: QoI for a given batch of samples 
+        :param output_new: QoI for a given batch of samples
         :type output_new: :class:`numpy.ndarray` of shape (num_chains, mdim)
         :param kern_old: kernel evaluated at previous step
 
@@ -864,7 +864,7 @@ class maxima_mean_kernel(maxima_kernel):
             vec_from_maxima = vec_from_maxima - self.MAXIMA
             # weight distances by 1/rho_D(maxima)
             dist_from_maxima = np.linalg.norm(vec_from_maxima, 2,
-                                              1)/self.rho_max
+                                              1) / self.rho_max
             # set kern_new to be the minimum of weighted distances from maxima
             kern_new[i] = np.min(dist_from_maxima)
         if kern_old is None:
@@ -878,8 +878,8 @@ class maxima_mean_kernel(maxima_kernel):
             return (kern_new, None)
         else:
             # update the estimate of the mean
-            self.mean = (self.current_clength-1)*self.mean + np.mean(output_new,
-                                                                     0)
+            self.mean = (self.current_clength - 1) * self.mean + np.mean(output_new,
+                                                                         0)
             self.mean = self.mean / self.current_clength
             # calculate the distance from the mean
             vec_from_mean = output_new - np.repeat([self.mean],
@@ -888,7 +888,7 @@ class maxima_mean_kernel(maxima_kernel):
             self.radius = max(np.max(np.linalg.norm(vec_from_mean, 2, 1)),
                               self.radius)
             # calculate the relative change in distance
-            kern_diff = (kern_new-kern_old)
+            kern_diff = (kern_new - kern_old)
             # normalize by the radius of D (IF POSSIBLE)
             kern_diff = kern_diff  # / self.radius
             # Compare to kernel for old data.

@@ -100,7 +100,8 @@ class ChooseQoIsMethods:
         self.assertEqual(self.condnum_indices_mat_vol.shape,
                          (self.num_optsets_return, self.output_dim_return + 1))
 
-        # Check that the 'global condition number' is greater than or equal to 1
+        # Check that the 'global condition number' is greater than or equal to
+        # 1
         nptest.assert_array_less(1.0, self.condnum_indices_mat[:, 0])
 
         # For measure, check that it is greater than or equal to 0
@@ -108,10 +109,10 @@ class ChooseQoIsMethods:
 
         # Test the method returns the known best set of QoIs  (chosen to be
         # last input_dim indices)
-        nptest.assert_array_less(self.output_dim-self.input_dim-1,
+        nptest.assert_array_less(self.output_dim - self.input_dim - 1,
                                  self.condnum_indices_mat[0, 1:])
 
-        nptest.assert_array_less(self.output_dim-self.input_dim-1,
+        nptest.assert_array_less(self.output_dim - self.input_dim - 1,
                                  self.condnum_indices_mat_vol[0, 1:])
 
         # Test that none of the best chosen QoIs are the same
@@ -148,10 +149,10 @@ class ChooseQoIsMethods:
 
         # Test the method returns the known best set of QoIs  (chosen to be
         # last input_dim indices)
-        nptest.assert_array_less(self.output_dim-self.input_dim-1,
+        nptest.assert_array_less(self.output_dim - self.input_dim - 1,
                                  self.condnum_indices_mat[0, 1:])
 
-        nptest.assert_array_less(self.output_dim-self.input_dim-1,
+        nptest.assert_array_less(self.output_dim - self.input_dim - 1,
                                  self.condnum_indices_mat_vol[0, 1:])
 
         # Test that none of the best chosen QoIs are the same
@@ -245,7 +246,7 @@ class test_2to20_choose2(ChooseQoIsMethods, unittest.TestCase):
         self.output_dim = 20
         self.output_set = sample.sample_set(self.output_dim)
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
         self.output_set.set_values(self.input_set._values.dot(self.coeffs))
@@ -276,7 +277,7 @@ class test_4to20_choose4(ChooseQoIsMethods, unittest.TestCase):
         self.output_dim = 20
         self.output_set = sample.sample_set(self.output_dim)
         coeffs = np.random.random((self.input_dim,
-                                   self.output_dim-self.input_dim))
+                                   self.output_dim - self.input_dim))
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
 
         self.output_set.set_values(self.input_set._values.dot(self.coeffs))
@@ -371,7 +372,7 @@ class test_2to28_choose2_zeros(ChooseQoIsMethods, unittest.TestCase):
 
         self.output_dim = 28
         self.output_set = sample.sample_set(self.output_dim)
-        coeffs = np.ones((self.input_dim, 2*self.input_dim))
+        coeffs = np.ones((self.input_dim, 2 * self.input_dim))
         coeffs = np.append(coeffs, np.random.random((self.input_dim,
                                                      self.output_dim - 3 * self.input_dim)), axis=1)
         self.coeffs = np.append(coeffs, np.eye(self.input_dim), axis=1)
