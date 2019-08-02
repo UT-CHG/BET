@@ -38,10 +38,10 @@ class Test_calc_marg_1D(unittest.TestCase):
         emulated_input_samples.set_values_local(
             np.linspace(emulated_input_samples.get_domain()[0][0],
                         emulated_input_samples.get_domain()[0][1],
-                        num_samples+1))
+                        num_samples + 1))
 
         emulated_input_samples.set_probabilities_local(
-            1.0/float(comm.size)*(1.0/float(
+            1.0 / float(comm.size) * (1.0 / float(
                 emulated_input_samples.get_values_local().shape[0])) *
             np.ones((emulated_input_samples.get_values_local().shape[0],)))
 
@@ -96,9 +96,9 @@ class Test_calc_marg_2D(unittest.TestCase):
             ))
         )
 
-        emulated_input_samples.set_probabilities_local(1.0/float(comm.size) *
+        emulated_input_samples.set_probabilities_local(1.0 / float(comm.size) *
                                                        (
-            1.0/float(
+            1.0 / float(
                 emulated_input_samples.get_values_local().shape[0])
         ) *
             np.ones(
@@ -110,7 +110,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         self.samples = emulated_input_samples
 
     def test_1_bin_1D(self):
-        """ 
+        """
         Test that 1D marginals sum to 1 and have right shape.
         """
         (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
@@ -122,7 +122,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         nptest.assert_equal(marginals[1].shape, (1,))
 
     def test_10_bins_1D(self):
-        """ 
+        """
         Test that 1D marginals sum to 1 and have right shape.
         """
         (bins, marginals) = plotP.calculate_1D_marginal_probs(self.samples,
@@ -133,7 +133,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         nptest.assert_equal(marginals[0].shape, (10,))
 
     def test_1_bin_2D(self):
-        """ 
+        """
         Test that 2D marginals sum to 1 and have right shape.
         """
         (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
@@ -143,7 +143,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         nptest.assert_equal(marginals[(0, 1)].shape, (1, 1))
 
     def test_10_bins_2D(self):
-        """ 
+        """
         Test that 2D marginals sum to 1 and have right shape.
         """
         (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
@@ -153,7 +153,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         nptest.assert_equal(marginals[(0, 1)].shape, (10, 10))
 
     def test_5_10_bins_2D(self):
-        """ 
+        """
         Test that 1D marginals sum to 1 and have right shape.
         """
         (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
@@ -172,7 +172,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         marginals_smooth = plotP.smooth_marginals_1D(marginals, bins,
                                                      sigma=10.0)
 
-        nptest.assert_equal(marginals_smooth[0].shape,  marginals[0].shape)
+        nptest.assert_equal(marginals_smooth[0].shape, marginals[0].shape)
         nptest.assert_almost_equal(np.sum(marginals_smooth[0]), 1.0)
 
     def test_2D_smoothing(self):

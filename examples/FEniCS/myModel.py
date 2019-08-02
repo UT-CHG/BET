@@ -34,7 +34,8 @@ def my_model(parameter_samples):
     # number of KL expansion terms.
     numKL = parameter_samples.shape[1]
 
-    # the samples are the coefficients of the KL expansion typically denoted by xi_k
+    # the samples are the coefficients of the KL expansion typically denoted
+    # by xi_k
     xi_k = parameter_samples
 
     '''

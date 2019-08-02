@@ -29,7 +29,7 @@ local_path = '.'
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 class test_plotDomains(unittest.TestCase):
     """
-    Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and  
+    Test :meth:`bet.postProcess.plotP.calculate_1D_marginal_probs` and
     :meth:`bet.postProcess.plotP.calculate_2D_marginal_probs` for a 2D
     parameter space.
     """
@@ -53,16 +53,17 @@ class test_plotDomains(unittest.TestCase):
              np.linspace(input_samples.get_domain()[3, 0],
                          input_samples.get_domain()[3, 1], 3))))
         input_samples.set_probabilities(
-            (1.0/float(input_samples.get_values().shape[0]))
+            (1.0 / float(input_samples.get_values().shape[0]))
             * np.ones((input_samples.get_values().shape[0],)))
 
-        # Check that probabilities and values arrays have same number of entries
+        # Check that probabilities and values arrays have same number of
+        # entries
         input_samples.check_num()
 
         # Create sample_set object for output_samples
         output_samples = sample.sample_set(4)
-        output_samples.set_values(input_samples.get_values()*3.0)
-        output_samples.set_domain(3.0*input_samples.get_domain())
+        output_samples.set_values(input_samples.get_values() * 3.0)
+        output_samples.set_domain(3.0 * input_samples.get_domain())
 
         self.disc = sample.discretization(input_samples, output_samples)
 
@@ -70,9 +71,9 @@ class test_plotDomains(unittest.TestCase):
 
         output_ref_datum = np.mean(output_samples.get_domain(), axis=1)
 
-        bin_size = 0.15*(np.max(output_samples.get_domain(), axis=1) -
-                         np.min(output_samples.get_domain(), axis=1))
-        maximum = 1/np.product(bin_size)
+        bin_size = 0.15 * (np.max(output_samples.get_domain(), axis=1) -
+                           np.min(output_samples.get_domain(), axis=1))
+        maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
@@ -82,15 +83,15 @@ class test_plotDomains(unittest.TestCase):
             :rtype: :class:`numpy.ndarray` of shape (N,)
             :returns: 0 if outside of set or positive number if inside set
             """
-            left = np.repeat([output_ref_datum-.5*bin_size],
+            left = np.repeat([output_ref_datum - .5 * bin_size],
                              outputs.shape[0], 0)
-            right = np.repeat([output_ref_datum+.5*bin_size],
+            right = np.repeat([output_ref_datum + .5 * bin_size],
                               outputs.shape[0], 0)
             left = np.all(np.greater_equal(outputs, left), axis=1)
             right = np.all(np.less_equal(outputs, right), axis=1)
             inside = np.logical_and(left, right)
             max_values = np.repeat(maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
 
         self.rho_D = ifun
         self.lnums = [1, 2, 3]
@@ -110,11 +111,11 @@ class test_plotDomains(unittest.TestCase):
         Tear Down problem
         """
         # remove any files the we create
-        filenames = glob.glob(self.filename+".*")
+        filenames = glob.glob(self.filename + ".*")
         filenames.extend(glob.glob('param_samples_*cs.*'))
         filenames.extend(glob.glob('data_samples_*cs.*'))
 
-        filenames.extend(glob.glob(self.filename+".*"))
+        filenames.extend(glob.glob(self.filename + ".*"))
         filenames.extend(glob.glob('param_samples_*cs.*'))
         filenames.extend(glob.glob(os.path.join(local_path,
                                                 'data_samples_*cs.*')))

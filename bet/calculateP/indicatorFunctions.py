@@ -27,7 +27,7 @@ def hyperrectangle(left, right):
     def ifun(points):
         r"""
         :param points: set of points in :math:`\{x_i\}_{i=0}^{N} \in
-            \mathbf{R}^n` 
+            \mathbf{R}^n`
         :type points: :class:`np.ndarray` of shape (N, ndim)
 
         :rtype: boolean :class:`np.ndarray` of shape (ndim,)
@@ -53,8 +53,8 @@ def hyperrectangle_size(center, width):
     :rtype: function
     :returns: :math:`\mathbf{1}_A`
     """
-    left = center-.5*width
-    right = center+.5*width
+    left = center - .5 * width
+    right = center + .5 * width
     return hyperrectangle(left, right)
 
 
@@ -68,25 +68,29 @@ def boundary_hyperrectangle(left, right, boundary_width):
     :type left: :class:`np.ndarray` of shape (ndim,)
     :param right: Rightmost(maximum) corner of the hyperrectangle.
     :type right: :class:`np.ndarray` of shape (ndim,)
-    :param boundary_width: Width of the boundary 
+    :param boundary_width: Width of the boundary
     :type boundary_width: :class:`np.ndarray` of shape (ndim,)
 
     :rtype: function
     :returns: :math:`\mathbf{1}_{\partial A \plusminus \epsilon}`
 
     """
-    inner = hyperrectangle(left+.5*boundary_width, right-.5*boundary_width)
-    outer = hyperrectangle(left-.5*boundary_width, right+.5*boundary_width)
+    inner = hyperrectangle(
+        left + .5 * boundary_width,
+        right - .5 * boundary_width)
+    outer = hyperrectangle(
+        left - .5 * boundary_width,
+        right + .5 * boundary_width)
 
     def ifun(points):
         r"""
         :param points: set of points in :math:`\{x_i\}_{i=0}^{N} \in
-            \mathbf{R}^n` 
+            \mathbf{R}^n`
         :type points: :class:`np.ndarray` of shape (N, ndim)
 
         :rtype: boolean :class:`np.ndarray` of shape (ndim,)
         :returns: :math:`\{ \mathbf{1}_{\partial A \plusminus \epsilon}(x_i)
-            \}_{i=0}^{N}` 
+            \}_{i=0}^{N}`
 
         """
         return np.logical_and(outer(points), np.logical_not(inner(points)))
@@ -104,15 +108,15 @@ def boundary_hyperrectangle_ratio(left, right, boundary_ratio):
     :type left: :class:`np.ndarray` of shape (ndim,)
     :param right: Rightmost(maximum) corner of the hyperrectangle.
     :type right: :class:`np.ndarray` of shape (ndim,)
-    :param boundary_ratio: Ratio of the width of the boundary 
+    :param boundary_ratio: Ratio of the width of the boundary
     :type boundary_ratio: :class:`np.ndarray` of shape (ndim,)
 
     :rtype: function
     :returns: :math:`\mathbf{1}_{\partial A \plusminus \epsilon}`
 
     """
-    width = right-left
-    boundary_width = width*boundary_ratio
+    width = right - left
+    boundary_width = width * boundary_ratio
     return boundary_hyperrectangle(left, right, boundary_width)
 
 
@@ -126,15 +130,15 @@ def boundary_hyperrectangle_size(center, width, boundary_width):
     :type left: :class:`np.ndarray` of shape (ndim,)
     :param width: length of the size of the sides of the hyperrectangle.
     :type width: :class:`np.ndarray` of shape (ndim,)
-    :param boundary_width: Width of the boundary 
+    :param boundary_width: Width of the boundary
     :type boundary_width: :class:`np.ndarray` of shape (ndim,)
 
     :rtype: function
     :returns: :math:`\mathbf{1}_{\partial A \plusminus \epsilon}`
 
     """
-    left = center-.5*width
-    right = center+.5*width
+    left = center - .5 * width
+    right = center + .5 * width
     return boundary_hyperrectangle(left, right, boundary_width)
 
 
@@ -149,14 +153,14 @@ def boundary_hyperrectangle_size_ratio(center, width, boundary_ratio):
     :type left: :class:`np.ndarray` of shape (ndim,)
     :param width: length of the size of the sides of the hyperrectangle.
     :type width: :class:`np.ndarray` of shape (ndim,)
-    :param boundary_ratio: Ratio of the width of the boundary 
+    :param boundary_ratio: Ratio of the width of the boundary
     :type boundary_ratio: :class:`np.ndarray` of shape (ndim,)
 
     :rtype: function
     :returns: :math:`\mathbf{1}_{\partial A \plusminus \epsilon}`
 
     """
-    return boundary_hyperrectangle_size(center, width, width*boundary_ratio)
+    return boundary_hyperrectangle_size(center, width, width * boundary_ratio)
 
 
 def hypersphere(center, radius):
@@ -177,7 +181,7 @@ def hypersphere(center, radius):
     """
     def ifun(points):
         # calculate distance from the center
-        dist = np.linalg.norm(center-points, ord=2, axis=1)
+        dist = np.linalg.norm(center - points, ord=2, axis=1)
         return dist <= radius
     return ifun
 
@@ -193,7 +197,7 @@ def boundary_hypersphere(center, radius, boundary_width):
     :type center: :class:`numpy.ndarray` of shape (ndim,)
     :param radius: radius or radii of the hypereliipse
     :type radius: ``float`` or :class:`numpy.ndarray` of shape(ndim,)
-    :param boundary_width: Width of the boundary 
+    :param boundary_width: Width of the boundary
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
@@ -201,9 +205,9 @@ def boundary_hypersphere(center, radius, boundary_width):
     """
     def ifun(points):
         # calculate distance from the center
-        dist = np.linalg.norm(center-points, ord=2, axis=1)
-        return np.logical_and(dist <= radius+boundary_width*.5,
-                              dist >= radius-boundary_width*.5)
+        dist = np.linalg.norm(center - points, ord=2, axis=1)
+        return np.logical_and(dist <= radius + boundary_width * .5,
+                              dist >= radius - boundary_width * .5)
     return ifun
 
 
@@ -218,10 +222,10 @@ def boundary_hypersphere_ratio(center, radius, boundary_ratio):
     :type center: :class:`numpy.ndarray` of shape (ndim,)
     :param radius: radius or radii of the hypereliipse
     :type radius: ``float`` or :class:`numpy.ndarray` of shape(ndim,)
-    :param boundary_ratio: Ratio of the width of the boundary 
+    :param boundary_ratio: Ratio of the width of the boundary
 
     :rtype: callable
     :returns: :math:`\mathbf{1}_A` where A is a hypersphere/ellipse
 
     """
-    return boundary_hypersphere(center, radius, radius*boundary_ratio)
+    return boundary_hypersphere(center, radius, radius * boundary_ratio)

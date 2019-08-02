@@ -40,12 +40,12 @@ class Test_plot_1D_voronoi(unittest.TestCase):
         emulated_input_samples.set_values_local(np.linspace(emulated_input_samples.get_domain()[0][0],
                                                             emulated_input_samples.get_domain()[
             0][1],
-            num_samples+1))
+            num_samples + 1))
 
-        emulated_input_samples.set_probabilities_local(1.0/float(comm.size)*(1.0/float(
+        emulated_input_samples.set_probabilities_local(1.0 / float(comm.size) * (1.0 / float(
             emulated_input_samples.get_values_local().shape[0]))
             * np.ones((emulated_input_samples.get_values_local().shape[0],)))
-        emulated_input_samples.set_volumes_local(1.0/float(comm.size)*(1.0/float(
+        emulated_input_samples.set_volumes_local(1.0 / float(comm.size) * (1.0 / float(
             emulated_input_samples.get_values_local().shape[0]))
             * np.ones((emulated_input_samples.get_values_local().shape[0],)))
         emulated_input_samples.check_num()
@@ -87,11 +87,11 @@ class Test_plot_2D_voronoi(unittest.TestCase):
                                                                     np.linspace(emulated_input_samples.get_domain()[1][0],
                                                                                 emulated_input_samples.get_domain()[1][1], 10))))
 
-        emulated_input_samples.set_probabilities_local(1.0/float(comm.size) *
-                                                       (1.0/float(emulated_input_samples.get_values_local().shape[0])) *
+        emulated_input_samples.set_probabilities_local(1.0 / float(comm.size) *
+                                                       (1.0 / float(emulated_input_samples.get_values_local().shape[0])) *
                                                        np.ones((emulated_input_samples.get_values_local().shape[0],)))
-        emulated_input_samples.set_volumes_local(1.0/float(comm.size) *
-                                                 (1.0/float(emulated_input_samples.get_values_local().shape[0])) *
+        emulated_input_samples.set_volumes_local(1.0 / float(comm.size) *
+                                                 (1.0 / float(emulated_input_samples.get_values_local().shape[0])) *
                                                  np.ones((emulated_input_samples.get_values_local().shape[0],)))
         emulated_input_samples.check_num()
 

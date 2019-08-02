@@ -27,7 +27,7 @@ sample :mod:`~bet.sample` provides data structures to store sets of samples and
     their associated arrays.
 
 surrogates :mod:`~bet.surrogates` provides methods for generating and using
-    surrogate models. 
+    surrogate models.
 
 """
 

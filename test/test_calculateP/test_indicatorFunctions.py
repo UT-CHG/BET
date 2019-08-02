@@ -67,12 +67,12 @@ class check_inside(object):
         Set up the problem by calculating required ratios and widths.
         """
         self.boundary_ratio_radius = 0.1
-        self.boundary_width_radius = self.radius*self.boundary_ratio_radius
+        self.boundary_width_radius = self.radius * self.boundary_ratio_radius
         self.boundary_width = np.ones(self.center.shape) + \
-            0.1*np.arange(len(self.center))
-        self.right = self.center + .5*self.width
-        self.left = self.center - .5*self.width
-        self.boundary_ratio = self.boundary_width/self.width
+            0.1 * np.arange(len(self.center))
+        self.right = self.center + .5 * self.width
+        self.left = self.center - .5 * self.width
+        self.boundary_ratio = self.boundary_width / self.width
         # create a list of coordinates that are outside the domain
         outcoords_rect = []
         outcoords_sphere = []
@@ -81,16 +81,16 @@ class check_inside(object):
         oncoords_rect = []
         dim = len(self.width)
         for l, r, bw in zip(self.left, self.right, self.boundary_width):
-            outcoords_rect.append(np.array([l-bw, r+bw]))
-            outcoords_sphere.append(np.array([self.center-self.radius
+            outcoords_rect.append(np.array([l - bw, r + bw]))
+            outcoords_sphere.append(np.array([self.center - self.radius
                                               - self.boundary_width_radius,
-                                              self.center+self.radius+self.boundary_width_radius]))
+                                              self.center + self.radius + self.boundary_width_radius]))
             oncoords_rect.append(np.array([l, r]))
         self.outcoords_rect = util.meshgrid_ndim(outcoords_rect)
         self.oncoords_rect = util.meshgrid_ndim(oncoords_rect)
         self.outcoords_sphere = util.meshgrid_ndim(outcoords_sphere)
         self.oncoords_sphere = np.row_stack((-np.eye(dim),
-                                             np.eye(dim).transpose()))*self.radius+self.center
+                                             np.eye(dim).transpose())) * self.radius + self.center
         print("SPHERE", self.center, self.radius, self.oncoords_sphere)
 
     def test_hyperrectangle(self):

@@ -48,7 +48,8 @@ class wrong_p_norm(Exception):
     """
 
 
-def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
+def save_sample_set(save_set, file_name,
+                    sample_set_name=None, globalize=False):
     """
     Saves this :class:`bet.sample.sample_set` as a ``.mat`` file. Each
     attribute is added to a dictionary of names and arrays which are then
@@ -83,7 +84,7 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     new_mdat = dict()
     # create temporary dictionary
     if os.path.exists(local_file_name) or \
-            os.path.exists(local_file_name+'.mat'):
+            os.path.exists(local_file_name + '.mat'):
         new_mdat = sio.loadmat(local_file_name)
 
     # store sample set in dictionary
@@ -92,15 +93,15 @@ def save_sample_set(save_set, file_name, sample_set_name=None, globalize=False):
     for attrname in save_set.vector_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
-            new_mdat[sample_set_name+attrname] = curr_attr
-        elif sample_set_name+attrname in new_mdat:
-            new_mdat.pop(sample_set_name+attrname)
+            new_mdat[sample_set_name + attrname] = curr_attr
+        elif sample_set_name + attrname in new_mdat:
+            new_mdat.pop(sample_set_name + attrname)
     for attrname in save_set.all_ndarray_names:
         curr_attr = getattr(save_set, attrname)
         if curr_attr is not None:
-            new_mdat[sample_set_name+attrname] = curr_attr
-        elif sample_set_name+attrname in new_mdat:
-            new_mdat.pop(sample_set_name+attrname)
+            new_mdat[sample_set_name + attrname] = curr_attr
+        elif sample_set_name + attrname in new_mdat:
+            new_mdat.pop(sample_set_name + attrname)
     new_mdat[sample_set_name + '_sample_set_type'] = \
         str(type(save_set)).split("'")[1]
     comm.barrier()
@@ -143,9 +144,9 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
     if sample_set_name is None:
         sample_set_name = 'default'
 
-    if sample_set_name+"_dim" in list(mdat.keys()):
+    if sample_set_name + "_dim" in list(mdat.keys()):
         loaded_set = eval(mdat[sample_set_name + '_sample_set_type'][0])(
-            np.squeeze(mdat[sample_set_name+"_dim"]))
+            np.squeeze(mdat[sample_set_name + "_dim"]))
     else:
         logging.info("No sample_set named {} with _dim in file".
                      format(sample_set_name))
@@ -153,12 +154,12 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
 
     for attrname in loaded_set.vector_names:
         if attrname is not '_dim':
-            if sample_set_name+attrname in list(mdat.keys()):
+            if sample_set_name + attrname in list(mdat.keys()):
                 setattr(loaded_set, attrname,
-                        np.squeeze(mdat[sample_set_name+attrname]))
+                        np.squeeze(mdat[sample_set_name + attrname]))
     for attrname in loaded_set.all_ndarray_names:
-        if sample_set_name+attrname in list(mdat.keys()):
-            setattr(loaded_set, attrname, mdat[sample_set_name+attrname])
+        if sample_set_name + attrname in list(mdat.keys()):
+            setattr(loaded_set, attrname, mdat[sample_set_name + attrname])
 
     if localize:
         # re-localize if necessary
@@ -217,10 +218,10 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         for mlist in mdat_list:
             mdat_global.extend(mlist)
 
-        if sample_set_name+"_dim" in list(mdat_global[0].keys()):
+        if sample_set_name + "_dim" in list(mdat_global[0].keys()):
             loaded_set = eval(mdat_global[0][sample_set_name +
                                              '_sample_set_type'][0])(
-                np.squeeze(mdat_global[0][sample_set_name+"_dim"]))
+                np.squeeze(mdat_global[0][sample_set_name + "_dim"]))
         else:
             logging.info("No sample_set named {} with _dim in file".
                          format(sample_set_name))
@@ -229,30 +230,30 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         # load attributes
         for attrname in loaded_set.vector_names:
             if attrname is not '_dim':
-                if sample_set_name+attrname in list(mdat_global[0].keys()):
+                if sample_set_name + attrname in list(mdat_global[0].keys()):
                     # create lists of local data
                     if attrname.endswith('_local'):
                         temp_input = []
                         for mdat in mdat_global:
                             temp_input.append(np.squeeze(
-                                mdat[sample_set_name+attrname]))
+                                mdat[sample_set_name + attrname]))
                         # turn into arrays
                         temp_input = np.concatenate(temp_input)
                     else:
                         temp_input = np.squeeze(mdat_global[0]
-                                                [sample_set_name+attrname])
+                                                [sample_set_name + attrname])
                     setattr(loaded_set, attrname, temp_input)
         for attrname in loaded_set.all_ndarray_names:
-            if sample_set_name+attrname in list(mdat_global[0].keys()):
+            if sample_set_name + attrname in list(mdat_global[0].keys()):
                 if attrname.endswith('_local'):
                     # create lists of local data
                     temp_input = []
                     for mdat in mdat_global:
-                        temp_input.append(mdat[sample_set_name+attrname])
+                        temp_input.append(mdat[sample_set_name + attrname])
                     # turn into arrays
                     temp_input = np.concatenate(temp_input)
                 else:
-                    temp_input = mdat_global[0][sample_set_name+attrname]
+                    temp_input = mdat_global[0][sample_set_name + attrname]
                 setattr(loaded_set, attrname, temp_input)
 
         # re-localize if necessary
@@ -267,18 +268,22 @@ class sample_set_base(object):
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray` or int/float
-    vector_names = ['_probabilities', '_probabilities_local', '_volumes',
-                    '_volumes_local', '_local_index', '_dim', '_p_norm',
+    vector_names = ['_probabilities', '_probabilities_local',
+                    '_volumes', '_volumes_local',
+                    '_densities', '_densities_local',
+                    '_local_index', '_dim', '_p_norm',
                     '_radii', '_normalized_radii', '_region', '_region_local',
                     '_error_id', '_error_id_local', '_reference_value',
                     '_domain_original']
 
     #: List of global attribute names for attributes that are
     #: :class:`numpy.ndarray`
-    array_names = ['_values', '_volumes', '_probabilities', '_jacobians',
+    array_names = ['_values', '_volumes', '_probabilities',
+                   '_densities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
                    '_kdtree_values', '_radii', '_normalized_radii',
                    '_region', '_error_id']
+
     #: List of attribute names for attributes that are
     #: :class:`numpy.ndarray` with dim > 1
     all_ndarray_names = ['_error_estimates', '_error_estimates_local',
@@ -303,6 +308,8 @@ class sample_set_base(object):
         self._volumes = None
         #: :class:`numpy.ndarray` of sample probabilities of shape (num,)
         self._probabilities = None
+        #: :class:`numpy.ndarray` of sample densities of shape (num,)
+        self._densities = None
         #: :class:`numpy.ndarray` of Jacobians at samples of shape (num,
         #: other_dim, dim)
         self._jacobians = None
@@ -324,6 +331,9 @@ class sample_set_base(object):
         #: Local probabilities for parallelism, :class:`numpy.ndarray` of shape
         #: (local_num,)
         self._probabilities_local = None
+        #: Local densities for parallelism, :class:`numpy.ndarray` of shape
+        #: (local_num,)
+        self._densities_local = None
         #: Local Jacobians for parallelism, :class:`numpy.ndarray` of shape
         #: (local_num, other_dim, dim)
         self._jacobians_local = None
@@ -401,7 +411,7 @@ class sample_set_base(object):
                 val = getattr(self, obj)
                 if val is not None:
                     val -= self._domain[:, 0]
-                    val = val/(self._domain[:, 1] - self._domain[:, 0])
+                    val = val / (self._domain[:, 1] - self._domain[:, 0])
                     setattr(self, obj, val)
 
             self._domain_original = np.copy(self._domain)
@@ -552,7 +562,7 @@ class sample_set_base(object):
             num = self._values.shape[0]
         self._left = np.repeat([self._domain[:, 0]], num, 0)
         self._right = np.repeat([self._domain[:, 1]], num, 0)
-        self._width = self._right-self._left
+        self._width = self._right - self._left
 
     def update_bounds_local(self, local_num=None):
         """
@@ -568,7 +578,7 @@ class sample_set_base(object):
             local_num = self._values_local.shape[0]
         self._left_local = np.repeat([self._domain[:, 0]], local_num, 0)
         self._right_local = np.repeat([self._domain[:, 1]], local_num, 0)
-        self._width_local = self._right_local-self._left_local
+        self._width_local = self._right_local - self._left_local
 
     def append_values(self, values):
         """
@@ -600,7 +610,7 @@ class sample_set_base(object):
 
     def clip(self, cnum):
         """
-        Creates and returns a sample set with the the first `cnum` 
+        Creates and returns a sample set with the the first `cnum`
         entries of the sample set.
 
         :param int cnum: number of values of sample set to return
@@ -661,8 +671,8 @@ class sample_set_base(object):
         """
 
         Checks that the number of entries in ``self._values_local``,
-        ``self._volumes_local``, ``self._probabilities_local``, 
-        ``self._jacobians_local``, and ``self._error_estimates_local`` 
+        ``self._volumes_local``, ``self._probabilities_local``,
+        ``self._jacobians_local``, and ``self._error_estimates_local``
         all match (assuming the named array exists).
 
         :rtype: int
@@ -705,7 +715,6 @@ class sample_set_base(object):
         mins = np.min(self._values, axis=0)
         maxes = np.max(self._values, axis=0)
         self._bounding_box = np.vstack((mins, maxes)).transpose()
-        pass
 
     def get_bounding_box(self):
         """
@@ -717,7 +726,7 @@ class sample_set_base(object):
 
     def set_values(self, values):
         """
-        Sets the sample values. 
+        Sets the sample values.
 
         :param values: sample values
         :type values: :class:`numpy.ndarray` of shape (num, dim)
@@ -800,6 +809,32 @@ class sample_set_base(object):
         """
         return self._probabilities
 
+    def set_densities(self, densities=None):
+        """
+        Set sample densities.
+
+        :type densities: :class:`numpy.ndarray` of shape (num,)
+        :param densities: sample densities
+
+        """
+        if densities is not None:
+            self._densities = densities
+        else:
+            logging.warn("Setting densities with probability/volume.")
+            probs = self._probabilities
+            vols = self._volumes
+            self._densities = probs / vols
+
+    def get_densities(self):
+        """
+        Returns sample densities.
+
+        :rtype: :class:`numpy.ndarray` of shape (num,)
+        :returns: sample densities
+
+        """
+        return self._densities
+
     def set_jacobians(self, jacobians):
         """
         Returns sample jacobians.
@@ -822,7 +857,7 @@ class sample_set_base(object):
 
     def append_jacobians(self, new_jacobians):
         """
-        Appends the ``new_jacobians`` to ``self._jacobians``. 
+        Appends the ``new_jacobians`` to ``self._jacobians``.
 
         .. note::
 
@@ -830,7 +865,7 @@ class sample_set_base(object):
             :meth:`~sample.sample.check_num` does not fail.
 
         :param new_jacobians: New jacobians to append.
-        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim,
             dim)
 
         """
@@ -859,7 +894,7 @@ class sample_set_base(object):
 
     def append_error_estimates(self, new_error_estimates):
         """
-        Appends the ``new_error_estimates`` to ``self._error_estimates``. 
+        Appends the ``new_error_estimates`` to ``self._error_estimates``.
 
         .. note::
 
@@ -875,7 +910,7 @@ class sample_set_base(object):
 
     def set_values_local(self, values_local):
         """
-        Sets the local sample values. 
+        Sets the local sample values.
 
         :param values_local: sample local values
         :type values_local: :class:`numpy.ndarray` of shape (local_num, dim)
@@ -885,7 +920,6 @@ class sample_set_base(object):
         if len(self._values_local.shape) > 1 and \
                 self._values_local.shape[1] != self._dim:
             raise dim_not_matching("dimension of values incorrect")
-        pass
 
     def set_kdtree(self):
         """
@@ -923,7 +957,6 @@ class sample_set_base(object):
 
         """
         self._volumes_local = volumes_local
-        pass
 
     def get_volumes_local(self):
         """
@@ -944,30 +977,55 @@ class sample_set_base(object):
 
         """
         self._probabilities_local = probabilities_local
-        pass
 
     def get_probabilities_local(self):
         """
-        Returns sample local probablities.
+        Returns sample local probabilities.
 
         :rtype: :class:`numpy.ndarray`
-        :returns: sample local probablities
+        :returns: sample local probabilities
 
         """
 
         return self._probabilities_local
+
+    def set_densities_local(self, densities_local=None):
+        """
+        Set sample local densities.
+
+        :type densities_local: :class:`numpy.ndarray` of shape (num,)
+        :param densities_local: local sample densities
+
+        """
+        if densities_local is not None:
+            self._densities_local = densities_local
+        else:
+            logging.warn("Setting densities with probability/volume.")
+            probs = self._probabilities_local
+            vols = self._volumes_local
+            self._densities_local = probs / vols
+
+    def get_densities_local(self):
+        """
+        Returns sample local densities.
+
+        :rtype: :class:`numpy.ndarray`
+        :returns: sample local densities
+
+        """
+
+        return self._densities_local
 
     def set_jacobians_local(self, jacobians_local):
         """
         Returns local sample jacobians.
 
         :type jacobians_local: :class:`numpy.ndarray` of shape (num, other_dim,
-            dim) 
+            dim)
         :param jacobians_local: local sample jacobians
 
         """
         self._jacobians_local = jacobians_local
-        pass
 
     def get_jacobians_local(self):
         """
@@ -988,7 +1046,6 @@ class sample_set_base(object):
 
         """
         self._error_estimates_local = error_estimates_local
-        pass
 
     def get_error_estimates_local(self):
         """
@@ -1024,17 +1081,17 @@ class sample_set_base(object):
     def estimate_volume(self, n_mc_points=int(1E4)):
         """
         Calculate the volume faction of cells approximately using Monte
-        Carlo integration. 
+        Carlo integration.
 
         :param int n_mc_points: If estimate is True, number of MC points to use
         """
         num = self.check_num()
         n_mc_points = int(n_mc_points)
-        n_mc_points_local = int(n_mc_points/comm.size) + \
+        n_mc_points_local = int(n_mc_points / comm.size) + \
             int(comm.rank < n_mc_points % comm.size)
         width = self._domain[:, 1] - self._domain[:, 0]
-        mc_points = width*np.random.random((n_mc_points_local,
-                                            self._domain.shape[0])) + self._domain[:, 0]
+        mc_points = width * np.random.random((n_mc_points_local,
+                                              self._domain.shape[0])) + self._domain[:, 0]
         (_, emulate_ptr) = self.query(mc_points)
         vol = np.zeros((num,))
         for i in range(num):
@@ -1042,7 +1099,7 @@ class sample_set_base(object):
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
         vol = cvol
-        vol = vol/float(n_mc_points)
+        vol = vol / float(n_mc_points)
         self._volumes = vol
         self.global_to_local()
 
@@ -1076,22 +1133,22 @@ class sample_set_base(object):
         num_emulate = emulated_sample_set._values_local.shape[0]
         num_emulate = comm.allreduce(num_emulate, op=MPI.SUM)
         vol = cvol
-        vol = vol/float(num_emulate)
+        vol = vol / float(num_emulate)
         self._volumes = vol
         self.global_to_local()
 
     def estimate_volume_mc(self, globalize=True):
         """
         Give all cells the same volume fraction based on the Monte Carlo
-        assumption.  
+        assumption.
         """
         num = self.check_num()
         if globalize:
-            self._volumes = 1.0/float(num)*np.ones((num,))
+            self._volumes = 1.0 / float(num) * np.ones((num,))
             self.global_to_local()
         else:
             num_local = self.check_num_local()
-            self._volumes_local = 1.0/float(num)*np.ones((num_local,))
+            self._volumes_local = 1.0 / float(num) * np.ones((num_local,))
 
     def global_to_local(self):
         """
@@ -1206,21 +1263,21 @@ def save_discretization(save_disc, file_name, discretization_name=None,
         if curr_attr is not None:
             if attrname in discretization.sample_set_names:
                 save_sample_set(curr_attr, file_name,
-                                discretization_name+attrname, globalize)
+                                discretization_name + attrname, globalize)
 
     new_mdat = dict()
     # create temporary dictionary
     if os.path.exists(local_file_name) or \
-            os.path.exists(local_file_name+'.mat'):
+            os.path.exists(local_file_name + '.mat'):
         new_mdat = sio.loadmat(local_file_name)
 
     # store discretization in dictionary
     for attrname in discretization.vector_names:
         curr_attr = getattr(save_disc, attrname)
         if curr_attr is not None:
-            new_mdat[discretization_name+attrname] = curr_attr
-        elif discretization_name+attrname in new_mdat:
-            new_mdat.pop(discretization_name+attrname)
+            new_mdat[discretization_name + attrname] = curr_attr
+        elif discretization_name + attrname in new_mdat:
+            new_mdat.pop(discretization_name + attrname)
     comm.barrier()
 
     # save new file or append to existing file
@@ -1268,10 +1325,10 @@ def load_discretization_parallel(file_name, discretization_name=None):
             discretization_name = 'default'
 
         input_sample_set = load_sample_set(file_name,
-                                           discretization_name+'_input_sample_set')
+                                           discretization_name + '_input_sample_set')
 
         output_sample_set = load_sample_set(file_name,
-                                            discretization_name+'_output_sample_set')
+                                            discretization_name + '_output_sample_set')
 
         loaded_disc = discretization(input_sample_set, output_sample_set)
 
@@ -1288,14 +1345,14 @@ def load_discretization_parallel(file_name, discretization_name=None):
 
         # load attributes
         for attrname in discretization.vector_names:
-            if discretization_name+attrname in list(mdat_global[0].keys()):
+            if discretization_name + attrname in list(mdat_global[0].keys()):
                 if attrname.endswith('_local') and comm.size != \
                         len(mdat_list):
                     # create lists of local data
                     temp_input = None
                 else:
                     temp_input = np.squeeze(mdat_global[0][
-                        discretization_name+attrname])
+                        discretization_name + attrname])
                 setattr(loaded_disc, attrname, temp_input)
 
         # load sample sets
@@ -1303,7 +1360,7 @@ def load_discretization_parallel(file_name, discretization_name=None):
             if attrname is not '_input_sample_set' and \
                     attrname is not '_output_sample_set':
                 setattr(loaded_disc, attrname, load_sample_set(file_name,
-                                                               discretization_name+attrname))
+                                                               discretization_name + attrname))
 
         # re-localize if necessary
         if file_name.startswith('proc_') and comm.size > 1 \
@@ -1361,12 +1418,12 @@ def load_discretization(file_name, discretization_name=None):
         if attrname is not '_input_sample_set' and \
                 attrname is not '_output_sample_set':
             setattr(loaded_disc, attrname,
-                    load_sample_set(file_name, discretization_name+attrname))
+                    load_sample_set(file_name, discretization_name + attrname))
 
     for attrname in discretization.vector_names:
-        if discretization_name+attrname in list(mdat.keys()):
+        if discretization_name + attrname in list(mdat.keys()):
             setattr(loaded_disc, attrname,
-                    np.squeeze(mdat[discretization_name+attrname]))
+                    np.squeeze(mdat[discretization_name + attrname]))
 
     # re-localize if necessary
     if file_name.rfind('proc_') == 0 and comm.size > 1:
@@ -1408,7 +1465,7 @@ class voronoi_sample_set(sample_set_base):
         r"""
 
         Exactly calculates the volume fraction of the Voronoi cells.
-        Specifically we are calculating 
+        Specifically we are calculating
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
 
         """
@@ -1425,14 +1482,14 @@ class voronoi_sample_set(sample_set_base):
         # voronoi cells and bound the cells by the domain
         edges = np.concatenate(([self._domain[:, 0]],
                                 (sorted_samples[:-1, :] +
-                                 sorted_samples[1:, :])*.5,
+                                 sorted_samples[1:, :]) * .5,
                                 [self._domain[:, 1]]))
         # calculate difference between right and left of each cell
         # and renormalize
         sorted_lam_vol = np.squeeze(edges[1:, :] - edges[:-1, :])
         lam_vol = np.zeros(sorted_lam_vol.shape)
         lam_vol[sort_ind] = sorted_lam_vol
-        lam_vol = lam_vol/domain_width
+        lam_vol = lam_vol / domain_width
         self._volumes = lam_vol
         self.global_to_local()
 
@@ -1440,7 +1497,7 @@ class voronoi_sample_set(sample_set_base):
         r"""
 
         Exactly calculates the volume fraction of the Voronoi cells.
-        Specifically we are calculating 
+        Specifically we are calculating
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
 
         :param float side_ratio: ratio of width to reflect across boundary
@@ -1455,43 +1512,43 @@ class voronoi_sample_set(sample_set_base):
         # Add points around boundary
         add_points = np.less(self._values[:, 0],
                              self._domain[0][0] +
-                             side_ratio*(self._domain[0][1] -
-                                         self._domain[0][0]))
+                             side_ratio * (self._domain[0][1] -
+                                           self._domain[0][0]))
         points_new = self._values[add_points, :]
         points_new[:, 0] = self._domain[0][0] - \
-            (points_new[:, 0]-self._domain[0][0])
+            (points_new[:, 0] - self._domain[0][0])
         new_samp = np.vstack((new_samp, points_new))
 
         add_points = np.greater(self._values[:, 0],
                                 self._domain[0][1] -
-                                side_ratio*(self._domain[0][1] -
-                                            self._domain[0][0]))
+                                side_ratio * (self._domain[0][1] -
+                                              self._domain[0][0]))
         points_new = self._values[add_points, :]
         points_new[:, 0] = self._domain[0][1] + \
-            (-points_new[:, 0]+self._domain[0][1])
+            (-points_new[:, 0] + self._domain[0][1])
         new_samp = np.vstack((new_samp, points_new))
 
         add_points = np.less(self._values[:, 1],
                              self._domain[1][0] +
-                             side_ratio*(self._domain[1][1] -
-                                         self._domain[1][0]))
+                             side_ratio * (self._domain[1][1] -
+                                           self._domain[1][0]))
         points_new = self._values[add_points, :]
         points_new[:, 1] = self._domain[1][0] - \
-            (points_new[:, 1]-self._domain[1][0])
+            (points_new[:, 1] - self._domain[1][0])
         new_samp = np.vstack((new_samp, points_new))
 
         add_points = np.greater(self._values[:, 1],
                                 self._domain[1][1] -
-                                side_ratio*(self._domain[1][1] -
-                                            self._domain[1][0]))
+                                side_ratio * (self._domain[1][1] -
+                                              self._domain[1][0]))
         points_new = self._values[add_points, :]
         points_new[:, 1] = self._domain[1][1] + \
-            (-points_new[:, 1]+self._domain[1][1])
+            (-points_new[:, 1] + self._domain[1][1])
         new_samp = np.vstack((new_samp, points_new))
 
         # Make Voronoi diagram and calculate volumes
         vor = spatial.Voronoi(new_samp)
-        local_index = np.arange(0+comm.rank, num, comm.size)
+        local_index = np.arange(0 + comm.rank, num, comm.size)
         local_array = np.array(local_index, dtype='int64')
         lam_vol_local = np.zeros(local_array.shape)
         for I, i in enumerate(local_index):
@@ -1506,10 +1563,11 @@ class voronoi_sample_set(sample_set_base):
                     mat = np.empty((self._dim, self._dim))
                     mat[:, :] = (simplices[j][1::, :] -
                                  simplices[j][0, :]).transpose()
-                    vol += abs(1.0/math.factorial(self._dim)*linalg.det(mat))
+                    vol += abs(1.0 / math.factorial(self._dim)
+                               * linalg.det(mat))
                 lam_vol_local[I] = vol
         lam_size = np.prod(self._domain[:, 1] - self._domain[:, 0])
-        lam_vol_local = lam_vol_local/lam_size
+        lam_vol_local = lam_vol_local / lam_size
         lam_vol_global = util.get_global_values(lam_vol_local)
         global_index = util.get_global_values(local_array)
         lam_vol = np.zeros(lam_vol_global.shape)
@@ -1520,14 +1578,14 @@ class voronoi_sample_set(sample_set_base):
     def estimate_radii(self, n_mc_points=int(1E4), normalize=True):
         """
         Calculate the radii of cells approximately using Monte
-        Carlo integration. 
+        Carlo integration.
 
         .. todo::
 
            This currently presumes a uniform Lesbegue measure on the
            ``domain``. Currently the way this is written
            ``emulated_input_sample_set`` is NOT used to calculate the volume.
-           This should at least be an option. 
+           This should at least be an option.
 
         :param int n_mc_points: If estimate is True, number of MC points to use
         :param bool normalize: estimate normalized radius
@@ -1536,21 +1594,21 @@ class voronoi_sample_set(sample_set_base):
         num = self.check_num()
         n_mc_points = int(n_mc_points)
         samples = np.copy(self.get_values())
-        n_mc_points_local = int(n_mc_points/comm.size) + \
+        n_mc_points_local = int(n_mc_points / comm.size) + \
             int(comm.rank < n_mc_points % comm.size)
 
         # normalize the samples
         if normalize:
             self.update_bounds()
             samples = samples - self._left
-            samples = samples/self._width
+            samples = samples / self._width
             self._left = None
             self._right = None
             self._width = None
 
         width = self._domain[:, 1] - self._domain[:, 0]
-        mc_points = width*np.random.random((n_mc_points_local,
-                                            self._domain.shape[0])) +\
+        mc_points = width * np.random.random((n_mc_points_local,
+                                              self._domain.shape[0])) +\
             self._domain[:, 0]
 
         (_, emulate_ptr) = self.query(mc_points)
@@ -1558,7 +1616,7 @@ class voronoi_sample_set(sample_set_base):
         if normalize:
             self.update_bounds(n_mc_points_local)
             mc_points = mc_points - self._left
-            mc_points = mc_points/self._width
+            mc_points = mc_points / self._width
             self._left = None
             self._right = None
             self._width = None
@@ -1584,14 +1642,14 @@ class voronoi_sample_set(sample_set_base):
     def estimate_radii_and_volume(self, n_mc_points=int(1E4), normalize=True):
         """
         Calculate the radii and volume faction of cells approximately using
-        Monte Carlo integration. 
+        Monte Carlo integration.
 
         .. todo::
 
            This currently presumes a uniform Lesbegue measure on the
            ``domain``. Currently the way this is written
            ``emulated_input_sample_set`` is NOT used to calculate the volume.
-           This should at least be an option. 
+           This should at least be an option.
 
         :param int n_mc_points: If estimate is True, number of MC points to use
         :param bool normalize: estimate normalized radius
@@ -1600,18 +1658,18 @@ class voronoi_sample_set(sample_set_base):
         num = self.check_num()
         n_mc_points = int(n_mc_points)
         samples = np.copy(self.get_values())
-        n_mc_points_local = int(n_mc_points/comm.size) + \
+        n_mc_points_local = int(n_mc_points / comm.size) + \
             int(comm.rank < n_mc_points % comm.size)
 
         # normalize the samples
         if normalize:
             self.update_bounds()
             samples = samples - self._left
-            samples = samples/self._width
+            samples = samples / self._width
 
         width = self._domain[:, 1] - self._domain[:, 0]
-        mc_points = width*np.random.random((n_mc_points_local,
-                                            self._domain.shape[0])) +\
+        mc_points = width * np.random.random((n_mc_points_local,
+                                              self._domain.shape[0])) +\
             self._domain[:, 0]
 
         (_, emulate_ptr) = self.query(mc_points)
@@ -1619,7 +1677,7 @@ class voronoi_sample_set(sample_set_base):
         if normalize:
             self.update_bounds(n_mc_points_local)
             mc_points = mc_points - self._left
-            mc_points = mc_points/self._width
+            mc_points = mc_points / self._width
             self._left = None
             self._right = None
             self._width = None
@@ -1644,7 +1702,7 @@ class voronoi_sample_set(sample_set_base):
         cvol = np.copy(vol)
         comm.Allreduce([vol, MPI.DOUBLE], [cvol, MPI.DOUBLE], op=MPI.SUM)
         vol = cvol
-        vol = vol/float(n_mc_points)
+        vol = vol / float(n_mc_points)
         self._volumes = vol
         self.global_to_local()
 
@@ -1665,7 +1723,7 @@ class voronoi_sample_set(sample_set_base):
             normalized to the unit hypercube (``_normalized_radii``). Note that
             these are not centroidal Voronoi tesselations meaning that the
             centroid is NOT the generator of the Voronoi cell. What we desire
-            for the radius is actually 
+            for the radius is actually
             :math:`sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda,
             \lambda^{(i)})`.
 
@@ -1687,7 +1745,7 @@ class voronoi_sample_set(sample_set_base):
         samples = np.copy(self.get_values())
         self.update_bounds()
         samples = samples - self._left
-        samples = samples/self._width
+        samples = samples / self._width
         num_emulate_local = int(num_emulate_local)
         max_num_emulate = int(max_num_emulate)
         kdtree = spatial.KDTree(samples)
@@ -1702,9 +1760,9 @@ class voronoi_sample_set(sample_set_base):
             sample_radii = np.copy(self._normalized_radii)
 
         if sample_radii is None:
-            num_mc_points = np.max([1e4, samples.shape[0]*20])
+            num_mc_points = np.max([1e4, samples.shape[0] * 20])
             self.estimate_radii(n_mc_points=int(num_mc_points))
-            sample_radii = 1.5*np.copy(self._normalized_radii)
+            sample_radii = 1.5 * np.copy(self._normalized_radii)
         if np.sum(sample_radii <= 0) > 0:
             # Calculate the pairwise distances
             if not np.isinf(self._p_norm):
@@ -1716,7 +1774,7 @@ class voronoi_sample_set(sample_set_base):
             pairwise_distance = spatial.distance.squareform(pairwise_distance)
             pairwise_distance_ma = np.ma.masked_less_equal(pairwise_distance,
                                                            0.)
-            prob_est_radii = np.std(pairwise_distance_ma*.5, 0)*2.
+            prob_est_radii = np.std(pairwise_distance_ma * .5, 0) * 2.
             # Calculate mean, std of pairwise distances
             # TODO this may be too large/small
             # Estimate radius as 2.*STD of the pairwise distance
@@ -1725,10 +1783,10 @@ class voronoi_sample_set(sample_set_base):
         # determine the volume of the Lp ball
         if not np.isinf(self._p_norm):
             sample_Lp_ball_vol = sample_radii**self._dim * \
-                scipy.special.gamma(1+1./self._p_norm) / \
-                scipy.special.gamma(1+float(self._dim)/self._p_norm)
+                scipy.special.gamma(1 + 1. / self._p_norm) / \
+                scipy.special.gamma(1 + float(self._dim) / self._p_norm)
         else:
-            sample_Lp_ball_vol = (2.0*sample_radii)**self._dim
+            sample_Lp_ball_vol = (2.0 * sample_radii)**self._dim
 
         # Set up local arrays for parallelism
         self.global_to_local()
@@ -1741,7 +1799,7 @@ class voronoi_sample_set(sample_set_base):
             total_samples = 10
             while samples_in_cell < num_emulate_local and \
                     total_samples < max_num_emulate:
-                total_samples = total_samples*10
+                total_samples = total_samples * 10
                 # Sample within an Lp ball until num_emulate_local samples are
                 # present in the Voronoi cell
                 local_lambda_emulate = \
@@ -1829,9 +1887,9 @@ class rectangle_sample_set(sample_set_base):
     A data structure containing arrays specific to a set of samples defining a
     hyperrectangle discretization.
 
-    A series of n hyperrectangles :math:`A_i \subset \Lambda` with 
-    :math:`A_i \cap A_j = \emptyset` 
-    for :math:`i \neq j`. The last entry represents the remainder 
+    A series of n hyperrectangles :math:`A_i \subset \Lambda` with
+    :math:`A_i \cap A_j = \emptyset`
+    for :math:`i \neq j`. The last entry represents the remainder
     :math:`\Lambda \setminus ( \cup_{i-1}^n A_i)`.
 
     """
@@ -1856,11 +1914,11 @@ class rectangle_sample_set(sample_set_base):
                     repr(i) + " has the wrong number of entries."
                 raise length_not_matching(msg)
 
-        values = np.zeros((len(maxes)+1, self._dim))
-        self._right = np.zeros((len(maxes)+1, self._dim))
-        self._left = np.zeros((len(mins)+1, self._dim))
+        values = np.zeros((len(maxes) + 1, self._dim))
+        self._right = np.zeros((len(maxes) + 1, self._dim))
+        self._left = np.zeros((len(mins) + 1, self._dim))
         for i in range(len(maxes)):
-            values[i, :] = 0.5*(np.array(maxes[i]) + np.array(mins[i]))
+            values[i, :] = 0.5 * (np.array(maxes[i]) + np.array(mins[i]))
             self._right[i, :] = maxes[i]
             self._left[i, :] = mins[i]
         values[-1, :] = np.inf
@@ -1881,8 +1939,6 @@ class rectangle_sample_set(sample_set_base):
         """
         logging.warning(
             "Bounds cannot be updated for this type of sample set.")
-
-        pass
 
     def update_bounds_local(self, num_local=None):
         """
@@ -1922,7 +1978,7 @@ class rectangle_sample_set(sample_set_base):
 
     def append_jacobians(self, new_jacobians):
         """
-        Does nothing for this type of sample set. 
+        Does nothing for this type of sample set.
 
         .. note::
 
@@ -1930,7 +1986,7 @@ class rectangle_sample_set(sample_set_base):
             :meth:`~sample.sample.check_num` does not fail.
 
         :param new_jacobians: New jacobians to append.
-        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim,
             dim)
 
         """
@@ -1980,12 +2036,12 @@ class rectangle_sample_set(sample_set_base):
             in_rec = np.logical_and(in_r, in_l)
             for j in range(k):
                 if j == 0:
-                    in_rec_now = np.logical_and(np.equal(pt[:, j], num-1),
+                    in_rec_now = np.logical_and(np.equal(pt[:, j], num - 1),
                                                 in_rec)
                 else:
                     in_rec_now = np.logical_and(np.logical_and(
-                        np.equal(pt[:, j], num-1), in_rec),
-                        np.not_equal(pt[:, j-1], i))
+                        np.equal(pt[:, j], num - 1), in_rec),
+                        np.not_equal(pt[:, j - 1], i))
                 pt[:, j][in_rec_now] = i
                 dist[:, j][in_rec_now] = 0.0
         if k == 1:
@@ -2003,7 +2059,7 @@ class rectangle_sample_set(sample_set_base):
         num = self.check_num()
         self._volumes = np.zeros((num, ))
         domain_width = self._domain[:, 1] - self._domain[:, 0]
-        self._volumes[0:-1] = np.prod(self._width[0:-1]/domain_width, axis=1)
+        self._volumes[0:-1] = np.prod(self._width[0:-1] / domain_width, axis=1)
         self._volumes[-1] = 1.0 - np.sum(self._volumes[0:-1])
 
 
@@ -2013,9 +2069,9 @@ class ball_sample_set(sample_set_base):
     discretization containing a number of balls.
     Only returns the neighbors for which :math:`x_i \in A_k`.
 
-    A series of n balls :math:`A_i \subset \Lambda` with 
-    :math:`A_i \cap A_j = \emptyset` 
-    for :math:`i \neq j`. The last entry represents the remainder 
+    A series of n balls :math:`A_i \subset \Lambda` with
+    :math:`A_i \cap A_j = \emptyset`
+    for :math:`i \neq j`. The last entry represents the remainder
     :math:`\Lambda \setminus ( \cup_{i-1}^n A_i)`.
 
     """
@@ -2036,11 +2092,11 @@ class ball_sample_set(sample_set_base):
             if len(centers[i]) != self._dim:
                 msg = "Center " + repr(i) + " has the wrong number of entries."
                 raise length_not_matching(msg)
-        values = np.zeros((len(centers)+1, self._dim))
+        values = np.zeros((len(centers) + 1, self._dim))
         values[0:-1, :] = centers
         values[-1, :] = np.nan
         self.set_values(values)
-        self._radii = np.zeros((len(centers)+1,))
+        self._radii = np.zeros((len(centers) + 1,))
         self._radii[0:-1] = radii
         self._radii[-1] = np.inf
         if len(centers) > 1:
@@ -2079,7 +2135,7 @@ class ball_sample_set(sample_set_base):
 
     def append_jacobians(self, new_jacobians):
         """
-        Does nothing for this type of sample set. 
+        Does nothing for this type of sample set.
 
         .. note::
 
@@ -2087,7 +2143,7 @@ class ball_sample_set(sample_set_base):
             :meth:`~sample.sample.check_num` does not fail.
 
         :param new_jacobians: New jacobians to append.
-        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim, 
+        :type new_jacobians: :class:`numpy.ndarray` of shape (num, other_dim,
             dim)
 
         """
@@ -2117,7 +2173,6 @@ class ball_sample_set(sample_set_base):
         """
         logging.warning(
             "Bounds cannot be updated for this type of sample set.")
-        pass
 
     def update_bounds_local(self, num_local=None):
         """
@@ -2126,12 +2181,11 @@ class ball_sample_set(sample_set_base):
         """
         logging.warning(
             "Bounds cannot be updated for this type of sample set.")
-        pass
 
     def query(self, x, k=1):
         """
         Identify which value points x are associated with for discretization.
-        The distance is set to 0 if it is in the rectangle and infinity 
+        The distance is set to 0 if it is in the rectangle and infinity
         if it is not.
         It is only considered in or out.
 
@@ -2149,16 +2203,16 @@ class ball_sample_set(sample_set_base):
         dist = np.inf * np.ones((x.shape[0], k), dtype=np.float)
         pt = (num - 1) * np.ones((x.shape[0], k), dtype=np.int)
         for i in range(num - 1):
-            in_rec = np.less(linalg.norm(x-self._values[i, :], self._p_norm,
+            in_rec = np.less(linalg.norm(x - self._values[i, :], self._p_norm,
                                          axis=1), self._radii[i])
             for j in range(k):
                 if j == 0:
-                    in_rec_now = np.logical_and(np.equal(pt[:, j], num-1),
+                    in_rec_now = np.logical_and(np.equal(pt[:, j], num - 1),
                                                 in_rec)
                 else:
                     in_rec_now = np.logical_and(np.logical_and(
-                        np.equal(pt[:, j], num-1), in_rec),
-                        np.not_equal(pt[:, j-1], i))
+                        np.equal(pt[:, j], num - 1), in_rec),
+                        np.not_equal(pt[:, j - 1], i))
                 pt[:, j][in_rec_now] = i
                 dist[:, j][in_rec_now] = 0.0
         if k == 1:
@@ -2177,9 +2231,9 @@ class ball_sample_set(sample_set_base):
         self._volumes = np.zeros((num, ))
         domain_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
         self._volumes[0:-1] = 2.0**self._dim * self._radii[0:-1]**self._dim * \
-            scipy.special.gamma(1+1./self._p_norm)**self._dim / \
-            scipy.special.gamma(1+float(self._dim)/self._p_norm)
-        self._volumes[0:-1] *= 1.0/domain_vol
+            scipy.special.gamma(1 + 1. / self._p_norm)**self._dim / \
+            scipy.special.gamma(1 + float(self._dim) / self._p_norm)
+        self._volumes[0:-1] *= 1.0 / domain_vol
         self._volumes[-1] = 1.0 - np.sum(self._volumes[0:-1])
 
 
@@ -2198,7 +2252,7 @@ class cartesian_sample_set(rectangle_sample_set):
         Initialize.
 
         :param xi: x1, x2,..., xn, 1-D arrays representing the coordinates of a
-            grid 
+            grid
         :type xi: array_like
 
         .. seealso::
@@ -2231,7 +2285,7 @@ class cartesian_sample_set(rectangle_sample_set):
 class discretization(object):
     """
     A data structure to store all of the :class:`~bet.sample.sample_set_base`
-    objects and associated pointers to solve an stochastic inverse problem. 
+    objects and associated pointers to solve an stochastic inverse problem.
     """
     #: List of attribute names for attributes which are vectors or 1D
     #: :class:`numpy.ndarray`
@@ -2650,7 +2704,7 @@ class discretization(object):
 
     def clip(self, cnum):
         """
-        Creates and returns a discretization with the the first `cnum` 
+        Creates and returns a discretization with the the first `cnum`
         entries of the input and output sample sets.
 
         :param int cnum: number of values of sample set to return

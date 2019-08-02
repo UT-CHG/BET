@@ -52,7 +52,7 @@ def unit_center_set(dim=1, num_samples=100,
 
 
 def check_densities(s_set, dim=2, delta=0.1, tol=1e-4):
-    # density values should be reciprocal of delta^dim
+    # densities values should be reciprocal of delta^dim
     true_den_val = 1.0 / (delta**dim)
     if np.mean(np.abs(s_set._den - true_den_val)) < tol:
         return 1
@@ -129,7 +129,7 @@ class Test_distance(unittest.TestCase):
                 d1 - d2, 0, 12, 'Distance not symmetric.')
 
 
-class Test_density(unittest.TestCase):
+class Test_densities(unittest.TestCase):
     def setUp(self):
         self.dim = 1
         self.int_set = sample.sample_set(dim=self.dim)
@@ -149,13 +149,13 @@ class Test_density(unittest.TestCase):
             self.int_set, self.left_set.copy(), self.right_set)
         try:
             mm.get_left().set_probabilities(None)
-            mm.estimate_left_density()
+            mm.estimate_left_densities()
         except AttributeError:
             pass
         mm.set_left(self.left_set)
         # if local probs go missing, we should still be fine
         mm.get_left()._probabilities_local = None
-        mm.estimate_left_density()
+        mm.estimate_left_densities()
 
     def test_missing_vols(self):
         r"""
@@ -164,7 +164,7 @@ class Test_density(unittest.TestCase):
         mm = compP.comparison(self.int_set, self.left_set, self.right_set)
         try:
             mm.get_left().set_volumes(None)
-            mm.estimate_left_density()
+            mm.estimate_left_densities()
         except AttributeError:
             pass
 
@@ -174,22 +174,22 @@ class Test_density(unittest.TestCase):
         Check behavior of second argument not being provided.
         """
         try:
-            compP.density(None)
+            compP.density_estimate(None)
         except AttributeError:
             pass
         ll = self.left_set
         dd = ll._probabilities.flatten() / ll._volumes.flatten()
-        compP.density(ll, None)
-        nptest.assert_array_equal(ll._density, dd)
+        compP.density_estimate(ll, None)
+        nptest.assert_array_equal(ll._densities, dd)
 
-    def test_existing_density(self):
+    def test_existing_densities(self):
         r"""
-        Test intelligent evaluation of density (when to skip).
+        Test intelligent evaluation of densities (when to skip).
         """
         ll = self.left_set
-        ll._density = ll._probabilities.flatten() / ll._volumes.flatten()
-        compP.density(ll)
-        compP.density(ll, [1, 2, 3])
+        ll._densities = ll._probabilities.flatten() / ll._volumes.flatten()
+        compP.density_estimate(ll)
+        compP.density_estimate(ll, [1, 2, 3])
 
 
 class Test_comparison_simple(unittest.TestCase):
@@ -207,7 +207,7 @@ class Test_comparison_simple(unittest.TestCase):
         self.right_set.set_domain(self.domain)
         self.mtrc = compP.comparison(sample_set_left=self.left_set,
                                      sample_set_right=self.right_set,
-                                     emulated_sample_set=self.emulation_set)
+                                     comparison_sample_set=self.emulation_set)
 
     def test_domain(self):
         r"""
@@ -219,9 +219,9 @@ class Test_comparison_simple(unittest.TestCase):
             self.mtrc.check_domain()
         except sample.domain_not_matching:
             pass
-        # mess up integration set to trigger error
+        # mess up comparison set to trigger error
         self.mtrc.get_left()._domain = self.domain
-        self.mtrc.get_emulated()._domain = self.domain * 1.05
+        self.mtrc.get_comparison()._domain = self.domain * 1.05
         try:
             self.mtrc.check_domain()
         except sample.domain_not_matching:
@@ -238,10 +238,10 @@ class Test_comparison_simple(unittest.TestCase):
         """
         self.mtrc.check_dim()
         try:
-            self.mtrc._sample_set_right._dim = 15
+            self.mtrc._right_sample_set._dim = 15
             self.mtrc.check_dim()
         except sample.dim_not_matching:
-            self.mtrc._sample_set_right._dim = self.dim
+            self.mtrc._right_sample_set._dim = self.dim
             pass
         # force inconsistent sizes
         try:
@@ -276,32 +276,32 @@ class Test_comparison_simple(unittest.TestCase):
         try:
             compP.comparison(sample_set_left=self.left_set,
                              sample_set_right=self.right_set,
-                             emulated_sample_set=emulation_set)
+                             comparison_sample_set=emulation_set)
         except sample.dim_not_matching:
             pass
         try:
             compP.comparison(sample_set_left=self.left_set,
                              sample_set_right=None,
-                             emulated_sample_set=emulation_set)
+                             comparison_sample_set=emulation_set)
         except sample.dim_not_matching:
             pass
         try:
             compP.comparison(sample_set_left=self.left_set,
                              sample_set_right=None,
-                             emulated_sample_set=emulation_set)
+                             comparison_sample_set=emulation_set)
         except sample.dim_not_matching:
             pass
         # if missing domain info, should be able to infer
         self.emulation_set._domain = None
         compP.comparison(sample_set_left=None,
                          sample_set_right=self.right_set,
-                         emulated_sample_set=self.emulation_set)
+                         comparison_sample_set=self.emulation_set)
 
         try:  # if not enough info, raise error
             self.emulation_set._domain = None
             compP.comparison(sample_set_left=None,
                              sample_set_right=None,
-                             emulated_sample_set=self.emulation_set)
+                             comparison_sample_set=self.emulation_set)
         except AttributeError:
             pass
 
@@ -341,7 +341,7 @@ class Test_comparison_simple(unittest.TestCase):
         # setting one of the missing properties
         for mm in test_metr:
             try:
-                mm.set_emulated(test_set)
+                mm.set_comparison(test_set)
             except sample.domain_not_matching:
                 pass
 
@@ -415,10 +415,10 @@ class Test_comparison_simple(unittest.TestCase):
         mm.get_right().set_reference_value(np.array([0.5] * self.dim))
         mm.get_left()._jacobians = np.ones((self.num1, self.dim, 1))
         mm.get_right()._jacobians = np.ones((self.num2, self.dim, 1))
-        mm.estimate_density()
+        mm.estimate_densities()
         mm.slice([0])
         mc = mm.clip(50)
-        mc.estimate_density()  # make sure function still works!
+        mc.estimate_densities()  # make sure function still works!
         ms = mm.merge(mc)
         ms = ms.clip(0)  # this should just return an identical copy
         ms.slice([0])
@@ -433,7 +433,7 @@ class Test_comparison_simple(unittest.TestCase):
     def test_missing_domain(self):
         r"""
         Make sure we can initialize the function in several permutations
-        if the domain is missing from the integration set
+        if the domain is missing from the comparison set
         """
         test_set = sample.sample_set(dim=self.dim)  # no domain info
         other_set = test_set.copy()  # has domain info
@@ -522,10 +522,10 @@ class Test_comparison_simple(unittest.TestCase):
         set_left = self.mtrc.get_left()
         assert set_left == self.left_set
 
-    def test_estimate_density(self):
+    def test_estimate_densities(self):
         r"""
         """
-        self.mtrc.estimate_density()
+        self.mtrc.estimate_densities()
 
     def test_set_emulation(self):
         r"""
@@ -533,51 +533,51 @@ class Test_comparison_simple(unittest.TestCase):
         """
         mm = compP.comparison(None, self.left_set, None)
         emulation_set = self.emulation_set.copy()
-        mm.set_emulated(emulation_set)
-        nptest.assert_array_equal(mm.get_emulated()._values,
+        mm.set_comparison(emulation_set)
+        nptest.assert_array_equal(mm.get_comparison()._values,
                                   self.emulation_set._values)
-        mm.set_emulated_sample_set(emulation_set)
-        nptest.assert_array_equal(mm.get_emulated()._values,
+        mm.set_comparison_sample_set(emulation_set)
+        nptest.assert_array_equal(mm.get_comparison()._values,
                                   self.emulation_set._values)
         try:  # None should trigger error
-            mm._emulated_sample_set = None
-            mm.estimate_density()
+            mm._comparison_sample_set = None
+            mm.estimate_densities()
         except AttributeError:
             pass
         # the following syntax to should be able to run
-        mm.set_emulated(emulation_set)
+        mm.set_comparison(emulation_set)
         mm.set_right(self.right_set)
-        mm.estimate_density()
+        mm.estimate_densities()
         mm.set_left(self.left_set)
-        mm.estimate_density()
+        mm.estimate_densities()
 
     def test_get(self):
         r"""
-        Different ways to get emulated set.
+        Different ways to get comparison set.
         """
         mm = self.mtrc
-        mm.get_emulated()
-        mm.get_emulated_sample_set()
+        mm.get_comparison()
+        mm.get_comparison_sample_set()
 
     def test_estimate(self):
         r"""
         """
         mm = self.mtrc
-        rd = mm.estimate_right_density()
-        ld = mm.estimate_left_density()
-        msg = "Get/set density mismatch."
-        nptest.assert_array_equal(mm.get_density_left(), ld, msg)
-        nptest.assert_array_equal(mm.get_density_right(), rd, msg)
-        mm.estimate_density(emulated_sample_set=self.emulation_set)
+        rd = mm.estimate_right_densities()
+        ld = mm.estimate_left_densities()
+        msg = "Get/set densities mismatch."
+        nptest.assert_array_equal(mm.get_densities_left(), ld, msg)
+        nptest.assert_array_equal(mm.get_densities_right(), rd, msg)
+        mm.estimate_densities(comparison_sample_set=self.emulation_set)
         mm.get_left().set_volumes(None)
         mm.get_right().set_volumes(None)
-        mm.estimate_density()
+        mm.estimate_densities()
         mm.get_left().set_volumes(None)
         mm.get_right().set_volumes(None)
-        mm.estimate_density(emulated_sample_set=self.emulation_set)
+        mm.estimate_densities(comparison_sample_set=self.emulation_set)
         try:  # the following should raise an error
-            mm.set_emulated_sample_set(None)
-            mm.estimate_density()
+            mm.set_comparison_sample_set(None)
+            mm.estimate_densities()
         except AttributeError:
             pass
 

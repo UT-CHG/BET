@@ -45,8 +45,8 @@ def test_loadmat_init():
     my_output2.set_values(np.random.random((60, 1)))
 
     num_samples = np.array([50, 60])
-    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples/float(
-        chain_length*comm.size)).astype('int')
+    num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples / float(
+        chain_length * comm.size)).astype('int')
     num_chains1, num_chains2 = comm.size * np.array([num_chains_pproc1,
                                                      num_chains_pproc2])
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
@@ -78,7 +78,7 @@ def test_loadmat_init():
     assert loaded_sampler1.num_chains == num_chains1
     nptest.assert_array_equal(np.repeat(np.arange(num_chains1), chain_length, 0),
                               loaded_sampler1.sample_batch_no)
-    assert loaded_sampler1.lb_model == None
+    assert loaded_sampler1.lb_model is None
 
     loaded_sampler2, discretization2, _, _ = asam.loadmat(os.path.join(local_path,
                                                                        'testfile2'), lb_model=model, hot_start=2)
@@ -109,21 +109,21 @@ def verify_samples(QoI_range, sampler, input_domain,
     """
 
     # create indicator function
-    Q_ref = QoI_range*0.5
-    bin_size = 0.15*QoI_range
-    maximum = 1/np.product(bin_size)
+    Q_ref = QoI_range * 0.5
+    bin_size = 0.15 * QoI_range
+    maximum = 1 / np.product(bin_size)
 
     def ifun(outputs):
         """
         Indicator function
         """
-        left = np.repeat([Q_ref-.5*bin_size], outputs.shape[0], 0)
-        right = np.repeat([Q_ref+.5*bin_size], outputs.shape[0], 0)
+        left = np.repeat([Q_ref - .5 * bin_size], outputs.shape[0], 0)
+        right = np.repeat([Q_ref + .5 * bin_size], outputs.shape[0], 0)
         left = np.all(np.greater_equal(outputs, left), axis=1)
         right = np.all(np.less_equal(outputs, right), axis=1)
         inside = np.logical_and(left, right)
         max_values = np.repeat(maximum, outputs.shape[0], 0)
-        return inside.astype('float64')*max_values
+        return inside.astype('float64') * max_values
 
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
@@ -213,7 +213,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         # create 3-2 map
 
         def map_3t2(x):
-            return np.vstack(([x[:, 0]+x[:, 1], x[:, 2]])).transpose()
+            return np.vstack(([x[:, 0] + x[:, 1], x[:, 2]])).transpose()
         # create 10-4 map
         self.input_domain10 = np.column_stack(
             (np.zeros((10,)), np.ones((10,))))
@@ -234,8 +234,8 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         num_samples = 100
         chain_length = 10
-        num_chains_pproc = int(np.ceil(num_samples/float(chain_length *
-                                                         comm.size)))
+        num_chains_pproc = int(np.ceil(num_samples / float(chain_length *
+                                                           comm.size)))
         num_chains = comm.size * num_chains_pproc
         num_samples = chain_length * np.array(num_chains)
 
@@ -253,8 +253,8 @@ class Test_adaptive_sampler(unittest.TestCase):
     def tearDown(self):
         comm.barrier()
         for f in self.savefiles:
-            if comm.rank == 0 and os.path.exists(f+".mat"):
-                os.remove(f+".mat")
+            if comm.rank == 0 and os.path.exists(f + ".mat"):
+                os.remove(f + ".mat")
         proc_savefiles = glob.glob("p{}*.mat".format(comm.rank))
         proc_savefiles.extend(glob.glob("proc{}*.mat".format(comm.rank)))
         for pf in proc_savefiles:
@@ -288,23 +288,23 @@ class Test_adaptive_sampler(unittest.TestCase):
         inputs = self.test_list[3]
         _, QoI_range, sampler, input_domain, savefile = inputs
 
-        Q_ref = QoI_range*0.5
-        bin_size = 0.15*QoI_range
-        maximum = 1/np.product(bin_size)
+        Q_ref = QoI_range * 0.5
+        bin_size = 0.15 * QoI_range
+        maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
             Indicator function
             """
             inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                              Q_ref+.5*bin_size), axis=1))
+                                                            Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                  Q_ref + .5 * bin_size), axis=1))
             max_values = np.repeat(maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
 
         # create rhoD_kernel
         kernel_rD = asam.rhoD_kernel(maximum, ifun)
-        kern_list = [kernel_rD]*2
+        kern_list = [kernel_rD] * 2
 
         # create t_set
         t_set = asam.transition_set(.5, .5**5, 1.0)
@@ -346,19 +346,19 @@ class Test_adaptive_sampler(unittest.TestCase):
         inputs = self.test_list[3]
         _, QoI_range, sampler, input_domain, savefile = inputs
 
-        Q_ref = QoI_range*0.5
-        bin_size = 0.15*QoI_range
-        maximum = 1/np.product(bin_size)
+        Q_ref = QoI_range * 0.5
+        bin_size = 0.15 * QoI_range
+        maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
             Indicator function
             """
             inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                              Q_ref+.5*bin_size), axis=1))
+                                                            Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                  Q_ref + .5 * bin_size), axis=1))
             max_values = np.repeat(maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
 
         # create rhoD_kernel
         kernel_rD = asam.rhoD_kernel(maximum, ifun)
@@ -405,19 +405,19 @@ class Test_adaptive_sampler(unittest.TestCase):
         inputs = self.test_list[3]
         _, QoI_range, sampler, input_domain, savefile = inputs
 
-        Q_ref = QoI_range*0.5
-        bin_size = 0.15*QoI_range
-        maximum = 1/np.product(bin_size)
+        Q_ref = QoI_range * 0.5
+        bin_size = 0.15 * QoI_range
+        maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
             Indicator function
             """
             inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                              Q_ref+.5*bin_size), axis=1))
+                                                            Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                  Q_ref + .5 * bin_size), axis=1))
             max_values = np.repeat(maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
 
         # create rhoD_kernel
         increase = [2.0, 3.0, 5.0]
@@ -483,19 +483,19 @@ class test_kernels(unittest.TestCase):
         Run test for a 1d, 2d, and 4d output space.
         """
         for QoI_range in self.QoI_range:
-            Q_ref = QoI_range*0.5
-            bin_size = 0.15*QoI_range
-            maximum = 1/np.product(bin_size)
+            Q_ref = QoI_range * 0.5
+            bin_size = 0.15 * QoI_range
+            maximum = 1 / np.product(bin_size)
 
             def ifun(outputs):
                 """
                 Indicator function
                 """
                 inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                                Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                                  Q_ref+.5*bin_size), axis=1))
+                                                                Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                      Q_ref + .5 * bin_size), axis=1))
                 max_values = np.repeat(maximum, outputs.shape[0], 0)
-                return inside.astype('float64')*max_values
+                return inside.astype('float64') * max_values
             self.verify_indiv(Q_ref, ifun, maximum)
 
     def verify_indiv(self, Q_ref, rhoD, maximum):
@@ -518,22 +518,22 @@ class output_1D(object):
         """
         Set up output.
         """
-        self.output = np.random.random((100, 1))*10.0
+        self.output = np.random.random((100, 1)) * 10.0
         self.Q_ref = np.array([5.0])
         self.output_domain = np.expand_dims(np.array([0.0, 10.0]), axis=0)
         self.mdim = 1
-        bin_size = 0.15*self.output_domain[:, 1]
-        self.maximum = 1/np.product(bin_size)
+        bin_size = 0.15 * self.output_domain[:, 1]
+        self.maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
             Indicator function
             """
             inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            self.Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                                   self.Q_ref+.5*bin_size), axis=1))
+                                                            self.Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                       self.Q_ref + .5 * bin_size), axis=1))
             max_values = np.repeat(self.maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
         self.rho_D = ifun
 
 
@@ -546,22 +546,22 @@ class output_2D(object):
         """
         Set up output.
         """
-        self.output = np.random.random((100, 2))*10.0
+        self.output = np.random.random((100, 2)) * 10.0
         self.Q_ref = np.array([5.0, 5.0])
         self.output_domain = np.array([[0.0, 10.0], [0.0, 10.0]])
         self.mdim = 2
-        bin_size = 0.15*self.output_domain[:, 1]
-        self.maximum = 1/np.product(bin_size)
+        bin_size = 0.15 * self.output_domain[:, 1]
+        self.maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
             Indicator function
             """
             inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            self.Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                                   self.Q_ref+.5*bin_size), axis=1))
+                                                            self.Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                       self.Q_ref + .5 * bin_size), axis=1))
             max_values = np.repeat(self.maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
         self.rho_D = ifun
 
 
@@ -574,22 +574,22 @@ class output_3D(object):
         """
         Set up output.
         """
-        self.output = np.random.random((100, 3))*10.0
+        self.output = np.random.random((100, 3)) * 10.0
         self.Q_ref = np.array([5.0, 5.0, 5.0])
         self.output_domain = np.array([[0.0, 10.0], [0.0, 10.0], [0.0, 10.0]])
         self.mdim = 3
-        bin_size = 0.15*self.output_domain[:, 1]
-        self.maximum = 1/np.product(bin_size)
+        bin_size = 0.15 * self.output_domain[:, 1]
+        self.maximum = 1 / np.product(bin_size)
 
         def ifun(outputs):
             """
             Indicator function
             """
             inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            self.Q_ref-.5*bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                                   self.Q_ref+.5*bin_size), axis=1))
+                                                            self.Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
+                                                                                                                       self.Q_ref + .5 * bin_size), axis=1))
             max_values = np.repeat(self.maximum, outputs.shape[0], 0)
-            return inside.astype('float64')*max_values
+            return inside.astype('float64') * max_values
         self.rho_D = ifun
 
 
@@ -618,7 +618,7 @@ class kernel(object):
         :class:`bet.sampling.adaptiveSampling.kernel`
         """
         kern_new, proposal = self.kernel.delta_step(self.output)
-        assert kern_new == None
+        assert kern_new is None
         assert proposal.shape == (self.output.shape[0],)
 
 
@@ -675,7 +675,7 @@ class rhoD_kernel(kernel):
     def test_init(self):
         """
         Test the initalization of
-        :class:`bet.sampling.adaptiveSampling.rhoD_kernel` 
+        :class:`bet.sampling.adaptiveSampling.rhoD_kernel`
         """
         assert self.kernel.TOL == 1e-8
         assert self.kernel.increase == 2.0
@@ -691,10 +691,11 @@ class rhoD_kernel(kernel):
         """
         kern_new, proposal = self.kernel.delta_step(self.output)
         nptest.assert_array_equal(kern_new, self.rho_D(self.output))
-        assert proposal == None
+        assert proposal is None
 
-        output = np.vstack([self.Q_ref+3.0, self.Q_ref, self.Q_ref-3.0])
-        output_new = np.vstack([self.Q_ref, self.Q_ref+3.0, self.Q_ref-3.0])
+        output = np.vstack([self.Q_ref + 3.0, self.Q_ref, self.Q_ref - 3.0])
+        output_new = np.vstack(
+            [self.Q_ref, self.Q_ref + 3.0, self.Q_ref - 3.0])
         kern_old = self.rho_D(output)
         kern_new, proposal = self.kernel.delta_step(output_new, kern_old)
         nptest.assert_array_equal(proposal, [0.5, 2.0, 1.0])
@@ -703,7 +704,7 @@ class rhoD_kernel(kernel):
 class test_rhoD_kernel_1D(rhoD_kernel, output_1D):
     """
     Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 1D output
-    space.  
+    space.
     """
 
     def setUp(self):
@@ -717,7 +718,7 @@ class test_rhoD_kernel_1D(rhoD_kernel, output_1D):
 class test_rhoD_kernel_2D(rhoD_kernel, output_2D):
     """
     Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 2D output
-    space.  
+    space.
     """
 
     def setUp(self):
@@ -731,7 +732,7 @@ class test_rhoD_kernel_2D(rhoD_kernel, output_2D):
 class test_rhoD_kernel_3D(rhoD_kernel, output_3D):
     """
     Test :class:`bet.sampling.adaptiveSampling.rhoD_kernel` on a 3D output
-    space.  
+    space.
     """
 
     def setUp(self):
@@ -752,7 +753,7 @@ class maxima_kernel(kernel):
         Set up
         """
         self.kernel = asam.maxima_kernel(np.vstack([self.Q_ref,
-                                                    self.Q_ref+.5]), self.rho_D)
+                                                    self.Q_ref + .5]), self.rho_D)
 
     def test_init(self):
         """
@@ -763,10 +764,10 @@ class maxima_kernel(kernel):
         assert self.kernel.increase == 2.0
         assert self.kernel.decrease == 0.5
         nptest.assert_equal(self.kernel.MAXIMA, np.vstack([self.Q_ref,
-                                                           self.Q_ref+.5]))
+                                                           self.Q_ref + .5]))
         assert self.kernel.num_maxima == 2
         nptest.assert_equal(self.kernel.rho_max,
-                            self.rho_D(np.vstack([self.Q_ref, self.Q_ref+.5])))
+                            self.rho_D(np.vstack([self.Q_ref, self.Q_ref + .5])))
         assert self.kernel.sort_ascending == True
 
     def test_delta_step(self):
@@ -774,14 +775,16 @@ class maxima_kernel(kernel):
         Test the delta_step method of
         :class:`bet.sampling.adaptiveSampling.maxima_kernel`
         """
-        output_old = np.vstack([self.Q_ref+3.0, self.Q_ref, self.Q_ref-3.0])
+        output_old = np.vstack(
+            [self.Q_ref + 3.0, self.Q_ref, self.Q_ref - 3.0])
         kern_old, proposal = self.kernel.delta_step(output_old)
 
         # TODO: check kern_old
         # nptest.assert_array_equal(kern_old, np.zeros((self.output.shape[0],))
-        assert proposal == None
+        assert proposal is None
 
-        output_new = np.vstack([self.Q_ref, self.Q_ref+3.0, self.Q_ref-3.0])
+        output_new = np.vstack(
+            [self.Q_ref, self.Q_ref + 3.0, self.Q_ref - 3.0])
         kern_new, proposal = self.kernel.delta_step(output_new, kern_old)
 
         # TODO: check kern_new
@@ -806,7 +809,7 @@ class test_maxima_kernel_1D(maxima_kernel, output_1D):
 class test_maxima_kernel_2D(maxima_kernel, output_2D):
     """
     Test :class:`bet.sampling.adaptiveSampling.maxima_kernel` on a 2D output
-    space.  
+    space.
     """
 
     def setUp(self):
@@ -841,15 +844,15 @@ class maxima_mean_kernel(maxima_kernel):
         Set up
         """
         self.kernel = asam.maxima_mean_kernel(np.vstack([self.Q_ref,
-                                                         self.Q_ref+.5]), self.rho_D)
+                                                         self.Q_ref + .5]), self.rho_D)
 
     def test_init(self):
         """
         Test the initalization of
         :class:`bet.sampling.adaptiveSampling.maxima_mean_kernel`
         """
-        assert self.kernel.radius == None
-        assert self.kernel.mean == None
+        assert self.kernel.radius is None
+        assert self.kernel.mean is None
         assert self.kernel.current_clength == 0
         super(maxima_mean_kernel, self).test_init()
 
@@ -859,8 +862,8 @@ class maxima_mean_kernel(maxima_kernel):
         :meth:`bet.sampling.adaptiveSampling.maxima_mean_kernel.reset`
         """
         self.kernel.reset()
-        assert self.kernel.radius == None
-        assert self.kernel.mean == None
+        assert self.kernel.radius is None
+        assert self.kernel.mean is None
         assert self.kernel.current_clength == 0
 
     def test_delta_step(self):
@@ -951,10 +954,10 @@ class transition_set(object):
         """
         # define step_ratio from output_set
         local_num = self.output_set._values_local.shape[0]
-        step_ratio = 0.5*np.ones(local_num,)
-        step_ratio[local_num//2:] = .1
+        step_ratio = 0.5 * np.ones(local_num,)
+        step_ratio[local_num // 2:] = .1
         step_size = np.repeat([step_ratio], self.output_set.get_dim(),
-                              0).transpose()*self.output_set._width_local
+                              0).transpose() * self.output_set._width_local
         # take a step
         samples_new = self.t_set.step(step_ratio, self.output_set)
 
@@ -972,10 +975,10 @@ class transition_set(object):
         # generating old samples
         assert np.all(samples_new.get_values_local() <=
                       self.output_set.get_values_local()
-                      + 0.5*step_size)
+                      + 0.5 * step_size)
         assert np.all(samples_new.get_values_local() >=
                       self.output_set.get_values_local()
-                      - 0.5*step_size)
+                      - 0.5 * step_size)
 
 
 class test_transition_set_1D(transition_set, output_1D):

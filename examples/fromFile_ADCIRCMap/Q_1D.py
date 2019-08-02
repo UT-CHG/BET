@@ -24,12 +24,13 @@ input_sample_set.set_domain(lam_domain)
 
 print("Finished loading data")
 
+
 def postprocess(station_nums, ref_num):
-    
-    filename = 'P_q'+str(station_nums[0]+1)+'_q'
+
+    filename = 'P_q' + str(station_nums[0] + 1) + '_q'
     if len(station_nums) == 3:
-        filename += '_q'+str(station_nums[2]+1)
-    filename += '_ref_'+str(ref_num+1)
+        filename += '_q' + str(station_nums[2] + 1)
+    filename += '_ref_' + str(ref_num + 1)
 
     data = Q[:, station_nums]
     output_sample_set = sample.sample_set(data.shape[1])
@@ -39,21 +40,24 @@ def postprocess(station_nums, ref_num):
     # Create Simple function approximation
     # Save points used to parition D for simple function approximation and the
     # approximation itself (this can be used to make close comparisions...)
-    output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(\
-            output_sample_set, q_ref, rect_scale=0.15,
-            cells_per_dimension=np.ones((data.shape[1],)))
+    output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(
+        output_sample_set, q_ref, rect_scale=0.15,
+        cells_per_dimension=np.ones((data.shape[1],)))
 
     num_l_emulate = 1e4
     set_emulated = bsam.random_sample_set('r', lam_domain, num_l_emulate)
     my_disc = sample.discretization(input_sample_set, output_sample_set,
-            output_probability_set, emulated_input_sample_set=set_emulated)
+                                    output_probability_set, emulated_input_sample_set=set_emulated)
 
     print("Finished emulating lambda samples")
 
     # Calculate P on lambda emulate
     print("Calculating prob_on_emulated_samples")
     calcP.prob_on_emulated_samples(my_disc)
-    sample.save_discretization(my_disc, filename, "prob_on_emulated_samples_solution")
+    sample.save_discretization(
+        my_disc,
+        filename,
+        "prob_on_emulated_samples_solution")
 
     # Calclate P on the actual samples with assumption that voronoi cells have
     # equal size
@@ -66,11 +70,15 @@ def postprocess(station_nums, ref_num):
     # integration
     calcP.prob_with_emulated_volumes(my_disc)
     print("Calculating prob_with_emulated_volumes")
-    sample.save_discretization(my_disc, filename, "prob_with_emulated_volumes_solution")
+    sample.save_discretization(
+        my_disc,
+        filename,
+        "prob_with_emulated_volumes_solution")
+
 
 # Post-process and save P and emulated points
-ref_nums = [6, 11, 15] # 7, 12, 16
-stations = [1, 4, 5] # 2, 5, 6
+ref_nums = [6, 11, 15]  # 7, 12, 16
+stations = [1, 4, 5]  # 2, 5, 6
 
 ref_nums, stations = np.meshgrid(ref_nums, stations)
 ref_nums = ref_nums.ravel()
@@ -78,4 +86,3 @@ stations = stations.ravel()
 
 for tnum, stat in zip(ref_nums, stations):
     postprocess([0], tnum)
-

@@ -21,13 +21,13 @@ def get_binary_rep(i, dim):
 
     """
     short = bin(i).partition('b')[-1]
-    full = '0'*(dim-len(short))+short
+    full = '0' * (dim - len(short)) + short
     return full
 
 
 def compare_to_bin_rep(xnew):
     """
-    xnew[i] == get_binar_rep(i, dim)     
+    xnew[i] == get_binar_rep(i, dim)
     """
     rep_compare = np.zeros((xnew.shape[0],), np.bool)
     for i, row in enumerate(xnew):
@@ -45,7 +45,7 @@ def test_meshgrid_ndim():
     equal to ``[0, 1]``.
     """
     for i in range(10):
-        x = [[0, 1] for v in range(i+1)]
+        x = [[0, 1] for v in range(i + 1)]
         yield compare_to_bin_rep, util.meshgrid_ndim(x)
 
 
@@ -68,14 +68,14 @@ def compare_get_global_values(i, provide_shape):
     """
     if comm.rank == 0:
         if i == 0:
-            original_array = np.array(np.random.random((comm.size*2, )))
+            original_array = np.array(np.random.random((comm.size * 2, )))
         else:
-            original_array = np.array(np.random.random((comm.size*2, i)))
+            original_array = np.array(np.random.random((comm.size * 2, i)))
     else:
         original_array = None
     original_array = comm.bcast(original_array)
-    my_len = original_array.shape[0]//comm.size
-    my_index = np.arange(0+comm.rank*my_len, (comm.rank+1)*my_len)
+    my_len = original_array.shape[0] // comm.size
+    my_index = np.arange(0 + comm.rank * my_len, (comm.rank + 1) * my_len)
     if i == 0:
         my_array = original_array[my_index]
     else:

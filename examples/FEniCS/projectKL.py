@@ -25,7 +25,7 @@ class projectKL(object):
     def getCovMat(self, cov_expr):
         """TODO: Docstring for getCovMat.
 
-        :cov_expr: Expression (dolfin) as a function of 
+        :cov_expr: Expression (dolfin) as a function of
         :returns: covariance PETSC matrix cov_mat
 
         """
@@ -47,7 +47,8 @@ class projectKL(object):
         print(' Building Covariance Matrix')
         print('---------------------------')
         print('---------------------------')
-        # Loop through global nodes and build the matrix for i < j because of symmetric nature.
+        # Loop through global nodes and build the matrix for i < j because of
+        # symmetric nature.
         for node_i in range(0, self.domain.getNodes()):
             # global node node_i
             for node_j in range(node_i, self.domain.getNodes()):
@@ -72,7 +73,7 @@ class projectKL(object):
                         # evaluate the expression
                         cov_expr.eval(cov_ij, xycor)
                         if cov_ij[0] > 0:
-                            temp_cov_ij += (1.0/3)*(1.0/3)*cov_ij[0]*self.c_volume_array[elem_i] * \
+                            temp_cov_ij += (1.0 / 3) * (1.0 / 3) * cov_ij[0] * self.c_volume_array[elem_i] * \
                                 self.c_volume_array[elem_j]
                             cov_mat.setValue(node_i, node_j, temp_cov_ij)
                             cov_mat.setValue(node_j, node_i, temp_cov_ij)
@@ -88,20 +89,21 @@ class projectKL(object):
 
     def _getBMat(self):
         """TODO: Docstring for getBmat. We are solving for CX = BX where C is the covariance matrix
-        and B is just a mass matrix. Here we assemble B. This is a private function. DONT call this 
+        and B is just a mass matrix. Here we assemble B. This is a private function. DONT call this
         unless debuging.
 
-        :returns: PETScMatrix B 
+        :returns: PETScMatrix B
         """
 
         # B matrix is just a mass matrix, can be easily assembled through fenics
         # however, the ordering in fenics is not the mesh ordering. so we build a temp matrix
-        # then use the vertex to dof map to get the right ordering interms of our mesh nodes
+        # then use the vertex to dof map to get the right ordering interms of
+        # our mesh nodes
         V = FunctionSpace(self._mesh, "CG", 1)
         # Define basis and bilinear form
         u = TrialFunction(V)
         v = TestFunction(V)
-        a = u*v*dx
+        a = u * v * dx
         B_temp = assemble(a)
 
         B = PETSc.Mat().create()
@@ -136,7 +138,7 @@ class projectKL(object):
 
     def projectCovToMesh(self, num_kl, cov_expr):
         """TODO: Docstring for projectCovToMesh. Solves CX = BX where C is the covariance matrix
-        :num_kl : number of kl exapansion terms needed 
+        :num_kl : number of kl exapansion terms needed
         :returns: TODO
 
         """
