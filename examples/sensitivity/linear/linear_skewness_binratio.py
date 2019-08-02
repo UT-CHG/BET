@@ -110,7 +110,7 @@ simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
     data_set=my_discretization, Q_ref=Q_ref, rect_scale=bin_ratio,
     cells_per_dimension=1)
 
-# Calculate probablities making the Monte Carlo assumption
+# Calculate probabilities making the Monte Carlo assumption
 calculateP.prob(my_discretization)
 
 percentile = 1.0

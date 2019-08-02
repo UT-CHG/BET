@@ -585,7 +585,7 @@ def normal_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
     if Q_ref is None:
         Q_ref = infer_Q(data_set)
     import scipy.stats as stats
-    r'''Create M smaples defining M bins in D used to define
+    r'''Create M samples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
     Q_ref = check_type(Q_ref, data_set)

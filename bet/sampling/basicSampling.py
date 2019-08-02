@@ -361,7 +361,7 @@ class sampler(object):
 
         :param input_sample_set: samples to evaluate the model at
         :type input_sample_set: :class:`~bet.sample.sample_set` with
-            num_smaples
+            num_samples
         :param string savefile: filename to save samples and data
         :param bool globalize: Makes local variables global.
 
