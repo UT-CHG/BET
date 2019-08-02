@@ -407,7 +407,8 @@ class comparison(object):
             self._ptr_left_local = None
             self._den_left = None
         elif isinstance(sample_set, samp.discretization):
-            logging.warn("Discretization passed. Assuming input set.")
+            msg = "Discretization passed. Assuming input set."
+            logging.warning(msg)
             sample_set = sample_set.get_input_sample_set()
             self._left_sample_set = sample_set
             self._ptr_left = None
@@ -478,7 +479,8 @@ class comparison(object):
             self._ptr_right_local = None
             self._den_right = None
         elif isinstance(sample_set, samp.discretization):
-            logging.warn("Discretization passed. Assuming input set.")
+            msg = "Discretization passed. Assuming input set."
+            logging.warning(msg)
             sample_set = sample_set.get_input_sample_set()
             self._right_sample_set = sample_set
             self._ptr_right = None
@@ -897,24 +899,24 @@ class comparison(object):
         if left_set._volumes is None:
             if comparison_sample_set is None:
                 msg = " Volumes missing from left. Using MC assumption."
-                logging.warn(msg)
+                logging.warning(msg)
                 left_set.estimate_volume_mc()
             else:
                 self.set_left_volume_comparison(comparison_sample_set)
         else:  # volumes present and comparison passed
             if comparison_sample_set is not None:
                 msg = " Overwriting left volumes with comparison ones."
-                logging.warn(msg)
+                logging.warning(msg)
                 self.set_left_volume_comparison(comparison_sample_set)
 
         if right_set._volumes is None:
             if comparison_sample_set is None:
                 msg = " Volumes missing from right. Using MC assumption."
-                logging.warn(msg)
+                logging.warning(msg)
                 right_set.estimate_volume_mc()
             else:
                 msg = " Overwriting right volumes with comparison ones."
-                logging.warn(msg)
+                logging.warning(msg)
                 self.set_right_volume_comparison(comparison_sample_set)
         else:  # volumes present and comparison passed
             if comparison_sample_set is not None:
