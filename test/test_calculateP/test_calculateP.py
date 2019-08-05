@@ -270,7 +270,7 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.lam_domain[:, 1] = 1.0
         self.inputs.set_domain(self.lam_domain)
         self.inputs = bsam.random_sample_set('r',
-                                             self.inputs.get_domain(), num_samples=101, globalize=True)
+                                             self.inputs.get_domain(), num_samples=200, globalize=True)
         self.outputs.set_values(np.dot(self.inputs._values, rnd.rand(10, 4)))
         Q_ref = np.mean(self.outputs._values, axis=0)
         self.inputs_emulated = bsam.random_sample_set('r',
