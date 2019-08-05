@@ -393,8 +393,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         for inds in sort_ind:
             assert np.issubdtype(type(inds), np.signedinteger)
         for asr, mir, mar in zip(mean_ss, min_ratio, max_ratio):
-            assert asr > mir
-            assert asr < mar
+            assert asr >= mir
+            assert asr <= mar
 
     def test_run_inc_dec(self):
         """

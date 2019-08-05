@@ -151,7 +151,7 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
-                                     num_samples=10,
+                                     num_samples=20,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=0)
         sur_disc.check_nums()
@@ -233,7 +233,7 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         """
         iss = bsam.random_sample_set('r',
                                      self.sur.input_disc._input_sample_set._domain,
-                                     num_samples=10,
+                                     num_samples=20,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=0)
         sur_disc.check_nums()
