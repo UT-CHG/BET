@@ -176,7 +176,7 @@ def verify_samples(QoI_range, sampler, input_domain,
     mdat = sio.loadmat(savefile)
     saved_disc = bet.sample.load_discretization(savefile)
     saved_disc.local_to_global()
-    
+
     # # compare the input
     nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
                               saved_disc._input_sample_set.get_values())
@@ -206,13 +206,13 @@ class Test_adaptive_sampler(unittest.TestCase):
         self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
 
         def map_1t1(x):
-            return np.sin(x).reshape(-1,1)
+            return np.sin(x).reshape(-1, 1)
 
         # create 3-1 map
         self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
 
         def map_3t1(x):
-            return np.sum(x, 1).reshape(-1,1)
+            return np.sum(x, 1).reshape(-1, 1)
 
         # create 3-2 map
         def map_3t2(x):
@@ -245,7 +245,11 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         self.samplers = []
         for model in self.models:
-            self.samplers.append(asam.sampler(num_samples, chain_length, model))
+            self.samplers.append(
+                asam.sampler(
+                    num_samples,
+                    chain_length,
+                    model))
 
         self.input_domain_list = [self.input_domain1, self.input_domain1,
                                   self.input_domain3,
@@ -464,9 +468,9 @@ class Test_adaptive_sampler(unittest.TestCase):
         t_set = asam.transition_set(.5, .5**5, 1.0)
 
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
-            print("savefile: %s"%savefile)
+            print("savefile: %s" % savefile)
             for initial_sample_type in ["random", "r", "lhs"]:
-                print("Initial sample type: %s"%(initial_sample_type))
+                print("Initial sample type: %s" % (initial_sample_type))
                 for hot_start in range(3):
                     verify_samples(QoI_range, sampler, input_domain,
                                    t_set, savefile, initial_sample_type, hot_start)
