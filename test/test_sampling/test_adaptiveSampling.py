@@ -35,15 +35,6 @@ def test_loadmat_init():
     mdat2 = {'num_samples': 60, 'chain_length': chain_length}
     model = "this is not a model"
 
-    my_input1 = sample_set(1)
-    my_input1.set_values(np.random.random((50, 1)))
-    my_output1 = sample_set(1)
-    my_output1.set_values(np.random.random((50, 1)))
-    my_input2 = sample_set(1)
-    my_input2.set_values(np.random.random((60, 1)))
-    my_output2 = sample_set(1)
-    my_output2.set_values(np.random.random((60, 1)))
-
     num_samples = np.array([50, 60])
     num_chains_pproc1, num_chains_pproc2 = np.ceil(num_samples / float(
         chain_length * comm.size)).astype('int')
@@ -52,12 +43,21 @@ def test_loadmat_init():
     num_samples1, num_samples2 = chain_length * np.array([num_chains1,
                                                           num_chains2])
 
+    my_input1 = sample_set(1)
+    my_input1.set_values(np.random.random((num_samples1, 1)))
+    my_output1 = sample_set(1)
+    my_output1.set_values(np.random.random((num_samples1, 1)))
+    my_input2 = sample_set(1)
+    my_input2.set_values(np.random.random((num_samples2, 1)))
+    my_output2 = sample_set(1)
+    my_output2.set_values(np.random.random((num_samples2, 1)))
+
     mdat1['num_chains'] = num_chains1
     mdat1['kern_old'] = np.random.random((num_chains1,))
-    mdat1['step_ratios'] = np.random.random((num_samples[0],))
+    mdat1['step_ratios'] = np.random.random((num_samples1,))
     mdat2['num_chains'] = num_chains2
     mdat2['kern_old'] = np.random.random((num_chains2,))
-    mdat2['step_ratios'] = np.random.random((num_samples[1],))
+    mdat2['step_ratios'] = np.random.random((num_samples2,))
 
     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
     sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
@@ -128,7 +128,7 @@ def verify_samples(QoI_range, sampler, input_domain,
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
     if comm.rank == 0:
-        print("dim", input_domain.shape)
+        print("domain shape:", input_domain.shape)
     if not hot_start:
         # run generalized chains
         (my_discretization, all_step_ratios) = sampler.generalized_chains(
@@ -175,12 +175,14 @@ def verify_samples(QoI_range, sampler, input_domain,
     # if comm.rank == 0:
     mdat = sio.loadmat(savefile)
     saved_disc = bet.sample.load_discretization(savefile)
-    # compare the input
-    nptest.assert_array_equal(my_discretization._input_sample_set.
-                              get_values(), saved_disc._input_sample_set.get_values())
+    saved_disc.local_to_global()
+    
+    # # compare the input
+    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
+                              saved_disc._input_sample_set.get_values())
     # compare the output
-    nptest.assert_array_equal(my_discretization._output_sample_set.
-                              get_values(), saved_disc._output_sample_set.get_values())
+    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
+                              saved_disc._output_sample_set.get_values())
 
     nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
     assert sampler.chain_length == mdat['chain_length']
@@ -204,16 +206,18 @@ class Test_adaptive_sampler(unittest.TestCase):
         self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
 
         def map_1t1(x):
-            return np.sin(x)
+            return np.sin(x).reshape(-1,1)
+
         # create 3-1 map
         self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
 
         def map_3t1(x):
-            return np.sum(x, 1)
-        # create 3-2 map
+            return np.sum(x, 1).reshape(-1,1)
 
+        # create 3-2 map
         def map_3t2(x):
-            return np.vstack(([x[:, 0] + x[:, 1], x[:, 2]])).transpose()
+            return np.column_stack([x[:, 0] + x[:, 1], x[:, 2]])
+
         # create 10-4 map
         self.input_domain10 = np.column_stack(
             (np.zeros((10,)), np.ones((10,))))
@@ -223,32 +227,32 @@ class Test_adaptive_sampler(unittest.TestCase):
             x2 = x[:, 2] + x[:, 3]
             x3 = x[:, 4] + x[:, 5]
             x4 = np.sum(x[:, [6, 7, 8, 9]], 1)
-            return np.vstack([x1, x2, x3, x4]).transpose()
+            return np.column_stack([x1, x2, x3, x4])
 
-        self.savefiles = ["11t11", "1t1", "3to1", "3to2", "10to4"]
-        self.models = [map_1t1, map_1t1, map_3t1, map_3t2, map_10t4]
+        self.savefiles = ["11t11", "1t1", "3to1", "10to4", "3to2"]
+        self.models = [map_1t1, map_1t1, map_3t1, map_10t4, map_3t2]
         self.QoI_range = [np.array([2.0]), np.array([2.0]), np.array([3.0]),
-                          np.array([2.0, 1.0]), np.array([2.0, 2.0, 2.0, 4.0])]
+                          np.array([2.0, 2.0, 2.0, 4.0]), np.array([2.0, 1.0])]
 
         # define parameters for the adaptive sampler
 
         num_samples = 100
         chain_length = 10
-        num_chains_pproc = int(np.ceil(num_samples / float(chain_length *
-                                                           comm.size)))
-        num_chains = comm.size * num_chains_pproc
-        num_samples = chain_length * np.array(num_chains)
+        # num_chains_pproc = int(np.ceil(num_samples / float(chain_length *
+        #                                                    comm.size)))
+        # num_chains = comm.size * num_chains_pproc
+        # num_samples = chain_length * np.array(num_chains)
 
         self.samplers = []
         for model in self.models:
-            self.samplers.append(asam.sampler(num_samples, chain_length,
-                                              model))
+            self.samplers.append(asam.sampler(num_samples, chain_length, model))
 
         self.input_domain_list = [self.input_domain1, self.input_domain1,
-                                  self.input_domain3, self.input_domain3, self.input_domain10]
+                                  self.input_domain3,
+                                  self.input_domain10, self.input_domain3]
 
         self.test_list = list(zip(self.models, self.QoI_range, self.samplers,
-                                  self.input_domain_list, self.savefiles))
+                                  self.input_domain_list, self.savefiles))[:-1]
 
     def tearDown(self):
         comm.barrier()
@@ -453,14 +457,16 @@ class Test_adaptive_sampler(unittest.TestCase):
 
     def test_generalized_chains(self):
         """
-        Test :met:`bet.sampling.adaptiveSampling.sampler.generalized_chains`
+        Test :meth:`bet.sampling.adaptiveSampling.sampler.generalized_chains`
         for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
         """
         # create a transition set
         t_set = asam.transition_set(.5, .5**5, 1.0)
 
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
+            print("savefile: %s"%savefile)
             for initial_sample_type in ["random", "r", "lhs"]:
+                print("Initial sample type: %s"%(initial_sample_type))
                 for hot_start in range(3):
                     verify_samples(QoI_range, sampler, input_domain,
                                    t_set, savefile, initial_sample_type, hot_start)
