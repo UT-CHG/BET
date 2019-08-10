@@ -1169,11 +1169,15 @@ class Test_rectangle_sample_set(unittest.TestCase):
     def setUp(self):
         self.dim = 2
         self.sam_set = sample.rectangle_sample_set(dim=self.dim)
-        maxes = [[0.9, 0.8], [0.5, 0.5]]
-        mins = [[0.6, 0.6], [0.1, 0.1]]
+        # maximum number 
+        nprocs = 8
+        self.nprocs = nprocs
+        n = np.linspace(0.1, 0.9, nprocs)
+        maxes = [[n[-i],  n[-i]] for i in range(1,nprocs)]
+        mins = [[n[i],  n[i]] for i in range(nprocs-1)][::-1]
         self.sam_set.setup(maxes, mins)
         self.domain = np.array([[0, 1], [0, 1]], dtype=np.float)
-        self.sam_set.set_domain(np.array([[0, 1], [0, 1]], dtype=np.float))
+        self.sam_set.set_domain(self.domain)
         self.num = self.sam_set.check_num()
 
     def test_save_load(self):
@@ -1280,9 +1284,10 @@ class Test_rectangle_sample_set(unittest.TestCase):
         """
         Check querying
         """
-        x = np.array([[0.2, 0.2], [0.61, 0.61], [0.99, 0.99]])
+        n = np.linspace(0.1, 0.9, self.nprocs)
+        x = np.array([[n[i]+1E-5, n[i]+1E-5] for i in range(self.nprocs-1)])
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, [1, 0, 2])
+        nptest.assert_array_equal(ptr, np.arange(self.nprocs-1)[::-1])
 
     def test_volumes(self):
         """
@@ -1290,18 +1295,24 @@ class Test_rectangle_sample_set(unittest.TestCase):
         """
         self.sam_set.exact_volume_lebesgue()
         volumes = self.sam_set.get_volumes()
-        nptest.assert_array_almost_equal(volumes, [.06, .16, .78])
-
+        volumes_exact = (0.8/(self.nprocs-1))**2
+        total_vol_exact = 1 - (self.nprocs-1)*volumes_exact
+        nptest.assert_array_almost_equal(volumes[:-1], volumes_exact)
+        nptest.assert_array_almost_equal(volumes[-1], total_vol_exact)
 
 class Test_ball_sample_set(unittest.TestCase):
     def setUp(self):
         self.dim = 2
         self.sam_set = sample.ball_sample_set(dim=self.dim)
-        centers = [[0.2, 0.2], [0.8, 0.8]]
-        radii = [0.1, 0.2]
+        # max number of processors supported in test.
+        nprocs = 8
+        self.nprocs = nprocs
+        n = np.linspace(0.1, 0.9, nprocs)
+        centers = [[n[i], n[i]] for i in range(nprocs-1)]
+        radii = [0.1]*(nprocs-1)
         self.sam_set.setup(centers, radii)
         self.domain = np.array([[0, 1], [0, 1]], dtype=np.float)
-        self.sam_set.set_domain(np.array([[0, 1], [0, 1]], dtype=np.float))
+        self.sam_set.set_domain(self.domain)
         self.num = self.sam_set.check_num()
 
     def test_save_load(self):
@@ -1412,9 +1423,10 @@ class Test_ball_sample_set(unittest.TestCase):
         """
         Check querying
         """
-        x = np.array([[0.21, 0.19], [0.55, 0.55], [0.83, 0.73]])
+        n = np.linspace(0.1, 0.9, self.nprocs)
+        x = np.array([[n[i]+1E-5, n[i]+1E-5] for i in range(self.nprocs-1)])
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, [0, 2, 1])
+        nptest.assert_array_equal(ptr, np.arange(self.nprocs-1))
 
     def test_volumes(self):
         """
@@ -1422,28 +1434,35 @@ class Test_ball_sample_set(unittest.TestCase):
         """
         self.sam_set.exact_volume()
         volumes = self.sam_set.get_volumes()
-        nptest.assert_array_almost_equal(volumes, [0.031415926535897934,
-                                                   0.12566370614359174,
-                                                   0.8429203673205103])
+        nptest.assert_array_almost_equal(volumes[:-1], np.pi/100)
+        leftover_volume = 1-(self.nprocs-1)*np.pi/100
+        nptest.assert_array_almost_equal(volumes[-1], leftover_volume)
 
 
 class Test_cartesian_sample_set(unittest.TestCase):
     def setUp(self):
         self.dim = 2
         self.sam_set = sample.cartesian_sample_set(dim=self.dim)
-        xi = [np.linspace(0, 1, 3), np.linspace(0, 1, 3)]
+        # number of processors test should support (for dim<=2 only)
+        nprocs = 10
+        self.nprocs = int(np.ceil(np.sqrt(nprocs))**2)
+        # equispaced grid in each dimension
+        vi = np.linspace(0, 1, 1+int(np.sqrt(self.nprocs)))
+        xi = [vi, vi]
         self.sam_set.setup(xi)
         self.domain = np.array([[0, 1], [0, 1]], dtype=np.float)
-        self.sam_set.set_domain(np.array([[0, 1], [0, 1]], dtype=np.float))
+        self.sam_set.set_domain(self.domain)
         self.num = self.sam_set.check_num()
 
     def test_save_load(self):
         """
         Check save_sample_set and load_sample_set.
         """
-        prob = 1.0 / float(self.num) * np.ones((self.num,))
+        prob = 1.0 / float(self.num-1) * np.ones((self.num,))
+        prob[-1] = 0
         self.sam_set.set_probabilities(prob)
-        vol = 1.0 / float(self.num) * np.ones((self.num,))
+        vol = 1.0 / float(self.num-1) * np.ones((self.num,))
+        vol[-1] = 0
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1523,9 +1542,11 @@ class Test_cartesian_sample_set(unittest.TestCase):
         """
         Check copy.
         """
-        prob = 1.0 / float(self.num) * np.ones((self.num,))
+        prob = 1.0 / float(self.num-1) * np.ones((self.num,))
+        prob[-1] = 0
         self.sam_set.set_probabilities(prob)
-        vol = 1.0 / float(self.num) * np.ones((self.num,))
+        vol = 1.0 / float(self.num-1) * np.ones((self.num,))
+        vol[-1] = 0
         self.sam_set.set_volumes(vol)
         ee = np.ones((self.num, self.dim))
         self.sam_set.set_error_estimates(ee)
@@ -1549,10 +1570,9 @@ class Test_cartesian_sample_set(unittest.TestCase):
         """
         Check querying
         """
-        x = np.array([[0.2, 0.2], [0.6, 0.6], [
-                     0.1, 0.9], [0.8, 0.2], [5.0, 5.0]])
+        x = self.sam_set.get_values()[:-1,:] + 1E-5
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, [0, 3, 1, 2, 4])
+        nptest.assert_array_equal(ptr, np.arange(self.nprocs))
 
     def test_volumes(self):
         """
@@ -1560,4 +1580,5 @@ class Test_cartesian_sample_set(unittest.TestCase):
         """
         self.sam_set.exact_volume_lebesgue()
         volumes = self.sam_set.get_volumes()
-        nptest.assert_array_almost_equal(volumes, [.25, 0.25, 0.25, 0.25, 0.0])
+        nptest.assert_array_almost_equal(volumes[:-1], 1./self.nprocs)
+        assert volumes[-1] == 0
