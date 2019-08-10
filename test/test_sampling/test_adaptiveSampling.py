@@ -199,33 +199,32 @@ class Test_adaptive_sampler(unittest.TestCase):
 
     def setUp(self):
         """
-        Set up
+        Set up for sampler.
         """
 
         # create 1-1 map
         self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
-
         def map_1t1(x):
             return np.sin(x)
+
         # create 3-1 map
         self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
-
         def map_3t1(x):
             return np.sum(x, 1)
+
         # create 3-2 map
-
         def map_3t2(x):
-            return np.vstack(([x[:, 0] + x[:, 1], x[:, 2]])).transpose()
-        # create 10-4 map
-        self.input_domain10 = np.column_stack(
-            (np.zeros((10,)), np.ones((10,))))
+            return np.column_stack(([x[:, 0] + x[:, 1], x[:, 2]]))
 
+        # create 10-4 map
+        self.input_domain10 = np.column_stack((np.zeros((10,)),
+                                              np.ones((10,))))
         def map_10t4(x):
             x1 = x[:, 0] + x[:, 1]
             x2 = x[:, 2] + x[:, 3]
             x3 = x[:, 4] + x[:, 5]
             x4 = np.sum(x[:, [6, 7, 8, 9]], 1)
-            return np.vstack([x1, x2, x3, x4]).transpose()
+            return np.column_stack([x1, x2, x3, x4])
 
         self.savefiles = ["11t11", "1t1", "3to1", "3to2", "10to4"]
         self.models = [map_1t1, map_1t1, map_3t1, map_3t2, map_10t4]

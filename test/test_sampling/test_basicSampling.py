@@ -20,6 +20,7 @@ import collections
 
 local_path = os.path.join(".")
 
+
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 def test_loadmat():
     """
@@ -129,7 +130,6 @@ def test_loadmat_parallel():
 
     assert loaded_sampler2.num_samples == 20
     assert loaded_sampler2.lb_model == model
-    comm.barrier()
     if comm.size == 1:
         os.remove(file_name1)
         os.remove(file_name2)
