@@ -204,11 +204,13 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         # create 1-1 map
         self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
+
         def map_1t1(x):
             return np.sin(x)
 
         # create 3-1 map
         self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
+
         def map_3t1(x):
             return np.sum(x, 1)
 
@@ -218,7 +220,8 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         # create 10-4 map
         self.input_domain10 = np.column_stack((np.zeros((10,)),
-                                              np.ones((10,))))
+                                               np.ones((10,))))
+
         def map_10t4(x):
             x1 = x[:, 0] + x[:, 1]
             x2 = x[:, 2] + x[:, 3]
@@ -242,7 +245,11 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         self.samplers = []
         for model in self.models:
-            self.samplers.append(asam.sampler(num_samples, chain_length, model))
+            self.samplers.append(
+                asam.sampler(
+                    num_samples,
+                    chain_length,
+                    model))
 
         self.input_domain_list = [self.input_domain1, self.input_domain1,
                                   self.input_domain3, self.input_domain3,
@@ -462,7 +469,7 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
-                print("Initial sample type: %s"%(initial_sample_type))
+                print("Initial sample type: %s" % (initial_sample_type))
                 for hot_start in range(3):
                     verify_samples(QoI_range, sampler, input_domain,
                                    t_set, savefile, initial_sample_type, hot_start)
