@@ -128,7 +128,7 @@ def verify_samples(QoI_range, sampler, input_domain,
     # create rhoD_kernel
     kernel_rD = asam.rhoD_kernel(maximum, ifun)
     if comm.rank == 0:
-        print("domain shape:", input_domain.shape)
+        print("dim", input_domain.shape)
     if not hot_start:
         # run generalized chains
         (my_discretization, all_step_ratios) = sampler.generalized_chains(
@@ -206,18 +206,16 @@ class Test_adaptive_sampler(unittest.TestCase):
         self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
 
         def map_1t1(x):
-            return np.sin(x).reshape(-1, 1)
-
+            return np.sin(x)
         # create 3-1 map
         self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
 
         def map_3t1(x):
-            return np.sum(x, 1).reshape(-1, 1)
-
+            return np.sum(x, 1)
         # create 3-2 map
-        def map_3t2(x):
-            return np.column_stack([x[:, 0] + x[:, 1], x[:, 2]])
 
+        def map_3t2(x):
+            return np.vstack(([x[:, 0] + x[:, 1], x[:, 2]])).transpose()
         # create 10-4 map
         self.input_domain10 = np.column_stack(
             (np.zeros((10,)), np.ones((10,))))
@@ -227,16 +225,16 @@ class Test_adaptive_sampler(unittest.TestCase):
             x2 = x[:, 2] + x[:, 3]
             x3 = x[:, 4] + x[:, 5]
             x4 = np.sum(x[:, [6, 7, 8, 9]], 1)
-            return np.column_stack([x1, x2, x3, x4])
+            return np.vstack([x1, x2, x3, x4]).transpose()
 
-        self.savefiles = ["11t11", "1t1", "3to1", "10to4", "3to2"]
-        self.models = [map_1t1, map_1t1, map_3t1, map_10t4, map_3t2]
+        self.savefiles = ["11t11", "1t1", "3to1", "3to2", "10to4"]
+        self.models = [map_1t1, map_1t1, map_3t1, map_3t2, map_10t4]
         self.QoI_range = [np.array([2.0]), np.array([2.0]), np.array([3.0]),
-                          np.array([2.0, 2.0, 2.0, 4.0]), np.array([2.0, 1.0])]
+                          np.array([2.0, 1.0]), np.array([2.0, 2.0, 2.0, 4.0])]
 
         # define parameters for the adaptive sampler
 
-        num_samples = 100
+        num_samples = 150
         chain_length = 10
         # num_chains_pproc = int(np.ceil(num_samples / float(chain_length *
         #                                                    comm.size)))
@@ -245,18 +243,14 @@ class Test_adaptive_sampler(unittest.TestCase):
 
         self.samplers = []
         for model in self.models:
-            self.samplers.append(
-                asam.sampler(
-                    num_samples,
-                    chain_length,
-                    model))
+            self.samplers.append(asam.sampler(num_samples, chain_length, model))
 
         self.input_domain_list = [self.input_domain1, self.input_domain1,
-                                  self.input_domain3,
-                                  self.input_domain10, self.input_domain3]
+                                  self.input_domain3, self.input_domain3,
+                                  self.input_domain10]
 
         self.test_list = list(zip(self.models, self.QoI_range, self.samplers,
-                                  self.input_domain_list, self.savefiles))[:-1]
+                                  self.input_domain_list, self.savefiles))
 
     def tearDown(self):
         comm.barrier()
@@ -397,8 +391,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         for inds in sort_ind:
             assert np.issubdtype(type(inds), np.signedinteger)
         for asr, mir, mar in zip(mean_ss, min_ratio, max_ratio):
-            assert asr >= mir
-            assert asr <= mar
+            assert asr > mir
+            assert asr < mar
 
     def test_run_inc_dec(self):
         """
@@ -468,9 +462,8 @@ class Test_adaptive_sampler(unittest.TestCase):
         t_set = asam.transition_set(.5, .5**5, 1.0)
 
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
-            print("savefile: %s" % savefile)
             for initial_sample_type in ["random", "r", "lhs"]:
-                print("Initial sample type: %s" % (initial_sample_type))
+                print("Initial sample type: %s"%(initial_sample_type))
                 for hot_start in range(3):
                     verify_samples(QoI_range, sampler, input_domain,
                                    t_set, savefile, initial_sample_type, hot_start)
