@@ -1174,8 +1174,8 @@ class Test_rectangle_sample_set(unittest.TestCase):
         nprocs = 8
         self.nprocs = nprocs
         n = np.linspace(0.1, 0.9, nprocs)
-        maxes = [[n[-i], n[-i]] for i in range(1, nprocs)]
-        mins = [[n[i], n[i]] for i in range(nprocs - 1)][::-1]
+        maxes = [[n[i], n[i]] for i in range(1, nprocs)]
+        mins = [[n[i], n[i]] for i in range(nprocs - 1)]
         self.sam_set.setup(maxes, mins)
         self.domain = np.array([[0, 1], [0, 1]], dtype=np.float)
         self.sam_set.set_domain(self.domain)
@@ -1289,7 +1289,7 @@ class Test_rectangle_sample_set(unittest.TestCase):
         x = np.array([[n[i] + 1E-5, n[i] + 1E-5]
                       for i in range(self.nprocs - 1)])
         (d, ptr) = self.sam_set.query(x)
-        nptest.assert_array_equal(ptr, np.arange(self.nprocs - 1)[::-1])
+        nptest.assert_array_equal(ptr, np.arange(self.nprocs - 1))
 
     def test_volumes(self):
         """
