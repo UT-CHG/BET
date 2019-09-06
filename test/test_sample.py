@@ -678,7 +678,7 @@ class Test_discretization_simple(unittest.TestCase):
         if comm.size > 1 and not globalize:
             local_file_name = os.path.os.path.join(os.path.dirname(file_name),
                                                    "proc{}_{}".format(comm.rank,
-                                                   os.path.basename(file_name)))
+                                                                      os.path.basename(file_name)))
         else:
             local_file_name = file_name
 
@@ -687,7 +687,7 @@ class Test_discretization_simple(unittest.TestCase):
         for attrname in sample.discretization.vector_names:
             curr_attr = getattr(loaded_disc, attrname)
             if curr_attr is not None:
-                nptest.assert_array_equal(curr_attr, 
+                nptest.assert_array_equal(curr_attr,
                                           getattr(self.disc, attrname))
 
         for attrname in sample.discretization.sample_set_names:
