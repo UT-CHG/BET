@@ -246,10 +246,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         self.samplers = []
         for model in self.models:
             self.samplers.append(
-                asam.sampler(
-                    num_samples,
-                    chain_length,
-                    model))
+                asam.sampler(num_samples, chain_length, model))
 
         self.input_domain_list = [self.input_domain1, self.input_domain1,
                                   self.input_domain3, self.input_domain3,
