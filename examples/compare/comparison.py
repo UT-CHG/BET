@@ -9,7 +9,7 @@ uniformly distributed in a hypercube of sidelength ``delta``.
 The hypercube can be in three locations:
 - corner at [0, 0, ..., 0]  in ``unit_bottom_set``
 - centered at [0.5, 0.5, ... 0.5] in ``unit_center_set``
-- corner in [1, 1, ..., 1] in `` unit_top_set``
+- corner in [1, 1, ..., 1] in ``unit_top_set``
 
 and the number of samples will determine the fidelity of the
 approximation since we are using voronoi-cell approximations.

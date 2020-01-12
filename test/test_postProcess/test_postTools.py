@@ -129,12 +129,12 @@ class Test_PostTools(unittest.TestCase):
         Test :meth:`bet.postProcess.postTools.sort_by_rho`.
         """
         disc = sample.discretization(input_sample_set=self.data,
-				     output_sample_set=self.data.copy())
+                                     output_sample_set=self.data.copy())
         (self.data1, _) = postTools.sort_by_rho(disc)
         self.assertGreater(np.min(self.data1.get_input_sample_set().
                                   get_probabilities()), 0.0)
         nptest.assert_almost_equal(np.sum(self.data1.get_input_sample_set().
-                                   get_probabilities()), 1.0)
+                                          get_probabilities()), 1.0)
 
         (self.data2, _) = postTools.sort_by_rho(self.data)
         self.assertGreater(np.min(self.data2.get_probabilities()), 0.0)

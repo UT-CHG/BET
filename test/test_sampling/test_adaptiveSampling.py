@@ -11,7 +11,6 @@ import glob
 import numpy.testing as nptest
 import numpy as np
 import bet.sampling.adaptiveSampling as asam
-import scipy.io as sio
 from bet.Comm import comm
 import bet
 import bet.sample
@@ -59,8 +58,8 @@ def test_loadmat_init():
     mdat2['kern_old'] = np.random.random((num_chains2,))
     mdat2['step_ratios'] = np.random.random((num_samples2,))
 
-    sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
-    sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
+    bet.sample.savemat(os.path.join(local_path, 'testfile1'), mdat1)
+    bet.sample.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
     bet.sample.save_discretization(disc(my_input1, my_output1),
                                    os.path.join(local_path, 'testfile1'), globalize=True)
@@ -173,15 +172,17 @@ def verify_samples(QoI_range, sampler, input_domain,
     comm.barrier()
     mdat = dict()
     # if comm.rank == 0:
-    mdat = sio.loadmat(savefile)
+    mdat = bet.sample.loadmat(savefile)
     saved_disc = bet.sample.load_discretization(savefile)
     saved_disc.local_to_global()
 
     # # compare the input
-    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
+    nptest.assert_array_equal(my_discretization._input_sample_set.
+                              get_values(),
                               saved_disc._input_sample_set.get_values())
     # compare the output
-    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
+    nptest.assert_array_equal(my_discretization._output_sample_set.
+                              get_values(),
                               saved_disc._output_sample_set.get_values())
 
     nptest.assert_array_equal(all_step_ratios, mdat['step_ratios'])
@@ -418,9 +419,9 @@ class Test_adaptive_sampler(unittest.TestCase):
             """
             Indicator function
             """
-            inside = np.logical_and(np.all(np.greater_equal(outputs,
-                                                            Q_ref - .5 * bin_size), axis=1), np.all(np.less_equal(outputs,
-                                                                                                                  Q_ref + .5 * bin_size), axis=1))
+            bs = .5 * bin_size
+            inside = np.logical_and(np.all(np.greater_equal(outputs, Q_ref - bs), axis=1),
+                                    np.all(np.less_equal(outputs, Q_ref + bs), axis=1))
             max_values = np.repeat(maximum, outputs.shape[0], 0)
             return inside.astype('float64') * max_values
 
@@ -467,7 +468,7 @@ class Test_adaptive_sampler(unittest.TestCase):
         for _, QoI_range, sampler, input_domain, savefile in self.test_list:
             for initial_sample_type in ["random", "r", "lhs"]:
                 print("Initial sample type: %s" % (initial_sample_type))
-                for hot_start in range(3):
+                for hot_start in range(2):
                     verify_samples(QoI_range, sampler, input_domain,
                                    t_set, savefile, initial_sample_type, hot_start)
 

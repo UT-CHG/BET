@@ -38,12 +38,17 @@ def prob_on_emulated_samples(discretization, globalize=True):
 
     # Check dimensions
     discretization.check_nums()
-    op_num = discretization._output_probability_set.check_num()
     discretization._emulated_input_sample_set.check_num()
 
     # Check for necessary properties
+    if discretization._output_probability_set is None:
+        raise AttributeError("Please define output probabilities.")
+    else:
+        op_num = discretization._output_probability_set.check_num()
+
     if discretization._io_ptr_local is None:
         discretization.set_io_ptr(globalize=True)
+
     if discretization._emulated_ii_ptr_local is None:
         discretization.set_emulated_ii_ptr(globalize=False)
 
@@ -82,26 +87,42 @@ def prob(discretization, globalize=True):
 
     # Check Dimensions
     discretization.check_nums()
-    op_num = discretization._output_probability_set.check_num()
+
+    # Check for necessary properties, infer initial probabilities from volumes
+    if discretization._output_probability_set is None:
+        raise AttributeError("Please define output probabilities.")
+    else:
+        op_num = discretization._output_probability_set.check_num()
 
     # Check for necessary attributes
     if discretization._io_ptr_local is None:
         discretization.set_io_ptr(globalize=False)
+    if discretization._input_sample_set._probabilities_local is None:
+        if discretization._input_sample_set._volumes_local is None:
+            msg = "No volumes or initial probabilities. "
+            msg += "Making MC assumption for both attributes."
+            logging.warning(msg)
+            discretization._input_sample_set.estimate_probabilities_mc()
+            discretization._input_sample_set.estimate_volume_mc()
+        else:  # or use MC assumption in absense of other information
+            discretization._input_sample_set._probabilities_local =\
+                discretization._input_sample_set._volumes_local.copy()
 
     # Calculate Probabilities
     if discretization._input_sample_set._values_local is None:
         discretization._input_sample_set.global_to_local()
+
     P_local = np.zeros((len(discretization._io_ptr_local),))
     for i in range(op_num):
         if discretization._output_probability_set._probabilities[i] > 0.0:
             Itemp = np.equal(discretization._io_ptr_local, i)
             Itemp_sum = np.sum(discretization._input_sample_set.
-                               _volumes_local[Itemp])
+                               _probabilities_local[Itemp])
             Itemp_sum = comm.allreduce(Itemp_sum, op=MPI.SUM)
             if Itemp_sum > 0:
                 P_local[Itemp] = discretization._output_probability_set.\
                     _probabilities[i] * discretization._input_sample_set.\
-                    _volumes_local[Itemp] / Itemp_sum
+                    _probabilities_local[Itemp] / Itemp_sum
     if globalize:
         discretization._input_sample_set._probabilities = util.\
             get_global_values(P_local)
@@ -161,6 +182,7 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
     set_emulate.check_num()
     if (set_old._dim != set_new._dim) or (set_old._dim != set_emulate._dim):
         raise samp.dim_not_matching("Dimensions of sets are not equal.")
+
     # Localize emulated points
     if set_emulate._values_local is None:
         set_emulate.global_to_local()
@@ -186,6 +208,7 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
                 prob_em[Itemp] += set_old._probabilities[i] / float(Itemp_sum)
             else:
                 warn = True
+
     # Warn that some cells have no emulated points in them
     if warn:
         msg = "Some old cells have no emulated points in them. "
@@ -270,6 +293,7 @@ def prob_from_discretization_input(disc, set_new):
 
     if em_set._values_local is None:
         em_set.global_to_local()
+
     if em_set._probabilities_local is None:
         raise AttributeError("Probabilities must be pre-calculated.")
 

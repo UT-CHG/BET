@@ -11,7 +11,7 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='bet',
-      version='2.2.1',
+      version='2.3.0',
       description='Butler, Estep, Tavener method',
       author='Steven Mattis',
       author_email='steve.a.mattis@gmail.com',
@@ -24,6 +24,6 @@ setup(name='bet',
                 'bet.sensitivity'],
       install_requires=['matplotlib',
                         'pyDOE',
-                        'scipy<=1.2.1',
+                        'scipy',
                         'numpy',
                         'nose'])

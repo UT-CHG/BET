@@ -9,7 +9,6 @@ import os
 import pyDOE
 import numpy.testing as nptest
 import numpy as np
-import scipy.io as sio
 import bet
 import bet.sampling.basicSampling as bsam
 from bet.Comm import comm
@@ -38,8 +37,8 @@ def test_loadmat():
     my_input2 = sample_set(1)
     my_input2.set_values(np.random.random((6, 1)))
 
-    sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
-    sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
+    bet.sample.savemat(os.path.join(local_path, 'testfile1'), mdat1)
+    bet.sample.savemat(os.path.join(local_path, 'testfile2'), mdat2)
 
     bet.sample.save_discretization(disc(my_input1, my_output),
                                    (os.path.join(local_path, 'testfile1')), globalize=True)
@@ -104,8 +103,8 @@ def test_loadmat_parallel():
         local_file_name1 = file_name1
         local_file_name2 = file_name2
 
-    sio.savemat(local_file_name1, mdat1)
-    sio.savemat(local_file_name2, mdat2)
+    bet.sample.savemat(local_file_name1, mdat1)
+    bet.sample.savemat(local_file_name2, mdat2)
     comm.barrier()
 
     bet.sample.save_discretization(disc(my_input1, my_output1),
@@ -173,7 +172,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
 
     # did the file get correctly saved?
     saved_disc = bet.sample.load_discretization(savefile)
-    mdat = sio.loadmat(savefile)
+    mdat = bet.sample.loadmat(savefile)
     print("HERE HERE", mdat, my_num)
     # comm.barrier()
     # compare the samples
@@ -184,7 +183,129 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
                               saved_disc._output_sample_set.get_values())
 
 
-def verify_create_random_discretization(model, sampler, sample_type, input_domain,
+def verify_add_qoi(model, sampler,
+                   input_sample_set,
+                   savefile):
+    """
+    Verify that the user samples are correct.
+    """
+    # evalulate the model at the samples directly
+    output_values = (np.column_stack([model(input_sample_set._values),
+                                      model(input_sample_set._values)]))
+
+    if len(output_values.shape) == 1:
+        output_sample_set = sample_set(1)
+    else:
+        output_sample_set = sample_set(output_values.shape[1])
+    output_sample_set.set_values(output_values)
+    discretization = disc(input_sample_set, output_sample_set)
+
+    # evaluate the model at the sample
+    print(savefile, input_sample_set.get_dim())
+    my_discretization = sampler.compute_QoI_and_create_discretization(
+        input_sample_set, savefile, globalize=True)
+    # check add_qoi
+    my_discretization = sampler.add_qoi(my_discretization,
+                                        savefile=savefile, globalize=True)
+    # comm.barrier()
+
+    my_num = my_discretization.check_nums()
+
+    # compare the samples
+    nptest.assert_array_equal(my_discretization._input_sample_set.get_values(),
+                              discretization._input_sample_set.get_values())
+    # compare the data
+    nptest.assert_array_equal(my_discretization._output_sample_set.get_values(),
+                              discretization._output_sample_set.get_values())
+
+    # did num_samples get updated?
+    assert my_num == sampler.num_samples
+
+    # did the file get correctly saved?
+    saved_disc = bet.sample.load_discretization(savefile)
+    mdat = bet.sample.loadmat(savefile)
+    print("HERE HERE", mdat, my_num)
+    # comm.barrier()
+    # compare the samples
+    nptest.assert_array_equal(my_discretization.
+                              _input_sample_set.get_values(),
+                              saved_disc._input_sample_set.get_values())
+    # compare the data
+    nptest.assert_array_equal(my_discretization.
+                              _output_sample_set.get_values(),
+                              saved_disc._output_sample_set.get_values())
+
+
+def verify_add_qoi_with_data(model, sampler,
+                             input_sample_set,
+                             savefile):
+    """
+    Verify that the adding data and QoI is done correctly.
+    """
+    # evalulate the model at the samples directly
+    output_values = (np.column_stack([model(input_sample_set._values),
+                                      model(input_sample_set._values)]))
+
+    if len(output_values.shape) == 1:
+        output_sample_set = sample_set(1)
+        prob_set = sample_set(1)
+    else:
+        output_sample_set = sample_set(output_values.shape[1])
+        prob_set = sample_set(output_values.shape[1] // 2)
+
+    output_sample_set.set_values(output_values)
+    discretization = disc(input_sample_set, output_sample_set)
+
+    # evaluate the model at the sample
+    print(savefile, input_sample_set.get_dim())
+    my_discretization = sampler.compute_QoI_and_create_discretization(
+        input_sample_set, savefile, globalize=True)
+
+    # set output_probability_set to not be empty (but with data)
+    my_discretization.set_output_probability_set(prob_set)
+    data_orig = np.random.rand(prob_set.get_dim())
+    my_discretization.set_data(data_orig)
+    data = np.random.rand(prob_set.get_dim())
+    # check add_qoi
+    my_discretization = sampler.add_qoi(my_discretization, data=data,
+                                        savefile=savefile, globalize=True)
+    # comm.barrier()
+
+    my_num = my_discretization.check_nums()
+
+    # compare the samples
+    MD = my_discretization
+    D = discretization
+    nptest.assert_array_equal(MD.get_input().get_values(),
+                              D.get_input().get_values())
+
+    # compare the data
+    nptest.assert_array_equal(MD.get_output().get_values(),
+                              D.get_output().get_values())
+
+    nptest.assert_array_equal(MD.get_data(),
+                              np.concatenate((data_orig, data)))
+
+    # did num_samples get updated?
+    assert my_num == sampler.num_samples
+
+    # did the file get correctly saved?
+    saved_disc = bet.sample.load_discretization(savefile)
+    mdat = bet.sample.loadmat(savefile)
+    print("HERE HERE", mdat, my_num)
+    # comm.barrier()
+    # compare the samples
+    nptest.assert_array_equal(my_discretization.
+                              _input_sample_set.get_values(),
+                              saved_disc._input_sample_set.get_values())
+    # compare the data
+    nptest.assert_array_equal(my_discretization.
+                              _output_sample_set.get_values(),
+                              saved_disc._output_sample_set.get_values())
+
+
+def verify_create_random_discretization(model, sampler,
+                                        sample_type, input_domain,
                                         num_samples, savefile):
 
     np.random.seed(1)
@@ -629,7 +750,7 @@ class Test_basic_sampler(unittest.TestCase):
             self.samplers.append(bsam.sampler(model, num_samples))
 
         self.input_dim1 = 1
-        self.input_dim2 = 2
+        self.input_dim2 = 3  # can be set to other dimensions.
         self.input_dim3 = 10
 
         self.input_sample_set1 = sample_set(self.input_dim1)
@@ -693,7 +814,8 @@ class Test_basic_sampler(unittest.TestCase):
 
         for model, sampler, input_sample_set, savefile in test_list:
             verify_compute_QoI_and_create_discretization(model, sampler,
-                                                         input_sample_set, savefile)
+                                                         input_sample_set,
+                                                         savefile)
 
     def test_random_sample_set(self):
         """
@@ -721,7 +843,8 @@ class Test_basic_sampler(unittest.TestCase):
         for five different input domains.
         """
         input_domain_list = [self.input_domain1, self.input_domain1,
-                             self.input_domain3, self.input_domain3, self.input_domain10]
+                             self.input_domain3, self.input_domain3,
+                             self.input_domain10]
 
         test_list = list(zip(self.samplers, input_domain_list))
 
@@ -799,7 +922,8 @@ class Test_basic_sampler(unittest.TestCase):
         for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
         """
         input_domain_list = [self.input_domain1, self.input_domain1,
-                             self.input_domain3, self.input_domain3, self.input_domain10]
+                             self.input_domain3, self.input_domain3,
+                             self.input_domain10]
 
         test_list = list(zip(self.models, self.samplers, input_domain_list,
                              self.savefiles))
@@ -808,5 +932,126 @@ class Test_basic_sampler(unittest.TestCase):
             for sample_type in ["random", "r", "lhs"]:
                 for num_samples in [None, 25]:
                     verify_create_random_discretization(model, sampler,
-                                                        sample_type, input_domain, num_samples,
+                                                        sample_type,
+                                                        input_domain,
+                                                        num_samples,
                                                         savefile)
+
+
+class Test_basic_sampler_extended(Test_basic_sampler):
+    """
+    Test model and output appending and reference
+    values for :class:`bet.sampling.basicSampling.sampler`.
+    """
+
+    def setUp(self):
+        # create 1-1 map
+        self.input_domain1 = np.column_stack((np.zeros((1,)), np.ones((1,))))
+
+        def map_1t1(x):
+            return np.sin(x)
+        # create 3-1 map
+        self.input_domain3 = np.column_stack((np.zeros((3,)), np.ones((3,))))
+
+        def map_3t1(x):
+            return np.sum(x, 1)
+
+        # create 3-2 map
+        def map_3t2(x):
+            try:
+                return np.vstack(([x[:, 0] + x[:, 1], x[:, 2]])).transpose()
+            except IndexError:  # support reference-parameter mapping
+                return np.vstack(([x[0] + x[1], x[2]])).transpose()
+        # create 10-4 map
+        self.input_domain10 = np.column_stack(
+            (np.zeros((10,)), np.ones((10,))))
+
+        def map_10t4(x):
+            if len(x.shape) == 1:
+                x = np.array([x])  # support for reference parameter
+            x1 = x[:, 0] + x[:, 1]
+            x2 = x[:, 2] + x[:, 3]
+            x3 = x[:, 4] + x[:, 5]
+            x4 = np.sum(x[:, [6, 7, 8, 9]], 1)
+            return np.vstack([x1, x2, x3, x4]).transpose()
+        num_samples = 100
+        self.savefiles = ["11t11", "1t1", "3to1", "3to2", "10to4"]
+        self.models = [map_1t1, map_1t1, map_3t1, map_3t2, map_10t4]
+        self.samplers = []
+        for model in self.models:
+            self.samplers.append(bsam.sampler(model, num_samples))
+
+        self.input_dim1 = 1
+        self.input_dim2 = 3
+        self.input_dim3 = 10
+
+        self.input_sample_set1 = sample_set(self.input_dim1)
+        ref_val1 = np.random.rand(self.input_dim1)
+        self.input_sample_set1.set_reference_value(ref_val1)
+        self.input_sample_set2 = sample_set(self.input_dim2)
+        ref_val2 = np.random.rand(self.input_dim2)
+        self.input_sample_set2.set_reference_value(ref_val2)
+        self.input_sample_set3 = sample_set(self.input_dim3)
+        ref_val3 = np.random.rand(self.input_dim3)
+        self.input_sample_set3.set_reference_value(ref_val3)
+
+        self.input_sample_set4 = sample_set(self.input_domain1.shape[0])
+        self.input_sample_set4.set_reference_value(ref_val1)
+        self.input_sample_set4.set_domain(self.input_domain1)
+
+        self.input_sample_set5 = sample_set(self.input_domain3.shape[0])
+        self.input_sample_set5.set_reference_value(ref_val2)
+        self.input_sample_set5.set_domain(self.input_domain3)
+
+        self.input_sample_set6 = sample_set(self.input_domain10.shape[0])
+        self.input_sample_set6.set_reference_value(ref_val3)
+        self.input_sample_set6.set_domain(self.input_domain10)
+
+    def test_add_qoi(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.add_qoi`
+        for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
+        """
+        # create a list of different sets of samples
+        list_of_samples = [np.ones((4, )), np.ones((4, 1)), np.ones((4, 3)),
+                           np.ones((4, 3)), np.ones((4, 10))]
+        list_of_dims = [1, 1, 3, 3, 10]
+
+        list_of_sample_sets = [None] * len(list_of_samples)
+
+        for i, array in enumerate(list_of_samples):
+            dim = list_of_dims[i]
+            list_of_sample_sets[i] = sample_set(dim)
+            list_of_sample_sets[i].set_values(array)
+            list_of_sample_sets[i].set_reference_value(np.random.rand(dim))
+
+        test_list = list(zip(self.models, self.samplers, list_of_sample_sets,
+                             self.savefiles))
+
+        for model, sampler, input_sample_set, savefile in test_list:
+            verify_add_qoi(model, sampler, input_sample_set, savefile)
+
+    def test_add_qoi_with_data(self):
+        """
+        Test :meth:`bet.sampling.basicSampling.sampler.add_qoi`
+        for three different QoI maps (1 to 1, 3 to 1, 3 to 2, 10 to 4).
+        """
+        # create a list of different sets of samples
+        list_of_samples = [np.ones((4, )), np.ones((4, 1)), np.ones((4, 3)),
+                           np.ones((4, 3)), np.ones((4, 10))]
+        list_of_dims = [1, 1, 3, 3, 10]
+
+        list_of_sample_sets = [None] * len(list_of_samples)
+
+        for i, array in enumerate(list_of_samples):
+            dim = list_of_dims[i]
+            list_of_sample_sets[i] = sample_set(dim)
+            list_of_sample_sets[i].set_values(array)
+            list_of_sample_sets[i].set_reference_value(np.random.rand(dim))
+
+        test_list = list(zip(self.models, self.samplers, list_of_sample_sets,
+                             self.savefiles))
+
+        for model, sampler, input_sample_set, savefile in test_list:
+            verify_add_qoi_with_data(
+                model, sampler, input_sample_set, savefile)

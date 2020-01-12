@@ -67,7 +67,7 @@ def get_global_values(array, shape=None):
     Concatenates local arrays into global array using :meth:`np.vstack`.
 
     :param array: Array.
-    :type P_samples: :class:`~numpy.ndarray`
+    :type array: :class:`~numpy.ndarray`
     :rtype: :class:`~numpy.ndarray`
     :returns: array
     """

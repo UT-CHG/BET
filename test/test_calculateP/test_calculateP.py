@@ -146,6 +146,37 @@ class Test_prob_3to2(TestProbMethod_3to2, prob):
         self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
 
 
+class Test_prob_3to2_no_volumes(TestProbMethod_3to2, prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on 3 to 2 map without
+    explicitly defining volumes.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_3to2_no_volumes, self).setUp()
+        calcP.prob(self.disc)
+        self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
+
+
+class Test_prob_3to2_global_to_local(TestProbMethod_3to2, prob):
+    """
+    Test :meth:`bet.calculateP.calculateP.prob` on 3 to 2 map without
+    explicitly defining volumes.
+    """
+
+    def setUp(self):
+        """
+        Set up problem.
+        """
+        super(Test_prob_3to2_global_to_local, self).setUp()
+        self.disc._input_sample_set._values_local = None
+        calcP.prob(self.disc)
+        self.P_ref = np.loadtxt(data_path + "/3to2_prob.txt.gz")
+
+
 class Test_prob_on_emulated_samples_3to2(
         TestProbMethod_3to2, prob_on_emulated_samples):
     """
@@ -269,13 +300,15 @@ class TestProbMethod_10to4(unittest.TestCase):
         self.lam_domain[:, 0] = 0.0
         self.lam_domain[:, 1] = 1.0
         self.inputs.set_domain(self.lam_domain)
-        self.inputs = bsam.random_sample_set('r',
-                                             self.inputs.get_domain(), num_samples=200, globalize=True)
+        self.inputs = bsam.random_sample_set('r', self.inputs.get_domain(),
+                                             num_samples=200, globalize=True)
         self.outputs.set_values(np.dot(self.inputs._values, rnd.rand(10, 4)))
         Q_ref = np.mean(self.outputs._values, axis=0)
         self.inputs_emulated = bsam.random_sample_set('r',
-                                                      self.inputs.get_domain(), num_samples=1001, globalize=True)
-        self.output_prob = simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+                                                      self.inputs.get_domain(),
+                                                      num_samples=1001, globalize=True)
+        self.output_prob = simpleFunP.\
+            regular_partition_uniform_distribution_rectangle_scaled(
             self.outputs, Q_ref=Q_ref, rect_scale=0.2, cells_per_dimension=1)
         self.disc = samp.discretization(input_sample_set=self.inputs,
                                         output_sample_set=self.outputs,
@@ -456,3 +489,34 @@ class Test_prob_from_sample_set(unittest.TestCase):
                                    emulated_input_sample_set=self.set_em)
         calcP.prob_from_discretization_input(disc, self.set_new)
         nptest.assert_almost_equal(self.set_new._probabilities, [0.25, 0.75])
+
+
+class Test_sampling_approach(unittest.TestCase, prob):
+    """
+    Test :method: `bet.sample.set_probabilities_from_densities()`
+    """
+
+    def setUp(self):
+        self.dim = 2
+        self.num = 100
+
+        def mymodel(input_values):
+            return input_values
+
+        sampler = bsam.sampler(mymodel)
+        input_set = samp.sample_set(2)
+        input_set.set_distribution('uni')
+        input_set.generate_samples(num_samples=self.num)
+        disc = sampler.compute_QoI_and_create_discretization(input_set)
+        disc.set_observed('uni', loc=0, scale=[0.5, 0.5])
+        disc.set_predicted('uni', loc=[0, 0])
+        # disc.set_probabilities_from_densities()
+        disc.set_prob_from_den()
+        self.inputs = disc.get_input()
+        self.outputs = disc.get_output()
+        P_ref = np.zeros(self.num)
+        P_ref[np.logical_and(disc.get_input_values()[:, 0] < 0.5,
+                             disc.get_input_values()[:, 1] < 0.5)] = 1
+        P_ref = P_ref / np.sum(P_ref)
+
+        self.P_ref = P_ref

@@ -12,5 +12,7 @@ build/
 *.eps
 *.mat
 *.swp
+*.swo
+*.swn
 dist/
 bet.egg-info/

@@ -11,10 +11,10 @@ assume the measure on both spaces in Lebesgue.
 
 import collections
 import os
+import logging
 import warnings
 import glob
 import numpy as np
-import scipy.io as sio
 from pyDOE import lhs
 from bet.Comm import comm
 import bet.sample as sample
@@ -49,10 +49,10 @@ def loadmat(save_file, disc_name=None, model=None):
         mdat_files = glob.glob(os.path.join(save_dir,
                                             "proc*_{}".format(base_name)))
         # load the data from a *.mat file
-        mdat = sio.loadmat(mdat_files[0])
+        mdat = sample.loadmat(mdat_files[0])
     else:
         # load the data from a *.mat file
-        mdat = sio.loadmat(save_file)
+        mdat = sample.loadmat(save_file)
     num_samples = mdat['num_samples']
     # load the discretization
     discretization = sample.load_discretization(save_file, disc_name)
@@ -111,6 +111,8 @@ def random_sample_set(sample_type, input_obj, num_samples,
         # create the domain
         input_domain = np.array([[0., 1.]] * dim)
         input_sample_set.set_domain(input_domain)
+    else:
+        input_domain = input_sample_set.get_domain()
 
     if sample_type == "lhs":
         # update the bounds based on the number of samples
@@ -123,8 +125,8 @@ def random_sample_set(sample_type, input_obj, num_samples,
                                                          comm.size)[comm.rank])
     elif sample_type == "random" or "r":
         # define local number of samples
-        num_samples_local = int((num_samples / comm.size) +
-                                (comm.rank < num_samples % comm.size))
+        num_samples_local = (num_samples // comm.size) +\
+            int(comm.rank < num_samples % comm.size)
         # update the bounds based on the number of samples
         input_sample_set.update_bounds_local(num_samples_local)
         input_values_local = np.copy(input_sample_set._width_local)
@@ -133,7 +135,8 @@ def random_sample_set(sample_type, input_obj, num_samples,
         input_values_local = input_values_local + input_sample_set._left_local
 
         input_sample_set.set_values_local(input_values_local)
-
+        from scipy.stats import uniform
+        input_sample_set.set_distribution(uniform, loc=input_domain[:,0], scale=input_domain[:,1]-input_domain[:,0])
     comm.barrier()
 
     if globalize:
@@ -254,6 +257,14 @@ class sampler(object):
         self.error_estimates = error_estimates
         self.jacobians = jacobians
 
+    def set_num_samples(self, num_samples):
+        """
+        Overwrite `num_samples`, the default value for sample size.
+
+        :param int num_samples: Number of samples for sample-set objects.
+        """
+        self.num_samples = int(num_samples)
+
     def save(self, mdict, save_file, discretization=None, globalize=False):
         """
         Save matrices to a ``*.mat`` file for use by ``MATLAB BET`` code and
@@ -269,12 +280,14 @@ class sampler(object):
 
         if comm.size > 1 and not globalize:
             local_save_file = os.path.join(os.path.dirname(save_file),
-                                           "proc{}_{}".format(comm.rank, os.path.basename(save_file)))
+                                           "proc{}_{}".
+                                           format(comm.rank, os.path.
+                                                  basename(save_file)))
         else:
             local_save_file = save_file
 
         if (globalize and comm.rank == 0) or not globalize:
-            sio.savemat(local_save_file, mdict)
+            sample.savemat(local_save_file, mdict)
         comm.barrier()
 
         if discretization is not None:
@@ -370,6 +383,13 @@ class sampler(object):
             input and output of ``num_samples``
 
         """
+        if isinstance(input_sample_set, int):
+            msg = "No sample set. Using uniform random sampling in [0,1]."
+            logging.warning(msg)
+            if self.num_samples is None:
+                logging.warning("Missing num_samples. Using 100 as default.")
+                self.num_samples = 100
+            input_sample_set = self.random_sample_set('r', input_sample_set)
 
         # Update the number of samples
         self.num_samples = input_sample_set.check_num()
@@ -411,16 +431,18 @@ class sampler(object):
                 if not isinstance(lam_ref, collections.Iterable):
                     lam_ref = np.array([lam_ref])
                 Q_ref = self.lb_model(lam_ref)
-                output_sample_set.set_reference_value(Q_ref)
+                if not isinstance(Q_ref, collections.Iterable):
+                    Q_ref = np.array([Q_ref])
+                output_sample_set.set_reference_value(Q_ref.ravel())
             except ValueError:
                 try:
                     msg = "Model not mapping reference value as expected."
                     msg += "Attempting reshape..."
-                    logging.log(20, msg)
+                    logging.warning(msg)
                     Q_ref = self.lb_model(lam_ref.reshape(1, -1))
                     output_sample_set.set_reference_value(Q_ref)
                 except ValueError:
-                    logging.log(20, 'Unable to map reference value.')
+                    sample.dim_not_matching('Unable to map reference value.')
 
         if self.error_estimates:
             output_sample_set.set_error_estimates_local(local_output_ee)
@@ -448,11 +470,16 @@ class sampler(object):
 
         comm.barrier()
 
+        # Attach necessary attributes to discretization
+        discretization._setup[0]['model'] = self.lb_model
+        discretization._setup[0]['ind'] = list(np.arange(output_dim))
+
         return discretization
 
     def create_random_discretization(self, sample_type, input_obj,
-                                     savefile=None, num_samples=None, criterion='center',
-                                     globalize=True):
+                                     savefile=None, num_samples=None,
+                                     criterion='center',
+                                     globalize=True, param_ref=None):
         """
         Sampling algorithm with three basic options
 
@@ -492,6 +519,85 @@ class sampler(object):
 
         input_sample_set = self.random_sample_set(sample_type, input_obj,
                                                   num_samples, criterion, globalize)
-
+        if param_ref is not None:
+            input_sample_set.set_reference_value(param_ref)
         return self.compute_QoI_and_create_discretization(input_sample_set,
                                                           savefile, globalize)
+
+    def add_qoi(self, discretization, data=None,
+                savefile=None, globalize=True):
+        """
+        Add a column of data to the output sample set, update the
+        reference parameter, dimension information.
+        :param disc: A :class:`bet.sample.discretization` object with
+        :type disc: :class:`~bet.sample.discretization` for problem set
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output sample sets.
+        """
+        disc = discretization.copy()  # do not overwrite original
+        Q_ref = disc._output_sample_set._reference_value
+
+        # Take advantage of parallelism in other method to map values
+        input_sample_set = disc._input_sample_set
+        new = self.compute_QoI_and_create_discretization(input_sample_set,
+                                                         None, globalize)
+
+        # Append output values
+        num_new_obs = new._output_sample_set.get_dim()
+        num_old_obs = disc._output_sample_set.get_dim()
+        new._output_sample_set._dim = num_old_obs + num_new_obs
+        new_outputs = new._output_sample_set._values  # reference
+        old_outputs = disc._output_sample_set._values
+
+        new_outputs = np.column_stack((old_outputs, new_outputs))
+        new._output_sample_set.set_values(new_outputs)
+
+        # If reference input specified, use it to set output reference
+        new_ref_val = new._output_sample_set._reference_value
+        if new_ref_val is not None:
+            if not isinstance(new_ref_val, collections.Iterable):
+                new_ref_val = np.array(new_ref_val).ravel()
+            new_ref_val = np.concatenate((Q_ref.ravel(), new_ref_val))
+            new._output_sample_set.set_reference_value(new_ref_val)
+
+        if globalize:
+            new._output_sample_set.global_to_local()
+
+        new._iteration = discretization._iteration
+        new._setup = discretization._setup.copy()
+        new.iterate()
+        new._setup[new._iteration]['model'] = self.lb_model
+        # if inds is None, keep using all the data.
+        if discretization._setup[discretization._iteration]['ind'] is not None:
+            # use just new data by default if previous inds existed
+            new._setup[new._iteration]['ind'] = np.arange(
+                num_new_obs) + num_old_obs
+        else:  # if None, copy.
+            new._setup[new._iteration]['ind'] = None
+
+        # Noisy (raw) data passed, no reference output value needed.
+        if disc._output_probability_set is not None:
+            out_prob_set = sample.sample_set(num_old_obs + num_new_obs)
+            new.set_output_probability_set(out_prob_set)
+            if data is None:  # otherwise, append values
+                if new_ref_val is not None:  # ref input must be specified
+                    msg = "Setting data for new discretization"
+                    msg += "Using reference value and noise distribution."
+                    logging.warning(msg)
+                    new.set_data_from_reference()
+                else:
+                    msg = "No data and no reference output"
+                    msg += "for new output_probability_set."
+                    logging.warning(msg)
+            else:  # data that is passed is assumed to be noisy.
+                ref = disc._output_probability_set._reference_value
+                data = np.concatenate((ref.ravel(), data.ravel()))
+            new._output_probability_set.set_reference_value(data)
+
+        mdat = dict()
+        if savefile is not None:
+            self.save(mdat, savefile, new, globalize=globalize)
+
+        return new

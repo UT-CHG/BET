@@ -30,6 +30,7 @@ minimizing average skewness.
 """
 
 import scipy.io as sio
+import numpy as np
 import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cqoi
 import bet.Comm as comm

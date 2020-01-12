@@ -126,14 +126,14 @@ class comparison(object):
         self._comparison_sample_set = comparison_sample_set
         #: Pointer from ``self._comparison_sample_set`` to
         #: ``self._left_sample_set``
-        self._ptr_left = ptr_left
+        self._ptr_left = None
         #: Pointer from ``self._comparison_sample_set`` to
         #: ``self._right_sample_set``
-        self._ptr_right = ptr_right
+        self._ptr_right = None
         #: local integration left ptr for parallelsim
-        self._ptr_left_local = None
+        self._ptr_left_local = ptr_left
         #: local integration right ptr for parallelism
-        self._ptr_right_local = None
+        self._ptr_right_local = ptr_right
         #: Domain
         self._domain = None
         #: Left sample set density evaluated on emulation set.
@@ -195,6 +195,8 @@ class comparison(object):
             if len(ptr_left) != self._num_samples:
                 raise AttributeError(
                     "Left pointer length must match comparison set.")
+            else:
+                self._ptr_left_local = ptr_left
             if (ptr_right is not None):
                 if not np.allclose(ptr_left.shape, ptr_right.shape):
                     raise AttributeError("Pointers must be of same length.")
@@ -202,6 +204,8 @@ class comparison(object):
             if len(ptr_right) != self._num_samples:
                 raise AttributeError(
                     "Right pointer length must match comparison set.")
+            else:
+                self._ptr_right_local = ptr_right
 
     def check_dim(self):
         r"""
@@ -675,7 +679,8 @@ class comparison(object):
         comp = comparison(sample_set_left=left_ss,
                           sample_set_right=right_ss,
                           comparison_sample_set=comp_ss)
-        # additional attributes to copy over here. TODO: maybe slice through
+        # additional attributes to copy over here.
+        # maybe "setup"?
         return comp
 
     def global_to_local(self):
