@@ -47,7 +47,7 @@ class wrong_p_norm(Exception):
     Exception for when the dimension of the array is inconsistent.
     """
 
-
+'''
 def save_sample_set(save_set, file_name,
                     sample_set_name=None, globalize=False):
     """
@@ -111,8 +111,27 @@ def save_sample_set(save_set, file_name,
         sio.savemat(local_file_name, new_mdat)
     comm.barrier()
     return local_file_name
+'''
 
+def save_object(save_set, file_name, globalize=True):
+    import pickle
+    # create processor specific file name
+    if comm.size > 1 and not globalize:
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                                       "proc{}_{}".format(comm.rank,
+                                                          os.path.basename(file_name)))
+    else:
+        local_file_name = file_name
 
+    # globalize
+    if globalize:
+        save_set.local_to_global()
+    comm.barrier()
+    pickle.dump(save_set, open(local_file_name + '.p', "wb"))
+    comm.barrier()
+    return local_file_name
+
+'''
 def load_sample_set(file_name, sample_set_name=None, localize=True):
     """
     Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file. If a file
@@ -166,8 +185,42 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
         loaded_set.global_to_local()
 
     return loaded_set
+'''
 
 
+def load_object(file_name, localize=True):
+    import pickle
+    # check to see if parallel file name
+    if file_name.startswith('proc_'):
+        # logging.warning("Avoid starting filenames with 'proc_'. Unable to localize.")
+        localize = False
+    elif not os.path.exists(file_name+'.p') and os.path.exists('proc0_'+file_name+'.p'):
+        return load_sample_set_parallel(file_name)
+    loaded_set = pickle.load(open(file_name+'.p', "rb"))
+    if localize:
+        loaded_set.global_to_local()
+    return loaded_set
+
+
+def load_object_parallel(file_name):
+    save_dir = os.path.dirname(file_name)
+    base_name = os.path.basename(file_name)
+    files = glob.glob(os.path.join(save_dir, "proc*_{}".format(base_name+'.p')))
+    if len(files) == comm.size:
+        logging.info("Loading {} sample set using parallel files (same nproc)")
+        # if the number of processors is the same then set mdat to
+        # be the one with the matching processor number (doesn't
+        # really matter)
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                                       "proc{}_{}".format(comm.rank,
+                                                          os.path.basename(file_name)))
+        return load_object(local_file_name)
+    else:
+        raise dim_not_matching("Number of parallel files is different from nproc.")
+    # SM possibly re-add the feature to have different numbers. Probably not necessary.
+
+
+'''
 def load_sample_set_parallel(file_name, sample_set_name=None):
     """
     Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file in parallel
@@ -258,6 +311,7 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
 
         # re-localize if necessary
         loaded_set.local_to_global()
+'''
 
 
 class sample_set_base(object):
@@ -291,6 +345,13 @@ class sample_set_base(object):
                          '_right', '_right_local', '_width', '_width_local',
                          '_domain', '_kdtree_values', '_jacobians',
                          '_jacobians_local', '_domain_original']
+    meta_fields = ['_bounding_box', '_densities', '_densities_local', '_dim', '_domain', '_domain_original',
+                   '_error_estimates', '_error_estimates_local', '_error_id', '_error_id_local', '_jacobians',
+                   '_jacobians_local', '_kdtree', '_kdtree_values', '_kdtree_values_local', '_left', '_left_local',
+                   '_local_index', '_normalized_radii', '_normalized_radii_local', '_p_norm', '_probabilities',
+                   '_probabilities_local', '_radii', '_radii_local', '_reference_value', '_region', '_region_local',
+                   '_right', '_right_local', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
+                   '_width_local']
 
     def __init__(self, dim):
         """
@@ -384,6 +445,23 @@ class sample_set_base(object):
         self._error_id_local = None
         #: :class:`numpy.ndarray` of reference value of shape (dim,)
         self._reference_value = None
+
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            fields = self.meta_fields
+            for field in fields:
+                if getattr(self, field) is np.ndarray:
+                    if np.all(getattr(self, field) == getattr(other, field)):
+                        return True
+                    else:
+                        return False
+                else:
+                    if not getattr(self, field) == getattr(other, field):
+                        return False
+                    return True
+        else:
+            raise TypeError('Comparing object is not of the same type.')
+
 
     def normalize_domain(self):
         """
@@ -2323,7 +2401,7 @@ class discretization(object):
         self._emulated_oo_ptr = None
         #: local io pointer for parallelism
         self._io_ptr_local = None
-        #: local emulated ii ptr for parallelsim
+        #: local emulated ii ptr for parallelism
         self._emulated_ii_ptr_local = None
         #: local emulated oo ptr for parallelism
         self._emulated_oo_ptr_local = None
@@ -2332,6 +2410,22 @@ class discretization(object):
             self.check_nums()
         else:
             logging.info("No output_sample_set")
+
+    def __eq__(self, other):
+        if self.__class__ == other.__class__:
+            fields = self.vector_names + self.sample_set_names
+            for field in fields:
+                if getattr(self, field) is np.ndarray:
+                    if np.all(getattr(self, field) == getattr(other, field)):
+                        return True
+                    else:
+                        return False
+                else:
+                    if not getattr(self, field) == getattr(other, field):
+                        return False
+                    return True
+        else:
+            raise TypeError('Comparing object is not of the same type.')
 
     def check_nums(self):
         """
@@ -2807,3 +2901,13 @@ class discretization(object):
             self._input_sample_set.local_to_global()
         if self._output_sample_set is not None:
             self._output_sample_set.local_to_global()
+            
+    def global_to_local(self):
+        """
+        Call global_to_local for ``input_sample_set`` and
+        ``output_sample_set``.
+        """
+        if self._input_sample_set is not None:
+            self._input_sample_set.global_to_local()
+        if self._output_sample_set is not None:
+            self._output_sample_set.global_to_local()
