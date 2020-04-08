@@ -6,7 +6,11 @@ This module contains general tools for BET.
 
 import sys
 import collections
+import os
+import glob
+import logging
 import numpy as np
+import bet.sample
 from bet.Comm import comm, MPI
 
 possible_types = {int: MPI.INT, float: MPI.DOUBLE}
@@ -212,3 +216,54 @@ def clean_data(data):
     data[np.isinf(data)] = np.sign(data[np.isinf(data)]) * sys.float_info[0]
 
     return data
+
+
+def save_object(save_set, file_name, globalize=True):
+    import pickle
+    # create processor specific file name
+    if comm.size > 1 and not globalize:
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                                       "proc{}_{}".format(comm.rank,
+                                                          os.path.basename(file_name)))
+    else:
+        local_file_name = file_name
+
+    # globalize
+    if globalize:
+        save_set.local_to_global()
+    comm.barrier()
+    pickle.dump(save_set, open(local_file_name + '.p', "wb"))
+    comm.barrier()
+    return local_file_name
+
+
+def load_object(file_name, localize=False):
+    import pickle
+    # check to see if parallel file name
+    if file_name.startswith('proc_'):
+        # logging.warning("Avoid starting filenames with 'proc_'. Unable to localize.")
+        localize = False
+    elif not os.path.exists(file_name+'.p') and os.path.exists('proc0_'+file_name+'.p'):
+        return load_object_parallel(file_name)
+    loaded_set = pickle.load(open(file_name+'.p', "rb"))
+    if localize:
+        loaded_set.global_to_local()
+    return loaded_set
+
+
+def load_object_parallel(file_name):
+    save_dir = os.path.dirname(file_name)
+    base_name = os.path.basename(file_name)
+    files = glob.glob(os.path.join(save_dir, "proc*_{}".format(base_name+'.p')))
+    if len(files) == comm.size:
+        logging.info("Loading sample set using parallel files (same nproc)")
+        # if the number of processors is the same then set mdat to
+        # be the one with the matching processor number (doesn't
+        # really matter)
+        local_file_name = os.path.join(os.path.dirname(file_name),
+                                       "proc{}_{}".format(comm.rank,
+                                                          os.path.basename(file_name)))
+        return load_object(local_file_name)
+    else:
+        raise bet.sample.dim_not_matching("Number of parallel files is different from nproc.")
+    # SM possibly re-add the feature to have different numbers. Probably not necessary.

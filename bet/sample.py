@@ -113,23 +113,23 @@ def save_sample_set(save_set, file_name,
     return local_file_name
 '''
 
-def save_object(save_set, file_name, globalize=True):
-    import pickle
-    # create processor specific file name
-    if comm.size > 1 and not globalize:
-        local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank,
-                                                          os.path.basename(file_name)))
-    else:
-        local_file_name = file_name
-
-    # globalize
-    if globalize:
-        save_set.local_to_global()
-    comm.barrier()
-    pickle.dump(save_set, open(local_file_name + '.p', "wb"))
-    comm.barrier()
-    return local_file_name
+# def save_object(save_set, file_name, globalize=True):
+#     import pickle
+#     # create processor specific file name
+#     if comm.size > 1 and not globalize:
+#         local_file_name = os.path.join(os.path.dirname(file_name),
+#                                        "proc{}_{}".format(comm.rank,
+#                                                           os.path.basename(file_name)))
+#     else:
+#         local_file_name = file_name
+#
+#     # globalize
+#     if globalize:
+#         save_set.local_to_global()
+#     comm.barrier()
+#     pickle.dump(save_set, open(local_file_name + '.p', "wb"))
+#     comm.barrier()
+#     return local_file_name
 
 '''
 def load_sample_set(file_name, sample_set_name=None, localize=True):
@@ -188,36 +188,36 @@ def load_sample_set(file_name, sample_set_name=None, localize=True):
 '''
 
 
-def load_object(file_name, localize=True):
-    import pickle
-    # check to see if parallel file name
-    if file_name.startswith('proc_'):
-        # logging.warning("Avoid starting filenames with 'proc_'. Unable to localize.")
-        localize = False
-    elif not os.path.exists(file_name+'.p') and os.path.exists('proc0_'+file_name+'.p'):
-        return load_sample_set_parallel(file_name)
-    loaded_set = pickle.load(open(file_name+'.p', "rb"))
-    if localize:
-        loaded_set.global_to_local()
-    return loaded_set
-
-
-def load_object_parallel(file_name):
-    save_dir = os.path.dirname(file_name)
-    base_name = os.path.basename(file_name)
-    files = glob.glob(os.path.join(save_dir, "proc*_{}".format(base_name+'.p')))
-    if len(files) == comm.size:
-        logging.info("Loading {} sample set using parallel files (same nproc)")
-        # if the number of processors is the same then set mdat to
-        # be the one with the matching processor number (doesn't
-        # really matter)
-        local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank,
-                                                          os.path.basename(file_name)))
-        return load_object(local_file_name)
-    else:
-        raise dim_not_matching("Number of parallel files is different from nproc.")
-    # SM possibly re-add the feature to have different numbers. Probably not necessary.
+# def load_object(file_name, localize=True):
+#     import pickle
+#     # check to see if parallel file name
+#     if file_name.startswith('proc_'):
+#         # logging.warning("Avoid starting filenames with 'proc_'. Unable to localize.")
+#         localize = False
+#     elif not os.path.exists(file_name+'.p') and os.path.exists('proc0_'+file_name+'.p'):
+#         return load_sample_set_parallel(file_name)
+#     loaded_set = pickle.load(open(file_name+'.p', "rb"))
+#     if localize:
+#         loaded_set.global_to_local()
+#     return loaded_set
+#
+#
+# def load_object_parallel(file_name):
+#     save_dir = os.path.dirname(file_name)
+#     base_name = os.path.basename(file_name)
+#     files = glob.glob(os.path.join(save_dir, "proc*_{}".format(base_name+'.p')))
+#     if len(files) == comm.size:
+#         logging.info("Loading {} sample set using parallel files (same nproc)")
+#         # if the number of processors is the same then set mdat to
+#         # be the one with the matching processor number (doesn't
+#         # really matter)
+#         local_file_name = os.path.join(os.path.dirname(file_name),
+#                                        "proc{}_{}".format(comm.rank,
+#                                                           os.path.basename(file_name)))
+#         return load_object(local_file_name)
+#     else:
+#         raise dim_not_matching("Number of parallel files is different from nproc.")
+#     # SM possibly re-add the feature to have different numbers. Probably not necessary.
 
 
 '''
@@ -347,7 +347,7 @@ class sample_set_base(object):
                          '_jacobians_local', '_domain_original']
     meta_fields = ['_bounding_box', '_densities', '_densities_local', '_dim', '_domain', '_domain_original',
                    '_error_estimates', '_error_estimates_local', '_error_id', '_error_id_local', '_jacobians',
-                   '_jacobians_local', '_kdtree', '_kdtree_values', '_kdtree_values_local', '_left', '_left_local',
+                   '_jacobians_local', '_kdtree_values', '_kdtree_values_local', '_left', '_left_local',
                    '_local_index', '_normalized_radii', '_normalized_radii_local', '_p_norm', '_probabilities',
                    '_probabilities_local', '_radii', '_radii_local', '_reference_value', '_region', '_region_local',
                    '_right', '_right_local', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
@@ -450,18 +450,32 @@ class sample_set_base(object):
         if self.__class__ == other.__class__:
             fields = self.meta_fields
             for field in fields:
-                if getattr(self, field) is np.ndarray:
-                    if np.all(getattr(self, field) == getattr(other, field)):
-                        return True
+                if type(getattr(self, field)) is np.ndarray:
+                    if np.any(getattr(self, field) != getattr(other, field)):
+                        return False
+                elif type(getattr(self, field)) is list:
+                    compare = getattr(self, field) == getattr(other, field)
+                    if compare is bool:
+                        if compare is False:
+                            return False
                     else:
-                        return False
+                        if compare.any() is False:
+                            return False
                 else:
-                    if not getattr(self, field) == getattr(other, field):
+                    if getattr(self, field) != getattr(other, field):
                         return False
-                    return True
+            return True
         else:
             raise TypeError('Comparing object is not of the same type.')
 
+    def save(self, filename, globalize=True):
+        """
+
+        Save the set using pickle.
+
+        :return:
+        """
+        util.save_object(save_set=self, file_name=filename, globalize=globalize)
 
     def normalize_domain(self):
         """
@@ -1251,20 +1265,22 @@ class sample_set_base(object):
         :returns: Copy of this :class:`~bet.sample.sample_set_base`
 
         """
-        my_copy = type(self)(self.get_dim())
-        for array_name in self.all_ndarray_names:
-            current_array = getattr(self, array_name)
-            if current_array is not None:
-                setattr(my_copy, array_name,
-                        np.copy(current_array))
-        for vector_name in self.vector_names:
-            if vector_name is not "_dim":
-                current_vector = getattr(self, vector_name)
-                if current_vector is not None:
-                    setattr(my_copy, vector_name, np.copy(current_vector))
-        if self._kdtree is not None:
-            my_copy.set_kdtree()
-        return my_copy
+        # my_copy = type(self)(self.get_dim())
+        # for array_name in self.all_ndarray_names:
+        #     current_array = getattr(self, array_name)
+        #     if current_array is not None:
+        #         setattr(my_copy, array_name,
+        #                 np.copy(current_array))
+        # for vector_name in self.vector_names:
+        #     if vector_name is not "_dim":
+        #         current_vector = getattr(self, vector_name)
+        #         if current_vector is not None:
+        #             setattr(my_copy, vector_name, np.copy(current_vector))
+        # if self._kdtree is not None:
+        #     my_copy.set_kdtree()
+        # return my_copy
+        import copy
+        return copy.deepcopy(self)
 
     def shape(self):
         """
@@ -1296,221 +1312,221 @@ class sample_set_base(object):
         """
 
 
-def save_discretization(save_disc, file_name, discretization_name=None,
-                        globalize=False):
-    """
-    Saves this :class:`bet.sample.discretization` as a ``.mat`` file. Each
-    attribute is added to a dictionary of names and arrays which are then
-    saved to a MATLAB-style file.
-
-    :param save_disc: sample set to save
-    :type save_disc: :class:`bet.sample.discretization`
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string discretization_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.discretization` objects to a single
-        ``.mat`` file
-    :param bool globalize: flag whether or not to globalize
-        :class:`bet.sample.sample_set_base` objects stored in this
-        discretization
-
-    :rtype: string
-    :returns: local file name
-
-    """
-    # create temporary dictionary
-    new_mdat = dict()
-
-    # create processor specific file name
-    if comm.size > 1 and not globalize:
-        local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank,
-                                                          os.path.basename(file_name)))
-    else:
-        local_file_name = file_name
-
-    # set name if doesn't exist
-    if discretization_name is None:
-        discretization_name = 'default'
-
-    # globalize the pointers
-    if globalize:
-        save_disc.globalize_ptrs()
-    # save sample sets if they exist
-    for attrname in discretization.sample_set_names:
-        curr_attr = getattr(save_disc, attrname)
-        if curr_attr is not None:
-            if attrname in discretization.sample_set_names:
-                save_sample_set(curr_attr, file_name,
-                                discretization_name + attrname, globalize)
-
-    new_mdat = dict()
-    # create temporary dictionary
-    if os.path.exists(local_file_name) or \
-            os.path.exists(local_file_name + '.mat'):
-        new_mdat = sio.loadmat(local_file_name)
-
-    # store discretization in dictionary
-    for attrname in discretization.vector_names:
-        curr_attr = getattr(save_disc, attrname)
-        if curr_attr is not None:
-            new_mdat[discretization_name + attrname] = curr_attr
-        elif discretization_name + attrname in new_mdat:
-            new_mdat.pop(discretization_name + attrname)
-    comm.barrier()
-
-    # save new file or append to existing file
-    if (globalize and comm.rank == 0) or not globalize:
-        sio.savemat(local_file_name, new_mdat)
-    comm.barrier()
-    return local_file_name
-
-
-def load_discretization_parallel(file_name, discretization_name=None):
-    """
-    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
-    contains multiple :class:`~bet.sample.discretization` objects then
-    ``discretization_name`` is used to distinguish which between different
-    :class:`~bet.sample.discretization` objects.
-
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string discretization_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.discretization` objects to a single
-        ``.mat`` file
-
-    :rtype: :class:`~bet.sample.discretization`
-    :returns: the ``discretization`` that matches the ``discretization_name``
-
-    """
-    # Find and open save files
-    save_dir = os.path.dirname(file_name)
-    base_name = os.path.basename(file_name)
-    mdat_files = glob.glob(os.path.join(save_dir,
-                                        "proc*_{}".format(base_name)))
-
-    if len(mdat_files) == comm.size:
-        logging.info("Loading {} sample set using parallel files (same nproc)"
-                     .format(discretization_name))
-        # if the number of processors is the same then set mdat to
-        # be the one with the matching processor number (doesn't
-        # really matter)
-        return load_discretization(mdat_files[comm.rank], discretization_name)
-    else:
-        logging.info("Loading {} sample set using parallel files (diff nproc)"
-                     .format(discretization_name))
-
-        if discretization_name is None:
-            discretization_name = 'default'
-
-        input_sample_set = load_sample_set(file_name,
-                                           discretization_name + '_input_sample_set')
-
-        output_sample_set = load_sample_set(file_name,
-                                            discretization_name + '_output_sample_set')
-
-        loaded_disc = discretization(input_sample_set, output_sample_set)
-
-        # Determine how many processors the previous data used
-        # otherwise gather the data from mdat and then scatter
-        # among the processors and update mdat
-        mdat_files_local = comm.scatter(mdat_files)
-        mdat_local = [sio.loadmat(m) for m in mdat_files_local]
-        mdat_list = comm.allgather(mdat_local)
-        mdat_global = []
-        # instead of a list of lists, create a list of mdat
-        for mlist in mdat_list:
-            mdat_global.extend(mlist)
-
-        # load attributes
-        for attrname in discretization.vector_names:
-            if discretization_name + attrname in list(mdat_global[0].keys()):
-                if attrname.endswith('_local') and comm.size != \
-                        len(mdat_list):
-                    # create lists of local data
-                    temp_input = None
-                else:
-                    temp_input = np.squeeze(mdat_global[0][
-                        discretization_name + attrname])
-                setattr(loaded_disc, attrname, temp_input)
-
-        # load sample sets
-        for attrname in discretization.sample_set_names:
-            if attrname is not '_input_sample_set' and \
-                    attrname is not '_output_sample_set':
-                setattr(loaded_disc, attrname, load_sample_set(file_name,
-                                                               discretization_name + attrname))
-
-        # re-localize if necessary
-        if file_name.startswith('proc_') and comm.size > 1 \
-                and comm.size != len(mdat_list):
-            warn_string = "Local pointers have been removed and will be"
-            warn_string += " re-created as necessary)"
-            warnings.warn(warn_string)
-            #loaded_disc._io_ptr_local = None
-            #loaded_disc._emulated_ii_ptr_local = None
-            #loaded_disc._emulated_oo_ptr_local = None
-    return loaded_disc
-
-
-def load_discretization(file_name, discretization_name=None):
-    """
-    Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
-    contains multiple :class:`~bet.sample.discretization` objects then
-    ``discretization_name`` is used to distinguish which between different
-    :class:`~bet.sample.discretization` objects.
-
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string discretization_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.discretization` objects to a single
-        ``.mat`` file
-
-    :rtype: :class:`~bet.sample.discretization`
-    :returns: the ``discretization`` that matches the ``discretization_name``
-
-    """
-
-    # check to see if parallel file name
-    if file_name.startswith('proc_'):
-        pass
-    elif not os.path.exists(file_name) and os.path.exists(os.path.join(
-            os.path.dirname(file_name),
-            "proc{}_{}".format(comm.rank, os.path.basename(file_name)))):
-        return load_discretization_parallel(file_name, discretization_name)
-
-    mdat = sio.loadmat(file_name)
-    if discretization_name is None:
-        discretization_name = 'default'
-
-    input_sample_set = load_sample_set(file_name,
-                                       discretization_name +
-                                       '_input_sample_set')
-
-    output_sample_set = load_sample_set(file_name,
-                                        discretization_name +
-                                        '_output_sample_set')
-
-    loaded_disc = discretization(input_sample_set, output_sample_set)
-
-    for attrname in discretization.sample_set_names:
-        if attrname is not '_input_sample_set' and \
-                attrname is not '_output_sample_set':
-            setattr(loaded_disc, attrname,
-                    load_sample_set(file_name, discretization_name + attrname))
-
-    for attrname in discretization.vector_names:
-        if discretization_name + attrname in list(mdat.keys()):
-            setattr(loaded_disc, attrname,
-                    np.squeeze(mdat[discretization_name + attrname]))
-
-    # re-localize if necessary
-    if file_name.rfind('proc_') == 0 and comm.size > 1:
-        loaded_disc._io_ptr_local = None
-        loaded_disc._emulated_ii_ptr_local = None
-        loaded_disc._emulated_oo_ptr_local = None
-
-    return loaded_disc
+# def save_discretization(save_disc, file_name, discretization_name=None,
+#                         globalize=False):
+#     """
+#     Saves this :class:`bet.sample.discretization` as a ``.mat`` file. Each
+#     attribute is added to a dictionary of names and arrays which are then
+#     saved to a MATLAB-style file.
+#
+#     :param save_disc: sample set to save
+#     :type save_disc: :class:`bet.sample.discretization`
+#     :param string file_name: Name of the ``.mat`` file, no extension is
+#         needed.
+#     :param string discretization_name: String to prepend to attribute names when
+#         saving multiple :class`bet.sample.discretization` objects to a single
+#         ``.mat`` file
+#     :param bool globalize: flag whether or not to globalize
+#         :class:`bet.sample.sample_set_base` objects stored in this
+#         discretization
+#
+#     :rtype: string
+#     :returns: local file name
+#
+#     """
+#     # create temporary dictionary
+#     new_mdat = dict()
+#
+#     # create processor specific file name
+#     if comm.size > 1 and not globalize:
+#         local_file_name = os.path.join(os.path.dirname(file_name),
+#                                        "proc{}_{}".format(comm.rank,
+#                                                           os.path.basename(file_name)))
+#     else:
+#         local_file_name = file_name
+#
+#     # set name if doesn't exist
+#     if discretization_name is None:
+#         discretization_name = 'default'
+#
+#     # globalize the pointers
+#     if globalize:
+#         save_disc.globalize_ptrs()
+#     # save sample sets if they exist
+#     for attrname in discretization.sample_set_names:
+#         curr_attr = getattr(save_disc, attrname)
+#         if curr_attr is not None:
+#             if attrname in discretization.sample_set_names:
+#                 save_sample_set(curr_attr, file_name,
+#                                 discretization_name + attrname, globalize)
+#
+#     new_mdat = dict()
+#     # create temporary dictionary
+#     if os.path.exists(local_file_name) or \
+#             os.path.exists(local_file_name + '.mat'):
+#         new_mdat = sio.loadmat(local_file_name)
+#
+#     # store discretization in dictionary
+#     for attrname in discretization.vector_names:
+#         curr_attr = getattr(save_disc, attrname)
+#         if curr_attr is not None:
+#             new_mdat[discretization_name + attrname] = curr_attr
+#         elif discretization_name + attrname in new_mdat:
+#             new_mdat.pop(discretization_name + attrname)
+#     comm.barrier()
+#
+#     # save new file or append to existing file
+#     if (globalize and comm.rank == 0) or not globalize:
+#         sio.savemat(local_file_name, new_mdat)
+#     comm.barrier()
+#     return local_file_name
+#
+#
+# def load_discretization_parallel(file_name, discretization_name=None):
+#     """
+#     Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
+#     contains multiple :class:`~bet.sample.discretization` objects then
+#     ``discretization_name`` is used to distinguish which between different
+#     :class:`~bet.sample.discretization` objects.
+#
+#     :param string file_name: Name of the ``.mat`` file, no extension is
+#         needed.
+#     :param string discretization_name: String to prepend to attribute names when
+#         saving multiple :class`bet.sample.discretization` objects to a single
+#         ``.mat`` file
+#
+#     :rtype: :class:`~bet.sample.discretization`
+#     :returns: the ``discretization`` that matches the ``discretization_name``
+#
+#     """
+#     # Find and open save files
+#     save_dir = os.path.dirname(file_name)
+#     base_name = os.path.basename(file_name)
+#     mdat_files = glob.glob(os.path.join(save_dir,
+#                                         "proc*_{}".format(base_name)))
+#
+#     if len(mdat_files) == comm.size:
+#         logging.info("Loading {} sample set using parallel files (same nproc)"
+#                      .format(discretization_name))
+#         # if the number of processors is the same then set mdat to
+#         # be the one with the matching processor number (doesn't
+#         # really matter)
+#         return load_discretization(mdat_files[comm.rank], discretization_name)
+#     else:
+#         logging.info("Loading {} sample set using parallel files (diff nproc)"
+#                      .format(discretization_name))
+#
+#         if discretization_name is None:
+#             discretization_name = 'default'
+#
+#         input_sample_set = load_sample_set(file_name,
+#                                            discretization_name + '_input_sample_set')
+#
+#         output_sample_set = load_sample_set(file_name,
+#                                             discretization_name + '_output_sample_set')
+#
+#         loaded_disc = discretization(input_sample_set, output_sample_set)
+#
+#         # Determine how many processors the previous data used
+#         # otherwise gather the data from mdat and then scatter
+#         # among the processors and update mdat
+#         mdat_files_local = comm.scatter(mdat_files)
+#         mdat_local = [sio.loadmat(m) for m in mdat_files_local]
+#         mdat_list = comm.allgather(mdat_local)
+#         mdat_global = []
+#         # instead of a list of lists, create a list of mdat
+#         for mlist in mdat_list:
+#             mdat_global.extend(mlist)
+#
+#         # load attributes
+#         for attrname in discretization.vector_names:
+#             if discretization_name + attrname in list(mdat_global[0].keys()):
+#                 if attrname.endswith('_local') and comm.size != \
+#                         len(mdat_list):
+#                     # create lists of local data
+#                     temp_input = None
+#                 else:
+#                     temp_input = np.squeeze(mdat_global[0][
+#                         discretization_name + attrname])
+#                 setattr(loaded_disc, attrname, temp_input)
+#
+#         # load sample sets
+#         for attrname in discretization.sample_set_names:
+#             if attrname is not '_input_sample_set' and \
+#                     attrname is not '_output_sample_set':
+#                 setattr(loaded_disc, attrname, load_sample_set(file_name,
+#                                                                discretization_name + attrname))
+#
+#         # re-localize if necessary
+#         if file_name.startswith('proc_') and comm.size > 1 \
+#                 and comm.size != len(mdat_list):
+#             warn_string = "Local pointers have been removed and will be"
+#             warn_string += " re-created as necessary)"
+#             warnings.warn(warn_string)
+#             #loaded_disc._io_ptr_local = None
+#             #loaded_disc._emulated_ii_ptr_local = None
+#             #loaded_disc._emulated_oo_ptr_local = None
+#     return loaded_disc
+#
+#
+# def load_discretization(file_name, discretization_name=None):
+#     """
+#     Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
+#     contains multiple :class:`~bet.sample.discretization` objects then
+#     ``discretization_name`` is used to distinguish which between different
+#     :class:`~bet.sample.discretization` objects.
+#
+#     :param string file_name: Name of the ``.mat`` file, no extension is
+#         needed.
+#     :param string discretization_name: String to prepend to attribute names when
+#         saving multiple :class`bet.sample.discretization` objects to a single
+#         ``.mat`` file
+#
+#     :rtype: :class:`~bet.sample.discretization`
+#     :returns: the ``discretization`` that matches the ``discretization_name``
+#
+#     """
+#
+#     # check to see if parallel file name
+#     if file_name.startswith('proc_'):
+#         pass
+#     elif not os.path.exists(file_name) and os.path.exists(os.path.join(
+#             os.path.dirname(file_name),
+#             "proc{}_{}".format(comm.rank, os.path.basename(file_name)))):
+#         return load_discretization_parallel(file_name, discretization_name)
+#
+#     mdat = sio.loadmat(file_name)
+#     if discretization_name is None:
+#         discretization_name = 'default'
+#
+#     input_sample_set = load_sample_set(file_name,
+#                                        discretization_name +
+#                                        '_input_sample_set')
+#
+#     output_sample_set = load_sample_set(file_name,
+#                                         discretization_name +
+#                                         '_output_sample_set')
+#
+#     loaded_disc = discretization(input_sample_set, output_sample_set)
+#
+#     for attrname in discretization.sample_set_names:
+#         if attrname is not '_input_sample_set' and \
+#                 attrname is not '_output_sample_set':
+#             setattr(loaded_disc, attrname,
+#                     load_sample_set(file_name, discretization_name + attrname))
+#
+#     for attrname in discretization.vector_names:
+#         if discretization_name + attrname in list(mdat.keys()):
+#             setattr(loaded_disc, attrname,
+#                     np.squeeze(mdat[discretization_name + attrname]))
+#
+#     # re-localize if necessary
+#     if file_name.rfind('proc_') == 0 and comm.size > 1:
+#         loaded_disc._io_ptr_local = None
+#         loaded_disc._emulated_ii_ptr_local = None
+#         loaded_disc._emulated_oo_ptr_local = None
+#
+#     return loaded_disc
 
 
 class voronoi_sample_set(sample_set_base):
@@ -2413,19 +2429,34 @@ class discretization(object):
 
     def __eq__(self, other):
         if self.__class__ == other.__class__:
-            fields = self.vector_names + self.sample_set_names
+            fields = self.sample_set_names + self.vector_names
             for field in fields:
-                if getattr(self, field) is np.ndarray:
-                    if np.all(getattr(self, field) == getattr(other, field)):
-                        return True
+                if type(getattr(self, field)) is np.ndarray:
+                    if np.any(getattr(self, field) != getattr(other, field)):
+                        return False
+                elif type(getattr(self, field)) is list:
+                    compare = getattr(self, field) == getattr(other, field)
+                    if compare is bool:
+                        if compare is False:
+                            return False
                     else:
-                        return False
+                        if compare.any() is False:
+                            return False
                 else:
-                    if not getattr(self, field) == getattr(other, field):
+                    if getattr(self, field) != getattr(other, field):
                         return False
-                    return True
+            return True
         else:
             raise TypeError('Comparing object is not of the same type.')
+
+    def save(self, filename, globalize=True):
+        """
+
+        Save the discretization using pickle.
+
+        :return:
+        """
+        util.save_object(save_set=self, file_name=filename, globalize=globalize)
 
     def check_nums(self):
         """
@@ -2586,21 +2617,23 @@ class discretization(object):
         :returns: Copy of this :class:`~bet.sample.discretization`
 
         """
-        my_copy = discretization(self._input_sample_set.copy(),
-                                 self._output_sample_set.copy())
-
-        for attrname in discretization.sample_set_names:
-            if attrname is not '_input_sample_set' and \
-                    attrname is not '_output_sample_set':
-                curr_sample_set = getattr(self, attrname)
-                if curr_sample_set is not None:
-                    setattr(my_copy, attrname, curr_sample_set.copy())
-
-        for array_name in discretization.vector_names:
-            current_array = getattr(self, array_name)
-            if current_array is not None:
-                setattr(my_copy, array_name, np.copy(current_array))
-        return my_copy
+        # my_copy = discretization(self._input_sample_set.copy(),
+        #                          self._output_sample_set.copy())
+        #
+        # for attrname in discretization.sample_set_names:
+        #     if attrname is not '_input_sample_set' and \
+        #             attrname is not '_output_sample_set':
+        #         curr_sample_set = getattr(self, attrname)
+        #         if curr_sample_set is not None:
+        #             setattr(my_copy, attrname, curr_sample_set.copy())
+        #
+        # for array_name in discretization.vector_names:
+        #     current_array = getattr(self, array_name)
+        #     if current_array is not None:
+        #         setattr(my_copy, array_name, np.copy(current_array))
+        # return my_copy
+        import copy
+        return copy.deepcopy(self)
 
     def get_input_sample_set(self):
         """
@@ -2901,7 +2934,13 @@ class discretization(object):
             self._input_sample_set.local_to_global()
         if self._output_sample_set is not None:
             self._output_sample_set.local_to_global()
-            
+        if self._output_probability_set is not None:
+            self._output_probability_set.local_to_global()
+        if self._emulated_input_sample_set is not None:
+            self._emulated_input_sample_set.local_to_global()
+        if self._emulated_output_sample_set is not None:
+            self._emulated_output_sample_set.local_to_global()
+
     def global_to_local(self):
         """
         Call global_to_local for ``input_sample_set`` and
@@ -2911,3 +2950,9 @@ class discretization(object):
             self._input_sample_set.global_to_local()
         if self._output_sample_set is not None:
             self._output_sample_set.global_to_local()
+        if self._output_probability_set is not None:
+            self._output_probability_set.global_to_local()
+        if self._emulated_input_sample_set is not None:
+            self._emulated_input_sample_set.global_to_local()
+        if self._emulated_output_sample_set is not None:
+            self._emulated_output_sample_set.global_to_local
