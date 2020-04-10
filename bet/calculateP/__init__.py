@@ -12,4 +12,4 @@ probability measure :math:`P_{\Lambda}`.
     indicator functions for use by various other classes.
 """
 __all__ = ['calculateP', 'simpleFunP', 'indicatorFunctions',
-           'calculateError']
+           'calculateError', 'dataConsistent']

@@ -47,6 +47,12 @@ class wrong_p_norm(Exception):
     Exception for when the dimension of the array is inconsistent.
     """
 
+
+class wrong_input(Exception):
+    """
+    Exception for when the input is of the wrong type.
+    """
+
 '''
 def save_sample_set(save_set, file_name,
                     sample_set_name=None, globalize=False):
@@ -350,7 +356,7 @@ class sample_set_base(object):
                    '_jacobians_local', '_kdtree_values', '_kdtree_values_local', '_left', '_left_local',
                    '_local_index', '_normalized_radii', '_normalized_radii_local', '_p_norm', '_probabilities',
                    '_probabilities_local', '_radii', '_radii_local', '_reference_value', '_region', '_region_local',
-                   '_right', '_right_local', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
+                   '_right', '_right_local', '_rv', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
                    '_width_local']
 
     def __init__(self, dim):
@@ -445,6 +451,16 @@ class sample_set_base(object):
         self._error_id_local = None
         #: :class:`numpy.ndarray` of reference value of shape (dim,)
         self._reference_value = None
+        # self._rv = None
+        # self._rv_init = None
+        self._kdes = None
+        self._prob_type = None
+        self._prob_parameters = None
+        self._prob_type_init = None
+        self._prob_parameters_init = None
+        self._label = None
+        self._labels = None
+
 
     def __eq__(self, other):
         if self.__class__ == other.__class__:
@@ -564,6 +580,54 @@ class sample_set_base(object):
         Returns p-norm for sample set
         """
         return self._p_norm
+
+    # def set_rv(self, rv):
+    #     self._rv = rv
+    #
+    # def set_rv_init(self, rv_init):
+    #     self._rv_init = rv_init
+
+    def set_label(self, label):
+        self._label = label
+
+    def get_label(self):
+        return self._label
+
+    def set_labels(self, labels):
+        self._labels = labels
+
+    def get_labels(self):
+        return self._labels
+
+    def set_kdes(self, kdes):
+        self._kdes = kdes
+
+    def get_kdes(self):
+        return self._kdes
+
+    def set_prob_type_init(self, prob_type_init):
+        self._prob_type_init = prob_type_init
+
+    def get_prob_type_init(self):
+        return self._prob_type_init
+
+    def set_prob_parameters_init(self, prob_parameters_init):
+        self._prob_parameters_init = prob_parameters_init
+
+    def get_prob_parameters_init(self):
+        return self._prob_parameters_init
+
+    def set_prob_type(self, prob_type):
+        self._prob_type = prob_type
+
+    def get_prob_type(self):
+        return self._prob_type
+
+    def set_prob_parameters(self, prob_parameters):
+        self._prob_parameters = prob_parameters
+
+    def get_prob_parameters(self):
+        return self._prob_parameters
 
     def set_reference_value(self, ref_val):
         """

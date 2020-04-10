@@ -10,4 +10,4 @@ This subpackage contains
 * :class:`bet.sampling.adaptiveSampling` inherits from
     :class:`~bet.sampling.basicSampling` adaptively generates samples.
 """
-__all__ = ['basicSampling', 'adaptiveSampling', 'LpGeneralizedSamples']
+__all__ = ['basicSampling', 'adaptiveSampling', 'LpGeneralizedSamples', 'useLUQ']

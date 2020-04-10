@@ -7,6 +7,7 @@ This module provides methods for plotting probabilities.
 import copy
 import math
 import numpy as np
+import scipy.stats as stats
 import matplotlib
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
@@ -555,3 +556,68 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
                 plt.close()
 
     comm.barrier()
+
+
+def plot_prob_marginal(sets, i, label=None, sets_label=None):
+    if isinstance(sets, sample.sample_set):
+        sets = [sets]
+
+    if label is None and sets[0].get_labels() is not None:
+        label = sets[0].get_labels()[i]
+    elif label is None:
+        label = str(i)
+
+    if sets_label is None:
+        sets_label = []
+        for j, s in enumerate(sets):
+            if s.get_labels() is None:
+                sets_label.append('Set ' + str(j))
+            else:
+                sets_label.append(s.get_labels()[i])
+
+    fig = plt.figure(figsize=(10, 10))
+    x_min = np.inf
+    x_max = -np.inf
+    for s in sets:
+        min1 = np.min(s.get_values()[:, i])
+        max1 = np.max(s.get_values()[:, i])
+        if min1 < x_min:
+            x_min = min1
+        if max1 > x_max:
+            x_max = max1
+
+    delt = 0.25 * (x_max - x_min)
+    x = np.linspace(x_min - delt, x_max + delt, 100)
+    for k, s in enumerate(sets):
+        if s.get_prob_type() is not None:
+            if s.get_prob_type() == 'kde':
+                param_marginals, cluster_weights = s.get_prob_parameters()
+                mar = np.zeros(x.shape)
+                num_clusters = len(cluster_weights)
+                for j in range(num_clusters):
+                    mar += param_marginals[i][j](x) * cluster_weights[j]
+                plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
+            elif s.get_prob_type() == 'rv':
+                rv = s.get_prob_parameters()
+                rv_continuous = getattr(stats, rv[i][0])
+                args = rv[i][1]
+                mar = rv_continuous.pdf(x, **args)
+                plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
+        if s.get_prob_type_init() is not None:
+            if s.get_prob_type_init() == 'kde':
+                param_marginals, cluster_weights = s.get_prob_parameters_init()
+                mar = np.zeros(x.shape)
+                num_clusters = len(cluster_weights)
+                for j in range(num_clusters):
+                    mar += param_marginals[i][j](x) * cluster_weights[j]
+                plt.plot(x, mar, label=sets_label[k] + 'Initial', linewidth=4)
+            elif s.get_prob_type_init() == 'rv':
+                rv = s.get_prob_parameters_init()
+                rv_continuous = getattr(stats, rv[i][0])
+                args = rv[i][1]
+                mar = rv_continuous.pdf(x, **args)
+                plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4, linestyle='dashed')
+
+    plt.title('Densities for parameter ' + label, fontsize=16)
+    plt.legend(fontsize=20)
+    plt.show()

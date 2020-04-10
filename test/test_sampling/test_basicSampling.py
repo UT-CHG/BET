@@ -21,124 +21,124 @@ import collections
 local_path = os.path.join(".")
 
 
-@unittest.skipIf(comm.size > 1, 'Only run in serial')
-def test_loadmat():
-    """
-    Tests :meth:`bet.sampling.basicSampling.loadmat`
-    """
-    np.random.seed(1)
-    mdat1 = {'num_samples': 5}
-    mdat2 = {'num_samples': 6}
-    model = "this is not a model"
+# @unittest.skipIf(comm.size > 1, 'Only run in serial')
+# def test_loadmat():
+#     """
+#     Tests :meth:`bet.sampling.basicSampling.loadmat`
+#     """
+#     np.random.seed(1)
+#     mdat1 = {'num_samples': 5}
+#     mdat2 = {'num_samples': 6}
+#     model = "this is not a model"
+#
+#     my_input1 = sample_set(1)
+#     my_input1.set_values(np.random.random((5, 1)))
+#     my_output = sample_set(1)
+#     my_output.set_values(np.random.random((5, 1)))
+#     my_input2 = sample_set(1)
+#     my_input2.set_values(np.random.random((6, 1)))
+#
+#     sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
+#     sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
+#
+#     bet.sample.save_discretization(disc(my_input1, my_output),
+#                                    (os.path.join(local_path, 'testfile1')), globalize=True)
+#     bet.sample.save_discretization(disc(my_input2, None),
+#                                    os.path.join(local_path, 'testfile2'), "NAME", globalize=True)
+#
+#     (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
+#                                                                    'testfile1'))
+#     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
+#                               my_input1.get_values())
+#     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
+#                               my_output.get_values())
+#     assert loaded_sampler1.num_samples == 5
+#     assert loaded_sampler1.lb_model is None
+#
+#     (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
+#                                                                    'testfile2'), disc_name="NAME", model=model)
+#     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
+#                               my_input2.get_values())
+#     assert discretization2._output_sample_set is None
+#     assert loaded_sampler2.num_samples == 6
+#     assert loaded_sampler2.lb_model == model
+#     if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
+#         os.remove(os.path.join(local_path, 'testfile1.mat'))
+#     if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
+#         os.remove(os.path.join(local_path, 'testfile2.mat'))
+#
+#
+# def test_loadmat_parallel():
+#     """
+#
+#     Tests :class:`bet.sampling.basicSampling.sampler.loadmat`.
+#
+#     """
+#     np.random.seed(1)
+#     mdat1 = {'num_samples': 10}
+#     mdat2 = {'num_samples': 20}
+#     model = "this is not a model"
+#
+#     my_input1 = sample_set(1)
+#     my_input1.set_values_local(np.array_split(np.random.random((10, 1)),
+#                                               comm.size)[comm.rank])
+#     my_output1 = sample_set(1)
+#     my_output1.set_values_local(np.array_split(np.random.random((10, 1)),
+#                                                comm.size)[comm.rank])
+#     my_input2 = sample_set(1)
+#     my_input2.set_values_local(np.array_split(np.random.random((20, 1)),
+#                                               comm.size)[comm.rank])
+#     my_output2 = sample_set(1)
+#     my_output2.set_values_local(np.array_split(np.random.random((20, 1)),
+#                                                comm.size)[comm.rank])
+#
+#     file_name1 = 'testfile1.mat'
+#     file_name2 = 'testfile2.mat'
+#
+#     if comm.size > 1:
+#         local_file_name1 = os.path.os.path.join(os.path.dirname(file_name1),
+#                                                 "proc{}_{}".format(comm.rank, os.path.basename(file_name1)))
+#         local_file_name2 = os.path.os.path.join(os.path.dirname(file_name2),
+#                                                 "proc{}_{}".format(comm.rank, os.path.basename(file_name2)))
+#     else:
+#         local_file_name1 = file_name1
+#         local_file_name2 = file_name2
+#
+#     sio.savemat(local_file_name1, mdat1)
+#     sio.savemat(local_file_name2, mdat2)
+#     comm.barrier()
+#
+#     bet.sample.save_discretization(disc(my_input1, my_output1),
+#                                    file_name1, globalize=False)
+#     bet.sample.save_discretization(disc(my_input2, my_output2),
+#                                    file_name2, "NAME", globalize=False)
+#
+#     (loaded_sampler1, discretization1) = bsam.loadmat(file_name1)
+#     nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
+#                               my_input1.get_values())
+#     nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
+#                               my_output1.get_values())
+#     assert loaded_sampler1.num_samples == 10
+#     assert loaded_sampler1.lb_model is None
+#
+#     (loaded_sampler2, discretization2) = bsam.loadmat(file_name2,
+#                                                       disc_name="NAME", model=model)
+#     nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
+#                               my_input2.get_values())
+#     nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
+#                               my_output2.get_values())
+#
+#     assert loaded_sampler2.num_samples == 20
+#     assert loaded_sampler2.lb_model == model
+#     if comm.size == 1:
+#         os.remove(file_name1)
+#         os.remove(file_name2)
+#     else:
+#         os.remove(local_file_name1)
+#         os.remove(local_file_name2)
 
-    my_input1 = sample_set(1)
-    my_input1.set_values(np.random.random((5, 1)))
-    my_output = sample_set(1)
-    my_output.set_values(np.random.random((5, 1)))
-    my_input2 = sample_set(1)
-    my_input2.set_values(np.random.random((6, 1)))
 
-    sio.savemat(os.path.join(local_path, 'testfile1'), mdat1)
-    sio.savemat(os.path.join(local_path, 'testfile2'), mdat2)
-
-    bet.sample.save_discretization(disc(my_input1, my_output),
-                                   (os.path.join(local_path, 'testfile1')), globalize=True)
-    bet.sample.save_discretization(disc(my_input2, None),
-                                   os.path.join(local_path, 'testfile2'), "NAME", globalize=True)
-
-    (loaded_sampler1, discretization1) = bsam.loadmat(os.path.join(local_path,
-                                                                   'testfile1'))
-    nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
-                              my_input1.get_values())
-    nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
-                              my_output.get_values())
-    assert loaded_sampler1.num_samples == 5
-    assert loaded_sampler1.lb_model is None
-
-    (loaded_sampler2, discretization2) = bsam.loadmat(os.path.join(local_path,
-                                                                   'testfile2'), disc_name="NAME", model=model)
-    nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
-                              my_input2.get_values())
-    assert discretization2._output_sample_set is None
-    assert loaded_sampler2.num_samples == 6
-    assert loaded_sampler2.lb_model == model
-    if os.path.exists(os.path.join(local_path, 'testfile1.mat')):
-        os.remove(os.path.join(local_path, 'testfile1.mat'))
-    if os.path.exists(os.path.join(local_path, 'testfile2.mat')):
-        os.remove(os.path.join(local_path, 'testfile2.mat'))
-
-
-def test_loadmat_parallel():
-    """
-
-    Tests :class:`bet.sampling.basicSampling.sampler.loadmat`.
-
-    """
-    np.random.seed(1)
-    mdat1 = {'num_samples': 10}
-    mdat2 = {'num_samples': 20}
-    model = "this is not a model"
-
-    my_input1 = sample_set(1)
-    my_input1.set_values_local(np.array_split(np.random.random((10, 1)),
-                                              comm.size)[comm.rank])
-    my_output1 = sample_set(1)
-    my_output1.set_values_local(np.array_split(np.random.random((10, 1)),
-                                               comm.size)[comm.rank])
-    my_input2 = sample_set(1)
-    my_input2.set_values_local(np.array_split(np.random.random((20, 1)),
-                                              comm.size)[comm.rank])
-    my_output2 = sample_set(1)
-    my_output2.set_values_local(np.array_split(np.random.random((20, 1)),
-                                               comm.size)[comm.rank])
-
-    file_name1 = 'testfile1.mat'
-    file_name2 = 'testfile2.mat'
-
-    if comm.size > 1:
-        local_file_name1 = os.path.os.path.join(os.path.dirname(file_name1),
-                                                "proc{}_{}".format(comm.rank, os.path.basename(file_name1)))
-        local_file_name2 = os.path.os.path.join(os.path.dirname(file_name2),
-                                                "proc{}_{}".format(comm.rank, os.path.basename(file_name2)))
-    else:
-        local_file_name1 = file_name1
-        local_file_name2 = file_name2
-
-    sio.savemat(local_file_name1, mdat1)
-    sio.savemat(local_file_name2, mdat2)
-    comm.barrier()
-
-    bet.sample.save_discretization(disc(my_input1, my_output1),
-                                   file_name1, globalize=False)
-    bet.sample.save_discretization(disc(my_input2, my_output2),
-                                   file_name2, "NAME", globalize=False)
-
-    (loaded_sampler1, discretization1) = bsam.loadmat(file_name1)
-    nptest.assert_array_equal(discretization1._input_sample_set.get_values(),
-                              my_input1.get_values())
-    nptest.assert_array_equal(discretization1._output_sample_set.get_values(),
-                              my_output1.get_values())
-    assert loaded_sampler1.num_samples == 10
-    assert loaded_sampler1.lb_model is None
-
-    (loaded_sampler2, discretization2) = bsam.loadmat(file_name2,
-                                                      disc_name="NAME", model=model)
-    nptest.assert_array_equal(discretization2._input_sample_set.get_values(),
-                              my_input2.get_values())
-    nptest.assert_array_equal(discretization2._output_sample_set.get_values(),
-                              my_output2.get_values())
-
-    assert loaded_sampler2.num_samples == 20
-    assert loaded_sampler2.lb_model == model
-    if comm.size == 1:
-        os.remove(file_name1)
-        os.remove(file_name2)
-    else:
-        os.remove(local_file_name1)
-        os.remove(local_file_name2)
-
-
-def verify_compute_QoI_and_create_discretization(model, sampler,
+def verify_compute_qoi_and_create_discretization(model, sampler,
                                                  input_sample_set,
                                                  savefile):
     """
@@ -155,7 +155,7 @@ def verify_compute_QoI_and_create_discretization(model, sampler,
 
     # evaluate the model at the sample
     print(savefile, input_sample_set.get_dim())
-    my_discretization = sampler.compute_QoI_and_create_discretization(
+    my_discretization = sampler.compute_qoi_and_create_discretization(
         input_sample_set, savefile, globalize=True)
     # comm.barrier()
 
