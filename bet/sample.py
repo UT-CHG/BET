@@ -460,7 +460,7 @@ class sample_set_base(object):
         self._prob_parameters_init = None
         self._label = None
         self._labels = None
-
+        self._cluster_maps = None
 
     def __eq__(self, other):
         if self.__class__ == other.__class__:
@@ -586,6 +586,12 @@ class sample_set_base(object):
     #
     # def set_rv_init(self, rv_init):
     #     self._rv_init = rv_init
+
+    def set_cluster_maps(self, cluster_maps):
+        self._cluster_maps = cluster_maps
+
+    def get_cluster_maps(self):
+        return self._cluster_maps
 
     def set_label(self, label):
         self._label = label

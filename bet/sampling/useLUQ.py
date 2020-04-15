@@ -1,6 +1,8 @@
 import numpy as np
 import bet.sample as sample
+import bet.util as util
 from luq.luq import LUQ
+
 
 def myModel(inputs, times):
     from luq.dynamical_systems import Selkov
@@ -19,6 +21,9 @@ class useLUQ:
         self.predicted_time_series = None
         self.obs_time_series = None
         self.learn = None
+
+    def save(self, savefile):
+        util.save_object(save_set=self, file_name=savefile, globalize=True)
 
     def get_predictions(self):
         self.predicted_time_series = self.lb_model(self.predict_set.get_values(), self.times)
@@ -46,27 +51,12 @@ class useLUQ:
         out_num_obs = self.learn.observed_time_series.shape[0]
 
         predict_output = sample.sample_set(out_dim)
-        predict_vals = np.empty((out_num_predict, out_dim))
-        predict_region = np.empty((out_num_predict,))
+        predict_output.set_region_local(self.learn.predict_labels)
+        predict_output.set_cluster_maps(self.learn.predict_maps)
 
         obs_output = sample.sample_set(out_dim)
-        obs_vals = np.empty((out_num_obs, out_dim))
-        obs_region = np.empty((out_num_obs,))
-
-        for i in range(self.learn.num_clusters):
-            ptr = np.where(self.learn.predict_labels == i)[0]
-            predict_vals[ptr, :] = self.learn.predict_maps[i]
-            predict_region[ptr] = i
-
-            ptr = np.where(self.learn.obs_labels == i)[0]
-            obs_vals[ptr, :] = self.learn.obs_maps[i]
-            obs_region[ptr] = i
-
-        predict_output.set_values_local(predict_vals)
-        predict_output.set_region_local(predict_region)
-
-        obs_output.set_values_local(obs_vals)
-        obs_output.set_region_local(obs_region)
+        obs_output.set_region_local(self.learn.obs_labels)
+        obs_output.set_cluster_maps(self.learn.obs_maps)
 
         disc1 = sample.discretization(input_sample_set=self.predict_set,
                                       output_sample_set=predict_output,
@@ -76,6 +66,9 @@ class useLUQ:
                                       output_sample_set=obs_output)
 
         return disc1, disc2
+
+    def local_to_global(self):
+        pass
 
 
 

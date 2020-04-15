@@ -1,6 +1,7 @@
 # Copyright (C) 2014-2020 The BET Development Team
 import bet.sample
 import numpy as np
+import logging
 
 
 def generate_output_kdes(discretization):
@@ -19,22 +20,48 @@ def generate_output_kdes(discretization):
         predict_set.set_region(np.array([0] * predict_set.check_num()))
         obs_set.set_region(np.array([0] * obs_set.check_num()))
 
-    num_clusters = int(max(np.max(predict_set.get_region()), np.max(obs_set.get_region())) + 1)
+    if predict_set.get_cluster_maps() is None:
+        num_clusters = int(max(np.max(predict_set.get_region()), np.max(obs_set.get_region())) + 1)
+    else:
+        num_clusters = len(predict_set.get_cluster_maps())
 
     predict_kdes = []
     obs_kdes = []
     for i in range(num_clusters):
-        predict_pointer = np.where(predict_set.get_region() == i)[0]
-        obs_pointer = np.where(obs_set.get_region() == i)[0]
-        if len(predict_pointer) > 1:
-            predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T))
+        if predict_set.get_cluster_maps() is not None:
+            if len(predict_set.get_cluster_maps()) > 1:
+                predict_kdes.append(gaussian_kde(predict_set.get_cluster_maps()[i].T))
+            else:
+                predict_kdes.append(None)
         else:
-            predict_kdes.append(None)
+            predict_pointer = np.where(predict_set.get_region() == i)[0]
+            if len(predict_pointer) > 1:
+                predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T))
+            else:
+                predict_kdes.append(None)
 
-        if len(obs_pointer) > 1:
-            obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T))
+        if obs_set.get_cluster_maps() is not None:
+            if len(obs_set.get_cluster_maps()) > 1:
+                obs_kdes.append(gaussian_kde(obs_set.get_cluster_maps()[i].T))
+            else:
+                obs_kdes.append(None)
         else:
-            obs_kdes.append(None)
+            obs_pointer = np.where(obs_set.get_region() == i)[0]
+            if len(obs_pointer) > 1:
+                obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T))
+            else:
+                obs_kdes.append(None)
+
+        # obs_pointer = np.where(obs_set.get_region() == i)[0]
+        # if len(predict_pointer) > 1:
+        #     predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T))
+        # else:
+        #     predict_kdes.append(None)
+        #
+        # if len(obs_pointer) > 1:
+        #     obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T))
+        # else:
+        #     obs_kdes.append(None)
     predict_set.set_kdes(predict_kdes)
     obs_set.set_kdes(obs_kdes)
     return predict_set, obs_set, num_clusters
@@ -57,12 +84,14 @@ def dc_inversion_gkde(discretization):
     r = []
     lam_ptr = []
     for i in range(num_clusters):
-        # First compute the rejection ratio
         predict_pointer = np.where(predict_set.get_region() == i)[0]
-        # obs_pointer = np.where(obs_set.get_region() == i)[0]
+        # First compute the rejection ratio
+        if predict_set.get_cluster_maps() is None:
+            vals = predict_set.get_values()[predict_pointer]
+        else:
+            vals = predict_set.get_cluster_maps()[i]
         if len(predict_pointer) > 0:
-            r.append(np.divide(obs_kdes[i](predict_set.get_values()[predict_pointer].T),
-                           predict_kdes[i](predict_set.get_values()[predict_pointer].T)))
+            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
             rs.append((r[i].mean()))
         else:
             r.append(None)
@@ -73,6 +102,7 @@ def dc_inversion_gkde(discretization):
     param_marginals = []
     cluster_weights = []
     num_obs = obs_set.check_num()
+
     input_dim = discretization.get_input_sample_set().get_dim()
     params = discretization.get_input_sample_set().get_values()
 
@@ -87,5 +117,5 @@ def dc_inversion_gkde(discretization):
                 param_marginals[i].append(None)
     discretization.get_input_sample_set().set_prob_type("kde")
     discretization.get_input_sample_set().set_prob_parameters((param_marginals, cluster_weights))
-
+    print('Diagnostic for clusters [sample average of ratios in each cluster]: ', rs)
     return param_marginals, cluster_weights

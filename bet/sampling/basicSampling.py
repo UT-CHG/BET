@@ -20,6 +20,7 @@ import scipy.stats as stats
 from pyDOE import lhs
 from bet.Comm import comm
 import bet.sample as sample
+import bet.sample
 import bet.util as util
 
 
@@ -61,6 +62,37 @@ class bad_object(Exception):
 #     discretization = sample.load_discretization(save_file, disc_name)
 #     loaded_sampler = sampler(model, num_samples)
 #     return (loaded_sampler, discretization)
+
+def resample_from_solution(input_set, num_samples, globalize=True):
+    """
+
+    :param input_set:
+    :type input_set: :class:`~bet.sample.sample_set`
+    :param num_samples:
+    :return:
+    """
+    new_set = sample.sample_set(dim=input_set.get_dim())
+    if input_set.get_prob_type() == 'rv':
+        return random_sample_set(input_set.get_prob_parameters(), new_set, num_samples, globalize)
+    elif input_set.get_prob_type() == 'kde':
+        param_marginals, cluster_weights = input_set.get_prob_parameters()
+        v_outer = []
+        for i, w in enumerate(cluster_weights):
+            v_inner = []
+            num_samples_clust = round(w*num_samples)
+            num_samples_local = int((num_samples_clust / comm.size) +
+                                    (comm.rank < num_samples_clust % comm.size))
+            for j in range(input_set.get_dim()):
+                v_inner.append(param_marginals[j][i].resample(num_samples_local))
+            v_outer.append(np.vstack(v_inner))
+        vals_local = np.hstack(v_outer)
+        new_set.set_values_local(vals_local)
+        new_set.set_prob_type_init('kde')
+        new_set.set_prob_parameters_init((param_marginals, cluster_weights))
+        if globalize:
+            new_set.local_to_global()
+        return new_set
+
 
 
 def random_sample_set(rv, input_obj, num_samples, globalize=True):
