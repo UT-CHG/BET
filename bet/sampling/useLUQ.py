@@ -13,7 +13,7 @@ def myModel(inputs, times):
 
 
 class useLUQ:
-    def __init__(self, predict_set, obs_set, lb_model, times):
+    def __init__(self, predict_set, obs_set, lb_model=None, times=None):
         self.predict_set = predict_set
         self.obs_set = obs_set
         self.lb_model = lb_model
@@ -31,10 +31,13 @@ class useLUQ:
     def get_obs(self):
         self.obs_time_series = self.lb_model(self.obs_set.get_values(), self.times)
 
+    def initialize(self, predicted_time_series, obs_time_series, times):
+        self.learn = LUQ(predicted_time_series, obs_time_series, times)
+
     def setup(self):
         self.get_predictions()
         self.get_obs()
-        self.learn = LUQ(self.predicted_time_series, self.obs_time_series, self.times)
+        self.initialize(self.predicted_time_series, self.obs_time_series, self.times)
 
     def clean_data(self, **kwargs):
         self.learn.clean_data(**kwargs)

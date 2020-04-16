@@ -92,7 +92,24 @@ def resample_from_solution(input_set, num_samples, globalize=True):
         if globalize:
             new_set.local_to_global()
         return new_set
-
+    elif input_set.get_prob_type() == 'gmm':
+        means, covariances, cluster_weights = input_set.get_prob_parameters()
+        v_outer = []
+        for i, w in enumerate(cluster_weights):
+            num_samples_clust = round(w * num_samples)
+            num_samples_local = int((num_samples_clust / comm.size) +
+                                    (comm.rank < num_samples_clust % comm.size))
+            #for j in range(input_set.get_dim()):
+            #    v_inner.append(param_marginals[j][i].resample(num_samples_local))
+            #v_outer.append(np.vstack(v_inner))
+            v_outer.append(stats.multivariate_normal.rvs(mean=means[i], cov=covariances[i], size=num_samples_local))
+        vals_local = np.vstack(v_outer)
+        new_set.set_values_local(vals_local)
+        new_set.set_prob_type_init('gmm')
+        new_set.set_prob_parameters_init((means, covariances, cluster_weights))
+        if globalize:
+            new_set.local_to_global()
+        return new_set
 
 
 def random_sample_set(rv, input_obj, num_samples, globalize=True):

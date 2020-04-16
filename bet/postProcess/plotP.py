@@ -603,6 +603,13 @@ def plot_prob_marginal(sets, i, label=None, sets_label=None):
                 args = rv[i][1]
                 mar = rv_continuous.pdf(x, **args)
                 plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
+            elif s.get_prob_type() == 'gmm':
+                means, covs,  cluster_weights = s.get_prob_parameters()
+                mar = np.zeros(x.shape)
+                num_clusters = len(cluster_weights)
+                for j in range(num_clusters):
+                    mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i]**0.5)) * cluster_weights[j]
+                plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
         if s.get_prob_type_init() is not None:
             if s.get_prob_type_init() == 'kde':
                 param_marginals, cluster_weights = s.get_prob_parameters_init()
@@ -616,7 +623,14 @@ def plot_prob_marginal(sets, i, label=None, sets_label=None):
                 rv_continuous = getattr(stats, rv[i][0])
                 args = rv[i][1]
                 mar = rv_continuous.pdf(x, **args)
-                plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4, linestyle='dashed')
+                plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
+            elif s.get_prob_type_init() == 'gmm':
+                means, covs,  cluster_weights = s.get_prob_parameters_init()
+                mar = np.zeros(x.shape)
+                num_clusters = len(cluster_weights)
+                for j in range(num_clusters):
+                    mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i] ** 0.5)) * cluster_weights[j]
+                plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
 
     plt.title('Densities for parameter ' + label, fontsize=16)
     plt.legend(fontsize=20)
