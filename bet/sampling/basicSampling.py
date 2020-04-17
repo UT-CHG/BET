@@ -122,7 +122,7 @@ def random_sample_set(rv, input_obj, num_samples, globalize=True):
     dim = input_sample_set.get_dim()
 
     if type(rv) is str:
-        rv = [rv, {}] * dim
+        rv = [[rv, {}]] * dim
     elif type(rv) in (list, tuple):
         if len(rv) == 2 and type(rv[0]) is str and type(rv[1]) is dict:
             rv = [rv] * dim
@@ -185,6 +185,8 @@ def lhs_sample_set(input_obj, num_samples, criterion, globalize=True):
         input_sample_set.local_to_global()
     else:
         input_sample_set._values = None
+    input_sample_set.set_prob_type_init("lhs")
+    input_sample_set.set_prob_parameters_init(criterion)
 
     return input_sample_set
 
@@ -341,6 +343,8 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
 
     input_sample_set.set_values(input_values)
     input_sample_set.global_to_local()
+    input_sample_set.set_prob_type_init("grid")
+    input_sample_set.set_prob_parameters_init(num_samples_per_dim)
 
     return input_sample_set
 

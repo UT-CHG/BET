@@ -319,6 +319,61 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         loaded_set.local_to_global()
 '''
 
+def evaluate_pdf(prob_type, prob_parameters, vals):
+    dim = vals.shape[1]
+    if prob_type == "kde":
+        mar = np.ones((vals.shape[0], ))
+        for i in range(dim):
+            mar *= evaluate_pdf(prob_parameters, prob_parameters, vals, i)
+    elif prob_type == "rv":
+        mar = np.ones((vals.shape[0],))
+        for i in range(dim):
+            mar *= evaluate_pdf(prob_parameters, prob_parameters, vals, i)
+    elif prob_type == "gmm":
+        from scipy.stats import multivariate_normal
+        means, covs, cluster_weights = prob_parameters
+        mar = np.zeros((vals.shape[0],))
+        num_clusters = len(cluster_weights)
+        for i in range(num_clusters):
+            mar += cluster_weights[i] * multivariate_normal.pdf(vals, means[i], covs[i])
+    else:
+        raise wrong_input("This type of probability density is not yet supported.")
+
+
+def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
+    if len(vals.shape) == 2:
+        if vals.shape[1] == 1:
+            x = vals[:, 0]
+        else:
+            x = vals[:, i]
+    elif len(vals.shape) == 1:
+        x = vals
+
+    if prob_type == "kde":
+        param_marginals, cluster_weights = prob_parameters
+        num_clusters = len(cluster_weights)
+        mar = np.zeros(x.shape[0])
+        for j in range(num_clusters):
+            mar += param_marginals[i][j](x) * cluster_weights[j]
+        return mar
+    elif prob_type == "rv":
+        import scipy.stats as stats
+        rv = prob_parameters
+        rv_continuous = getattr(stats, rv[i][0])
+        args = rv[i][1]
+        mar = rv_continuous.pdf(x, **args)
+        return mar
+    elif prob_type == 'gmm':
+        import scipy.stats as stats
+        means, covs, cluster_weights = prob_parameters
+        mar = np.zeros(x.shape)
+        num_clusters = len(cluster_weights)
+        for j in range(num_clusters):
+            mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i] ** 0.5)) * cluster_weights[j]
+        return mar
+    else:
+        raise wrong_input("This type of probability density is not yet supported.")
+
 
 class sample_set_base(object):
     """
@@ -996,6 +1051,24 @@ class sample_set_base(object):
 
         """
         return self._densities
+
+    def pdf(self, vals):
+        if vals.shape[1] != self._dim:
+            raise dim_not_matching("Array does not have the correct dimension.")
+
+        return evaluate_pdf(self._prob_type, self._prob_parameters, vals)
+
+    def pdf_init(self, vals):
+        if vals.shape[1] != self._dim:
+            raise dim_not_matching("Array does not have the correct dimension.")
+
+        return evaluate_pdf(self._prob_type_init, self._prob_parameters_init, vals)
+
+    def marginal_pdf(self, vals, i):
+        return evaluate_pdf_marginal(self._prob_type, self._prob_parameters, vals, i)
+
+    def marginal_pdf_init(self, vals, i):
+        return evaluate_pdf_marginal(self._prob_type_init, self._prob_parameters_init, vals, i)
 
     def set_jacobians(self, jacobians):
         """

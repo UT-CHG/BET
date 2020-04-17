@@ -317,14 +317,15 @@ def dc_inverse_random_variable(discretization, rv, num_reweighted=10000, bw_meth
     import scipy.stats as stats
 
     dim = discretization.get_input_sample_set().get_dim()
-
     if type(rv) is str:
-        rv = [rv] * dim
+        rv = [[rv, {}]] * dim
     elif type(rv) in (list, tuple):
-        if len(rv) != dim:
-            raise sample.dim_not_matching("rv has fewer entries than the dimension.")
+        if len(rv) == 2 and type(rv[0]) is str and type(rv[1]) is dict:
+            rv = [rv] * dim
+        elif len(rv) != dim:
+            raise bet.sample.dim_not_matching("rv has fewer entries than the dimension.")
     else:
-        raise sample.wrong_input("rv must be a string, list, or tuple.")
+        raise bet.sample.wrong_input("rv must be a string, list, or tuple.")
 
     predict_set, obs_set, num_clusters = generate_output_kdes(discretization, bw_method)
     predict_kdes = predict_set.get_kdes()
@@ -363,9 +364,9 @@ def dc_inverse_random_variable(discretization, rv, num_reweighted=10000, bw_meth
 
     prob_params = []
     for i in range(dim):
-        pp = [rv[i], {}]
-        rv_continuous = getattr(stats, rv[i])
-        A = rv_continuous.fit(reweighted_vals[:, i])
+        pp = [rv[i][0], {}]
+        rv_continuous = getattr(stats, rv[i][0])
+        A = rv_continuous.fit(reweighted_vals[:, i], **rv[i][1])
         if len(A) == 2:
             pp[1]['loc'] = A[0]
             pp[1]['scale'] = A[1]
@@ -384,4 +385,5 @@ def dc_inverse_random_variable(discretization, rv, num_reweighted=10000, bw_meth
     discretization.get_input_sample_set().set_prob_type('rv')
     discretization.get_input_sample_set().set_prob_parameters(prob_params)
     print('Random variable fits: ', prob_params)
+    print('Diagnostic for clusters [sample average of ratios in each cluster]: ', rs)
     return prob_params

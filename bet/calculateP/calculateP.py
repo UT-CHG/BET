@@ -62,6 +62,7 @@ def prob_on_emulated_samples(discretization, globalize=True):
                     _probabilities[i] / Itemp_sum
 
     discretization._emulated_input_sample_set._probabilities_local = P
+    discretization._emulated_output_sample_set.set_prob_type('voronoi')
     if globalize:
         discretization._emulated_input_sample_set.local_to_global()
     pass
@@ -106,6 +107,8 @@ def prob(discretization, globalize=True):
         discretization._input_sample_set._probabilities = util.\
             get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
+    discretization._input_sample_set.set_prob_type('voronoi')
+
 
 
 def prob_with_emulated_volumes(discretization):
@@ -203,6 +206,7 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
 
     # Set probabilities
     set_new.set_probabilities(prob_new)
+    set_new.set_prob_type('voronoi')
     return prob_new
 
 
@@ -245,6 +249,7 @@ def prob_from_sample_set(set_old, set_new):
 
     # Set probabilities
     set_new.set_probabilities(prob_new)
+    set_new.set_prob_type('voronoi')
     return prob_new
 
 
@@ -295,4 +300,5 @@ def prob_from_discretization_input(disc, set_new):
 
     # Set probabilities
     set_new.set_probabilities(prob_new)
+    set_new.set_prob_type('voronoi')
     return prob_new
