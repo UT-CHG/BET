@@ -64,7 +64,8 @@ import scipy.spatial.distance as ds
 #     return sample_set
 
 class compare:
-    def __init__(self, set1, set2=None, input=True, init='left'):
+    def __init__(self, set1, set2, compare_set=10000, compare_factor=0.0, inputs=True,
+                 set1_init=False, set2_init=False):
         """
 
         :param set1:
@@ -73,40 +74,35 @@ class compare:
         :type set2: :class:`bet.sample.sample_set`
         :param input:
         """
+        self.pdfs1 = None
+        self.pdfs2 = None
+        self.compare_vals = None
+        self.set1_init = set1_init
+        self.set2_init = set2_init
+        self.pdfs_zero = None
         if isinstance(set1, samp.discretization):
-            if input:
+            if inputs:
                 set1 = set1.get_input_sample_set()
             else:
                 set1 = set1.get_output_sample_set()
 
         if isinstance(set2, samp.discretization):
-            if input:
+            if inputs:
                 set2 = set2.get_input_sample_set()
             else:
                 set2 = set2.get_output_sample_set()
 
-        if isinstance(set1, samp.sample_set):
-            if set2 is None:
-                if init == 'left':
-                    self.set1 = set1
-                    self.set2 = set1
-                    self.init = 'left'
-                else:
-                    self.set1 = set1
-                    self.set2 = set1
-                    self.init = 'right'
-            else:
-                if isinstance(set2, samp.sample_set):
-                    self.set1 = set1
-                    self.set2 = set2
-                    self.init = None
+        if isinstance(set1, samp.sample_set) and isinstance(set2, samp.sample_set):
+            self.set1 = set1
+            self.set2 = set2
         else:
             raise samp.wrong_input("Inputs are not of valid form.")
 
         if self.set1.get_dim() != self.set2.get_dim():
             raise samp.dim_not_matching("The sets do not have the same dimension.")
+        self.set_compare_set(compare_set, compare_factor)
 
-    def set_compare_set(self, compare_set):
+    def set_compare_set(self, compare_set, compare_factor):
         """
 
         :param compare_set:
@@ -124,19 +120,36 @@ class compare:
                 self.compare_vals = compare_set
             else:
                 raise samp.dim_not_matching("The sets do not have the same dimension.")
+        elif isinstance(compare_set, int):
+            combined = np.vstack((self.set1.get_values(), self.set2.get_values()))
+            mins = np.min(combined, axis=0)
+            maxes = np.max(combined, axis=0)
+            rv = []
+            for i in range(self.set1.get_dim()):
+                rv_loc = ['uniform', {}]
+                delt = compare_factor * (maxes[i] - mins[i])
+                rv_loc[1]['loc'] = mins[i] - delt
+                rv_loc[1]['scale'] = maxes[i] - mins[i] + delt
+            unif_set = bsam.random_sample_set(rv=rv_loc, input_obj=self.set1.get_dim(), num_samples=compare_set)
+            self.compare_vals = unif_set.get_values()
         else:
             raise samp.wrong_input("Inputs are not of valid form.")
 
     def evaluate_pdfs(self):
-        if init is None:
-            self.pdfs1 = self.set1.pdf(self.compare_vals)
-            self.pdfs2 = self.set2.pdf(self.compare_vals)
-        elif init == 'left':
+        if self.set1_init:
             self.pdfs1 = self.set1.pdf_init(self.compare_vals)
-            self.pdfs2 = self.set1.pdf(self.compare_vals)
-        elif init == 'right':
-            self.pdfs2 = self.set1.pdf_init(self.compare_vals)
+        else:
             self.pdfs1 = self.set1.pdf(self.compare_vals)
+
+        if self.set2_init:
+            self.pdfs2 = self.set2.pdf_init(self.compare_vals)
+        else:
+            self.pdfs2 = self.set2.pdf(self.compare_vals)
+
+        sup1 = np.equal(self.pdfs1, 0.0)
+        sup2 = np.equal(self.pdfs2, 0.0)
+        self.pdfs_zero = np.sum(np.logical_and(sup1, sup2))
+
 
     def distance(self, functional='tv', **kwargs):
         r"""
@@ -153,31 +166,26 @@ class compare:
             sample sets, ideally a measure of similarity, a distance, a metric.
 
         """
-        left_den, right_den = self.get_left_densities(), self.get_right_densities()
-        if left_den is None:
-            # logging.log(20,"Left density missing. Estimating now.")
-            left_den = self.estimate_densities_left()
-        if right_den is None:
-            # logging.log(20,"Right density missing. Estimating now.")
-            right_den = self.estimate_densities_right()
+        if self.pdfs1 is None or self.pdfs2 is None:
+            self.evaluate_pdfs()
 
         if functional in ['tv', 'totvar',
                           'total variation', 'total-variation', '1']:
-            dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
+            dist = ds.minkowski(self.pdfs1, self.pdfs2, 1, w=0.5, **kwargs)
         elif functional in ['mink', 'minkowski']:
-            dist = ds.minkowski(left_den, right_den, **kwargs)
+            dist = ds.minkowski(self.pdfs1, self.pdfs2, **kwargs)
         elif functional in ['norm']:
-            dist = ds.norm(left_den - right_den, **kwargs)
+            dist = ds.norm(self.pdfs1 - self.pdfs2, **kwargs)
         elif functional in ['euclidean', '2-norm', '2']:
-            dist = ds.minkowski(left_den, right_den, 2, **kwargs)
+            dist = ds.minkowski(self.pdfs1, self.pdfs2, 2, **kwargs)
         elif functional in ['sqhell', 'sqhellinger']:
-            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den)) / 2.0
+            dist = ds.sqeuclidean(np.sqrt(self.pdfs1), np.sqrt(self.pdfs2)) / 2.0
         elif functional in ['hell', 'hellinger']:
-            return np.sqrt(self.value('sqhell'))
+            return np.sqrt(self.distance('sqhell'))
         else:
-            dist = functional(left_den, right_den, **kwargs)
+            dist = functional(self.pdfs1, self.pdfs2, **kwargs)
 
-        return dist / self._comparison_sample_set.check_num()
+        return dist / (len(self.pdfs1) - self.pdfs_zero)
 
 
 
@@ -1094,7 +1102,7 @@ class comparison_old(object):
         return dist / self._comparison_sample_set.check_num()
 
 
-def compare(left_set, right_set, num_mc_points=1000, choice='input'):
+def compare_func_old(left_set, right_set, num_mc_points=1000, choice='input'):
     r"""
     This is a convience function to quickly instantiate and return
     a `~bet.postProcess.comparison` object.

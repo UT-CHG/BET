@@ -325,12 +325,12 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
     if prob_type == "kde":
         mar = np.ones((vals.shape[0], ))
         for i in range(dim):
-            mar *= evaluate_pdf_marginal(prob_parameters, prob_parameters, vals, i)
+            mar *= evaluate_pdf_marginal(prob_type, prob_parameters, vals, i)
         return mar
     elif prob_type == "rv":
         mar = np.ones((vals.shape[0],))
         for i in range(dim):
-            mar *= evaluate_pdf_marginal(prob_parameters, prob_parameters, vals, i)
+            mar *= evaluate_pdf_marginal(prob_type, prob_parameters, vals, i)
         return mar
     elif prob_type == "gmm":
         from scipy.stats import multivariate_normal
