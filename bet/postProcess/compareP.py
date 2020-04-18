@@ -2,68 +2,190 @@ import numpy as np
 import logging
 import bet.util as util
 import bet.sample as samp
+import bet.sample
 import bet.sampling.basicSampling as bsam
 import scipy.spatial.distance as ds
 
 
-def density_estimate(sample_set, ptr=None):
-    r"""
-    Evaluate an approximate density on a comparison sample set into
-    which the pointer variable ``ptr`` points. This function returns
-    the density estimates for a sample set object and write it to the
-    ``_comparison_densities`` attribute inside of ``sample_set``
+# def density_estimate(sample_set, ptr=None):
+#     r"""
+#     Evaluate an approximate density on a comparison sample set into
+#     which the pointer variable ``ptr`` points. This function returns
+#     the density estimates for a sample set object and write it to the
+#     ``_comparison_densities`` attribute inside of ``sample_set``
+#
+#     :param sample_set: sample set with existing probabilities stored
+#     :type sample_set: :class:`bet.sample.sample_set_base`
+#     :param ptr: pointer to a reference set against which densities are
+#         being compared. If ``None``, use samples as they are.
+#     :type ptr: list, tuple, or ``np.ndarray``
+#
+#     :rtype: :class:`bet.sample.sample_set_base`
+#     :returns: sample set object with attribute ``_comparison_densities``
+#
+#     """
+#     if sample_set is None:
+#         raise AttributeError("Required: sample_set object")
+#     elif sample_set._densities is not None:
+#         # this is our way of checking if we used sampling-approach
+#         # if already computed, avoid re-computation.
+#         if ptr is not None:
+#             den = sample_set._densities[ptr]
+#         else:
+#             den = sample_set._densities
+#         sample_set._comparison_densities = den
+#     else:  # missing densities, use probabilities
+#         if sample_set._probabilities is None:
+#             if sample_set._probabilities_local is not None:
+#                 sample_set.local_to_global()
+#             else:
+#                 msg = "Required: _probabilities in sample_set"
+#                 msg += "to construct density estimates."
+#                 raise AttributeError(msg)
+#         if sample_set._volumes is None:
+#             msg = "Required: _volumes in sample_set"
+#             msg += "to construct density estimates."
+#             raise AttributeError(msg)
+#         if sample_set._probabilities_local is None:
+#             sample_set.global_to_local()
+#
+#         if ptr is None:
+#             den = np.divide(sample_set._probabilities.ravel(),
+#                             sample_set._volumes.ravel())
+#         else:
+#             den = np.divide(sample_set._probabilities[ptr].ravel(),
+#                             sample_set._volumes[ptr].ravel())
+#         sample_set._comparison_densities = den
+#     if ptr is None:  # create pointer to density estimates to avoid re-run
+#         sample_set._densities = sample_set._comparison_densities
+#     else:
+#         sample_set._prob = sample_set._probabilities[ptr].ravel()
+#     sample_set.local_to_global()
+#     return sample_set
 
-    :param sample_set: sample set with existing probabilities stored
-    :type sample_set: :class:`bet.sample.sample_set_base`
-    :param ptr: pointer to a reference set against which densities are
-        being compared. If ``None``, use samples as they are.
-    :type ptr: list, tuple, or ``np.ndarray``
+class compare:
+    def __init__(self, set1, set2=None, input=True, init='left'):
+        """
 
-    :rtype: :class:`bet.sample.sample_set_base`
-    :returns: sample set object with attribute ``_comparison_densities``
-
-    """
-    if sample_set is None:
-        raise AttributeError("Required: sample_set object")
-    elif sample_set._densities is not None:
-        # this is our way of checking if we used sampling-approach
-        # if already computed, avoid re-computation.
-        if ptr is not None:
-            den = sample_set._densities[ptr]
-        else:
-            den = sample_set._densities
-        sample_set._comparison_densities = den
-    else:  # missing densities, use probabilities
-        if sample_set._probabilities is None:
-            if sample_set._probabilities_local is not None:
-                sample_set.local_to_global()
+        :param set1:
+        :type set1: :class:`bet.sample.sample_set`
+        :param set2:
+        :type set2: :class:`bet.sample.sample_set`
+        :param input:
+        """
+        if isinstance(set1, samp.discretization):
+            if input:
+                set1 = set1.get_input_sample_set()
             else:
-                msg = "Required: _probabilities in sample_set"
-                msg += "to construct density estimates."
-                raise AttributeError(msg)
-        if sample_set._volumes is None:
-            msg = "Required: _volumes in sample_set"
-            msg += "to construct density estimates."
-            raise AttributeError(msg)
-        if sample_set._probabilities_local is None:
-            sample_set.global_to_local()
+                set1 = set1.get_output_sample_set()
 
-        if ptr is None:
-            den = np.divide(sample_set._probabilities.ravel(),
-                            sample_set._volumes.ravel())
+        if isinstance(set2, samp.discretization):
+            if input:
+                set2 = set2.get_input_sample_set()
+            else:
+                set2 = set2.get_output_sample_set()
+
+        if isinstance(set1, samp.sample_set):
+            if set2 is None:
+                if init == 'left':
+                    self.set1 = set1
+                    self.set2 = set1
+                    self.init = 'left'
+                else:
+                    self.set1 = set1
+                    self.set2 = set1
+                    self.init = 'right'
+            else:
+                if isinstance(set2, samp.sample_set):
+                    self.set1 = set1
+                    self.set2 = set2
+                    self.init = None
         else:
-            den = np.divide(sample_set._probabilities[ptr].ravel(),
-                            sample_set._volumes[ptr].ravel())
-        sample_set._comparison_densities = den
-    if ptr is None:  # create pointer to density estimates to avoid re-run
-        sample_set._densities = sample_set._comparison_densities
-    else:
-        sample_set._prob = sample_set._probabilities[ptr].ravel()
-    sample_set.local_to_global()
-    return sample_set
+            raise samp.wrong_input("Inputs are not of valid form.")
+
+        if self.set1.get_dim() != self.set2.get_dim():
+            raise samp.dim_not_matching("The sets do not have the same dimension.")
+
+    def set_compare_set(self, compare_set):
+        """
+
+        :param compare_set:
+        :type compare_set: :class:`bet.sample.sample_set`
+        :return:
+        """
+        if isinstance(compare_set, samp.sample_set):
+            if compare_set.get_dim() == self.set1.get_dim():
+                compare_set.local_to_global()
+                self.compare_vals = compare_set.get_values()
+            else:
+                raise samp.dim_not_matching("The sets do not have the same dimension.")
+        elif isinstance(compare_set, np.ndarray):
+            if compare_set.shape[1] == self.set1.get_dim():
+                self.compare_vals = compare_set
+            else:
+                raise samp.dim_not_matching("The sets do not have the same dimension.")
+        else:
+            raise samp.wrong_input("Inputs are not of valid form.")
+
+    def evaluate_pdfs(self):
+        if init is None:
+            self.pdfs1 = self.set1.pdf(self.compare_vals)
+            self.pdfs2 = self.set2.pdf(self.compare_vals)
+        elif init == 'left':
+            self.pdfs1 = self.set1.pdf_init(self.compare_vals)
+            self.pdfs2 = self.set1.pdf(self.compare_vals)
+        elif init == 'right':
+            self.pdfs2 = self.set1.pdf_init(self.compare_vals)
+            self.pdfs1 = self.set1.pdf(self.compare_vals)
+
+    def distance(self, functional='tv', **kwargs):
+        r"""
+        Compute value capturing some meaure of similarity using the
+        evaluated densities on a shared comparison set.
+        If either density evaluation is missing, re-compute it.
+
+        :param funtional: a function representing a measure of similarity
+        :type functional: method that takes in two lists/arrays and returns
+            a scalar value (measure of similarity)
+
+        :rtype: float
+        :returns: value representing a measurement between the left and right
+            sample sets, ideally a measure of similarity, a distance, a metric.
+
+        """
+        left_den, right_den = self.get_left_densities(), self.get_right_densities()
+        if left_den is None:
+            # logging.log(20,"Left density missing. Estimating now.")
+            left_den = self.estimate_densities_left()
+        if right_den is None:
+            # logging.log(20,"Right density missing. Estimating now.")
+            right_den = self.estimate_densities_right()
+
+        if functional in ['tv', 'totvar',
+                          'total variation', 'total-variation', '1']:
+            dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
+        elif functional in ['mink', 'minkowski']:
+            dist = ds.minkowski(left_den, right_den, **kwargs)
+        elif functional in ['norm']:
+            dist = ds.norm(left_den - right_den, **kwargs)
+        elif functional in ['euclidean', '2-norm', '2']:
+            dist = ds.minkowski(left_den, right_den, 2, **kwargs)
+        elif functional in ['sqhell', 'sqhellinger']:
+            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den)) / 2.0
+        elif functional in ['hell', 'hellinger']:
+            return np.sqrt(self.value('sqhell'))
+        else:
+            dist = functional(left_den, right_den, **kwargs)
+
+        return dist / self._comparison_sample_set.check_num()
 
 
-class comparison(object):
+
+
+
+
+
+class comparison_old(object):
     """
     This class allows for analytically-sound comparisons between
     probability measures defined on different sigma-algebras. In order

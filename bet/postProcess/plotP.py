@@ -558,7 +558,7 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
     comm.barrier()
 
 
-def plot_prob_marginal(sets, i, label=None, sets_label=None):
+def plot_prob_marginal(sets, i, label=None, sets_label=None, initials=True):
     if isinstance(sets, sample.sample_set):
         sets = [sets]
 
@@ -588,6 +588,14 @@ def plot_prob_marginal(sets, i, label=None, sets_label=None):
 
     delt = 0.25 * (x_max - x_min)
     x = np.linspace(x_min - delt, x_max + delt, 100)
+    for k, s in enumerate(sets):
+        if s.get_prob_type_init() is not None:
+            mar = s.marginal_pdf_init(x, i)
+            plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
+        if s.get_prob_type() is not None:
+            mar = s.marginal_pdf(x, i)
+            plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
+    """
     for k, s in enumerate(sets):
         if s.get_prob_type() is not None:
             if s.get_prob_type() == 'kde':
@@ -631,6 +639,7 @@ def plot_prob_marginal(sets, i, label=None, sets_label=None):
                 for j in range(num_clusters):
                     mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i] ** 0.5)) * cluster_weights[j]
                 plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
+    """
 
     plt.title('Densities for parameter ' + label, fontsize=16)
     plt.legend(fontsize=20)

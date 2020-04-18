@@ -319,16 +319,19 @@ def load_sample_set_parallel(file_name, sample_set_name=None):
         loaded_set.local_to_global()
 '''
 
+
 def evaluate_pdf(prob_type, prob_parameters, vals):
     dim = vals.shape[1]
     if prob_type == "kde":
         mar = np.ones((vals.shape[0], ))
         for i in range(dim):
-            mar *= evaluate_pdf(prob_parameters, prob_parameters, vals, i)
+            mar *= evaluate_pdf_marginal(prob_parameters, prob_parameters, vals, i)
+        return mar
     elif prob_type == "rv":
         mar = np.ones((vals.shape[0],))
         for i in range(dim):
-            mar *= evaluate_pdf(prob_parameters, prob_parameters, vals, i)
+            mar *= evaluate_pdf_marginal(prob_parameters, prob_parameters, vals, i)
+        return mar
     elif prob_type == "gmm":
         from scipy.stats import multivariate_normal
         means, covs, cluster_weights = prob_parameters
@@ -336,6 +339,10 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
         num_clusters = len(cluster_weights)
         for i in range(num_clusters):
             mar += cluster_weights[i] * multivariate_normal.pdf(vals, means[i], covs[i])
+        return mar
+    elif prob_type == "voronoi":
+        _, pt = prob_parameters.query(vals)
+        return prob_parameters.get_densities()[pt]
     else:
         raise wrong_input("This type of probability density is not yet supported.")
 
@@ -371,6 +378,12 @@ def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
         for j in range(num_clusters):
             mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i] ** 0.5)) * cluster_weights[j]
         return mar
+    elif prob_type == 'voronoi':
+        from scipy.stats import gaussian_kde
+        logging.warning("Using kernel density estimate to estimate marginal PDF.")
+        sam_set = prob_parameters
+        kde = gaussian_kde(sam_set.get_values()[:, i], weights=sam_set.get_probabilities())
+        return kde(vals.T)
     else:
         raise wrong_input("This type of probability density is not yet supported.")
 
@@ -1056,19 +1069,42 @@ class sample_set_base(object):
         if vals.shape[1] != self._dim:
             raise dim_not_matching("Array does not have the correct dimension.")
 
-        return evaluate_pdf(self._prob_type, self._prob_parameters, vals)
+        if self._prob_type == 'voronoi':
+            if self._probabilities_local is None and self._probabilities is None:
+                raise wrong_input("Missing probabilities for Voronoi cells.")
+            if self._densities_local is not None:
+                if self._volumes_local is None:
+                    logging.warning("Using Monte Carlo Assumption to Estimate Volumes.")
+                    self.estimate_volume_mc(globalize=False)
+                self.set_densities_local(self._probabilities_local/self._volumes_local)
+            self.local_to_global()
+            return evaluate_pdf(self._prob_type, self, vals)
+        else:
+            return evaluate_pdf(self._prob_type, self._prob_parameters, vals)
 
     def pdf_init(self, vals):
         if vals.shape[1] != self._dim:
             raise dim_not_matching("Array does not have the correct dimension.")
-
-        return evaluate_pdf(self._prob_type_init, self._prob_parameters_init, vals)
+        if self._prob_type_init == "voronoi":
+            raise wrong_input("Voronoi probability not valid for initial PDF.")
+        else:
+            return evaluate_pdf(self._prob_type_init, self._prob_parameters_init, vals)
 
     def marginal_pdf(self, vals, i):
-        return evaluate_pdf_marginal(self._prob_type, self._prob_parameters, vals, i)
+        if self._prob_type == 'voronoi':
+            if self._probabilities_local is None and self._probabilities is None:
+                raise wrong_input("Missing probabilities for Voronoi cells.")
+            if self._probabilities is None:
+                self.local_to_global()
+            return evaluate_pdf_marginal(self._prob_type, self, vals, i)
+        else:
+            return evaluate_pdf_marginal(self._prob_type, self._prob_parameters, vals, i)
 
     def marginal_pdf_init(self, vals, i):
-        return evaluate_pdf_marginal(self._prob_type_init, self._prob_parameters_init, vals, i)
+        if self._prob_type_init == "voronoi":
+            raise wrong_input("Voronoi probability not valid for initial PDF.")
+        else:
+            return evaluate_pdf_marginal(self._prob_type_init, self._prob_parameters_init, vals, i)
 
     def set_jacobians(self, jacobians):
         """
@@ -1447,12 +1483,7 @@ class sample_set_base(object):
         """
         return self._values_local.shape
 
-    def calculate_volumes(self):
-        """
 
-        Calculate the volumes of cells. Depends on sample set type.
-
-        """
 
 
 # def save_discretization(save_disc, file_name, discretization_name=None,
