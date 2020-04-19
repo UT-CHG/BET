@@ -64,8 +64,7 @@ import scipy.spatial.distance as ds
 #     return sample_set
 
 class compare:
-    def __init__(self, set1, set2, compare_set=10000, compare_factor=0.0, inputs=True,
-                 set1_init=False, set2_init=False):
+    def __init__(self, set1, set2, inputs=True, set1_init=False, set2_init=False):
         """
 
         :param set1:
@@ -100,9 +99,8 @@ class compare:
 
         if self.set1.get_dim() != self.set2.get_dim():
             raise samp.dim_not_matching("The sets do not have the same dimension.")
-        self.set_compare_set(compare_set, compare_factor)
 
-    def set_compare_set(self, compare_set, compare_factor):
+    def set_compare_set(self, compare_set=10000, compare_factor=0.0):
         """
 
         :param compare_set:
@@ -150,7 +148,6 @@ class compare:
         sup2 = np.equal(self.pdfs2, 0.0)
         self.pdfs_zero = np.sum(np.logical_and(sup1, sup2))
 
-
     def distance(self, functional='tv', **kwargs):
         r"""
         Compute value capturing some meaure of similarity using the
@@ -166,6 +163,9 @@ class compare:
             sample sets, ideally a measure of similarity, a distance, a metric.
 
         """
+
+        if self.compare_vals is None:
+            raise samp.wrong_input("Compare set needed.")
         if self.pdfs1 is None or self.pdfs2 is None:
             self.evaluate_pdfs()
 
@@ -187,10 +187,112 @@ class compare:
 
         return dist / (len(self.pdfs1) - self.pdfs_zero)
 
+    def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0,
+                          functional='tv', **kwargs):
+        x = None
+        if interval is None:
+            if self.set1.get_domain() is not None and self.set2.get_domain() is not None:
+                min1 = min(self.set1.get_domain()[i, 0], self.set1.get_domain()[i, 0])
+                max1 = min(self.set1.get_domain()[i, 1], self.set1.get_domain()[i, 1])
+                if min1 != -np.inf and max1 != np.inf:
+                    delt = compare_factor * (max1 - min1)
+                    x = np.linspace(min1-delt, max1+delt, num_points)
+            if x is None:
+                combined = np.vstack((self.set1.get_values()[:, i], self.set2.get_values()[:, i]))
+                min1 = np.min(combined)
+                max1 = np.max(combined)
+                delt = compare_factor * (max1 - min1)
+                x = np.linspace(min1 - delt, max1 + delt, num_points)
+        else:
+            x = np.linspace(interval[0], interval[1], num_points)
 
+        if self.set1_init:
+            pdfs1 = self.set1.marginal_pdf_init(x, i)
+        else:
+            pdfs1 = self.set1.marginal_pdf(x, i)
 
+        if self.set2_init:
+            pdfs2 = self.set2.marginal_pdf_init(x, i)
+        else:
+            pdfs2 = self.set2.marginal_pdf(x, i)
 
+        sup1 = np.equal(pdfs1, 0.0)
+        sup2 = np.equal(pdfs2, 0.0)
+        pdfs_zero = np.sum(np.logical_and(sup1, sup2))
 
+        if functional in ['tv', 'totvar',
+                          'total variation', 'total-variation', '1']:
+            dist = ds.minkowski(pdfs1, pdfs2, 1, w=0.5, **kwargs)
+        elif functional in ['mink', 'minkowski']:
+            dist = ds.minkowski(pdfs1, pdfs2, **kwargs)
+        elif functional in ['norm']:
+            dist = ds.norm(pdfs1 - pdfs2, **kwargs)
+        elif functional in ['euclidean', '2-norm', '2']:
+            dist = ds.minkowski(pdfs1, pdfs2, 2, **kwargs)
+        elif functional in ['sqhell', 'sqhellinger']:
+            dist = ds.sqeuclidean(np.sqrt(pdfs1), np.sqrt(pdfs2)) / 2.0
+        elif functional in ['hell', 'hellinger']:
+            return np.sqrt(self.distance_marginal(i, interval, num_points, compare_factor, 'sqhell',
+                                                  **kwargs))
+        else:
+            dist = functional(pdfs1, pdfs2, **kwargs)
+
+        return (dist / (len(pdfs1) - pdfs_zero)) * \
+               ((num_points - pdfs_zero)/num_points) * (x[-1] - x[0])
+
+    def distance_marginal_quad(self, i, interval=None, compare_factor=0.0,
+                               functional='tv', **kwargs):
+        from scipy.integrate import quadrature
+        if interval is None:
+            if self.set1.get_domain() is not None and self.set2.get_domain() is not None:
+                min1 = min(self.set1.get_domain()[i, 0], self.set1.get_domain()[i, 0])
+                max1 = min(self.set1.get_domain()[i, 1], self.set1.get_domain()[i, 1])
+                if min1 != -np.inf and max1 != np.inf:
+                    delt = compare_factor * (max1 - min1)
+                    interval = [min1-delt, max1 + delt]
+            if interval is None:
+                combined = np.vstack((self.set1.get_values()[:, i], self.set2.get_values()[:, i]))
+                min1 = np.min(combined)
+                max1 = np.max(combined)
+                delt = compare_factor * (max1 - min1)
+                interval = [min1 - delt, max1 + delt]
+                
+        if self.set1_init:
+            pdf1 = self.set1.marginal_pdf_init
+        else:
+            pdf1 = self.set1.marginal_pdf
+
+        if self.set2_init:
+            pdf2 = self.set2.marginal_pdf_init
+        else:
+            pdf2 = self.set2.marginal_pdf
+
+        if functional in ['tv', 'totvar',
+                          'total variation', 'total-variation', '1']:
+            def error(x):
+                return np.abs(pdf1(x, i) - pdf2(x, i))
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['norm']:
+            def error(x):
+                return pdf1(x, i) - pdf2(x, i)
+
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['sqhell', 'sqhellinger']:
+            def error(x):
+                return 0.5 * (np.sqrt(pdf1(x, i)) - np.sqrt(pdf2(x, i)))**2
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['hell', 'hellinger']:
+            return np.sqrt(self.distance_marginal_quad(i, interval, compare_factor=0,
+                                                       functional="sqhell", **kwargs))
+        elif functional in ['kl', 'k-l', 'kullback-leibler']:
+            def error(x):
+                return pdf1(x, i) * np.log(pdf1(x, i)/pdf2(x, i))
+
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        else:
+            def error(x):
+                return functional(pdf1(x, i), pdf2(x, i))
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
 
 
 class comparison_old(object):
