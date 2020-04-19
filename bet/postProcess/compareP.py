@@ -272,6 +272,10 @@ class compare:
             def error(x):
                 return np.abs(pdf1(x, i) - pdf2(x, i))
             return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['euclidean', '2-norm', '2']:
+            def error(x):
+                return (pdf1(x, i) - pdf2(x, i))**2
+            return (quadrature(error, interval[0], interval[1], **kwargs)[0])**0.5
         elif functional in ['norm']:
             def error(x):
                 return pdf1(x, i) - pdf2(x, i)
