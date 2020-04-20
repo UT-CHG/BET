@@ -1072,7 +1072,7 @@ class sample_set_base(object):
         if self._prob_type == 'voronoi':
             if self._probabilities_local is None and self._probabilities is None:
                 raise wrong_input("Missing probabilities for Voronoi cells.")
-            if self._densities_local is not None:
+            if self._densities_local is None:
                 if self._volumes_local is None:
                     logging.warning("Using Monte Carlo Assumption to Estimate Volumes.")
                     self.estimate_volume_mc(globalize=False)

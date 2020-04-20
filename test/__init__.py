@@ -6,4 +6,4 @@ structure mirrors the ``bet`` package structure.
 """
 __all__ = ['test_calculateP', 'test_postProcess', 'test_sampling',
            'test_sensitivity', 'test_util', 'test_Comm', 'test_sample',
-           'test_surrogates']
+           'test_surrogates', 'problem_setups']
