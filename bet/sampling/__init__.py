@@ -7,7 +7,5 @@ This subpackage contains
     methods that interogates a model through an interface.
 * :class:`~bet.sampling.basicSampling.sampler` requests data(QoI) at a
     specified set of parameter samples.
-* :class:`bet.sampling.adaptiveSampling` inherits from
-    :class:`~bet.sampling.basicSampling` adaptively generates samples.
 """
-__all__ = ['basicSampling', 'adaptiveSampling', 'LpGeneralizedSamples', 'useLUQ']
+__all__ = ['basicSampling', 'LpGeneralizedSamples', 'useLUQ']

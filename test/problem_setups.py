@@ -48,6 +48,7 @@ def random_kde(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True,
         dataConsistent.dc_inverse_kde(disc1)
         return disc1, disc2
 
+
 def random_gmm(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True, level=1, rv2="norm"):
     if level == 1:
         return bsam.random_sample_set(rv, dim, num_samples, globalize)
