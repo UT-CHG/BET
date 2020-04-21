@@ -18,8 +18,8 @@ This module provides methods for calulating the probability measure
 import logging
 import numpy as np
 from bet.Comm import comm, MPI
-import bet.util as util
 import bet.sample as samp
+import bet.util as util
 
 
 def prob_on_emulated_samples(discretization, globalize=True):
@@ -62,7 +62,7 @@ def prob_on_emulated_samples(discretization, globalize=True):
                     _probabilities[i] / Itemp_sum
 
     discretization._emulated_input_sample_set._probabilities_local = P
-    discretization._emulated_output_sample_set.set_prob_type('voronoi')
+    discretization._emulated_input_sample_set.set_prob_type('voronoi')
     if globalize:
         discretization._emulated_input_sample_set.local_to_global()
     pass

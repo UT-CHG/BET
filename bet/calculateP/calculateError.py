@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 r"""
 This module provides methods for calulating error estimates of
@@ -51,7 +51,7 @@ def cell_connectivity_exact(disc):
         msg = "The argument must be of type bet.sample.discretization."
         raise wrong_argument_type(msg)
 
-    if not isinstance(disc._input_sample_set, samp.voronoi_sample_set):
+    if not isinstance(disc.get_input_sample_set(), samp.voronoi_sample_set):
         msg = "disc._input_sample_set must be of type bet.sample.voronoi"
         msg += "_sample_set defined with the 2-norm"
         raise wrong_argument_type(msg)

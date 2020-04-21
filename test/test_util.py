@@ -4,6 +4,7 @@
 This module contains unittests for :mod:`~bet.util`
 """
 
+import bet.sample
 import bet.util as util
 from bet.Comm import comm
 import numpy.testing as nptest

@@ -187,7 +187,7 @@ def loadmat(save_file, lb_model=None, hot_start=None, num_chains=None):
     return (new_sampler, disc, all_step_ratios, kern_old)
 
 
-class sampler(bsam.sampler_old):
+class sampler(bsam.sampler):
     """
     This class provides methods for adaptive sampling of parameter space to
     provide samples to be used by algorithms to solve inverse problems.
