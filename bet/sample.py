@@ -292,7 +292,7 @@ class sample_set_base(object):
                         return False
                 elif type(getattr(self, field)) is list:
                     compare = getattr(self, field) == getattr(other, field)
-                    if compare is bool:
+                    if type(compare) is bool:
                         if compare is False:
                             return False
                     else:
