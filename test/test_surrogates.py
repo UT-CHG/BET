@@ -51,8 +51,8 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         input_samples = sample.sample_set(3)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
         input_samples = sampler.random_sample_set(
-            'random', input_samples, num_samples=1E2)
-        disc = sampler.compute_QoI_and_create_discretization(input_samples,
+            'uniform', input_samples, num_samples=1E2)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
@@ -69,8 +69,8 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         """
         Test for piecewise constants.
         """
-        iss = bsam.random_sample_set('r',
-                                     self.sur.input_disc._input_sample_set._domain,
+        iss = bsam.random_sample_set('uniform',
+                                     self.sur.input_disc._input_sample_set.get_dim(),
                                      num_samples=30,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=0)
@@ -93,8 +93,8 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         """
         Test for piecewise linears.
         """
-        iss = bsam.random_sample_set('r',
-                                     self.sur.input_disc._input_sample_set._domain,
+        iss = bsam.random_sample_set('uniform',
+                                     self.sur.input_disc._input_sample_set.get_dim(),
                                      num_samples=20,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=1)
@@ -132,8 +132,8 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         input_samples = sample.sample_set(3)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
         input_samples = sampler.random_sample_set(
-            'random', input_samples, num_samples=1E2)
-        disc = sampler.compute_QoI_and_create_discretization(input_samples,
+            'uniform', input_samples, num_samples=1E2)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
@@ -149,8 +149,8 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         """
         Test for piecewise constants.
         """
-        iss = bsam.random_sample_set('r',
-                                     self.sur.input_disc._input_sample_set._domain,
+        iss = bsam.random_sample_set('uniform',
+                                     self.sur.input_disc._input_sample_set.get_dim(),
                                      num_samples=30,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=0)
@@ -174,8 +174,8 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         """
         Test for piecewise linears.
         """
-        iss = bsam.random_sample_set('r',
-                                     self.sur.input_disc._input_sample_set._domain,
+        iss = bsam.random_sample_set('uniform',
+                                     self.sur.input_disc._input_sample_set.get_dim(),
                                      num_samples=20,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=1)
@@ -214,8 +214,8 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         input_samples = sample.sample_set(1)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 1, axis=0))
         input_samples = sampler.random_sample_set(
-            'random', input_samples, num_samples=1E3)
-        disc = sampler.compute_QoI_and_create_discretization(input_samples,
+            'uniform', input_samples, num_samples=1E3)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
@@ -231,8 +231,8 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         """
         Test methods for order 0 polynomials.
         """
-        iss = bsam.random_sample_set('r',
-                                     self.sur.input_disc._input_sample_set._domain,
+        iss = bsam.random_sample_set('uniform',
+                                     self.sur.input_disc._input_sample_set.get_dim(),
                                      num_samples=20,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=0)
@@ -256,8 +256,8 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         """
         Test for piecewise linears.
         """
-        iss = bsam.random_sample_set('r',
-                                     self.sur.input_disc._input_sample_set._domain,
+        iss = bsam.random_sample_set('uniform',
+                                     self.sur.input_disc._input_sample_set.get_dim(),
                                      num_samples=20,
                                      globalize=False)
         sur_disc = self.sur.generate_for_input_set(iss, order=1)

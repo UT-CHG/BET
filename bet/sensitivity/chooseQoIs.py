@@ -9,6 +9,7 @@ from itertools import combinations
 import numpy as np
 from scipy import stats
 from bet.Comm import comm
+import bet.sample
 import bet.util as util
 
 
