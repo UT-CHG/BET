@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains data structure/storage classes for BET. Notably:
@@ -16,7 +16,6 @@ import numpy as np
 import math as math
 import numpy.linalg as linalg
 import scipy.spatial as spatial
-import scipy.io as sio
 import scipy.stats
 import bet
 from bet.Comm import comm, MPI
@@ -53,274 +52,20 @@ class wrong_input(Exception):
     Exception for when the input is of the wrong type.
     """
 
-'''
-def save_sample_set(save_set, file_name,
-                    sample_set_name=None, globalize=False):
-    """
-    Saves this :class:`bet.sample.sample_set` as a ``.mat`` file. Each
-    attribute is added to a dictionary of names and arrays which are then
-    saved to a MATLAB-style file.
-
-    :param save_set: sample set to save
-    :type save_set: :class:`bet.sample.sample_set_base`
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string sample_set_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.sample_set_base` objects to a single
-        ``.mat`` file
-    :param bool globalize: flag whether or not to globalize
-
-    :rtype: string
-    :returns: local file name
-
-    """
-    # create processor specific file name
-    if comm.size > 1 and not globalize:
-        local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank,
-                                                          os.path.basename(file_name)))
-    else:
-        local_file_name = file_name
-
-    # globalize
-    if globalize and save_set._values_local is not None:
-        save_set.local_to_global()
-    comm.barrier()
-
-    new_mdat = dict()
-    # create temporary dictionary
-    if os.path.exists(local_file_name) or \
-            os.path.exists(local_file_name + '.mat'):
-        new_mdat = sio.loadmat(local_file_name)
-
-    # store sample set in dictionary
-    if sample_set_name is None:
-        sample_set_name = 'default'
-    for attrname in save_set.vector_names:
-        curr_attr = getattr(save_set, attrname)
-        if curr_attr is not None:
-            new_mdat[sample_set_name + attrname] = curr_attr
-        elif sample_set_name + attrname in new_mdat:
-            new_mdat.pop(sample_set_name + attrname)
-    for attrname in save_set.all_ndarray_names:
-        curr_attr = getattr(save_set, attrname)
-        if curr_attr is not None:
-            new_mdat[sample_set_name + attrname] = curr_attr
-        elif sample_set_name + attrname in new_mdat:
-            new_mdat.pop(sample_set_name + attrname)
-    new_mdat[sample_set_name + '_sample_set_type'] = \
-        str(type(save_set)).split("'")[1]
-    comm.barrier()
-
-    # save new file or append to existing file
-    if (globalize and comm.rank == 0) or not globalize:
-        sio.savemat(local_file_name, new_mdat)
-    comm.barrier()
-    return local_file_name
-'''
-
-# def save_object(save_set, file_name, globalize=True):
-#     import pickle
-#     # create processor specific file name
-#     if comm.size > 1 and not globalize:
-#         local_file_name = os.path.join(os.path.dirname(file_name),
-#                                        "proc{}_{}".format(comm.rank,
-#                                                           os.path.basename(file_name)))
-#     else:
-#         local_file_name = file_name
-#
-#     # globalize
-#     if globalize:
-#         save_set.local_to_global()
-#     comm.barrier()
-#     pickle.dump(save_set, open(local_file_name + '.p', "wb"))
-#     comm.barrier()
-#     return local_file_name
-
-'''
-def load_sample_set(file_name, sample_set_name=None, localize=True):
-    """
-    Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file. If a file
-    contains multiple :class:`~bet.sample.sample_set` objects then
-    ``sample_set_name`` is used to distinguish which between different
-    :class:`~bet.sample.sample_set` objects.
-
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string sample_set_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.sample_set` objects to a single
-        ``.mat`` file
-    :param bool localize: Flag whether or not to re-localize arrays. If
-        ``file_name`` is prepended by ``proc_{}`` localize is set to ``False``.
-
-    :rtype: :class:`~bet.sample.sample_set`
-    :returns: the ``sample_set`` that matches the ``sample_set_name``
-
-    """
-    # check to see if parallel file name
-    if file_name.startswith('proc_'):
-        localize = False
-    elif not os.path.exists(file_name) and os.path.exists(os.path.join(
-            os.path.dirname(file_name), "proc{}_0".format(
-                os.path.basename(file_name)))):
-        return load_sample_set_parallel(file_name, sample_set_name)
-
-    mdat = sio.loadmat(file_name)
-    if sample_set_name is None:
-        sample_set_name = 'default'
-
-    if sample_set_name + "_dim" in list(mdat.keys()):
-        loaded_set = eval(mdat[sample_set_name + '_sample_set_type'][0])(
-            np.squeeze(mdat[sample_set_name + "_dim"]))
-    else:
-        logging.info("No sample_set named {} with _dim in file".
-                     format(sample_set_name))
-        return None
-
-    for attrname in loaded_set.vector_names:
-        if attrname is not '_dim':
-            if sample_set_name + attrname in list(mdat.keys()):
-                setattr(loaded_set, attrname,
-                        np.squeeze(mdat[sample_set_name + attrname]))
-    for attrname in loaded_set.all_ndarray_names:
-        if sample_set_name + attrname in list(mdat.keys()):
-            setattr(loaded_set, attrname, mdat[sample_set_name + attrname])
-
-    if localize:
-        # re-localize if necessary
-        loaded_set.global_to_local()
-
-    return loaded_set
-'''
-
-
-# def load_object(file_name, localize=True):
-#     import pickle
-#     # check to see if parallel file name
-#     if file_name.startswith('proc_'):
-#         # logging.warning("Avoid starting filenames with 'proc_'. Unable to localize.")
-#         localize = False
-#     elif not os.path.exists(file_name+'.p') and os.path.exists('proc0_'+file_name+'.p'):
-#         return load_sample_set_parallel(file_name)
-#     loaded_set = pickle.load(open(file_name+'.p', "rb"))
-#     if localize:
-#         loaded_set.global_to_local()
-#     return loaded_set
-#
-#
-# def load_object_parallel(file_name):
-#     save_dir = os.path.dirname(file_name)
-#     base_name = os.path.basename(file_name)
-#     files = glob.glob(os.path.join(save_dir, "proc*_{}".format(base_name+'.p')))
-#     if len(files) == comm.size:
-#         logging.info("Loading {} sample set using parallel files (same nproc)")
-#         # if the number of processors is the same then set mdat to
-#         # be the one with the matching processor number (doesn't
-#         # really matter)
-#         local_file_name = os.path.join(os.path.dirname(file_name),
-#                                        "proc{}_{}".format(comm.rank,
-#                                                           os.path.basename(file_name)))
-#         return load_object(local_file_name)
-#     else:
-#         raise dim_not_matching("Number of parallel files is different from nproc.")
-#     # SM possibly re-add the feature to have different numbers. Probably not necessary.
-
-
-'''
-def load_sample_set_parallel(file_name, sample_set_name=None):
-    """
-    Loads a :class:`~bet.sample.sample_set` from a ``.mat`` file in parallel
-    and correctly re-localizes data if necessary. If a file contains multiple
-    :class:`~bet.sample.sample_set` objects then ``sample_set_name`` is used to
-    distinguish which between different :class:`~bet.sample.sample_set`
-    objects.
-
-    :param string file_name: Name of the ``.mat`` file, no extension is
-        needed.
-    :param string sample_set_name: String to prepend to attribute names when
-        saving multiple :class`bet.sample.sample_set` objects to a single
-        ``.mat`` file
-
-    :rtype: :class:`~bet.sample.sample_set`
-    :returns: the ``sample_set`` that matches the ``sample_set_name``
-    """
-
-    if sample_set_name is None:
-        sample_set_name = 'default'
-    # Find and open save files
-    save_dir = os.path.dirname(file_name)
-    base_name = os.path.basename(file_name)
-    mdat_files = glob.glob(os.path.join(save_dir,
-                                        "proc*_{}".format(base_name)))
-
-    if len(mdat_files) == comm.size:
-        logging.info("Loading {} sample set using parallel files (same nproc)"
-                     .format(sample_set_name))
-        # if the number of processors is the same then set mdat to
-        # be the one with the matching processor number (doesn't
-        # really matter)
-        local_file_name = os.path.join(os.path.dirname(file_name),
-                                       "proc{}_{}".format(comm.rank,
-                                                          os.path.basename(file_name)))
-        return load_sample_set(local_file_name, sample_set_name)
-    else:
-        logging.info("Loading {} sample set using parallel files (diff nproc)"
-                     .format(sample_set_name))
-        # Determine how many processors the previous data used
-        # otherwise gather the data from mdat and then scatter
-        # among the processors and update mdat
-        mdat_files_local = comm.scatter(mdat_files)
-        mdat_local = [sio.loadmat(m) for m in mdat_files_local]
-        mdat_list = comm.allgather(mdat_local)
-        mdat_global = []
-        # instead of a list of lists, create a list of mdat
-        for mlist in mdat_list:
-            mdat_global.extend(mlist)
-
-        if sample_set_name + "_dim" in list(mdat_global[0].keys()):
-            loaded_set = eval(mdat_global[0][sample_set_name +
-                                             '_sample_set_type'][0])(
-                np.squeeze(mdat_global[0][sample_set_name + "_dim"]))
-        else:
-            logging.info("No sample_set named {} with _dim in file".
-                         format(sample_set_name))
-            return None
-
-        # load attributes
-        for attrname in loaded_set.vector_names:
-            if attrname is not '_dim':
-                if sample_set_name + attrname in list(mdat_global[0].keys()):
-                    # create lists of local data
-                    if attrname.endswith('_local'):
-                        temp_input = []
-                        for mdat in mdat_global:
-                            temp_input.append(np.squeeze(
-                                mdat[sample_set_name + attrname]))
-                        # turn into arrays
-                        temp_input = np.concatenate(temp_input)
-                    else:
-                        temp_input = np.squeeze(mdat_global[0]
-                                                [sample_set_name + attrname])
-                    setattr(loaded_set, attrname, temp_input)
-        for attrname in loaded_set.all_ndarray_names:
-            if sample_set_name + attrname in list(mdat_global[0].keys()):
-                if attrname.endswith('_local'):
-                    # create lists of local data
-                    temp_input = []
-                    for mdat in mdat_global:
-                        temp_input.append(mdat[sample_set_name + attrname])
-                    # turn into arrays
-                    temp_input = np.concatenate(temp_input)
-                else:
-                    temp_input = mdat_global[0][sample_set_name + attrname]
-                setattr(loaded_set, attrname, temp_input)
-
-        # re-localize if necessary
-        loaded_set.local_to_global()
-'''
-
-
 def evaluate_pdf(prob_type, prob_parameters, vals):
+    """
+    Evaluate the probability density function defined by `prob_type` and `prob_parameters`
+    at points defined by `vals`.
+
+    :param prob_type: Type of probability description. Options are 'kde' (weighted kernel
+    density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
+    :type prob_type: str
+    :param prob_parameters: Parameters that define the probability measure of type `prob_type`
+    :param vals: Values at which to evaluate the PDF.
+    :type vals: :class:`numpy.ndarray`
+    :return: probability density evaluated at `vals`
+    :rtype `numpy.ndarray`
+    """
     dim = vals.shape[1]
     if prob_type == "kde":
         mar = np.ones((vals.shape[0], ))
@@ -348,6 +93,21 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
 
 
 def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
+    """
+    Evaluate the marginal probability density function of index `i` defined by `prob_type`
+    and `prob_parameters` at points defined by `vals`.
+
+    :param prob_type: Type of probability description. Options are 'kde' (weighted kernel
+    density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
+    :type prob_type: str
+    :param prob_parameters: Parameters that define the probability measure of type `prob_type`
+    :param vals: Values at which to evaluate the PDF.
+    :type vals: :class:`numpy.ndarray`
+    :param i: index of marginal
+    :type i: int
+    :return: marginal probability density evaluated at `vals`
+    :rtype `numpy.ndarray`
+    """
     if len(vals.shape) == 2:
         if vals.shape[1] == 1:
             x = vals[:, 0]
@@ -391,41 +151,24 @@ def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
 class sample_set_base(object):
     """
 
-    A data structure containing arrays specific to a set of samples.
+    A data structure containing values that define a set of samples.
 
     """
-    #: List of attribute names for attributes which are vectors or 1D
-    #: :class:`numpy.ndarray` or int/float
-    vector_names = ['_probabilities', '_probabilities_local',
-                    '_volumes', '_volumes_local',
-                    '_densities', '_densities_local',
-                    '_local_index', '_dim', '_p_norm',
-                    '_radii', '_normalized_radii', '_region', '_region_local',
-                    '_error_id', '_error_id_local', '_reference_value',
-                    '_domain_original']
-
-    #: List of global attribute names for attributes that are
-    #: :class:`numpy.ndarray`
-    array_names = ['_values', '_volumes', '_probabilities',
-                   '_densities', '_jacobians',
-                   '_error_estimates', '_right', '_left', '_width',
-                   '_kdtree_values', '_radii', '_normalized_radii',
-                   '_region', '_error_id']
-
-    #: List of attribute names for attributes that are
-    #: :class:`numpy.ndarray` with dim > 1
-    all_ndarray_names = ['_error_estimates', '_error_estimates_local',
-                         '_values', '_values_local', '_left', '_left_local',
-                         '_right', '_right_local', '_width', '_width_local',
-                         '_domain', '_kdtree_values', '_jacobians',
-                         '_jacobians_local', '_domain_original']
+    # fields defining the object
     meta_fields = ['_bounding_box', '_densities', '_densities_local', '_dim', '_domain', '_domain_original',
                    '_error_estimates', '_error_estimates_local', '_error_id', '_error_id_local', '_jacobians',
                    '_jacobians_local', '_kdtree_values', '_kdtree_values_local', '_left', '_left_local',
                    '_local_index', '_normalized_radii', '_normalized_radii_local', '_p_norm', '_probabilities',
                    '_probabilities_local', '_radii', '_radii_local', '_reference_value', '_region', '_region_local',
-                   '_right', '_right_local', '_rv', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
-                   '_width_local']
+                   '_right', '_right_local', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
+                   '_width_local', '_prob_type', '_prob_type_init', '_prob_parameters', '_prob_parameters_init',
+                   '_label', '_labels', '_cluster_maps']
+    #: List of global attribute names for attributes that are :class:`numpy.ndarray`
+    array_names = ['_values', '_volumes', '_probabilities',
+                   '_densities', '_jacobians',
+                   '_error_estimates', '_right', '_left', '_width',
+                   '_kdtree_values', '_radii', '_normalized_radii',
+                   '_region', '_error_id']
 
     def __init__(self, dim):
         """
@@ -519,18 +262,28 @@ class sample_set_base(object):
         self._error_id_local = None
         #: :class:`numpy.ndarray` of reference value of shape (dim,)
         self._reference_value = None
-        # self._rv = None
-        # self._rv_init = None
-        self._kdes = None
+        #: string defining type of probability
         self._prob_type = None
+        #: parameters defining probability measure
         self._prob_parameters = None
+        #: string defining type of initial probability
         self._prob_type_init = None
+        #: parameters defining initial probability measure
         self._prob_parameters_init = None
+        #: label for sample set
         self._label = None
+        #: list of labels for each dimension of sample set
         self._labels = None
+        #: list of arrays of cluster maps from LUQ package
         self._cluster_maps = None
 
     def __eq__(self, other):
+        """
+        Redefines equality to easily check the equivalence of two sample sets.
+        :param other: other object set to which compare
+        :return: True for equality and False for not
+        :rtype: bool
+        """
         if self.__class__ == other.__class__:
             fields = self.meta_fields
             for field in fields:
@@ -554,10 +307,12 @@ class sample_set_base(object):
 
     def save(self, filename, globalize=True):
         """
-
         Save the set using pickle.
 
-        :return:
+        :param filename: filename to save to
+        :type filename: str
+        :param globalize: whether or not to globalize local variables before saving
+        :type globalize: bool
         """
         util.save_object(save_set=self, file_name=filename, globalize=globalize)
 
@@ -649,58 +404,102 @@ class sample_set_base(object):
         """
         return self._p_norm
 
-    # def set_rv(self, rv):
-    #     self._rv = rv
-    #
-    # def set_rv_init(self, rv_init):
-    #     self._rv_init = rv_init
-
     def set_cluster_maps(self, cluster_maps):
+        """
+        Sets cluster maps (generally coming from LUQ).
+
+        :param cluster_maps: List of arrays containing values in each cluster.
+        :type cluster_maps: list
+        """
         self._cluster_maps = cluster_maps
 
     def get_cluster_maps(self):
+        """
+        Returns cluster maps.
+        """
         return self._cluster_maps
 
     def set_label(self, label):
+        """
+        Sets label for set.
+        :param label: Label for set.
+        :type label: str
+        """
         self._label = label
 
     def get_label(self):
+        """
+        Returns label for set.
+        """
         return self._label
 
     def set_labels(self, labels):
+        """
+        Sets labels for each dimension of set.
+        :param labels: list or tuple containing strings which label parameters in each dimension.
+        :type labels: list or tuple of length `dim`
+        :return:
+        """
         self._labels = labels
 
     def get_labels(self):
+        """
+        Returns labels for each dimension of set.
+        """
         return self._labels
 
-    def set_kdes(self, kdes):
-        self._kdes = kdes
-
-    def get_kdes(self):
-        return self._kdes
-
     def set_prob_type_init(self, prob_type_init):
+        """
+        Set the type of initial probability measure.
+        :param prob_type_init: Type of initial probability measure ('kde', 'gmm', 'voronoi', 'rv')
+        :type prob_type_init: str
+        """
         self._prob_type_init = prob_type_init
 
     def get_prob_type_init(self):
+        """
+        Returns the type of initial probability measure.
+        """
         return self._prob_type_init
 
     def set_prob_parameters_init(self, prob_parameters_init):
+        """
+        Set initial probability measure parameters.
+        :param prob_parameters_init:  Initial probability measure parameters.
+        """
         self._prob_parameters_init = prob_parameters_init
 
     def get_prob_parameters_init(self):
+        """
+        Returns initial probability measure parameters.
+        """
         return self._prob_parameters_init
 
     def set_prob_type(self, prob_type):
+        """
+        Set the type of updated probability measure.
+        :param prob_type: Type of updated probability measure ('kde', 'gmm', 'voronoi', 'rv')
+        :type prob_type: str
+        """
         self._prob_type = prob_type
 
     def get_prob_type(self):
+        """
+        Returns the type of updated probability measure.
+        """
         return self._prob_type
 
     def set_prob_parameters(self, prob_parameters):
+        """
+        Set updated probability measure parameters.
+        :param prob_parameters:  Updated probability measure parameters.
+        """
         self._prob_parameters = prob_parameters
 
     def get_prob_parameters(self):
+        """
+        Returns the updated probability measure parameters.
+        """
         return self._prob_parameters
 
     def set_reference_value(self, ref_val):
@@ -1066,6 +865,13 @@ class sample_set_base(object):
         return self._densities
 
     def pdf(self, vals):
+        """
+        Evaluate the probability density function of the updated probability measure at values.
+        :param vals: Values at which to evaluated the PDF.
+        :type vals: :class:`numpy.ndarray` of shape (num_vals, dim)
+        :return probability densities
+        :rtype :class:`numpy.ndarray` of shape (num_vals, )
+        """
         if vals.shape[1] != self._dim:
             raise dim_not_matching("Array does not have the correct dimension.")
 
@@ -1083,6 +889,13 @@ class sample_set_base(object):
             return evaluate_pdf(self._prob_type, self._prob_parameters, vals)
 
     def pdf_init(self, vals):
+        """
+        Evaluate the probability density function of the initial probability measure at values.
+        :param vals: Values at which to evaluated the PDF.
+        :type vals: :class:`numpy.ndarray` of shape (num_vals, dim)
+        :return probability densities
+        :rtype :class:`numpy.ndarray` of shape (num_vals, )
+        """
         if vals.shape[1] != self._dim:
             raise dim_not_matching("Array does not have the correct dimension.")
         if self._prob_type_init == "voronoi":
@@ -1091,6 +904,16 @@ class sample_set_base(object):
             return evaluate_pdf(self._prob_type_init, self._prob_parameters_init, vals)
 
     def marginal_pdf(self, vals, i):
+        """
+        Evaluate the marginal (with index `i`) probability density function of the updated
+        probability measure at values.
+        :param vals: Values at which to evaluated the PDF.
+        :type vals: :class:`numpy.ndarray` of shape (num_vals, dim) or (num_vals, )
+        :param i: index defining marginal
+        :type i: int
+        :return probability densities
+        :rtype :class:`numpy.ndarray` of shape (num_vals, )
+        """
         if self._prob_type == 'voronoi':
             if self._probabilities_local is None and self._probabilities is None:
                 raise wrong_input("Missing probabilities for Voronoi cells.")
@@ -1101,6 +924,16 @@ class sample_set_base(object):
             return evaluate_pdf_marginal(self._prob_type, self._prob_parameters, vals, i)
 
     def marginal_pdf_init(self, vals, i):
+        """
+        Evaluate the marginal (with index `i`) probability density function of the initial
+        probability measure at values.
+        :param vals: Values at which to evaluated the PDF.
+        :type vals: :class:`numpy.ndarray` of shape (num_vals, dim) or (num_vals, )
+        :param i: index defining marginal
+        :type i: int
+        :return probability densities
+        :rtype :class:`numpy.ndarray` of shape (num_vals, )
+        """
         if self._prob_type_init == "voronoi":
             raise wrong_input("Voronoi probability not valid for initial PDF.")
         else:
@@ -1482,225 +1315,6 @@ class sample_set_base(object):
 
         """
         return self._values_local.shape
-
-
-
-
-# def save_discretization(save_disc, file_name, discretization_name=None,
-#                         globalize=False):
-#     """
-#     Saves this :class:`bet.sample.discretization` as a ``.mat`` file. Each
-#     attribute is added to a dictionary of names and arrays which are then
-#     saved to a MATLAB-style file.
-#
-#     :param save_disc: sample set to save
-#     :type save_disc: :class:`bet.sample.discretization`
-#     :param string file_name: Name of the ``.mat`` file, no extension is
-#         needed.
-#     :param string discretization_name: String to prepend to attribute names when
-#         saving multiple :class`bet.sample.discretization` objects to a single
-#         ``.mat`` file
-#     :param bool globalize: flag whether or not to globalize
-#         :class:`bet.sample.sample_set_base` objects stored in this
-#         discretization
-#
-#     :rtype: string
-#     :returns: local file name
-#
-#     """
-#     # create temporary dictionary
-#     new_mdat = dict()
-#
-#     # create processor specific file name
-#     if comm.size > 1 and not globalize:
-#         local_file_name = os.path.join(os.path.dirname(file_name),
-#                                        "proc{}_{}".format(comm.rank,
-#                                                           os.path.basename(file_name)))
-#     else:
-#         local_file_name = file_name
-#
-#     # set name if doesn't exist
-#     if discretization_name is None:
-#         discretization_name = 'default'
-#
-#     # globalize the pointers
-#     if globalize:
-#         save_disc.globalize_ptrs()
-#     # save sample sets if they exist
-#     for attrname in discretization.sample_set_names:
-#         curr_attr = getattr(save_disc, attrname)
-#         if curr_attr is not None:
-#             if attrname in discretization.sample_set_names:
-#                 save_sample_set(curr_attr, file_name,
-#                                 discretization_name + attrname, globalize)
-#
-#     new_mdat = dict()
-#     # create temporary dictionary
-#     if os.path.exists(local_file_name) or \
-#             os.path.exists(local_file_name + '.mat'):
-#         new_mdat = sio.loadmat(local_file_name)
-#
-#     # store discretization in dictionary
-#     for attrname in discretization.vector_names:
-#         curr_attr = getattr(save_disc, attrname)
-#         if curr_attr is not None:
-#             new_mdat[discretization_name + attrname] = curr_attr
-#         elif discretization_name + attrname in new_mdat:
-#             new_mdat.pop(discretization_name + attrname)
-#     comm.barrier()
-#
-#     # save new file or append to existing file
-#     if (globalize and comm.rank == 0) or not globalize:
-#         sio.savemat(local_file_name, new_mdat)
-#     comm.barrier()
-#     return local_file_name
-#
-#
-# def load_discretization_parallel(file_name, discretization_name=None):
-#     """
-#     Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
-#     contains multiple :class:`~bet.sample.discretization` objects then
-#     ``discretization_name`` is used to distinguish which between different
-#     :class:`~bet.sample.discretization` objects.
-#
-#     :param string file_name: Name of the ``.mat`` file, no extension is
-#         needed.
-#     :param string discretization_name: String to prepend to attribute names when
-#         saving multiple :class`bet.sample.discretization` objects to a single
-#         ``.mat`` file
-#
-#     :rtype: :class:`~bet.sample.discretization`
-#     :returns: the ``discretization`` that matches the ``discretization_name``
-#
-#     """
-#     # Find and open save files
-#     save_dir = os.path.dirname(file_name)
-#     base_name = os.path.basename(file_name)
-#     mdat_files = glob.glob(os.path.join(save_dir,
-#                                         "proc*_{}".format(base_name)))
-#
-#     if len(mdat_files) == comm.size:
-#         logging.info("Loading {} sample set using parallel files (same nproc)"
-#                      .format(discretization_name))
-#         # if the number of processors is the same then set mdat to
-#         # be the one with the matching processor number (doesn't
-#         # really matter)
-#         return load_discretization(mdat_files[comm.rank], discretization_name)
-#     else:
-#         logging.info("Loading {} sample set using parallel files (diff nproc)"
-#                      .format(discretization_name))
-#
-#         if discretization_name is None:
-#             discretization_name = 'default'
-#
-#         input_sample_set = load_sample_set(file_name,
-#                                            discretization_name + '_input_sample_set')
-#
-#         output_sample_set = load_sample_set(file_name,
-#                                             discretization_name + '_output_sample_set')
-#
-#         loaded_disc = discretization(input_sample_set, output_sample_set)
-#
-#         # Determine how many processors the previous data used
-#         # otherwise gather the data from mdat and then scatter
-#         # among the processors and update mdat
-#         mdat_files_local = comm.scatter(mdat_files)
-#         mdat_local = [sio.loadmat(m) for m in mdat_files_local]
-#         mdat_list = comm.allgather(mdat_local)
-#         mdat_global = []
-#         # instead of a list of lists, create a list of mdat
-#         for mlist in mdat_list:
-#             mdat_global.extend(mlist)
-#
-#         # load attributes
-#         for attrname in discretization.vector_names:
-#             if discretization_name + attrname in list(mdat_global[0].keys()):
-#                 if attrname.endswith('_local') and comm.size != \
-#                         len(mdat_list):
-#                     # create lists of local data
-#                     temp_input = None
-#                 else:
-#                     temp_input = np.squeeze(mdat_global[0][
-#                         discretization_name + attrname])
-#                 setattr(loaded_disc, attrname, temp_input)
-#
-#         # load sample sets
-#         for attrname in discretization.sample_set_names:
-#             if attrname is not '_input_sample_set' and \
-#                     attrname is not '_output_sample_set':
-#                 setattr(loaded_disc, attrname, load_sample_set(file_name,
-#                                                                discretization_name + attrname))
-#
-#         # re-localize if necessary
-#         if file_name.startswith('proc_') and comm.size > 1 \
-#                 and comm.size != len(mdat_list):
-#             warn_string = "Local pointers have been removed and will be"
-#             warn_string += " re-created as necessary)"
-#             warnings.warn(warn_string)
-#             #loaded_disc._io_ptr_local = None
-#             #loaded_disc._emulated_ii_ptr_local = None
-#             #loaded_disc._emulated_oo_ptr_local = None
-#     return loaded_disc
-#
-#
-# def load_discretization(file_name, discretization_name=None):
-#     """
-#     Loads a :class:`~bet.sample.discretization` from a ``.mat`` file. If a file
-#     contains multiple :class:`~bet.sample.discretization` objects then
-#     ``discretization_name`` is used to distinguish which between different
-#     :class:`~bet.sample.discretization` objects.
-#
-#     :param string file_name: Name of the ``.mat`` file, no extension is
-#         needed.
-#     :param string discretization_name: String to prepend to attribute names when
-#         saving multiple :class`bet.sample.discretization` objects to a single
-#         ``.mat`` file
-#
-#     :rtype: :class:`~bet.sample.discretization`
-#     :returns: the ``discretization`` that matches the ``discretization_name``
-#
-#     """
-#
-#     # check to see if parallel file name
-#     if file_name.startswith('proc_'):
-#         pass
-#     elif not os.path.exists(file_name) and os.path.exists(os.path.join(
-#             os.path.dirname(file_name),
-#             "proc{}_{}".format(comm.rank, os.path.basename(file_name)))):
-#         return load_discretization_parallel(file_name, discretization_name)
-#
-#     mdat = sio.loadmat(file_name)
-#     if discretization_name is None:
-#         discretization_name = 'default'
-#
-#     input_sample_set = load_sample_set(file_name,
-#                                        discretization_name +
-#                                        '_input_sample_set')
-#
-#     output_sample_set = load_sample_set(file_name,
-#                                         discretization_name +
-#                                         '_output_sample_set')
-#
-#     loaded_disc = discretization(input_sample_set, output_sample_set)
-#
-#     for attrname in discretization.sample_set_names:
-#         if attrname is not '_input_sample_set' and \
-#                 attrname is not '_output_sample_set':
-#             setattr(loaded_disc, attrname,
-#                     load_sample_set(file_name, discretization_name + attrname))
-#
-#     for attrname in discretization.vector_names:
-#         if discretization_name + attrname in list(mdat.keys()):
-#             setattr(loaded_disc, attrname,
-#                     np.squeeze(mdat[discretization_name + attrname]))
-#
-#     # re-localize if necessary
-#     if file_name.rfind('proc_') == 0 and comm.size > 1:
-#         loaded_disc._io_ptr_local = None
-#         loaded_disc._emulated_ii_ptr_local = None
-#         loaded_disc._emulated_oo_ptr_local = None
-#
-#     return loaded_disc
 
 
 class voronoi_sample_set(sample_set_base):
@@ -2791,21 +2405,6 @@ class discretization(object):
         :returns: Copy of this :class:`~bet.sample.discretization`
 
         """
-        # my_copy = discretization(self._input_sample_set.copy(),
-        #                          self._output_sample_set.copy())
-        #
-        # for attrname in discretization.sample_set_names:
-        #     if attrname is not '_input_sample_set' and \
-        #             attrname is not '_output_sample_set':
-        #         curr_sample_set = getattr(self, attrname)
-        #         if curr_sample_set is not None:
-        #             setattr(my_copy, attrname, curr_sample_set.copy())
-        #
-        # for array_name in discretization.vector_names:
-        #     current_array = getattr(self, array_name)
-        #     if current_array is not None:
-        #         setattr(my_copy, array_name, np.copy(current_array))
-        # return my_copy
         import copy
         return copy.deepcopy(self)
 

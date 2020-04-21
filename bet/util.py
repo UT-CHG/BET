@@ -228,7 +228,7 @@ def save_object(save_set, file_name, globalize=True):
     else:
         local_file_name = file_name
     if os.path.exists(local_file_name + '.p'):
-        logging("Warning! Output file already exists. New object will be appended.")
+        logging.warn("Warning! Output file already exists. New object will be appended.")
     # globalize
     if globalize:
         save_set.local_to_global()

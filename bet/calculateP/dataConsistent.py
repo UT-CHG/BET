@@ -62,9 +62,9 @@ def generate_output_kdes(discretization, bw_method=None):
         #     obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T))
         # else:
         #     obs_kdes.append(None)
-    predict_set.set_kdes(predict_kdes)
-    obs_set.set_kdes(obs_kdes)
-    return predict_set, obs_set, num_clusters
+    #predict_set.set_kdes(predict_kdes)
+    #obs_set.set_kdes(obs_kdes)
+    return predict_set, predict_kdes, obs_set, obs_kdes, num_clusters
 
 
 def dc_inverse_kde(discretization, bw_method = None):
@@ -76,9 +76,7 @@ def dc_inverse_kde(discretization, bw_method = None):
     """
     from scipy.stats import gaussian_kde
 
-    predict_set, obs_set, num_clusters = generate_output_kdes(discretization, bw_method)
-    predict_kdes = predict_set.get_kdes()
-    obs_kdes = obs_set.get_kdes()
+    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs = []
     r = []
@@ -128,9 +126,8 @@ def dc_inverse_rejection_sampling(discretization, bw_method=None):
     :type discretization: :class:`bet.sample.discretization`
     :return:
     """
-    predict_set, obs_set, num_clusters = generate_output_kdes(discretization, bw_method=bw_method)
-    predict_kdes = predict_set.get_kdes()
-    obs_kdes = obs_set.get_kdes()
+    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization,
+                                                                                      bw_method=bw_method)
 
     rs = []
     r = []
@@ -196,9 +193,7 @@ def dc_inverse_gmm(discretization, bw_method=None):
         cov1 = cov1 / sum_weights
         return mean1, cov1
 
-    predict_set, obs_set, num_clusters = generate_output_kdes(discretization, bw_method)
-    predict_kdes = predict_set.get_kdes()
-    obs_kdes = obs_set.get_kdes()
+    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs = []
     r = []
@@ -264,9 +259,7 @@ def dc_inverse_multivariate_gaussian(discretization, bw_method=None):
         cov1 = cov1 / sum_weights
         return mean1, cov1
 
-    predict_set, obs_set, num_clusters = generate_output_kdes(discretization, bw_method)
-    predict_kdes = predict_set.get_kdes()
-    obs_kdes = obs_set.get_kdes()
+    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs = []
     r = []
@@ -327,9 +320,7 @@ def dc_inverse_random_variable(discretization, rv, num_reweighted=10000, bw_meth
     else:
         raise bet.sample.wrong_input("rv must be a string, list, or tuple.")
 
-    predict_set, obs_set, num_clusters = generate_output_kdes(discretization, bw_method)
-    predict_kdes = predict_set.get_kdes()
-    obs_kdes = obs_set.get_kdes()
+    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs = []
     r = []

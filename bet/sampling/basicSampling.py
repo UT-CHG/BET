@@ -4,8 +4,8 @@
 This module contains functions for sampling. We assume we are given access to a
 model, a parameter space, and a data space. The model is a map from the
 parameter space to the data space. We desire to build up a set of samples to
-sovle an inverse problem this guving use information about the inverse mapping.
-Each sample consists for a pareamter coordinate, data coordinate pairing. We
+solve an inverse problem thus giving information about the inverse mapping.
+Each sample consists for a parameter coordinate, data coordinate pairing. We
 assume the measure on both spaces is Lebesgue.
 """
 
@@ -29,48 +29,24 @@ class bad_object(Exception):
     Exception for when the wrong type of object is used.
     """
 
-
-# def loadmat(save_file, disc_name=None, model=None):
-#     """
-#     Loads data from ``save_file`` into a
-#     :class:`~bet.basicSampling.sampler` object.
-#
-#     :param string save_file: file name
-#     :param string disc_name: name of :class:`~bet.sample.discretization` in
-#         file
-#     :param model: runs the model at a given set of parameter samples and
-#         returns data
-#     :type model: callable
-#
-#     :rtype: tuple
-#     :returns: (sampler, discretization)
-#
-#     """
-#     # check to see if parallel save
-#     if not (os.path.exists(save_file) or os.path.exists(save_file + '.mat')):
-#         save_dir = os.path.dirname(save_file)
-#         base_name = os.path.basename(save_file)
-#         mdat_files = glob.glob(os.path.join(save_dir,
-#                                             "proc*_{}".format(base_name)))
-#         # load the data from a *.mat file
-#         mdat = sio.loadmat(mdat_files[0])
-#     else:
-#         # load the data from a *.mat file
-#         mdat = sio.loadmat(save_file)
-#     num_samples = mdat['num_samples']
-#     # load the discretization
-#     discretization = sample.load_discretization(save_file, disc_name)
-#     loaded_sampler = sampler(model, num_samples)
-#     return (loaded_sampler, discretization)
-
-def resample_from_solution(input_set, num_samples, globalize=True):
+def sample_from_updated(input_set, num_samples, globalize=True):
     """
+    Create a new sample set from sampling from the updated probability measure of another sample set.
 
-    :param input_set:
-    :type input_set: :class:`~bet.sample.sample_set`
-    :param num_samples:
-    :return:
+    :param input_set: Sample set or discretization containing updated probability measure from which to sample.
+    :type input_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`
+    :param num_samples: Number of new samples to create.
+    :type num_samples: int
+    :param globalize: Whether or not to globalize objects.
+    :type bool
+    :return: Sample set containing new samples.
+    :rtype :class:`~bet.sample.sample_set`
     """
+    if isinstance(input_set, bet.sample.discretization):
+        input_set = input_set.get_input_sample_set()
+    elif not isinstance(input_set, bet.sample.sample_set):
+        raise bad_object("input_set is of the wrong type.")
+
     new_set = sample.sample_set(dim=input_set.get_dim())
     if input_set.get_prob_type() == 'rv':
         return random_sample_set(input_set.get_prob_parameters(), new_set, num_samples, globalize)
@@ -99,9 +75,6 @@ def resample_from_solution(input_set, num_samples, globalize=True):
             num_samples_clust = round(w * num_samples)
             num_samples_local = int((num_samples_clust / comm.size) +
                                     (comm.rank < num_samples_clust % comm.size))
-            #for j in range(input_set.get_dim()):
-            #    v_inner.append(param_marginals[j][i].resample(num_samples_local))
-            #v_outer.append(np.vstack(v_inner))
             v_outer.append(stats.multivariate_normal.rvs(mean=means[i], cov=covariances[i], size=num_samples_local))
         vals_local = np.vstack(v_outer)
         new_set.set_values_local(vals_local)
@@ -110,9 +83,40 @@ def resample_from_solution(input_set, num_samples, globalize=True):
         if globalize:
             new_set.local_to_global()
         return new_set
+    else:
+        raise bad_object("The updated probability measure is undefined or not allowed for this method.")
 
 
 def random_sample_set(rv, input_obj, num_samples, globalize=True):
+    """
+    Create a sample set by sampling random variates from continuous distributions
+    from :class:`scipy.stats.rv_continuous`. See https://docs.scipy.org/doc/scipy/reference/stats.html.
+
+    `rv` can take multiple types of formats depending on type of distribution.
+
+    A string is used for the same distribution with default parameters in each dimension.
+    ex. rv = 'uniform' or rv = 'beta'
+
+    A list or tuple of length 2 is used for the same distribution with user-defined parameters in each dimension as a
+    dictionary.
+    ex. rv = ['uniform', {'loc':-2, 'scale':5}] or rv = ['beta', {'a': 2, 'b':5, 'loc':-2, 'scale':5}]
+
+    A list of length dim which entries of lists or tuples of length 2 is used for different distributions with
+    user-defined parameters in each dimension as a
+    dictionary.
+    ex. rv = [['uniform', {'loc':-2, 'scale':5}],
+              ['beta', {'a': 2, 'b':5, 'loc':-2, 'scale':5}]]
+
+    :param rv: Type and parameters for continuous random variables.
+    :type rv: str, list, or tuple
+    :param input_obj: :class:`~bet.sample.sample_set` object containing the dimension to sample from, or the dimension.
+    :type input_obj: :class:`~bet.sample.sample_set` or int
+    :param num_samples: Number of samples
+    :type num_samples: int
+    :param globalize: Whether or not to globalize vectors.
+    :type globalize: bool
+    :return:
+    """
     # check to see what the input object is
     if isinstance(input_obj, sample.sample_set):
         input_sample_set = input_obj
