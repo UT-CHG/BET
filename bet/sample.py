@@ -290,6 +290,15 @@ class sample_set_base(object):
                 if type(getattr(self, field)) is np.ndarray:
                     if np.any(getattr(self, field) != getattr(other, field)):
                         return False
+                elif field == "_cluster_maps":
+                    cluster_maps = getattr(self, field)
+                    cluster_maps_other = getattr(other, field)
+                    if type(cluster_maps_other) != type(cluster_maps):
+                        return False
+                    if type(cluster_maps) is list:
+                        for k in range(len(cluster_maps)):
+                            if not np.array_equal(cluster_maps[k], cluster_maps_other[k]):
+                                return False
                 elif type(getattr(self, field)) is list:
                     compare = getattr(self, field) == getattr(other, field)
                     if type(compare) is bool:
