@@ -244,6 +244,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         nptest.assert_equal(go, True)
 
 
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class Test_plot_marginal(unittest.TestCase):
     """
     Test :meth:`bet.postProcess.plotP.plot_marginal`.
@@ -269,7 +270,7 @@ class Test_plot_marginal(unittest.TestCase):
         time_end_idx = len(self.luq.times) - 1
         self.luq.clean_data(time_start_idx=time_start_idx, time_end_idx=time_end_idx,
                             num_clean_obs=20, tol=5.0e-2, min_knots=3, max_knots=12)
-        self.luq.dynamics(cluster_method='kmeans', kwargs={'n_clusters': 3, 'n_init': 10})
+        self.luq.dynamics(cluster_method='kmeans', kwargs={'n_clusters': 2, 'n_init': 10})
         self.luq.learn_qois_and_transform(num_qoi=2)
         self.disc1, self.disc2 = self.luq.make_disc()
 

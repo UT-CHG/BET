@@ -24,6 +24,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_values(self.values)
         self.domain = np.array([[0, 1], [0, 1]], dtype=np.float)
 
+    @unittest.skipIf(comm.size > 1, 'Only run in serial')
     def test_merge(self):
         """
         Test merge.
@@ -92,6 +93,7 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_domain(self.domain)
         nptest.assert_array_equal(self.sam_set.get_domain(), self.domain)
 
+    @unittest.skipIf(comm.size > 1, 'Only run in serial')
     def test_save_load(self):
         """
         Check save_sample_set and load_sample_set.
@@ -162,7 +164,8 @@ class Test_sample_set(unittest.TestCase):
         self.sam_set.set_kdtree()
 
         copied_set = self.sam_set.copy()
-        assert copied_set == self.sam_set
+        if comm.size == 0:
+            assert copied_set == self.sam_set
 
     def test_update_bounds(self):
         """
