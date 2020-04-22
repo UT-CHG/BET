@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2019 The BET Development Team
 
 r"""
-This module provides methods for calulating the probability measure
+This module provides methods for calculating the probability measure
 :math:`P_{\Lambda}`.
 
 * :mod:`~bet.calculateP.prob_on_emulated_samples` provides a skeleton class and

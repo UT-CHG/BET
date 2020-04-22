@@ -3,13 +3,23 @@ import bet.sample
 import numpy as np
 import logging
 
+"""
+This module contains functions for data-consistent stochastic inversion.
+"""
+
 
 def generate_output_kdes(discretization, bw_method=None):
     """
+    Generate Kernel Density Estimates on predicted and observed output sample sets.
 
-    :param discretization: Discretization on which to perform inversion.
+    :param discretization: Discretization used to calculate KDes
     :type discretization: :class:`bet.sample.discretization`
-    :return:
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :returns: prediction set, prediction kdes, observation set, observation kdes, number of clusters
+    :rtype :class:`bet.discretization.sample_set`, list, :class:`bet.discretization.sample_set`, list, int
     """
     from scipy.stats import gaussian_kde
     discretization.local_to_global()
@@ -51,28 +61,21 @@ def generate_output_kdes(discretization, bw_method=None):
                 obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T, bw_method=bw_method))
             else:
                 obs_kdes.append(None)
-
-        # obs_pointer = np.where(obs_set.get_region() == i)[0]
-        # if len(predict_pointer) > 1:
-        #     predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T))
-        # else:
-        #     predict_kdes.append(None)
-        #
-        # if len(obs_pointer) > 1:
-        #     obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T))
-        # else:
-        #     obs_kdes.append(None)
-    #predict_set.set_kdes(predict_kdes)
-    #obs_set.set_kdes(obs_kdes)
     return predict_set, predict_kdes, obs_set, obs_kdes, num_clusters
 
 
-def dc_inverse_kde(discretization, bw_method = None):
+def invert_to_kde(discretization, bw_method = None):
     """
+    Solve the data consistent stochastic inverse problem, solving for a weighted kernel density estimate.
 
     :param discretization: Discretization on which to perform inversion.
     :type discretization: :class:`bet.sample.discretization`
-    :return:
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :return: marginal probabilities and cluster weights
+    :rtype list, `np.ndarray`
     """
     from scipy.stats import gaussian_kde
 
@@ -121,10 +124,16 @@ def dc_inverse_kde(discretization, bw_method = None):
 
 def dc_inverse_rejection_sampling(discretization, bw_method=None):
     """
+    Solve the data consistent stochastic inverse problem by rejection sampling.
 
     :param discretization: Discretization on which to perform inversion.
     :type discretization: :class:`bet.sample.discretization`
-    :return:
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :return: sample set containing samples
+    :rtype :class:`bet.sample.sample_set`
     """
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization,
                                                                                       bw_method=bw_method)
@@ -174,11 +183,17 @@ def dc_inverse_rejection_sampling(discretization, bw_method=None):
 
 def dc_inverse_gmm(discretization, bw_method=None):
     """
+    Solve the data consistent stochastic inverse problem, solving for a Gaussian mixture model.
 
-     :param discretization: Discretization on which to perform inversion.
-     :type discretization: :class:`bet.sample.discretization`
-     :return:
-     """
+    :param discretization: Discretization on which to perform inversion.
+    :type discretization: :class:`bet.sample.discretization`
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :return: means, covariances, and weights for Gaussians
+    :rtype list, list, list
+    """
     def weighted_mean_and_cov(x, weights):
         sum_weights = np.sum(weights)
         mean1 = []
@@ -240,11 +255,17 @@ def dc_inverse_gmm(discretization, bw_method=None):
 
 def dc_inverse_multivariate_gaussian(discretization, bw_method=None):
     """
+    Solve the data consistent stochastic inverse problem, solving for a multivariate Gaussian.
 
-     :param discretization: Discretization on which to perform inversion.
-     :type discretization: :class:`bet.sample.discretization`
-     :return:
-     """
+    :param discretization: Discretization on which to perform inversion.
+    :type discretization: :class:`bet.sample.discretization`
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :return: marginal probabilities and cluster weights
+    :rtype list, `np.ndarray`
+    """
     def weighted_mean_and_cov(x, weights):
         sum_weights = np.sum(weights)
         mean1 = []
@@ -302,11 +323,35 @@ def dc_inverse_multivariate_gaussian(discretization, bw_method=None):
 
 def dc_inverse_random_variable(discretization, rv, num_reweighted=10000, bw_method=None):
     """
+    Solve the data consistent stochastic inverse problem, fitting a random variable.
 
-     :param discretization: Discretization on which to perform inversion.
-     :type discretization: :class:`bet.sample.discretization`
-     :return:
-     """
+    `rv` can take multiple types of formats depending on type of distribution.
+
+    A string is used for the same distribution with default parameters in each dimension.
+    ex. rv = 'uniform' or rv = 'beta'
+
+    A list or tuple of length 2 is used for the same distribution with  fixed user-defined parameters in each dimension
+    as a dictionary.
+    ex. rv = ['uniform', {'floc':-2, 'fscale':5}] or rv = ['beta', {'fa': 2, 'fb':5, 'floc':-2, 'fscale':5}]
+
+    A list of length dim which entries of lists or tuples of length 2 is used for different distributions with fixed
+    user-defined parameters in each dimension as a dictionary.
+    ex. rv = [['uniform', {'floc':-2, 'fscale':5}],
+              ['beta', {'fa': 2, 'fb':5, 'floc':-2, 'fscale':5}]]
+
+    :param discretization: Discretization on which to perform inversion.
+    :type discretization: :class:`bet.sample.discretization`
+    :param rv: Type and parameters for continuous random variables.
+    :type rv: str, list, or tuple
+    :param num_reweighted: number of reweighted samples for fitting
+    :type num_reweighted: int
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :return: marginal probabilities and cluster weights
+    :rtype list, `np.ndarray`
+    """
     import scipy.stats as stats
 
     dim = discretization.get_input_sample_set().get_dim()
