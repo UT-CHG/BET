@@ -18,6 +18,9 @@ import bet.util as util
 from bet.Comm import comm
 import os
 import bet.sample as sample
+import bet.calculateP.dataConsistent as dc
+import bet.sampling.basicSampling as bsam
+import bet.sampling.useLUQ as useLUQ
 
 
 class Test_calc_marg_1D(unittest.TestCase):
@@ -239,3 +242,44 @@ class Test_calc_marg_2D(unittest.TestCase):
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
+
+
+class Test_plot_marginal(unittest.TestCase):
+    """
+    Test :meth:`bet.postProcess.plotP.plot_marginal`.
+    """
+    def setUp(self):
+        np.random.seed(123456)
+        self.p_set = bsam.random_sample_set(rv=[['uniform', {'loc': .01, 'scale': 0.114}],
+                                        ['uniform', {'loc': .05, 'scale': 1.45}]],
+                                       input_obj=2, num_samples=50)
+
+        self.o_set = bsam.random_sample_set(rv=[['beta', {'a': 2, 'b': 2, 'loc': .01, 'scale': 0.114}],
+                                           ['beta', {'a': 2, 'b': 2, 'loc': .05, 'scale': 1.45}]],
+                                       input_obj=2, num_samples=50)
+        time_start = 2.0  # 0.5
+        time_end = 6.5  # 40.0
+        num_time_preds = int((time_end - time_start) * 100)
+        self.times = np.linspace(time_start, time_end, num_time_preds)
+
+        self.luq = useLUQ.useLUQ(predict_set=self.p_set, obs_set=self.o_set, lb_model=useLUQ.myModel, times=self.times)
+        self.luq.setup()
+
+        time_start_idx = 0
+        time_end_idx = len(self.luq.times) - 1
+        self.luq.clean_data(time_start_idx=time_start_idx, time_end_idx=time_end_idx,
+                            num_clean_obs=20, tol=5.0e-2, min_knots=3, max_knots=12)
+        self.luq.dynamics(cluster_method='kmeans', kwargs={'n_clusters': 3, 'n_init': 10})
+        self.luq.learn_qois_and_transform(num_qoi=2)
+        self.disc1, self.disc2 = self.luq.make_disc()
+
+    def test_rv(self):
+        """
+        Test plotting random variable probability.
+        """
+        dc.invert_to_random_variable(self.disc1, rv='beta')
+        param_labels = [r'$a$', r'$b$']
+        for i in range(2):
+            plotP.plot_marginal(sets=(self.disc1, self.disc2), i=i,
+                                sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
+                                title="Fitted Beta Distribution", label=param_labels[i], interactive=False)

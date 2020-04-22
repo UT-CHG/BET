@@ -36,11 +36,11 @@ class missing_attribute(Exception):
 
 def calculate_1D_marginal_probs(sample_set, nbins=20):
     r"""
-    This calculates every single marginal of the probability measure
-    described by the probabilities within the sample_set object.
+    This estimates every marginal of a voronoi probability measure
+    described by the probabilities within the sample_set object with histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
-    emulated samples
+    emulated samples.
     (``discretization._emulated_input_sample_set._probabilties_local``).
 
     This assumes that the user has already run
@@ -97,7 +97,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 def calculate_2D_marginal_probs(sample_set, nbins=20):
     """
     This calculates every pair of marginals (or joint in 2d case) of
-    input probability measure defined on a rectangular grid.
+    input probability measure defined on a rectangular grid for voronoi probabilities using histograms..
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
     emulated samples
@@ -168,7 +168,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
                            lambda_label=None, file_extension=".png"):
     """
     This makes plots of every single marginal probability of
-    input probability measure on a 1D  grid.
+    input probability measure on a 1D  grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
 
@@ -246,7 +246,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                            lambda_label=None, file_extension=".png"):
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
-    input probability measure on a rectangular grid.
+    input probability measure on a rectangular grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
 
@@ -358,7 +358,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
 
 def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
-    This function smooths 1D marginal probabilities.
+    This function smooths 1D marginal probabilities calculated from histograms.
 
     :param marginals: 1D marginal probabilities
     :type marginals: dictionary with int as keys and :class:`~numpy.ndarray` of
@@ -400,7 +400,7 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
 
 def smooth_marginals_2D(marginals, bins, sigma=10.0):
     """
-    This function smooths 2D marginal probabilities.
+    This function smooths 2D marginal probabilities calculated from histograms.
 
     :param marginals: 2D marginal probabilities
     :type marginals: dictionary with tuples of 2 integers as keys and
@@ -461,7 +461,7 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
                               file_extension=".png"):
     """
     This makes contour plots of every pair of marginals (or joint in 2d case)
-    of input probability measure on a rectangular grid.
+    of input probability measure on a rectangular grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
 
@@ -558,89 +558,104 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
     comm.barrier()
 
 
-def plot_prob_marginal(sets, i, label=None, sets_label=None, initials=True):
-    if isinstance(sets, sample.sample_set):
-        sets = [sets]
+def plot_marginal(sets, i, interval=None, num_points=1000, label=None, sets_label=None, sets_label_initial=None,
+                  title=None, initials=True, inputs=True, interactive=True, savefile=None):
+    """
+    Plot marginal probability density functions in direction `i`.
 
+    :param sets: Object containing sample sets to plot marginals for.
+    :type sets: :class:`bet.sample.sample_set` or :class:`bet.sample.discretization` or list or tuple of these
+    :param i: index of direction to take marginal
+    :type i: int
+    :param interval: Interval over which to plot.
+    :type interval: list
+    :param num_points: Number of points to evaluate PDFs at.
+    :type num_points: int
+    :param label: Label for parameter i
+    :type label: str
+    :param sets_label: Labels for sets
+    :type sets_label: List or tuple of strings.
+    :param sets_label_initial: Labels for sets' initial probabilities
+    :type sets_label_initial: List or tuple of strings.
+    :param title: "Title for plot"
+    :type title: str
+    :param initials: Whether or not to plot initial probabilities
+    :type initials: bool
+    :param inputs: Whether to use input or output sample sets for disretizations
+    :type inputs: bool
+    :param interactive: Whether or not to show interactive figure
+    :type interactive: bool
+    :param savefile: filename to save to
+    :type savefile: str
+    """
+    if isinstance(sets, sample.sample_set) or isinstance(sets, sample.discretization):
+        sets = [sets]
+    new_sets = []
+    for s in sets:
+        if isinstance(s, sample.sample_set):
+            new_sets.append(s)
+        elif isinstance(s, sample.discretization):
+            if inputs:
+                new_sets.append(s.get_input_sample_set())
+            else:
+                new_sets.append(s.get_output_sample_set())
+        else:
+            raise bad_object("One of the input sets does not contain a sample set.")
+    sets = new_sets
+
+    # set labels
     if label is None and sets[0].get_labels() is not None:
         label = sets[0].get_labels()[i]
     elif label is None:
-        label = str(i)
+        label = 'Parameter ' + str(i)
 
     if sets_label is None:
         sets_label = []
         for j, s in enumerate(sets):
             if s.get_labels() is None:
-                sets_label.append('Set ' + str(j))
+                sets_label.append('Set ' + str(j) + ' Updated')
             else:
                 sets_label.append(s.get_labels()[i])
+    if sets_label_initial is None:
+        sets_label_initial = []
+        for j, s in enumerate(sets):
+            if s.get_labels() is None:
+                sets_label_initial.append('Set ' + str(j) + ' Initial')
+            else:
+                sets_label_initial.append(s.get_labels()[i] + ' Initial')
 
+    if interval is None:
+        x_min = np.inf
+        x_max = -np.inf
+        for s in sets:
+            min1 = np.min(s.get_values()[:, i])
+            max1 = np.max(s.get_values()[:, i])
+            if min1 < x_min:
+                x_min = min1
+            if max1 > x_max:
+                x_max = max1
+        delt = 0.25 * (x_max - x_min)
+        x = np.linspace(x_min - delt, x_max + delt, 100)
+    else:
+        x = np.linspace(interval[0], interval[1], num_points)
+
+    # plot marginals
+    plt.rcParams.update({'font.size': 22})
+    plt.rcParams.update({'axes.linewidth': 2})
     fig = plt.figure(figsize=(10, 10))
-    x_min = np.inf
-    x_max = -np.inf
-    for s in sets:
-        min1 = np.min(s.get_values()[:, i])
-        max1 = np.max(s.get_values()[:, i])
-        if min1 < x_min:
-            x_min = min1
-        if max1 > x_max:
-            x_max = max1
-
-    delt = 0.25 * (x_max - x_min)
-    x = np.linspace(x_min - delt, x_max + delt, 100)
     for k, s in enumerate(sets):
-        if s.get_prob_type_init() is not None:
+        if s.get_prob_type_init() is not None and initials:
             mar = s.marginal_pdf_init(x, i)
-            plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
+            plt.plot(x, mar, label=sets_label_initial[k], linewidth=4)
         if s.get_prob_type() is not None:
             mar = s.marginal_pdf(x, i)
-            plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
-    """
-    for k, s in enumerate(sets):
-        if s.get_prob_type() is not None:
-            if s.get_prob_type() == 'kde':
-                param_marginals, cluster_weights = s.get_prob_parameters()
-                mar = np.zeros(x.shape)
-                num_clusters = len(cluster_weights)
-                for j in range(num_clusters):
-                    mar += param_marginals[i][j](x) * cluster_weights[j]
-                plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
-            elif s.get_prob_type() == 'rv':
-                rv = s.get_prob_parameters()
-                rv_continuous = getattr(stats, rv[i][0])
-                args = rv[i][1]
-                mar = rv_continuous.pdf(x, **args)
-                plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
-            elif s.get_prob_type() == 'gmm':
-                means, covs,  cluster_weights = s.get_prob_parameters()
-                mar = np.zeros(x.shape)
-                num_clusters = len(cluster_weights)
-                for j in range(num_clusters):
-                    mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i]**0.5)) * cluster_weights[j]
-                plt.plot(x, mar, label=sets_label[k] + ' Updated', linewidth=4, linestyle='dashed')
-        if s.get_prob_type_init() is not None:
-            if s.get_prob_type_init() == 'kde':
-                param_marginals, cluster_weights = s.get_prob_parameters_init()
-                mar = np.zeros(x.shape)
-                num_clusters = len(cluster_weights)
-                for j in range(num_clusters):
-                    mar += param_marginals[i][j](x) * cluster_weights[j]
-                plt.plot(x, mar, label=sets_label[k] + 'Initial', linewidth=4)
-            elif s.get_prob_type_init() == 'rv':
-                rv = s.get_prob_parameters_init()
-                rv_continuous = getattr(stats, rv[i][0])
-                args = rv[i][1]
-                mar = rv_continuous.pdf(x, **args)
-                plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
-            elif s.get_prob_type_init() == 'gmm':
-                means, covs,  cluster_weights = s.get_prob_parameters_init()
-                mar = np.zeros(x.shape)
-                num_clusters = len(cluster_weights)
-                for j in range(num_clusters):
-                    mar += stats.norm.pdf(x, loc=means[j][i], scale=(covs[j][i, i] ** 0.5)) * cluster_weights[j]
-                plt.plot(x, mar, label=sets_label[k] + ' Initial', linewidth=4)
-    """
-
-    plt.title('Densities for parameter ' + label, fontsize=16)
-    plt.legend(fontsize=20)
-    plt.show()
+            plt.plot(x, mar, label=sets_label[k], linewidth=4, linestyle='dashed')
+    plt.xlabel(label)
+    plt.ylabel("PDF")
+    if type(title) is str:
+        plt.title(title)
+    plt.legend(fontsize=16)
+    if interactive:
+        plt.show()
+    if savefile is not None:
+        plt.savefig(savefile)
