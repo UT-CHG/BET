@@ -322,7 +322,7 @@ class test_plotDomains(unittest.TestCase):
         try:
             plotDomains.show_data_domain_2D(
                 disc_obj_temp, Q_ref,
-                ref_markers, ref_colors, triangles=triangles, save=save,
+                ref_markers, ref_colors, save=save,
                 filenames=filenames)
             go = True
         except (RuntimeError, TypeError, NameError):
