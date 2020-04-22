@@ -5,11 +5,16 @@ import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
 import bet.calculateP.dataConsistent as dataConsistent
 
+"""
+Useful setups for testing.
+"""
+
 
 def random_voronoi(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True, level=1):
     if level == 1:
         return bsam.random_sample_set(rv, dim, num_samples, globalize)
     elif level == 2:
+
         def my_model(samples):
             A = np.eye(dim, out_dim)
             return np.dot(samples, A)
@@ -43,6 +48,7 @@ def regular_voronoi(dim=1, out_dim=1, num_samples_per_dim=3, level=1):
         return bsam.regular_sample_set(domain, num_samples_per_dim)
     elif level == 2:
         domain = np.array([[0.0, 1.0]] * dim)
+
         def my_model(samples):
             A = np.eye(dim, out_dim)
             return np.dot(samples, A)
@@ -62,6 +68,7 @@ def regular_voronoi(dim=1, out_dim=1, num_samples_per_dim=3, level=1):
         return disc
     elif level == 3:
         domain = np.array([[0.0, 1.0]] * dim)
+
         def my_model(samples):
             A = np.eye(dim, out_dim)
             return np.dot(samples, A)
@@ -69,6 +76,7 @@ def regular_voronoi(dim=1, out_dim=1, num_samples_per_dim=3, level=1):
         sampler.regular_sample_set(domain, num_samples_per_dim)
         disc = sampler.compute_qoi_and_create_discretization()
         return sampler
+
 
 def lhs_voronoi(dim=1, out_dim=1, num_samples=1000, criterion='center', level=1):
     if level == 1:
@@ -76,6 +84,7 @@ def lhs_voronoi(dim=1, out_dim=1, num_samples=1000, criterion='center', level=1)
         return bsam.lhs_sample_set(domain, num_samples, criterion)
     elif level == 2:
         domain = np.array([[0.0, 1.0]] * dim)
+
         def my_model(samples):
             A = np.eye(dim, out_dim)
             return np.dot(samples, A)
@@ -95,6 +104,7 @@ def lhs_voronoi(dim=1, out_dim=1, num_samples=1000, criterion='center', level=1)
         return disc
     elif level == 3:
         domain = np.array([[0.0, 1.0]] * dim)
+
         def my_model(samples):
             A = np.eye(dim, out_dim)
             return np.dot(samples, A)
@@ -102,6 +112,7 @@ def lhs_voronoi(dim=1, out_dim=1, num_samples=1000, criterion='center', level=1)
         sampler.lhs_sample_set(domain, num_samples, criterion)
         disc = sampler.compute_qoi_and_create_discretization()
         return sampler
+
 
 def random_kde(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True, level=1, rv2="norm"):
     if level == 1:
@@ -120,7 +131,7 @@ def random_kde(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True,
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_probability_set(disc2.get_output_sample_set())
-        dataConsistent.dc_inverse_kde(disc1)
+        dataConsistent.invert_to_kde(disc1)
         return disc1, disc2
 
 
@@ -141,28 +152,7 @@ def random_gmm(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True,
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_probability_set(disc2.get_output_sample_set())
-        dataConsistent.dc_inverse_gmm(disc1)
-        return disc1, disc2
-
-
-def random_gmm(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True, level=1, rv2="norm"):
-    if level == 1:
-        return bsam.random_sample_set(rv, dim, num_samples, globalize)
-    elif level == 2:
-        def my_model(samples):
-            A = np.eye(dim, out_dim)
-            return np.dot(samples, A)
-
-        sampler1 = bsam.sampler(lb_model=my_model, error_estimates=False, jacobians=False)
-        sampler1.random_sample_set(rv, dim, num_samples, globalize)
-        disc1 = sampler1.compute_qoi_and_create_discretization()
-
-        sampler2 = bsam.sampler(lb_model=my_model, error_estimates=False, jacobians=False)
-        sampler2.random_sample_set(rv2, dim, num_samples, globalize)
-        disc2 = sampler1.compute_qoi_and_create_discretization()
-
-        disc1.set_output_probability_set(disc2.get_output_sample_set())
-        dataConsistent.dc_inverse_gmm(disc1)
+        dataConsistent.invert_to_gmm(disc1)
         return disc1, disc2
 
 
@@ -184,12 +174,12 @@ def random_multivariate_gaussian(rv='uniform', dim=1, out_dim=1, num_samples=100
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_probability_set(disc2.get_output_sample_set())
-        dataConsistent.dc_inverse_multivariate_gaussian(disc1)
+        dataConsistent.invert_to_multivariate_gaussian(disc1)
         return disc1, disc2
 
 
 def random_rv(rv='uniform', dim=1, out_dim=1, num_samples=1000,
-                                 globalize=True, level=1, rv2="norm"):
+              globalize=True, level=1, rv2="norm", rv_invert="norm"):
     if level == 1:
         return bsam.random_sample_set(rv, dim, num_samples, globalize)
     elif level == 2:
@@ -206,7 +196,7 @@ def random_rv(rv='uniform', dim=1, out_dim=1, num_samples=1000,
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_probability_set(disc2.get_output_sample_set())
-        dataConsistent.dc_inverse_random_variable(disc1, rv="norm")
+        dataConsistent.invert_to_random_variable(disc1, rv=rv_invert)
         return disc1, disc2
 
 

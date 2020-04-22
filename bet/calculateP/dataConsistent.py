@@ -122,7 +122,7 @@ def invert_to_kde(discretization, bw_method = None):
     return param_marginals, cluster_weights
 
 
-def dc_inverse_rejection_sampling(discretization, bw_method=None):
+def invert_rejection_sampling(discretization, bw_method=None):
     """
     Solve the data consistent stochastic inverse problem by rejection sampling.
 
@@ -181,7 +181,7 @@ def dc_inverse_rejection_sampling(discretization, bw_method=None):
     return new_set
 
 
-def dc_inverse_gmm(discretization, bw_method=None):
+def invert_to_gmm(discretization, bw_method=None):
     """
     Solve the data consistent stochastic inverse problem, solving for a Gaussian mixture model.
 
@@ -253,7 +253,7 @@ def dc_inverse_gmm(discretization, bw_method=None):
     return means, covariances, cluster_weights
 
 
-def dc_inverse_multivariate_gaussian(discretization, bw_method=None):
+def invert_to_multivariate_gaussian(discretization, bw_method=None):
     """
     Solve the data consistent stochastic inverse problem, solving for a multivariate Gaussian.
 
@@ -321,7 +321,7 @@ def dc_inverse_multivariate_gaussian(discretization, bw_method=None):
     return means, covariances, cluster_weights
 
 
-def dc_inverse_random_variable(discretization, rv, num_reweighted=10000, bw_method=None):
+def invert_to_random_variable(discretization, rv, num_reweighted=10000, bw_method=None):
     """
     Solve the data consistent stochastic inverse problem, fitting a random variable.
 

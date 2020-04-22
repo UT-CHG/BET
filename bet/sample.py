@@ -872,6 +872,8 @@ class sample_set_base(object):
         :return probability densities
         :rtype :class:`numpy.ndarray` of shape (num_vals, )
         """
+        if len(vals.shape) == 1:
+            vals = np.reshape(vals, (vals.shape[0], 1))
         if vals.shape[1] != self._dim:
             raise dim_not_matching("Array does not have the correct dimension.")
 
@@ -896,6 +898,8 @@ class sample_set_base(object):
         :return probability densities
         :rtype :class:`numpy.ndarray` of shape (num_vals, )
         """
+        if len(vals.shape) == 1:
+            vals = np.reshape(vals, (vals.shape[0], 1))
         if vals.shape[1] != self._dim:
             raise dim_not_matching("Array does not have the correct dimension.")
         if self._prob_type_init == "voronoi":

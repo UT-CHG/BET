@@ -163,6 +163,8 @@ class Test_sampler_regular(Test_sampler):
         assert self.sampler.discretization.check_nums() == self.num ** self.input_dim
 
 
+
+
 class Test_sampler_lhs(Test_sampler):
     """
     Testing ``bet.sampling.basicSampling.sampler``
