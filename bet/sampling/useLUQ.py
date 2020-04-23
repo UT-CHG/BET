@@ -1,3 +1,4 @@
+# Copyright (C) 2014-2020 The BET Development Team
 import numpy as np
 import bet.sample as sample
 import bet.util as util

@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2020 The BET Development Team
+
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 import numpy as np

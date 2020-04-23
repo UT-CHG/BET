@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2014-2019 BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 '''
 The python script for building the BET package and subpackages.
