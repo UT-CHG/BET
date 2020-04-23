@@ -19,6 +19,14 @@ from bet.sample import sample_set
 from bet.sample import discretization as disc
 import collections
 
+try:
+    from luq.luq import LUQ
+    has_luq = True
+except ImportError:
+    has_luq = False
+
+
+@unittest.skipIf(not has_luq, 'LUQ is not installed.')
 class Test_useLUQ(unittest.TestCase):
     """
     Testing ``bet.sampling.useLUQ.useLUQ``, interfacing with a model.

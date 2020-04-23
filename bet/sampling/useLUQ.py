@@ -6,7 +6,10 @@ import logging
 """
 The module contains a class for interfacing between BET and LUQ.
 """
-
+class missing_module(Exception):
+    """
+    Exception for when a module cannot be imported.
+    """
 
 def myModel(inputs, times):
     """
@@ -20,8 +23,8 @@ def myModel(inputs, times):
     """
     try:
         from luq.dynamical_systems import Selkov
-    except RuntimeError:
-        logging.warning("luq package is not found.")
+    except ImportError:
+        raise missing_module("luq cannot be imported")
     ics = np.ones(inputs.shape)
     # Solve systems
     phys = Selkov()
@@ -88,8 +91,8 @@ class useLUQ:
         """
         try:
             from luq.luq import LUQ
-        except RuntimeError:
-            logging.warning("luq package is not found.")
+        except ImportError:
+            raise missing_module("luq cannot be imported")
 
         self.learn = LUQ(predicted_time_series, obs_time_series, times)
 

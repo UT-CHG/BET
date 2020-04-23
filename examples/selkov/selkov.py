@@ -15,7 +15,7 @@ o_set = bsam.random_sample_set(rv=[['beta', {'a': 2, 'b': 2, 'loc': .01, 'scale'
 
 # Construct the predicted time series data
 time_start = 2.0
-time_end = 6.5 
+time_end = 6.5
 num_time_preds = int((time_end-time_start)*100)  # number of predictions (uniformly space) between [time_start,time_end]
 times = np.linspace(time_start, time_end, num_time_preds)
 

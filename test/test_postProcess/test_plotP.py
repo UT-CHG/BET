@@ -20,7 +20,6 @@ import os
 import bet.sample as sample
 import bet.calculateP.dataConsistent as dc
 import bet.sampling.basicSampling as bsam
-import bet.sampling.useLUQ as useLUQ
 
 
 class Test_calc_marg_1D(unittest.TestCase):
@@ -250,37 +249,34 @@ class Test_plot_marginal(unittest.TestCase):
     Test :meth:`bet.postProcess.plotP.plot_marginal`.
     """
     def setUp(self):
-        np.random.seed(123456)
-        self.p_set = bsam.random_sample_set(rv=[['uniform', {'loc': .01, 'scale': 0.114}],
-                                        ['uniform', {'loc': .05, 'scale': 1.45}]],
-                                       input_obj=2, num_samples=50)
+        def my_model(parameter_samples):
+            Q_map = np.array([[0.506, 0.463], [0.253, 0.918], [0.685, 0.496]])
+            QoI_samples = np.dot(parameter_samples, Q_map)
+            return QoI_samples
 
-        self.o_set = bsam.random_sample_set(rv=[['beta', {'a': 2, 'b': 2, 'loc': .01, 'scale': 0.114}],
-                                           ['beta', {'a': 2, 'b': 2, 'loc': .05, 'scale': 1.45}]],
-                                       input_obj=2, num_samples=50)
-        time_start = 2.0  # 0.5
-        time_end = 6.5  # 40.0
-        num_time_preds = int((time_end - time_start) * 100)
-        self.times = np.linspace(time_start, time_end, num_time_preds)
+        sampler = bsam.sampler(my_model)
+        sampler.random_sample_set(rv=[['norm', {'loc': 2, 'scale': 3}],
+                                      ['uniform', {'loc': 2, 'scale': 3}],
+                                      ['beta', {'a': 2, 'b': 2}]], input_obj=3, num_samples=1000)
+        sampler.compute_qoi_and_create_discretization()
 
-        self.luq = useLUQ.useLUQ(predict_set=self.p_set, obs_set=self.o_set, lb_model=useLUQ.myModel, times=self.times)
-        self.luq.setup()
+        sampler2 = bsam.sampler(my_model)
+        sampler2.random_sample_set(rv=[['norm', {'loc': 1, 'scale': 2}],
+                                       ['uniform', {'loc': 2, 'scale': 2}],
+                                       ['beta', {'a': 2, 'b': 3}]], input_obj=3, num_samples=1000)
+        sampler2.compute_qoi_and_create_discretization()
 
-        time_start_idx = 0
-        time_end_idx = len(self.luq.times) - 1
-        self.luq.clean_data(time_start_idx=time_start_idx, time_end_idx=time_end_idx,
-                            num_clean_obs=20, tol=5.0e-2, min_knots=3, max_knots=12)
-        self.luq.dynamics(cluster_method='kmeans', kwargs={'n_clusters': 2, 'n_init': 10})
-        self.luq.learn_qois_and_transform(num_qoi=2)
-        self.disc1, self.disc2 = self.luq.make_disc()
+        sampler.discretization.set_output_probability_set(sampler2.discretization.get_output_sample_set())
+        self.disc1 = sampler.discretization
+        self.disc2 = sampler2.discretization
 
     def test_rv(self):
         """
         Test plotting random variable probability.
         """
         dc.invert_to_random_variable(self.disc1, rv='beta')
-        param_labels = [r'$a$', r'$b$']
-        for i in range(2):
+        param_labels = [r'$a$', r'$b$', r'$c$']
+        for i in range(3):
             plotP.plot_marginal(sets=(self.disc1, self.disc2), i=i,
                                 sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                                 title="Fitted Beta Distribution", label=param_labels[i], interactive=False)
