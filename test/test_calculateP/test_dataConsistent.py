@@ -117,6 +117,20 @@ class Test_invert_to_random_variable(unittest.TestCase):
         assert new_set.get_dim() == 2
         assert new_set.check_num() == 100
 
+        disc, _ = random_gmm(dim=2, out_dim=1, level=2)
+        new_set = bsam.sample_from_updated(disc, num_samples=100)
+        assert new_set.get_dim() == 2
+        assert new_set.check_num() == 100
+
+        disc, _ = random_kde(dim=2, out_dim=1, level=2)
+        new_set = bsam.sample_from_updated(disc, num_samples=100)
+        assert new_set.get_dim() == 2
+        assert new_set.check_num() == 100
+        disc.global_to_local()
+
+
+
+
 class Test_rejection_sampling(unittest.TestCase):
     def Test_rejection_sampling(self):
         """
