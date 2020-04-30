@@ -2,7 +2,6 @@ dist: xenial
 language: python
 
 python:
-    - "2.7"
     - "3.6"
     - "3.7"
 
@@ -28,16 +27,13 @@ notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
-            - lichgraham@gmail.com
-            - scottw13@gmail.com
-            - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
 
 # whitelist
 branches:
     only:
-        - master
+        - v3-steve
 
 # Push the results back to codecov
 after_success:
