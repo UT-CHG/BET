@@ -65,7 +65,7 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
         disc._input_sample_set.set_jacobians(jac)
         self.sur = surrogates.piecewise_polynomial_surrogate(disc)
 
-    def Test_constants(self):
+    def test_constants(self):
         """
         Test for piecewise constants.
         """
@@ -89,7 +89,7 @@ class Test_piecewise_polynomial_surrogate_3_to_2(unittest.TestCase):
                                                       regions=[0],
                                                       update_input=True)
 
-    def Test_linears(self):
+    def test_linears(self):
         """
         Test for piecewise linears.
         """
@@ -145,7 +145,7 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
         disc._input_sample_set.set_jacobians(jac)
         self.sur = surrogates.piecewise_polynomial_surrogate(disc)
 
-    def Test_constants(self):
+    def test_constants(self):
         """
         Test for piecewise constants.
         """
@@ -170,7 +170,7 @@ class Test_piecewise_polynomial_surrogate_3_to_1(unittest.TestCase):
                                                       regions=[0],
                                                       update_input=True)
 
-    def Test_linears(self):
+    def test_linears(self):
         """
         Test for piecewise linears.
         """
@@ -227,7 +227,7 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
         disc._input_sample_set.set_jacobians(jac)
         self.sur = surrogates.piecewise_polynomial_surrogate(disc)
 
-    def Test_constants(self):
+    def test_constants(self):
         """
         Test methods for order 0 polynomials.
         """
@@ -252,7 +252,7 @@ class Test_piecewise_polynomial_surrogate_1_to_1(unittest.TestCase):
                                                       regions=[0],
                                                       update_input=True)
 
-    def Test_linears(self):
+    def test_linears(self):
         """
         Test for piecewise linears.
         """

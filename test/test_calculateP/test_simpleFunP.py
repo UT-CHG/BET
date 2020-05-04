@@ -205,7 +205,7 @@ class uniform_partition_uniform_distribution_rectangle_scaled(prob_uniform):
 
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_01D(data_01D,
-                                                                       uniform_partition_uniform_distribution_rectangle_scaled):
+                                                                       uniform_partition_uniform_distribution_rectangle_scaled, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled` on 01D data domain.
     """
@@ -221,7 +221,7 @@ class test_uniform_partition_uniform_distribution_rectangle_scaled_01D(data_01D,
 
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_1D(data_1D,
-                                                                      uniform_partition_uniform_distribution_rectangle_scaled):
+                                                                      uniform_partition_uniform_distribution_rectangle_scaled, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled` on 1D data domain.
     """
@@ -238,7 +238,7 @@ class test_uniform_partition_uniform_distribution_rectangle_scaled_1D(data_1D,
 
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_2D(data_2D,
-                                                                      uniform_partition_uniform_distribution_rectangle_scaled):
+                                                                      uniform_partition_uniform_distribution_rectangle_scaled, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled` on 2D data domain.
     """
@@ -255,7 +255,7 @@ class test_uniform_partition_uniform_distribution_rectangle_scaled_2D(data_2D,
 
 
 class test_uniform_partition_uniform_distribution_rectangle_scaled_3D(data_3D,
-                                                                      uniform_partition_uniform_distribution_rectangle_scaled):
+                                                                      uniform_partition_uniform_distribution_rectangle_scaled, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_uniform_distribution_rectangle_scaled` on 3D data domain.
     """
@@ -299,7 +299,7 @@ class normal_partition_normal_distribution(prob):
 
 
 class test_normal_partition_normal_distribution_01D(
-        data_01D, normal_partition_normal_distribution):
+        data_01D, normal_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 01D data domain.
     """
@@ -313,7 +313,7 @@ class test_normal_partition_normal_distribution_01D(
 
 
 class test_normal_partition_normal_distribution_1D(
-        data_1D, normal_partition_normal_distribution):
+        data_1D, normal_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 1D data domain.
     """
@@ -327,7 +327,7 @@ class test_normal_partition_normal_distribution_1D(
 
 
 class test_normal_partition_normal_distribution_2D(
-        data_2D, normal_partition_normal_distribution):
+        data_2D, normal_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 2D data domain.
     """
@@ -341,7 +341,7 @@ class test_normal_partition_normal_distribution_2D(
 
 
 class test_normal_partition_normal_distribution_3D(
-        data_3D, normal_partition_normal_distribution):
+        data_3D, normal_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.normal_partition_normal_distribution` on 3D data domain.
     """
@@ -382,7 +382,7 @@ class uniform_partition_normal_distribution(prob):
 
 
 class test_uniform_partition_normal_distribution_01D(
-        data_01D, uniform_partition_normal_distribution):
+        data_01D, uniform_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 01D data domain.
     """
@@ -396,7 +396,7 @@ class test_uniform_partition_normal_distribution_01D(
 
 
 class test_uniform_partition_normal_distribution_1D(
-        data_1D, uniform_partition_normal_distribution):
+        data_1D, uniform_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 1D data domain.
     """
@@ -410,7 +410,7 @@ class test_uniform_partition_normal_distribution_1D(
 
 
 class test_uniform_partition_normal_distribution_2D(
-        data_2D, uniform_partition_normal_distribution):
+        data_2D, uniform_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 2D data domain.
     """
@@ -424,7 +424,7 @@ class test_uniform_partition_normal_distribution_2D(
 
 
 class test_uniform_partition_normal_distribution_3D(
-        data_3D, uniform_partition_normal_distribution):
+        data_3D, uniform_partition_normal_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.uniform_partition_normal_distribution` on 3D data domain.
     """
@@ -1445,7 +1445,7 @@ class user_partition_user_distribution(prob):
 
 
 class test_user_partition_user_distribution_01D(data_01D,
-                                                user_partition_user_distribution):
+                                                user_partition_user_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 01D data domain.
     """
@@ -1459,7 +1459,7 @@ class test_user_partition_user_distribution_01D(data_01D,
 
 
 class test_user_partition_user_distribution_1D(data_1D,
-                                               user_partition_user_distribution):
+                                               user_partition_user_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 1D data domain.
     """
@@ -1473,7 +1473,7 @@ class test_user_partition_user_distribution_1D(data_1D,
 
 
 class test_user_partition_user_distribution_2D(data_2D,
-                                               user_partition_user_distribution):
+                                               user_partition_user_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 2D data domain.
     """
@@ -1487,7 +1487,7 @@ class test_user_partition_user_distribution_2D(data_2D,
 
 
 class test_user_partition_user_distribution_3D(data_3D,
-                                               user_partition_user_distribution):
+                                               user_partition_user_distribution, unittest.TestCase):
     """
     Tests :meth:`bet.calculateP.simpleFunP.user_partition_user_distribution` on 3D data domain.
     """
