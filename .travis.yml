@@ -18,6 +18,9 @@ install:
 
 script:
   - pytest --cov=./bet/ ./test/
+  - mpirun -n 2 pytest --cov=./bet/ ./test/
+  - pip uninstall -y mpi4py
+  -  pytest --cov=./bet/ ./test/
 
 # notification settings
 notifications:
