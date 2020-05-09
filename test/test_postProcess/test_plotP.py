@@ -217,6 +217,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         try:
             plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
                                          filename="file", interactive=False)
+            plotP.plot_2D_marginal_probs(marginals, bins, self.samples, plot_surface=True,
+                                         filename="file", interactive=False)
             go = True
             if os.path.exists("file_2D_0_1.png") and comm.rank == 0:
                 os.remove("file_2D_0_1.png")
@@ -233,7 +235,7 @@ class Test_calc_marg_2D(unittest.TestCase):
         marginals[(0, 1)][0][0] = 0.0
         marginals[(0, 1)][0][1] *= 2.0
         try:
-            plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
+            plotP.plot_2D_marginal_contours(marginals, bins, self.samples,
                                          filename="file", interactive=False)
             go = True
             if os.path.exists("file_2D_contours_0_1.png") and comm.rank == 0:
