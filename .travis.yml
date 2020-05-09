@@ -15,6 +15,7 @@ before_install:
 install:
   - pip install .
   - pip install codecov pytest-cov
+  - pip install git+https://github.com/CU-Denver-UQ/LUQ
 
 script:
   - pytest --cov=./bet/ ./test/
