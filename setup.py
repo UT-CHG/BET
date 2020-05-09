@@ -12,7 +12,7 @@ except ImportError:
 
 setup(name='bet',
       version='2.2.1',
-      description='Butler, Estep, Tavener method',
+      description='A toolkit for data-consistent stochastic problems.',
       author='Steven Mattis',
       author_email='steve.a.mattis@gmail.com',
       license='GNU LGPL',
@@ -24,6 +24,7 @@ setup(name='bet',
                 'bet.sensitivity'],
       install_requires=['matplotlib',
                         'pyDOE',
-                        'scipy<=1.2.1',
                         'numpy',
-                        'nose'])
+                        'scipy',
+                        'pytest',
+                        'mpi4py'])

@@ -13,8 +13,8 @@ before_install:
   - sudo apt-get install gfortran libblas-dev liblapack-dev mpich libmpich-dev
 
 install:
-  - pip install matplotlib mpi4py codecov pytest pytest-cov
-  - python setup.py install
+  - pip install .
+  - pip install codecov pytest-cov
 
 script:
   - pytest --cov=./bet/ ./test/
