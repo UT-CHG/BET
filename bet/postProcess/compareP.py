@@ -133,7 +133,7 @@ class compare:
         sup2 = np.equal(self.pdfs2, 0.0)
         self.pdfs_zero = np.sum(np.logical_and(sup1, sup2))
 
-    def distance(self, functional='tv', **kwargs):
+    def distance(self, functional='tv', normalize=True, **kwargs):
         """
         Compute the discrete statistical distance between the probability measures
         evaluated at the comparison points.
@@ -143,6 +143,8 @@ class compare:
             a scalar value (measure of similarity). Accepted strings are 'tv' (total variation) the
             default,
             'mink' (minkowski), '2' (Euclidean norm), and 'hell' (Hellinger distance).
+        :param normalize: whether or not to normalize the distance
+        :type normalize: bool
         :param kwargs: Keyword arguments for `functional`.
 
         :rtype: float
@@ -170,8 +172,10 @@ class compare:
             return np.sqrt(self.distance('sqhell'))
         else:
             dist = functional(self.pdfs1, self.pdfs2, **kwargs)
-
-        return dist / (len(self.pdfs1) - self.pdfs_zero)
+        if normalize:
+            return dist / (len(self.pdfs1) - self.pdfs_zero)
+        else:
+            return dist
 
     def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0,
                           functional='tv', **kwargs):

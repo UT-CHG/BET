@@ -50,12 +50,12 @@ simpleFunP.regular_partition_uniform_distribution_rectangle_domain(
     data_set=my_disc, rect_domain=rect_domain)
 
 # Make emulated input sets
-emulated_inputs = bsam.random_sample_set('r',
+emulated_inputs = bsam.random_sample_set('uniform',
                                          my_disc._input_sample_set._domain,
                                          num_samples=10001,
                                          globalize=False)
 
-emulated_inputs2 = bsam.random_sample_set('r',
+emulated_inputs2 = bsam.random_sample_set('uniform',
                                           my_disc._input_sample_set._domain,
                                           num_samples=10001,
                                           globalize=False)
@@ -130,8 +130,8 @@ sur_disc_linear = sur.generate_for_input_set(emulated_inputs, order=1)
 (P3, er_est3) = sur.calculate_prob_for_sample_set_region(s_set,
                                                          regions=[0])
 if comm.rank == 0:
-    print("Piecewise constant surrogate probability: ", P3[0])
-    print("Piecewise constant error estimate ", er_est3[0])
-    print("Piecewise constant corrected probability: ", P3[0] - er_est3[0])
-    print("Piecewise constant effectivity ratio: ",
+    print("Piecewise linear surrogate probability: ", P3[0])
+    print("Piecewise linear error estimate ", er_est3[0])
+    print("Piecewise linear corrected probability: ", P3[0] - er_est3[0])
+    print("Piecewise linear effectivity ratio: ",
           er_est3[0] / (P3[0] - P_true))

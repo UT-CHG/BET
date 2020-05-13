@@ -21,7 +21,7 @@ def my_model(parameter_samples):
     mesh.init()
 
     # Random field is projected on the space of Hat functions in the mesh
-    V = FunctionSpace(mesh, "CG", 1)
+    V = FunctionSpace(mesh, "Lagrange", 1)
 
     # Load the KL expansion information
     KL_mdat = sio.loadmat("KL_expansion")

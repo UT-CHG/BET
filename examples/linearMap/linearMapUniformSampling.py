@@ -88,7 +88,7 @@ else:
     input_samples.estimate_volume_mc()
 
 # Create the discretization object using the input samples
-my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
+my_discretization = sampler.compute_qoi_and_create_discretization(input_samples,
                                                                   savefile='3to2_discretization.txt.gz')
 
 '''

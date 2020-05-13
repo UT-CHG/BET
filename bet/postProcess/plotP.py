@@ -40,11 +40,12 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
     described by the probabilities within the sample_set object with histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
-    emulated samples.
-    (``discretization._emulated_input_sample_set._probabilties_local``).
+    emulated samples (if they exist) or the samples.
+    (``discretization._emulated_input_sample_set._probabilties_local`` or
+    ``discretization._input_sample_set._probabilties_local``).
 
     This assumes that the user has already run
-    :meth:`~bet.calculateP.calculateP.prob_emulated`.
+    :meth:`~bet.calculateP.calculateP.prob_emulated` or :meth:`~bet.calculateP.calculateP.prob`.
 
     :param sample_set: Object containing samples and probabilities
     :type sample_set: :class:`~bet.sample.sample_set_base` or
@@ -56,7 +57,10 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._emulated_input_sample_set
+        if sample_set.get_emulated_input_sample_set() is not None:
+            sample_obj = sample_set._emulated_input_sample_set
+        else:
+            sample_obj = sample_set.get_input_sample_set()
         if sample_obj is None:
             raise missing_attribute("Missing emulated_input_sample_set")
     elif isinstance(sample_set, sample.sample_set_base):
@@ -100,11 +104,12 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     input probability measure defined on a rectangular grid for voronoi probabilities using histograms..
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
-    emulated samples
-    (``discretization._emulated_input_sample_set._probabilties_local``).
+    emulated samples (if they exist) or samples
+    (``discretization._emulated_input_sample_set._probabilties_local`` or
+    ``discretization._input_sample_set._probabilties_local``).
 
     This assumes that the user has already run
-    :meth:`~bet.calculateP.calculateP.prob_emulated`.
+    :meth:`~bet.calculateP.calculateP.prob_emulated` or :meth:`~bet.calculateP.calculateP.prob`.
 
 
     :param sample_set: Object containing samples and probabilities
@@ -117,9 +122,12 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._emulated_input_sample_set
+        if sample_set._emulated_input_sample_set is not None:
+            sample_obj = sample_set._emulated_input_sample_set
+        else:
+            sample_obj = sample_set.get_input_sample_set()
         if sample_obj is None:
-            raise missing_attribute("Missing emulated_input_sample_set")
+            raise missing_attribute("Missing input_sample_set")
     elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:

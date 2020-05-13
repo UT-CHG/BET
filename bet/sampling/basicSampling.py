@@ -110,23 +110,40 @@ def random_sample_set(rv, input_obj, num_samples, globalize=True):
     :param rv: Type and parameters for continuous random variables.
     :type rv: str, list, or tuple
     :param input_obj: :class:`~bet.sample.sample_set` object containing the dimension to sample from, or the dimension.
-    :type input_obj: :class:`~bet.sample.sample_set` or int
+    :type input_obj: :class:`~bet.sample.sample_set` or int or :class:`numpy.ndarray`
     :param num_samples: Number of samples
     :type num_samples: int
     :param globalize: Whether or not to globalize vectors.
     :type globalize: bool
     :return:
     """
+    # for backward compatibility
+    if rv == "r" or rv == "random":
+        rv = "uniform"
+    elif rv == 'lhs':
+        return lhs_sample_set(input_obj, num_samples, criterion='center', globalize=globalize)
     # check to see what the input object is
     if isinstance(input_obj, sample.sample_set):
         input_sample_set = input_obj
     elif isinstance(input_obj, int):
         input_sample_set = sample.sample_set(input_obj)
+    elif isinstance(input_obj, np.ndarray):
+        input_sample_set = sample.sample_set(input_obj.shape[0])
+        input_sample_set.set_domain(input_obj)
+    else:
+        raise sample.wrong_input("input_obj is of wrong type.")
 
     dim = input_sample_set.get_dim()
 
     if type(rv) is str:
-        rv = [[rv, {}]] * dim
+        if input_sample_set.get_domain() is None:
+            rv = [[rv, {}]] * dim
+        else:
+            domain = input_sample_set.get_domain()
+            rv_type = rv
+            rv = []
+            for i in range(dim):
+                rv.append([rv_type, {'loc': domain[i, 0], 'scale': domain[i, 1]-domain[i, 0]}])
     elif type(rv) in (list, tuple):
         if len(rv) == 2 and type(rv[0]) is str and type(rv[1]) is dict:
             rv = [rv] * dim
@@ -497,7 +514,7 @@ class sampler(object):
         comm.barrier()
 
         if savefile is not None:
-            self.save(savefile=savefile, globalize=globalize)
+            self.discretization.save(filename=savefile, globalize=globalize)
 
         comm.barrier()
 
@@ -509,3 +526,50 @@ class sampler(object):
         """
         import copy
         return copy.deepcopy(self)
+
+    def create_random_discretization(self, rv, input_obj,
+                                     savefile=None, num_samples=None,
+                                     globalize=True):
+        """
+        Create a sample set by sampling random variates from continuous distributions
+        from :class:`scipy.stats.rv_continuous`. See https://docs.scipy.org/doc/scipy/reference/stats.html,
+        and evaluate the model to calculate quantities of interest and make a discretization.
+
+        `rv` can take multiple types of formats depending on type of distribution.
+
+        A string is used for the same distribution with default parameters in each dimension.
+        ex. rv = 'uniform' or rv = 'beta'
+
+        A list or tuple of length 2 is used for the same distribution with user-defined parameters in each dimension as a
+        dictionary.
+        ex. rv = ['uniform', {'loc':-2, 'scale':5}] or rv = ['beta', {'a': 2, 'b':5, 'loc':-2, 'scale':5}]
+
+        A list of length dim which entries of lists or tuples of length 2 is used for different distributions with
+        user-defined parameters in each dimension as a
+        dictionary.
+        ex. rv = [['uniform', {'loc':-2, 'scale':5}],
+                  ['beta', {'a': 2, 'b':5, 'loc':-2, 'scale':5}]]
+
+        :param rv: Type and parameters for continuous random variables.
+        :type rv: str, list, or tuple
+        :param input_obj: :class:`~bet.sample.sample_set` object containing the dimension to sample from, or the dimension.
+        :type input_obj: :class:`~bet.sample.sample_set` or int
+        :param string savefile: filename to save discretization
+        :param num_samples: Number of samples
+        :type num_samples: int
+        :param globalize: Whether or not to globalize vectors.
+        :type globalize: bool
+
+        :rtype: :class:`~bet.sample.discretization`
+        :returns: :class:`~bet.sample.discretization` object which contains
+            input and output sample sets with ``num_samples`` total samples
+        """
+        # Create N samples
+        if num_samples is None:
+            num_samples = self.num_samples
+
+        input_sample_set = self.random_sample_set(rv, input_obj,
+                                                  num_samples, globalize)
+
+        return self.compute_qoi_and_create_discretization(input_sample_set,
+                                                          savefile, globalize)
