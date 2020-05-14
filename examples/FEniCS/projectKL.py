@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2020 The BET Development Team
+
 from dolfin import *
 import numpy as np
 import petsc4py

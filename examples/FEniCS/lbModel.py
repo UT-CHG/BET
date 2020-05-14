@@ -1,4 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 # -*- coding: utf-8 -*-
 r"""

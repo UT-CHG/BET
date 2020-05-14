@@ -1,5 +1,8 @@
 #!/usr/bin/en python
 
+# Copyright (C) 2014-2020 The BET Development Team
+
+
 from dolfin import *
 from numpy import *
 
