@@ -4,7 +4,9 @@
 
 r"""
 This example generates samples on a 2D grid and evaluates
-a nonlinear map to a 1d or 2d space. The maps are defined
+a nonlinear map to a 1d or 2d space. Modify QoI_num in myModel.py
+to change the dimension of the output.
+The maps are defined
 as quantities of interest (QoI) defined as spatial
 observations of the solution to the elliptic PDE .. math::
   :nowrap:

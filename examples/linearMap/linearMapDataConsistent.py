@@ -26,10 +26,7 @@ This can be compared to the data-generating distribution through plots and a var
 """
 
 import numpy as np
-import bet.calculateP.simpleFunP as simpleFunP
-import bet.calculateP.calculateP as calculateP
 import bet.postProcess.plotP as plotP
-import bet.postProcess.plotDomains as plotD
 import bet.calculateP.dataConsistent as dc
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
