@@ -141,7 +141,7 @@ class compare:
         :param functional: functional defining type of statistical distance
         :type functional: str or a function that takes in two lists/arrays and returns
             a scalar value (measure of similarity). Accepted strings are 'tv' (total variation) the
-            default,
+            default, 'kl' (Kullback-Leibler),
             'mink' (minkowski), '2' (Euclidean norm), and 'hell' (Hellinger distance).
         :param normalize: whether or not to normalize the distance
         :type normalize: bool
@@ -156,28 +156,35 @@ class compare:
             raise samp.wrong_input("Compare set needed.")
         if self.pdfs1 is None or self.pdfs2 is None:
             self.evaluate_pdfs()
+        if normalize:
+            self.pdfs1 = self.pdfs1 / np.sum(self.pdfs1)
+            self.pdfs2 = self.pdfs2 / np.sum(self.pdfs2)
+            factor = 1.0
+        else:
+            factor = 1.0 / (self.pdfs1.shape[0] - self.pdfs_zero)
+
 
         if functional in ['tv', 'totvar',
                           'total variation', 'total-variation', '1']:
-            dist = ds.minkowski(self.pdfs1, self.pdfs2, 1, w=0.5, **kwargs)
+            dist = factor * ds.minkowski(self.pdfs1, self.pdfs2, 1, w=0.5, **kwargs)
         elif functional in ['mink', 'minkowski']:
-            dist = ds.minkowski(self.pdfs1, self.pdfs2, **kwargs)
+            dist = factor * ds.minkowski(self.pdfs1, self.pdfs2, **kwargs)
         elif functional in ['norm']:
-            dist = ds.norm(self.pdfs1 - self.pdfs2, **kwargs)
+            dist = factor * ds.norm(self.pdfs1 - self.pdfs2, **kwargs)
         elif functional in ['euclidean', '2-norm', '2']:
-            dist = ds.minkowski(self.pdfs1, self.pdfs2, 2, **kwargs)
+            dist = (factor ** 0.5) * ds.minkowski(self.pdfs1, self.pdfs2, 2, **kwargs)
         elif functional in ['sqhell', 'sqhellinger']:
-            dist = ds.sqeuclidean(np.sqrt(self.pdfs1), np.sqrt(self.pdfs2)) / 2.0
+            dist = factor * ds.sqeuclidean(np.sqrt(self.pdfs1), np.sqrt(self.pdfs2)) / 2.0
         elif functional in ['hell', 'hellinger']:
             return np.sqrt(self.distance('sqhell'))
+        elif functional in ['kl', 'k-l', 'kullback-leibler', 'entropy']:
+            from scipy.stats import entropy as kl_div
+            dist = kl_div(self.pdfs1, self.pdfs2, **kwargs)
         else:
             dist = functional(self.pdfs1, self.pdfs2, **kwargs)
-        if normalize:
-            return dist / (len(self.pdfs1) - self.pdfs_zero)
-        else:
-            return dist
+        return dist
 
-    def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0,
+    def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0, normalize=True,
                           functional='tv', **kwargs):
         """
         Compute the discrete statistical distance between the marginals of the probability measures
@@ -194,9 +201,11 @@ class compare:
         :param compare_factor: Proportion to increase domain. Only used if
         `interval` is None. 0 by default.
         :type compare_factor: float
+        :param normalize: whether or not to normalize the probabilities to sum to 1
+        :type normalize: bool
         :param functional: functional defining type of statistical distance
         :type functional: str or a function that takes in two lists/arrays and returns
-            a scalar value (measure of similarity). Accepted strings are 'tv' (total variation),
+            a scalar value (measure of similarity). Accepted strings are 'tv' (total variation), 'kl' (Kullback-Leibler)
             'mink' (minkowski), '2' (Euclidean norm), and 'hell' (Hellinger distance).
         :param kwargs: Keyword arguments for `functional`.
 
@@ -231,29 +240,36 @@ class compare:
         else:
             pdfs2 = self.set2.marginal_pdf(x, i)
 
-        sup1 = np.equal(pdfs1, 0.0)
-        sup2 = np.equal(pdfs2, 0.0)
-        pdfs_zero = np.sum(np.logical_and(sup1, sup2))
+        if normalize:
+            pdfs1 = pdfs1 / np.sum(pdfs1)
+            pdfs2 = pdfs2 / np.sum(pdfs2)
+            factor = 1.0
+        else:
+            sup1 = np.equal(pdfs1, 0.0)
+            sup2 = np.equal(pdfs2, 0.0)
+            pdfs_zero = np.sum(np.logical_and(sup1, sup2))
+            factor = 1.0 / (pdfs1.shape[0] - pdfs_zero) * (x[-1] - x[0])
 
         if functional in ['tv', 'totvar',
                           'total variation', 'total-variation', '1']:
-            dist = ds.minkowski(pdfs1, pdfs2, 1, w=0.5, **kwargs)
+            dist = factor * ds.minkowski(pdfs1, pdfs2, 1, w=0.5, **kwargs)
         elif functional in ['mink', 'minkowski']:
             dist = ds.minkowski(pdfs1, pdfs2, **kwargs)
         elif functional in ['norm']:
             dist = ds.norm(pdfs1 - pdfs2, **kwargs)
         elif functional in ['euclidean', '2-norm', '2']:
-            dist = ds.minkowski(pdfs1, pdfs2, 2, **kwargs)
+            dist = (factor ** 0.5) * ds.minkowski(pdfs1, pdfs2, 2, **kwargs)
         elif functional in ['sqhell', 'sqhellinger']:
-            dist = ds.sqeuclidean(np.sqrt(pdfs1), np.sqrt(pdfs2)) / 2.0
+            dist = 0.5 * factor * (ds.minkowski(np.sqrt(pdfs1), np.sqrt(pdfs2), 2, **kwargs) ** 2.0)
         elif functional in ['hell', 'hellinger']:
-            return np.sqrt(self.distance_marginal(i, interval, num_points, compare_factor, 'sqhell',
-                                                  **kwargs))
+            dist = (0.5 * factor * (ds.minkowski(np.sqrt(pdfs1), np.sqrt(pdfs2), 2, **kwargs) ** 2.0)) ** 0.5
+        elif functional in ['kl', 'k-l', 'kullback-leibler', 'entropy']:
+            from scipy.stats import entropy as kl_div
+            dist = kl_div(pdfs1, pdfs2, **kwargs)
         else:
             dist = functional(pdfs1, pdfs2, **kwargs)
 
-        return (dist / (len(pdfs1) - pdfs_zero)) * \
-               ((num_points - pdfs_zero)/num_points) * (x[-1] - x[0])
+        return dist
 
     def distance_marginal_quad(self, i, interval=None, compare_factor=0.0,
                                functional='tv', **kwargs):
@@ -309,7 +325,7 @@ class compare:
                           'total variation', 'total-variation', '1']:
             def error(x):
                 return np.abs(pdf1(x, i) - pdf2(x, i))
-            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+            return 0.5 * quadrature(error, interval[0], interval[1], **kwargs)[0]
         elif functional in ['euclidean', '2-norm', '2']:
             def error(x):
                 return (pdf1(x, i) - pdf2(x, i))**2
@@ -326,7 +342,7 @@ class compare:
         elif functional in ['hell', 'hellinger']:
             return np.sqrt(self.distance_marginal_quad(i, interval, compare_factor=0,
                                                        functional="sqhell", **kwargs))
-        elif functional in ['kl', 'k-l', 'kullback-leibler']:
+        elif functional in ['kl', 'k-l', 'kullback-leibler', 'entropy']:
             def error(x):
                 return pdf1(x, i) * np.log(pdf1(x, i)/pdf2(x, i))
 

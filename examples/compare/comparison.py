@@ -41,7 +41,7 @@ def inftynorm(x, y):
     return np.max(np.abs(x - y))
 
 
-mm.set_compare_set(compare_set=10000, compare_factor=0.1)
+mm.set_compare_set(compare_set=num_comparison_samples, compare_factor=0.1)
 
 print(mm.distance('tv'))
 print(mm.distance(inftynorm, normalize=False))
@@ -49,6 +49,31 @@ print(mm.distance('mink', w=0.5, p=1))
 print(mm.distance('hell'))
 
 
+set1 = bsam.random_sample_set(rv=[['beta', {'loc': 0, 'scale': 2, 'a': 3, 'b': 2}],
+                              ['beta', {'loc': 0, 'scale': 2, 'a': 3, 'b': 2}]],
+                               input_obj=2, num_samples=300)
+set2 = bsam.random_sample_set(rv=[['beta', {'loc': 0, 'scale': 2, 'a': 2, 'b': 3}],
+                              ['beta', {'loc': 0, 'scale': 2, 'a': 2, 'b': 3}]],
+                               input_obj=2, num_samples=300)
+
+mm = compP.compare(set1, set2, set2_init=True, set1_init=True)  # initialize metric
+mm.set_compare_set()
+print(mm.distance('tv'))
+print('TV')
+print(mm.distance_marginal(i=0, functional='tv', normalize=False))
+print(mm.distance_marginal_quad(i=0, functional='tv'))
+
+print('KL')
+print(mm.distance_marginal(i=0, functional='kl', normalize=False))
+print(mm.distance_marginal_quad(i=0, functional='kl'))
+
+print('Hell')
+print(mm.distance_marginal(i=0, functional='hell', normalize=False))
+print(mm.distance_marginal_quad(i=0, functional='hell'))
+
+print('Euclidean')
+print(mm.distance_marginal(i=0, functional='2', normalize=False))
+print(mm.distance_marginal_quad(i=0, functional='2'))
 """
 mm.set_left(unit_center_set(2, 1000, delta / 2))
 mm.set_right(unit_center_set(2, 1000, delta))
