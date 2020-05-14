@@ -161,7 +161,7 @@ class compare:
             self.pdfs2 = self.pdfs2 / np.sum(self.pdfs2)
             factor = 1.0
         else:
-            factor = 1.0 / (self.pdfs1.shape[0] - self.pdfs_zero)
+            factor = 1.0 / (self.pdfs1.shape[0])
 
 
         if functional in ['tv', 'totvar',
@@ -245,10 +245,7 @@ class compare:
             pdfs2 = pdfs2 / np.sum(pdfs2)
             factor = 1.0
         else:
-            sup1 = np.equal(pdfs1, 0.0)
-            sup2 = np.equal(pdfs2, 0.0)
-            pdfs_zero = np.sum(np.logical_and(sup1, sup2))
-            factor = 1.0 / (pdfs1.shape[0] - pdfs_zero) * (x[-1] - x[0])
+            factor = 1.0 / (pdfs1.shape[0]) * (x[-1] - x[0])
 
         if functional in ['tv', 'totvar',
                           'total variation', 'total-variation', '1']:
