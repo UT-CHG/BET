@@ -20,6 +20,29 @@ BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 ver
 ## License
 [GNU Lesser General Public License (LGPL)](https://github.com/UT-CHG/BET/blob/master/LICENSE.txt)
 
+## Citing BET
+Please include the citation:
+
+Lindley Graham, Steven Mattis, Scott Walsh, Troy Butler, Michael Pilosov, and Damon McDougall. “BET: Butler, Estep, Tavener Method V2.0.0”. Zenodo, August 10, 2016. [doi:10.5281/zenodo.59964](https://doi.org/10.5281/zenodo.59964)
+
+or in BibTEX:
+
+    @software{BET,
+    author       = {Lindley Graham and
+                    Steven Mattis and
+                     Scott Walsh and
+                     Troy Butler and
+                     Michael Pilosov and
+                     Damon McDougall},
+    title        = {BET: Butler, Estep, Tavener Method v2.0.0},
+    month        = aug,
+    year         = 2016,
+    publisher    = {Zenodo},
+    version      = {v2.0.0},
+    doi          = {10.5281/zenodo.59964},
+    url          = {https://doi.org/10.5281/zenodo.59964}
+    }
+
 ## Documentation
 
 This code has been documented with sphinx. the documentation is available online at http://ut-chg.github.io/BET. to build documentation run 
