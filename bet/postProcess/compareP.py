@@ -24,16 +24,16 @@ class compare:
         Initialize comparison object.
 
         :param set1: Object containing left probability measure.
-        :type set1: :class:`bet.sample.sample_set` or class:`bet.sample.discretization`
+        :type set1: :class:`bet.sample.sample_set` or `bet.sample.discretization`lass:
         :param set2: Object containing left probability measure.
         :type set1: :class:`bet.sample.sample_set` or class:`bet.sample.discretization`
         :param inputs: If set1 and set2 are discretizations, use input sets if True and output if False.
-        True by default.
+            True by default.
         :type inputs: bool
         :param set1_init: Use initial probability measure for set1 if True. False by default.
         :type set1_init: bool
         :param set2_init: Use initial probability measure for set2 if True. False by default.
-        :type set2_init bool
+        :type set2_init: bool
         """
         self.pdfs1 = None
         self.pdfs2 = None
@@ -77,10 +77,9 @@ class compare:
         sampling domain may catch areas of nonzero probability.
 
         :param compare_set: Set containing values on which to compare.
-        :type compare_set: :class:`bet.sample.sample_set`, :class:`numpy.ndarray`, or int 10000 by
-        default.
-        :param compare_factor: Proportion to increase domain for sampling. Only used if
-        `compare_set` is type int. 0 by default.
+        :type compare_set: :class:`bet.sample.sample_set`, :class:`numpy.ndarray`, or int 10000 by default.
+        :param compare_factor: Proportion to increase domain for sampling. Only used if `compare_set` is type int.
+            0 by default.
         :type compare_factor: float
         """
         # Extract values to evaluate the probability measures.
@@ -199,7 +198,7 @@ class compare:
         :param num_points: number of evaluation points. 1000 by default.
         :type num_points: int
         :param compare_factor: Proportion to increase domain. Only used if
-        `interval` is None. 0 by default.
+            `interval` is None. 0 by default.
         :type compare_factor: float
         :param normalize: whether or not to normalize the probabilities to sum to 1
         :type normalize: bool
@@ -281,12 +280,12 @@ class compare:
         :param interval: interval over which to integrate. None by default.
         :type interval: list, tuple, or :class:`numpy.ndarray`
         :param compare_factor: Proportion to increase domain. Only used if
-        `interval` is None. 0 by default.
+            `interval` is None. 0 by default.
         :type compare_factor: float
         :param functional: functional defining type of statistical distance
         :type functional: str or a function that takes in two lists/arrays and returns
-        a scalar value (measure of similarity). Accepted strings are 'tv' (total variation),
-        'mink' (minkowski), '2' (Euclidean norm), 'kl' (Kullback-Leibler) and 'hell' (Hellinger distance).
+            a scalar value (measure of similarity). Accepted strings are 'tv' (total variation),
+            'mink' (minkowski), '2' (Euclidean norm), 'kl' (Kullback-Leibler) and 'hell' (Hellinger distance).
         :param kwargs: Keyword arguments for `scipy.integrate.quadrature`.
 
         :rtype: float

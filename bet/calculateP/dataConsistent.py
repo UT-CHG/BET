@@ -15,11 +15,11 @@ def generate_output_kdes(discretization, bw_method=None):
     :param discretization: Discretization used to calculate KDes
     :type discretization: :class:`bet.sample.discretization`
     :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
     :returns: prediction set, prediction kdes, observation set, observation kdes, number of clusters
-    :rtype :class:`bet.discretization.sample_set`, list, :class:`bet.discretization.sample_set`, list, int
+    :rtype: :class:`bet.discretization.sample_set`, list, :class:`bet.discretization.sample_set`, list, int
     """
     from scipy.stats import gaussian_kde
     discretization.local_to_global()
@@ -71,11 +71,11 @@ def invert_to_kde(discretization, bw_method = None):
     :param discretization: Discretization on which to perform inversion.
     :type discretization: :class:`bet.sample.discretization`
     :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
     :return: marginal probabilities and cluster weights
-    :rtype list, `np.ndarray`
+    :rtype: list, `np.ndarray`
     """
     from scipy.stats import gaussian_kde
 
@@ -129,11 +129,11 @@ def invert_rejection_sampling(discretization, bw_method=None):
     :param discretization: Discretization on which to perform inversion.
     :type discretization: :class:`bet.sample.discretization`
     :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
     :return: sample set containing samples
-    :rtype :class:`bet.sample.sample_set`
+    :rtype: :class:`bet.sample.sample_set`
     """
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization,
                                                                                       bw_method=bw_method)
@@ -188,11 +188,11 @@ def invert_to_gmm(discretization, bw_method=None):
     :param discretization: Discretization on which to perform inversion.
     :type discretization: :class:`bet.sample.discretization`
     :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
     :return: means, covariances, and weights for Gaussians
-    :rtype list, list, list
+    :rtype: list, list, list
     """
     def weighted_mean_and_cov(x, weights):
         sum_weights = np.sum(weights)
@@ -260,11 +260,11 @@ def invert_to_multivariate_gaussian(discretization, bw_method=None):
     :param discretization: Discretization on which to perform inversion.
     :type discretization: :class:`bet.sample.discretization`
     :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
     :return: marginal probabilities and cluster weights
-    :rtype list, `np.ndarray`
+    :rtype: list, `np.ndarray`
     """
     def weighted_mean_and_cov(x, weights):
         sum_weights = np.sum(weights)
@@ -346,11 +346,11 @@ def invert_to_random_variable(discretization, rv, num_reweighted=10000, bw_metho
     :param num_reweighted: number of reweighted samples for fitting
     :type num_reweighted: int
     :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
-    See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
     :return: marginal probabilities and cluster weights
-    :rtype list, `np.ndarray`
+    :rtype: list, `np.ndarray`
     """
     import scipy.stats as stats
 

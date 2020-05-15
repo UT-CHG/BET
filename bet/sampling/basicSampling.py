@@ -29,6 +29,7 @@ class bad_object(Exception):
     Exception for when the wrong type of object is used.
     """
 
+
 def sample_from_updated(input_set, num_samples, globalize=True):
     """
     Create a new sample set from sampling from the updated probability measure of another sample set.
@@ -40,7 +41,7 @@ def sample_from_updated(input_set, num_samples, globalize=True):
     :param globalize: Whether or not to globalize objects.
     :type bool
     :return: Sample set containing new samples.
-    :rtype :class:`~bet.sample.sample_set`
+    :rtype: :class:`~bet.sample.sample_set`
     """
     if isinstance(input_set, bet.sample.discretization):
         input_set = input_set.get_input_sample_set()
@@ -115,7 +116,7 @@ def random_sample_set(rv, input_obj, num_samples, globalize=True):
     :type num_samples: int
     :param globalize: Whether or not to globalize vectors.
     :type globalize: bool
-    :return:
+    
     """
     # for backward compatibility
     if rv == "r" or rv == "random":
@@ -315,16 +316,17 @@ class sampler(object):
     """
     This class provides methods for sampling of parameter space to
     provide samples to be used by algorithms to solve inverse problems.
+
     """
     def __init__(self, lb_model,
                  error_estimates=False, jacobians=False):
         """
         Initialization
+
         :param lb_model: Interface to physics-based model takes an input of
             shape (N, ndim) and returns an output of shape (N, mdim)
         :type lb_model: callable function
-        :param bool error_estimates: Whether or not the model returns error
-            estimates
+        :param bool error_estimates: Whether or not the model returns error estimates
         :param bool jacobians: Whether or not the model returns Jacobians
         """
         self.lb_model = lb_model
@@ -563,6 +565,7 @@ class sampler(object):
         :rtype: :class:`~bet.sample.discretization`
         :returns: :class:`~bet.sample.discretization` object which contains
             input and output sample sets with ``num_samples`` total samples
+
         """
         # Create N samples
         if num_samples is None:

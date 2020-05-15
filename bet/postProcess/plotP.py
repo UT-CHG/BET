@@ -116,7 +116,7 @@ def calculate_2D_marginal_probs(sample_set, nbins=20):
     :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
-    :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
+    :type nbins: int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
     :returns: (bins, marginals)
 

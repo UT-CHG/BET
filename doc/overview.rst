@@ -4,33 +4,116 @@
 Overview
 ========
 
+BET is an initialism of Butler, Estep and Tavener, the primary authors of a
+`series <https://epubs.siam.org/doi/abs/10.1137/100785946>`_
+`of <https://epubs.siam.org/doi/abs/10.1137/100785958>`_
+`papers <https://epubs.siam.org/doi/abs/10.1137/130930406>`_
+that introduced the mathematical framework for measure-theoretic stochastic inversion, for which BET included
+a computational implementation. However, since it's initial inception it has grown to include a broad range of
+`data- <https://iopscience.iop.org/article/10.1088/1361-6420/ab8f83/meta>`_
+`consistent <https://epubs.siam.org/doi/abs/10.1137/16M1087229>`_
+`methods <https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.6078>`_.
+It has been applied to a wide variety of application problems, many of which can be found
+`here. <https://scholar.google.com/scholar?oi=bibs&hl=en&cites=915741139550333528,6038673497778212734,182199236207122617>`_
+
 Installation
 ------------
 
 The code currently resides at `GitHub
 <https://github.com/UT-CHG/BET>`_.
-If you have a 
-`zip file <https://github.com/UT-CHG/BET/archive/master.zip>`_ you can install
-BET using::
+The current development branch of BET can be installed from GitHub,  using ``pip``::
 
-    python setup.py install
+    $ pip install git+https://github.com/UT-CHG/BET
 
-from the package root directory. The BET package is currently NOT avaiable in
-the `Python Package Index <http://pypi.python.org/pypi/Sphinx>`_ this may
-change in the future. This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy <scipy.org>`_, mpl_toolkits,  `numpy
-<http://http://www.numpy.org>`_, and `pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
-<http://http://docs.python.org/2>`_.
+Another option is to clone the repository and install BET using::
 
-If you have `nose <http://nose.readthedocs.org/en/latest/index.html>`_
-installed you can run tests by typing::
+    $ python setup.py install
 
-    nosetests
+Dependencies
+------------
+BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 versions) and depends on
+`NumPy <http://www.numpy.org/>`_, `SciPy <http://www.scipy.org/>`_,
+`matplotlib <http://matplotlib.org/>`_, `pyDOE <https://pythonhosted.org/pyDOE/>`_,
+`pytest <https://docs.pytest.org/>`_, and
+`mpi4py <https://mpi4py.readthedocs.io/en/stable/>`_ (optional) (see ``requirements.txt`` for version information).
+For some optional features `LUQ <https://github.com/CU-Denver-UQ/LUQ>`_ is also required.
 
-in ``BET`` to run the serial tests or ::
+License
+------------
+`GNU Lesser General Public License (LGPL) <https://github.com/UT-CHG/BET/blob/master/LICENSE.txt>`_
 
-    mpirun -np NPROC nosetests
+Citing BET
+------------
+Please include the citation:
 
-to run the parallel tests.
+Lindley Graham, Steven Mattis, Scott Walsh, Troy Butler, Michael Pilosov, and Damon McDougall.
+“BET: Butler, Estep, Tavener Method V2.0.0”. Zenodo, August 10, 2016.
+`doi:10.5281/zenodo.59964 <https://doi.org/10.5281/zenodo.59964>`_
+
+or in BibTEX::
+
+    @software{BET,
+    author       = {Lindley Graham and
+                    Steven Mattis and
+                     Scott Walsh and
+                     Troy Butler and
+                     Michael Pilosov and
+                     Damon McDougall},
+    title        = {BET: Butler, Estep, Tavener Method v2.0.0},
+    month        = aug,
+    year         = 2016,
+    publisher    = {Zenodo},
+    version      = {v2.0.0},
+    doi          = {10.5281/zenodo.59964},
+    url          = {https://doi.org/10.5281/zenodo.59964}
+    }
+
+Documentation
+------------
+
+This code has been documented with sphinx. the documentation is available online at http://ut-chg.github.io/BET.
+To build documentation run
+``make html`` in the ``doc/`` folder.
+
+To build/update the documentation use the following commands::
+
+    sphinx-apidoc -f -o doc bet
+    cd doc/
+    make html
+    make html
+
+This creates the relevant documentation at ``bet/gh-pages/html``.
+To change the build location of the documentation you will need to update ``doc/makefile``.
+
+You will need to run ``sphinx-apidoc`` and reinstall bet anytime a new module or method in the source code has been added.
+If only the ``*.rst`` files have changed then you can simply run ``make html`` twice in the doc folder.
+
+Testing
+------------
+
+To run the tests in the root directory with ``pytest`` in serial call::
+
+    $ pytest ./test/
+
+Some features of BET have the ability to work in parallel. To run tests in parallel call::
+
+    $ mpirun -np NPROC pytest ./test/
+
+Make sure to have a working MPI environment (we recommend `mpich <http://www.mpich.org/downloads/>`_).
+if you want to use parallel features.
+
+Contributors
+------------
+
+See the `GitHub contributors page <https://github.com/UT-CHG/BET/graphs/contributors>`_.
+
+Contact
+------------
+
+BET is in active development. Hence, some features are still being added and you may find bugs we have overlooked.
+If you find something please report these problems to us through GitHub so that we can fix them. Thanks!
+
+Please note that we are using continuous integration and issues for bug tracking.
 
 Package Layout
 --------------
@@ -46,22 +129,23 @@ The package layout is as follows::
       calculateP 
       calculateError
       simpleFunP
-      voronoiHistogram
-      indicatorFunctions
+      dataConsistent
     sampling/
-      basicSampling 
-      adaptiveSampling
+      basicSampling
+      useLUQ
       LpGeneralizedSamples
     postProcess/
       plotP
       plotDomains
       postTools
+      plotVoronoi
     sensitivity/
       gradients
       chooseQoIs
 
 Code Overview
 --------------
+
 :mod:`bet.sample` module
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -98,49 +182,4 @@ Code Overview
 .. automodule:: bet.sensitivity
 
 .. seealso:: :ref:`modindex` for detailed documentation of modules, classes, etc.
-
-Internal dependencies
----------------------
-Dependencies via :keyword:`import` statements::
-
-        bet 
-          \-Comm (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.sampling.basicSampling,bet.util,bet.calculateP.calculateP,bet.postProcess.plotP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
-          \-calculateP 
-          | \-calculateError (bet.surrogates)
-          | \-calculateP (bet.surrogates,bet.calculateP.calculateError)
-          \-sample (bet.surrogates,bet.sampling.adaptiveSampling,bet.postProcess.plotDomains,bet.sampling.basicSampling,bet.sensitivity.gradients,,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
-          \-sampling 
-          | \-LpGeneralizedSamples (bet.sample,bet.sensitivity.gradients)
-          | \-basicSampling (bet.sampling.adaptiveSampling,bet.calculateP.calculateP)
-          \-util (bet.sample,bet.sensitivity.gradients,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,,bet.calculateP.calculateP,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
-
-
-External dependencies
----------------------
-This pacakge requires `matplotlib <http://http://matplotlib.org>`_, `scipy
-<scipy.org>`_, mpl_toolkits,  `numpy <http://http://www.numpy.org>`_, and
-`pyDOE <http://pythonhosted.org/pyDOE/>`_. This package is written in `Python
-<http://http://docs.python.org/2>`_.
-
-::    
-  
-        matplotlib 
-          \-cm (bet.postProcess.plotP)
-          \-lines (bet.postProcess.plotDomains)
-          \-pyplot (bet.postProcess.plotP,bet.postProcess.plotDomains)
-          \-ticker (bet.postProcess.plotP)
-          \-tri (bet.postProcess.plotDomains)
-        mpl_toolkits 
-          \-mplot3d (bet.postProcess.plotP,bet.postProcess.plotDomains)
-        numpy (bet.sample,bet.surrogates,bet.sampling.adaptiveSampling,bet.sensitivity.chooseQoIs,bet.postProcess.plotDomains,bet.sampling.LpGeneralizedSamples,bet.sampling.basicSampling,bet.sensitivity.gradients,bet.calculateP.indicatorFunctions,bet.util,,bet.calculateP.calculateP,bet.postProcess.plotP,bet.postProcess.postTools,bet.calculateP.calculateError,bet.calculateP.simpleFunP)
-          \-linalg (bet.sample,bet.calculateP.calculateError)
-        pyDOE (bet.sampling.basicSampling)
-        scipy 
-          \-fftpack (bet.postProcess.plotP)
-          \-io (bet.sample,bet.sampling.basicSampling,bet.sampling.adaptiveSampling)
-          \-spatial (bet.sample,bet.sensitivity.gradients,bet.calculateP.calculateError)
-          \-stats (bet.sample,bet.sensitivity.chooseQoIs,bet.calculateP.simpleFunP)
-
-
-
 

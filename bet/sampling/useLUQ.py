@@ -20,7 +20,7 @@ def myModel(inputs, times):
     :param times: Times at which to output results.
     :type times: :class:`numpy.ndarray` of shape (num_times, )
     :return: Time series data
-    :rtype :class:`numpy.ndarray` of shape (num_inputs, num_times)
+    :rtype: :class:`numpy.ndarray` of shape (num_inputs, num_times)
     """
     try:
         from luq.dynamical_systems import Selkov

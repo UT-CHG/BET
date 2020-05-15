@@ -58,7 +58,7 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
     at points defined by `vals`.
 
     :param prob_type: Type of probability description. Options are 'kde' (weighted kernel
-    density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
+        density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
     :type prob_type: str
     :param prob_parameters: Parameters that define the probability measure of type `prob_type`
     :param vals: Values at which to evaluate the PDF.
@@ -98,7 +98,7 @@ def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
     and `prob_parameters` at points defined by `vals`.
 
     :param prob_type: Type of probability description. Options are 'kde' (weighted kernel
-    density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
+        density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
     :type prob_type: str
     :param prob_parameters: Parameters that define the probability measure of type `prob_type`
     :param vals: Values at which to evaluate the PDF.
@@ -921,6 +921,7 @@ class sample_set_base(object):
         """
         Evaluate the marginal (with index `i`) probability density function of the updated
         probability measure at values.
+
         :param vals: Values at which to evaluated the PDF.
         :type vals: :class:`numpy.ndarray` of shape (num_vals, dim) or (num_vals, )
         :param i: index defining marginal
@@ -941,6 +942,7 @@ class sample_set_base(object):
         """
         Evaluate the marginal (with index `i`) probability density function of the initial
         probability measure at values.
+
         :param vals: Values at which to evaluated the PDF.
         :type vals: :class:`numpy.ndarray` of shape (num_vals, dim) or (num_vals, )
         :param i: index defining marginal
@@ -2198,6 +2200,21 @@ class discretization(object):
                  output_probability_set=None,
                  emulated_input_sample_set=None,
                  emulated_output_sample_set=None):
+        """
+        Initialize the discretization.
+        
+        :param input_sample_set: Input sample set
+        :type input_sample_set: :class:`bet.sample.sample_set_base`
+        :param output_sample_set: Output sample set
+        :type output_sample_set: :class:`bet.sample.sample_set_base`
+        :param output_probability_set: Output probability set
+        :type output_probability_set: :class:`bet.sample.sample_set_base`
+        :param emulated_input_sample_set: Emulated input set
+        :type emulated_input_sample_set: :class:`bet.sample.sample_set_base`
+        :param emulated_output_sample_set: Emulated output set
+        :type emulated_output_sample_set: :class:`bet.sample.sample_set_base`
+
+        """
         #: Input sample set :class:`~bet.sample.sample_set_base`
         self._input_sample_set = input_sample_set
         #: Output sample set :class:`~bet.sample.sample_set_base`
