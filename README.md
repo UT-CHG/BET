@@ -1,7 +1,9 @@
 # BET
 [![Build Status](https://travis-ci.org/UT-CHG/BET.svg?branch=master)](https://travis-ci.org/UT-CHG/BET) [![DOI](https://zenodo.org/badge/18813599.svg)](https://zenodo.org/badge/latestdoi/18813599) [![codecov](https://codecov.io/gh/UT-CHG/BET/branch/master/graph/badge.svg)](https://codecov.io/gh/UT-CHG/BET) [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/UT-CHG/BET/master)
 
-BET is a Python package for measure-theoretic and data-consistent stochastic forward and inverse problems. The package is very flexible and is applicable to a wide variety of problems.
+BET is a Python package for measure-theoretic and data-consistent stochastic forward and inverse problems. The package is very flexible and is applicable to a wide variety of problems. 
+
+BET is an initialism of Butler, Estep and Tavener, the primary authors of a [series](https://epubs.siam.org/doi/abs/10.1137/100785946) [of](https://epubs.siam.org/doi/abs/10.1137/100785958) [papers](https://epubs.siam.org/doi/abs/10.1137/130930406) that introduced the mathematical framework for measure-theoretic stochastic inversion, of which BET was originally a computational implementation. However, since it's initial inception it has grown to include a broad range of [data-](https://iopscience.iop.org/article/10.1088/1361-6420/ab8f83/meta)[consistent](https://epubs.siam.org/doi/abs/10.1137/16M1087229) [methods](https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.6078). It has been applied to a wide variety of application problems, many of which can be found [here](https://scholar.google.com/scholar?oi=bibs&hl=en&cites=915741139550333528,6038673497778212734,182199236207122617).
 
 ## Installation
 The current development branch of BET can be installed from GitHub,  using ``pip``:
@@ -63,6 +65,9 @@ Make sure to have a working MPI environment (we recommend [mpich](http://www.mpi
 
 
 (Note: you may need to set `~/.config/matplotlib/matplotlibrc` to include `backend:agg` if there is no `DISPLAY` port in your environment). 
+
+## Contributors
+See the [GitHub contributors page](https://github.com/UT-CHG/BET/graphs/contributors).
 
 ## Contact
 BET is in active development. Hence, some features are still being added and you may find bugs we have overlooked. If you find something please report these problems to us through GitHub so that we can fix them. Thanks! 
