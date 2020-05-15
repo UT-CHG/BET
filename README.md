@@ -8,7 +8,7 @@ The current development branch of BET can be installed from GitHub,  using ``pip
 
     pip install git+https://github.com/UT-CHG/BET
     
-Another option is to clone the repository and install LUQ using
+Another option is to clone the repository and install BET using
 ``python setup.py install``
 
 
