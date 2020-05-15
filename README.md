@@ -55,11 +55,11 @@ You can also try out BET in your browser using [Binder](https://mybinder.org/v2/
 
 To run the tests in the root directory with `pytest` in serial call::
 
-    pytest
+    pytest ./test/
 
 Some features of BET have the ability to work in parallel. To run tests in parallel call::
 
-    mpirun -np nproc pytest
+    mpirun -np NPROC pytest ./test/
 
 Make sure to have a working MPI environment (we recommend [mpich](http://www.mpich.org/downloads/)) if you want to use parallel features.
 
