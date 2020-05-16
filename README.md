@@ -45,7 +45,7 @@ or in BibTEX:
 
 ## Documentation
 
-This code has been documented with sphinx. the documentation is available online at http://ut-chg.github.io/BET. to build documentation run 
+This code has been documented with sphinx. the documentation is available online at http://ut-chg.github.io/BET. To build documentation run 
 ``make html`` in the ``doc/`` folder.
 
 To build/update the documentation use the following commands::
