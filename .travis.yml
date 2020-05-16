@@ -28,13 +28,15 @@ notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
+            - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
 
 # whitelist
 branches:
     only:
-        - v3-steve
+        - master
+        - v3-dev
 
 # Push the results back to codecov
 after_success:
