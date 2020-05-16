@@ -82,17 +82,13 @@ sampling
 ~~~~~~~~
 If you are using a model with parallel capabilities we recommend that you write
 your own python interface to handle running multiple parallel copies of your
-model simulatenously. If your model is serial then you might benefit from
+model simultaneously. If your model is serial then you might benefit from
 parallel execution of scripts that use
-:class:`bet.sampling.basicSampling.sampler` or
-:class:`bet.sampling.adaptiveSampling.sampler`.  The method
-:meth:`~bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization`
+:class:`bet.sampling.basicSampling.sampler`.  The method
+:meth:`~bet.sampling.basicSampling.sampler.compute_qoi_and_create_discretization`
 and :meth:`~bet.sampling.basicSampling.sampler.create_random_discretization`
 both  will partition the samples over several processors and have a globalize
-option to return a globalized set of results. The method
-:meth:`~bet.sampling.adaptiveSampling.sampler.generalized_chains` divides up
-the chains among the availiable processors and returns a globalized result.
-This method also has serial and parallel hotstart capabilties.
+option to return a globalized set of results.
 
 postProcess
 ~~~~~~~~~~~
@@ -108,7 +104,7 @@ In :mod:`~bet.postProcess.postTools` the methods
 :meth:`~bet.postProcess.postTools.collect_parallel_probs_csv`,
 :meth:`~bet.postProcess.postTools.save_parallel_probs_mat`, and
 :meth:`~bet.postProcess.postTools.collect_parallel_probs_mat` provide tools to
-save and collect probabitlies on separate processors as appropriately named files.
+save and collect probabilities on separate processors as appropriately named files.
 
 sensitivity
 ~~~~~~~~~~~

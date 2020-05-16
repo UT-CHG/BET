@@ -15,7 +15,6 @@ Contents:
    overview
    parallel
    examples/*
-   modules
    todo_list
 
 

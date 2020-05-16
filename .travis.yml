@@ -2,7 +2,6 @@ dist: xenial
 language: python
 
 python:
-    - "2.7"
     - "3.6"
     - "3.7"
 
@@ -14,22 +13,21 @@ before_install:
   - sudo apt-get install gfortran libblas-dev liblapack-dev mpich libmpich-dev
 
 install:
-  - pip install matplotlib mpi4py nose codecov
-  - python setup.py install
+  - pip install .
+  - pip install codecov pytest-cov
+  - pip install git+https://github.com/CU-Denver-UQ/LUQ
 
 script:
-  - nosetests --with-coverage --cover-package=bet --cover-erase --cover-html
-  - mpirun -n 2 nosetests
+  - pytest --cov=./bet/ ./test/
+  - mpirun -n 2 pytest  ./test/
   - pip uninstall -y mpi4py
-  - nosetests
+  - pytest ./test/
 
 # notification settings
 notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
-            - lichgraham@gmail.com
-            - scottw13@gmail.com
             - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
@@ -38,6 +36,7 @@ notifications:
 branches:
     only:
         - master
+        - v3-dev
 
 # Push the results back to codecov
 after_success:

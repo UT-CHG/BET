@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This example solves a stochastic inverse problem for a
@@ -88,7 +88,7 @@ else:
     input_samples.estimate_volume_mc()
 
 # Create the discretization object using the input samples
-my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
+my_discretization = sampler.compute_qoi_and_create_discretization(input_samples,
                                                                   savefile='3to2_discretization.txt.gz')
 
 '''

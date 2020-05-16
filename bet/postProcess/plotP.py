@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module provides methods for plotting probabilities.
@@ -7,6 +7,7 @@ This module provides methods for plotting probabilities.
 import copy
 import math
 import numpy as np
+import scipy.stats as stats
 import matplotlib
 import matplotlib.pyplot as plt
 #plt.rc('text', usetex=True)
@@ -35,15 +36,16 @@ class missing_attribute(Exception):
 
 def calculate_1D_marginal_probs(sample_set, nbins=20):
     r"""
-    This calculates every single marginal of the probability measure
-    described by the probabilities within the sample_set object.
+    This estimates every marginal of a voronoi probability measure
+    described by the probabilities within the sample_set object with histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
-    emulated samples
-    (``discretization._emulated_input_sample_set._probabilties_local``).
+    emulated samples (if they exist) or the samples.
+    (``discretization._emulated_input_sample_set._probabilties_local`` or
+    ``discretization._input_sample_set._probabilties_local``).
 
     This assumes that the user has already run
-    :meth:`~bet.calculateP.calculateP.prob_emulated`.
+    :meth:`~bet.calculateP.calculateP.prob_emulated` or :meth:`~bet.calculateP.calculateP.prob`.
 
     :param sample_set: Object containing samples and probabilities
     :type sample_set: :class:`~bet.sample.sample_set_base` or
@@ -55,7 +57,10 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._emulated_input_sample_set
+        if sample_set.get_emulated_input_sample_set() is not None:
+            sample_obj = sample_set._emulated_input_sample_set
+        else:
+            sample_obj = sample_set.get_input_sample_set()
         if sample_obj is None:
             raise missing_attribute("Missing emulated_input_sample_set")
     elif isinstance(sample_set, sample.sample_set_base):
@@ -96,29 +101,33 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 def calculate_2D_marginal_probs(sample_set, nbins=20):
     """
     This calculates every pair of marginals (or joint in 2d case) of
-    input probability measure defined on a rectangular grid.
+    input probability measure defined on a rectangular grid for voronoi probabilities using histograms..
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
-    emulated samples
-    (``discretization._emulated_input_sample_set._probabilties_local``).
+    emulated samples (if they exist) or samples
+    (``discretization._emulated_input_sample_set._probabilties_local`` or
+    ``discretization._input_sample_set._probabilties_local``).
 
     This assumes that the user has already run
-    :meth:`~bet.calculateP.calculateP.prob_emulated`.
+    :meth:`~bet.calculateP.calculateP.prob_emulated` or :meth:`~bet.calculateP.calculateP.prob`.
 
 
     :param sample_set: Object containing samples and probabilities
     :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :param nbins: Number of bins in each direction.
-    :type nbins: :int or :class:`~numpy.ndarray` of shape (ndim,)
+    :type nbins: int or :class:`~numpy.ndarray` of shape (ndim,)
     :rtype: tuple
     :returns: (bins, marginals)
 
     """
     if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._emulated_input_sample_set
+        if sample_set._emulated_input_sample_set is not None:
+            sample_obj = sample_set._emulated_input_sample_set
+        else:
+            sample_obj = sample_set.get_input_sample_set()
         if sample_obj is None:
-            raise missing_attribute("Missing emulated_input_sample_set")
+            raise missing_attribute("Missing input_sample_set")
     elif isinstance(sample_set, sample.sample_set_base):
         sample_obj = sample_set
     else:
@@ -167,7 +176,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
                            lambda_label=None, file_extension=".png"):
     """
     This makes plots of every single marginal probability of
-    input probability measure on a 1D  grid.
+    input probability measure on a 1D  grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
 
@@ -245,7 +254,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
                            lambda_label=None, file_extension=".png"):
     """
     This makes plots of every pair of marginals (or joint in 2d case) of
-    input probability measure on a rectangular grid.
+    input probability measure on a rectangular grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
 
@@ -357,7 +366,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
 
 def smooth_marginals_1D(marginals, bins, sigma=10.0):
     """
-    This function smooths 1D marginal probabilities.
+    This function smooths 1D marginal probabilities calculated from histograms.
 
     :param marginals: 1D marginal probabilities
     :type marginals: dictionary with int as keys and :class:`~numpy.ndarray` of
@@ -399,7 +408,7 @@ def smooth_marginals_1D(marginals, bins, sigma=10.0):
 
 def smooth_marginals_2D(marginals, bins, sigma=10.0):
     """
-    This function smooths 2D marginal probabilities.
+    This function smooths 2D marginal probabilities calculated from histograms.
 
     :param marginals: 2D marginal probabilities
     :type marginals: dictionary with tuples of 2 integers as keys and
@@ -448,110 +457,104 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
 
     return marginals_smooth
 
-
-def plot_2D_marginal_contours(marginals, bins, sample_set,
-                              contour_num=8,
-                              lam_ref=None, lam_refs=None,
-                              plot_domain=None,
-                              interactive=False,
-                              lambda_label=None,
-                              contour_font_size=20,
-                              filename="file",
-                              file_extension=".png"):
+def plot_marginal(sets, i, interval=None, num_points=1000, label=None, sets_label=None, sets_label_initial=None,
+                  title=None, initials=True, inputs=True, interactive=True, savefile=None):
     """
-    This makes contour plots of every pair of marginals (or joint in 2d case)
-    of input probability measure on a rectangular grid.
-    If the sample_set object is a discretization object, we assume
-    that the probabilities to be plotted are from the input space.
+    Plot marginal probability density functions in direction `i`.
 
-    .. note::
-
-        Do not specify the file extension in the file name.
-
-    :param marginals: 2D marginal probabilities
-    :type marginals: dictionary with tuples of 2 integers as keys and
-        :class:`~numpy.ndarray` of shape (nbins+1,) as values
-    :param bins: Endpoints of bins used in calculating marginals
-    :type bins: :class:`~numpy.ndarray` of shape (nbins+1,2)
-    :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base`
-        or :class:`~bet.sample.discretization`
-    :param filename: Prefix for output files.
-    :type filename: str
-    :param lam_ref: True parameters.
-    :type lam_ref: :class:`~numpy.ndarray` of shape (ndim,) or None
-    :param interactive: Whether or not to display interactive plots.
+    :param sets: Object containing sample sets to plot marginals for.
+    :type sets: :class:`bet.sample.sample_set` or :class:`bet.sample.discretization` or list or tuple of these
+    :param i: index of direction to take marginal
+    :type i: int
+    :param interval: Interval over which to plot.
+    :type interval: list
+    :param num_points: Number of points to evaluate PDFs at.
+    :type num_points: int
+    :param label: Label for parameter i
+    :type label: str
+    :param sets_label: Labels for sets
+    :type sets_label: List or tuple of strings.
+    :param sets_label_initial: Labels for sets' initial probabilities
+    :type sets_label_initial: List or tuple of strings.
+    :param title: "Title for plot"
+    :type title: str
+    :param initials: Whether or not to plot initial probabilities
+    :type initials: bool
+    :param inputs: Whether to use input or output sample sets for disretizations
+    :type inputs: bool
+    :param interactive: Whether or not to show interactive figure
     :type interactive: bool
-    :param lambda_label: Label for each parameter for plots.
-    :type lambda_label: list of length nbins of strings or None
-    :param string file_extension: file extenstion
-
+    :param savefile: filename to save to
+    :type savefile: str
     """
-    if isinstance(sample_set, sample.discretization):
-        sample_obj = sample_set._input_sample_set
-    elif isinstance(sample_set, sample.sample_set_base):
-        sample_obj = sample_set
+    if isinstance(sets, sample.sample_set) or isinstance(sets, sample.discretization):
+        sets = [sets]
+    new_sets = []
+    for s in sets:
+        if isinstance(s, sample.sample_set):
+            new_sets.append(s)
+        elif isinstance(s, sample.discretization):
+            if inputs:
+                new_sets.append(s.get_input_sample_set())
+            else:
+                new_sets.append(s.get_output_sample_set())
+        else:
+            raise bad_object("One of the input sets does not contain a sample set.")
+    sets = new_sets
+
+    # set labels
+    if label is None and sets[0].get_labels() is not None:
+        label = sets[0].get_labels()[i]
+    elif label is None:
+        label = 'Parameter ' + str(i)
+
+    if sets_label is None:
+        sets_label = []
+        for j, s in enumerate(sets):
+            if s.get_labels() is None:
+                sets_label.append('Set ' + str(j) + ' Updated')
+            else:
+                sets_label.append(s.get_labels()[i])
+    if sets_label_initial is None:
+        sets_label_initial = []
+        for j, s in enumerate(sets):
+            if s.get_labels() is None:
+                sets_label_initial.append('Set ' + str(j) + ' Initial')
+            else:
+                sets_label_initial.append(s.get_labels()[i] + ' Initial')
+
+    if interval is None:
+        x_min = np.inf
+        x_max = -np.inf
+        for s in sets:
+            min1 = np.min(s.get_values()[:, i])
+            max1 = np.max(s.get_values()[:, i])
+            if min1 < x_min:
+                x_min = min1
+            if max1 > x_max:
+                x_max = max1
+        delt = 0.25 * (x_max - x_min)
+        x = np.linspace(x_min - delt, x_max + delt, 100)
     else:
-        raise bad_object("Improper sample object")
+        x = np.linspace(interval[0], interval[1], num_points)
 
-    if lam_ref is None:
-        lam_ref = sample_obj._reference_value
-
-    lam_domain = sample_obj.get_domain()
-
-    matplotlib.rcParams['xtick.direction'] = 'out'
-    matplotlib.rcParams['ytick.direction'] = 'out'
-    matplotlib.rcParams.update({'figure.autolayout': True})
-
-    if comm.rank == 0:
-        pairs = sorted(copy.deepcopy(list(marginals.keys())))
-        for k, (i, j) in enumerate(pairs):
-            fig = plt.figure(k)
-            ax = fig.add_subplot(111)
-            boxSize = (bins[i][1] - bins[i][0]) * (bins[j][1] - bins[j][0])
-            nx = len(bins[i]) - 1
-            ny = len(bins[j]) - 1
-            dx = bins[i][1] - bins[i][0]
-            dy = bins[j][1] - bins[j][0]
-
-            x_kernel = np.linspace(-nx * dx / 2, nx * dx / 2, nx)
-            y_kernel = np.linspace(-ny * dy / 2, ny * dy / 2, ny)
-            X, Y = np.meshgrid(x_kernel, y_kernel, indexing='ij')
-            quadmesh = ax.contour(marginals[(i, j)].transpose() / boxSize,
-                                  contour_num, colors='k',
-                                  extent=[lam_domain[i][0], lam_domain[i][1],
-                                          lam_domain[j][0], lam_domain[j][1]], origin='lower',
-                                  vmax=marginals[(i, j)].max() / boxSize, vmin=0,
-                                  aspect='auto')
-            if lam_refs is not None:
-                ax.plot(lam_refs[:, i], lam_refs[:, j], 'wo', markersize=20)
-            if lam_ref is not None:
-                ax.plot(lam_ref[i], lam_ref[j], 'ko', markersize=20)
-            if lambda_label is None:
-                label1 = r'$\lambda_{' + str(i + 1) + '}$'
-                label2 = r'$\lambda_{' + str(j + 1) + '}$'
-            else:
-                label1 = lambda_label[i]
-                label2 = lambda_label[j]
-            ax.set_xlabel(label1, fontsize=30)
-            ax.set_ylabel(label2, fontsize=30)
-            ax.tick_params(axis='both', which='major',
-                           labelsize=20)
-            plt.clabel(quadmesh, fontsize=contour_font_size,
-                       inline=1, style='sci')
-
-            if plot_domain is None:
-                plt.axis([lam_domain[i][0], lam_domain[i][1],
-                          lam_domain[j][0], lam_domain[j][1]])
-            else:
-                plt.axis([plot_domain[i][0], plot_domain[i][1],
-                          plot_domain[j][0], plot_domain[j][1]])
-            plt.tight_layout()
-            fig.savefig(filename + "_2D_contours_" + str(i) + "_" + str(j) +
-                        file_extension, transparent=True)
-            if interactive:
-                plt.show()
-            else:
-                plt.close()
-
-    comm.barrier()
+    # plot marginals
+    plt.rcParams.update({'font.size': 22})
+    plt.rcParams.update({'axes.linewidth': 2})
+    fig = plt.figure(figsize=(10, 10))
+    for k, s in enumerate(sets):
+        if s.get_prob_type_init() is not None and initials:
+            mar = s.marginal_pdf_init(x, i)
+            plt.plot(x, mar, label=sets_label_initial[k], linewidth=4)
+        if s.get_prob_type() is not None:
+            mar = s.marginal_pdf(x, i)
+            plt.plot(x, mar, label=sets_label[k], linewidth=4, linestyle='dashed')
+    plt.xlabel(label)
+    plt.ylabel("PDF")
+    if type(title) is str:
+        plt.title(title)
+    plt.legend(fontsize=16)
+    if interactive:
+        plt.show()
+    if savefile is not None:
+        plt.savefig(savefile)

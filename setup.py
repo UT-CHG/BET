@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 
-# Copyright (C) 2014-2019 BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 '''
 The python script for building the BET package and subpackages.
@@ -11,8 +11,8 @@ except ImportError:
     from distutils.core import setup
 
 setup(name='bet',
-      version='2.2.1',
-      description='Butler, Estep, Tavener method',
+      version='3.0.0',
+      description='A toolkit for data-consistent stochastic problems.',
       author='Steven Mattis',
       author_email='steve.a.mattis@gmail.com',
       license='GNU LGPL',
@@ -24,6 +24,7 @@ setup(name='bet',
                 'bet.sensitivity'],
       install_requires=['matplotlib',
                         'pyDOE',
-                        'scipy<=1.2.1',
                         'numpy',
-                        'nose'])
+                        'scipy',
+                        'pytest',
+                        'mpi4py'])

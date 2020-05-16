@@ -1,25 +1,21 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 r"""
-This module provides methods for calulating the probability measure
+This module provides methods for calculating the probability measure
 :math:`P_{\Lambda}`.
 
-* :mod:`~bet.calculateP.prob_on_emulated_samples` provides a skeleton class and
-    calculates the probability for a set of emulation points.
-* :mod:`~bet.calculateP.calculateP.prob` estimates the
-    probability based on pre-defined volumes.
-* :mod:`~bet.calculateP.calculateP.prob_with_emulated` estimates the
-    probability using volume emulation.
-* :mod:`~bet.calculateP.calculateP.prob_from_sample_set` estimates the
-    probability based on probabilities from another sample set on the same
-    space.
+* :mod:`~bet.calculateP.prob_on_emulated_samples` provides a skeleton class and calculates the probability for a set of emulation points.
+* :mod:`~bet.calculateP.calculateP.prob` estimates the probability based on pre-defined volumes.
+* :mod:`~bet.calculateP.calculateP.prob_with_emulated` estimates the probability using volume emulation.
+* :mod:`~bet.calculateP.calculateP.prob_from_sample_set` estimates the probability based on probabilities from another
+sample set on the same space.
 
 """
 import logging
 import numpy as np
 from bet.Comm import comm, MPI
-import bet.util as util
 import bet.sample as samp
+import bet.util as util
 
 
 def prob_on_emulated_samples(discretization, globalize=True):
@@ -62,6 +58,7 @@ def prob_on_emulated_samples(discretization, globalize=True):
                     _probabilities[i] / Itemp_sum
 
     discretization._emulated_input_sample_set._probabilities_local = P
+    discretization._emulated_input_sample_set.set_prob_type('voronoi')
     if globalize:
         discretization._emulated_input_sample_set.local_to_global()
     pass
@@ -106,6 +103,8 @@ def prob(discretization, globalize=True):
         discretization._input_sample_set._probabilities = util.\
             get_global_values(P_local)
     discretization._input_sample_set._probabilities_local = P_local
+    discretization._input_sample_set.set_prob_type('voronoi')
+
 
 
 def prob_with_emulated_volumes(discretization):
@@ -203,6 +202,7 @@ def prob_from_sample_set_with_emulated_volumes(set_old, set_new,
 
     # Set probabilities
     set_new.set_probabilities(prob_new)
+    set_new.set_prob_type('voronoi')
     return prob_new
 
 
@@ -245,6 +245,7 @@ def prob_from_sample_set(set_old, set_new):
 
     # Set probabilities
     set_new.set_probabilities(prob_new)
+    set_new.set_prob_type('voronoi')
     return prob_new
 
 
@@ -295,4 +296,5 @@ def prob_from_discretization_input(disc, set_new):
 
     # Set probabilities
     set_new.set_probabilities(prob_new)
+    set_new.set_prob_type('voronoi')
     return prob_new

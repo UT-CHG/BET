@@ -1,9 +1,10 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains unittests for :mod:`~bet.util`
 """
 
+import bet.sample
 import bet.util as util
 from bet.Comm import comm
 import numpy.testing as nptest
@@ -46,7 +47,7 @@ def test_meshgrid_ndim():
     """
     for i in range(10):
         x = [[0, 1] for v in range(i + 1)]
-        yield compare_to_bin_rep, util.meshgrid_ndim(x)
+        compare_to_bin_rep(util.meshgrid_ndim(x))
 
 
 def test_get_global_values():
@@ -55,7 +56,7 @@ def test_get_global_values():
     """
     for provide_shape in [True, False]:
         for i in range(5):
-            yield compare_get_global_values, i, provide_shape
+            compare_get_global_values(i, provide_shape)
 
 
 def compare_get_global_values(i, provide_shape):

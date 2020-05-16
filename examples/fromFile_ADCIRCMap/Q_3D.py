@@ -1,7 +1,8 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
+import bet.sampling.basicSampling as bsam
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
@@ -39,10 +40,10 @@ def postprocess(station_nums, ref_num):
     # Create Simple function approximation
     # Save points used to parition D for simple function approximation and the
     # approximation itself (this can be used to make close comparisions...)
+
     output_probability_set = sfun.regular_partition_uniform_distribution_rectangle_scaled(
         output_sample_set, q_ref, rect_scale=0.15,
         cells_per_dimension=np.ones((data.shape[1],)))
-
     my_disc = sample.discretization(input_sample_set, output_sample_set,
                                     output_probability_set)
 
@@ -51,8 +52,6 @@ def postprocess(station_nums, ref_num):
     input_sample_set.estimate_volume_mc()
     print("Calculating prob")
     calcP.prob(my_disc)
-    sample.save_discretization(my_disc, filename, "prob_solution")
-
 
 # Post-process and save P and emulated points
 ref_num = 14

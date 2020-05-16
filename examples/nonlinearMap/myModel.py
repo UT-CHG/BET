@@ -1,4 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 # -*- coding: utf-8 -*-
 import numpy as np
@@ -23,7 +23,7 @@ Some interesting pairs of QoI to compare are:
 (x1,y1)=(0.5,0.5) and (x2,y2)=(0.25,0.15)
 '''
 # Choose the number of QoI
-QoI_num = 1
+QoI_num = 2
 
 # Specify the spatial points to take measurements of solution defining the QoI
 if QoI_num == 1:

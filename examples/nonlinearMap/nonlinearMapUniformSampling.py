@@ -1,10 +1,12 @@
 #! /usr/bin/env python
 
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 r"""
 This example generates samples on a 2D grid and evaluates
-a nonlinear map to a 1d or 2d space. The maps are defined
+a nonlinear map to a 1d or 2d space. Modify QoI_num in myModel.py
+to change the dimension of the output.
+The maps are defined
 as quantities of interest (QoI) defined as spatial
 observations of the solution to the elliptic PDE .. math::
   :nowrap:
@@ -62,10 +64,11 @@ If using regular sampling, try different numbers of samples
 per dimension.
 '''
 # Generate samples on the parameter space
-randomSampling = False
+randomSampling = True
 if randomSampling is True:
     input_samples = sampler.random_sample_set(
-        'random', input_samples, num_samples=1E4)
+        'uniform',
+        input_samples, num_samples=1E4)
 else:
     input_samples = sampler.regular_sample_set(
         input_samples, num_samples_per_dim=[50, 50])
@@ -89,7 +92,7 @@ else:
     input_samples.estimate_volume_mc()
 
 # Create the discretization object using the input samples
-my_discretization = sampler.compute_QoI_and_create_discretization(input_samples,
+my_discretization = sampler.compute_qoi_and_create_discretization(input_samples,
                                                                   savefile='NonlinearExample.txt.gz')
 
 '''

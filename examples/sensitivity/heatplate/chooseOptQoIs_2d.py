@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 Consider a thin 2-dimensional (square) metal plate constructed by welding
@@ -34,6 +34,7 @@ import bet.sensitivity.gradients as grad
 import bet.sensitivity.chooseQoIs as cqoi
 import bet.Comm as comm
 import bet.sample as sample
+import numpy as np
 
 # Select the type of finite difference scheme as either RBF, FFD, or CFD
 fd_scheme = 'RBF'

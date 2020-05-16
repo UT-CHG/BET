@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module provides methods for creating simple function approximations to be
@@ -9,8 +9,8 @@ import collections
 import logging
 import numpy as np
 from bet.Comm import comm, MPI
-import bet.util as util
 import bet.sample as samp
+import bet.util as util
 
 
 class wrong_argument_type(Exception):

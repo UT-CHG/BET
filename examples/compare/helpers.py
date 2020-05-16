@@ -1,3 +1,5 @@
+# Copyright (C) 2014-2020 The BET Development Team
+
 import bet.sample as sample
 import bet.sampling.basicSampling as bsam
 import numpy as np
@@ -34,6 +36,7 @@ def unit_center_set(dim=1, num_samples=100,
         probs = 1 * (np.logical_and(s._values <= (0.5 + dd),
                                     s._values >= (0.5 - dd)))
     s.set_probabilities(probs / np.sum(probs))  # uniform probabilities
+    s.set_prob_type('voronoi')
     s.estimate_volume_mc()
     s.global_to_local()
     return s
@@ -67,6 +70,7 @@ def unit_bottom_set(dim=1, num_samples=100,
     else:
         probs = 1 * (np.sum(s._values <= dd, axis=1) >= dim)
     s.set_probabilities(probs / np.sum(probs))  # uniform probabilities
+    s.set_prob_type('voronoi')
     s.estimate_volume_mc()
     s.global_to_local()
     return s
@@ -101,6 +105,7 @@ def unit_top_set(dim=1, num_samples=100,
     else:
         probs = 1 * (np.sum(s._values >= (1 - dd), axis=1) >= dim)
     s.set_probabilities(probs / np.sum(probs))  # uniform probabilities
+    s.set_prob_type('voronoi')
     s.estimate_volume_mc()
     s.global_to_local()
     return s

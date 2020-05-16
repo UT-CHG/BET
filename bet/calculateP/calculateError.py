@@ -1,18 +1,14 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 r"""
-This module provides methods for calulating error estimates of
+This module provides methods for calculating error estimates of
 the probability measure for calculate probability measures. See
 `Butler et al. 2015. <http://arxiv.org/pdf/1407.3851>`.
 
-* :meth:`~bet.calculateErrors.cell_connectivity_exact` calculates
-    the connectivity of cells.
-* :meth:`~bet.calculateErrors.boundary_sets` calculates which cells are
-    on the boundary and strictly interior for contour events.
-* :class:`~bet.calculateErrors.sampling_error` is for calculating error
-    estimates due to sampling
-* :class:`~bet.calculateErrors.model_error` is for calculating error
-    estimates due to error in solution of QoIs
+* :mod:`~bet.calculateErrors.cell_connectivity_exact` calculates the connectivity of cells.
+* :mod:`~bet.calculateErrors.boundary_sets` calculates which cells are on the boundary and strictly interior for contour events.
+* :class:`~bet.calculateErrors.sampling_error` is for calculating error estimates due to sampling.
+* :class:`~bet.calculateErrors.model_error` is for calculating error estimates due to error in solution of QoIs
 
 """
 
@@ -51,7 +47,7 @@ def cell_connectivity_exact(disc):
         msg = "The argument must be of type bet.sample.discretization."
         raise wrong_argument_type(msg)
 
-    if not isinstance(disc._input_sample_set, samp.voronoi_sample_set):
+    if not isinstance(disc.get_input_sample_set(), samp.voronoi_sample_set):
         msg = "disc._input_sample_set must be of type bet.sample.voronoi"
         msg += "_sample_set defined with the 2-norm"
         raise wrong_argument_type(msg)

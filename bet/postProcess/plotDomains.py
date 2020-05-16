@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module provides methods used to plot two-dimensional domains and/or
@@ -15,8 +15,8 @@ import matplotlib.pyplot as plt
 # plt.rc('font', family='serif')
 from matplotlib.lines import Line2D
 from mpl_toolkits.mplot3d import Axes3D
-import bet.util as util
 import bet.sample as sample
+import bet.util as util
 
 markers = []
 for m in Line2D.markers:

@@ -1,4 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 # -*- coding: utf-8 -*-
 import numpy as np
@@ -50,7 +50,7 @@ def my_model(parameter_sample):
     mesh.init()
 
     # Random field is projected on the space of Hat functions in the mesh
-    V = FunctionSpace(mesh, "CG", 1)
+    V = FunctionSpace(mesh, "Lagrange", 1)
 
     '''
     ++++++++++++++++ Steps in Solving Poisson with the KL fields ++++++++++++

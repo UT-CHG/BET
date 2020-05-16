@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains tests for :module:`bet.postProcess.plotP`.
@@ -18,6 +18,8 @@ import bet.util as util
 from bet.Comm import comm
 import os
 import bet.sample as sample
+import bet.calculateP.dataConsistent as dc
+import bet.sampling.basicSampling as bsam
 
 
 class Test_calc_marg_1D(unittest.TestCase):
@@ -215,6 +217,8 @@ class Test_calc_marg_2D(unittest.TestCase):
         try:
             plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
                                          filename="file", interactive=False)
+            plotP.plot_2D_marginal_probs(marginals, bins, self.samples, plot_surface=True,
+                                         filename="file", interactive=False)
             go = True
             if os.path.exists("file_2D_0_1.png") and comm.rank == 0:
                 os.remove("file_2D_0_1.png")
@@ -222,20 +226,41 @@ class Test_calc_marg_2D(unittest.TestCase):
             go = False
         nptest.assert_equal(go, True)
 
-    def test_plot_2D_marginal_contours(self):
+
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
+class Test_plot_marginal(unittest.TestCase):
+    """
+    Test :meth:`bet.postProcess.plotP.plot_marginal`.
+    """
+    def setUp(self):
+        def my_model(parameter_samples):
+            Q_map = np.array([[0.506, 0.463], [0.253, 0.918], [0.685, 0.496]])
+            QoI_samples = np.dot(parameter_samples, Q_map)
+            return QoI_samples
+
+        sampler = bsam.sampler(my_model)
+        sampler.random_sample_set(rv=[['norm', {'loc': 2, 'scale': 3}],
+                                      ['uniform', {'loc': 2, 'scale': 3}],
+                                      ['beta', {'a': 2, 'b': 2}]], input_obj=3, num_samples=1000)
+        sampler.compute_qoi_and_create_discretization()
+
+        sampler2 = bsam.sampler(my_model)
+        sampler2.random_sample_set(rv=[['norm', {'loc': 1, 'scale': 2}],
+                                       ['uniform', {'loc': 2, 'scale': 2}],
+                                       ['beta', {'a': 2, 'b': 3}]], input_obj=3, num_samples=1000)
+        sampler2.compute_qoi_and_create_discretization()
+
+        sampler.discretization.set_output_probability_set(sampler2.discretization.get_output_sample_set())
+        self.disc1 = sampler.discretization
+        self.disc2 = sampler2.discretization
+
+    def test_rv(self):
         """
-        Test :meth:`bet.postProcess.plotP.plot_2D_marginal_contours`.
+        Test plotting random variable probability.
         """
-        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
-                                                              nbins=10)
-        marginals[(0, 1)][0][0] = 0.0
-        marginals[(0, 1)][0][1] *= 2.0
-        try:
-            plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
-                                         filename="file", interactive=False)
-            go = True
-            if os.path.exists("file_2D_contours_0_1.png") and comm.rank == 0:
-                os.remove("file_2D_contours_0_1.png")
-        except (RuntimeError, TypeError, NameError):
-            go = False
-        nptest.assert_equal(go, True)
+        dc.invert_to_random_variable(self.disc1, rv='beta')
+        param_labels = [r'$a$', r'$b$', r'$c$']
+        for i in range(3):
+            plotP.plot_marginal(sets=(self.disc1, self.disc2), i=i,
+                                sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
+                                title="Fitted Beta Distribution", label=param_labels[i], interactive=False)
