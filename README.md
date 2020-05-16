@@ -62,16 +62,8 @@ You will need to run sphinx-apidoc and reinstall bet anytime a new module or met
 If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
 
 ## Examples
-Useful scripts are contained in ``examples/``, as are the following sets of example Jupyter Notebooks:
+Examples scripts are contained in ``examples/``, as are the following sets of example Jupyter Notebooks:
 
-- [Plotting](./examples/plotting/Plotting_Examples.ipynb)
-    (this allows execution any of the following examples and plots the associated results)
-- [Contaminant Transport](./examples/contaminantTransport/contaminant.ipynb)
-- [Validation Example](./examples/validationExample/linearMap.ipynb)
-- [Linear (QoI) Sensitivity](./examples/sensitivity/linear_sensitivity.ipynb)
-- [Linear Map](./examples/linearMap/linearMapUniformSampling.ipynb)
-
-Furthermore, the `examples/templates` directory contains a [notebook](./examples/templates/Example_Notebook_Template.ipynb) that serves as a template for the examples.
 You can also try out BET in your browser using [Binder](https://mybinder.org/v2/gh/UT-CHG/BET/master).
 
 ## Testing
