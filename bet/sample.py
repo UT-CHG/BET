@@ -868,7 +868,10 @@ class sample_set_base(object):
             self._densities = densities
         else:
             logging.warning("Setting densities with probability/volume.")
-            total_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
+            if self._domain is None:
+                total_vol = 1.0
+            else:
+                total_vol = np.product(self._domain[:, 1] - self._domain[:, 0])
             probs = self._probabilities
             vols = self._volumes * total_vol
             self._densities = probs / vols
