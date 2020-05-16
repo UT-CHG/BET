@@ -13,18 +13,20 @@ See :ref:`validation` for a basic example involving measure-theoretic stochastic
 Getting Started: Data-Consistent Stochastic Inversion
 =======================================
 
-See `<https://github.com/smattis/BET-1/blob/v3-steve/examples/linearMap/linearMapDataConsistent.py` for a basic
+See `here <https://github.com/smattis/BET-1/blob/v3-steve/examples/linearMap/linearMapDataConsistent.py>`_ for a basic
 example involving Data-Consistent Stochastic Inversion for a linear map.
 
 Linear Map Example
 =======================================
 
-See :ref:`linearMap` for an example using a linear map.
+See :ref:`linearMap` for an example using a linear map involving measure-theoretic stochastic inversion.
 
 Non-Linear Map Example
 =======================================
 
-See :ref:`nonlinearMap` for an example using a nonlinear map.
+See :ref:`nonlinearMap` for an example using a nonlinear map involving measure-theoretic stochastic inversion.
+
+See `here <https://github.com/smattis/BET-1/blob/v3-steve/examples/nonlinearMap/nonlinearMapDataConsistent.py>`_  for an example using a nonlinear map with data-consistent inversion.
 
 FEniCS Example (serial BET and serial model)
 =============================================

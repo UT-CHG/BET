@@ -1,12 +1,13 @@
 # Copyright (C) 2014-2020 The BET Development Team
+"""
+The module contains a class for interfacing between BET and LUQ.
+"""
+
 import numpy as np
 import bet.sample as sample
 import bet.util as util
 import logging
 
-"""
-The module contains a class for interfacing between BET and LUQ.
-"""
 class missing_module(Exception):
     """
     Exception for when a module cannot be imported.

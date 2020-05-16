@@ -1,7 +1,14 @@
 # Copyright (C) 2014-2020 The BET Development Team
 
 """
-This module contains general tools for BET.
+This module contains general tools for BET including saving and loading objects, and reshaping objects. The most
+important methods are:
+
+* :mod:`~bet.util.get_global_values` concatenates local arrays into global arrays.
+* :mod:`~bet.util.save_object` saves all types of objects.
+* :mod:`~bet.util.load_object` loads all types of saved objects.
+* :mod:`~bet.util.load_object_parallel` loads all types of saved parallel objects.
+
 """
 
 import sys
@@ -219,6 +226,15 @@ def clean_data(data):
 
 
 def save_object(save_set, file_name, globalize=True):
+    """
+    Save BET object.
+
+    :param save_set: Object to Save.
+    :param file_name: Filename to save to.
+    :type file_name: str
+    :param globalize: Whether or not to globalize parallel objects.
+    :type globalize: bool
+    """
     import pickle
     # create processor specific file name
     if comm.size > 1 and not globalize:
@@ -239,6 +255,15 @@ def save_object(save_set, file_name, globalize=True):
 
 
 def load_object(file_name, localize=False):
+    """
+    Load saved objects.
+
+    :param file_name: Filename of object.
+    :type file_name: str
+    :param localize: Whether or not to localize parallel object.
+    :type localize: bool
+    :return: The saved object
+    """
     import pickle
     # check to see if parallel file name
     if file_name.startswith('proc_'):
@@ -253,6 +278,14 @@ def load_object(file_name, localize=False):
 
 
 def load_object_parallel(file_name):
+    """
+    Load saved paralell objects.
+
+    :param file_name: Filename of object.
+    :type file_name: str
+    :return: The saved object
+
+    """
     save_dir = os.path.dirname(file_name)
     base_name = os.path.basename(file_name)
     files = glob.glob(os.path.join(save_dir, "proc*_{}".format(base_name+'.p')))

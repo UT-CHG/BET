@@ -1,11 +1,20 @@
 # Copyright (C) 2014-2020 The BET Development Team
 
 """
-This module contains data structure/storage classes for BET. Notably:
-    :class:`bet.sample.sample_set`
-    :class:`bet.sample.discretization`
-    :class:`bet.sample.length_not_matching`
-    :class:`bet.sample.dim_not_matching`
+This module contains the main data structures and exceptions for BET. Notably:
+
+* :class:`~bet.sample.sample_set_base` provides the basic data structure for input and output sets
+* :class:`~bet.sample.sample_set` is the default sample set.
+* :class:`~bet.sample.voronoi_sample_set` is a sample set based on a Voronoi discretization (same as default).
+* :class:`~bet.sample.rectangle_sample_set` is a sample set based on a hyper-rectangle.
+* :class:`~bet.sample.ball_sample_set` is a sample set based on balls in R^n
+* :class:`~bet.sample.cartesian_sample_set` is a sample set based on a Cartesian grid.
+* :class:`~bet.sample.discretization` provides the basic data structure for and input to output stochastic map.
+* :class:`~bet.sample.length_not_matching` is an Exception class.
+* :class:`~bet.sample.dim_not_matching` is an Exception class.
+* :func:`~bet.evaluate_pdf` evaluates probability density functions.
+* :func:`~bet.evaluate_pdf_marginal` evaluates marginal probability density functions.
+
 """
 
 import os

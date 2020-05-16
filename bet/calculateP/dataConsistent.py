@@ -1,12 +1,19 @@
 # Copyright (C) 2014-2020 The BET Development Team
+
+r"""
+This module contains functions for data-consistent stochastic inversion.
+
+* :meth:`~bet.calculateP.dataConsistent.generate_output_kdes` generates KDEs on output sets.
+* :meth:`~bet.calculateP.dataConsistent.invert_to_kde` solves SIP for weighted KDEs.
+* :meth:`~bet.calculateP.dataConsistent.invert_to_gmm` solves SIP for a Gaussian Mixture Model.
+* :meth:`~bet.calculateP.dataConsistent.invert_to_multivariate_gaussian` solves SIP for a multivariate Gaussian.
+* :meth:`~bet.calculateP.dataConsistent.invert_to_random_variable` solves SIP for random variables.
+* :meth:`~bet.calculateP.dataConsistent.invert_rejection_sampling` solves SIP with rejection sampling.
+
+"""
 import bet.sample
 import numpy as np
 import logging
-
-"""
-This module contains functions for data-consistent stochastic inversion.
-"""
-
 
 def generate_output_kdes(discretization, bw_method=None):
     """

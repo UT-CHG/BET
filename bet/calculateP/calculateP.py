@@ -4,15 +4,11 @@ r"""
 This module provides methods for calculating the probability measure
 :math:`P_{\Lambda}`.
 
-* :mod:`~bet.calculateP.prob_on_emulated_samples` provides a skeleton class and
-    calculates the probability for a set of emulation points.
-* :mod:`~bet.calculateP.calculateP.prob` estimates the
-    probability based on pre-defined volumes.
-* :mod:`~bet.calculateP.calculateP.prob_with_emulated` estimates the
-    probability using volume emulation.
-* :mod:`~bet.calculateP.calculateP.prob_from_sample_set` estimates the
-    probability based on probabilities from another sample set on the same
-    space.
+* :mod:`~bet.calculateP.prob_on_emulated_samples` provides a skeleton class and calculates the probability for a set of emulation points.
+* :mod:`~bet.calculateP.calculateP.prob` estimates the probability based on pre-defined volumes.
+* :mod:`~bet.calculateP.calculateP.prob_with_emulated` estimates the probability using volume emulation.
+* :mod:`~bet.calculateP.calculateP.prob_from_sample_set` estimates the probability based on probabilities from another
+sample set on the same space.
 
 """
 import logging
