@@ -1,30 +1,20 @@
 .. _examples:
 
 =======================================
-Some References and Examples
+Examples
+=======================================
+All of the examples listed here and more are located in the ``BET/examples/`` directory.
+
+Getting Started: Measure Theoretic Stochastic Inversion
 =======================================
 
-For more information about the method and algorithm, see `A Measure-Theoretic
-Computational Method for Inverse Sensitivity Problems III: Multiple Quantities of Interest 
-<http://dx.doi.org/10.1137/130930406>`_ for the formulation of the stochastic
-inverse problem in a measure theoretic framework along with proofs of existence
-and uniqueness of solutions, `Solving Stochastic Inverse Problems using Sigma-Algebras on Contour Maps 
-<http://arxiv.org/abs/1407.3851>`_ for the convergence 
-and error analysis of the non-intrusive algorithm, and
-`Definition and solution of a stochastic inverse problem for the Manning’s n parameter field in 
-hydrodynamic models <http://dx.doi.org/10.1016/j.advwatres.2015.01.011>`_ for a less technical description
-of the method for engineers as well as application to a physically relevant problem
-in coastal ocean modeling. 
+See :ref:`validation` for a basic example involving measure-theoretic stochastic inversion.
 
-All of the example listed here and more are located in the ``BET/examples/``
-directory.
-
-
-Validation example
+Getting Started: Data-Consistent Stochastic Inversion
 =======================================
 
-See :ref:`validation` for an example.
-
+See `<https://github.com/smattis/BET-1/blob/v3-steve/examples/linearMap/linearMapDataConsistent.py` for a basic
+example involving Data-Consistent Stochastic Inversion for a linear map.
 
 Linear Map Example
 =======================================
@@ -62,19 +52,6 @@ space for the examples using the idealized inlet see `Definition and solution
 of a stochastic inverse problem for the Manning’s n parameter field in
 hydrodynamic models <http://dx.doi.org/10.1016/j.advwatres.2015.01.011>`_.
 
-
-(Batch) Adaptive Sampling Examples
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-These illustrate how to perform a specific type of goal-oriented
-adaptive sampling on a linear interpolant
-created from data read from file.
-We also show how several methods within the module
-:mod:`~bet.postProcess.plotDomains` can be used to
-plot 2D domains and/or 2D slices and projections of higher dimensional domains.
-
-    * :ref:`fromFile2DExample`
-    * :ref:`fromFile3DExample`
 
 Examples Estimating :math:`P_\Lambda`
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

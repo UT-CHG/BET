@@ -40,8 +40,9 @@ def sample_from_updated(input_set, num_samples, globalize=True):
     :type num_samples: int
     :param globalize: Whether or not to globalize objects.
     :type bool
-    :return: Sample set containing new samples.
+    :return: Sample set containing new samples
     :rtype: :class:`~bet.sample.sample_set`
+
     """
     if isinstance(input_set, bet.sample.discretization):
         input_set = input_set.get_input_sample_set()
@@ -116,7 +117,7 @@ def random_sample_set(rv, input_obj, num_samples, globalize=True):
     :type num_samples: int
     :param globalize: Whether or not to globalize vectors.
     :type globalize: bool
-    
+
     """
     # for backward compatibility
     if rv == "r" or rv == "random":
