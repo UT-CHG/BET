@@ -30,10 +30,10 @@ or in BibTEX:
     @software{BET,
     author       = {Lindley Graham and
                     Steven Mattis and
-                     Scott Walsh and
-                     Troy Butler and
-                     Michael Pilosov and
-                     Damon McDougall},
+                    Scott Walsh and
+                    Troy Butler and
+                    Michael Pilosov and
+                    Damon McDougall},
     title        = {BET: Butler, Estep, Tavener Method v2.0.0},
     month        = aug,
     year         = 2016,
