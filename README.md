@@ -62,7 +62,7 @@ You will need to run sphinx-apidoc and reinstall bet anytime a new module or met
 If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
 
 ## Examples
-Examples scripts are contained in ``examples/``, as are the following sets of example Jupyter Notebooks:
+Examples scripts are contained in [here](examples/), 
 
 You can also try out BET in your browser using [Binder](https://mybinder.org/v2/gh/UT-CHG/BET/master).
 
