@@ -15,10 +15,10 @@ Another option is to clone the repository and install BET using
 
 
 ## Dependencies
-BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 versions) and depends on [NumPy](http://www.numpy.org/), [SciPy](http://www.scipy.org/), [matplotlib](http://matplotlib.org/), [pyDOE](https://pythonhosted.org/pyDOE/), [pytest](https://docs.pytest.org/), and [mpi4py](https://mpi4py.readthedocs.io/en/stable/) (optional) (see ``requirements.txt`` for version information). For some optional features [LUQ](https://github.com/CU-Denver-UQ/LUQ) is also required.
+BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 versions) and depends on [NumPy](http://www.numpy.org/), [SciPy](http://www.scipy.org/), [matplotlib](http://matplotlib.org/), [pyDOE](https://pythonhosted.org/pyDOE/), [pytest](https://docs.pytest.org/), and [mpi4py](https://mpi4py.readthedocs.io/en/stable/) (optional) (see [requirements.txt](requirements.txt) for version information). For some optional features [LUQ](https://github.com/CU-Denver-UQ/LUQ) is also required.
 
 ## License
-[GNU Lesser General Public License (LGPL)](https://github.com/UT-CHG/BET/blob/master/LICENSE.txt)
+[GNU Lesser General Public License (LGPL)](LICENSE.txt)
 
 ## Citing BET
 Please include the citation:
@@ -30,10 +30,10 @@ or in BibTEX:
     @software{BET,
     author       = {Lindley Graham and
                     Steven Mattis and
-                     Scott Walsh and
-                     Troy Butler and
-                     Michael Pilosov and
-                     Damon McDougall},
+                    Scott Walsh and
+                    Troy Butler and
+                    Michael Pilosov and
+                    Damon McDougall},
     title        = {BET: Butler, Estep, Tavener Method v2.0.0},
     month        = aug,
     year         = 2016,
@@ -62,7 +62,7 @@ You will need to run sphinx-apidoc and reinstall bet anytime a new module or met
 If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
 
 ## Examples
-Examples scripts are contained in ``examples/``, as are the following sets of example Jupyter Notebooks:
+Examples scripts are contained in [here](examples/). 
 
 You can also try out BET in your browser using [Binder](https://mybinder.org/v2/gh/UT-CHG/BET/master).
 
