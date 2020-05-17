@@ -2,7 +2,6 @@ dist: xenial
 language: python
 
 python:
-    - "2.7"
     - "3.6"
     - "3.7"
 
@@ -14,7 +13,7 @@ before_install:
   - sudo apt-get install gfortran libblas-dev liblapack-dev mpich libmpich-dev
 
 install:
-  - pip install matplotlib mpi4py nose codecov
+  - pip install matplotlib mpi4py nose codecov sphinx-apidoc sphinx_rtd_theme
   - python setup.py install
 
 script:
