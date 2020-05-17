@@ -14,7 +14,7 @@ before_install:
 
 install:
   - pip install .
-  - pip install codecov pytest-cov
+  - pip install codecov pytest-cov Sphinx sphinx_rtd_theme
   - pip install git+https://github.com/CU-Denver-UQ/LUQ
 
 script:
@@ -22,6 +22,11 @@ script:
   - mpirun -n 2 pytest  ./test/
   - pip uninstall -y mpi4py
   - pytest ./test/
+  - sphinx-apidoc -f -o doc bet
+  - cd doc/
+  - make html
+  - make html
+  - cd ..
 
 # notification settings
 notifications:
@@ -41,3 +46,13 @@ branches:
 # Push the results back to codecov
 after_success:
   - codecov
+
+# Deploy docs
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: false
+  local_dir: gh-pages/html
+  on:
+    branch: master
