@@ -22,6 +22,11 @@ script:
   - mpirun -n 2 nosetests
   - pip uninstall -y mpi4py
   - nosetests
+  - sphinx-apidoc -f -o doc bet
+  - cd doc/
+  - make html
+  - make html
+  - cd ..
 
 # notification settings
 notifications:
@@ -42,3 +47,13 @@ branches:
 # Push the results back to codecov
 after_success:
   - codecov
+
+# Deploy docs
+deploy:
+  provider: pages
+  skip_cleanup: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: true
+  local_dir: gh-pages
+  on:
+    branch: master
