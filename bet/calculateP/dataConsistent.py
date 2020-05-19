@@ -15,6 +15,7 @@ import bet.sample
 import numpy as np
 import logging
 
+
 def generate_output_kdes(discretization, bw_method=None):
     """
     Generate Kernel Density Estimates on predicted and observed output sample sets.
@@ -47,13 +48,24 @@ def generate_output_kdes(discretization, bw_method=None):
     for i in range(num_clusters):
         if predict_set.get_cluster_maps() is not None:
             if len(predict_set.get_cluster_maps()) > 1:
-                predict_kdes.append(gaussian_kde(predict_set.get_cluster_maps()[i].T, bw_method=bw_method))
+                if predict_set.get_weights_init() is None:
+                    predict_kdes.append(gaussian_kde(predict_set.get_cluster_maps()[i].T, bw_method=bw_method))
+                else:
+                    predict_pointer = np.where(predict_set.get_region() == i)[0]
+                    weights = predict_set.get_weights_init()[predict_pointer]
+                    predict_kdes.append(gaussian_kde(predict_set.get_cluster_maps()[i].T, bw_method=bw_method,
+                                                     weights=weights))
             else:
                 predict_kdes.append(None)
         else:
             predict_pointer = np.where(predict_set.get_region() == i)[0]
             if len(predict_pointer) > 1:
-                predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T, bw_method=bw_method))
+                if predict_set.get_weights_init() is None:
+                    predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T, bw_method=bw_method))
+                else:
+                    weights = predict_set.get_weights_init()[predict_pointer]
+                    predict_kdes.append(gaussian_kde(predict_set.get_values()[predict_pointer].T, bw_method=bw_method,
+                                                     weights=weights))
             else:
                 predict_kdes.append(None)
 
@@ -69,6 +81,44 @@ def generate_output_kdes(discretization, bw_method=None):
             else:
                 obs_kdes.append(None)
     return predict_set, predict_kdes, obs_set, obs_kdes, num_clusters
+
+
+def invert(discretization, bw_method = None):
+    """
+    Solve the data consistent stochastic inverse problem, solving for input sample weights.
+
+    :param discretization: Discretization on which to perform inversion.
+    :type discretization: :class:`bet.sample.discretization`
+    :param bw_method: bandwidth method for `scipy.stats.gaussian_kde`.
+        See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
+    :type bw_method: str
+
+    :return: marginal probabilities and cluster weights
+    :rtype: list, `np.ndarray`
+    """
+    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+
+    rs = []
+    r = []
+    lam_ptr = []
+    weights = np.zeros((discretization.get_output_sample_set().check_num(), ))
+    for i in range(num_clusters):
+        predict_pointer = np.where(predict_set.get_region() == i)[0]
+        # First compute the rejection ratio
+        if predict_set.get_cluster_maps() is None:
+            vals = predict_set.get_values()[predict_pointer]
+        else:
+            vals = predict_set.get_cluster_maps()[i]
+        if len(predict_pointer) > 0:
+            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
+            rs.append((r[i].mean()))
+        else:
+            r.append(None)
+            rs.append(None)
+        weights[predict_pointer] = r
+        lam_ptr.append(predict_pointer)
+    discretization.get_input_sample_set().set_weights(weights)
+    return rs, r, lam_ptr
 
 
 def invert_to_kde(discretization, bw_method = None):
@@ -88,23 +138,7 @@ def invert_to_kde(discretization, bw_method = None):
 
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
-    rs = []
-    r = []
-    lam_ptr = []
-    for i in range(num_clusters):
-        predict_pointer = np.where(predict_set.get_region() == i)[0]
-        # First compute the rejection ratio
-        if predict_set.get_cluster_maps() is None:
-            vals = predict_set.get_values()[predict_pointer]
-        else:
-            vals = predict_set.get_cluster_maps()[i]
-        if len(predict_pointer) > 0:
-            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
-            rs.append((r[i].mean()))
-        else:
-            r.append(None)
-            rs.append(None)
-        lam_ptr.append(predict_pointer)
+    rs, r, lam_ptr = invert(discretization, bw_method)
 
     # Compute marginal probabilities for each parameter and initial condition.
     param_marginals = []
@@ -145,23 +179,7 @@ def invert_rejection_sampling(discretization, bw_method=None):
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization,
                                                                                       bw_method=bw_method)
 
-    rs = []
-    r = []
-    lam_ptr = []
-    for i in range(num_clusters):
-        predict_pointer = np.where(predict_set.get_region() == i)[0]
-        # First compute the rejection ratio
-        if predict_set.get_cluster_maps() is None:
-            vals = predict_set.get_values()[predict_pointer]
-        else:
-            vals = predict_set.get_cluster_maps()[i]
-        if len(predict_pointer) > 0:
-            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
-            rs.append((r[i].mean()))
-        else:
-            r.append(None)
-            rs.append(None)
-        lam_ptr.append(predict_pointer)
+    rs, r, lam_ptr = invert(discretization, bw_method)
 
     discretization.get_input_sample_set().local_to_global()
     new_vals = []
@@ -217,23 +235,7 @@ def invert_to_gmm(discretization, bw_method=None):
 
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
-    rs = []
-    r = []
-    lam_ptr = []
-    for i in range(num_clusters):
-        predict_pointer = np.where(predict_set.get_region() == i)[0]
-        # First compute the rejection ratio
-        if predict_set.get_cluster_maps() is None:
-            vals = predict_set.get_values()[predict_pointer]
-        else:
-            vals = predict_set.get_cluster_maps()[i]
-        if len(predict_pointer) > 0:
-            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
-            rs.append((r[i].mean()))
-        else:
-            r.append(None)
-            rs.append(None)
-        lam_ptr.append(predict_pointer)
+    rs, r, lam_ptr = invert(discretization, bw_method)
 
     # Compute multivariate normal for each cluster
     means = []
@@ -289,23 +291,7 @@ def invert_to_multivariate_gaussian(discretization, bw_method=None):
 
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
-    rs = []
-    r = []
-    lam_ptr = []
-    for i in range(num_clusters):
-        predict_pointer = np.where(predict_set.get_region() == i)[0]
-        # First compute the rejection ratio
-        if predict_set.get_cluster_maps() is None:
-            vals = predict_set.get_values()[predict_pointer]
-        else:
-            vals = predict_set.get_cluster_maps()[i]
-        if len(predict_pointer) > 0:
-            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
-            rs.append((r[i].mean()))
-        else:
-            r.append(None)
-            rs.append(None)
-        lam_ptr.append(predict_pointer)
+    rs, r, lam_ptr = invert(discretization, bw_method)
 
     # Compute multivariate normal
     cluster_weights = []
@@ -374,23 +360,7 @@ def invert_to_random_variable(discretization, rv, num_reweighted=10000, bw_metho
 
     predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
-    rs = []
-    r = []
-    lam_ptr = []
-    for i in range(num_clusters):
-        predict_pointer = np.where(predict_set.get_region() == i)[0]
-        # First compute the rejection ratio
-        if predict_set.get_cluster_maps() is None:
-            vals = predict_set.get_values()[predict_pointer]
-        else:
-            vals = predict_set.get_cluster_maps()[i]
-        if len(predict_pointer) > 0:
-            r.append(np.divide(obs_kdes[i](vals.T), predict_kdes[i](vals.T)))
-            rs.append((r[i].mean()))
-        else:
-            r.append(None)
-            rs.append(None)
-        lam_ptr.append(predict_pointer)
+    rs, r, lam_ptr = invert(discretization, bw_method)
 
     # Compute multivariate normal
     cluster_weights = []
