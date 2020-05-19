@@ -426,6 +426,14 @@ class sampler(object):
         self.input_sample_set = lhs_sample_set(input_obj, num_samples, criterion, globalize)
         return self.input_sample_set
 
+    def compute_QoI_and_create_discretization(self, input_sample_set=None,
+                                              savefile=None, globalize=True):
+        """
+        Dummy function for `compute_qoi_and_create_discretization`.
+        """
+        logging.warning("This will be removed in a later version. Use compute_qoi_and_create_discretization instead.")
+        return self.compute_qoi_and_create_discretization(input_sample_set, savefile, globalize)
+
     def compute_qoi_and_create_discretization(self, input_sample_set=None,
                                               savefile=None, globalize=True):
         """

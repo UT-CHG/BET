@@ -171,7 +171,7 @@ class sample_set_base(object):
                    '_probabilities_local', '_radii', '_radii_local', '_reference_value', '_region', '_region_local',
                    '_right', '_right_local', '_values', '_values_local', '_volumes', '_volumes_local', '_width',
                    '_width_local', '_prob_type', '_prob_type_init', '_prob_parameters', '_prob_parameters_init',
-                   '_label', '_labels', '_cluster_maps']
+                   '_label', '_labels', '_cluster_maps', '_weights', '_weights_init']
     #: List of global attribute names for attributes that are :class:`numpy.ndarray`
     array_names = ['_values', '_volumes', '_probabilities',
                    '_densities', '_jacobians',
@@ -285,6 +285,10 @@ class sample_set_base(object):
         self._labels = None
         #: list of arrays of cluster maps from LUQ package
         self._cluster_maps = None
+        #: :class:`numpy.ndarray` of weights of shape (num,)
+        self._weights = None
+        #: :class:`numpy.ndarray` of initial weights of shape (num,)
+        self._weights_init = None
 
     def __eq__(self, other):
         """
@@ -465,6 +469,34 @@ class sample_set_base(object):
         Returns labels for each dimension of set.
         """
         return self._labels
+
+    def set_weights(self, weights):
+        """
+        Set weights for samples
+        :type weights: :class:`numpy.ndarray` of shape (num,)
+        :param weights: weights of samples
+        """
+        self._weights = weights
+
+    def get_weights(self):
+        """
+        Returns weights of samples.
+        """
+        return self._weights
+
+    def set_weights_init(self, weights):
+        """
+        Set initial weights for samples
+        :type weights: :class:`numpy.ndarray` of shape (num,)
+        :param weights: initial weights of samples
+        """
+        self._weights_init = weights
+
+    def get_weights_init(self):
+        """
+        Returns initial weights of samples
+        """
+        return self._weights_init
 
     def set_prob_type_init(self, prob_type_init):
         """
