@@ -177,7 +177,7 @@ class sample_set_base(object):
                    '_densities', '_jacobians',
                    '_error_estimates', '_right', '_left', '_width',
                    '_kdtree_values', '_radii', '_normalized_radii',
-                   '_region', '_error_id', '_weights', '_weights_init']
+                   '_region', '_error_id']
 
     def __init__(self, dim):
         """
