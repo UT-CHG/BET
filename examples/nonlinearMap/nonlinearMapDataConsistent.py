@@ -38,7 +38,7 @@ This can be compared to the data-generating distribution through plots and a var
 
 import numpy as np
 import bet.postProcess.plotP as plotP
-import bet.calculateP.dataConsistent as dc
+import bet.calculateP.calculateR as calculateR
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 import bet.postProcess.compareP as compP
@@ -131,19 +131,19 @@ Try changing the type of probability measure to invert to from
 if invert_to == 'kde':
     # Invert to weighted KDE
     print("Weighted Kernel Density Estimate")
-    dc.invert_to_kde(disc_predict)
+    calculateR.invert_to_kde(disc_predict)
 elif invert_to == 'multivariate_gaussian':
     # Invert to multivariate Gaussian
     print("Multivariate Gaussian")
-    dc.invert_to_multivariate_gaussian(disc_predict)
+    calculateR.invert_to_multivariate_gaussian(disc_predict)
 elif invert_to == 'beta':
     # Invert and fit Beta distribution
     print("Beta Distribution")
-    dc.invert_to_random_variable(disc_predict, rv='beta')
+    calculateR.invert_to_random_variable(disc_predict, rv='beta')
 elif invert_to == 'expon':
     # Invert and fit Beta distribution
     print("Beta Distribution")
-    dc.invert_to_random_variable(disc_predict, rv='expon')
+    calculateR.invert_to_random_variable(disc_predict, rv='expon')
 else:
     raise RuntimeError("Not an acceptable type of Inversion.")
 

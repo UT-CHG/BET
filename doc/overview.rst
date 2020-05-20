@@ -152,7 +152,7 @@ The package layout is as follows::
       calculateP 
       calculateError
       simpleFunP
-      dataConsistent
+      calculateR
     sampling/
       basicSampling
       useLUQ

@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2020 The BET Development Team
 
 import bet.sampling.basicSampling as bsam
-import bet.calculateP.dataConsistent as dc
+import bet.calculateP.calculateR as calculateR
 import bet.sampling.useLUQ as useLUQ
 import bet.postProcess.plotP as plotP
 import bet.postProcess.compareP as compP
@@ -60,7 +60,7 @@ for i in range(2):
 # Invert to multivariate Gaussian
 print("------------------------------------------------------")
 print("Multivariate Gaussian")
-dc.invert_to_multivariate_gaussian(disc1)
+calculateR.invert_to_multivariate_gaussian(disc1)
 
 # Plot marginal probabilities and calculate total variations between probability measures
 for i in range(2):
@@ -77,7 +77,7 @@ for i in range(2):
 # Invert to Gaussian Mixture Model
 print("------------------------------------------------------")
 print("Gaussian Mixture Model")
-dc.invert_to_gmm(disc1)
+calculateR.invert_to_gmm(disc1)
 for i in range(2):
     plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
@@ -90,7 +90,7 @@ for i in range(2):
 
 print("------------------------------------------------------")
 print("Weighted Kernel Density Estimate")
-dc.invert_to_kde(disc1)
+calculateR.invert_to_kde(disc1)
 for i in range(2):
     plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
@@ -105,7 +105,7 @@ for i in range(2):
 print("------------------------------------------------------")
 print("Beta distribution")
 
-dc.invert_to_random_variable(disc1, rv='beta')
+calculateR.invert_to_random_variable(disc1, rv='beta')
 for i in range(2):
     plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],

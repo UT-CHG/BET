@@ -20,10 +20,10 @@ bet.calculateP.calculateP module
     :undoc-members:
     :show-inheritance:
 
-bet.calculateP.dataConsistent module
+bet.calculateP.calculateR module
 ------------------------------------
 
-.. automodule:: bet.calculateP.dataConsistent
+.. automodule:: bet.calculateP.calculateR
     :members:
     :undoc-members:
     :show-inheritance:

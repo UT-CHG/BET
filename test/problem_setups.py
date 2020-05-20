@@ -5,7 +5,7 @@ import bet.sampling.basicSampling as bsam
 import numpy as np
 import bet.calculateP.simpleFunP as simpleFunP
 import bet.calculateP.calculateP as calculateP
-import bet.calculateP.dataConsistent as dataConsistent
+import bet.calculateP.calculateR as calculateR
 
 """
 Useful setups for testing.
@@ -133,7 +133,7 @@ def random_kde(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True,
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_observed_set(disc2.get_output_sample_set())
-        dataConsistent.invert_to_kde(disc1)
+        calculateR.invert_to_kde(disc1)
         return disc1, disc2
 
 
@@ -154,7 +154,7 @@ def random_gmm(rv='uniform', dim=1, out_dim=1, num_samples=1000, globalize=True,
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_observed_set(disc2.get_output_sample_set())
-        dataConsistent.invert_to_gmm(disc1)
+        calculateR.invert_to_gmm(disc1)
         return disc1, disc2
 
 
@@ -176,7 +176,7 @@ def random_multivariate_gaussian(rv='uniform', dim=1, out_dim=1, num_samples=100
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_observed_set(disc2.get_output_sample_set())
-        dataConsistent.invert_to_multivariate_gaussian(disc1)
+        calculateR.invert_to_multivariate_gaussian(disc1)
         return disc1, disc2
 
 
@@ -198,7 +198,7 @@ def random_rv(rv='uniform', dim=1, out_dim=1, num_samples=1000,
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
         disc1.set_output_observed_set(disc2.get_output_sample_set())
-        dataConsistent.invert_to_random_variable(disc1, rv=rv_invert)
+        calculateR.invert_to_random_variable(disc1, rv=rv_invert)
         return disc1, disc2
 
 
