@@ -154,7 +154,7 @@ class Test_rejection_sampling(unittest.TestCase):
         sampler2.random_sample_set(rv2, dim, num_samples, globalize)
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
-        disc1.set_output_probability_set(disc2.get_output_sample_set())
+        disc1.set_output_observed_set(disc2.get_output_sample_set())
         dataConsistent.invert_rejection_sampling(disc1)
 
 

@@ -80,7 +80,7 @@ def generate_output_kdes(discretization, bw_method=None):
                 obs_kdes.append(gaussian_kde(obs_set.get_values()[obs_pointer].T, bw_method=bw_method))
             else:
                 obs_kdes.append(None)
-    return predict_set, predict_kdes, obs_set, obs_kdes, num_clusters
+    return predict_kdes, obs_kdes, num_clusters
 
 
 def invert(discretization, bw_method = None):
@@ -96,7 +96,8 @@ def invert(discretization, bw_method = None):
     :return: marginal probabilities and cluster weights
     :rtype: list, `np.ndarray`
     """
-    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_set = discretization.get_output_sample_set()
 
     rs = []
     r = []
@@ -136,9 +137,11 @@ def invert_to_kde(discretization, bw_method = None):
     """
     from scipy.stats import gaussian_kde
 
-    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs, r, lam_ptr = invert(discretization, bw_method)
+
+    obs_set = discretization.get_output_observed_set()
 
     # Compute marginal probabilities for each parameter and initial condition.
     param_marginals = []
@@ -176,8 +179,7 @@ def invert_rejection_sampling(discretization, bw_method=None):
     :return: sample set containing samples
     :rtype: :class:`bet.sample.sample_set`
     """
-    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization,
-                                                                                      bw_method=bw_method)
+    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs, r, lam_ptr = invert(discretization, bw_method)
 
@@ -233,9 +235,11 @@ def invert_to_gmm(discretization, bw_method=None):
         cov1 = cov1 / sum_weights
         return mean1, cov1
 
-    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs, r, lam_ptr = invert(discretization, bw_method)
+
+    obs_set = discretization.get_output_observed_set()
 
     # Compute multivariate normal for each cluster
     means = []
@@ -289,9 +293,11 @@ def invert_to_multivariate_gaussian(discretization, bw_method=None):
         cov1 = cov1 / sum_weights
         return mean1, cov1
 
-    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs, r, lam_ptr = invert(discretization, bw_method)
+
+    obs_set = discretization.get_output_observed_set()
 
     # Compute multivariate normal
     cluster_weights = []
@@ -358,9 +364,11 @@ def invert_to_random_variable(discretization, rv, num_reweighted=10000, bw_metho
     else:
         raise bet.sample.wrong_input("rv must be a string, list, or tuple.")
 
-    predict_set, predict_kdes, obs_set, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
 
     rs, r, lam_ptr = invert(discretization, bw_method)
+
+    obs_set = discretization.get_output_observed_set()
 
     # Compute multivariate normal
     cluster_weights = []
