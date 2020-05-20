@@ -2238,12 +2238,13 @@ class discretization(object):
     #: :class:`sample.sample_set_base`
     sample_set_names = ['_input_sample_set', '_output_sample_set',
                         '_emulated_input_sample_set', '_emulated_output_sample_set',
-                        '_output_probability_set']
+                        '_output_probability_set', '_output_observed_set']
 
     def __init__(self, input_sample_set, output_sample_set,
                  output_probability_set=None,
                  emulated_input_sample_set=None,
-                 emulated_output_sample_set=None):
+                 emulated_output_sample_set=None,
+                 output_observed_set=None):
         """
         Initialize the discretization.
         
@@ -2257,6 +2258,8 @@ class discretization(object):
         :type emulated_input_sample_set: :class:`bet.sample.sample_set_base`
         :param emulated_output_sample_set: Emulated output set
         :type emulated_output_sample_set: :class:`bet.sample.sample_set_base`
+        :param output_observed_set: Observed output set
+        :type output_observed_set: :class:`bet.sample.sample_set_base`
 
         """
         #: Input sample set :class:`~bet.sample.sample_set_base`
@@ -2271,6 +2274,8 @@ class discretization(object):
         self._output_probability_set = output_probability_set
         #: Pointer from ``self._output_sample_set`` to
         #: ``self._output_probability_set``
+        #: Observed output sample set :class:`~bet.sample.sample_set_base`
+        self._output_observed_set = output_observed_set
         self._io_ptr = None
         #: Pointer from ``self._emulated_input_sample_set`` to
         #: ``self._input_sample_set``
@@ -2530,6 +2535,31 @@ class discretization(object):
         """
         if isinstance(output_sample_set, sample_set_base):
             self._output_sample_set = output_sample_set
+        else:
+            raise AttributeError("Wrong Type: Should be sample_set_base type")
+
+    def get_output_observed_set(self):
+        """
+
+        Returns a reference to the output observed sample set for this discretization.
+
+        :rtype: :class:`~bet.sample.sample_set_base`
+        :returns: output sample set
+
+        """
+        return self._output_observed_set
+
+    def set_output_observed_set(self, output_sample_set):
+        """
+
+        Sets the output observed sample set for this discretization.
+
+        :param output_sample_set: output observed sample set.
+        :type output_sample_set: :class:`~bet.sample.sample_set_base`
+
+        """
+        if isinstance(output_sample_set, sample_set_base):
+            self._output_observed_set = output_sample_set
         else:
             raise AttributeError("Wrong Type: Should be sample_set_base type")
 

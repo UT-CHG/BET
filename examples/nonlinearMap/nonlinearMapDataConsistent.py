@@ -104,7 +104,7 @@ input_samples_obs = sampler_obs.random_sample_set([['beta', {'a': beta_a, 'b': b
 disc_obs = sampler_obs.compute_qoi_and_create_discretization(input_samples_obs)
 
 # Set probability set for predictions
-disc_predict.set_output_probability_set(disc_obs.get_output_sample_set())
+disc_predict.set_output_observed_set(disc_obs.get_output_sample_set())
 
 
 # Calculate initial total variation of marginals

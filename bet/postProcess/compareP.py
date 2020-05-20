@@ -132,9 +132,9 @@ class compare:
         sup2 = np.equal(self.pdfs2, 0.0)
         self.pdfs_zero = np.sum(np.logical_and(sup1, sup2))
 
-    def distance(self, functional='tv', normalize=True, **kwargs):
+    def distance(self, functional='tv', normalize=False, **kwargs):
         """
-        Compute the discrete statistical distance between the probability measures
+        Compute the statistical distance between the probability measures
         evaluated at the comparison points.
 
         :param functional: functional defining type of statistical distance
@@ -183,10 +183,10 @@ class compare:
             dist = functional(self.pdfs1, self.pdfs2, **kwargs)
         return dist
 
-    def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0, normalize=True,
+    def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0, normalize=False,
                           functional='tv', **kwargs):
         """
-        Compute the discrete statistical distance between the marginals of the probability measures
+        Compute the statistical distance between the marginals of the probability measures
         evaluated at equally spaced points on an interval. If the interval is not defined,
         one is computed by the maximum and minimum values. This domain is extended by the proportion
         set by `compare_factor`.

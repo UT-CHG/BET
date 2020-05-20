@@ -33,13 +33,13 @@ def generate_output_kdes(discretization, bw_method=None):
     discretization.local_to_global()
 
     predict_set = discretization.get_output_sample_set()
-    obs_set = discretization.get_output_probability_set()
+    obs_set = discretization.get_output_observed_set()
     if predict_set.get_region() is None or obs_set.get_region() is None:
         predict_set.set_region(np.array([0] * predict_set.check_num()))
         obs_set.set_region(np.array([0] * obs_set.check_num()))
 
     if predict_set.get_cluster_maps() is None:
-        num_clusters = int(max(np.max(predict_set.get_region()), np.max(obs_set.get_region())) + 1)
+        num_clusters = int(np.max(predict_set.get_region()) + 1)
     else:
         num_clusters = len(predict_set.get_cluster_maps())
 

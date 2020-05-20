@@ -143,7 +143,7 @@ class useLUQ:
         # Prediction discretization
         disc1 = sample.discretization(input_sample_set=self.predict_set,
                                       output_sample_set=predict_output,
-                                      output_probability_set=obs_output)
+                                      output_observed_setobs_output)
 
         # Observation discretization
         disc2 = sample.discretization(input_sample_set=self.obs_set,

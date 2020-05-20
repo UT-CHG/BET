@@ -70,8 +70,8 @@ input_samples_obs = samp.sample_set(3)
 input_samples_obs.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
 
 # Generate samples on the parameter space
-beta_a = 2.0  # a parameter for beta distribution
-beta_b = 2.0  # b parameter for beta distribution
+beta_a = 0.5  # a parameter for beta distribution
+beta_b = 3.0  # b parameter for beta distribution
 
 '''
 Suggested changes for user:
@@ -88,7 +88,7 @@ input_samples_obs = sampler_obs.random_sample_set(['beta', {'a': beta_a, 'b': be
 disc_obs = sampler_obs.compute_qoi_and_create_discretization(input_samples_obs)
 
 # Set probability set for predictions
-disc_predict.set_output_probability_set(disc_obs.get_output_sample_set())
+disc_predict.set_output_observed_set(disc_obs.get_output_sample_set())
 
 
 # Calculate initial total variation of marginals
@@ -99,7 +99,7 @@ for i in range(3):
 
 print("------------------------------------------------------")
 
-invert_to = 'kde'  # 'multivariate_gaussian', 'expon', 'beta'
+invert_to = 'expon'  # 'multivariate_gaussian', 'expon', 'beta'
 
 '''
 Suggested changes for user:
