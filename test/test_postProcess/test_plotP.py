@@ -18,7 +18,7 @@ import bet.util as util
 from bet.Comm import comm
 import os
 import bet.sample as sample
-import bet.calculateP.dataConsistent as dc
+import bet.calculateP.calculateR as calculateR
 import bet.sampling.basicSampling as bsam
 
 
@@ -250,7 +250,7 @@ class Test_plot_marginal(unittest.TestCase):
                                        ['beta', {'a': 2, 'b': 3}]], input_obj=3, num_samples=1000)
         sampler2.compute_qoi_and_create_discretization()
 
-        sampler.discretization.set_output_probability_set(sampler2.discretization.get_output_sample_set())
+        sampler.discretization.set_output_observed_set(sampler2.discretization.get_output_sample_set())
         self.disc1 = sampler.discretization
         self.disc2 = sampler2.discretization
 
@@ -258,7 +258,7 @@ class Test_plot_marginal(unittest.TestCase):
         """
         Test plotting random variable probability.
         """
-        dc.invert_to_random_variable(self.disc1, rv='beta')
+        calculateR.invert_to_random_variable(self.disc1, rv='beta')
         param_labels = [r'$a$', r'$b$', r'$c$']
         for i in range(3):
             plotP.plot_marginal(sets=(self.disc1, self.disc2), i=i,

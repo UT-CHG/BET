@@ -76,7 +76,7 @@ class Test_useLUQ(unittest.TestCase):
         """
         assert self.disc1.get_input_sample_set() == self.p_set
         assert self.disc2.get_input_sample_set() == self.o_set
-        assert self.disc1.get_output_probability_set() == self.disc2.get_output_sample_set()
+        assert self.disc1.get_output_observed_set() == self.disc2.get_output_sample_set()
 
     def test_saving(self):
         """

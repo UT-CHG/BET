@@ -1,7 +1,7 @@
 # Copyright (C) 2014-2020 The BET Development Team
 
 """
-This module contains unittests for :mod:`~bet.calculateP.dataConsistent`
+This module contains unittests for :mod:`~bet.calculateP.calculateR`
 """
 
 import unittest
@@ -20,9 +20,9 @@ import collections
 from test.problem_setups import *
 
 
-class Test_dataConsistent(unittest.TestCase):
+class Test_calculateR(unittest.TestCase):
     """
-    Testing ``bet.calculateP.dataConsistent``
+    Testing ``bet.calculateP.calculateR``
     """
     def setUp(self):
         self.in_dim = 1
@@ -32,7 +32,7 @@ class Test_dataConsistent(unittest.TestCase):
 
     def test_kde(self):
         """
-        Test ``bet.calculateP.dataConsistent.invert_to_kde``
+        Test ``bet.calculateP.calculateR.invert_to_kde``
         """
         disc, _ = random_kde(dim=self.in_dim, out_dim=self.out_dim, level=2)
         disc.get_input_sample_set().pdf(self.vals)
@@ -44,7 +44,7 @@ class Test_dataConsistent(unittest.TestCase):
 
     def test_rv(self):
         """
-        Test ``bet.calculateP.dataConsistent.invert_to_random_variable``
+        Test ``bet.calculateP.calculateR.invert_to_random_variable``
         """
         disc, _ = random_rv(dim=self.in_dim, out_dim=self.out_dim, level=2)
         disc.get_input_sample_set().pdf(self.vals)
@@ -56,7 +56,7 @@ class Test_dataConsistent(unittest.TestCase):
 
     def test_gmm(self):
         """
-        Test ``bet.calculateP.dataConsistent.invert_to_gmm``
+        Test ``bet.calculateP.calculateR.invert_to_gmm``
         """
         disc, _ = random_gmm(dim=self.in_dim, out_dim=self.out_dim, level=2)
         disc.get_input_sample_set().pdf(self.vals)
@@ -68,7 +68,7 @@ class Test_dataConsistent(unittest.TestCase):
 
     def test_multivariate_gaussian(self):
         """
-        Test ``bet.calculateP.dataConsistent.invert_to_multivariate_gaussian``
+        Test ``bet.calculateP.calculateR.invert_to_multivariate_gaussian``
         """
         disc, _ = random_multivariate_gaussian(dim=self.in_dim, out_dim=self.out_dim, level=2)
         disc.get_input_sample_set().pdf(self.vals)
@@ -78,9 +78,9 @@ class Test_dataConsistent(unittest.TestCase):
         disc.get_input_sample_set().marginal_pdf(self.vals_marg, i=0)
         disc.get_input_sample_set().marginal_pdf_init(self.vals_marg, i=0)
 
-class Test_dataConsistent_3to2(Test_dataConsistent):
+class Test_calculateR_3to2(Test_calculateR):
     """
-    Testing ``bet.calculateP.dataConsistent`` with a 3 to 2 map.
+    Testing ``bet.calculateP.calculateR`` with a 3 to 2 map.
     """
     def setUp(self):
         self.in_dim = 3
@@ -91,7 +91,7 @@ class Test_dataConsistent_3to2(Test_dataConsistent):
 
 class Test_invert_to_random_variable(unittest.TestCase):
     """
-    Test `bet.calculateP.dataConsistent.invert_to_random_variable`
+    Test `bet.calculateP.calculateR.invert_to_random_variable`
     """
     def test_string(self):
         """
@@ -134,7 +134,7 @@ class Test_invert_to_random_variable(unittest.TestCase):
 class Test_rejection_sampling(unittest.TestCase):
     def Test_rejection_sampling(self):
         """
-        Testing ``bet.calculateP.dataConsistent.invert_rejection_sampling``
+        Testing ``bet.calculateP.calculateR.invert_rejection_sampling``
         """
         rv = 'uniform'
         dim = 1
@@ -154,8 +154,8 @@ class Test_rejection_sampling(unittest.TestCase):
         sampler2.random_sample_set(rv2, dim, num_samples, globalize)
         disc2 = sampler1.compute_qoi_and_create_discretization()
 
-        disc1.set_output_probability_set(disc2.get_output_sample_set())
-        dataConsistent.invert_rejection_sampling(disc1)
+        disc1.set_output_observed_set(disc2.get_output_sample_set())
+        calculateR.invert_rejection_sampling(disc1)
 
 
 
