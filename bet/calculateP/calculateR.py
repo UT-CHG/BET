@@ -116,13 +116,13 @@ def invert(discretization, bw_method = None):
         else:
             r.append(None)
             rs.append(None)
-        weights[predict_pointer] = r
+        weights[predict_pointer] = r[i]
         lam_ptr.append(predict_pointer)
     discretization.get_input_sample_set().set_weights(weights)
     return rs, r, lam_ptr
 
 
-def invert_to_kde(discretization, bw_method = None):
+def invert_to_kde(discretization, bw_method=None):
     """
     Solve the data consistent stochastic inverse problem, solving for a weighted kernel density estimate.
 

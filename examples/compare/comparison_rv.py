@@ -2,6 +2,7 @@
 
 
 import bet.sampling.basicSampling as bsam
+import bet.postProcess.compareP as compP
 
 """
 Compare marginals of two probability measures based on random variables with certain properties.

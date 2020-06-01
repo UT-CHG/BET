@@ -32,10 +32,10 @@ if QoI_num == 1:
     x = np.array([x1])
     y = np.array([y1])
 else:
-    x1 = 0.5
-    y1 = 0.15
-    x2 = 0.15
-    y2 = 0.25
+    x1 = 0.1
+    y1 = 0.05
+    x2 = 0.05
+    y2 = 0.1
     x = np.array([x1, x2])
     y = np.array([y1, y2])
 

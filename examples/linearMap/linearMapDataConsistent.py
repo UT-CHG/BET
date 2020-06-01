@@ -70,8 +70,8 @@ input_samples_obs = samp.sample_set(3)
 input_samples_obs.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
 
 # Generate samples on the parameter space
-beta_a = 0.5  # a parameter for beta distribution
-beta_b = 3.0  # b parameter for beta distribution
+beta_a = 2.0  # a parameter for beta distribution
+beta_b = 2.0  # b parameter for beta distribution
 
 '''
 Suggested changes for user:
@@ -99,7 +99,7 @@ for i in range(3):
 
 print("------------------------------------------------------")
 
-invert_to = 'expon'  # 'multivariate_gaussian', 'expon', 'beta'
+invert_to = 'kde'  # 'multivariate_gaussian', 'expon', or 'beta'
 
 '''
 Suggested changes for user:
@@ -138,4 +138,4 @@ for i in range(3):
 comp_init = compP.compare(disc_predict, disc_obs, set1_init=False, set2_init=True)
 print("Updated TV of Marginals")
 for i in range(3):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=1000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))

@@ -51,7 +51,7 @@ from myModel import my_model
 # and it allows BET to create input/output samples of the model.
 sampler = bsam.sampler(my_model)
 
-# Initialize 3-dimensional input parameter sample set object
+# Initialize 2-dimensional input parameter sample set object
 input_samples = samp.sample_set(2)
 
 # Set parameter domain
@@ -111,7 +111,7 @@ disc_predict.set_output_observed_set(disc_obs.get_output_sample_set())
 comp_init = compP.compare(disc_predict, disc_obs, set1_init=True, set2_init=True)
 print("Initial TV of Marginals")
 for i in range(2):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=1000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))
 
 print("------------------------------------------------------")
 
