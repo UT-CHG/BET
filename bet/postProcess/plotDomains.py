@@ -778,9 +778,11 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
         Q_ref = util.fix_dimensions_data(Q_ref, 2)
 
     # Create figure
-    plt.tricontourf(data_obj.get_values()[:, 0], data_obj.get_values()[:, 1],
+    plt.tricontourf(data_obj.get_values()[:, 0],
+                    data_obj.get_values()[:, 1],
+                    triangles,
                     np.zeros((data_obj.get_values().shape[0],)),
-                    triangles=triangles, colors='grey')
+                    colors='grey')
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
