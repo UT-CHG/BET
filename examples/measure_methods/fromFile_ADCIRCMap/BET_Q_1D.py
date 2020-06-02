@@ -1,14 +1,14 @@
 # Copyright (C) 2014-2020 The BET Development Team
 
-import bet.calculateP.calculateP as calcP
 import bet.sampling.basicSampling as bsam
+import bet.calculateP.calculateP as calcP
 import bet.calculateP.simpleFunP as sfun
 import numpy as np
 import scipy.io as sio
 import bet.sample as sample
 
 # Import "Truth"
-mdat = sio.loadmat('../matfiles/Q_2D')
+mdat = sio.loadmat('../Q_2D')
 Q = mdat['Q']
 Q_ref = mdat['Q_true']
 
@@ -20,13 +20,14 @@ lam_domain = np.array([[0.07, .15], [0.1, 0.2]])
 input_sample_set = sample.sample_set(points.shape[0])
 input_sample_set.set_values(points.transpose())
 input_sample_set.set_domain(lam_domain)
+
+
 print("Finished loading data")
 
 
 def postprocess(station_nums, ref_num):
 
-    filename = 'P_q' + str(station_nums[0] + 1) + \
-        '_q' + str(station_nums[1] + 1)
+    filename = 'P_q' + str(station_nums[0] + 1) + '_q'
     if len(station_nums) == 3:
         filename += '_q' + str(station_nums[2] + 1)
     filename += '_ref_' + str(ref_num + 1)
@@ -74,4 +75,4 @@ ref_nums = ref_nums.ravel()
 stations = stations.ravel()
 
 for tnum, stat in zip(ref_nums, stations):
-    postprocess([0, stat], tnum)
+    postprocess([0], tnum)
