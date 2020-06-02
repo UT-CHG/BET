@@ -148,6 +148,8 @@ class useLUQ:
         # Observation discretization
         disc2 = sample.discretization(input_sample_set=self.obs_set,
                                       output_sample_set=obs_output)
+        disc1.local_to_global()
+        disc2.local_to_global()
 
         return disc1, disc2
 

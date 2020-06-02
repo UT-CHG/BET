@@ -17,12 +17,12 @@ The LUQ package must be installed to run this example.
 # sample for prediction set
 p_set = bsam.random_sample_set(rv=[['uniform', {'loc': .01, 'scale': 0.114}],
                               ['uniform', {'loc': .05, 'scale': 1.45}]],
-                               input_obj=2, num_samples=300)
+                               input_obj=2, num_samples=500)
 
 # sample for observation set
 o_set = bsam.random_sample_set(rv=[['beta', {'a': 2, 'b': 2, 'loc': .01, 'scale': 0.114}],
                                    ['beta', {'a': 2, 'b': 2, 'loc': .05, 'scale': 1.45}]],
-                               input_obj=2, num_samples=300)
+                               input_obj=2, num_samples=500)
 
 # Construct the predicted time series data
 time_start = 2.0
@@ -56,7 +56,7 @@ param_labels = [r'$a$', r'$b$']
 comp_init = compP.compare(disc1, disc2, set1_init=True, set2_init=True)
 print("Initial TV")
 for i in range(2):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=10000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))
 # Invert to multivariate Gaussian
 print("------------------------------------------------------")
 print("Multivariate Gaussian")
@@ -72,7 +72,7 @@ for i in range(2):
 comp_init = compP.compare(disc1, disc2, set1_init=False, set2_init=True)
 print("Updated TV")
 for i in range(2):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=1000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))
 
 # Invert to Gaussian Mixture Model
 print("------------------------------------------------------")
@@ -86,7 +86,7 @@ for i in range(2):
 comp_init = compP.compare(disc1, disc2, set1_init=False, set2_init=True)
 print("Updated TV")
 for i in range(2):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=1000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))
 
 print("------------------------------------------------------")
 print("Weighted Kernel Density Estimate")
@@ -100,7 +100,7 @@ for i in range(2):
 comp_init = compP.compare(disc1, disc2, set1_init=False, set2_init=True)
 print("Updated TV")
 for i in range(2):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=1000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))
 
 print("------------------------------------------------------")
 print("Beta distribution")
@@ -115,4 +115,4 @@ for i in range(2):
 comp_init = compP.compare(disc1, disc2, set1_init=False, set2_init=True)
 print("Updated TV")
 for i in range(2):
-    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=1000))
+    print(comp_init.distance_marginal_quad(i=i, compare_factor=0.2, rtol=1.0e-3, maxiter=100))
