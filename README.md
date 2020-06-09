@@ -71,11 +71,11 @@ You can also try out BET in your browser using [Binder](https://mybinder.org/v2/
 
 ## Testing
 
-To run the tests in the root directory with `pytest` in serial call::
+To run the tests in the root directory with `pytest` in serial call:
 
     pytest ./test/
 
-Some features of BET have the ability to work in parallel. To run tests in parallel call::
+Some features of BET have the ability to work in parallel. To run tests in parallel call:
 
     mpirun -np NPROC pytest ./test/
 
