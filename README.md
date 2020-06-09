@@ -48,7 +48,7 @@ or in BibTEX:
 This code has been documented with sphinx. the documentation is available online at http://ut-chg.github.io/BET. To build documentation run 
 ``make html`` in the ``doc/`` folder.
 
-To build/update the documentation use the following commands::
+To build/update the documentation use the following commands:
 
     sphinx-apidoc -f -o doc bet
     cd doc/
@@ -60,6 +60,9 @@ To change the build location of the documentation you will need to update ``doc/
 
 You will need to run sphinx-apidoc and reinstall bet anytime a new module or method in the source code has been added. 
 If only the `*.rst` files have changed then you can simply run ``make html`` twice in the doc folder.
+Building the docs requires Sphinx and the Read the Docs Sphinx theme, which can be installed with `pip` by:
+
+    pip install Sphinx sphinx_rtd_theme
 
 ## Examples
 Examples scripts are contained in [here](examples/). 
