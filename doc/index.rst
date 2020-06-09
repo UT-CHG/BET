@@ -14,7 +14,7 @@ Contents:
 
    overview
    parallel
-   examples/*
+   examples_overview
    todo_list
 
 

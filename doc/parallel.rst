@@ -47,7 +47,6 @@ The modules that have parallel capabilities are as follows::
       calculateError
     sampling/
       basicSampling 
-      adaptiveSampling
     postProcess/
       plotP  
       postTools
