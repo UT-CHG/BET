@@ -8,11 +8,12 @@ BET is an initialism of Butler, Estep and Tavener, the primary authors of a
 `series <https://epubs.siam.org/doi/abs/10.1137/100785946>`_
 `of <https://epubs.siam.org/doi/abs/10.1137/100785958>`_
 `papers <https://epubs.siam.org/doi/abs/10.1137/130930406>`_
-that introduced the mathematical framework for measure-theoretic stochastic inversion, for which BET included
+that introduced the mathematical framework for measure-based data-consistent stochastic inversion, for which BET included
 a computational implementation. However, since it's initial inception it has grown to include a broad range of
 `data- <https://iopscience.iop.org/article/10.1088/1361-6420/ab8f83/meta>`_
 `consistent <https://epubs.siam.org/doi/abs/10.1137/16M1087229>`_
-`methods <https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.6078>`_.
+`methods <https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.6078>`_
+that can also be density-based.
 It has been applied to a wide variety of application problems, many of which can be found
 `here.
 <https://scholar.google.com/scholar?oi=bibs&hl=en&cites=915741139550333528,6038673497778212734,182199236207122617>`_
@@ -20,7 +21,7 @@ It has been applied to a wide variety of application problems, many of which can
 
 Mathematical Theory
 ------------
-For more information about the methods and algorithms for the measure-theoretic framework, see `A Measure-Theoretic
+For more information about the methods and algorithms for the Measure-Based Data-Consistent framework, see `A Measure-Theoretic
 Computational Method for Inverse Sensitivity Problems III: Multiple Quantities of Interest
 <http://dx.doi.org/10.1137/130930406>`_ for the formulation of the stochastic
 inverse problem  along with proofs of existence
@@ -32,7 +33,7 @@ hydrodynamic models <http://dx.doi.org/10.1016/j.advwatres.2015.01.011>`_ for a 
 of the method for engineers as well as application to a physically relevant problem
 in coastal ocean modeling.
 
-For more information about the methods and algorithms for Data-Consistent framework see
+For more information about the methods and algorithms for Density-Based Data-Consistent framework see
 `Combining Push-Forward Measures and Bayes' Rule to Construct Consistent Solutions to Stochastic Inverse Problems
 <https://doi.org/10.1137/16M1087229>`_ and
 `Data-Consistent Inversion for Stochastic Input-to-Output Maps
@@ -78,10 +79,10 @@ or in BibTEX::
     @software{BET,
     author       = {Lindley Graham and
                     Steven Mattis and
-                     Scott Walsh and
-                     Troy Butler and
-                     Michael Pilosov and
-                     Damon McDougall},
+                    Scott Walsh and
+                    Troy Butler and
+                    Michael Pilosov and
+                    Damon McDougall},
     title        = {BET: Butler, Estep, Tavener Method v2.0.0},
     month        = aug,
     year         = 2016,
