@@ -19,6 +19,7 @@ This module contains the main data structures and exceptions for BET. Notably:
 
 import os
 import logging
+import copy
 import glob
 import warnings
 import numpy as np
@@ -292,7 +293,8 @@ class sample_set_base(object):
 
     def __eq__(self, other):
         """
-        Redefines equality to easily check the equivalence of two sample sets.
+        Redefines equality to easily check the equivalence of two sample sets as having identical
+        values in meta_fields.
         :param other: other object set to which compare
         :return: True for equality and False for not
         :rtype: bool
@@ -1242,6 +1244,11 @@ class sample_set_base(object):
 
         """
         pass
+    
+    def calculate_volumes(self):
+        """
+        Calculate the volumes of cells. Depends on sample set type.
+        """
 
     def estimate_volume(self, n_mc_points=int(1E4)):
         """
@@ -2296,6 +2303,13 @@ class discretization(object):
             logging.info("No output_sample_set")
 
     def __eq__(self, other):
+        """
+        Redefines equality to easily check the equivalence of two discretizations sets as having
+        identical values in meta_fields for each sample set and vector.
+        :param other: other object set to which compare
+        :return: True for equality and False for not
+        :rtype: bool
+        """
         if self.__class__ == other.__class__:
             fields = self.sample_set_names + self.vector_names
             for field in fields:
@@ -2485,7 +2499,6 @@ class discretization(object):
         :returns: Copy of this :class:`~bet.sample.discretization`
 
         """
-        import copy
         return copy.deepcopy(self)
 
     def get_input_sample_set(self):

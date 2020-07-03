@@ -32,7 +32,7 @@ class bad_object(Exception):
 
 def sample_from_updated(input_set, num_samples, globalize=True):
     """
-    Create a new sample set from sampling from the updated probability measure of another sample set.
+    Create a new sample set from resampling from the updated probability measure of another sample set.
 
     :param input_set: Sample set or discretization containing updated probability measure from which to sample.
     :type input_set: :class:`~bet.sample.sample_set` or :class:`~bet.sample.discretization`

@@ -621,21 +621,6 @@ class Test_discretization_simple(unittest.TestCase):
 
         loaded_disc = util.load_object(local_file_name)
 
-        # for attrname in sample.discretization.vector_names:
-        #     curr_attr = getattr(loaded_disc, attrname)
-        #     if curr_attr is not None:
-        #         nptest.assert_array_equal(curr_attr, getattr(self.disc,
-        #                                                      attrname))
-        #
-        # for attrname in sample.discretization.sample_set_names:
-        #     curr_set = getattr(loaded_disc, attrname)
-        #     if curr_set is not None:
-        #         for set_attrname in sample.sample_set.vector_names +\
-        #                 sample.sample_set.all_ndarray_names:
-        #             curr_attr = getattr(curr_set, set_attrname)
-        #             if curr_attr is not None:
-        #                 nptest.assert_array_equal(curr_attr, getattr(
-        #                     curr_set, set_attrname))
         comm.barrier()
         assert loaded_disc == self.disc
 
@@ -656,22 +641,6 @@ class Test_discretization_simple(unittest.TestCase):
 
         loaded_disc = util.load_object(local_file_name)
 
-        # for attrname in sample.discretization.vector_names:
-        #     curr_attr = getattr(loaded_disc, attrname)
-        #     if curr_attr is not None:
-        #         nptest.assert_array_equal(curr_attr,
-        #                                   getattr(self.disc, attrname))
-        #
-        # for attrname in sample.discretization.sample_set_names:
-        #     curr_set = getattr(loaded_disc, attrname)
-        #     if curr_set is not None:
-        #         for set_attrname in sample.sample_set.vector_names +\
-        #                 sample.sample_set.all_ndarray_names:
-        #             curr_attr = getattr(curr_set, set_attrname)
-        #             if curr_attr is not None:
-        #                 nptest.assert_array_equal(curr_attr,
-        #                                           getattr(curr_set, set_attrname))
-
         comm.barrier()
         assert loaded_disc == self.disc
 
@@ -688,22 +657,6 @@ class Test_discretization_simple(unittest.TestCase):
         copied_disc = self.disc.copy()
 
         assert copied_disc == self.disc
-
-        # for attrname in sample.discretization.vector_names:
-        #     curr_attr = getattr(copied_disc, attrname)
-        #     if curr_attr is not None:
-        #         nptest.assert_array_equal(curr_attr, getattr(self.disc,
-        #                                                      attrname))
-        #
-        # for attrname in sample.discretization.sample_set_names:
-        #     curr_set = getattr(copied_disc, attrname)
-        #     if curr_set is not None:
-        #         for set_attrname in sample.sample_set.vector_names +\
-        #                 sample.sample_set.all_ndarray_names:
-        #             curr_attr = getattr(curr_set, set_attrname)
-        #             if curr_attr is not None:
-        #                 nptest.assert_array_equal(curr_attr, getattr(
-        #                     curr_set, set_attrname))
 
     def test_estimate_input_volume_emulated(self):
         """
