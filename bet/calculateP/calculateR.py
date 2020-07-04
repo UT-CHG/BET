@@ -83,7 +83,7 @@ def generate_output_kdes(discretization, bw_method=None):
     return predict_kdes, obs_kdes, num_clusters
 
 
-def invert(discretization, bw_method = None):
+def invert(discretization, bw_method=None):
     """
     Solve the data consistent stochastic inverse problem, solving for input sample weights.
 
@@ -93,8 +93,8 @@ def invert(discretization, bw_method = None):
         See https://docs.scipy.org/doc/scipy/reference/generated/scipy.stats.gaussian_kde.html.
     :type bw_method: str
 
-    :return: marginal probabilities and cluster weights
-    :rtype: list, `np.ndarray`
+    :return: acceptance rate, mean acceptance rate, pointers for samples to clusters
+    :rtype: list, `np.ndarray`, list
     """
     predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
     predict_set = discretization.get_output_sample_set()

@@ -1244,7 +1244,7 @@ class sample_set_base(object):
 
         """
         pass
-    
+
     def calculate_volumes(self):
         """
         Calculate the volumes of cells. Depends on sample set type.
