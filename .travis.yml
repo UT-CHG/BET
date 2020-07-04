@@ -51,8 +51,12 @@ after_success:
 deploy:
   provider: pages
   skip_cleanup: true
+  skip_existing: true
   github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
   keep_history: false
   local_dir: gh-pages/html
   on:
     branch: master
+
+
+
