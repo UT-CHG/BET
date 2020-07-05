@@ -226,6 +226,24 @@ class Test_calc_marg_2D(unittest.TestCase):
             go = False
         nptest.assert_equal(go, True)
 
+    def test_plot_2D_marginal_contours(self):
+        """
+        Test :meth:`bet.postProcess.plotP.plot_2D_marginal_contours`.
+        """
+        (bins, marginals) = plotP.calculate_2D_marginal_probs(self.samples,
+                                                              nbins=10)
+        marginals[(0, 1)][0][0] = 0.0
+        marginals[(0, 1)][0][1] *= 2.0
+        try:
+            plotP.plot_2D_marginal_probs(marginals, bins, self.samples,
+                                         filename="file", interactive=False)
+            go = True
+            if os.path.exists("file_2D_contours_0_1.png") and comm.rank == 0:
+                os.remove("file_2D_contours_0_1.png")
+        except (RuntimeError, TypeError, NameError):
+            go = False
+        nptest.assert_equal(go, True)
+
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
 class Test_plot_marginal(unittest.TestCase):
