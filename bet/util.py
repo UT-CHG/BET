@@ -12,7 +12,7 @@ important methods are:
 """
 
 import sys
-import collections
+import collections.abc
 import os
 import glob
 import logging
@@ -123,7 +123,7 @@ def fix_dimensions_vector(vector):
     :rtype: :class:`numpy.ndarray`
     :returns: array of shape (N,)
     """
-    if not isinstance(vector, collections.Iterable):
+    if not isinstance(vector, collections.abc.Iterable):
         vector = np.array([vector])
     elif not isinstance(vector, np.ndarray):
         vector = np.array(vector)
@@ -140,7 +140,7 @@ def fix_dimensions_vector_2darray(vector):
     :returns: array of shape (N,1)
 
     """
-    if not isinstance(vector, collections.Iterable):
+    if not isinstance(vector, collections.abc.Iterable):
         vector = np.array([vector])
     elif not isinstance(vector, np.ndarray):
         vector = np.array(vector)
@@ -155,7 +155,7 @@ def fix_dimensions_domain(domain):
     shape (dim, 2).
 
     :param vector: numerical object of at least length 2
-    :type vector: :class:`collections.Iterable`
+    :type vector: :class:`collections.abc.Iterable`
     :rtype: :class:`numpy.ndarray`
     :retuns: array of shape (dim, 2)
 
