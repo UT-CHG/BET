@@ -9,7 +9,7 @@ Each sample consists for a parameter coordinate, data coordinate pairing. We
 assume the measure on both spaces is Lebesgue.
 """
 
-import collections
+import collections.abc
 import os
 import warnings
 import logging
@@ -272,7 +272,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
     # Create N samples
     dim = input_sample_set.get_dim()
 
-    if not isinstance(num_samples_per_dim, collections.Iterable):
+    if not isinstance(num_samples_per_dim, collections.abc.Iterable):
         num_samples_per_dim = num_samples_per_dim * np.ones((dim,))
     if np.any(np.less_equal(num_samples_per_dim, 0)):
         warnings.warn('Warning: num_samples_per_dim must be greater than 0')
@@ -492,7 +492,7 @@ class sampler(object):
 
         if lam_ref is not None:
             try:
-                if not isinstance(lam_ref, collections.Iterable):
+                if not isinstance(lam_ref, collections.abc.Iterable):
                     lam_ref = np.array([lam_ref])
                 Q_ref = self.lb_model(lam_ref)
                 output_sample_set.set_reference_value(Q_ref)
