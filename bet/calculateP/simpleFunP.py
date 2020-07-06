@@ -5,7 +5,7 @@ This module provides methods for creating simple function approximations to be
 used by :mod:`~bet.calculateP.calculateP`. These simple function approximations
 are returned as `bet.sample.sample_set` objects.
 """
-import collections
+import collections.abc
 import logging
 import numpy as np
 from bet.Comm import comm, MPI
@@ -38,7 +38,7 @@ def check_type(val, data_set=None):
             raise samp.dim_not_matching("Dimension mismatch.")
         else:
             val = np.array(val)
-    elif not isinstance(val, collections.Iterable):
+    elif not isinstance(val, collections.abc.Iterable):
         val = np.array([val])
     else:
         pass
@@ -172,7 +172,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
 
     if rect_size is None:
         raise wrong_argument_type("Rectangle size required.")
-    elif not isinstance(rect_size, collections.Iterable):
+    elif not isinstance(rect_size, collections.abc.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less_equal(rect_size, 0)):
         msg = 'rect_size must be greater than 0'
@@ -390,13 +390,13 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
     if rect_size is None:
         raise wrong_argument_type("Missing rectangle size.")
-    elif not isinstance(rect_size, collections.Iterable):
+    elif not isinstance(rect_size, collections.abc.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less_equal(rect_size, 0)):
         msg = 'rect_size must be greater than 0'
         raise wrong_argument_type(msg)
 
-    if not isinstance(cells_per_dimension, collections.Iterable):
+    if not isinstance(cells_per_dimension, collections.abc.Iterable):
         cells_per_dimension = np.ones((dim,)) * cells_per_dimension
 
     maxes = [Q_ref + 0.5 * np.array(rect_size)]
@@ -500,7 +500,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set,
 
     data = values
 
-    if not isinstance(rect_scale, collections.Iterable):
+    if not isinstance(rect_scale, collections.abc.Iterable):
         rect_scale = rect_scale * np.ones((dim, ))
 
     rect_size = (np.max(data, 0) - np.min(data, 0)) * rect_scale
