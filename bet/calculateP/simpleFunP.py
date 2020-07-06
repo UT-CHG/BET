@@ -405,7 +405,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     xi = []
     for i in range(dim):
         xi.append(np.linspace(mins[0][i], maxes[0][i],
-                              cells_per_dimension[i] + 1))
+                              int(cells_per_dimension[i]) + 1))
 
     s_set = samp.cartesian_sample_set(dim)
     s_set.setup(xi)

@@ -295,7 +295,7 @@ def regular_sample_set(input_obj, num_samples_per_dim=1):
         vec_samples_dimension[i] = list(np.linspace(
             input_domain[i, 0] - 0.5 * bin_width,
             input_domain[i, 1] + 0.5 * bin_width,
-            num_samples_per_dim[i] + 2))[1:int(num_samples_per_dim[i] + 1)]
+            int(num_samples_per_dim[i]) + 2))[1:int(num_samples_per_dim[i] + 1)]
 
     arrays_samples_dimension = np.meshgrid(
         *[vec_samples_dimension[i] for i in np.arange(0, dim)],
