@@ -30,7 +30,7 @@ jobs:
       with:
         python-version: 3.7
 
-    -name: Install dependencies
+    - name: Install dependencies
       run: |
         sudo apt update
         sudo apt install -y gfortran libblas-dev liblapack-dev mpich libmpich-dev
