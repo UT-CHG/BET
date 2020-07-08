@@ -36,7 +36,7 @@ class missing_attribute(Exception):
 
 def calculate_1D_marginal_probs(sample_set, nbins=20):
     r"""
-    This estimates every marginal of a voronoi probability measure
+    This estimates every marginal of a Voronoi probability measure
     described by the probabilities within the sample_set object with histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
@@ -101,7 +101,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 def calculate_2D_marginal_probs(sample_set, nbins=20):
     """
     This calculates every pair of marginals (or joint in 2d case) of
-    input probability measure defined on a rectangular grid for voronoi probabilities using histograms..
+    input probability measure defined on a rectangular grid for Voronoi probabilities using histograms..
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
     emulated samples (if they exist) or samples

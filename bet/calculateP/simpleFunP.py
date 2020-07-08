@@ -515,7 +515,7 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
     the entire ``data_domain``. Here the ``data_domain`` is the union of
-    voronoi cells defined by ``data``. In other words we assign each sample the
+    Voronoi cells defined by ``data``. In other words we assign each sample the
     same probability, so ``M = len(data)`` or rather ``len(d_distr_samples) ==
     len(data)``. The purpose of this method is to approximate uniform
     distributions over irregularly shaped domains.
