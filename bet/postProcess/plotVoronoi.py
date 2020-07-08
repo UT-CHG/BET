@@ -9,8 +9,6 @@ import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-#plt.rc('text', usetex=True)
-#plt.rc('font', family='serif')
 from bet.Comm import comm, MPI
 import bet.sample as sample
 

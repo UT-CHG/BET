@@ -29,7 +29,7 @@ The model is solved for these parameters to generate
 
 The parameter space is also sampled with a different ("data-generating") random variable, and the linear map
 is applied to generate artificial "observed" data.
-We solve the data-consistent stochastic inversion problem defined by the predicted inputs and outputs and the
+We solve the density-based approach problem defined by the predicted inputs and outputs and the
 observed output data.
 In this problem, the initial uniform probability on the parameter space is updated to a new probability measure
 based on the data-consistent inversion framework.

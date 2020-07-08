@@ -144,7 +144,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
 
         ``data_set`` is only used to determine dimension.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -276,7 +276,7 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set,
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -322,7 +322,7 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set,
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
