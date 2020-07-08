@@ -1,1080 +1,349 @@
+# Copyright (C) 2014-2020 The BET Development Team
 import numpy as np
-import logging
-import bet.util as util
 import bet.sample as samp
 import bet.sampling.basicSampling as bsam
 import scipy.spatial.distance as ds
 
 
-def density_estimate(sample_set, ptr=None):
-    r"""
-    Evaluate an approximate density on a comparison sample set into
-    which the pointer variable ``ptr`` points. This function returns
-    the density estimates for a sample set object and write it to the
-    ``_comparison_densities`` attribute inside of ``sample_set``
-
-    :param sample_set: sample set with existing probabilities stored
-    :type sample_set: :class:`bet.sample.sample_set_base`
-    :param ptr: pointer to a reference set against which densities are
-        being compared. If ``None``, use samples as they are.
-    :type ptr: list, tuple, or ``np.ndarray``
-
-    :rtype: :class:`bet.sample.sample_set_base`
-    :returns: sample set object with attribute ``_comparison_densities``
-
+class compare:
     """
-    if sample_set is None:
-        raise AttributeError("Required: sample_set object")
-    elif sample_set._densities is not None:
-        # this is our way of checking if we used sampling-approach
-        # if already computed, avoid re-computation.
-        if ptr is not None:
-            den = sample_set._densities[ptr]
-        else:
-            den = sample_set._densities
-        sample_set._comparison_densities = den
-    else:  # missing densities, use probabilities
-        if sample_set._probabilities is None:
-            if sample_set._probabilities_local is not None:
-                sample_set.local_to_global()
-            else:
-                msg = "Required: _probabilities in sample_set"
-                msg += "to construct density estimates."
-                raise AttributeError(msg)
-        if sample_set._volumes is None:
-            msg = "Required: _volumes in sample_set"
-            msg += "to construct density estimates."
-            raise AttributeError(msg)
-        if sample_set._probabilities_local is None:
-            sample_set.global_to_local()
-
-        if ptr is None:
-            den = np.divide(sample_set._probabilities.ravel(),
-                            sample_set._volumes.ravel())
-        else:
-            den = np.divide(sample_set._probabilities[ptr].ravel(),
-                            sample_set._volumes[ptr].ravel())
-        sample_set._comparison_densities = den
-    if ptr is None:  # create pointer to density estimates to avoid re-run
-        sample_set._densities = sample_set._comparison_densities
-    else:
-        sample_set._prob = sample_set._probabilities[ptr].ravel()
-    sample_set.local_to_global()
-    return sample_set
-
-
-class comparison(object):
-    """
-    This class allows for analytically-sound comparisons between
-    probability measures defined on different sigma-algebras. In order
-    to compare the similarity of two measures defined on different
-    sigma-algebras (induced by the voronoi-cell tesselations implicitly
-    defined by the ``_values`` in each sample set), a third sample set
-    object contains the set of samples on which the measures will
-    be compared. It is referred to as an ``comparison_sample_set``
-    and is the only set that is actually required to instantiate a
-    ``comparison`` object; the dimension and domain of it will be
-    used to enforce proper setting of the left and right sample sets.
-
+    This class allows for the statistical distance between probability measures
+    to be calculated.
+    The probability measures may be defined by Voronoi tesselations, weighted Kernel Density Estimates,
+    Gaussian Mixture Models, random variables with known parameters, and multi-dimensional
+    normal distributions.
     This object can be thought of as a more flexible version of an abstraction
     of a metric, a measure of distance between two probability measures.
-    A metric ``d(x,y)`` has two arguments, one to the left (``x``),
+    It ``d(x,y)`` takes two arguments, one to the left (``x``),
     and one to the right (``y``). However, we do not enforce the properties
-    that define a formal metric, instead we use the language of "comparisons".
-
-    Technically, any function can be passed for evaluation, including
-    ones that fail to satisfy symmetry, so we refrain from referring
-    to measures of similarity as metrics, though this is the usual case
-    (with the exception of the frequently used KL-Divergence).
-    Several common measures of similarity are accessible with keywords.
-
-    The number of samples in this third (reference) sample set is
-    given by the argument ``num_mc_points``, and pointers between this
-    set and the left/right sets are built on-demand. Methods in this
-    class allow for over-writing of any of the three sample set objects
-    involved, and pointers are either re-built explictly, or they
-    are constructed when a measure of similarity (such as distance)
-    is requested to be evaluated.
-
-    .. seealso::
-
-        :meth:`bet.compareP.comparison.value``
-
-    :param comparison_sample_set: Reference set against which comparisons
-        will be made.
-    :type comparison_sample_set: :class:`bet.sample.sample_set_base`
-
+    that define a formal metric, instead we use the language of statistical distance.
     """
-    #: List of attribute names for attributes which are vectors or 1D
-    #: :class:`numpy.ndarray`
-    vector_names = ['_ptr_left', '_ptr_left_local',
-                    '_ptr_right', '_ptr_right_local', '_domain']
+    def __init__(self, set1, set2, inputs=True, set1_init=False, set2_init=False):
+        """
 
-    #: List of attribute names for attributes that are
-    #: :class:`sample.sample_set_base`
-    sample_set_names = ['_left_sample_set', '_right_sample_set',
-                        '_comparison_sample_set']
+        Initialize comparison object.
 
-    def __init__(self, comparison_sample_set,
-                 sample_set_left=None, sample_set_right=None,
-                 ptr_left=None, ptr_right=None):
-        #: Left sample set
-        self._left_sample_set = None
-        #: Right sample set
-        self._right_sample_set = None
-        #: Integration/Emulation set :class:`~bet.sample.sample_set_base`
-        self._comparison_sample_set = comparison_sample_set
-        #: Pointer from ``self._comparison_sample_set`` to
-        #: ``self._left_sample_set``
-        self._ptr_left = ptr_left
-        #: Pointer from ``self._comparison_sample_set`` to
-        #: ``self._right_sample_set``
-        self._ptr_right = ptr_right
-        #: local integration left ptr for parallelsim
-        self._ptr_left_local = None
-        #: local integration right ptr for parallelism
-        self._ptr_right_local = None
-        #: Domain
-        self._domain = None
-        #: Left sample set density evaluated on emulation set.
-        self._den_left = None
-        #: Right sample set density evaluated on emulation set.
-        self._den_right = None
+        :param set1: Object containing left probability measure.
+        :type set1: :class:`bet.sample.sample_set` or `bet.sample.discretization`lass:
+        :param set2: Object containing left probability measure.
+        :type set1: :class:`bet.sample.sample_set` or class:`bet.sample.discretization`
+        :param inputs: If set1 and set2 are discretizations, use input sets if True and output if False.
+            True by default.
+        :type inputs: bool
+        :param set1_init: Use initial probability measure for set1 if True. False by default.
+        :type set1_init: bool
+        :param set2_init: Use initial probability measure for set2 if True. False by default.
+        :type set2_init: bool
+        """
+        self.pdfs1 = None
+        self.pdfs2 = None
+        self.compare_vals = None
+        self.set1_init = set1_init
+        self.set2_init = set2_init
+        self.pdfs_zero = None
 
-        # extract sample set
-        if isinstance(sample_set_left, samp.sample_set_base):
-            # left sample set
-            self._left_sample_set = sample_set_left
-            self._domain = sample_set_left.get_domain()
-        if isinstance(sample_set_right, samp.sample_set_base):
-            # right sample set
-            self._right_sample_set = sample_set_right
-            if self._domain is not None:
-                if not np.allclose(self._domain, sample_set_right._domain):
-                    raise samp.domain_not_matching(
-                        "Left and Right domains do not match")
+        # Extract sample sets
+        if isinstance(set1, samp.discretization):
+            if inputs:
+                set1 = set1.get_input_sample_set()
             else:
-                self._domain = sample_set_right.get_domain()
+                set1 = set1.get_output_sample_set()
 
-        # check dimension consistency
-        if isinstance(comparison_sample_set, samp.sample_set_base):
-            self._num_samples = comparison_sample_set.check_num()
-            output_dims = []
-            output_dims.append(comparison_sample_set.get_dim())
-            if self._right_sample_set is not None:
-                output_dims.append(self._right_sample_set.get_dim())
-            if self._left_sample_set is not None:
-                output_dims.append(self._left_sample_set.get_dim())
-            if len(output_dims) == 1:
-                self._comparison_sample_set = comparison_sample_set
-            elif np.all(np.array(output_dims) == output_dims[0]):
-                self._comparison_sample_set = comparison_sample_set
+        if isinstance(set2, samp.discretization):
+            if inputs:
+                set2 = set2.get_input_sample_set()
             else:
-                raise samp.dim_not_matching("Dimension of values incorrect")
+                set2 = set2.get_output_sample_set()
 
-            if not isinstance(comparison_sample_set.get_domain(), np.ndarray):
-                # domain can be missing if left/right sample sets present
-                if self._left_sample_set is not None:
-                    comparison_sample_set.set_domain(self._domain)
-                else:
-                    if self._right_sample_set is not None:
-                        comparison_sample_set.set_domain(self._domain)
-                    else:  # no sample sets provided
-                        msg = "Must provide at least one set from\n"
-                        msg += "\twhich a domain can be inferred."
-                        raise AttributeError(msg)
+        if isinstance(set1, samp.sample_set) and isinstance(set2, samp.sample_set):
+            self.set1 = set1
+            self.set2 = set2
         else:
-            if (self._left_sample_set is not None) or \
-               (self._right_sample_set is not None):
-                pass
+            raise samp.wrong_input("Inputs are not of valid form.")
+
+        # Check dimensions
+        if self.set1.get_dim() != self.set2.get_dim():
+            raise samp.dim_not_matching("The sets do not have the same dimension.")
+
+    def set_compare_set(self, compare_set=10000, compare_factor=0.0):
+        """
+        Set values where the left and right probability measures should be compared.
+        If `compare_set` is of type :class:`bet.sample.sample_set`, then the values from
+        that object are used. If `compare_set` is of type :class:`numpy.ndarray`, then the
+        values in that array are used. If `compare_set` is of type int, then that number
+        of uniformly distributed are sampled from a domain containing all of the values
+        for set1 and set2. If compare_factor is set to be greater than 0, then this domain
+        is increased by that proportion in every direction. Increasing the size of the
+        sampling domain may catch areas of nonzero probability.
+
+        :param compare_set: Set containing values on which to compare.
+        :type compare_set: :class:`bet.sample.sample_set`, :class:`numpy.ndarray`, or int 10000 by default.
+        :param compare_factor: Proportion to increase domain for sampling. Only used if `compare_set` is type int.
+            0 by default.
+        :type compare_factor: float
+        """
+        # Extract values to evaluate the probability measures.
+        if isinstance(compare_set, samp.sample_set):
+            if compare_set.get_dim() == self.set1.get_dim():
+                compare_set.local_to_global()
+                self.compare_vals = compare_set.get_values()
             else:
-                raise AttributeError(
-                    "Wrong Type: Should be samp.sample_set_base type")
-
-        if (ptr_left is not None):
-            if len(ptr_left) != self._num_samples:
-                raise AttributeError(
-                    "Left pointer length must match comparison set.")
-            if (ptr_right is not None):
-                if not np.allclose(ptr_left.shape, ptr_right.shape):
-                    raise AttributeError("Pointers must be of same length.")
-        if (ptr_right is not None):
-            if len(ptr_right) != self._num_samples:
-                raise AttributeError(
-                    "Right pointer length must match comparison set.")
-
-    def check_dim(self):
-        r"""
-        Checks that dimensions of left and right sample sets match
-        the dimension of the comparison sample set.
-
-        :rtype: int
-        :returns: dimension
-
-        """
-        left_set = self.get_left()
-        right_set = self.get_right()
-        if left_set.get_dim() != right_set.get_dim():
-            msg = "These sample sets must have the same dimension."
-            raise samp.dim_not_matching(msg)
-        else:
-            dim = left_set.get_dim()
-
-        il, ir = self.get_ptr_left(), self.get_ptr_right()
-        if (il is not None) and (ir is not None):
-            if len(il) != len(ir):
-                msg = "The pointers have inconsistent sizes."
-                msg += "\nTry running set_ptr_left() [or _right()]"
-                raise samp.dim_not_matching(msg)
-        return dim
-
-    def check_domain(self):
-        r"""
-        Checks that all domains match so that the comparisons
-        are being made on measures defined on the same underlying space.
-
-        :rtype: ``np.ndarray`` of shape (ndim, 2)
-        :returns: domain bounds
-
-        """
-        left_set = self.get_left()
-        right_set = self.get_right()
-        if left_set._domain is not None and right_set._domain is not None:
-            if not np.allclose(left_set._domain, right_set._domain):
-                msg = "These sample sets have different domains."
-                raise samp.domain_not_matching(msg)
+                raise samp.dim_not_matching("The sets do not have the same dimension.")
+        elif isinstance(compare_set, np.ndarray):
+            if compare_set.shape[1] == self.set1.get_dim():
+                self.compare_vals = compare_set
             else:
-                domain = left_set.get_domain()
-        else:  # since the domains match, we can choose either.
-            if left_set._domain is None or right_set._domain is None:
-                msg = "One or more of your sets is missing a domain."
-                raise samp.domain_not_matching(msg)
+                raise samp.dim_not_matching("The sets do not have the same dimension.")
+        elif isinstance(compare_set, int):
+            # Find bounds
+            combined = np.vstack((self.set1.get_values(), self.set2.get_values()))
+            mins = np.min(combined, axis=0)
+            maxes = np.max(combined, axis=0)
 
-        if not np.allclose(self._comparison_sample_set.get_domain(), domain):
-            msg = "Integration domain mismatch."
-            raise samp.domain_not_matching(msg)
-        self._domain = domain
-        return domain
-
-    def globalize_ptrs(self):
-        r"""
-        Globalizes comparison pointers by caling ``get_global_values``
-        for both the left and right sample sets.
-
-        """
-        if (self._ptr_left_local is not None) and\
-                (self._ptr_left is None):
-            self._ptr_left = util.get_global_values(
-                self._ptr_left_local)
-        if (self._ptr_right_local is not None) and\
-                (self._ptr_right is None):
-            self._ptr_right = util.get_global_values(
-                self._ptr_right_local)
-
-    def set_ptr_left(self, globalize=True):
-        """
-        Creates the pointer from ``self._comparison_sample_set`` to
-        ``self._left_sample_set``
-
-        .. seealso::
-
-            :meth:`scipy.spatial.KDTree.query``
-
-        :param bool globalize: flag whether or not to globalize
-            ``self._ptr_left``
-
-        """
-        if self._comparison_sample_set._values_local is None:
-            self._comparison_sample_set.global_to_local()
-
-        (_, self._ptr_left_local) = self._left_sample_set.query(
-            self._comparison_sample_set._values_local)
-
-        if globalize:
-            self._ptr_left = util.get_global_values(
-                self._ptr_left_local)
-        assert self._left_sample_set.check_num() >= max(self._ptr_left_local)
-
-    def get_ptr_left(self):
-        """
-        Returns the pointer from ``self._comparison_sample_set`` to
-        ``self._left_sample_set``
-
-        .. seealso::
-
-            :meth:`scipy.spatial.KDTree.query``
-
-        :rtype: :class:`numpy.ndarray` of int of shape
-            (self._left_sample_set._values.shape[0],)
-        :returns: self._ptr_left
-
-        """
-        return self._ptr_left
-
-    def set_ptr_right(self, globalize=True):
-        """
-        Creates the pointer from ``self._comparison_sample_set`` to
-        ``self._right_sample_set``
-
-        .. seealso::
-
-            :meth:`scipy.spatial.KDTree.query``
-
-        :param bool globalize: flag whether or not to globalize
-            ``self._ptr_right``
-
-        """
-        if self._comparison_sample_set._values_local is None:
-            self._comparison_sample_set.global_to_local()
-
-        (_, self._ptr_right_local) = self._right_sample_set.query(
-            self._comparison_sample_set._values_local)
-
-        if globalize:
-            self._ptr_right = util.get_global_values(
-                self._ptr_right_local)
-        assert self._right_sample_set.check_num() >= max(self._ptr_right_local)
-
-    def get_ptr_right(self):
-        """
-        Returns the pointer from ``self._comparison_sample_set`` to
-        ``self._right_sample_set``
-
-        .. seealso::
-
-            :meth:`scipy.spatial.KDTree.query``
-
-        :rtype: :class:`numpy.ndarray` of int of shape
-            (self._right_sample_set._values.shape[0],)
-        :returns: self._ptr_right
-
-        """
-        return self._ptr_right
-
-    def copy(self):
-        """
-        Makes a copy using :meth:`numpy.copy`.
-
-        :rtype: :class:`~bet.postProcess.compareP.comparison`
-        :returns: Copy of a comparison object.
-
-        """
-        my_copy = comparison(self._comparison_sample_set.copy(),
-                             self._left_sample_set.copy(),
-                             self._right_sample_set.copy())
-
-        for attrname in comparison.sample_set_names:
-            if attrname is not '_left_sample_set' and \
-                    attrname is not '_right_sample_set':
-                curr_sample_set = getattr(self, attrname)
-                if curr_sample_set is not None:
-                    setattr(my_copy, attrname, curr_sample_set.copy())
-
-        for array_name in comparison.vector_names:
-            current_array = getattr(self, array_name)
-            if current_array is not None:
-                setattr(my_copy, array_name, np.copy(current_array))
-        return my_copy
-
-    def get_left_sample_set(self):
-        """
-        Returns a reference to the left sample set for this comparison.
-
-        :rtype: :class:`~bet.sample.sample_set_base`
-        :returns: left sample set
-
-        """
-        return self._left_sample_set
-
-    def get_left(self):
-        r"""
-        Wrapper for `get_left_sample_set`.
-        """
-        return self.get_left_sample_set()
-
-    def set_left_sample_set(self, sample_set):
-        """
-
-        Sets the left sample set for this comparison.
-
-        :param sample_set: left sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        if isinstance(sample_set, samp.sample_set_base):
-            self._left_sample_set = sample_set
-            self._ptr_left = None
-            self._ptr_left_local = None
-            self._den_left = None
-        elif isinstance(sample_set, samp.discretization):
-            msg = "Discretization passed. Assuming input set."
-            logging.warning(msg)
-            sample_set = sample_set.get_input_sample_set()
-            self._left_sample_set = sample_set
-            self._ptr_left = None
-            self._ptr_left_local = None
-            self._den_left = None
+            # Perform uniform random sampling.
+            rv = []
+            for i in range(self.set1.get_dim()):
+                rv_loc = ['uniform', {}]
+                delt = compare_factor * (maxes[i] - mins[i])
+                rv_loc[1]['loc'] = mins[i] - delt
+                rv_loc[1]['scale'] = maxes[i] - mins[i] + delt
+            unif_set = bsam.random_sample_set(rv=rv_loc, input_obj=self.set1.get_dim(),
+                                              num_samples=compare_set)
+            self.compare_vals = unif_set.get_values()
         else:
-            raise TypeError(
-                "Wrong Type: Should be samp.sample_set_base type")
-        if self._comparison_sample_set._domain is None:
-            self._comparison_sample_set.set_domain(
-                sample_set.get_domain())
+            raise samp.wrong_input("Inputs are not of valid form.")
+
+    def evaluate_pdfs(self):
+        """
+        Evaluate probability density functions associated with the probability measures at
+        the comparison points.
+        """
+        if self.set1_init:
+            self.pdfs1 = self.set1.pdf_init(self.compare_vals)
         else:
-            if not np.allclose(self._comparison_sample_set._domain,
-                               sample_set._domain):
-                raise samp.domain_not_matching(
-                    "Domain does not match comparison set.")
+            self.pdfs1 = self.set1.pdf(self.compare_vals)
 
-    def set_left(self, sample_set):
-        r"""
-
-        Wrapper for `set_left_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_left_sample_set(sample_set)
-
-    def get_right_sample_set(self):
-        """
-
-        Returns a reference to the right sample set for this comparison.
-
-        :rtype: :class:`~bet.sample.sample_set_base`
-        :returns: right sample set
-
-        """
-        return self._right_sample_set
-
-    def get_right(self):
-        r"""
-        Wrapper for `get_right_sample_set`.
-        """
-        return self.get_right_sample_set()
-
-    def set_right(self, sample_set):
-        r"""
-
-        Wrapper for `set_right_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_right_sample_set(sample_set)
-
-    def set_right_sample_set(self, sample_set):
-        """
-        Sets the right sample set for this comparison.
-
-        :param sample_set: right sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        if isinstance(sample_set, samp.sample_set_base):
-            self._right_sample_set = sample_set
-            self._ptr_right = None
-            self._ptr_right_local = None
-            self._den_right = None
-        elif isinstance(sample_set, samp.discretization):
-            msg = "Discretization passed. Assuming input set."
-            logging.warning(msg)
-            sample_set = sample_set.get_input_sample_set()
-            self._right_sample_set = sample_set
-            self._ptr_right = None
-            self._ptr_right_local = None
-            self._den_right = None
+        if self.set2_init:
+            self.pdfs2 = self.set2.pdf_init(self.compare_vals)
         else:
-            raise TypeError(
-                "Wrong Type: Should be samp.sample_set_base type")
-        if self._comparison_sample_set._domain is None:
-            self._comparison_sample_set.set_domain(
-                sample_set.get_domain())
-        else:
-            if not np.allclose(self._comparison_sample_set._domain,
-                               sample_set._domain):
-                raise samp.domain_not_matching(
-                    "Domain does not match comparison set.")
+            self.pdfs2 = self.set2.pdf(self.compare_vals)
 
-    def get_comparison_sample_set(self):
-        r"""
-        Returns a reference to the comparison sample set for this comparison.
+        sup1 = np.equal(self.pdfs1, 0.0)
+        sup2 = np.equal(self.pdfs2, 0.0)
+        self.pdfs_zero = np.sum(np.logical_and(sup1, sup2))
 
-        :rtype: :class:`~bet.sample.sample_set_base`
-        :returns: comparison sample set
-
+    def distance(self, functional='tv', normalize=False, **kwargs):
         """
-        return self._comparison_sample_set
-
-    def get_comparison(self):
-        r"""
-        Wrapper for `get_comparison_sample_set`.
-        """
-        return self.get_comparison_sample_set()
-
-    def set_comparison_sample_set(self, comparison_sample_set):
-        r"""
-        Sets the comparison sample set for this comparison.
-
-        :param comparison_sample_set: comparison sample set
-        :type comparison_sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        if isinstance(comparison_sample_set, samp.sample_set_base):
-            output_dims = []
-            output_dims.append(comparison_sample_set.get_dim())
-            if self._right_sample_set is not None:
-                output_dims.append(self._right_sample_set.get_dim())
-            if self._left_sample_set is not None:
-                output_dims.append(self._left_sample_set.get_dim())
-            if len(output_dims) == 1:
-                self._comparison_sample_set = comparison_sample_set
-            elif np.all(np.array(output_dims) == output_dims[0]):
-                self._comparison_sample_set = comparison_sample_set
-            else:
-                raise samp.dim_not_matching("dimension of values incorrect")
-        else:
-            raise AttributeError(
-                "Wrong Type: Should be samp.sample_set_base type")
-        # if a new emulation set is provided, forget the comparison evaluation.
-        if self._left_sample_set is not None:
-            self._left_sample_set._comparison_densities = None
-        if self._right_sample_set is not None:
-            self._right_sample_set._comparison_densities = None
-
-    def set_comparison(self, sample_set):
-        r"""
-        Wrapper for `set_comparison_sample_set`.
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        return self.set_comparison_sample_set(sample_set)
-
-    def clip(self, lnum, rnum=None, copy=True):
-        r"""
-        Creates and returns a comparison with the the first `lnum`
-        and `rnum` entries of the left and right sample sets, respectively.
-
-        :param int lnum: number of values in left sample set to return.
-        :param int rnum: number of values in right sample set to return.
-            If ``rnum==None``, set ``rnum=lnum``.
-        :param bool copy: Pass comparison_sample_set by value instead of pass
-            by reference (use same pointer to sample set object).
-
-        :rtype: :class:`~bet.sample.comparison`
-        :returns: clipped comparison
-
-        """
-        if rnum is None:  # can clip by same amount
-            rnum = lnum
-        if lnum > 0:
-            cl = self._left_sample_set.clip(lnum)
-        else:
-            cl = self._left_sample_set.copy()
-        if rnum > 0:
-            cr = self._right_sample_set.clip(rnum)
-        else:
-            cr = self._right_sample_set.copy()
-
-        if copy:
-            comp_set = self._comparison_sample_set.copy()
-        else:
-            comp_set = self._comparison_sample_set
-
-        return comparison(sample_set_left=cl,
-                          sample_set_right=cr,
-                          comparison_sample_set=comp_set)
-
-    def merge(self, comp):
-        r"""
-        Merges a given comparison with this one by merging the input and
-        output sample sets.
-
-        :param comp: comparison object to merge with.
-        :type comp: :class:`bet.sample.comparison`
-
-        :rtype: :class:`bet.sample.comparison`
-        :returns: Merged comparison
-        """
-        ml = self._left_sample_set.merge(comp._left_sample_set)
-        mr = self._right_sample_set.merge(comp._right_sample_set)
-        il, ir = self._ptr_left, self._ptr_right
-        if comp._ptr_left is not None:
-            il += comp._ptr_left
-        if comp._ptr_right is not None:
-            ir += comp._ptr_right
-        return comparison(sample_set_left=ml,
-                          sample_set_right=mr,
-                          comparison_sample_set=self._comparison_sample_set,
-                          ptr_left=il,
-                          ptr_right=ir)
-
-    def slice(self,
-              dims=None):
-        r"""
-        Slices the left and right of the comparison.
-
-        :param list dims: list of indices (dimensions) of sample set to include
-
-        :rtype: :class:`~bet.sample.comparison`
-        :returns: sliced comparison
-
-        """
-        slice_list = ['_values', '_values_local',
-                      '_error_estimates', '_error_estimates_local',
-                      ]
-        slice_list2 = ['_jacobians', '_jacobians_local']
-
-        comp_ss = samp.sample_set(len(dims))
-        left_ss = samp.sample_set(len(dims))
-        right_ss = samp.sample_set(len(dims))
-
-        if self._comparison_sample_set._domain is not None:
-            comp_ss.set_domain(self._comparison_sample_set._domain[dims, :])
-
-        if self._left_sample_set._domain is not None:
-            left_ss.set_domain(self._left_sample_set._domain[dims, :])
-        if self._left_sample_set._reference_value is not None:
-            left_ss.set_reference_value(
-                self._left_sample_set._reference_value[dims])
-
-        if self._right_sample_set._domain is not None:
-            right_ss.set_domain(self._right_sample_set._domain[dims, :])
-        if self._right_sample_set._reference_value is not None:
-            right_ss.set_reference_value(
-                self._right_sample_set._reference_value[dims])
-
-        for obj in slice_list:
-            val = getattr(self._left_sample_set, obj)
-            if val is not None:
-                setattr(left_ss, obj, val[:, dims])
-            val = getattr(self._right_sample_set, obj)
-            if val is not None:
-                setattr(right_ss, obj, val[:, dims])
-            val = getattr(self._comparison_sample_set, obj)
-            if val is not None:
-                setattr(comp_ss, obj, val[:, dims])
-        for obj in slice_list2:
-            val = getattr(self._left_sample_set, obj)
-            if val is not None:
-                nval = np.copy(val)
-                nval = nval.take(dims, axis=1)
-                nval = nval.take(dims, axis=2)
-                setattr(left_ss, obj, nval)
-            val = getattr(self._right_sample_set, obj)
-            if val is not None:
-                nval = np.copy(val)
-                nval = nval.take(dims, axis=1)
-                nval = nval.take(dims, axis=2)
-                setattr(right_ss, obj, nval)
-
-        comp = comparison(sample_set_left=left_ss,
-                          sample_set_right=right_ss,
-                          comparison_sample_set=comp_ss)
-        # additional attributes to copy over here. TODO: maybe slice through
-        return comp
-
-    def global_to_local(self):
-        """
-        Call global_to_local for ``sample_set_left`` and
-        ``sample_set_right``.
-
-        """
-        if self._left_sample_set is not None:
-            self._left_sample_set.global_to_local()
-        if self._right_sample_set is not None:
-            self._right_sample_set.global_to_local()
-        if self._comparison_sample_set is not None:
-            self._comparison_sample_set.global_to_local()
-
-    def local_to_global(self):
-        """
-        Call local_to_global for ``sample_set_left``,
-        ``sample_set_right``, and ``comparison_sample_set``.
-
-        """
-        if self._left_sample_set is not None:
-            self._left_sample_set.local_to_global()
-        if self._right_sample_set is not None:
-            self._right_sample_set.local_to_global()
-        if self._comparison_sample_set is not None:
-            self._comparison_sample_set.local_to_global()
-
-    def estimate_volume_mc(self):
-        r"""
-        Applies MC assumption to volumes of both sets.
-        """
-        self._left_sample_set.estimate_volume_mc()
-        self._right_sample_set.estimate_volume_mc()
-
-    def set_left_probabilities(self, probabilities):
-        r"""
-        Allow overwriting of probabilities for the left sample set.
-
-        :param probabilities: probabilities to overwrite the ones in the
-            left sample set.
-        :type probabilities: list, tuple, or `numpy.ndarray`
-
-        """
-        if self.get_left().check_num() != len(probabilities):
-            raise AttributeError("Length of probabilities incorrect.")
-        self._left_sample_set.set_probabilities(probabilities)
-        self._left_sample_set.global_to_local()
-        self._left_sample_set._comparison_densities = None
-        self._den_left = None
-
-    def set_right_probabilities(self, probabilities):
-        r"""
-        Allow overwriting of probabilities for the right sample set.
-
-        :param probabilities: probabilities to overwrite the ones in the
-            right sample set.
-        :type probabilities: list, tuple, or `numpy.ndarray`
-
-        """
-        if self.get_right().check_num() != len(probabilities):
-            raise AttributeError("Length of probabilities incorrect.")
-        self._right_sample_set._probabilities = probabilities
-        self._right_sample_set.global_to_local()
-        self._right_sample_set._comparison_densities = None
-        self._den_right = None
-
-    def get_left_probabilities(self):
-        r"""
-        Wrapper for ``get_probabilities`` for the left sample set.
-        """
-        return self._left_sample_set.get_probabilities()
-
-    def get_right_probabilities(self):
-        r"""
-        Wrapper for ``get_probabilities`` for the right sample set.
-        """
-        return self._right_sample_set.get_probabilities()
-
-    def set_volume_comparison(self, sample_set, comparison_sample_set=None):
-        r"""
-        Wrapper to use the comparison sample set for the
-        calculation of volumes on the sample sets (as opposed to using the
-        Monte-Carlo assumption or setting volumes manually.)
-
-        .. seealso::
-
-            :meth:`bet.compareP.comparison.estimate_volume_mc``
-            :meth:`bet.compareP.comparison.set_left_volume_comparison``
-            :meth:`bet.compareP.comparison.set_right_volume_comparison``
-
-        :param sample_set: sample set
-        :type sample_set: :class:`~bet.sample.sample_set_base`
-        :param comparison_sample_set: comparison sample set
-        :type comparison_sample_set: :class:`~bet.sample.sample_set_base`
-
-
-        """
-        if comparison_sample_set is not None:
-            if not isinstance(comparison_sample_set, samp.sample_set_base):
-                msg = "Wrong type specified for `emulation_set`.\n"
-                msg += "Please specify a `~bet.sample.sample_set_base`."
-                raise AttributeError(msg)
-            else:
-                sample_set.estimate_volume_emulated(comparison_sample_set)
-        else:
-            # if not defined, use existing comparison set for volumes.
-            sample_set.estimate_volume_emulated(self._comparison_sample_set)
-
-    def set_left_volume_comparison(self, comparison_sample_set=None):
-        r"""
-        Use an comparison sample set to define volumes for the left set.
-        """
-        self.set_volume_comparison(self.get_left(), comparison_sample_set)
-        self._den_left = None  # if volumes change, so will densities.
-
-    def set_right_volume_comparison(self, comparison_sample_set=None):
-        r"""
-        Use an comparison sample set to define volumes for the right set.
-
-        :param comparison_sample_set: comparison sample set
-        :type comparison_sample_set: :class:`~bet.sample.sample_set_base`
-
-        """
-        self.set_volume_comparison(self.get_right(), comparison_sample_set)
-        self._den_right = None  # if volumes change, so will densities.
-
-    def estimate_densities_left(self):
-        r"""
-        Evaluates density function for the left probability measure
-        at the set of samples defined in `comparison_sample_set`.
-
-        """
-        s_set = self.get_left()
-        if self._ptr_left_local is None:
-            self.set_ptr_left()
-        s_set = density_estimate(s_set, self._ptr_left_local)
-        self._den_left = s_set._comparison_densities
-        return self._den_left
-
-    def estimate_densities_right(self):
-        r"""
-        Evaluates density function for the right probability measure
-        at the set of samples defined in ``comparison_sample_set``.
-
-        """
-        s_set = self.get_right()
-        if self._ptr_right_local is None:
-            self.set_ptr_right()
-        s_set = density_estimate(s_set, self._ptr_right_local)
-        self._den_right = s_set._comparison_densities
-        return self._den_right
-
-    def estimate_right_densities(self):
-        r"""
-        Wrapper for ``bet.postProcess.compareP.estimate_densities_right``.
-        """
-        return self.estimate_densities_right()
-
-    def estimate_left_densities(self):
-        r"""
-        Wrapper for ``bet.postProcess.compareP.estimate_densities_left``.
-        """
-        return self.estimate_densities_left()
-
-    def get_densities_right(self):
-        r"""
-        Returns right comparison density.
-        """
-        return self._den_right
-
-    def get_densities_left(self):
-        r"""
-        Returns left comparison density.
-        """
-        return self._den_left
-
-    def get_left_densities(self):
-        r"""
-        Wrapper for ``bet.postProcess.compareP.get_densities_left``.
-        """
-        return self.get_densities_left()
-
-    def get_right_densities(self):
-        r"""
-        Wrapper for ``bet.postProcess.compareP.get_densities_right``.
-        """
-        return self.get_densities_right()
-
-    def estimate_densities(self, globalize=True,
-                           comparison_sample_set=None):
-        r"""
-        Evaluate density functions for both left and right sets using
-        the set of samples defined in ``self._comparison_sample_set``.
-
-        :param bool globalize: globalize left/right sample sets
-        :param comparison_sample_set: comparison sample set
-        :type comparison_sample_set: :class:`~bet.sample.sample_set_base`
-
-        :rtype: ``numpy.ndarray``, ``numpy.ndarray``
-        :returns: left and right density values
-
-        """
-        if globalize:  # in case probabilities were re-set but not local
-            self.global_to_local()
-
-        comp_set = self.get_comparison_sample_set()
-        if comp_set is None:
-            raise AttributeError("Missing comparison set.")
-        self.check_domain()
-
-        # set pointers if they have not already been set
-        if self._ptr_left_local is None:
-            self.set_ptr_left(globalize)
-        if self._ptr_right_local is None:
-            self.set_ptr_right(globalize)
-        self.check_dim()
-
-        left_set, right_set = self.get_left(), self.get_right()
-
-        if left_set._volumes is None:
-            if comparison_sample_set is None:
-                msg = " Volumes missing from left. Using MC assumption."
-                logging.warning(msg)
-                left_set.estimate_volume_mc()
-            else:
-                self.set_left_volume_comparison(comparison_sample_set)
-        else:  # volumes present and comparison passed
-            if comparison_sample_set is not None:
-                msg = " Overwriting left volumes with comparison ones."
-                logging.warning(msg)
-                self.set_left_volume_comparison(comparison_sample_set)
-
-        if right_set._volumes is None:
-            if comparison_sample_set is None:
-                msg = " Volumes missing from right. Using MC assumption."
-                logging.warning(msg)
-                right_set.estimate_volume_mc()
-            else:
-                msg = " Overwriting right volumes with comparison ones."
-                logging.warning(msg)
-                self.set_right_volume_comparison(comparison_sample_set)
-        else:  # volumes present and comparison passed
-            if comparison_sample_set is not None:
-                self.set_right_volume_comparison(comparison_sample_set)
-
-        # compute densities
-        self.estimate_densities_left()
-        self.estimate_densities_right()
-
-        if globalize:
-            self.local_to_global()
-        return self._den_left, self._den_right
-
-    def value(self, functional='tv', **kwargs):
-        r"""
-        Compute value capturing some meaure of similarity using the
-        evaluated densities on a shared comparison set.
-        If either density evaluation is missing, re-compute it.
-
-        :param funtional: a function representing a measure of similarity
-        :type functional: method that takes in two lists/arrays and returns
-            a scalar value (measure of similarity)
+        Compute the statistical distance between the probability measures
+        evaluated at the comparison points.
+
+        :param functional: functional defining type of statistical distance
+        :type functional: str or a function that takes in two lists/arrays and returns
+            a scalar value (measure of similarity). Accepted strings are 'tv' (total variation) the
+            default, 'kl' (Kullback-Leibler),
+            'mink' (minkowski), '2' (Euclidean norm), and 'hell' (Hellinger distance).
+        :param normalize: whether or not to normalize the distance
+        :type normalize: bool
+        :param kwargs: Keyword arguments for `functional`.
 
         :rtype: float
-        :returns: value representing a measurement between the left and right
-            sample sets, ideally a measure of similarity, a distance, a metric.
+        :returns: The statistical distance
 
         """
-        left_den, right_den = self.get_left_densities(), self.get_right_densities()
-        if left_den is None:
-            # logging.log(20,"Left density missing. Estimating now.")
-            left_den = self.estimate_densities_left()
-        if right_den is None:
-            # logging.log(20,"Right density missing. Estimating now.")
-            right_den = self.estimate_densities_right()
+        # Check inputs
+        if self.compare_vals is None:
+            raise samp.wrong_input("Compare set needed.")
+        if self.pdfs1 is None or self.pdfs2 is None:
+            self.evaluate_pdfs()
+        if normalize:
+            self.pdfs1 = self.pdfs1 / np.sum(self.pdfs1)
+            self.pdfs2 = self.pdfs2 / np.sum(self.pdfs2)
+            factor = 1.0
+        else:
+            factor = 1.0 / (self.pdfs1.shape[0])
+
 
         if functional in ['tv', 'totvar',
                           'total variation', 'total-variation', '1']:
-            dist = ds.minkowski(left_den, right_den, 1, w=0.5, **kwargs)
+            dist = factor * ds.minkowski(self.pdfs1, self.pdfs2, 1, w=0.5, **kwargs)
         elif functional in ['mink', 'minkowski']:
-            dist = ds.minkowski(left_den, right_den, **kwargs)
+            dist = factor * ds.minkowski(self.pdfs1, self.pdfs2, **kwargs)
         elif functional in ['norm']:
-            dist = ds.norm(left_den - right_den, **kwargs)
+            dist = factor * ds.norm(self.pdfs1 - self.pdfs2, **kwargs)
         elif functional in ['euclidean', '2-norm', '2']:
-            dist = ds.minkowski(left_den, right_den, 2, **kwargs)
+            dist = (factor ** 0.5) * ds.minkowski(self.pdfs1, self.pdfs2, 2, **kwargs)
         elif functional in ['sqhell', 'sqhellinger']:
-            dist = ds.sqeuclidean(np.sqrt(left_den), np.sqrt(right_den)) / 2.0
+            dist = factor * ds.sqeuclidean(np.sqrt(self.pdfs1), np.sqrt(self.pdfs2)) / 2.0
         elif functional in ['hell', 'hellinger']:
-            return np.sqrt(self.value('sqhell'))
+            return np.sqrt(self.distance('sqhell'))
+        elif functional in ['kl', 'k-l', 'kullback-leibler', 'entropy']:
+            from scipy.stats import entropy as kl_div
+            dist = kl_div(self.pdfs1, self.pdfs2, **kwargs)
         else:
-            dist = functional(left_den, right_den, **kwargs)
+            dist = functional(self.pdfs1, self.pdfs2, **kwargs)
+        return dist
 
-        return dist / self._comparison_sample_set.check_num()
+    def distance_marginal(self, i, interval=None, num_points=1000, compare_factor=0.0, normalize=False,
+                          functional='tv', **kwargs):
+        """
+        Compute the statistical distance between the marginals of the probability measures
+        evaluated at equally spaced points on an interval. If the interval is not defined,
+        one is computed by the maximum and minimum values. This domain is extended by the proportion
+        set by `compare_factor`.
 
+        :param i: index of the marginal
+        :type i: int
+        :param interval: interval over which to integrate. None by default.
+        :type interval: list, tuple, or :class:`numpy.ndarray`
+        :param num_points: number of evaluation points. 1000 by default.
+        :type num_points: int
+        :param compare_factor: Proportion to increase domain. Only used if
+            `interval` is None. 0 by default.
+        :type compare_factor: float
+        :param normalize: whether or not to normalize the probabilities to sum to 1
+        :type normalize: bool
+        :param functional: functional defining type of statistical distance
+        :type functional: str or a function that takes in two lists/arrays and returns
+            a scalar value (measure of similarity). Accepted strings are 'tv' (total variation), 'kl' (Kullback-Leibler)
+            'mink' (minkowski), '2' (Euclidean norm), and 'hell' (Hellinger distance).
+        :param kwargs: Keyword arguments for `functional`.
 
-def compare(left_set, right_set, num_mc_points=1000, choice='input'):
-    r"""
-    This is a convience function to quickly instantiate and return
-    a `~bet.postProcess.comparison` object.
+        :rtype: float
+        :returns: The statistical distance
 
-    .. seealso::
-
-        :class:`bet.compareP.comparison`
-        :meth:`bet.compareP.compare_inputs`
-        :meth:`bet.compareP.compare_outputs`
-
-    :param left set: sample set in left position
-    :type left set: :class:`bet.sample.sample_set_base`
-    :param right set: sample set in right position
-    :type right set: :class:`bet.sample.sample_set_base`
-    :param int num_mc_points: number of values of sample set to return
-    :param choice: If discretization, choose 'input' (default) or 'output'
-    :type choice: string
-
-    :rtype: :class:`~bet.postProcess.compareP.comparison`
-    :returns: comparison object
-
-    """
-    # extract sample set
-    if isinstance(left_set, samp.discretization):
-        msg = 'Discretization passed. '
-        if choice == 'input':
-            msg += 'Using input sample set.'
-            left_set = left_set.get_input_sample_set()
+        """
+        x = None
+        if interval is None:
+            if self.set1.get_domain() is not None and self.set2.get_domain() is not None:
+                min1 = min(self.set1.get_domain()[i, 0], self.set1.get_domain()[i, 0])
+                max1 = min(self.set1.get_domain()[i, 1], self.set1.get_domain()[i, 1])
+                if min1 != -np.inf and max1 != np.inf:
+                    delt = compare_factor * (max1 - min1)
+                    x = np.linspace(min1-delt, max1+delt, num_points)
+            if x is None:
+                combined = np.vstack((self.set1.get_values()[:, i], self.set2.get_values()[:, i]))
+                min1 = np.min(combined)
+                max1 = np.max(combined)
+                delt = compare_factor * (max1 - min1)
+                x = np.linspace(min1 - delt, max1 + delt, num_points)
         else:
-            msg += 'Using output sample set.'
-            left_set = left_set.get_output_sample_set()
-        logging.info(msg)
+            x = np.linspace(interval[0], interval[1], num_points)
 
-    if isinstance(right_set, samp.discretization):
-        msg = 'Discretization passed. '
-        if choice == 'input':
-            msg += 'Using input sample set.'
-            right_set = right_set.get_input_sample_set()
+        if self.set1_init:
+            pdfs1 = self.set1.marginal_pdf_init(x, i)
         else:
-            msg += 'Using output sample set.'
-            right_set = right_set.get_output_sample_set()
-        logging.info(msg)
+            pdfs1 = self.set1.marginal_pdf(x, i)
 
-    if not num_mc_points > 0:
-        raise ValueError("Please specify positive num_mc_points")
+        if self.set2_init:
+            pdfs2 = self.set2.marginal_pdf_init(x, i)
+        else:
+            pdfs2 = self.set2.marginal_pdf(x, i)
 
-    # make integration sample set
-    assert left_set.get_dim() == right_set.get_dim()
-    assert np.array_equal(left_set.get_domain(), right_set.get_domain())
-    comp_set = samp.sample_set(left_set.get_dim())
-    comp_set.set_domain(right_set.get_domain())
-    comp_set = bsam.random_sample_set('r', comp_set, num_mc_points)
+        if normalize:
+            pdfs1 = pdfs1 / np.sum(pdfs1)
+            pdfs2 = pdfs2 / np.sum(pdfs2)
+            factor = 1.0
+        else:
+            factor = 1.0 / (pdfs1.shape[0]) * (x[-1] - x[0])
 
-    # to be generating a new random sample set pass an integer argument
-    comp = comparison(comp_set, left_set, right_set)
+        if functional in ['tv', 'totvar',
+                          'total variation', 'total-variation', '1']:
+            dist = factor * ds.minkowski(pdfs1, pdfs2, 1, w=0.5, **kwargs)
+        elif functional in ['mink', 'minkowski']:
+            dist = ds.minkowski(pdfs1, pdfs2, **kwargs)
+        elif functional in ['norm']:
+            dist = ds.norm(pdfs1 - pdfs2, **kwargs)
+        elif functional in ['euclidean', '2-norm', '2']:
+            dist = (factor ** 0.5) * ds.minkowski(pdfs1, pdfs2, 2, **kwargs)
+        elif functional in ['sqhell', 'sqhellinger']:
+            dist = 0.5 * factor * (ds.minkowski(np.sqrt(pdfs1), np.sqrt(pdfs2), 2, **kwargs) ** 2.0)
+        elif functional in ['hell', 'hellinger']:
+            dist = (0.5 * factor * (ds.minkowski(np.sqrt(pdfs1), np.sqrt(pdfs2), 2, **kwargs) ** 2.0)) ** 0.5
+        elif functional in ['kl', 'k-l', 'kullback-leibler', 'entropy']:
+            from scipy.stats import entropy as kl_div
+            dist = kl_div(pdfs1, pdfs2, **kwargs)
+        else:
+            dist = functional(pdfs1, pdfs2, **kwargs)
 
-    return comp
+        return dist
 
+    def distance_marginal_quad(self, i, interval=None, compare_factor=0.0,
+                               functional='tv', **kwargs):
+        """
+        Compute the  statistical distance between the marginals of the probability measures
+        by integrating using `scipy.integrate.quadrature`.. If the interval is not defined,
+        one is computed by the maximum and minimum values. This domain is extended by the proportion
+        set by `compare_factor`.
 
-def compare_inputs(left_set, right_set, num_mc_points=1000):
-    r"""
-    This is a convience function to quickly instantiate and return
-    a `~bet.postProcess.comparison` object. If discretizations are passed,
-    the respective input sample sets will be compared.
+        :param i: index of the marginal
+        :type i: int
+        :param interval: interval over which to integrate. None by default.
+        :type interval: list, tuple, or :class:`numpy.ndarray`
+        :param compare_factor: Proportion to increase domain. Only used if
+            `interval` is None. 0 by default.
+        :type compare_factor: float
+        :param functional: functional defining type of statistical distance
+        :type functional: str or a function that takes in two lists/arrays and returns
+            a scalar value (measure of similarity). Accepted strings are 'tv' (total variation),
+            'mink' (minkowski), '2' (Euclidean norm), 'kl' (Kullback-Leibler) and 'hell' (Hellinger distance).
+        :param kwargs: Keyword arguments for `scipy.integrate.quadrature`.
 
-    .. seealso::
+        :rtype: float
+        :returns: The statistical distance
 
-        :class:`bet.compareP.comparison`
-        :meth:`bet.compareP.compare`
+        """
+        from scipy.integrate import quadrature
+        if interval is None:
+            if self.set1.get_domain() is not None and self.set2.get_domain() is not None:
+                min1 = min(self.set1.get_domain()[i, 0], self.set1.get_domain()[i, 0])
+                max1 = min(self.set1.get_domain()[i, 1], self.set1.get_domain()[i, 1])
+                if min1 != -np.inf and max1 != np.inf:
+                    delt = compare_factor * (max1 - min1)
+                    interval = [min1-delt, max1 + delt]
+            if interval is None:
+                combined = np.vstack((self.set1.get_values()[:, i], self.set2.get_values()[:, i]))
+                min1 = np.min(combined)
+                max1 = np.max(combined)
+                delt = compare_factor * (max1 - min1)
+                interval = [min1 - delt, max1 + delt]
+                
+        if self.set1_init:
+            pdf1 = self.set1.marginal_pdf_init
+        else:
+            pdf1 = self.set1.marginal_pdf
 
-    :param left set: sample set in left position
-    :type left set: :class:`bet.sample.sample_set_base`
-    :param right set: sample set in right position
-    :type right set: :class:`bet.sample.sample_set_base`
-    :param int num_mc_points: number of values of sample set to return
+        if self.set2_init:
+            pdf2 = self.set2.marginal_pdf_init
+        else:
+            pdf2 = self.set2.marginal_pdf
 
-    :rtype: :class:`~bet.postProcess.compareP.comparison`
-    :returns: comparison object
+        if functional in ['tv', 'totvar',
+                          'total variation', 'total-variation', '1']:
+            def error(x):
+                return np.abs(pdf1(x, i) - pdf2(x, i))
+            return 0.5 * quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['euclidean', '2-norm', '2']:
+            def error(x):
+                return (pdf1(x, i) - pdf2(x, i))**2
+            return (quadrature(error, interval[0], interval[1], **kwargs)[0])**0.5
+        elif functional in ['norm']:
+            def error(x):
+                return pdf1(x, i) - pdf2(x, i)
 
-    """
-    return compare(left_set, right_set, num_mc_points, 'input')
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['sqhell', 'sqhellinger']:
+            def error(x):
+                return 0.5 * (np.sqrt(pdf1(x, i)) - np.sqrt(pdf2(x, i)))**2
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        elif functional in ['hell', 'hellinger']:
+            return np.sqrt(self.distance_marginal_quad(i, interval, compare_factor=0,
+                                                       functional="sqhell", **kwargs))
+        elif functional in ['kl', 'k-l', 'kullback-leibler', 'entropy']:
+            def error(x):
+                return pdf1(x, i) * np.log(pdf1(x, i)/pdf2(x, i))
 
-
-def compare_outputs(left_set, right_set, num_mc_points=1000):
-    r"""
-    This is a convience function to quickly instantiate and return
-    a `~bet.postProcess.comparison` object. If discretizations are passed,
-    the respective output sample sets will be compared.
-
-    .. seealso::
-
-        :class:`bet.compareP.comparison`
-        :meth:`bet.compareP.compare`
-
-    :param left set: sample set in left position
-    :type left set: :class:`bet.sample.sample_set_base`
-    :param right set: sample set in right position
-    :type right set: :class:`bet.sample.sample_set_base`
-    :param int num_mc_points: number of values of sample set to return
-
-    :rtype: :class:`~bet.postProcess.compareP.comparison`
-    :returns: comparison object
-
-    """
-    return compare(left_set, right_set, num_mc_points, 'output')
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]
+        else:
+            def error(x):
+                return functional(pdf1(x, i), pdf2(x, i))
+            return quadrature(error, interval[0], interval[1], **kwargs)[0]

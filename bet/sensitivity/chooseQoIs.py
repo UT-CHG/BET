@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains functions for choosing optimal sets of QoIs to use in the
@@ -9,6 +9,7 @@ from itertools import combinations
 import numpy as np
 from scipy import stats
 from bet.Comm import comm
+import bet.sample
 import bet.util as util
 
 

@@ -1,16 +1,16 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module provides methods for creating simple function approximations to be
 used by :mod:`~bet.calculateP.calculateP`. These simple function approximations
 are returned as `bet.sample.sample_set` objects.
 """
-import collections
+import collections.abc
 import logging
 import numpy as np
 from bet.Comm import comm, MPI
-import bet.util as util
 import bet.sample as samp
+import bet.util as util
 
 
 class wrong_argument_type(Exception):
@@ -38,7 +38,7 @@ def check_type(val, data_set=None):
             raise samp.dim_not_matching("Dimension mismatch.")
         else:
             val = np.array(val)
-    elif not isinstance(val, collections.Iterable):
+    elif not isinstance(val, collections.abc.Iterable):
         val = np.array([val])
     else:
         pass
@@ -144,7 +144,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
 
         ``data_set`` is only used to determine dimension.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -172,7 +172,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
 
     if rect_size is None:
         raise wrong_argument_type("Rectangle size required.")
-    elif not isinstance(rect_size, collections.Iterable):
+    elif not isinstance(rect_size, collections.abc.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less_equal(rect_size, 0)):
         msg = 'rect_size must be greater than 0'
@@ -276,7 +276,7 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set,
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -322,7 +322,7 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set,
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -390,13 +390,13 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
 
     if rect_size is None:
         raise wrong_argument_type("Missing rectangle size.")
-    elif not isinstance(rect_size, collections.Iterable):
+    elif not isinstance(rect_size, collections.abc.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less_equal(rect_size, 0)):
         msg = 'rect_size must be greater than 0'
         raise wrong_argument_type(msg)
 
-    if not isinstance(cells_per_dimension, collections.Iterable):
+    if not isinstance(cells_per_dimension, collections.abc.Iterable):
         cells_per_dimension = np.ones((dim,)) * cells_per_dimension
 
     maxes = [Q_ref + 0.5 * np.array(rect_size)]
@@ -405,7 +405,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     xi = []
     for i in range(dim):
         xi.append(np.linspace(mins[0][i], maxes[0][i],
-                              cells_per_dimension[i] + 1))
+                              int(cells_per_dimension[i]) + 1))
 
     s_set = samp.cartesian_sample_set(dim)
     s_set.setup(xi)
@@ -500,7 +500,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set,
 
     data = values
 
-    if not isinstance(rect_scale, collections.Iterable):
+    if not isinstance(rect_scale, collections.abc.Iterable):
         rect_scale = rect_scale * np.ones((dim, ))
 
     rect_size = (np.max(data, 0) - np.min(data, 0)) * rect_scale
@@ -515,7 +515,7 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
     the entire ``data_domain``. Here the ``data_domain`` is the union of
-    voronoi cells defined by ``data``. In other words we assign each sample the
+    Voronoi cells defined by ``data``. In other words we assign each sample the
     same probability, so ``M = len(data)`` or rather ``len(d_distr_samples) ==
     len(data)``. The purpose of this method is to approximate uniform
     distributions over irregularly shaped domains.

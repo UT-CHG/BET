@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains functions for approximating jacobians of QoI maps.
@@ -8,8 +8,8 @@ AROUND THE FIRST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
 """
 import numpy as np
 import scipy.spatial as spatial
-import bet.util as util
 import bet.sample as sample
+import bet.util as util
 import bet.sampling.LpGeneralizedSamples as lpsam
 
 

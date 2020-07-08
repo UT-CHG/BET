@@ -1,4 +1,4 @@
-# Copyright (C) 2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 
 import unittest
@@ -34,8 +34,29 @@ def linear_model3(parameter_samples):
     return QoI_samples
 
 
-class calculate_error(object):
-    def Test_sampling_error(self):
+class calculate_error(unittest.TestCase):
+    def setUp(self):
+        param_ref = np.array([0.5, 0.5, 0.5])
+        Q_ref = linear_model2(param_ref)
+
+        sampler = bsam.sampler(linear_model2)
+        input_samples = sample.sample_set(3)
+        input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
+        input_samples = sampler.random_sample_set(rv='uniform', input_obj=input_samples,
+                                                  num_samples=1E2)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
+                                                             globalize=True)
+        simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
+            data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
+        num = disc.check_nums()
+        disc._output_sample_set.set_error_estimates(0.01 * np.ones((num, 1)))
+        jac = np.zeros((num, 1, 3))
+        jac[:, :, :] = np.array([[0.506], [0.253], [0.085]]).transpose()
+
+        disc._input_sample_set.set_jacobians(jac)
+        self.disc = disc
+
+    def test_sampling_error(self):
         """
         Testing :meth:`bet.calculateP.calculateError.sampling_error`
         """
@@ -109,7 +130,7 @@ class calculate_error(object):
         else:
             self.assertAlmostEqual(low, lower[0])
 
-    def Test_model_error(self):
+    def test_model_error(self):
         """
         Testing :meth:`bet.calculateP.calculateError.model_error`
         """
@@ -141,7 +162,7 @@ class calculate_error(object):
         self.assertAlmostEqual(er_est[0], er_est4)
 
 
-class Test_3_to_2(calculate_error, unittest.TestCase):
+class Test_3_to_2(calculate_error):
     """
     Testing :meth:`bet.calculateP.calculateError` on a
     3 to 2 map.
@@ -154,9 +175,9 @@ class Test_3_to_2(calculate_error, unittest.TestCase):
         sampler = bsam.sampler(linear_model1)
         input_samples = sample.sample_set(3)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
-        input_samples = sampler.random_sample_set(
-            'random', input_samples, num_samples=1E3)
-        disc = sampler.compute_QoI_and_create_discretization(input_samples,
+        input_samples = sampler.random_sample_set(rv='uniform', input_obj=input_samples,
+                                                  num_samples=1E3)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
@@ -170,7 +191,7 @@ class Test_3_to_2(calculate_error, unittest.TestCase):
         self.disc = disc
 
 
-class Test_3_to_1(calculate_error, unittest.TestCase):
+class Test_3_to_1(calculate_error):
     """
     Testing :meth:`bet.calculateP.calculateError` on a
     3 to 1 map.
@@ -183,9 +204,9 @@ class Test_3_to_1(calculate_error, unittest.TestCase):
         sampler = bsam.sampler(linear_model2)
         input_samples = sample.sample_set(3)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 3, axis=0))
-        input_samples = sampler.random_sample_set(
-            'random', input_samples, num_samples=1E2)
-        disc = sampler.compute_QoI_and_create_discretization(input_samples,
+        input_samples = sampler.random_sample_set(rv='uniform', input_obj=input_samples,
+                                                  num_samples=1E2)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=disc, Q_ref=Q_ref, rect_scale=0.5)
@@ -198,7 +219,7 @@ class Test_3_to_1(calculate_error, unittest.TestCase):
         self.disc = disc
 
 
-class Test_1_to_1(calculate_error, unittest.TestCase):
+class Test_1_to_1(calculate_error):
     """
     Testing :meth:`bet.calculateP.calculateError` on a
     1 to 1 map.
@@ -211,9 +232,9 @@ class Test_1_to_1(calculate_error, unittest.TestCase):
         sampler = bsam.sampler(linear_model3)
         input_samples = sample.sample_set(1)
         input_samples.set_domain(np.repeat([[0.0, 1.0]], 1, axis=0))
-        input_samples = sampler.random_sample_set(
-            'random', input_samples, num_samples=1E2)
-        disc = sampler.compute_QoI_and_create_discretization(input_samples,
+        input_samples = sampler.random_sample_set(rv='uniform', input_obj=input_samples,
+                                                  num_samples=1E2)
+        disc = sampler.compute_qoi_and_create_discretization(input_samples,
                                                              globalize=True)
         simpleFunP.regular_partition_uniform_distribution_rectangle_scaled(
             data_set=disc, Q_ref=Q_ref, rect_scale=0.5)

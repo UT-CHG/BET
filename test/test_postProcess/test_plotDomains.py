@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2019 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains tests for :module:`bet.postProcess.plotDomains`.
@@ -168,6 +168,35 @@ class test_plotDomains(unittest.TestCase):
 
         nptest.assert_equal(go, True)
 
+    def check_scatter_2D_io(self, sample_nos, p_ref, save):
+        """
+        Check to see that the :meth:`bet.postTools.plotDomains.scatter_2D_input` ran
+        without generating an error.
+        """
+        try:
+            input_sample_set_temp = sample.sample_set(2)
+            input_sample_set_temp.set_values(
+                self.disc._input_sample_set.get_values()[:, [0, 1]])
+
+            disc = sample.discretization(input_sample_set=input_sample_set_temp,
+                                         output_sample_set=input_sample_set_temp)
+
+            plotDomains.scatter_2D_input(
+                disc,
+                sample_nos,
+                self.disc._input_sample_set.get_probabilities(),
+                p_ref, save, False, 'XLABEL', 'YLABEL', self.filename)
+            plotDomains.scatter_2D_output(
+                disc,
+                sample_nos,
+                self.disc._input_sample_set.get_probabilities(),
+                p_ref, save, False, 'XLABEL', 'YLABEL', self.filename)
+            go = True
+        except (RuntimeError, TypeError, NameError):
+            go = False
+
+        nptest.assert_equal(go, True)
+
     def test_scatter_3D(self):
         """
         Test :meth:`bet.postProcess.plotDomains.scatter_3D`
@@ -188,6 +217,34 @@ class test_plotDomains(unittest.TestCase):
                 self.disc._input_sample_set.get_values()[:, [0, 1, 2]])
             plotDomains.scatter_3D(
                 input_sample_set_temp,
+                sample_nos,
+                self.disc._input_sample_set.get_probabilities(),
+                p_ref, save, False, 'XLABEL', 'YLABEL', 'ZLABEL', self.filename)
+            go = True
+        except (RuntimeError, TypeError, NameError):
+            go = False
+
+        nptest.assert_equal(go, True)
+
+    def check_scatter_3D_io(self, sample_nos, p_ref, save):
+        """
+        Check to see that the :meth:`bet.postTools.plotDomains.scatter_3D_input` ran
+        without generating an error.
+        """
+        try:
+            input_sample_set_temp = sample.sample_set(3)
+            input_sample_set_temp.set_values(
+                self.disc._input_sample_set.get_values()[:, [0, 1, 2]])
+            disc = sample.discretization(input_sample_set=input_sample_set_temp,
+                                         output_sample_set=input_sample_set_temp)
+            plotDomains.scatter_3D_input(
+                disc,
+                sample_nos,
+                self.disc._input_sample_set.get_probabilities(),
+                p_ref, save, False, 'XLABEL', 'YLABEL', 'ZLABEL', self.filename)
+
+            plotDomains.scatter_3D_output(
+                disc,
                 sample_nos,
                 self.disc._input_sample_set.get_probabilities(),
                 p_ref, save, False, 'XLABEL', 'YLABEL', 'ZLABEL', self.filename)
@@ -322,7 +379,7 @@ class test_plotDomains(unittest.TestCase):
         try:
             plotDomains.show_data_domain_2D(
                 disc_obj_temp, Q_ref,
-                ref_markers, ref_colors, triangles=triangles, save=save,
+                ref_markers, ref_colors, save=save,
                 filenames=filenames)
             go = True
         except (RuntimeError, TypeError, NameError):

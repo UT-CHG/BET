@@ -12,18 +12,18 @@ bet.sampling.LpGeneralizedSamples module
     :undoc-members:
     :show-inheritance:
 
-bet.sampling.adaptiveSampling module
-------------------------------------
-
-.. automodule:: bet.sampling.adaptiveSampling
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 bet.sampling.basicSampling module
 ---------------------------------
 
 .. automodule:: bet.sampling.basicSampling
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+bet.sampling.useLUQ module
+--------------------------
+
+.. automodule:: bet.sampling.useLUQ
     :members:
     :undoc-members:
     :show-inheritance:
