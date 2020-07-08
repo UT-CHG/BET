@@ -129,13 +129,13 @@ calculateP.prob(my_discretization)
 # Show some plots of the different sample sets
 plotD.scatter_2D(my_discretization._input_sample_set,
                  filename='Parameter_Samples',
-                 file_extension='.eps')
+                 file_extension='.png')
 plotD.scatter_2D(my_discretization._output_sample_set,
                  filename='QoI_Samples',
-                 file_extension='.eps')
+                 file_extension='.png')
 plotD.scatter_2D(my_discretization._output_probability_set,
                  filename='Data_Space_Discretization',
-                 file_extension='.eps')
+                 file_extension='.png')
 '''
 Suggested changes for user:
 
@@ -157,7 +157,7 @@ the structure of a high dimensional non-parametric probability measure.
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
                              filename="validation_raw",
-                             file_extension=".eps", plot_surface=False)
+                             file_extension=".png", plot_surface=False)
 
 # smooth 2d marginals probs (optional)
 marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.1)
@@ -165,7 +165,7 @@ marginals2D = plotP.smooth_marginals_2D(marginals2D, bins, sigma=0.1)
 # plot 2d marginals probs
 plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
                              filename="validation_smooth",
-                             file_extension=".eps", plot_surface=False)
+                             file_extension=".png", plot_surface=False)
 
 # calculate 1d marginal probs
 (bins, marginals1D) = plotP.calculate_1D_marginal_probs(input_samples,
@@ -174,7 +174,7 @@ plotP.plot_2D_marginal_probs(marginals2D, bins, input_samples,
 # plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
                              filename="validation_raw",
-                             file_extension=".eps")
+                             file_extension=".png")
 
 # smooth 1d marginal probs (optional)
 marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.1)
@@ -182,4 +182,4 @@ marginals1D = plotP.smooth_marginals_1D(marginals1D, bins, sigma=0.1)
 # plot 1d marginal probs
 plotP.plot_1D_marginal_probs(marginals1D, bins, input_samples,
                              filename="validation_smooth",
-                             file_extension=".eps")
+                             file_extension=".png")
