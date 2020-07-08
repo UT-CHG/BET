@@ -246,9 +246,9 @@ class Test_calc_marg_2D(unittest.TestCase):
 
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
-class Test_plot_marginal(unittest.TestCase):
+class Test_plot_1d_marginal_densities(unittest.TestCase):
     """
-    Test :meth:`bet.postProcess.plotP.plot_marginal`.
+    Test :meth:`bet.postProcess.plotP.plot_1d_marginal_densities`.
     """
     def setUp(self):
         def my_model(parameter_samples):
@@ -279,6 +279,6 @@ class Test_plot_marginal(unittest.TestCase):
         calculateR.invert_to_random_variable(self.disc1, rv='beta')
         param_labels = [r'$a$', r'$b$', r'$c$']
         for i in range(3):
-            plotP.plot_marginal(sets=(self.disc1, self.disc2), i=i,
+            plotP.plot_1d_marginal_densities(sets=(self.disc1, self.disc2), i=i,
                                 sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                                 title="Fitted Beta Distribution", label=param_labels[i], interactive=False)

@@ -132,8 +132,10 @@ elif invert_to == 'expon':
 
 # Calculate Total Variation between updated marginals and data-generating marginals
 for i in range(3):
-    plotP.plot_marginal(sets=(disc_predict.get_input_sample_set(), disc_obs.get_input_sample_set()), i=i,
-                        sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''])
+    plotP.plot_1d_marginal_densities(sets=(disc_predict.get_input_sample_set(),
+                                           disc_obs.get_input_sample_set()), i=i,
+                                     sets_label_initial=['Initial', 'Data-Generating'],
+                                     sets_label=['Updated', ''])
 # Calculate updated total variation
 comp_init = compP.compare(disc_predict, disc_obs, set1_init=False, set2_init=True)
 print("Updated TV of Marginals")
