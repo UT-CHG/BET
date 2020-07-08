@@ -16,6 +16,7 @@ install:
   - pip install .
   - pip install codecov pytest-cov Sphinx sphinx_rtd_theme
   - pip install git+https://github.com/CU-Denver-UQ/LUQ
+  - pip install mpi4py
 
 script:
   - pytest --cov=./bet/ ./test/
