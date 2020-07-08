@@ -1660,7 +1660,7 @@ class voronoi_sample_set(sample_set_base):
                               max_num_emulate=int(1e4)):
         r"""
 
-        Estimates the volume fraction of the Voronoice cells associated
+        Estimates the volume fraction of the Voronoi cells associated
         with ``samples``. Specifically we are calculating
         :math:`\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)`.
         Here all of the samples are drawn from the generalized Lp uniform
