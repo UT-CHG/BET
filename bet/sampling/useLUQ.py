@@ -39,7 +39,7 @@ class useLUQ:
     from LUQ output.
     """
 
-    def __init__(self, predict_set, obs_set, lb_model, times):
+    def __init__(self, predict_set=None, obs_set=None, lb_model=None, times=None):
         """
         Initialize the object.
         :param predict_set: Sample set defining input prediction samples.
