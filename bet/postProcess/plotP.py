@@ -36,7 +36,7 @@ class missing_attribute(Exception):
 
 def calculate_1D_marginal_probs(sample_set, nbins=20):
     r"""
-    This estimates every marginal of a voronoi probability measure
+    This estimates every marginal of a Voronoi probability measure
     described by the probabilities within the sample_set object with histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
@@ -101,7 +101,7 @@ def calculate_1D_marginal_probs(sample_set, nbins=20):
 def calculate_2D_marginal_probs(sample_set, nbins=20):
     """
     This calculates every pair of marginals (or joint in 2d case) of
-    input probability measure defined on a rectangular grid for voronoi probabilities using histograms..
+    input probability measure defined on a rectangular grid for Voronoi probabilities using histograms..
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space on the
     emulated samples (if they exist) or samples
@@ -179,6 +179,7 @@ def plot_1D_marginal_probs(marginals, bins, sample_set,
     input probability measure on a 1D  grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
+    Useful for visualizing solutions of measure-based inverse problems.
 
     .. note::
 
@@ -257,6 +258,7 @@ def plot_2D_marginal_probs(marginals, bins, sample_set,
     input probability measure on a rectangular grid from histograms.
     If the sample_set object is a discretization object, we assume
     that the probabilities to be plotted are from the input space.
+    Useful for visualizing solutions of measure-based inverse problems.
 
     .. note::
 
@@ -457,6 +459,7 @@ def smooth_marginals_2D(marginals, bins, sigma=10.0):
 
     return marginals_smooth
 
+
 def plot_2D_marginal_contours(marginals, bins, sample_set,
                               contour_num=8,
                               lam_ref=None, lam_refs=None,
@@ -564,10 +567,13 @@ def plot_2D_marginal_contours(marginals, bins, sample_set,
 
     comm.barrier()
 
-def plot_marginal(sets, i, interval=None, num_points=1000, label=None, sets_label=None, sets_label_initial=None,
-                  title=None, initials=True, inputs=True, interactive=True, savefile=None):
+
+def plot_1d_marginal_densities(sets, i, interval=None, num_points=1000, label=None, sets_label=None,
+                               sets_label_initial=None, title=None, initials=True, inputs=True,
+                               interactive=True, savefile=None):
     """
-    Plot marginal probability density functions in direction `i`.
+    Plot 1D marginal probability density functions in direction `i`. Useful for visualizing
+    solutions of density-based inverse problems.
 
     :param sets: Object containing sample sets to plot marginals for.
     :type sets: :class:`bet.sample.sample_set` or :class:`bet.sample.discretization` or list or tuple of these

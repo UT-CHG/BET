@@ -9,7 +9,7 @@ import numpy as np
 
 """
 Use LUQ to solve the Sel'kov model for glycolysis and learn quantities of interest.
-Solve the corresponding Data-Consistent Stochastic Inverse Problem with a variety of methods.
+This also illustrates several different options available within `calculateR`  to approximate the updated density.
 
 The LUQ package must be installed to run this example.
 """
@@ -64,7 +64,7 @@ calculateR.invert_to_multivariate_gaussian(disc1)
 
 # Plot marginal probabilities and calculate total variations between probability measures
 for i in range(2):
-    plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
+    plotP.plot_1d_marginal_densities(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                         title="Multivariate Gaussian", label=param_labels[i])
 
@@ -79,7 +79,7 @@ print("------------------------------------------------------")
 print("Gaussian Mixture Model")
 calculateR.invert_to_gmm(disc1)
 for i in range(2):
-    plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
+    plotP.plot_1d_marginal_densities(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                         title="Gaussian Mixture Model", label=param_labels[i])
 # Calculate updated total variation
@@ -92,7 +92,7 @@ print("------------------------------------------------------")
 print("Weighted Kernel Density Estimate")
 calculateR.invert_to_kde(disc1)
 for i in range(2):
-    plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
+    plotP.plot_1d_marginal_densities(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                         title="Weighted KDEs", label=param_labels[i]
                         )
@@ -107,7 +107,7 @@ print("Beta distribution")
 
 calculateR.invert_to_random_variable(disc1, rv='beta')
 for i in range(2):
-    plotP.plot_marginal(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
+    plotP.plot_1d_marginal_densities(sets=(disc1.get_input_sample_set(), disc2.get_input_sample_set()), i=i,
                         sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                         title="Fitted Beta Distribution", label=param_labels[i]
                         )

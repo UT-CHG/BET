@@ -15,7 +15,10 @@ Another option is to clone the repository and install BET using
 
 
 ## Dependencies
-BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 versions) and depends on [NumPy](http://www.numpy.org/), [SciPy](http://www.scipy.org/), [matplotlib](http://matplotlib.org/), [pyDOE](https://pythonhosted.org/pyDOE/), [pytest](https://docs.pytest.org/), and [mpi4py](https://mpi4py.readthedocs.io/en/stable/) (optional) (see [requirements.txt](requirements.txt) for version information). For some optional features [LUQ](https://github.com/CU-Denver-UQ/LUQ) is also required.
+BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 versions) and depends on [NumPy](http://www.numpy.org/), [SciPy](http://www.scipy.org/), [matplotlib](http://matplotlib.org/), [pyDOE](https://pythonhosted.org/pyDOE/), [pytest](https://docs.pytest.org/), and [mpi4py](https://mpi4py.readthedocs.io/en/stable/) (optional) (see [requirements.txt](requirements.txt) for version information). For some optional features [LUQ](https://github.com/CU-Denver-UQ/LUQ) is also required. mpi4py is required to take advantage of parallel features and requires an mpi implementation. It can be installed by:
+
+    pip install mpi4py
+
 
 ## License
 [GNU Lesser General Public License (LGPL)](LICENSE.txt)
@@ -75,7 +78,7 @@ To run the tests in the root directory with `pytest` in serial call:
 
     pytest ./test/
 
-Some features of BET have the ability to work in parallel. To run tests in parallel call:
+Some features of BET (primarily those associated with the measure-based approach) have the ability to work in parallel. To run tests in parallel call:
 
     mpirun -np NPROC pytest ./test/
 

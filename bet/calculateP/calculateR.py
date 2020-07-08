@@ -1,7 +1,8 @@
 # Copyright (C) 2014-2020 The BET Development Team
 
 r"""
-This module contains functions for data-consistent stochastic inversion based on ratios of densities.
+This module contains functions for the density-based approach that utilizes a ratio of observed to predicted densities
+to update an initial density on the parameter space.
 
 * :meth:`~bet.calculateP.calculateR.generate_output_kdes` generates KDEs on output sets.
 * :meth:`~bet.calculateP.calculateR.invert_to_kde` solves SIP for weighted KDEs.

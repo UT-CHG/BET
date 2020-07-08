@@ -9,8 +9,6 @@ import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-#plt.rc('text', usetex=True)
-#plt.rc('font', family='serif')
 from bet.Comm import comm, MPI
 import bet.sample as sample
 
@@ -233,7 +231,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
 
 def voronoi_finite_polygons_2d(vor, radius=None):
     """
-    Reconstruct infinite voronoi regions in a 2D diagram to finite
+    Reconstruct infinite Voronoi regions in a 2D diagram to finite
     regions.
 
     :param vor: Voronoi input diagram

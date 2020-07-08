@@ -202,6 +202,10 @@ class Test_calc_marg_2D(unittest.TestCase):
             plotP.plot_1D_marginal_probs(marginals, bins, self.samples,
                                          filename="file", interactive=False)
             go = True
+            if os.path.exists("file_1D_0.png") and comm.rank == 0:
+                os.remove("file_1D_0.png")
+            if os.path.exists("file_1D_1.png") and comm.rank == 0:
+                os.remove("file_1D_1.png")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
@@ -222,6 +226,8 @@ class Test_calc_marg_2D(unittest.TestCase):
             go = True
             if os.path.exists("file_2D_0_1.png") and comm.rank == 0:
                 os.remove("file_2D_0_1.png")
+            if os.path.exists("file_surf_0_1.png") and comm.rank == 0:
+                os.remove("file_surf_0_1.png")
         except (RuntimeError, TypeError, NameError):
             go = False
         nptest.assert_equal(go, True)
@@ -246,9 +252,9 @@ class Test_calc_marg_2D(unittest.TestCase):
 
 
 @unittest.skipIf(comm.size > 1, 'Only run in serial')
-class Test_plot_marginal(unittest.TestCase):
+class Test_plot_1d_marginal_densities(unittest.TestCase):
     """
-    Test :meth:`bet.postProcess.plotP.plot_marginal`.
+    Test :meth:`bet.postProcess.plotP.plot_1d_marginal_densities`.
     """
     def setUp(self):
         def my_model(parameter_samples):
@@ -279,6 +285,6 @@ class Test_plot_marginal(unittest.TestCase):
         calculateR.invert_to_random_variable(self.disc1, rv='beta')
         param_labels = [r'$a$', r'$b$', r'$c$']
         for i in range(3):
-            plotP.plot_marginal(sets=(self.disc1, self.disc2), i=i,
+            plotP.plot_1d_marginal_densities(sets=(self.disc1, self.disc2), i=i,
                                 sets_label_initial=['Initial', 'Data-Generating'], sets_label=['Updated', ''],
                                 title="Fitted Beta Distribution", label=param_labels[i], interactive=False)

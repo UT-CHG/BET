@@ -15,7 +15,7 @@ lam_domain = np.array([[.07, .15], [.1, .2]])
 station_nums = [0, 5]  # 1, 6
 
 # Read in Q_ref and Q to create the appropriate rho_D
-mdat = sio.loadmat('../Q_2D.mat')
+mdat = sio.loadmat('Q_2D.mat')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']

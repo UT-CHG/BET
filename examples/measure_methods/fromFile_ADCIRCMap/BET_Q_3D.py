@@ -8,7 +8,7 @@ import scipy.io as sio
 import bet.sample as sample
 
 # Import "Truth"
-mdat = sio.loadmat('../Q_3D')
+mdat = sio.loadmat('Q_3D')
 Q = mdat['Q']
 Q_ref = mdat['Q_true']
 

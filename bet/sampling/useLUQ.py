@@ -39,7 +39,7 @@ class useLUQ:
     from LUQ output.
     """
 
-    def __init__(self, predict_set, obs_set, lb_model, times):
+    def __init__(self, predict_set, lb_model, times, obs_set=None):
         """
         Initialize the object.
         :param predict_set: Sample set defining input prediction samples.
@@ -80,7 +80,16 @@ class useLUQ:
         """
         self.obs_time_series = self.lb_model(self.obs_set.get_values(), self.times)
 
-    def initialize(self, predicted_time_series, obs_time_series, times):
+    def set_observed_time_series(self, obs_time_series):
+        """
+        Set observed time series data manually.
+        :param obs_time_series: time series data
+        :type obs_time_series:
+        :return: :class:`numpy.ndarray` with shape (num_obs, num_times)
+        """
+        self.obs_time_series = obs_time_series
+
+    def initialize(self, predicted_time_series=None, obs_time_series=None, times=None):
         """
         Initialize the LUQ object. This can be used manually if time series are pre-computed.
 
@@ -95,6 +104,13 @@ class useLUQ:
             from luq.luq import LUQ
         except ImportError:
             raise missing_module("luq cannot be imported")
+
+        if predicted_time_series is None:
+            predicted_time_series = self.predicted_time_series
+        if obs_time_series is None:
+            obs_time_series = self.obs_time_series
+        if times is None:
+            times = self.times
 
         self.learn = LUQ(predicted_time_series, obs_time_series, times)
 
@@ -128,7 +144,7 @@ class useLUQ:
         """
         Construct `bet.sample.discretization` objects for predict and obs sets.
         :return: predict_disc, obs_disc
-        :rtype: `bet.sample.discretization`, `bet.sample.discretization`
+        :rtype: `bet.sample.discretization`, `bet.sample.discretization` or None if no observation set.
         """
         out_dim = self.learn.num_pcs[0]
 
@@ -144,12 +160,15 @@ class useLUQ:
         disc1 = sample.discretization(input_sample_set=self.predict_set,
                                       output_sample_set=predict_output,
                                       output_observed_set=obs_output)
+        disc1.local_to_global()
 
         # Observation discretization
-        disc2 = sample.discretization(input_sample_set=self.obs_set,
-                                      output_sample_set=obs_output)
-        disc1.local_to_global()
-        disc2.local_to_global()
+        if self.obs_set is None:
+            disc2 = None
+        else:
+            disc2 = sample.discretization(input_sample_set=self.obs_set,
+                                          output_sample_set=obs_output)
+            disc2.local_to_global()
 
         return disc1, disc2
 
