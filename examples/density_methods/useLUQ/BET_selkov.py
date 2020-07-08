@@ -9,7 +9,7 @@ import numpy as np
 
 """
 Use LUQ to solve the Sel'kov model for glycolysis and learn quantities of interest.
-Solve the corresponding Data-Consistent Stochastic Inverse Problem with a variety of methods.
+This also illustrates several different options available within `calculateR`  to approximate the updated density.
 
 The LUQ package must be installed to run this example.
 """

@@ -7,7 +7,7 @@ import math as m
 '''
 Suggested changes for user:
 
-Try setting QoI_num = 2.
+Observe the differences when QoI_num is set to either 1 or 2 (see line 26)
 
 Play around with the x1, y1, and/or, x2, y2 values to try and
 "optimize" the QoI to give the highest probability region

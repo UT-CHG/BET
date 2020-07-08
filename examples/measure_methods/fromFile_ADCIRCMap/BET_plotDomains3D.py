@@ -22,7 +22,7 @@ ymax = 1500
 station_nums = [0, 4, 1]  # 1, 5, 2
 
 # Read in Q_ref and Q to create the appropriate rho_D
-mdat = sio.loadmat('../Q_3D')
+mdat = sio.loadmat('Q_3D')
 Q = mdat['Q']
 Q = Q[:, station_nums]
 Q_ref = mdat['Q_true']

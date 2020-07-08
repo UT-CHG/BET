@@ -4,7 +4,7 @@
 
 """
 This example solves a stochastic inverse problem for a
-linear 3-to-2 map with data-consistent methods.
+linear 3-to-2 map with a density-based method.
 We refer to the map as the QoI map,
 or just a QoI. We refer to the range of the QoI map as
 the data space.
