@@ -75,7 +75,7 @@ To run the tests in the root directory with `pytest` in serial call:
 
     pytest ./test/
 
-Some features of BET have the ability to work in parallel. To run tests in parallel call:
+Some features of BET (primarily those associated with the measure-based approach) have the ability to work in parallel. To run tests in parallel call:
 
     mpirun -np NPROC pytest ./test/
 
