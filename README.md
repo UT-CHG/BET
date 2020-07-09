@@ -30,22 +30,22 @@ Lindley Graham, Steven Mattis, Michael Pilosov, Scott Walsh, Troy Butler, Michae
 
 or in BibTEX:
 
-@software{BET,
-          author = {Lindley Graham and
-                    Steven Mattis and
-                    Michael Pilosov and
-                    Scott Walsh and
-                    Troy Butler and
-                    Wenjuan Zhang and
-                    Damon McDougall},
-          title = {UT-CHG/BET: BET v3.0.0},
-          month = jul,
-          year = 2020,
-          publisher = {Zenodo},
-          version = {v3.0.0},
-          doi = {10.5281/zenodo.3936258},
-          url = {https://doi.org/10.5281/zenodo.3936258}
-          }
+    @software{BET,
+              author = {Lindley Graham and
+                        Steven Mattis and
+                        Michael Pilosov and
+                        Scott Walsh and
+                        Troy Butler and
+                        Wenjuan Zhang and
+                        Damon McDougall},
+              title = {UT-CHG/BET: BET v3.0.0},
+              month = jul,
+              year = 2020,
+              publisher = {Zenodo},
+              version = {v3.0.0},
+              doi = {10.5281/zenodo.3936258},
+              url = {https://doi.org/10.5281/zenodo.3936258}
+              }
 
 ## Documentation
 
