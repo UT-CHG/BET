@@ -93,7 +93,7 @@ or in BibTEX::
   version        =  {v3.0.0},
   doi            =  {10.5281/zenodo.3936258},
   url            =  {https://doi.org/10.5281/zenodo.3936258}
-}
+  }
 
 
 Documentation
