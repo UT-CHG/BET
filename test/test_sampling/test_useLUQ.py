@@ -27,6 +27,7 @@ except ImportError:
 
 
 @unittest.skipIf(not has_luq, 'LUQ is not installed.')
+@unittest.skipIf(comm.size > 1, 'Only run in serial')
 class Test_useLUQ(unittest.TestCase):
     """
     Testing ``bet.sampling.useLUQ.useLUQ``, interfacing with a model.
