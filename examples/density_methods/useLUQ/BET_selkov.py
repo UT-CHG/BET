@@ -34,11 +34,11 @@ times = np.linspace(time_start, time_end, num_time_preds)
 luq = useLUQ.useLUQ(predict_set=p_set, obs_set=o_set, lb_model=useLUQ.myModel, times=times)
 luq.setup()
 
-# Clean the data
+# Filter the data
 time_start_idx = 0
 time_end_idx = len(luq.times) - 1
-luq.clean_data(time_start_idx=time_start_idx, time_end_idx=time_end_idx,
-               num_clean_obs=20, tol=5.0e-2, min_knots=3, max_knots=12)
+luq.filter_data(time_start_idx=time_start_idx, time_end_idx=time_end_idx,
+                num_filtered_obs=20, tol=5.0e-2, min_knots=3, max_knots=12)
 
 # Cluster and classify the dynamics
 luq.dynamics(cluster_method='kmeans', kwargs={'n_clusters': 3, 'n_init': 10})

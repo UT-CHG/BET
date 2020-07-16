@@ -128,6 +128,12 @@ class useLUQ:
         """
         self.learn.clean_data(**kwargs)
 
+    def filter_data(self, **kwargs):
+        """
+        Wrapper for `luq.luq.LUQ.filter_data`
+        """
+        self.learn.filter_data(**kwargs)
+
     def dynamics(self, **kwargs):
         """
         Wrapper for `luq.luq.LUQ.dynamics`
