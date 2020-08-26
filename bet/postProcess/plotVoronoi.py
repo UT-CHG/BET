@@ -97,10 +97,10 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         fig = plt.figure(0, constrained_layout=True)
         if density:
             plt.hlines(
-                sample_obj._probabilities[ind_sort] / (maxes - mins), mins, maxes)
+                sample_obj._probabilities[ind_sort[0]] / (maxes - mins), mins, maxes)
             plt.ylabel(r'$\rho_{\lambda}$', fontsize=20)
         else:
-            plt.hlines(sample_obj._probabilities[ind_sort], mins, maxes)
+            plt.hlines(sample_obj._probabilities[ind_sort[0]], mins, maxes)
             plt.ylabel(r'$P_{\Lambda}(\mathcal{V}_i)$', fontsize=20)
 
         if lam_ref is not None:
