@@ -1,43 +1,66 @@
+dist:
+    - xenial
+    - bionic
 language: python
+
 python:
-    #- "2.6"
-    - "2.7"
-    #- "3.2"
-    #- "3.3"
-    #- "3.4"
+    - "3.6"
+    - "3.7"
+    - "3.8"
+
+services:
+  - xvfb
 
 before_install:
   - "export DISPLAY=:99.0"
-  - "sh -e /etc/init.d/xvfb start"
-  - sudo apt-get install gfortran libblas-dev liblapack-dev mpich2 libmpich2-dev
-  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
-  - bash miniconda.sh -b -p $HOME/miniconda
-  - export PATH="$HOME/miniconda/bin:$PATH"
-  - conda update --yes conda
+  - sudo apt-get install gfortran libblas-dev liblapack-dev mpich libmpich-dev
 
 install:
-  - conda install --yes python=$TRAVIS_PYTHON_VERSION pip numpy scipy nose
-  - pip install pyDOE mpi4py
-  - python setup.py install
+  - pip install .
+  - pip install codecov pytest-cov Sphinx sphinx_rtd_theme
+  - pip install git+https://github.com/CU-Denver-UQ/LUQ
+  - pip install mpi4py
 
 script:
-  - nosetests
-  - mpirun -n 2 nosetests
+  - pytest --cov=./bet/ ./test/
+  - mpirun -n 2 pytest  ./test/
   - pip uninstall -y mpi4py
-  - nosetests
+  - pytest ./test/
+  - sphinx-apidoc -f -o doc bet
+  - cd doc/
+  - make html
+  - make html
+  - cd ..
 
 # notification settings
 notifications:
     email:
         recipients:
             - steve.a.mattis@gmail.com
-            - lichgraham@gmail.com
-            - scottw13@gmail.com
             - michael.pilosov@ucdenver.edu
         on_success: change
         on_failure: always
+
 # whitelist
 branches:
     only:
         - master
-        - v2_master
+        - v3-dev
+
+# Push the results back to codecov
+after_success:
+  - codecov
+
+# Deploy docs
+deploy:
+  provider: pages
+  skip_cleanup: true
+  skip_existing: true
+  github_token: $GITHUB_TOKEN  # Set in the settings page of your repository, as a secure variable
+  keep_history: false
+  local_dir: gh-pages/html
+  on:
+    branch: master
+
+
+

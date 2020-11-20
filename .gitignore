@@ -1,7 +1,16 @@
+cover/
 bin/
 doc/_build
 hershel_bin
 gh-pages/
 *.pyc
 *~
+*.ipynb_checkpoints/
+*.bak
 build/
+*.png
+*.eps
+*.mat
+*.swp
+dist/
+bet.egg-info/

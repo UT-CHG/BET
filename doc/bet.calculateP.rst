@@ -20,10 +20,10 @@ bet.calculateP.calculateP module
     :undoc-members:
     :show-inheritance:
 
-bet.calculateP.indicatorFunctions module
-----------------------------------------
+bet.calculateP.calculateR module
+------------------------------------
 
-.. automodule:: bet.calculateP.indicatorFunctions
+.. automodule:: bet.calculateP.calculateR
     :members:
     :undoc-members:
     :show-inheritance:

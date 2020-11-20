@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module contains functions for approximating jacobians of QoI maps.
@@ -8,9 +8,10 @@ AROUND THE FIRST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.
 """
 import numpy as np
 import scipy.spatial as spatial
-import bet.util as util
 import bet.sample as sample
+import bet.util as util
 import bet.sampling.LpGeneralizedSamples as lpsam
+
 
 def sample_lp_ball(input_set, num_close, radius, p_num=2):
     r"""
@@ -27,12 +28,12 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
     :type radii_vec: :class:`numpy.ndarray` of shape (``input_dim``,)
     :param float p_num: :math:`0 < p \leq \infty`, p for the lp norm where
         infinity is ``numpy.inf``
-    
+
     :rtype: :class:`~bet.sample.sample_set`
-    :returns: Centers and clusters of samples near each center (values are 
+    :returns: Centers and clusters of samples near each center (values are
         :class:`numpy.ndarray` of shape ((``num_close+1``)*``num_centers``,
         ``input_dim``))
-    
+
     """
     if input_set.get_values() is None:
         raise ValueError("You must have values to use this method.")
@@ -46,20 +47,20 @@ def sample_lp_ball(input_set, num_close, radius, p_num=2):
         cluster_set.set_domain(input_domain)
     cluster_set.set_values(centers)
 
-    for i in xrange(num_centers):
+    for i in range(num_centers):
         in_bounds = 0
         inflate = 1.0
         while in_bounds < num_close:
             # sample uniformly
             new_cluster = lpsam.Lp_generalized_uniform(input_dim,
-                    num_close*inflate, p_num, radius, centers[i, :])
+                                                       num_close * inflate, p_num, radius, centers[i, :])
             # check bounds
             if input_domain is not None:
-                cluster_set.update_bounds(num_close*inflate)
+                cluster_set.update_bounds(num_close * inflate)
                 left = np.all(np.greater_equal(new_cluster, cluster_set._left),
-                    axis=1)
+                              axis=1)
                 right = np.all(np.less_equal(new_cluster, cluster_set._right),
-                    axis=1)
+                               axis=1)
                 inside = np.logical_and(left, right)
                 in_bounds = np.sum(inside)
                 new_cluster = new_cluster[inside, :]
@@ -92,14 +93,15 @@ def sample_linf_ball(input_set, num_close, radii_vec):
     :param int num_close: Number of points in each cluster
     :param radii_vec: Each side of the box will have length ``2*radii_vec[i]``
     :type radii_vec: :class:`numpy.ndarray` of shape (``input_dim``,)
-    
+
     :rtype: :class:`~bet.sample.sample_set`
-    :returns: Centers and clusters of samples near each center (values are 
+    :returns: Centers and clusters of samples near each center (values are
         :class:`numpy.ndarray` of shape ((``num_close+1``)*``num_centers``,
         ``input_dim``))
-    
+
     """
     return sample_lp_ball(input_set, num_close, radii_vec, p_num=np.inf)
+
 
 def sample_l1_ball(input_set, num_close, radii_vec):
     r"""
@@ -114,14 +116,15 @@ def sample_l1_ball(input_set, num_close, radii_vec):
     :param int num_close: Number of points in each cluster
     :param radii_vec: Each side of the box will have length ``2*radii_vec[i]``
     :type radii_vec: :class:`numpy.ndarray` of shape (``input_dim``,)
-    
+
     :rtype: :class:`~bet.sample.sample_set`
-    :returns: Centers and clusters of samples near each center (values are 
+    :returns: Centers and clusters of samples near each center (values are
         :class:`numpy.ndarray` of shape ((``num_close+1``)*``num_centers``,
         ``input_dim``))
 
     """
     return sample_lp_ball(input_set, num_close, radii_vec, p_num=1)
+
 
 def pick_ffd_points(input_set, radii_vec):
     r"""
@@ -129,18 +132,18 @@ def pick_ffd_points(input_set, radii_vec):
     difference gradient approximation.  The points are returned in the order:
     centers, followed by the cluster around the first center, then the cluster
     around the second center and so on.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _values is
         not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param radii_vec: The radius of the stencil, along each axis
     :type radii_vec: :class:`numpy.ndarray` of shape (input_dim,)
-    
+
     :rtype: :class:`~bet.sample.sample_set`
-    :returns: Centers and clusters of samples near each center (values are 
+    :returns: Centers and clusters of samples near each center (values are
         :class:`numpy.ndarray` of shape ((``num_close+1``)*``num_centers``,
         ``input_dim``))
-    
+
     """
     if input_set._values is None:
         raise ValueError("You must have values to use this method.")
@@ -162,27 +165,28 @@ def pick_ffd_points(input_set, radii_vec):
     cluster_set.append_values(samples)
     return cluster_set
 
+
 def pick_cfd_points(input_set, radii_vec):
     r"""
     Pick 2*input_dim points, for each center, for centered finite difference
     gradient approximation.  The center are not needed for the CFD gradient
     approximation, they are returned for consistency with the other methods and
     because of the common need to have not just the gradient but also the QoI
-    value at the centers in adaptive sampling algorithms.The points are returned 
-    in the order: centers, followed by the cluster around the first center, then 
+    value at the centers in adaptive sampling algorithms.The points are returned
+    in the order: centers, followed by the cluster around the first center, then
     the cluster around the second center and so on.
-    
+
     :param input_set: The input sample set.  Make sure the attribute _values is
         not None
     :type input_set: :class:`~bet.sample.sample_set`
     :param radii_vec: The radius of the stencil, along each axis
     :type radii_vec: :class:`numpy.ndarray` of shape (input_dim,)
-    
+
     :rtype: :class:`~bet.sample.sample_set`
-    :returns: Centers and clusters of samples near each center (values are 
+    :returns: Centers and clusters of samples near each center (values are
         :class:`numpy.ndarray` of shape ((``num_close+1``)*``num_centers``,
         ``input_dim``))
-    
+
     """
     if input_set._values is None:
         raise ValueError("You must have values to use this method.")
@@ -205,21 +209,22 @@ def pick_cfd_points(input_set, radii_vec):
     cluster_set.append_values(samples)
     return cluster_set
 
+
 def radial_basis_function(r, kernel=None, ep=None):
     """
     Evaluate a chosen radial basis function.  Allow for the choice of several
     radial basis functions to use in
     :meth:~bet.sensitivity.gradients.calculate_gradients_rbf
-    
+
     :param r: Distances from the reference point
     :type r: :class:`numpy.ndarray`
     :param string kernel: Choice of radial basis funtion. Default is C4Matern
     :param float ep: Shape parameter for the radial basis function.
         Default is 1.0
-    
+
     :rtype: :class:`numpy.ndarray` of shape (r.shape)
     :returns: Radial basis function evaluated for each element of r
-    
+
     """
     if ep is None:
         ep = 1.0
@@ -237,12 +242,13 @@ def radial_basis_function(r, kernel=None, ep=None):
 
     return rbf
 
+
 def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     """
     Evaluate a partial derivative of a chosen radial basis function.  Allow for
     the choice of several radial basis functions to use in the
     :meth:~bet.sensitivity.gradients.calculate_gradients_rbf.
-    
+
     :param r: Distances from the reference point
     :type r: :class:`numpy.ndarray`
     :param xi: Distances from the reference point in dimension i
@@ -250,10 +256,10 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
     :param string kernel: Choice of radial basis funtion. Default is C4Matern
     :param float ep: Shape parameter for the radial basis function.
         Default is 1.0
-    
+
     :rtype: :class:`numpy.ndarray` of shape (r.shape)
     :returns: Radial basis function evaluated for each element of r
-    
+
     """
     if ep is None:
         ep = 1.0
@@ -271,13 +277,14 @@ def radial_basis_function_dxi(r, xi, kernel=None, ep=None):
 
     return rbfdxi
 
+
 def calculate_gradients_rbf(cluster_discretization, num_centers=None,
-        num_neighbors=None, RBF=None, ep=None, normalize=True): 
+                            num_neighbors=None, RBF=None, ep=None, normalize=True):
     r"""
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map using a radial basis function
     interpolation method.
-    
+
     :param cluster_discretization: Must contain input and output values for the
         sample clusters.
     :type cluster_discretization: :class:`~bet.sample.discretization`
@@ -289,14 +296,14 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
         Default value is 1.0
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
-    
+
     :rtype: :class:`~bet.sample.discretization`
     :returns: A new :class:`~bet.sample.discretization` that contains only the
         centers of the clusters and their associated ``_jacobians`` which are
         tensor representation of the gradient vectors of each QoI map at each
         point in centers :class:`numpy.ndarray` of shape (num_samples,
         output_dim, input_dim)
-    
+
     """
     if cluster_discretization._input_sample_set.get_values() is None \
             or cluster_discretization._output_sample_set.get_values() is None:
@@ -318,7 +325,7 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
     # If centers is None we assume the user chose clusters of size
     # input_dim + 2
     if num_centers is None:
-        num_centers = num_model_samples / (input_dim + 2)
+        num_centers = num_model_samples // (input_dim + 2)
     centers = samples[:num_centers, :]
 
     rbf_tensor = np.zeros([num_centers, num_model_samples, input_dim])
@@ -329,8 +336,8 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
     # point.
     for c in range(num_centers):
         # Find the k nearest neighbors and their distances to centers[c,:]
-        [r, nearest] = cluster_discretization._input_sample_set.query(\
-                centers[c, :], k=num_neighbors)
+        [r, nearest] = cluster_discretization._input_sample_set.query(
+            centers[c, :], k=num_neighbors)
         r = np.tile(r, (input_dim, 1))
 
         # Compute the linf distances to each of the nearest neighbors
@@ -344,13 +351,14 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
         # evaluate the partial derivatives
         rbf_mat_values = \
             np.linalg.solve(radial_basis_function(distMat, RBF),
-            radial_basis_function_dxi(r, diffVec, RBF, ep) \
-            .transpose()).transpose()
+                            radial_basis_function_dxi(r, diffVec, RBF, ep)
+                            .transpose()).transpose()
 
         # Construct the finite difference matrices
         rbf_tensor[c, nearest, :] = rbf_mat_values.transpose()
 
-    gradient_tensor = rbf_tensor.transpose(2, 0, 1).dot(data).transpose(1, 2, 0)
+    gradient_tensor = rbf_tensor.transpose(
+        2, 0, 1).dot(data).transpose(1, 2, 0)
 
     if normalize:
         # Compute the norm of each vector
@@ -360,24 +368,25 @@ def calculate_gradients_rbf(cluster_discretization, num_centers=None,
         norm_gradient_tensor[norm_gradient_tensor == 0] = 1.0
 
         # Normalize each gradient vector
-        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-            (input_dim, 1, 1)).transpose(1, 2, 0)
+        gradient_tensor = gradient_tensor / np.tile(norm_gradient_tensor,
+                                                    (input_dim, 1, 1)).transpose(1, 2, 0)
 
     center_input_sample_set = sample.sample_set(input_dim)
     center_input_sample_set.set_values(samples[:num_centers, :])
     if cluster_discretization._input_sample_set.get_domain() is not None:
-        center_input_sample_set.set_domain(cluster_discretization.\
-                _input_sample_set.get_domain())
+        center_input_sample_set.set_domain(cluster_discretization.
+                                           _input_sample_set.get_domain())
     center_input_sample_set.set_jacobians(gradient_tensor)
     center_output_sample_set = sample.sample_set(output_dim)
     center_output_sample_set.set_values(data[:num_centers, :])
     if cluster_discretization._output_sample_set.get_domain() is not None:
-        center_output_sample_set.set_domain(cluster_discretization.\
-                _output_sample_set.get_domain())
-    #center_output_sample_set.set_jacobians(gradient_tensor.transpose())
+        center_output_sample_set.set_domain(cluster_discretization.
+                                            _output_sample_set.get_domain())
+    # center_output_sample_set.set_jacobians(gradient_tensor.transpose())
     center_discretization = sample.discretization(center_input_sample_set,
-            center_output_sample_set)
+                                                  center_output_sample_set)
     return center_discretization
+
 
 def calculate_gradients_ffd(cluster_discretization, normalize=True):
     """
@@ -385,20 +394,20 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
     :meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
     FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.
-    
+
     :param cluster_discretization: Must contain input and output values for the
         sample clusters.
     :type cluster_discretization: :class:`~bet.sample.discretization`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
-    
+
     :rtype: :class:`~bet.sample.discretization`
     :returns: A new :class:`~bet.sample.discretization` that contains only the
         centers of the clusters and their associated ``_jacobians`` which are
         tensor representation of the gradient vectors of each QoI map at each
         point in centers :class:`numpy.ndarray` of shape (num_samples,
         output_dim, input_dim)
-    
+
     """
     if cluster_discretization._input_sample_set.get_values() is None \
             or cluster_discretization._output_sample_set.get_values() is None:
@@ -412,7 +421,7 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
 
     num_model_samples = cluster_discretization.check_nums()
     input_dim = cluster_discretization._input_sample_set.get_dim()
-    num_centers = num_model_samples / (input_dim + 1)
+    num_centers = num_model_samples // (input_dim + 1)
 
     # Find radii_vec from the first cluster of samples
     radii_vec = samples[num_centers:num_centers + input_dim, :] - samples[0, :]
@@ -423,15 +432,15 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
     gradient_tensor = np.zeros([num_centers, output_dim, input_dim])
 
     radii_vec = np.tile(np.repeat(radii_vec, output_dim, axis=1), [num_centers,
-        1])
+                                                                   1])
 
     # Compute the gradient vectors using the standard FFD stencil
-    gradient_mat = (data[num_centers:] - np.repeat(data[0:num_centers], \
-                   input_dim, axis=0)) * (1. / radii_vec)
+    gradient_mat = (data[num_centers:] - np.repeat(data[0:num_centers],
+                                                   input_dim, axis=0)) * (1. / radii_vec)
 
     # Reshape and organize
     gradient_tensor = np.reshape(gradient_mat.transpose(), [output_dim,
-        input_dim, num_centers], order='F').transpose(2, 0, 1)
+                                                            input_dim, num_centers], order='F').transpose(2, 0, 1)
 
     if normalize:
         # Compute the norm of each vector
@@ -441,45 +450,46 @@ def calculate_gradients_ffd(cluster_discretization, normalize=True):
         norm_gradient_tensor[norm_gradient_tensor == 0] = 1.0
 
         # Normalize each gradient vector
-        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-            (input_dim, 1, 1)).transpose(1, 2, 0)
+        gradient_tensor = gradient_tensor / np.tile(norm_gradient_tensor,
+                                                    (input_dim, 1, 1)).transpose(1, 2, 0)
 
     center_input_sample_set = sample.sample_set(input_dim)
     center_input_sample_set.set_values(samples[:num_centers, :])
     if cluster_discretization._input_sample_set.get_domain() is not None:
-        center_input_sample_set.set_domain(cluster_discretization.\
-                _input_sample_set.get_domain())
+        center_input_sample_set.set_domain(cluster_discretization.
+                                           _input_sample_set.get_domain())
     center_input_sample_set.set_jacobians(gradient_tensor)
     center_output_sample_set = sample.sample_set(output_dim)
     center_output_sample_set.set_values(data[:num_centers, :])
     if cluster_discretization._output_sample_set.get_domain() is not None:
-        center_output_sample_set.set_domain(cluster_discretization.\
-                _output_sample_set.get_domain())
-    #center_output_sample_set.set_jacobians(gradient_tensor.transpose())
+        center_output_sample_set.set_domain(cluster_discretization.
+                                            _output_sample_set.get_domain())
+    # center_output_sample_set.set_jacobians(gradient_tensor.transpose())
     center_discretization = sample.discretization(center_input_sample_set,
-            center_output_sample_set)
+                                                  center_output_sample_set)
     return center_discretization
+
 
 def calculate_gradients_cfd(cluster_discretization, normalize=True):
     """
     Approximate gradient vectors at ``num_centers, centers.shape[0]`` points
     in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
-    ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE 
+    ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE
     CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.
-    
+
     :param cluster_discretization: Must contain input and output values for the
         sample clusters.
     :type cluster_discretization: :class:`~bet.sample.discretization`
     :param boolean normalize:  If normalize is True, normalize each gradient
         vector
-    
+
     :rtype: :class:`~bet.sample.discretization`
     :returns: A new :class:`~bet.sample.discretization` that contains only the
         centers of the clusters and their associated ``_jacobians`` which are
         tensor representation of the gradient vectors of each QoI map at each
         point in centers :class:`numpy.ndarray` of shape (num_samples,
         output_dim, input_dim)
-    
+
     """
     if cluster_discretization._input_sample_set.get_values() is None \
             or cluster_discretization._output_sample_set.get_values() is None:
@@ -494,7 +504,7 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
     num_model_samples = cluster_discretization.check_nums()
     input_dim = cluster_discretization._input_sample_set.get_dim()
 
-    num_centers = num_model_samples / (2*input_dim + 1)
+    num_centers = num_model_samples // (2 * input_dim + 1)
 
     # Find radii_vec from the first cluster of samples
     radii_vec = samples[num_centers:num_centers + input_dim, :] - samples[0, :]
@@ -505,18 +515,18 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
     gradient_tensor = np.zeros([num_centers, output_dim, input_dim])
 
     radii_vec = np.tile(np.repeat(radii_vec, output_dim, axis=1), [num_centers,
-        1])
+                                                                   1])
 
     # Construct indices for CFD gradient approxiation
-    inds = np.repeat(range(0, 2 * input_dim * num_centers, 2 * input_dim),
-        input_dim) + np.tile(range(0, input_dim), num_centers)
-    inds = np.array([inds, inds+input_dim]).transpose()
+    inds = np.repeat(np.arange(0, 2 * input_dim * num_centers, 2 * input_dim),
+                     input_dim) + np.tile(np.arange(0, input_dim), num_centers)
+    inds = np.array([inds, inds + input_dim]).transpose()
 
     gradient_mat = (data[inds[:, 0]] - data[inds[:, 1]]) * (0.5 / radii_vec)
 
     # Reshape and organize
     gradient_tensor = np.reshape(gradient_mat.transpose(), [output_dim,
-        input_dim, num_centers], order='F').transpose(2, 0, 1)
+                                                            input_dim, num_centers], order='F').transpose(2, 0, 1)
 
     if normalize:
         # Compute the norm of each vector
@@ -526,21 +536,21 @@ def calculate_gradients_cfd(cluster_discretization, normalize=True):
         norm_gradient_tensor[norm_gradient_tensor == 0] = 1.0
 
         # Normalize each gradient vector
-        gradient_tensor = gradient_tensor/np.tile(norm_gradient_tensor,
-            (input_dim, 1, 1)).transpose(1, 2, 0)
+        gradient_tensor = gradient_tensor / np.tile(norm_gradient_tensor,
+                                                    (input_dim, 1, 1)).transpose(1, 2, 0)
 
     center_input_sample_set = sample.sample_set(input_dim)
     center_input_sample_set.set_values(samples[:num_centers, :])
     if cluster_discretization._input_sample_set.get_domain() is not None:
-        center_input_sample_set.set_domain(cluster_discretization.\
-                _input_sample_set.get_domain())
+        center_input_sample_set.set_domain(cluster_discretization.
+                                           _input_sample_set.get_domain())
     center_input_sample_set.set_jacobians(gradient_tensor)
     center_output_sample_set = sample.sample_set(output_dim)
     center_output_sample_set.set_values(data[:num_centers, :])
     if cluster_discretization._output_sample_set.get_domain() is not None:
-        center_output_sample_set.set_domain(cluster_discretization.\
-                _output_sample_set.get_domain())
-    #center_output_sample_set.set_jacobians(gradient_tensor.transpose())
+        center_output_sample_set.set_domain(cluster_discretization.
+                                            _output_sample_set.get_domain())
+    # center_output_sample_set.set_jacobians(gradient_tensor.transpose())
     center_discretization = sample.discretization(center_input_sample_set,
-            center_output_sample_set)
+                                                  center_output_sample_set)
     return center_discretization

@@ -1,16 +1,15 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
-This module provides methods for Voronoi plots. 
+This module provides methods for Voronoi plots.
 """
 
-import copy, math
+import copy
+import math
 import numpy as np
 import matplotlib
 import matplotlib.pyplot as plt
-#plt.rc('text', usetex=True)
-#plt.rc('font', family='serif')
-from bet.Comm import comm, MPI 
+from bet.Comm import comm, MPI
 import bet.sample as sample
 
 
@@ -19,23 +18,26 @@ class dim_not_matching(Exception):
     Exception for when the dimension is inconsistent.
     """
 
+
 class bad_object(Exception):
     """
     Exception for when the wrong type of object is used.
     """
+
 
 class missing_attribute(Exception):
     """
     Exception for missing attribute.
     """
 
-def plot_1D_voronoi(sample_set, density=True, filename="file", 
+
+def plot_1D_voronoi(sample_set, density=True, filename="file",
                     lam_ref=None, interactive=False,
                     lambda_label=None, file_extension=".png"):
     """
-    This makes a 1d Voronoi plot of the input probability measure for a 
-    1D Voronoi sample set. If the sample_set object is a discretization 
-    object, we assume that the probabilities to be plotted are from 
+    This makes a 1d Voronoi plot of the input probability measure for a
+    1D Voronoi sample set. If the sample_set object is a discretization
+    object, we assume that the probabilities to be plotted are from
     the input space.
 
     .. note::
@@ -43,7 +45,7 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         Do not specify the file extension in the file name.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` 
+    :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :param density: Plot prob. density instead of prob. measure.
     :type density: bool
@@ -70,7 +72,7 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
         raise bad_object("Improper sample object")
 
     if sample_obj._dim != 1:
-            raise dim_not_matching("Only applicable for 1D domains.")
+        raise dim_not_matching("Only applicable for 1D domains.")
 
     # Check for global probabilities
     if sample_obj._probabilities is None:
@@ -84,19 +86,21 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
 
     # Form 1D Voronoi
     ind_sort = np.argsort(sample_obj._values, axis=0)
-    ends = 0.5 * (sample_obj._values[ind_sort][1::] + sample_obj._values[ind_sort][0:-1])
+    ends = 0.5 * (sample_obj._values[ind_sort]
+                  [1::] + sample_obj._values[ind_sort][0:-1])
     ends = ends[:, 0, 0]
     mins = np.array([sample_obj._domain[0][0]] + list(ends))
     maxes = np.array(list(ends) + [sample_obj._domain[0][1]])
 
     # Make plot
     if comm.rank == 0:
-        fig = plt.figure(0)
+        fig = plt.figure(0, constrained_layout=True)
         if density:
-            plt.hlines(sample_obj._probabilities[ind_sort]/(maxes-mins), mins, maxes)
+            plt.hlines(
+                sample_obj._probabilities[ind_sort[0]] / (maxes - mins), mins, maxes)
             plt.ylabel(r'$\rho_{\lambda}$', fontsize=20)
         else:
-            plt.hlines(sample_obj._probabilities[ind_sort], mins, maxes)
+            plt.hlines(sample_obj._probabilities[ind_sort[0]], mins, maxes)
             plt.ylabel(r'$P_{\Lambda}(\mathcal{V}_i)$', fontsize=20)
 
         if lam_ref is not None:
@@ -108,20 +112,19 @@ def plot_1D_voronoi(sample_set, density=True, filename="file",
             label1 = lambda_label[0]
         plt.xlabel(label1, fontsize=20)
 
+        fig.savefig(filename + file_extension)
         if interactive:
             plt.show()
 
-        fig.savefig(filename + file_extension)
 
-def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn', 
-                    filename="file", 
+def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
+                    filename="file",
                     lam_ref=None, interactive=False,
                     lambda_label=None, file_extension=".png"):
-
     """
-    This makes a 2D Voronoi plot of the input probability measure for a 
-    2D Voronoi sample set. If the sample_set object is a discretization 
-    object, we assume that the probabilities to be plotted are from 
+    This makes a 2D Voronoi plot of the input probability measure for a
+    2D Voronoi sample set. If the sample_set object is a discretization
+    object, we assume that the probabilities to be plotted are from
     the input space.
 
     .. note::
@@ -129,7 +132,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         Do not specify the file extension in the file name.
 
     :param sample_set: Object containing samples and probabilities
-    :type sample_set: :class:`~bet.sample.sample_set_base` 
+    :type sample_set: :class:`~bet.sample.sample_set_base`
         or :class:`~bet.sample.discretization`
     :param density: Plot prob. density instead of prob. measure.
     :type density: bool
@@ -160,7 +163,7 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         raise bad_object("Improper sample object")
 
     if sample_obj._dim != 2:
-            raise dim_not_matching("Only applicable for 2D domains.")
+        raise dim_not_matching("Only applicable for 2D domains.")
 
     # Check for global probabilities
     if sample_obj._probabilities is None:
@@ -174,27 +177,29 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
     if lam_ref is None:
         lam_ref = sample_obj._reference_value
 
-    # Form Voronoi 
+    # Form Voronoi
     if comm.rank == 0:
         vor = Voronoi(sample_obj._values)
-        regions, vertices =  voronoi_finite_polygons_2d(vor)
+        regions, vertices = voronoi_finite_polygons_2d(vor)
         points = sample_obj._values
 
         # Make plot
-        fig = plt.figure(0)
+        fig = plt.figure(0, constrained_layout=True)
         cmap = matplotlib.cm.get_cmap(colormap_type)
         if density:
-            P = sample_obj._probabilities/sample_obj._volumes
+            P = sample_obj._probabilities / sample_obj._volumes
         else:
             P = sample_obj._probabilities
         P_max = np.max(P)
 
         # plot each cell
-        for i,region in enumerate(regions):
+        for i, region in enumerate(regions):
             polygon = vertices[region]
-            plt.fill(*zip(*polygon),color=cmap(P[i]/P_max), edgecolor = 'k', linewidth = 0.005)
+            plt.fill(*list(zip(*polygon)),
+                     color=cmap(P[i] / P_max), edgecolor='k', linewidth=0.005)
 
-        plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1], sample_obj._domain[1][0], sample_obj._domain[1][1]])
+        plt.axis([sample_obj._domain[0][0], sample_obj._domain[0][1],
+                  sample_obj._domain[1][0], sample_obj._domain[1][1]])
         if lam_ref is not None:
             plt.plot(lam_ref[0], lam_ref[1], 'ro', markersize=10)
 
@@ -218,14 +223,15 @@ def plot_2D_voronoi(sample_set, density=True, colormap_type='BuGn',
         text = cbar.ax.yaxis.label
         font = matplotlib.font_manager.FontProperties(size=20)
         text.set_font_properties(font)
+
+        fig.savefig(filename + file_extension)
         if interactive:
             plt.show()
 
-        fig.savefig(filename + file_extension)
-    
+
 def voronoi_finite_polygons_2d(vor, radius=None):
     """
-    Reconstruct infinite voronoi regions in a 2D diagram to finite
+    Reconstruct infinite Voronoi regions in a 2D diagram to finite
     regions.
 
     :param vor: Voronoi input diagram
@@ -234,12 +240,12 @@ def voronoi_finite_polygons_2d(vor, radius=None):
     :type radius: float
     :param regions: Indices of vertices in each revised Voronoi regions.
     :type regions: list of tuples
-    :param vertices: Coordinates for revised Voronoi vertices. 
+    :param vertices: Coordinates for revised Voronoi vertices.
     Same as coordinates
     of input vertices, with 'points at infinity' appended to the end.
     :type vertices: list of tuples
     :rtype: tuple
-    :returns (regions, vertices) 
+    :returns (regions, vertices)
 
     """
 
@@ -281,7 +287,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
 
             # Compute the missing endpoint of an infinite ridge
 
-            t = vor.points[p2] - vor.points[p1] # tangent
+            t = vor.points[p2] - vor.points[p1]  # tangent
             t /= np.linalg.norm(t)
             n = np.array([-t[1], t[0]])  # normal
 
@@ -295,7 +301,7 @@ def voronoi_finite_polygons_2d(vor, radius=None):
         # sort region counterclockwise
         vs = np.asarray([new_vertices[v] for v in new_region])
         c = vs.mean(axis=0)
-        angles = np.arctan2(vs[:,1] - c[1], vs[:,0] - c[0])
+        angles = np.arctan2(vs[:, 1] - c[1], vs[:, 0] - c[0])
         new_region = np.array(new_region)[np.argsort(angles)]
 
         # finish

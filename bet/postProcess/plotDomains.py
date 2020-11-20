@@ -1,4 +1,4 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module provides methods used to plot two-dimensional domains and/or
@@ -15,8 +15,8 @@ import matplotlib.pyplot as plt
 # plt.rc('font', family='serif')
 from matplotlib.lines import Line2D
 from mpl_toolkits.mplot3d import Axes3D
-import bet.util as util
 import bet.sample as sample
+import bet.util as util
 
 markers = []
 for m in Line2D.markers:
@@ -42,8 +42,8 @@ class bad_object(Exception):
 
 
 def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
-        filename='scatter2d', file_extension=".png"):
+               save=True, interactive=False, xlabel=r'$x$', ylabel=r'$y$', cbar_label=None,
+               filename='scatter2d', file_extension=".png", markersize=75):
     r"""
     Creates a two-dimensional scatter plot of the samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
@@ -96,11 +96,14 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     if cbar_label is None:
         cbar_label = r'$\rho_\mathcal{D}(q)$'
 
-    markersize = 75
     color = color[sample_nos]
+    # handle scalar scatterplots in in matplotlib>=3.0
+    color = np.reshape(color, -1)
+
+    fig = plt.figure(constrained_layout=True)
     # create the scatter plot for the samples specified by sample_nos
-    plt.scatter(sample_obj.get_values()[sample_nos, 0],
-                sample_obj.get_values()[sample_nos, 1],
+    plt.scatter(np.reshape(sample_obj.get_values()[sample_nos, 0], -1),
+                np.reshape(sample_obj.get_values()[sample_nos, 1], -1),
                 c=color, s=markersize, alpha=.75, linewidth=.1, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
@@ -117,7 +120,7 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         plt.xlabel(xlabel)
         plt.ylabel(ylabel)
         if "." not in filename:
-            full_filename = filename+file_extension
+            full_filename = filename + file_extension
         else:
             full_filename = filename
         plt.savefig(full_filename, bbox_inches='tight', transparent=True,
@@ -127,9 +130,10 @@ def scatter_2D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     else:
         plt.close()
 
+
 def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
-        filename='scatter2d_input', file_extension=".png"):
+                     save=True, interactive=False, xlabel=r'$\lambda_1$', ylabel=r'$\lambda_2$', cbar_label=None,
+                     filename='scatter2d_input', file_extension=".png", markersize=75):
     r"""
     Creates a two-dimensional scatter plot of the input samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -143,7 +147,7 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
         ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._input_sample_set``) to create
-        scatter plot 
+        scatter plot
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
@@ -182,12 +186,13 @@ def scatter_2D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
         color = sample_obj.get_error_id()
 
     scatter_2D(sample_obj, sample_nos, color, ref_sample,
-            save, interactive, xlabel, ylabel, cbar_label, filename,
-            file_extension)
+               save, interactive, xlabel, ylabel, cbar_label, filename,
+               file_extension, markersize)
+
 
 def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', cbar_label=None,
-        filename='scatter2d_input', file_extension=".png"):
+                      save=True, interactive=False, xlabel=r'$q_1$', ylabel=r'$q_2$', cbar_label=None,
+                      filename='scatter2d_output', file_extension=".png", markersize=75):
     r"""
     Creates a two-dimensional scatter plot of the output samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -201,7 +206,7 @@ def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
         ``file_extension``.
 
     :param my_disc: contains samples (`my_disc._output_sample_set``) to create
-        scatter plot 
+        scatter plot
     :type my_disc: :class:`~bet.sample.discretization`
     :param list sample_nos: indicies of the samples to plot
     :param color: values to color the samples by
@@ -240,13 +245,13 @@ def scatter_2D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
         color = sample_obj.get_error_id()
 
     scatter_2D(sample_obj, sample_nos, color, ref_sample,
-            save, interactive, xlabel, ylabel, cbar_label, filename,
-            file_extension)
+               save, interactive, xlabel, ylabel, cbar_label, filename,
+               file_extension, markersize)
 
 
 def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        cbar_label=None, filename="scatter3d", file_extension=".png"):
+               save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
+               cbar_label=None, filename="scatter3d", file_extension=".png", markersize=75):
     r"""
     Creates a three-dimensional scatter plot of samples within the sample
     object colored by ``color`` (usually an array of pointwise probability
@@ -296,14 +301,13 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
         cmap = None
     else:
         cmap = plt.cm.PuBu
-    markersize = 75
-    color = color[sample_nos]
+    color = np.reshape(color[sample_nos], -1)
     # create the scatter plot for the samples specified by sample_nos
-    fig = plt.figure()
+    fig = plt.figure(constrained_layout=True)
     ax = fig.add_subplot(111, projection='3d')
-    p = ax.scatter(sample_obj.get_values()[sample_nos, 0],
-                   sample_obj.get_values()[sample_nos, 1],
-                   sample_obj.get_values()[sample_nos, 2],
+    p = ax.scatter(np.reshape(sample_obj.get_values()[sample_nos, 0], -1),
+                   np.reshape(sample_obj.get_values()[sample_nos, 1], -1),
+                   np.reshape(sample_obj.get_values()[sample_nos, 2], -1),
                    alpha=.75, linewidth=.1, c=color, s=markersize, cmap=cmap)
     # add a colorbar and label for the colorbar usually we just assume the
     # samples are colored by the pointwise probability density on the data
@@ -315,14 +319,14 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     # if there is a reference value plot it with a notiable marker
     if ref_sample is not None:
         ax.scatter(ref_sample[0], ref_sample[1], ref_sample[2], c='m', s=2 *
-                markersize) 
+                   markersize)
     ax.autoscale(tight=True)
     ax.set_xlabel(xlabel)
     ax.set_ylabel(ylabel)
     ax.set_zlabel(zlabel)
     if save:
         if "." not in filename:
-            full_filename = filename+file_extension
+            full_filename = filename + file_extension
         else:
             full_filename = filename
         plt.savefig(full_filename, bbox_inches='tight', transparent=True,
@@ -332,9 +336,11 @@ def scatter_3D(sample_obj, sample_nos=None, color=None, ref_sample=None,
     else:
         plt.close()
 
+
 def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        cbar_label=None, filename="scatter3d", file_extension=".png"):
+                     save=True, interactive=False,
+                     xlabel=r'$\lambda_1$', ylabel=r'$\lambda_2$', zlabel=r'$\lambda_3$',
+                     cbar_label=None, filename="scatter3d_input", file_extension=".png", markersize=75):
     r"""
     Creates a three-dimensional scatter plot of input samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -388,12 +394,14 @@ def scatter_3D_input(my_disc, sample_nos=None, color=None, ref_sample=None,
         color = sample_obj.get_error_id()
 
     scatter_3D_input(sample_obj, sample_nos, color,
-            ref_sample, save, interactive, xlabel, ylabel, zlabel, cbar_label,
-            filename, file_extension)
+                     ref_sample, save, interactive, xlabel, ylabel, zlabel, cbar_label,
+                     filename, file_extension, markersize)
+
 
 def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
-        save=True, interactive=False, xlabel='x', ylabel='y', zlabel='z',
-        cbar_label=None, filename="scatter3d", file_extension=".png"):
+                      save=True, interactive=False,
+                      xlabel=r'$q_1$', ylabel=r'$q_2$', zlabel=r'$q_3$',
+                      cbar_label=None, filename="scatter3d_output", file_extension=".png", markersize=75):
     r"""
     Creates a three-dimensional scatter plot of output samples within the
     discretization object colored by ``color`` (usually an array of pointwise
@@ -447,12 +455,13 @@ def scatter_3D_output(my_disc, sample_nos=None, color=None, ref_sample=None,
         color = sample_obj.get_error_id()
 
     scatter_3D_output(sample_obj, sample_nos, color,
-            ref_sample, save, interactive, xlabel, ylabel, zlabel, cbar_label,
-            filename, file_extension)
+                      ref_sample, save, interactive, xlabel, ylabel, zlabel, cbar_label,
+                      filename, file_extension, markersize)
+
 
 def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
-        rho_D=None, dim_nums=None, label_char=None, showdim=None, save=True,
-        interactive=False, file_extension=".png"):
+                 rho_D=None, dim_nums=None, label_char=None, showdim=None, save=True,
+                 interactive=False, file_extension=".png", markersize=75):
     r"""
     Create scatter plots of samples within the sample object colored by
     ``color`` (usually an array of pointwise probability density values).  A
@@ -466,7 +475,7 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
         ``file_extension``.
 
     :param sample_obj: Object containing the samples to plot
-    :type sample_obj: :class:`~bet.sample.discretization` 
+    :type sample_obj: :class:`~bet.sample.discretization`
         or :class:`~bet.sample.sample_set_base`
     :param ref_sample: reference parameter value
     :type ref_sample: :class:`numpy.ndarray` of shape (ndim,)
@@ -508,17 +517,20 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
 
     if ref_sample is None:
         ref_sample = sample_obj._reference_value
-    
+
     if rD is None:
         rD = np.ones(sample_obj.get_values().shape[0])
 
-    if label_char is not None:
+    if label_char is None:
         if io_flag == 'input':
             label_char = r'$\lambda_'
             prefix = 'input_'
         elif io_flag == 'output':
             label_char = r'$q_'
             prefix = 'output_'
+        else:  # no io_flag
+            label_char = r'$x_'
+            prefix = 'rhoD_'
     else:
         label_char = r'$x_'
         prefix = 'rhoD_'
@@ -527,45 +539,59 @@ def scatter_rhoD(sample_obj, ref_sample=None, sample_nos=None, io_flag='input',
     # (e.g. i, where \lambda_i is a coordinate in the parameter space), then
     # set them to be the the counting numbers.
     if dim_nums is None:
-        dim_nums = 1 + np.array(range(sample_obj.get_values().shape[1]))
+        dim_nums = 1 + np.array(np.arange(sample_obj.get_values().shape[1]))
     # Create the labels based on the user selected parameter coordinates
-    xlabel = label_char+r'{' + str(dim_nums[0]) + '}$'
-    ylabel = label_char+r'{' + str(dim_nums[1]) + '}$'
-    savename = prefix+'samples_cs'
+    xlabel = label_char + r'{' + str(dim_nums[0]) + '}$'
+    ylabel = label_char + r'{' + str(dim_nums[1]) + '}$'
+    savename = prefix + 'samples_cs'
     # Plot 2 or 3 dimensional scatter plots of the samples colored by rD.
     if sample_obj.get_dim() == 2:
         scatter_2D(sample_obj, sample_nos, rD, ref_sample, save,
-                   interactive, xlabel, ylabel, None, savename)
-    elif sample_obj.get_dim() == 3:
-        zlabel = label_char+r'{' + str(dim_nums[2]) + '}$'
-        scatter_3D(sample_obj, sample_nos, rD, ref_sample, save,
-                   interactive, xlabel, ylabel, zlabel, None, savename)
+                   interactive, xlabel, ylabel, None, savename,
+                   markersize=markersize)
     elif sample_obj.get_dim() > 2 and showdim == 2:
         temp_obj = sample.sample_set(2)
         for x, y in combinations(dim_nums, 2):
-            xlabel = label_char+r'{' + str(x) + '}$'
-            ylabel = label_char+r'{' + str(y) + '}$'
-            savename = prefix+'samples_x' + str(x) + 'x' + str(y) + '_cs'
+            xlabel = label_char + r'{' + str(x) + '}$'
+            ylabel = label_char + r'{' + str(y) + '}$'
+            savename = prefix + 'samples_x' + str(x) + 'x' + str(y) + '_cs'
             temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1]])
-            scatter_2D(temp_obj, sample_nos, rD, ref_sample, save,
-                       interactive, xlabel, ylabel, None, savename)
+            if ref_sample is not None:
+                scatter_2D(temp_obj, sample_nos, rD, ref_sample[[x - 1, y - 1]], save,
+                           interactive, xlabel, ylabel, None, savename,
+                           markersize=markersize)
+            else:
+                scatter_2D(temp_obj, sample_nos, rD, ref_sample, save,
+                           interactive, xlabel, ylabel, None, savename,
+                           markersize=markersize)
+    elif sample_obj.get_dim() == 3:
+        zlabel = label_char + r'{' + str(dim_nums[2]) + '}$'
+        scatter_3D(sample_obj, sample_nos, rD, ref_sample, save,
+                   interactive, xlabel, ylabel, zlabel, None, savename,
+                   markersize=markersize)
     elif sample_obj.get_dim() > 3 and showdim == 3:
         temp_obj = sample.sample_set(3)
         for x, y, z in combinations(dim_nums, 3):
-            xlabel = label_char+r'{' + str(x) + '}$'
-            ylabel = label_char+r'{' + str(y) + '}$'
-            zlabel = label_char+r'{' + str(z) + '}$'
-            savename = prefix+'samples_x' + str(x) + 'x' + str(y) + 'x' +\
-                    str(z) + '_cs'
-            temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1, \
-                    z - 1]])
-            scatter_3D(temp_obj, sample_nos, rD, ref_sample, save,
-                       interactive, xlabel, ylabel, zlabel, None, savename,
-                       file_extension)
+            xlabel = label_char + r'{' + str(x) + '}$'
+            ylabel = label_char + r'{' + str(y) + '}$'
+            zlabel = label_char + r'{' + str(z) + '}$'
+            savename = prefix + 'samples_x' + str(x) + 'x' + str(y) + 'x' +\
+                str(z) + '_cs'
+            temp_obj.set_values(sample_obj.get_values()[:, [x - 1, y - 1,
+                                                            z - 1]])
+            if ref_sample is not None:
+                scatter_3D(temp_obj, sample_nos, rD, ref_sample[[x - 1, y - 1, z - 1]], save,
+                           interactive, xlabel, ylabel, zlabel, None, savename,
+                           file_extension, markersize=markersize)
+            else:
+                scatter_3D(temp_obj, sample_nos, rD, ref_sample, save,
+                           interactive, xlabel, ylabel, zlabel, None, savename,
+                           file_extension, markersize=markersize)
+
 
 def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
-        img_folder='figs/', ref_markers=None, ref_colors=None, showdim=None,
-        file_extension=".png"):
+                           img_folder='figs/', ref_markers=None, ref_colors=None, showdim=None,
+                           file_extension=".png", markersize=75):
     r"""
     Plots 2-D projections of the data domain D using a triangulation based on
     the first two coordinates (parameters) of the generating samples where
@@ -573,7 +599,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     :math:`Q_{ref}`.
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` 
+    :type sample_disc: :class:`~bet.sample.discretization`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, mdim)
     :param list Q_nums: dimensions of the QoI to plot
@@ -597,7 +623,7 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
 
     data_obj = sample_disc._output_sample_set
     sample_obj = sample_disc._input_sample_set
-    
+
     if Q_ref is None:
         Q_ref = data_obj._reference_value
 
@@ -605,7 +631,8 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     # (e.g. i, where \q_i is a coordinate in the data space), then
     # set them to be the the counting numbers.
     if Q_nums is None:
-        Q_nums = range(data_obj.get_dim())
+        Q_nums = list(range(data_obj.get_dim()))
+
     # If no specific coordinate number of choice is given set to be the first
     # coordinate direction.
     if showdim is None:
@@ -628,38 +655,45 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
     # Create plots of the showdim^th QoI (q_{showdim}) with all other QoI (q_i)
     if isinstance(showdim, int):
         for i in Q_nums:
-            xlabel = r'$q_{' + str(showdim + 1) + r'}$'
-            ylabel = r'$q_{' + str(i + 1) + r'}$'
+            if i != showdim:
+                xlabel = r'$q_{' + str(showdim + 1) + r'}$'
+                ylabel = r'$q_{' + str(i + 1) + r'}$'
 
-            filenames = [img_folder + 'domain_q' + str(showdim + 1) + '_q' + \
-                         str(i + 1), img_folder + 'q' + str(showdim + 1) + \
-                         '_q' + str(i + 1) + '_domain_Q_cs']
+                filenames = [img_folder + 'domain_q' + str(showdim + 1) + '_q' +
+                             str(i + 1), img_folder + 'q' + str(showdim + 1) +
+                             '_q' + str(i + 1) + '_domain_Q_cs']
 
-            data_obj_temp = sample.sample_set(2)
-            data_obj_temp.set_values(data_obj.get_values()[:, [showdim, i]])
-            sample_disc_temp = sample.discretization(sample_obj, data_obj_temp)
+                data_obj_temp = sample.sample_set(2)
+                data_obj_temp.set_values(
+                    data_obj.get_values()[:, [showdim, i]])
+                sample_disc_temp = sample.discretization(
+                    sample_obj, data_obj_temp)
 
-            if Q_ref is not None:
-                show_data_domain_2D(sample_disc_temp, Q_ref[:, [showdim, i]],
-                                    ref_markers, ref_colors, xlabel=xlabel,
-                                    ylabel=ylabel, triangles=triangles,
-                                    save=True, interactive=False,
-                                    filenames=filenames)
-
-            else:
-                show_data_domain_2D(sample_disc_temp, None, ref_markers,
-                        ref_colors, xlabel=xlabel, ylabel=ylabel,
-                        triangles=triangles, save=True, interactive=False,
-                        filenames=filenames)
+                if Q_ref is not None:
+                    show_data_domain_2D(sample_disc_temp, Q_ref[:, [showdim, i]],
+                                        ref_markers, ref_colors, xlabel=xlabel,
+                                        ylabel=ylabel, triangles=triangles,
+                                        save=True, interactive=False,
+                                        filenames=filenames,
+                                        file_extension=file_extension,
+                                        markersize=markersize)
+                else:
+                    show_data_domain_2D(sample_disc_temp, None, ref_markers,
+                                        ref_colors, xlabel=xlabel, ylabel=ylabel,
+                                        triangles=triangles, save=True,
+                                        interactive=False,
+                                        filenames=filenames,
+                                        file_extension=file_extension,
+                                        markersize=markersize)
     # Create plots of all combinations of QoI in 2D
     elif showdim == 'all' or showdim == 'ALL':
         for x, y in combinations(Q_nums, 2):
             xlabel = r'$q_{' + str(x + 1) + r'}$'
             ylabel = r'$q_{' + str(y + 1) + r'}$'
 
-            filenames = [img_folder + 'domain_q' + str(x + 1) + '_q' + \
-                    str(y + 1), img_folder + 'q' + str(x + 1) + '_q' + 
-                    str(y + 1) +  '_domain_Q_cs']
+            filenames = [img_folder + 'domain_q' + str(x + 1) + '_q' +
+                         str(y + 1), img_folder + 'q' + str(x + 1) + '_q' +
+                         str(y + 1) + '_domain_Q_cs']
 
             data_obj_temp = sample.sample_set(2)
             data_obj_temp.set_values(data_obj.get_values()[:, [x, y]])
@@ -667,20 +701,24 @@ def show_data_domain_multi(sample_disc, Q_ref=None, Q_nums=None,
 
             if Q_ref is not None:
                 show_data_domain_2D(sample_disc_temp, Q_ref[:, [x, y]],
-                        ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
-                        triangles=triangles, save=True, interactive=False,
-                        filenames=filenames, file_extension=file_extension)
+                                    ref_markers, ref_colors, xlabel=xlabel, ylabel=ylabel,
+                                    triangles=triangles, save=True, interactive=False,
+                                    filenames=filenames,
+                                    file_extension=file_extension,
+                                    markersize=markersize)
             else:
                 show_data_domain_2D(sample_disc_temp, None, ref_markers,
-                        ref_colors, xlabel=xlabel, ylabel=ylabel,
-                        triangles=triangles, save=True, interactive=False,
-                        filenames=filenames, file_extension=file_extension)
+                                    ref_colors, xlabel=xlabel, ylabel=ylabel,
+                                    triangles=triangles, save=True, interactive=False,
+                                    filenames=filenames,
+                                    file_extension=file_extension,
+                                    markersize=markersize)
 
 
 def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
                         ref_colors=None, xlabel=r'$q_1$', ylabel=r'$q_2$',
                         triangles=None, save=True, interactive=False,
-                        filenames=None, file_extension=".png"):
+                        filenames=None, file_extension=".png", markersize=75):
     r"""
     Plots 2-D a single data domain D using a triangulation based on the first
     two coordinates (parameters) of the generating samples where :math:`Q={q_1,
@@ -694,7 +732,7 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
 
 
     :param sample_disc: Object containing the samples to plot
-    :type sample_disc: :class:`~bet.sample.discretization` 
+    :type sample_disc: :class:`~bet.sample.discretization`
         or :class:`~bet.sample.sample_set_base`
     :param Q_ref: reference data value
     :type Q_ref: :class:`numpy.ndarray` of shape (M, 2)
@@ -740,32 +778,33 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
         Q_ref = util.fix_dimensions_data(Q_ref, 2)
 
     # Create figure
-    plt.tricontourf(data_obj.get_values()[:, 0], data_obj.get_values()[:, 1],
+    plt.tricontourf(data_obj.get_values()[:, 0],
+                    data_obj.get_values()[:, 1],
+                    triangles,
                     np.zeros((data_obj.get_values().shape[0],)),
-                    triangles=triangles, colors='grey')
+                    colors='grey')
     plt.autoscale(tight=True)
     plt.xlabel(xlabel)
     plt.ylabel(ylabel)
 
-    
     if "." not in filenames[0]:
-        full_filenames0 = filenames[0]+file_extension
+        full_filenames0 = filenames[0] + file_extension
     else:
         full_filenames0 = filenames[0]
 
     if "." not in filenames[1]:
-        full_filenames1 = filenames[1]+file_extension
+        full_filenames1 = filenames[1] + file_extension
     else:
         full_filenames1 = filenames[1]
-
 
     plt.savefig(full_filenames0, bbox_inches='tight', transparent=True,
                 pad_inches=.2)
     # Add truth markers
     if Q_ref is not None:
-        for i in xrange(Q_ref.shape[0]):
+        for i in range(Q_ref.shape[0]):
             plt.scatter(Q_ref[i, 0], Q_ref[i, 1], s=60, c=ref_colors[i],
                         marker=ref_markers[i])
+    plt.tight_layout()
     if save:
         plt.savefig(full_filenames1, bbox_inches='tight', transparent=True,
                     pad_inches=.2)
@@ -774,9 +813,10 @@ def show_data_domain_2D(sample_disc, Q_ref=None, ref_markers=None,
     else:
         plt.close()
 
+
 def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
-        img_folder='figs/', filename="scatter2Dm", label_char=r'$\lambda',
-        showdim=None, file_extension=".png", cbar_label=None):
+                     img_folder='figs/', filename="scatter2Dm", label_char=r'$\lambda',
+                     showdim=None, file_extension=".png", cbar_label=None, markersize=75):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
@@ -815,7 +855,7 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
     if not os.path.isdir(img_folder):
         os.mkdir(img_folder)
     # Create list of all the parameter coordinates
-    p_nums = range(sample_obj.get_dim())
+    p_nums = np.arange(sample_obj.get_dim())
 
     # Create plots of the showdim^th parameter (\lambda_{showdim}) with all the
     # other parameters
@@ -828,20 +868,21 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
             myfilename = os.path.join(img_folder, filename + postfix)
 
             sample_obj_temp = sample.sample_set(2)
-            sample_obj_temp.set_values(sample_obj.get_values()[:, [showdim, i]])
+            sample_obj_temp.set_values(
+                sample_obj.get_values()[:, [showdim, i]])
 
             if ref_sample is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
-                        ref_sample=ref_sample[[showdim, i]], save=True,
-                        interactive=False, xlabel=xlabel, ylabel=ylabel,
-                        cbar_label=cbar_label, filename=myfilename,
-                        file_extension=file_extension)
+                           ref_sample=ref_sample[[showdim, i]], save=True,
+                           interactive=False, xlabel=xlabel, ylabel=ylabel,
+                           cbar_label=cbar_label, filename=myfilename,
+                           file_extension=file_extension, markersize=markersize)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None,
                            color=color, ref_sample=None, save=True,
                            interactive=False, xlabel=xlabel, ylabel=ylabel,
                            cbar_label=cbar_label, filename=myfilename,
-                           file_extension=file_extension)
+                           file_extension=file_extension, markersize=markersize)
 
     # Create plots of all of the possible pairwise combinations of parameters
     elif showdim == 'all' or showdim == 'ALL':
@@ -857,19 +898,21 @@ def scatter_2D_multi(sample_obj, color=None, ref_sample=None,
 
             if ref_sample is not None:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
-                        ref_sample=ref_sample[[x, y]], save=True,
-                        interactive=False, xlabel=xlabel, ylabel=ylabel,
-                        cbar_label=cbar_label, filename=myfilename,
-                        file_extension=file_extension)
+                           ref_sample=ref_sample[[x, y]], save=True,
+                           interactive=False, xlabel=xlabel, ylabel=ylabel,
+                           cbar_label=cbar_label, filename=myfilename, markersize=markersize,
+                           file_extension=file_extension)
             else:
                 scatter_2D(sample_obj_temp, sample_nos=None, color=color,
                            ref_sample=None, save=True, interactive=False,
-                           xlabel=xlabel, ylabel=ylabel, cbar_label=cbar_label,
+                           xlabel=xlabel, ylabel=ylabel,
+                           cbar_label=cbar_label, markersize=markersize,
                            filename=myfilename, file_extension=file_extension)
 
+
 def scatter_2D_multi_input(my_disc, color=None, ref_sample=None,
-        img_folder='figs/', filename="scatter2Dm_input",
-        label_char=r'$\lambda', showdim=None, file_extension=".png"):
+                           img_folder='figs/', filename="scatter2Dm_input",
+                           label_char=r'$\lambda', showdim=None, file_extension=".png"):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
@@ -921,12 +964,14 @@ def scatter_2D_multi_input(my_disc, color=None, ref_sample=None,
         color = sample_obj.get_error_id()
 
     scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
-        img_folder=img_folder, filename=filename, label_char=label_char,
-        showdim=showdim, file_extension=file_extension, cbar_label=cbar_label)
+                     img_folder=img_folder, filename=filename, label_char=label_char,
+                     showdim=showdim, file_extension=file_extension,
+                     cbar_label=cbar_label, markersize=markersize)
+
 
 def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
-        img_folder='figs/', filename="scatter2Dm_output",
-        label_char=r'$q$', showdim=None, file_extension=".png"):
+                            img_folder='figs/', filename="scatter2Dm_output",
+                            label_char=r'$q$', showdim=None, file_extension=".png", markersize=75):
     r"""
     Creates two-dimensional projections of scatter plots of samples colored
     by ``color`` (usually an array of pointwise probability density values). A
@@ -978,6 +1023,6 @@ def scatter_2D_multi_output(my_disc, color=None, ref_sample=None,
         color = sample_obj.get_error_id()
 
     scatter_2D_multi(sample_obj, color=color, ref_sample=ref_sample,
-        img_folder=img_folder, filename=filename, label_char=label_char,
-        showdim=showdim, file_extension=file_extension, cbar_label=cbar_label)
-
+                     img_folder=img_folder, filename=filename, label_char=label_char,
+                     showdim=showdim, file_extension=file_extension,
+                     cbar_label=cbar_label, markersize=markersize)

@@ -94,13 +94,13 @@ We generate 1e6 uniformly distributed points in :math:`\Lambda`. We call these p
                 output_probability_set, emulated_input_sample_set=set_emulated)
 
 Calculate :math:`\hat{\rho}_{\Lambda, j}` where :math:`\mathcal{V}_j` are the
-voronoi cells defined by :math:`\lambda_{emulate}`::
+Voronoi cells defined by :math:`\lambda_{emulate}`::
 
         calcP.prob_on_emulated_samples(my_disc)
         sample.save_discretization(my_disc, filename, "prob_on_emulated_samples_solution")
 
 Calculate :math:`\hat{\rho}_{\Lambda, j}` where :math:`\mathcal{V}_j` are the
-voronoi cells defined by :math:`\lambda_{samples}` assume that :math:`\lambda_{samples}`
+Voronoi cells defined by :math:`\lambda_{samples}` assume that :math:`\lambda_{samples}`
 are uniformly distributed and therefore have approximately the same volume::
 
         input_sample_set.estimate_volume_mc()
@@ -108,7 +108,7 @@ are uniformly distributed and therefore have approximately the same volume::
         sample.save_discretization(my_disc, filename, "prob_solution")
 
 Calculate :math:`\hat{\rho}_{\Lambda, j}` where :math:`\mathcal{V}_j` are the
-voronoi cells defined by :math:`\lambda_{samples}` and we approximate the volume of
+Voronoi cells defined by :math:`\lambda_{samples}` and we approximate the volume of
 :math:`\mathcal{V}_j` using Monte Carlo integration. We use
 :math:`\lambda_{emulate}` to estimate the volume of :math:`\mathcal{V}_j` ::
 

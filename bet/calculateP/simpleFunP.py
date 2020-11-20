@@ -1,15 +1,17 @@
-# Copyright (C) 2014-2016 The BET Development Team
+# Copyright (C) 2014-2020 The BET Development Team
 
 """
 This module provides methods for creating simple function approximations to be
 used by :mod:`~bet.calculateP.calculateP`. These simple function approximations
 are returned as `bet.sample.sample_set` objects.
 """
-import collections, logging
+import collections.abc
+import logging
 import numpy as np
-from bet.Comm import comm, MPI 
-import bet.util as util
+from bet.Comm import comm, MPI
 import bet.sample as samp
+import bet.util as util
+
 
 class wrong_argument_type(Exception):
     """
@@ -17,10 +19,48 @@ class wrong_argument_type(Exception):
     types.
     """
 
+
+def check_type(val, data_set=None):
+    """
+    Add support for different data types that can be passed as keyword
+    arguments. Attempt to infer dimension and set it correctly.
+    """
+    if isinstance(data_set, samp.discretization):
+        dim = data_set._output_sample_set.get_dim()
+    elif isinstance(data_set, samp.sample_set_base):
+        dim = data_set.get_dim()
+    else:
+        dim = 1
+    if isinstance(val, float) or isinstance(val, int):
+        val = np.array([val] * dim)
+    elif isinstance(val, list) or isinstance(val, tuple):
+        if len(val) != dim:
+            raise samp.dim_not_matching("Dimension mismatch.")
+        else:
+            val = np.array(val)
+    elif not isinstance(val, collections.abc.Iterable):
+        val = np.array([val])
+    else:
+        pass
+    return val
+
+
+def infer_Q(data_set):
+    """
+    Attempt to infer reference value around which to define a sample set.
+    """
+    if isinstance(data_set, samp.sample_set_base):
+        return data_set.get_reference_value()
+    elif isinstance(data_set, samp.discretization):
+        return data_set._output_sample_set.get_reference_value()
+    else:
+        return None
+
+
 def check_inputs(data_set, Q_ref):
     """
     Checks inputs to methods.
-    """    
+    """
     if isinstance(data_set, samp.sample_set_base):
         num = data_set.check_num()
         dim = data_set._dim
@@ -54,10 +94,11 @@ def check_inputs(data_set, Q_ref):
 
     return (num, dim, values, Q_ref)
 
+
 def check_inputs_no_reference(data_set):
     """
     Checks inputs to methods.
-    """    
+    """
     if isinstance(data_set, samp.sample_set_base):
         num = data_set.check_num()
         dim = data_set._dim
@@ -78,9 +119,9 @@ def check_inputs_no_reference(data_set):
     return (num, dim, values)
 
 
-def uniform_partition_uniform_distribution_rectangle_size(data_set, 
+def uniform_partition_uniform_distribution_rectangle_size(data_set,
                                                           Q_ref=None,
-                                                          rect_size=None, 
+                                                          rect_size=None,
                                                           M=50,
                                                           num_d_emulate=1E6):
     r"""
@@ -103,7 +144,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
 
         ``data_set`` is only used to determine dimension.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -117,7 +158,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     :param int num_d_emulate: Number of samples used to emulate using an MC
         assumption
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` 
+    :type data_set: :class:`~bet.sample.discretization`
         or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
@@ -125,12 +166,13 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     :rtype: :class:`~bet.sample.voronoi_sample_set`
     :returns: sample_set object defininng simple function approximation
     """
-
+    if Q_ref is None:
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
 
     if rect_size is None:
         raise wrong_argument_type("Rectangle size required.")
-    elif not isinstance(rect_size, collections.Iterable):
+    elif not isinstance(rect_size, collections.abc.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less_equal(rect_size, 0)):
         msg = 'rect_size must be greater than 0'
@@ -161,7 +203,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
 
     if comm.rank == 0:
         d_distr_samples = 1.5 * rect_size * (np.random.random((M,
-                                            dim)) - 0.5) + Q_ref
+                                                               dim)) - 0.5) + Q_ref
     else:
         d_distr_samples = np.empty((M, dim))
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
@@ -179,8 +221,8 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     :math:`\rho_{\mathcal{D}}`.
     '''
     # Generate the samples from :math:`\rho_{\mathcal{D}}`
-    num_d_emulate_local = int((num_d_emulate/comm.size) + \
-                        (comm.rank < num_d_emulate%comm.size))
+    num_d_emulate_local = int((num_d_emulate / comm.size) +
+                              (comm.rank < num_d_emulate % comm.size))
     d_distr_emulate = rect_size * (np.random.random((num_d_emulate_local,
                                                      dim)) - 0.5) + Q_ref
 
@@ -188,7 +230,7 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     (_, k) = s_set.query(d_distr_emulate)
 
     count_neighbors = np.zeros((M,), dtype=np.int)
-    for i in xrange(M):
+    for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Use the binning to define :math:`\rho_{\mathcal{D},M}`
@@ -208,11 +250,13 @@ def uniform_partition_uniform_distribution_rectangle_size(data_set,
     '''
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
-def uniform_partition_uniform_distribution_rectangle_scaled(data_set, 
+
+def uniform_partition_uniform_distribution_rectangle_scaled(data_set,
                                                             Q_ref=None,
-                                                            rect_scale=0.2, 
+                                                            rect_scale=0.2,
                                                             M=50,
                                                             num_d_emulate=1E6):
     r"""
@@ -221,18 +265,18 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set,
     a generalized rectangle centered at ``Q_ref`` or the ``reference_value``
     of a sample set. If ``Q_ref`` is not given the reference value is used..
     The support of this density is defined by ``rect_scale``, which determines
-    the size of the generalized rectangle by scaling the circumscribing 
+    the size of the generalized rectangle by scaling the circumscribing
     generalized rectangle of :math:`\mathcal{D}`.
     The simple function approximation is then defined by determining ``M ``
     Voronoi cells (i.e., "bins") partitioning :math:`\mathcal{D}`. These
     bins are only implicitly defined by ``M`` samples in :math:`\mathcal{D}`.
-    Finally, the probabilities of each of these bins is computed by 
-    sampling from :math:`\rho{\mathcal{D}}` and using nearest neighbor 
+    Finally, the probabilities of each of these bins is computed by
+    sampling from :math:`\rho{\mathcal{D}}` and using nearest neighbor
     searches to bin these samples in the ``M`` implicitly defined bins.
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -244,24 +288,27 @@ def uniform_partition_uniform_distribution_rectangle_scaled(data_set,
         uniform distribution as ``rect_size = (data_max-data_min)*rect_scale``
     :type rect_scale: double or list
     :param int num_d_emulate: Number of samples used to emulate using an MC
-        assumption 
+        assumption
     :param data_set: Sample set that the probability measure is defined for.
     :type data_set: :class:`~bet.sample.discretization` or
         :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param Q_ref: :math:`Q(`\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
-    
+
     :rtype: :class:`~bet.sample.voronoi_sample_set`
     :returns: sample_set object defininng simple function approximation
     """
+    if Q_ref is None:
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
-    rect_size = (np.max(values, 0) - np.min(values, 0))*rect_scale
+    rect_size = (np.max(values, 0) - np.min(values, 0)) * rect_scale
 
     return uniform_partition_uniform_distribution_rectangle_size(data_set,
-            Q_ref, rect_size, M, num_d_emulate)
+                                                                 Q_ref, rect_size, M, num_d_emulate)
+
 
 def uniform_partition_uniform_distribution_rectangle_domain(data_set,
-        rect_domain, M=50, num_d_emulate=1E6):
+                                                            rect_domain, M=50, num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D}}`
     where :math:`\rho_{\mathcal{D}}` is a uniform probability density on
@@ -275,7 +322,7 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set,
     The result is the simple function approximation denoted by
     :math:`\rho_{\mathcal{D},M}`.
 
-    Note that all computations in the measure-theoretic framework that
+    Note that all computations in the measure-based approach that
     follow from this are for the fixed simple function approximation
     :math:`\rho_{\mathcal{D},M}`.
 
@@ -304,9 +351,8 @@ def uniform_partition_uniform_distribution_rectangle_domain(data_set,
     domain_center = np.mean(rect_domain, 0)
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
 
-
     return uniform_partition_uniform_distribution_rectangle_size(data_set,
-                        domain_center, domain_lengths, M, num_d_emulate)
+                                                                 domain_center, domain_lengths, M, num_d_emulate)
 
 
 def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
@@ -316,7 +362,7 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
     centered at ``Q_ref`` (or the ``reference_value``
-    of a sample set. If ``Q_ref`` is not given the reference value is used) 
+    of a sample set. If ``Q_ref`` is not given the reference value is used)
     with ``rect_size`` of the width of a hyperrectangle.
 
     Since rho_D is a uniform distribution on a hyperrectanlge we can represent
@@ -336,29 +382,31 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     :returns: sample_set object defining simple function approximation
 
     """
+    if Q_ref is None:
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
 
     data = values
-    
+
     if rect_size is None:
         raise wrong_argument_type("Missing rectangle size.")
-    elif not isinstance(rect_size, collections.Iterable):
+    elif not isinstance(rect_size, collections.abc.Iterable):
         rect_size = rect_size * np.ones((dim,))
     if np.any(np.less_equal(rect_size, 0)):
         msg = 'rect_size must be greater than 0'
         raise wrong_argument_type(msg)
 
-    if not isinstance(cells_per_dimension, collections.Iterable):
+    if not isinstance(cells_per_dimension, collections.abc.Iterable):
         cells_per_dimension = np.ones((dim,)) * cells_per_dimension
 
-    maxes = [Q_ref + 0.5*np.array(rect_size)]
-    mins = [Q_ref - 0.5*np.array(rect_size)]
+    maxes = [Q_ref + 0.5 * np.array(rect_size)]
+    mins = [Q_ref - 0.5 * np.array(rect_size)]
 
     xi = []
-    for i in xrange(dim):
-        xi.append(np.linspace(mins[0][i], maxes[0][i], 
-            cells_per_dimension[i] + 1))
-    
+    for i in range(dim):
+        xi.append(np.linspace(mins[0][i], maxes[0][i],
+                              int(cells_per_dimension[i]) + 1))
+
     s_set = samp.cartesian_sample_set(dim)
     s_set.setup(xi)
     domain = np.zeros((dim, 2))
@@ -368,17 +416,18 @@ def regular_partition_uniform_distribution_rectangle_size(data_set, Q_ref=None,
     s_set.exact_volume_lebesgue()
     vol = np.sum(s_set._volumes[0:-1])
     prob = np.zeros(s_set._volumes.shape)
-    prob[0:-1] = s_set._volumes[0:-1]/vol
+    prob[0:-1] = s_set._volumes[0:-1] / vol
     s_set.set_probabilities(prob)
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
 def regular_partition_uniform_distribution_rectangle_domain(data_set,
-                                                        rect_domain,
-                                                        cells_per_dimension=1):
+                                                            rect_domain,
+                                                            cells_per_dimension=1):
     r"""
     Creates a simple function appoximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho{\mathcal{D}, M}` is a uniform probablity density over the
@@ -394,34 +443,36 @@ def regular_partition_uniform_distribution_rectangle_domain(data_set,
         uniform.
     :type rect_domain: :class:`numpy.ndarray` of shape (2, mdim)
     :param list cells_per_dimension: number of cells per dimension
-    
-    
+
+
     :rtype: :class:`~bet.sample.rectangle_sample_set`
     :returns: sample_set object defining simple function approximation
-    
+
     """
     # make sure the shape of the data and the domain are correct
 
     (num, dim, values) = check_inputs_no_reference(data_set)
 
-    data = values 
+    data = values
     rect_domain = util.fix_dimensions_data(rect_domain, data.shape[1])
     domain_center = np.mean(rect_domain, 0)
     domain_lengths = np.max(rect_domain, 0) - np.min(rect_domain, 0)
- 
+
     return regular_partition_uniform_distribution_rectangle_size(data_set,
                                                                  domain_center,
                                                                  domain_lengths,
                                                                  cells_per_dimension)
 
-def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
-                                                            rect_scale,
+
+def regular_partition_uniform_distribution_rectangle_scaled(data_set,
+                                                            Q_ref=None,
+                                                            rect_scale=1,
                                                             cells_per_dimension=1):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density
     centered at ``Q_ref`` (or the ``reference_value``
-    of a sample set. If ``Q_ref`` is not given the reference value is used.) 
+    of a sample set. If ``Q_ref`` is not given the reference value is used.)
     with ``rect_scale`` of the width
     of D.
 
@@ -433,7 +484,7 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     :type data_set: :class:`~bet.sample.discretization` or
         :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
     :param rect_scale: The scale used to determine the width of the
-        uniform distributiion as ``rect_size = (data_max-data_min)*rect_scale``
+        uniform distribution as ``rect_size = (data_max-data_min)*rect_scale``
     :type rect_scale: double or list
     :param Q_ref: :math:`Q(\lambda_{reference})`
     :type Q_ref: :class:`~numpy.ndarray` of size (mdim,)
@@ -443,31 +494,34 @@ def regular_partition_uniform_distribution_rectangle_scaled(data_set, Q_ref,
     :returns: sample_set object defining simple function approximation
 
     """
+    if Q_ref is None:
+        Q_ref = infer_Q(data_set)
     (num, dim, values, Q_ref) = check_inputs(data_set, Q_ref)
 
     data = values
 
-    if not isinstance(rect_scale, collections.Iterable):
-        rect_scale = rect_scale*np.ones((dim, ))
+    if not isinstance(rect_scale, collections.abc.Iterable):
+        rect_scale = rect_scale * np.ones((dim, ))
 
-    rect_size = (np.max(data, 0) - np.min(data, 0))*rect_scale
+    rect_size = (np.max(data, 0) - np.min(data, 0)) * rect_scale
     return regular_partition_uniform_distribution_rectangle_size(data_set,
                                                                  Q_ref,
                                                                  rect_size,
                                                                  cells_per_dimension)
+
 
 def uniform_partition_uniform_distribution_data_samples(data_set):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a uniform probability density over
     the entire ``data_domain``. Here the ``data_domain`` is the union of
-    voronoi cells defined by ``data``. In other words we assign each sample the
+    Voronoi cells defined by ``data``. In other words we assign each sample the
     same probability, so ``M = len(data)`` or rather ``len(d_distr_samples) ==
     len(data)``. The purpose of this method is to approximate uniform
     distributions over irregularly shaped domains.
- 
+
     :param data_set: Sample set that the probability measure is defined for.
-    :type data_set: :class:`~bet.sample.discretization` 
+    :type data_set: :class:`~bet.sample.discretization`
         or :class:`~bet.sample.sample_set` or :class:`~numpy.ndarray`
 
     :rtype: :class:`~bet.sample.voronoi_sample_set`
@@ -493,16 +547,17 @@ def uniform_partition_uniform_distribution_data_samples(data_set):
         msg = "The first argument must be of type bet.sample.sample_set, "
         msg += "bet.sample.discretization or np.ndarray"
         raise wrong_argument_type(msg)
-    
-    s_set.set_probabilities(np.ones((num,), dtype=np.float)/num)
+
+    s_set.set_probabilities(np.ones((num,), dtype=np.float) / num)
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
-def normal_partition_normal_distribution(data_set, Q_ref, std, M,
-        num_d_emulate=1E6): 
+def normal_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
+                                         num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
@@ -527,24 +582,24 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     :returns: sample_set object defining simple function approximation
 
     """
+    if Q_ref is None:
+        Q_ref = infer_Q(data_set)
     import scipy.stats as stats
-    r'''Create M smaples defining M bins in D used to define
+    r'''Create M samples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
-    if not isinstance(Q_ref, collections.Iterable):
-        Q_ref = np.array([Q_ref])
-    if not isinstance(std, collections.Iterable):
-        std = np.array([std])
+    Q_ref = check_type(Q_ref, data_set)
+    std = check_type(std, data_set)
 
     covariance = std ** 2
 
     d_distr_samples = np.zeros((M, len(Q_ref)))
-    logging.info("d_distr_samples.shape "+str(d_distr_samples.shape))
-    logging.info("Q_ref.shape "+str(Q_ref.shape))
-    logging.info("std.shape "+str(std.shape))
+    logging.info("d_distr_samples.shape " + str(d_distr_samples.shape))
+    logging.info("Q_ref.shape " + str(Q_ref.shape))
+    logging.info("std.shape " + str(std.shape))
 
     if comm.rank == 0:
-        for i in xrange(len(Q_ref)):
+        for i in range(len(Q_ref)):
             d_distr_samples[:, i] = np.random.normal(Q_ref[i], std[i], M)
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
@@ -556,10 +611,10 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     r'''Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling
     from rho_D First generate samples of rho_D - I sometimes call this
     emulation'''
-    num_d_emulate_local = int((num_d_emulate/comm.size) + \
-                              (comm.rank < num_d_emulate%comm.size))
+    num_d_emulate_local = int((num_d_emulate / comm.size) +
+                              (comm.rank < num_d_emulate % comm.size))
     d_distr_emulate = np.zeros((num_d_emulate_local, len(Q_ref)))
-    for i in xrange(len(Q_ref)):
+    for i in range(len(Q_ref)):
         d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i],
                                                  num_d_emulate_local)
 
@@ -570,11 +625,11 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     (_, k) = s_set.query(d_distr_emulate)
     count_neighbors = np.zeros((M,), dtype=np.int)
     volumes = np.zeros((M,))
-    for i in xrange(M):
+    for i in range(M):
         Itemp = np.equal(k, i)
         count_neighbors[i] = np.sum(Itemp)
-        volumes[i] = np.sum(1.0 / stats.multivariate_normal.pdf \
-            (d_distr_emulate[Itemp, :], Q_ref, covariance))
+        volumes[i] = np.sum(1.0 / stats.multivariate_normal.pdf
+                            (d_distr_emulate[Itemp, :], Q_ref, covariance))
     # Now define probability of the d_distr_samples
     # This together with d_distr_samples defines :math:`\rho_{\mathcal{D},M}`
     ccount_neighbors = np.copy(count_neighbors)
@@ -594,11 +649,12 @@ def normal_partition_normal_distribution(data_set, Q_ref, std, M,
     # solving the model EVER! This can be done "offline" so to speak.
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
 
-def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
-        num_d_emulate=1E6): 
+def uniform_partition_normal_distribution(data_set, Q_ref=None, std=1, M=1,
+                                          num_d_emulate=1E6):
     r"""
     Creates a simple function approximation of :math:`\rho_{\mathcal{D},M}`
     where :math:`\rho_{\mathcal{D},M}` is a multivariate normal probability
@@ -627,16 +683,16 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
     r'''Create M samples defining M bins in D used to define
     :math:`\rho_{\mathcal{D},M}` rho_D is assumed to be a multi-variate normal
     distribution with mean Q_ref and standard deviation std.'''
-    if not isinstance(Q_ref, collections.Iterable):
-        Q_ref = np.array([Q_ref])
-    if not isinstance(std, collections.Iterable):
-        std = np.array([std])
+    if Q_ref is None:
+        Q_ref = infer_Q(data_set)
+    Q_ref = check_type(Q_ref, data_set)
+    std = check_type(std, data_set)
 
     bin_size = 4.0 * std
     d_distr_samples = np.zeros((M, len(Q_ref)))
     if comm.rank == 0:
         d_distr_samples = bin_size * (np.random.random((M,
-                                            len(Q_ref))) - 0.5) + Q_ref
+                                                        len(Q_ref))) - 0.5) + Q_ref
     comm.Bcast([d_distr_samples, MPI.DOUBLE], root=0)
 
     # Initialize sample set object
@@ -647,10 +703,10 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
     r'''Now compute probabilities for :math:`\rho_{\mathcal{D},M}` by sampling
     from rho_D First generate samples of rho_D - I sometimes call this
     emulation'''
-    num_d_emulate_local = int((num_d_emulate/comm.size) + \
-            (comm.rank < num_d_emulate%comm.size))
+    num_d_emulate_local = int((num_d_emulate / comm.size) +
+                              (comm.rank < num_d_emulate % comm.size))
     d_distr_emulate = np.zeros((num_d_emulate_local, len(Q_ref)))
-    for i in xrange(len(Q_ref)):
+    for i in range(len(Q_ref)):
         d_distr_emulate[:, i] = np.random.normal(Q_ref[i], std[i],
                                                  num_d_emulate_local)
 
@@ -661,7 +717,7 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
     (_, k) = s_set.query(d_distr_emulate)
     count_neighbors = np.zeros((M,), dtype=np.int)
     # volumes = np.zeros((M,))
-    for i in xrange(M):
+    for i in range(M):
         Itemp = np.equal(k, i)
         count_neighbors[i] = np.sum(Itemp)
 
@@ -678,10 +734,12 @@ def uniform_partition_normal_distribution(data_set, Q_ref, std, M,
     # solving the model EVER! This can be done "offline" so to speak.
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
 
+
 def user_partition_user_distribution(data_set, data_partition_set,
-                                          data_distribution_set):
+                                     data_distribution_set):
     r"""
     Creates a user defined simple function approximation of a user
     defined distribution. The simple function discretization is
@@ -769,7 +827,7 @@ def user_partition_user_distribution(data_set, data_partition_set,
     (_, k) = s_set.query(d_distr_emulate)
 
     count_neighbors = np.zeros((M,), dtype=np.int)
-    for i in xrange(M):
+    for i in range(M):
         count_neighbors[i] = np.sum(np.equal(k, i))
 
     # Use the binning to define :math:`\rho_{\mathcal{D},M}`
@@ -778,9 +836,10 @@ def user_partition_user_distribution(data_set, data_partition_set,
                    op=MPI.SUM)
     count_neighbors = ccount_neighbors
     rho_D_M = count_neighbors.astype(np.float64) / \
-              float(num_d_emulate * comm.size)
+        float(num_d_emulate * comm.size)
     s_set.set_probabilities(rho_D_M)
 
     if isinstance(data_set, samp.discretization):
         data_set._output_probability_set = s_set
+        data_set.set_io_ptr(globalize=False)
     return s_set
