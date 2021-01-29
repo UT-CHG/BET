@@ -1,0 +1,2711 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bet package &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>bet package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/bet.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="bet-package">
+<h1>bet package<a class="headerlink" href="#bet-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="subpackages">
+<h2>Subpackages<a class="headerlink" href="#subpackages" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="bet.calculateP.html">bet.calculateP package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateError">bet.calculateP.calculateError module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP">bet.calculateP.calculateP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateR">bet.calculateP.calculateR module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP">bet.calculateP.simpleFunP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bet.postProcess.html">bet.postProcess package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.compareP">bet.postProcess.compareP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains">bet.postProcess.plotDomains module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP">bet.postProcess.plotP module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotVoronoi">bet.postProcess.plotVoronoi module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools">bet.postProcess.postTools module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bet.sampling.html">bet.sampling package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.LpGeneralizedSamples">bet.sampling.LpGeneralizedSamples module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling">bet.sampling.basicSampling module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling.useLUQ">bet.sampling.useLUQ module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sampling.html#module-bet.sampling">Module contents</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bet.sensitivity.html">bet.sensitivity package</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#submodules">Submodules</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs">bet.sensitivity.chooseQoIs module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients">bet.sensitivity.gradients module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-bet.Comm">
+<span id="bet-comm-module"></span><h2>bet.Comm module<a class="headerlink" href="#module-bet.Comm" title="Permalink to this headline">¶</a></h2>
+<p>This module provides a workaround for people without mpi4py installed
+to run BET.</p>
+<dl class="py class">
+<dt id="bet.Comm.MPI_for_no_mpi4py">
+<em class="property">class </em><code class="sig-prename descclassname">bet.Comm.</code><code class="sig-name descname">MPI_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Provides a fake MPI implementation so that the user need not install
+mpi4py.</p>
+<dl class="py attribute">
+<dt id="bet.Comm.MPI_for_no_mpi4py.BOOL">
+<code class="sig-name descname">BOOL</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py.BOOL" title="Permalink to this definition">¶</a></dt>
+<dd><p>bool type</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.Comm.MPI_for_no_mpi4py.DOUBLE">
+<code class="sig-name descname">DOUBLE</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py.DOUBLE" title="Permalink to this definition">¶</a></dt>
+<dd><p>float type</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.Comm.MPI_for_no_mpi4py.INT">
+<code class="sig-name descname">INT</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py.INT" title="Permalink to this definition">¶</a></dt>
+<dd><p>int type</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.Comm.MPI_for_no_mpi4py.SUM">
+<code class="sig-name descname">SUM</code><a class="headerlink" href="#bet.Comm.MPI_for_no_mpi4py.SUM" title="Permalink to this definition">¶</a></dt>
+<dd><p>fake sum</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.Comm.comm_for_no_mpi4py">
+<em class="property">class </em><code class="sig-prename descclassname">bet.Comm.</code><code class="sig-name descname">comm_for_no_mpi4py</code><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Provides a fake MPI.COMM_WORLD implementation so that the user need not
+install mpi4py.</p>
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Allgather">
+<code class="sig-name descname">Allgather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">val2</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allgather" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to Allgather</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Allreduce">
+<code class="sig-name descname">Allreduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val1</span></em>, <em class="sig-param"><span class="n">val2</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">op</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Allreduce" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to Allreduce</p></li>
+<li><p><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to Allreduce</p></li>
+<li><p><strong>op</strong> – None</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Barrier">
+<code class="sig-name descname">Barrier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Barrier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing in serial.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Bcast">
+<code class="sig-name descname">Bcast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Bcast" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to gather</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Get_rank">
+<code class="sig-name descname">Get_rank</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_rank" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>0</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Get_size">
+<code class="sig-name descname">Get_size</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Get_size" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.Scatter">
+<code class="sig-name descname">Scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val1</span></em>, <em class="sig-param"><span class="n">val2</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.Scatter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to Scatter</p></li>
+<li><p><strong>val2</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to Scatter</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.allgather">
+<code class="sig-name descname">allgather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allgather" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to allgather</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.allreduce">
+<code class="sig-name descname">allreduce</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val1</span></em>, <em class="sig-param"><span class="n">op</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.allreduce" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to allreduce</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.barrier">
+<code class="sig-name descname">barrier</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.barrier" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing in serial.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.bcast">
+<code class="sig-name descname">bcast</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.bcast" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to broadcast</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.gather">
+<code class="sig-name descname">gather</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val1</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.gather" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to gather</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.Comm.comm_for_no_mpi4py.rank">
+<code class="sig-name descname">rank</code><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.rank" title="Permalink to this definition">¶</a></dt>
+<dd><p>rank, 0</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.Comm.comm_for_no_mpi4py.scatter">
+<code class="sig-name descname">scatter</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">val1</span></em>, <em class="sig-param"><span class="n">root</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.scatter" title="Permalink to this definition">¶</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>val1</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><em>object</em></a>) – object to scatter</p></li>
+<li><p><strong>root</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – 0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)">object</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>val1</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.Comm.comm_for_no_mpi4py.size">
+<code class="sig-name descname">size</code><a class="headerlink" href="#bet.Comm.comm_for_no_mpi4py.size" title="Permalink to this definition">¶</a></dt>
+<dd><p>size, 1</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.sample">
+<span id="bet-sample-module"></span><h2>bet.sample module<a class="headerlink" href="#module-bet.sample" title="Permalink to this headline">¶</a></h2>
+<p>This module contains the main data structures and exceptions for BET. Notably:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a> provides the basic data structure for input and output sets</p></li>
+<li><p><a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> is the default sample set.</p></li>
+<li><p><a class="reference internal" href="#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a> is a sample set based on a Voronoi discretization (same as default).</p></li>
+<li><p><a class="reference internal" href="#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">rectangle_sample_set</span></code></a> is a sample set based on a hyper-rectangle.</p></li>
+<li><p><a class="reference internal" href="#bet.sample.ball_sample_set" title="bet.sample.ball_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">ball_sample_set</span></code></a> is a sample set based on balls in R^n</p></li>
+<li><p><a class="reference internal" href="#bet.sample.cartesian_sample_set" title="bet.sample.cartesian_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">cartesian_sample_set</span></code></a> is a sample set based on a Cartesian grid.</p></li>
+<li><p><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> provides the basic data structure for and input to output stochastic map.</p></li>
+<li><p><a class="reference internal" href="#bet.sample.length_not_matching" title="bet.sample.length_not_matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">length_not_matching</span></code></a> is an Exception class.</p></li>
+<li><p><a class="reference internal" href="#bet.sample.dim_not_matching" title="bet.sample.dim_not_matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">dim_not_matching</span></code></a> is an Exception class.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">evaluate_pdf()</span></code> evaluates probability density functions.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">evaluate_pdf_marginal()</span></code> evaluates marginal probability density functions.</p></li>
+</ul>
+<dl class="py class">
+<dt id="bet.sample.ball_sample_set">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">ball_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a></p>
+<p>A data structure containing arrays specific to a set of samples defining
+discretization containing a number of balls.
+Only returns the neighbors for which <span class="math notranslate nohighlight">\(x_i \in A_k\)</span>.</p>
+<p>A series of n balls <span class="math notranslate nohighlight">\(A_i \subset \Lambda\)</span> with
+<span class="math notranslate nohighlight">\(A_i \cap A_j = \emptyset\)</span>
+for <span class="math notranslate nohighlight">\(i \neq j\)</span>. The last entry represents the remainder
+<span class="math notranslate nohighlight">\(\Lambda \setminus ( \cup_{i-1}^n A_i)\)</span>.</p>
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.append_error_estimates">
+<code class="sig-name descname">append_error_estimates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_error_estimates</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.append_error_estimates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to update the other member attribute arrays so that
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">check_num()</span></code> does not fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_error_estimates</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – New error_estimates to append.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.append_jacobians">
+<code class="sig-name descname">append_jacobians</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_jacobians</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.append_jacobians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to update the other member attribute arrays so that
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">check_num()</span></code> does not fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_jacobians</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim,
+dim)) – New jacobians to append.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.append_values">
+<code class="sig-name descname">append_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.append_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample_set.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.concatenate()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – values to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.append_values_local">
+<code class="sig-name descname">append_values_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.append_values_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample_set.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.concatenate()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – values to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.exact_volume">
+<code class="sig-name descname">exact_volume</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.exact_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the exact volume fraction given the given p-norm.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify which value points x are associated with for discretization.
+The distance is set to 0 if it is in the rectangle and infinity
+if it is not.
+It is only considered in or out.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) – points for query</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of nearest neighbors to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(dist, ptr)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">centers</span></em>, <em class="sig-param"><span class="n">radii</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>centers</strong> (<em>iterable of shape</em><em> (</em><em>num-1</em><em>, </em><em>dim</em><em>)</em>) – centers of balls</p></li>
+<li><p><strong>radii</strong> (<em>iterable of length num-1</em>) – radii of balls</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.update_bounds">
+<code class="sig-name descname">update_bounds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.update_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.ball_sample_set.update_bounds_local">
+<code class="sig-name descname">update_bounds_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_local</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.ball_sample_set.update_bounds_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.sample.cartesian_sample_set">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">cartesian_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.cartesian_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.rectangle_sample_set</span></code></a></p>
+<p>Defines a hyperrectangle discretization based on a Cartesian grid.</p>
+<blockquote>
+<div><div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-meth docutils literal notranslate"><span class="pre">bet.sample.rectangle_sample_set()</span></code></a></p>
+</div>
+</div></blockquote>
+<dl class="py method">
+<dt id="bet.sample.cartesian_sample_set.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">xi</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.cartesian_sample_set.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>xi</strong> (<em>array_like</em>) – x1, x2,…, xn, 1-D arrays representing the coordinates of a
+grid</p>
+</dd>
+</dl>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.meshgrid()</span></code></p>
+</div>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bet.sample.dim_not_matching">
+<em class="property">exception </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">dim_not_matching</code><a class="headerlink" href="#bet.sample.dim_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the dimension of the array is inconsistent.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.sample.discretization">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">discretization</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_sample_set</span></em>, <em class="sig-param"><span class="n">output_sample_set</span></em>, <em class="sig-param"><span class="n">output_probability_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">emulated_input_sample_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">emulated_output_sample_set</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">output_observed_set</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A data structure to store all of the <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+objects and associated pointers to solve an stochastic inverse problem.</p>
+<dl class="py method">
+<dt id="bet.sample.discretization.check_nums">
+<code class="sig-name descname">check_nums</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.check_nums" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that <code class="docutils literal notranslate"><span class="pre">self._input_sample_set</span></code> and <code class="docutils literal notranslate"><span class="pre">self._output_sample_set</span></code>
+both have the same number of samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Number of samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.choose_inputs_outputs">
+<code class="sig-name descname">choose_inputs_outputs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">inputs</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">outputs</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.choose_inputs_outputs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Slices the inputs and outputs of the discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>inputs</strong> (<em>list</em>) – list of indices of input sample set to include</p></li>
+<li><p><strong>outputs</strong> (<em>list</em>) – list of indices of output sample set to include</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>sliced discretization</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.clip">
+<code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cnum</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates and returns a discretization with the the first <cite>cnum</cite>
+entries of the input and output sample sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cnum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of values of sample set to return</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>clipped discretization</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a copy using <code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.copy()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Copy of this <a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.estimate_input_volume_emulated">
+<code class="sig-name descname">estimate_input_volume_emulated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.estimate_input_volume_emulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This could be re-written to just use <code class="docutils literal notranslate"><span class="pre">emulated_ii_ptr</span></code> instead
+of <code class="docutils literal notranslate"><span class="pre">_emulated_input_sample_set</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.estimate_output_volume_emulated">
+<code class="sig-name descname">estimate_output_volume_emulated</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.estimate_output_volume_emulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This could be re-written to just use <code class="docutils literal notranslate"><span class="pre">emulated_oo_ptr</span></code> instead
+of <code class="docutils literal notranslate"><span class="pre">_emulated_output_sample_set</span></code>.</p>
+</div>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_emulated_ii_ptr">
+<code class="sig-name descname">get_emulated_ii_ptr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_emulated_ii_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pointer from <code class="docutils literal notranslate"><span class="pre">self._emulated_input_sample_set</span></code> to
+<code class="docutils literal notranslate"><span class="pre">self._input_sample_set</span></code></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query`()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of int of shape
+(self._output_sample_set._values.shape[0],)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self._emulated_ii_ptr</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_emulated_input_sample_set">
+<code class="sig-name descname">get_emulated_input_sample_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_emulated_input_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the emulated_input sample set for this
+discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>emulated_input sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_emulated_oo_ptr">
+<code class="sig-name descname">get_emulated_oo_ptr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_emulated_oo_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pointer from <code class="docutils literal notranslate"><span class="pre">self._emulated_output_sample_set</span></code> to
+<code class="docutils literal notranslate"><span class="pre">self._output_probability_set</span></code></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query`()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of int of shape
+(self._output_sample_set._values.shape[0],)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self._emulated_ii_ptr</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_emulated_output_sample_set">
+<code class="sig-name descname">get_emulated_output_sample_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_emulated_output_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the emulated_output sample set for this
+discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>emulated_output sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_input_sample_set">
+<code class="sig-name descname">get_input_sample_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_input_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the input sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>input sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_io_ptr">
+<code class="sig-name descname">get_io_ptr</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_io_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the pointer from <code class="docutils literal notranslate"><span class="pre">self._output_sample_set</span></code> to
+<code class="docutils literal notranslate"><span class="pre">self._output_probability_set</span></code></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query`()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of int of shape
+(self._output_sample_set._values.shape[0],)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>self._io_ptr</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_output_observed_set">
+<code class="sig-name descname">get_output_observed_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_output_observed_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the output observed sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>output sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_output_probability_set">
+<code class="sig-name descname">get_output_probability_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_output_probability_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the output probability sample set for this
+discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>output probability sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.get_output_sample_set">
+<code class="sig-name descname">get_output_sample_set</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.get_output_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a reference to the output sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>output sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.global_to_local">
+<code class="sig-name descname">global_to_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.global_to_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call global_to_local for <code class="docutils literal notranslate"><span class="pre">input_sample_set</span></code> and
+<code class="docutils literal notranslate"><span class="pre">output_sample_set</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.globalize_ptrs">
+<code class="sig-name descname">globalize_ptrs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.globalize_ptrs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Globalizes discretization pointers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.local_to_global">
+<code class="sig-name descname">local_to_global</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.local_to_global" title="Permalink to this definition">¶</a></dt>
+<dd><p>Call local_to_global for <code class="docutils literal notranslate"><span class="pre">input_sample_set</span></code> and
+<code class="docutils literal notranslate"><span class="pre">output_sample_set</span></code>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">disc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges a given discretization with this one by merging the input and
+output sample sets.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>disc</strong> (<a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a>) – Discretization object to merge with.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Merged discretization</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.sample.discretization.sample_set_names">
+<code class="sig-name descname">sample_set_names</code><em class="property"> = ['_input_sample_set', '_output_sample_set', '_emulated_input_sample_set', '_emulated_output_sample_set', '_output_probability_set', '_output_observed_set']</em><a class="headerlink" href="#bet.sample.discretization.sample_set_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of attribute names for attributes that are
+<code class="xref py py-class docutils literal notranslate"><span class="pre">sample.sample_set_base</span></code></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the discretization using pickle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_emulated_ii_ptr">
+<code class="sig-name descname">set_emulated_ii_ptr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_emulated_ii_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the pointer from <code class="docutils literal notranslate"><span class="pre">self._emulated_input_sample_set</span></code> to
+<code class="docutils literal notranslate"><span class="pre">self._input_sample_set</span></code></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query`()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to globalize
+<code class="docutils literal notranslate"><span class="pre">self._output_sample_set</span></code></p></li>
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Which Minkowski p-norm to use. (1 &lt;= p &lt;= infinity)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_emulated_input_sample_set">
+<code class="sig-name descname">set_emulated_input_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">emulated_input_sample_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_emulated_input_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the emulated_input sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>emulated_input_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – emupated input sample set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_emulated_oo_ptr">
+<code class="sig-name descname">set_emulated_oo_ptr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_emulated_oo_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the pointer from <code class="docutils literal notranslate"><span class="pre">self._emulated_output_sample_set</span></code> to
+<code class="docutils literal notranslate"><span class="pre">self._output_probability_set</span></code></p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query`()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to globalize
+<code class="docutils literal notranslate"><span class="pre">self._output_sample_set</span></code></p></li>
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Which Minkowski p-norm to use. (1 &lt;= p &lt;= infinity)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_emulated_output_sample_set">
+<code class="sig-name descname">set_emulated_output_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">emulated_output_sample_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_emulated_output_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the emulated_output sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>emulated_output_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – emupated output sample set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_input_sample_set">
+<code class="sig-name descname">set_input_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_sample_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_input_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the input sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>input_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – input sample set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_io_ptr">
+<code class="sig-name descname">set_io_ptr</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_io_ptr" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the pointer from <code class="docutils literal notranslate"><span class="pre">self._output_sample_set</span></code> to
+<code class="docutils literal notranslate"><span class="pre">self._output_probability_set</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to globalize
+<code class="docutils literal notranslate"><span class="pre">self._output_sample_set</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_output_observed_set">
+<code class="sig-name descname">set_output_observed_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_sample_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_output_observed_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the output observed sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>output_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – output observed sample set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_output_probability_set">
+<code class="sig-name descname">set_output_probability_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_probability_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_output_probability_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the output probability sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>output_probability_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – output probability sample set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.discretization.set_output_sample_set">
+<code class="sig-name descname">set_output_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">output_sample_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.discretization.set_output_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the output sample set for this discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>output_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – output sample set.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.sample.discretization.vector_names">
+<code class="sig-name descname">vector_names</code><em class="property"> = ['_io_ptr', '_io_ptr_local', '_emulated_ii_ptr', '_emulated_ii_ptr_local', '_emulated_oo_ptr', '_emulated_oo_ptr_local']</em><a class="headerlink" href="#bet.sample.discretization.vector_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of attribute names for attributes which are vectors or 1D
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bet.sample.domain_not_matching">
+<em class="property">exception </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">domain_not_matching</code><a class="headerlink" href="#bet.sample.domain_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the domain does not match.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.sample.evaluate_pdf">
+<code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">evaluate_pdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_type</span></em>, <em class="sig-param"><span class="n">prob_parameters</span></em>, <em class="sig-param"><span class="n">vals</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.evaluate_pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the probability density function defined by <cite>prob_type</cite> and <cite>prob_parameters</cite>
+at points defined by <cite>vals</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Type of probability description. Options are ‘kde’ (weighted kernel
+density estimate), ‘rv’ (random variable), ‘gmm’ (Gaussian mixture model), and ‘voronoi’.</p></li>
+<li><p><strong>prob_parameters</strong> – Parameters that define the probability measure of type <cite>prob_type</cite></p></li>
+<li><p><strong>vals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Values at which to evaluate the PDF.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>probability density evaluated at <cite>vals</cite></p>
+</dd>
+</dl>
+<p>:rtype <cite>numpy.ndarray</cite></p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.sample.evaluate_pdf_marginal">
+<code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">evaluate_pdf_marginal</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_type</span></em>, <em class="sig-param"><span class="n">prob_parameters</span></em>, <em class="sig-param"><span class="n">vals</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.evaluate_pdf_marginal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the marginal probability density function of index <cite>i</cite> defined by <cite>prob_type</cite>
+and <cite>prob_parameters</cite> at points defined by <cite>vals</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Type of probability description. Options are ‘kde’ (weighted kernel
+density estimate), ‘rv’ (random variable), ‘gmm’ (Gaussian mixture model), and ‘voronoi’.</p></li>
+<li><p><strong>prob_parameters</strong> – Parameters that define the probability measure of type <cite>prob_type</cite></p></li>
+<li><p><strong>vals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Values at which to evaluate the PDF.</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – index of marginal</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>marginal probability density evaluated at <cite>vals</cite></p>
+</dd>
+</dl>
+<p>:rtype <cite>numpy.ndarray</cite></p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bet.sample.length_not_matching">
+<em class="property">exception </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">length_not_matching</code><a class="headerlink" href="#bet.sample.length_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the length of the array is inconsistent.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.sample.rectangle_sample_set">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">rectangle_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a></p>
+<p>A data structure containing arrays specific to a set of samples defining a
+hyperrectangle discretization.</p>
+<p>A series of n hyperrectangles <span class="math notranslate nohighlight">\(A_i \subset \Lambda\)</span> with
+<span class="math notranslate nohighlight">\(A_i \cap A_j = \emptyset\)</span>
+for <span class="math notranslate nohighlight">\(i \neq j\)</span>. The last entry represents the remainder
+<span class="math notranslate nohighlight">\(\Lambda \setminus ( \cup_{i-1}^n A_i)\)</span>.</p>
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.append_error_estimates">
+<code class="sig-name descname">append_error_estimates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_error_estimates</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.append_error_estimates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to update the other member attribute arrays so that
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">check_num()</span></code> does not fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_error_estimates</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – New error_estimates to append.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.append_jacobians">
+<code class="sig-name descname">append_jacobians</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_jacobians</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.append_jacobians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to update the other member attribute arrays so that
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">check_num()</span></code> does not fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_jacobians</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim,
+dim)) – New jacobians to append.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.append_values">
+<code class="sig-name descname">append_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.append_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample_set.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.concatenate()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – values to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.append_values_local">
+<code class="sig-name descname">append_values_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.append_values_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample_set.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.concatenate()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – values to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.exact_volume_lebesgue">
+<code class="sig-name descname">exact_volume_lebesgue</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.exact_volume_lebesgue" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exactly calculates the Lebesgue volume fraction of the cells.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify which value points x are associated with for discretization.
+Only returns the neighbors for which <span class="math notranslate nohighlight">\(x_i \in A_k\)</span>. The distance
+is set to 0 if it is in the rectangle and infinity if it is not.
+It is only considered in or out.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">scipy.spatial.KDTree.query()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) – points for query</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of nearest neighbors to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(dist, ptr)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.setup">
+<code class="sig-name descname">setup</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">maxes</span></em>, <em class="sig-param"><span class="n">mins</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialization</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>maxes</strong> (<em>iterable with components of length dim</em>) – array or list of maxes for hyperrectangles</p></li>
+<li><p><strong>mins</strong> (<em>iterable with components of length dim</em>) – array or list of mins for hyperrectangles</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.update_bounds">
+<code class="sig-name descname">update_bounds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.update_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.rectangle_sample_set.update_bounds_local">
+<code class="sig-name descname">update_bounds_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_local</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.rectangle_sample_set.update_bounds_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Does nothing for this type of sample set.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.sample.sample_set">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.voronoi_sample_set</span></code></a></p>
+<p>Set Voronoi cells as the default for now.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.sample.sample_set_base">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">sample_set_base</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>A data structure containing values that define a set of samples.</p>
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.append_error_estimates">
+<code class="sig-name descname">append_error_estimates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_error_estimates</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.append_error_estimates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends the <code class="docutils literal notranslate"><span class="pre">new_error_estimates</span></code> to <code class="docutils literal notranslate"><span class="pre">self._error_estimates</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to update the other member attribute arrays so that
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">check_num()</span></code> does not fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_error_estimates</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – New error_estimates to append.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.append_jacobians">
+<code class="sig-name descname">append_jacobians</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">new_jacobians</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.append_jacobians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends the <code class="docutils literal notranslate"><span class="pre">new_jacobians</span></code> to <code class="docutils literal notranslate"><span class="pre">self._jacobians</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Remember to update the other member attribute arrays so that
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">check_num()</span></code> does not fail.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>new_jacobians</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim,
+dim)) – New jacobians to append.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.append_values">
+<code class="sig-name descname">append_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.append_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends the values in <code class="docutils literal notranslate"><span class="pre">_values</span></code> to <code class="docutils literal notranslate"><span class="pre">self._values</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.concatenate()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – values to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.append_values_local">
+<code class="sig-name descname">append_values_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.append_values_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Appends the values in <code class="docutils literal notranslate"><span class="pre">_values_local</span></code> to <code class="docutils literal notranslate"><span class="pre">self._values</span></code>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.concatenate()</span></code></p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – values to append</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.sample.sample_set_base.array_names">
+<code class="sig-name descname">array_names</code><em class="property"> = ['_values', '_volumes', '_probabilities', '_densities', '_jacobians', '_error_estimates', '_right', '_left', '_width', '_kdtree_values', '_radii', '_normalized_radii', '_region', '_error_id']</em><a class="headerlink" href="#bet.sample.sample_set_base.array_names" title="Permalink to this definition">¶</a></dt>
+<dd><p>List of global attribute names for attributes that are <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.calculate_volumes">
+<code class="sig-name descname">calculate_volumes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.calculate_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volumes of cells. Depends on sample set type.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.check_num">
+<code class="sig-name descname">check_num</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.check_num" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that the number of entries in <code class="docutils literal notranslate"><span class="pre">self._values</span></code>,
+<code class="docutils literal notranslate"><span class="pre">self._volumes</span></code>, <code class="docutils literal notranslate"><span class="pre">self._probabilities</span></code>, <code class="docutils literal notranslate"><span class="pre">self._jacobians</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">self._error_estimates</span></code> all match (assuming the named array exists).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>num</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.check_num_local">
+<code class="sig-name descname">check_num_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.check_num_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that the number of entries in <code class="docutils literal notranslate"><span class="pre">self._values_local</span></code>,
+<code class="docutils literal notranslate"><span class="pre">self._volumes_local</span></code>, <code class="docutils literal notranslate"><span class="pre">self._probabilities_local</span></code>,
+<code class="docutils literal notranslate"><span class="pre">self._jacobians_local</span></code>, and <code class="docutils literal notranslate"><span class="pre">self._error_estimates_local</span></code>
+all match (assuming the named array exists).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>num</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.clip">
+<code class="sig-name descname">clip</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cnum</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.clip" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates and returns a sample set with the the first <cite>cnum</cite>
+entries of the sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cnum</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of values of sample set to return</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>the clipped sample set</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.copy">
+<code class="sig-name descname">copy</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes a copy using <code class="xref py py-meth docutils literal notranslate"><span class="pre">numpy.copy()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Copy of this <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.estimate_volume">
+<code class="sig-name descname">estimate_volume</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_mc_points</span><span class="o">=</span><span class="default_value">10000</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – If estimate is True, number of MC points to use</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.estimate_volume_emulated">
+<code class="sig-name descname">estimate_volume_emulated</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">emulated_sample_set</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume_emulated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the volume faction of cells approximately using Monte
+Carlo integration.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This could be re-written to just use an <code class="docutils literal notranslate"><span class="pre">emulated_ii_ptr</span></code> instead
+of an <code class="docutils literal notranslate"><span class="pre">emulated_sample_set</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>emulated_sample_set</strong> (<a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a>) – The set of samples used to approximate the
+volume measure.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.estimate_volume_mc">
+<code class="sig-name descname">estimate_volume_mc</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.estimate_volume_mc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Give all cells the same volume fraction based on the Monte Carlo
+assumption.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_bounding_box">
+<code class="sig-name descname">get_bounding_box</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_bounding_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the bounding box of the values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_cluster_maps">
+<code class="sig-name descname">get_cluster_maps</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_cluster_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns cluster maps.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_densities">
+<code class="sig-name descname">get_densities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_densities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample densities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample densities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_densities_local">
+<code class="sig-name descname">get_densities_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_densities_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample local densities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample local densities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_dim">
+<code class="sig-name descname">get_dim</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_dim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return the dimension of the sample space.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)">int</a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Dimension of the sample space.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_domain">
+<code class="sig-name descname">get_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the sample domain,</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>Sample domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_error_estimates">
+<code class="sig-name descname">get_error_estimates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_error_estimates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample error_estimates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample error_estimates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_error_estimates_local">
+<code class="sig-name descname">get_error_estimates_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_error_estimates_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample error_estimates_local.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample error_estimates_local</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_error_id">
+<code class="sig-name descname">get_error_id</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_error_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns error identifiers.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_error_id_local">
+<code class="sig-name descname">get_error_id_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_error_id_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local error identifier.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_jacobians">
+<code class="sig-name descname">get_jacobians</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_jacobians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample jacobians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim, dim)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample jacobians</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_jacobians_local">
+<code class="sig-name descname">get_jacobians_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_jacobians_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local sample jacobians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim, dim)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>local sample jacobians</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_kdtree">
+<code class="sig-name descname">get_kdtree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_kdtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.KDTree</span></code> for this set of samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.KDTree</span></code></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.KDTree</span></code> for this set of samples.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_label">
+<code class="sig-name descname">get_label</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns label for set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_labels">
+<code class="sig-name descname">get_labels</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns labels for each dimension of set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_p_norm">
+<code class="sig-name descname">get_p_norm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_p_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns p-norm for sample set</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_prob_parameters">
+<code class="sig-name descname">get_prob_parameters</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_prob_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the updated probability measure parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_prob_parameters_init">
+<code class="sig-name descname">get_prob_parameters_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_prob_parameters_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns initial probability measure parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_prob_type">
+<code class="sig-name descname">get_prob_type</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_prob_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the type of updated probability measure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_prob_type_init">
+<code class="sig-name descname">get_prob_type_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_prob_type_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the type of initial probability measure.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_probabilities">
+<code class="sig-name descname">get_probabilities</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample probabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample probabilities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_probabilities_local">
+<code class="sig-name descname">get_probabilities_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_probabilities_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample local probabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample local probabilities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_reference_value">
+<code class="sig-name descname">get_reference_value</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_reference_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the reference value of a sample set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_region">
+<code class="sig-name descname">get_region</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns region.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_region_local">
+<code class="sig-name descname">get_region_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_region_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local region.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_values">
+<code class="sig-name descname">get_values</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_values_local">
+<code class="sig-name descname">get_values_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_values_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample local values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample local values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_volumes">
+<code class="sig-name descname">get_volumes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample cell volumes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample cell volumes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_volumes_local">
+<code class="sig-name descname">get_volumes_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_volumes_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample local volumes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>sample local volumes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_weights">
+<code class="sig-name descname">get_weights</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns weights of samples.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.get_weights_init">
+<code class="sig-name descname">get_weights_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.get_weights_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns initial weights of samples</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.global_to_local">
+<code class="sig-name descname">global_to_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.global_to_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes local arrays from available global ones.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.local_to_global">
+<code class="sig-name descname">local_to_global</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.local_to_global" title="Permalink to this definition">¶</a></dt>
+<dd><p>Makes global arrays from available local ones.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.marginal_pdf">
+<code class="sig-name descname">marginal_pdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vals</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.marginal_pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the marginal (with index <cite>i</cite>) probability density function of the updated
+probability measure at values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, dim) or (num_vals, )) – Values at which to evaluated the PDF.</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – index defining marginal</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return probability densities
+:rtype <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.marginal_pdf_init">
+<code class="sig-name descname">marginal_pdf_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vals</span></em>, <em class="sig-param"><span class="n">i</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.marginal_pdf_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the marginal (with index <cite>i</cite>) probability density function of the initial
+probability measure at values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vals</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, dim) or (num_vals, )) – Values at which to evaluated the PDF.</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – index defining marginal</p></li>
+</ul>
+</dd>
+</dl>
+<p>:return probability densities
+:rtype <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, )</p>
+</dd></dl>
+
+<dl class="py attribute">
+<dt id="bet.sample.sample_set_base.meta_fields">
+<code class="sig-name descname">meta_fields</code><em class="property"> = ['_bounding_box', '_densities', '_densities_local', '_dim', '_domain', '_domain_original', '_error_estimates', '_error_estimates_local', '_error_id', '_error_id_local', '_jacobians', '_jacobians_local', '_kdtree_values', '_kdtree_values_local', '_left', '_left_local', '_local_index', '_normalized_radii', '_normalized_radii_local', '_p_norm', '_probabilities', '_probabilities_local', '_radii', '_radii_local', '_reference_value', '_region', '_region_local', '_right', '_right_local', '_values', '_values_local', '_volumes', '_volumes_local', '_width', '_width_local', '_prob_type', '_prob_type_init', '_prob_parameters', '_prob_parameters_init', '_label', '_labels', '_cluster_maps', '_weights', '_weights_init']</em><a class="headerlink" href="#bet.sample.sample_set_base.meta_fields" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.normalize_domain">
+<code class="sig-name descname">normalize_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.normalize_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Normalize the domain and attributes to a unit hyperbox.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.pdf">
+<code class="sig-name descname">pdf</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vals</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.pdf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the probability density function of the updated probability measure at values.
+:param vals: Values at which to evaluated the PDF.
+:type vals: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, dim)
+:return probability densities
+:rtype <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.pdf_init">
+<code class="sig-name descname">pdf_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vals</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.pdf_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the probability density function of the initial probability measure at values.
+:param vals: Values at which to evaluated the PDF.
+:type vals: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, dim)
+:return probability densities
+:rtype <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_vals, )</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify which value points x are associated with for discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) – points for query</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of nearest neighbors to return</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.save">
+<code class="sig-name descname">save</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">filename</span></em>, <em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the set using pickle.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – filename to save to</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – whether or not to globalize local variables before saving</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_bounding_box">
+<code class="sig-name descname">set_bounding_box</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_bounding_box" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the bounding box of the values.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_cluster_maps">
+<code class="sig-name descname">set_cluster_maps</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">cluster_maps</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_cluster_maps" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets cluster maps (generally coming from LUQ).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>cluster_maps</strong> (<em>list</em>) – List of arrays containing values in each cluster.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_densities">
+<code class="sig-name descname">set_densities</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">densities</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_densities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set sample densities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>densities</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – sample densities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_densities_local">
+<code class="sig-name descname">set_densities_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">densities_local</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_densities_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set sample local densities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>densities_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – local sample densities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_domain">
+<code class="sig-name descname">set_domain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the domain.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>domain</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim, 2)) – Sample domain</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_error_estimates">
+<code class="sig-name descname">set_error_estimates</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_estimates</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_error_estimates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample error estimates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error_estimates</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – sample error estimates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_error_estimates_local">
+<code class="sig-name descname">set_error_estimates_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_estimates_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_error_estimates_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local sample error estimates.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error_estimates_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – local sample error estimates</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_error_id">
+<code class="sig-name descname">set_error_id</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_error_id" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets error_id for sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error_id</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – array of error identifiers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_error_id_local">
+<code class="sig-name descname">set_error_id_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">error_id</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_error_id_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets local error id for sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>error_id</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (some_num, dim)) – array of error identifiers</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_jacobians">
+<code class="sig-name descname">set_jacobians</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">jacobians</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_jacobians" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns sample jacobians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>jacobians</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim, dim)) – sample jacobians</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_jacobians_local">
+<code class="sig-name descname">set_jacobians_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">jacobians_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_jacobians_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns local sample jacobians.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>jacobians_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, other_dim,
+dim)) – local sample jacobians</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_kdtree">
+<code class="sig-name descname">set_kdtree</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_kdtree" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.KDTree</span></code> for this set of samples.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_label">
+<code class="sig-name descname">set_label</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">label</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_label" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets label for set.
+:param label: Label for set.
+:type label: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_labels">
+<code class="sig-name descname">set_labels</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">labels</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_labels" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets labels for each dimension of set.
+:param labels: list or tuple containing strings which label parameters in each dimension.
+:type labels: list or tuple of length <cite>dim</cite>
+:return:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_p_norm">
+<code class="sig-name descname">set_p_norm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">p_norm</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_p_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets p-norm for sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>p_norm</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – p-norm to use</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_prob_parameters">
+<code class="sig-name descname">set_prob_parameters</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_parameters</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_prob_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set updated probability measure parameters.
+:param prob_parameters:  Updated probability measure parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_prob_parameters_init">
+<code class="sig-name descname">set_prob_parameters_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_parameters_init</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_prob_parameters_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set initial probability measure parameters.
+:param prob_parameters_init:  Initial probability measure parameters.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_prob_type">
+<code class="sig-name descname">set_prob_type</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_type</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_prob_type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the type of updated probability measure.
+:param prob_type: Type of updated probability measure (‘kde’, ‘gmm’, ‘voronoi’, ‘rv’)
+:type prob_type: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_prob_type_init">
+<code class="sig-name descname">set_prob_type_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_type_init</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_prob_type_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set the type of initial probability measure.
+:param prob_type_init: Type of initial probability measure (‘kde’, ‘gmm’, ‘voronoi’, ‘rv’)
+:type prob_type_init: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_probabilities">
+<code class="sig-name descname">set_probabilities</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probabilities</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_probabilities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set sample probabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>probabilities</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – sample probabilities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_probabilities_local">
+<code class="sig-name descname">set_probabilities_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">probabilities_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_probabilities_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set sample local probabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>probabilities_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – local sample probabilities</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_reference_value">
+<code class="sig-name descname">set_reference_value</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">ref_val</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_reference_value" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets reference value for sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>ref_val</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – reference value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_region">
+<code class="sig-name descname">set_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">region</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets region for sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region</strong> – array of regions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_region_local">
+<code class="sig-name descname">set_region_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">region</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_region_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets local region for sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>region</strong> – array of regions</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_values">
+<code class="sig-name descname">set_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the sample values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num, dim)) – sample values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_values_local">
+<code class="sig-name descname">set_values_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">values_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_values_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets the local sample values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>values_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (local_num, dim)) – sample local values</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_volumes">
+<code class="sig-name descname">set_volumes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">volumes</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_volumes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets sample cell volumes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>volumes</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – sample cell volumes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_volumes_local">
+<code class="sig-name descname">set_volumes_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">volumes_local</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_volumes_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sets local sample cell volumes.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>volumes_local</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)) – local sample cell volumes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_weights">
+<code class="sig-name descname">set_weights</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_weights" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set weights for samples
+:type weights: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)
+:param weights: weights of samples</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.set_weights_init">
+<code class="sig-name descname">set_weights_init</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">weights</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.set_weights_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set initial weights for samples
+:type weights: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num,)
+:param weights: initial weights of samples</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.shape">
+<code class="sig-name descname">shape</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.shape" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape of <code class="docutils literal notranslate"><span class="pre">self._values</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(num, dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.shape_local">
+<code class="sig-name descname">shape_local</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.shape_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns the shape of <code class="docutils literal notranslate"><span class="pre">self._values_local</span></code></p>
+<dl class="field-list simple">
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(local_num, dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.undo_normalize_domain">
+<code class="sig-name descname">undo_normalize_domain</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.undo_normalize_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Undoes normalization of the domain and attributes if they have been
+normalized.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.update_bounds">
+<code class="sig-name descname">update_bounds</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.update_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates <code class="docutils literal notranslate"><span class="pre">self._right</span></code>, <code class="docutils literal notranslate"><span class="pre">self._left</span></code>, <code class="docutils literal notranslate"><span class="pre">self._width</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Determines shape of pointwise bounds (num, dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.sample_set_base.update_bounds_local">
+<code class="sig-name descname">update_bounds_local</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">local_num</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.sample_set_base.update_bounds_local" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates local versions of <code class="docutils literal notranslate"><span class="pre">self._right</span></code>, <code class="docutils literal notranslate"><span class="pre">self._left</span></code>,
+<code class="docutils literal notranslate"><span class="pre">self._width</span></code> (<code class="docutils literal notranslate"><span class="pre">self._right_local</span></code>, <code class="docutils literal notranslate"><span class="pre">self._left_local</span></code>,
+<code class="docutils literal notranslate"><span class="pre">self._width_local</span></code>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>local_num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Determines shape of local pointwise bounds
+(local_num, dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt id="bet.sample.voronoi_sample_set">
+<em class="property">class </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">voronoi_sample_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">dim</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set_base</span></code></a></p>
+<p>A data structure containing arrays specific to a set of samples defining
+a Voronoi tesselation.</p>
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.estimate_local_volume">
+<code class="sig-name descname">estimate_local_volume</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">num_emulate_local</span><span class="o">=</span><span class="default_value">500</span></em>, <em class="sig-param"><span class="n">max_num_emulate</span><span class="o">=</span><span class="default_value">10000</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_local_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Estimates the volume fraction of the Voronoi cells associated
+with <code class="docutils literal notranslate"><span class="pre">samples</span></code>. Specifically we are calculating
+<span class="math notranslate nohighlight">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.
+Here all of the samples are drawn from the generalized Lp uniform
+distribution.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If this <a class="reference internal" href="#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a> has exact/estimated
+radii of the Voronoi cell associated with each sample for a domain
+normalized to the unit hypercube (<code class="docutils literal notranslate"><span class="pre">_normalized_radii</span></code>). Note that
+these are not centroidal Voronoi tesselations meaning that the
+centroid is NOT the generator of the Voronoi cell. What we desire
+for the radius is actually
+<span class="math notranslate nohighlight">\(sup_{\lambda \in \mathcal{V}_{i, N}} d_v(\lambda,
+\lambda^{(i)})\)</span>.</p>
+</div>
+<div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>When we move away from domains defined on hypercubes this will need
+to be updated to use whatever <code class="docutils literal notranslate"><span class="pre">_in_domain</span></code> method exists.</p>
+</div>
+<p>Volume of the L-p ball is obtained from  Wang, X.. (2005). Volumes of
+Generalized Unit Balls. Mathematics Magazine, 78(5), 390-395.
+<a class="reference external" href="http://doi.org/10.2307/30044198">DOI 10.2307/30044198</a></p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_emulate_local</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – The number of emulated samples.</p></li>
+<li><p><strong>max_num_emulate</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum number of local emulated samples</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.estimate_radii">
+<code class="sig-name descname">estimate_radii</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_mc_points</span><span class="o">=</span><span class="default_value">10000</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the radii of cells approximately using Monte
+Carlo integration.</p>
+<div class="admonition-todo admonition" id="id2">
+<p class="admonition-title">Todo</p>
+<p>This currently presumes a uniform Lesbegue measure on the
+<code class="docutils literal notranslate"><span class="pre">domain</span></code>. Currently the way this is written
+<code class="docutils literal notranslate"><span class="pre">emulated_input_sample_set</span></code> is NOT used to calculate the volume.
+This should at least be an option.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – If estimate is True, number of MC points to use</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – estimate normalized radius</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.estimate_radii_and_volume">
+<code class="sig-name descname">estimate_radii_and_volume</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">n_mc_points</span><span class="o">=</span><span class="default_value">10000</span></em>, <em class="sig-param"><span class="n">normalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.estimate_radii_and_volume" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the radii and volume faction of cells approximately using
+Monte Carlo integration.</p>
+<div class="admonition-todo admonition" id="id3">
+<p class="admonition-title">Todo</p>
+<p>This currently presumes a uniform Lesbegue measure on the
+<code class="docutils literal notranslate"><span class="pre">domain</span></code>. Currently the way this is written
+<code class="docutils literal notranslate"><span class="pre">emulated_input_sample_set</span></code> is NOT used to calculate the volume.
+This should at least be an option.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n_mc_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – If estimate is True, number of MC points to use</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – estimate normalized radius</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.exact_volume_1D">
+<code class="sig-name descname">exact_volume_1D</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.exact_volume_1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exactly calculates the volume fraction of the Voronoi cells.
+Specifically we are calculating
+<span class="math notranslate nohighlight">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.exact_volume_2D">
+<code class="sig-name descname">exact_volume_2D</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">side_ratio</span><span class="o">=</span><span class="default_value">0.25</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.exact_volume_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Exactly calculates the volume fraction of the Voronoi cells.
+Specifically we are calculating
+<span class="math notranslate nohighlight">\(\mu_\Lambda(\mathcal(V)_{i,N} \cap A)/\mu_\Lambda(\Lambda)\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>side_ratio</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – ratio of width to reflect across boundary</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.merge">
+<code class="sig-name descname">merge</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">sset</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.merge" title="Permalink to this definition">¶</a></dt>
+<dd><p>Merges a given sample set with this one by merging the values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sset</strong> (<a class="reference internal" href="#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.voronoi_sample_set</span></code></a>) – Sample set object to merge with.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.voronoi_sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Merged discretization</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.sample.voronoi_sample_set.query">
+<code class="sig-name descname">query</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">x</span></em>, <em class="sig-param"><span class="n">k</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sample.voronoi_sample_set.query" title="Permalink to this definition">¶</a></dt>
+<dd><p>Identify which value points x are associated with for discretization.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>x</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape <code class="docutils literal notranslate"><span class="pre">(*,</span> <span class="pre">dim)</span></code>) – points for query</p></li>
+<li><p><strong>k</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of nearest neighbors to return</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(dist, ptr)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bet.sample.wrong_input">
+<em class="property">exception </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">wrong_input</code><a class="headerlink" href="#bet.sample.wrong_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the input is of the wrong type.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt id="bet.sample.wrong_p_norm">
+<em class="property">exception </em><code class="sig-prename descclassname">bet.sample.</code><code class="sig-name descname">wrong_p_norm</code><a class="headerlink" href="#bet.sample.wrong_p_norm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the dimension of the array is inconsistent.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.surrogates">
+<span id="bet-surrogates-module"></span><h2>bet.surrogates module<a class="headerlink" href="#module-bet.surrogates" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for generating and using surrogate models.</p>
+<dl class="py class">
+<dt id="bet.surrogates.piecewise_polynomial_surrogate">
+<em class="property">class </em><code class="sig-prename descclassname">bet.surrogates.</code><code class="sig-name descname">piecewise_polynomial_surrogate</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_disc</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.surrogates.piecewise_polynomial_surrogate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class provides methods for generating a piecewise polynomial
+surrogate.</p>
+<dl class="py method">
+<dt id="bet.surrogates.piecewise_polynomial_surrogate.calculate_prob_for_sample_set_region">
+<code class="sig-name descname">calculate_prob_for_sample_set_region</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">s_set</span></em>, <em class="sig-param"><span class="n">regions</span></em>, <em class="sig-param"><span class="n">update_input</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.surrogates.piecewise_polynomial_surrogate.calculate_prob_for_sample_set_region" title="Permalink to this definition">¶</a></dt>
+<dd><p>Solves stochastic inverse problem based on surrogate points and the
+MC assumption. Calculates the probability of a regions of input space
+and error estimates for those probabilities.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Param</dt>
+<dd class="field-odd"><p>s_set: sample set for which to calculate error</p>
+</dd>
+<dt class="field-even">Parameters</dt>
+<dd class="field-even"><ul class="simple">
+<li><p><strong>region</strong> (<em>list</em>) – list of regions of s_set for which to calculate error</p></li>
+<li><p><strong>update_input</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – whether or not to update probabilities and
+errror identifiers for input discretization</p></li>
+</ul>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>tuple</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>(probabilities, <code class="docutils literal notranslate"><span class="pre">error_estimates</span></code>), the probability and
+error estimates for the region</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt id="bet.surrogates.piecewise_polynomial_surrogate.generate_for_input_set">
+<code class="sig-name descname">generate_for_input_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">input_sample_set</span></em>, <em class="sig-param"><span class="n">order</span><span class="o">=</span><span class="default_value">0</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.surrogates.piecewise_polynomial_surrogate.generate_for_input_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a surrogate discretization based on the input discretization,
+for a user-defined input sample set. The output sample set values
+and error estimates are piecewise polynomially defined over input sample
+set cells from the input discretization. For order 0, both are piecewise
+constant. For order 1, values are piecewise linear (assuming Jacobians
+exist), and error estimates are piecewise constant.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_sample_set</strong> – input sample set for surrogate discretization</p></li>
+<li><p><strong>order</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Polynomial order</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>discretization defining the surrogate model</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet.util">
+<span id="bet-util-module"></span><h2>bet.util module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h2>
+<p>This module contains general tools for BET including saving and loading objects, and reshaping objects. The most
+important methods are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#bet.util.get_global_values" title="bet.util.get_global_values"><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_global_values</span></code></a> concatenates local arrays into global arrays.</p></li>
+<li><p><a class="reference internal" href="#bet.util.save_object" title="bet.util.save_object"><code class="xref py py-mod docutils literal notranslate"><span class="pre">save_object</span></code></a> saves all types of objects.</p></li>
+<li><p><a class="reference internal" href="#bet.util.load_object" title="bet.util.load_object"><code class="xref py py-mod docutils literal notranslate"><span class="pre">load_object</span></code></a> loads all types of saved objects.</p></li>
+<li><p><a class="reference internal" href="#bet.util.load_object_parallel" title="bet.util.load_object_parallel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">load_object_parallel</span></code></a> loads all types of saved parallel objects.</p></li>
+</ul>
+<dl class="py function">
+<dt id="bet.util.clean_data">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">clean_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.clean_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Clean data so that NaN-&gt;0, inf-&gt; maxfloat, -inf-&gt; -maxfloat</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>data</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – numerical object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>array of shape (data.shape)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.fix_dimensions_data">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">fix_dimensions_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">dim</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+shape (N, dim).</p>
+<p>If <code class="docutils literal notranslate"><span class="pre">dim</span></code> is non-specified:
+If <code class="docutils literal notranslate"><span class="pre">data</span></code> is a non-iterable number assumes that <code class="docutils literal notranslate"><span class="pre">dim==1</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">data</span></code> is a numpy array with len(shape) == 1 assumes that <code class="docutils literal notranslate"><span class="pre">dim==1</span></code>.
+If <code class="docutils literal notranslate"><span class="pre">data</span></code> is a numpy array with len(shape) == 2 assumes that
+<code class="docutils literal notranslate"><span class="pre">dim==shape[1]</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> – numerical object</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – The dimension of the “data” space.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>array of shape (N, dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.fix_dimensions_domain">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">fix_dimensions_domain</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">domain</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_domain" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+shape (dim, 2).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vector</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">collections.abc.Iterable</span></code>) – numerical object of at least length 2</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Retuns</dt>
+<dd class="field-odd"><p>array of shape (dim, 2)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.fix_dimensions_vector">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">fix_dimensions_vector</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+shape (N,).
+:param vector: numerical object
+:rtype: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+:returns: array of shape (N,)</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.fix_dimensions_vector_2darray">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">fix_dimensions_vector_2darray</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">vector</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.fix_dimensions_vector_2darray" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fix the dimensions of an input so that it is a <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of
+shape (N,1).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>vector</strong> – numerical object</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>array of shape (N,1)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.get_global_values">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">get_global_values</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">array</span></em>, <em class="sig-param"><span class="n">shape</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.get_global_values" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates local arrays into global array using <code class="xref py py-meth docutils literal notranslate"><span class="pre">np.vstack()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>array</strong> – Array.</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.load_object">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">load_object</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span></em>, <em class="sig-param"><span class="n">localize</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.load_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Filename of object.</p></li>
+<li><p><strong>localize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to localize parallel object.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The saved object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.load_object_parallel">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">load_object_parallel</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">file_name</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.load_object_parallel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Load saved paralell objects.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Filename of object.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The saved object</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.meshgrid_ndim">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">meshgrid_ndim</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">X</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.meshgrid_ndim" title="Permalink to this definition">¶</a></dt>
+<dd><p>Return coordinate matrix from two or more coordinate vectors.
+Handles a maximum of 10 vectors.</p>
+<p>Make N-D coordinate arrays for vectorized evaluations of
+N-D scalar/vector fields over N-D grids, given
+one-dimensional coordinate arrays (x1, x2,…, xn).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>X</strong> (<em>tuple</em>) – A tuple containing the 1d coordinate arrays</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.19)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (num_grid_points,n)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>X_new</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="bet.util.save_object">
+<code class="sig-prename descclassname">bet.util.</code><code class="sig-name descname">save_object</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">save_set</span></em>, <em class="sig-param"><span class="n">file_name</span></em>, <em class="sig-param"><span class="n">globalize</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.util.save_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save BET object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>save_set</strong> – Object to Save.</p></li>
+<li><p><strong>file_name</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Filename to save to.</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to globalize parallel objects.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-bet">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet" title="Permalink to this headline">¶</a></h2>
+<p>Butler, Estep, Tavener Method</p>
+<p>This package provides tools for solving stochastic inverse problems using a
+measure-theoretic. It is named for the developers of the key algorithm in
+<a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.calculateP.calculateP</span></code></a>.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="overview.html#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">Comm</span></code></a> provides a work around for users who do not which to install :program:<code class="docutils literal notranslate"><span class="pre">mpi4py</span></code>.</p></li>
+<li><p><a class="reference internal" href="overview.html#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">util</span></code></a> provides some general use methods for creating grids, checking/fixing dimensions, and globalizing arrays.</p></li>
+<li><p><a class="reference internal" href="overview.html#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateP</span></code></a> provides tools to approximate probabilities.</p></li>
+<li><p><a class="reference internal" href="overview.html#module-bet.sampling" title="bet.sampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sampling</span></code></a> provides various sampling algorithms.</p></li>
+<li><p><a class="reference internal" href="overview.html#module-bet.sensitivity" title="bet.sensitivity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sensitivity</span></code></a> provides tools for approximating derivatives and optimally choosing quantities of interest.</p></li>
+<li><p><a class="reference internal" href="overview.html#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal notranslate"><span class="pre">postProcess</span></code></a> provides plotting tools and tools to sort samples by probabilities.</p></li>
+<li><p><a class="reference internal" href="overview.html#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">sample</span></code></a> provides data structures to store sets of samples and their associated arrays.</p></li>
+<li><dl class="simple">
+<dt><a class="reference internal" href="#module-bet.surrogates" title="bet.surrogates"><code class="xref py py-mod docutils literal notranslate"><span class="pre">surrogates</span></code></a> provides methods for generating and using</dt><dd><p>surrogate models.</p>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jan 29, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
