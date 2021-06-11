@@ -1,0 +1,704 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bet.sampling package &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>bet.sampling package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/bet.sampling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="bet-sampling-package">
+<h1>bet.sampling package<a class="headerlink" href="#bet-sampling-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-bet.sampling.LpGeneralizedSamples">
+<span id="bet-sampling-lpgeneralizedsamples-module"></span><h2>bet.sampling.LpGeneralizedSamples module<a class="headerlink" href="#module-bet.sampling.LpGeneralizedSamples" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods to sample from Lp generalized normal, uniform, and
+beta distributions on the nD ball.</p>
+<p>Adapted from natter.LpSphericallySymmetric.py
+<a class="reference external" href="https://github.com/fabiansinz/natter">https://github.com/fabiansinz/natter</a></p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.LpGeneralizedSamples.Lp_generalized_beta">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.LpGeneralizedSamples.</span></span><span class="sig-name descname"><span class="pre">Lp_generalized_beta</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">d</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate samples from an Lp generalized beta distribution. When p=d then
+this is simly the Lp generalized uniform distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+<li><p><strong>d</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – shape parameter</p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Dimension of the space</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples to generate</p></li>
+<li><p><strong>scale</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Radius to scale the samples by</p></li>
+<li><p><strong>loc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – Location of the center of the samples</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.LpGeneralizedSamples.Lp_generalized_normal">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.LpGeneralizedSamples.</span></span><span class="sig-name descname"><span class="pre">Lp_generalized_normal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_normal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate samples from an Lp generalized normal distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Dimension of the space</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples to generate</p></li>
+<li><p><strong>scale</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Radius to scale the samples by</p></li>
+<li><p><strong>loc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – Location of the center of the samples</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.LpGeneralizedSamples.Lp_generalized_uniform">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.LpGeneralizedSamples.</span></span><span class="sig-name descname"><span class="pre">Lp_generalized_uniform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dim</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">scale</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">loc</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.LpGeneralizedSamples.Lp_generalized_uniform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generate samples from an Lp generalized uniform distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>p</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+<li><p><strong>dim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Dimension of the space</p></li>
+<li><p><strong>num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples to generate</p></li>
+<li><p><strong>scale</strong> (<code class="docutils literal notranslate"><span class="pre">float</span></code>, <code class="docutils literal notranslate"><span class="pre">int</span></code>, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Radius to scale the samples by</p></li>
+<li><p><strong>loc</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (dim,)) – Location of the center of the samples</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bet.sampling.basicSampling">
+<span id="bet-sampling-basicsampling-module"></span><h2>bet.sampling.basicSampling module<a class="headerlink" href="#module-bet.sampling.basicSampling" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for sampling. We assume we are given access to a
+model, a parameter space, and a data space. The model is a map from the
+parameter space to the data space. We desire to build up a set of samples to
+solve an inverse problem thus giving information about the inverse mapping.
+Each sample consists for a parameter coordinate, data coordinate pairing. We
+assume the measure on both spaces is Lebesgue.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.bad_object">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.sampling.basicSampling.</span></span><span class="sig-name descname"><span class="pre">bad_object</span></span><a class="headerlink" href="#bet.sampling.basicSampling.bad_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the wrong type of object is used.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.lhs_sample_set">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.basicSampling.</span></span><span class="sig-name descname"><span class="pre">lhs_sample_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.lhs_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling algorithm for generating samples from a Latin hypercube
+in the domain present with <code class="docutils literal notranslate"><span class="pre">input_obj</span></code> (a default unit hypercube
+is used if no domain has been specified)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
+the dimension or domain to sample from, the domain to sample from, or
+the dimension</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of samples</p></li>
+<li><p><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – latin hypercube criterion see
+<cite>PyDOE &lt;http://pythonhosted.org/pyDOE/randomized.html&gt;</cite></p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to globalize local variables.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.random_sample_set">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.basicSampling.</span></span><span class="sig-name descname"><span class="pre">random_sample_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.random_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a sample set by sampling random variates from continuous distributions
+from <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.stats.rv_continuous</span></code>. See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/stats.html">https://docs.scipy.org/doc/scipy/reference/stats.html</a>.</p>
+<p><cite>rv</cite> can take multiple types of formats depending on type of distribution.</p>
+<p>A string is used for the same distribution with default parameters in each dimension.
+ex. rv = ‘uniform’ or rv = ‘beta’</p>
+<p>A list or tuple of length 2 is used for the same distribution with user-defined parameters in each dimension as a
+dictionary.
+ex. rv = [‘uniform’, {‘loc’:-2, ‘scale’:5}] or rv = [‘beta’, {‘a’: 2, ‘b’:5, ‘loc’:-2, ‘scale’:5}]</p>
+<p>A list of length dim which entries of lists or tuples of length 2 is used for different distributions with
+user-defined parameters in each dimension as a
+dictionary.
+ex. rv = [[‘uniform’, {‘loc’:-2, ‘scale’:5}],</p>
+<blockquote>
+<div><p>[‘beta’, {‘a’: 2, ‘b’:5, ‘loc’:-2, ‘scale’:5}]]</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rv</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>list</em><em>, or </em><em>tuple</em>) – Type and parameters for continuous random variables.</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or int or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing the dimension to sample from, or the dimension.</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to globalize vectors.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.regular_sample_set">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.basicSampling.</span></span><span class="sig-name descname"><span class="pre">regular_sample_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples_per_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.regular_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling algorithm for generating a regular grid of samples taken
+on the domain present with <code class="docutils literal notranslate"><span class="pre">input_obj</span></code> (a default unit hypercube
+is used if no domain has been specified)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
+the dimension or domain to sample from, the domain to sample from, or
+the dimension</p></li>
+<li><p><strong>num_samples_per_dim</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of dimension
+<code class="docutils literal notranslate"><span class="pre">(input_sample_set._dim,)</span></code>) – number of samples per dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object which contains
+input <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sample_from_updated">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.basicSampling.</span></span><span class="sig-name descname"><span class="pre">sample_from_updated</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sample_from_updated" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a new sample set from resampling from the updated probability measure of another sample set.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Sample set or discretization containing updated probability measure from which to sample.</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of new samples to create.</p></li>
+<li><p><strong>globalize</strong> – Whether or not to globalize objects.</p></li>
+</ul>
+</dd>
+</dl>
+<p>:type bool
+:return: Sample set containing new samples
+:rtype: <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">bet.sampling.basicSampling.</span></span><span class="sig-name descname"><span class="pre">sampler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">lb_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">error_estimates</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jacobians</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class provides methods for sampling of parameter space to
+provide samples to be used by algorithms to solve inverse problems.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization">
+<span class="sig-name descname"><span class="pre">compute_QoI_and_create_discretization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_sample_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.compute_QoI_and_create_discretization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy function for <cite>compute_qoi_and_create_discretization</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.compute_qoi_and_create_discretization">
+<span class="sig-name descname"><span class="pre">compute_qoi_and_create_discretization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_sample_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.compute_qoi_and_create_discretization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Samples the model at <code class="docutils literal notranslate"><span class="pre">input_sample_set</span></code> and saves the results.</p>
+<p>Note: There are many ways to generate samples on a regular grid in
+Numpy and other Python packages. Instead of reimplementing them here we
+provide sampler that utilizes user specified samples.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> with
+num_samples) – samples to evaluate the model at</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save samples and data</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Makes local variables global.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> object which contains
+input and output of length <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.copy">
+<span class="sig-name descname"><span class="pre">copy</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.copy" title="Permalink to this definition">¶</a></dt>
+<dd><p>Returns a copy of the sampler object.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.create_random_discretization">
+<span class="sig-name descname"><span class="pre">create_random_discretization</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.create_random_discretization" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a sample set by sampling random variates from continuous distributions
+from <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.stats.rv_continuous</span></code>. See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/stats.html">https://docs.scipy.org/doc/scipy/reference/stats.html</a>,
+and evaluate the model to calculate quantities of interest and make a discretization.</p>
+<p><cite>rv</cite> can take multiple types of formats depending on type of distribution.</p>
+<p>A string is used for the same distribution with default parameters in each dimension.
+ex. rv = ‘uniform’ or rv = ‘beta’</p>
+<p>A list or tuple of length 2 is used for the same distribution with user-defined parameters in each dimension as a
+dictionary.
+ex. rv = [‘uniform’, {‘loc’:-2, ‘scale’:5}] or rv = [‘beta’, {‘a’: 2, ‘b’:5, ‘loc’:-2, ‘scale’:5}]</p>
+<p>A list of length dim which entries of lists or tuples of length 2 is used for different distributions with
+user-defined parameters in each dimension as a
+dictionary.
+ex. rv = [[‘uniform’, {‘loc’:-2, ‘scale’:5}],</p>
+<blockquote>
+<div><p>[‘beta’, {‘a’: 2, ‘b’:5, ‘loc’:-2, ‘scale’:5}]]</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rv</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>list</em><em>, or </em><em>tuple</em>) – Type and parameters for continuous random variables.</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or int) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing the dimension to sample from, or the dimension.</p></li>
+<li><p><strong>savefile</strong> (<em>string</em>) – filename to save discretization</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to globalize vectors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> object which contains
+input and output sample sets with <code class="docutils literal notranslate"><span class="pre">num_samples</span></code> total samples</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.lhs_sample_set">
+<span class="sig-name descname"><span class="pre">lhs_sample_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">criterion</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.lhs_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling algorithm for generating samples from a Latin hypercube
+in the domain present with <code class="docutils literal notranslate"><span class="pre">input_obj</span></code> (a default unit hypercube
+is used if no domain has been specified)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
+the dimension or domain to sample from, the domain to sample from, or
+the dimension</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of samples</p></li>
+<li><p><strong>criterion</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – latin hypercube criterion see
+<cite>PyDOE &lt;http://pythonhosted.org/pyDOE/randomized.html&gt;</cite></p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to globalize local variables.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.local_to_global">
+<span class="sig-name descname"><span class="pre">local_to_global</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.local_to_global" title="Permalink to this definition">¶</a></dt>
+<dd><p>Globalize local variables.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.random_sample_set">
+<span class="sig-name descname"><span class="pre">random_sample_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rv</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">globalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.random_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create a sample set by sampling random variates from continuous distributions
+from <code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.stats.rv_continuous</span></code>. See <a class="reference external" href="https://docs.scipy.org/doc/scipy/reference/stats.html">https://docs.scipy.org/doc/scipy/reference/stats.html</a>.</p>
+<p><cite>rv</cite> can take multiple types of formats depending on type of distribution.</p>
+<p>A string is used for the same distribution with default parameters in each dimension.
+ex. rv = ‘uniform’ or rv = ‘beta’</p>
+<p>A list or tuple of length 2 is used for the same distribution with user-defined parameters in each dimension as a
+dictionary.
+ex. rv = [‘uniform’, {‘loc’:-2, ‘scale’:5}] or rv = [‘beta’, {‘a’: 2, ‘b’:5, ‘loc’:-2, ‘scale’:5}]</p>
+<p>A list of length dim which entries of lists or tuples of length 2 is used for different distributions with
+user-defined parameters in each dimension as a
+dictionary.
+ex. rv = [[‘uniform’, {‘loc’:-2, ‘scale’:5}],</p>
+<blockquote>
+<div><p>[‘beta’, {‘a’: 2, ‘b’:5, ‘loc’:-2, ‘scale’:5}]]</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>rv</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em>, </em><em>list</em><em>, or </em><em>tuple</em>) – Type and parameters for continuous random variables.</p></li>
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or int) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing the dimension to sample from, or the dimension.</p></li>
+<li><p><strong>num_samples</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of samples</p></li>
+<li><p><strong>globalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to globalize vectors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.basicSampling.sampler.regular_sample_set">
+<span class="sig-name descname"><span class="pre">regular_sample_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_samples_per_dim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.basicSampling.sampler.regular_sample_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Sampling algorithm for generating a regular grid of samples taken
+on the domain present with <code class="docutils literal notranslate"><span class="pre">input_obj</span></code> (a default unit hypercube
+is used if no domain has been specified)</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>
+of shape (dim, 2) or <code class="docutils literal notranslate"><span class="pre">int</span></code>) – <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object containing
+the dimension or domain to sample from, the domain to sample from, or
+the dimension</p></li>
+<li><p><strong>num_samples_per_dim</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of dimension
+<code class="docutils literal notranslate"><span class="pre">(input_sample_set._dim,)</span></code>) – number of samples per dimension</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> object which contains
+input <code class="docutils literal notranslate"><span class="pre">num_samples</span></code></p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-bet.sampling.useLUQ">
+<span id="bet-sampling-useluq-module"></span><h2>bet.sampling.useLUQ module<a class="headerlink" href="#module-bet.sampling.useLUQ" title="Permalink to this headline">¶</a></h2>
+<p>The module contains a class for interfacing between BET and LUQ.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.missing_module">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.sampling.useLUQ.</span></span><span class="sig-name descname"><span class="pre">missing_module</span></span><a class="headerlink" href="#bet.sampling.useLUQ.missing_module" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when a module cannot be imported.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.myModel">
+<span class="sig-prename descclassname"><span class="pre">bet.sampling.useLUQ.</span></span><span class="sig-name descname"><span class="pre">myModel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inputs</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.myModel" title="Permalink to this definition">¶</a></dt>
+<dd><p>Example for interfacing a time series model with LUQ.
+:param inputs: Parameter values at which to evaluate the model.
+:type inputs: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_inputs, num_params)
+:param times: Times at which to output results.
+:type times: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_times, )
+:return: Time series data
+:rtype: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_inputs, num_times)</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">bet.sampling.useLUQ.</span></span><span class="sig-name descname"><span class="pre">useLUQ</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predict_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lb_model</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>Wrappers for interfacing BET with LUQ. Allows for the simple creation of <cite>bet.sample.discretization</cite> objects
+from LUQ output.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.clean_data">
+<span class="sig-name descname"><span class="pre">clean_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.clean_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <cite>luq.luq.LUQ.clean_data</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.dynamics">
+<span class="sig-name descname"><span class="pre">dynamics</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.dynamics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <cite>luq.luq.LUQ.dynamics</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.get_obs">
+<span class="sig-name descname"><span class="pre">get_obs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.get_obs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model for the predicted time series.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.get_predictions">
+<span class="sig-name descname"><span class="pre">get_predictions</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.get_predictions" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate the model for the predicted time series.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">predicted_time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs_time_series</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">times</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.initialize" title="Permalink to this definition">¶</a></dt>
+<dd><p>Initialize the LUQ object. This can be used manually if time series are pre-computed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>predicted_time_series</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_predict_samples, num_times)) – Time series solutions for predicted values.</p></li>
+<li><p><strong>obs_time_series</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_obs_samples, num_times)) – Time series solutions for predicted values.</p></li>
+<li><p><strong>times</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with shape (num_times, )) – Times at which the series are output.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.learn_qois_and_transform">
+<span class="sig-name descname"><span class="pre">learn_qois_and_transform</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.learn_qois_and_transform" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wrapper for <cite>luq.luq.LUQ.learn_qois_and_transform</cite></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.local_to_global">
+<span class="sig-name descname"><span class="pre">local_to_global</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.local_to_global" title="Permalink to this definition">¶</a></dt>
+<dd><p>Dummy function for saving.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.make_disc">
+<span class="sig-name descname"><span class="pre">make_disc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.make_disc" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct <cite>bet.sample.discretization</cite> objects for predict and obs sets.
+:return: predict_disc, obs_disc
+:rtype: <cite>bet.sample.discretization</cite>, <cite>bet.sample.discretization</cite> or None if no observation set.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.save">
+<span class="sig-name descname"><span class="pre">save</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">savefile</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.save" title="Permalink to this definition">¶</a></dt>
+<dd><p>Save the object to a Pickle file.
+:param savefile: Name of file to save to.
+:type savefile: str</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.set_observed_time_series">
+<span class="sig-name descname"><span class="pre">set_observed_time_series</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">obs_time_series</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.set_observed_time_series" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set observed time series data manually.
+:param obs_time_series: time series data
+:type obs_time_series:
+:return: <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> with shape (num_obs, num_times)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.sampling.useLUQ.useLUQ.setup">
+<span class="sig-name descname"><span class="pre">setup</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.sampling.useLUQ.useLUQ.setup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup LUQ object all at once.</p>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-bet.sampling">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.sampling" title="Permalink to this headline">¶</a></h2>
+<p>This subpackage contains</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">basicSampling</span></code></a> a general class and associated set of methods that sample spaces and solve models through an interface.</p></li>
+<li><p><a class="reference internal" href="#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">sampler</span></code></a> requests data (QoI) at a specified set of parameter samples.</p></li>
+<li><p><a class="reference internal" href="#module-bet.sampling.LpGeneralizedSamples" title="bet.sampling.LpGeneralizedSamples"><code class="xref py py-mod docutils literal notranslate"><span class="pre">LpGeneralizedSamples</span></code></a> provides methods for sampling on balls in Lp spaces.</p></li>
+<li><p><a class="reference internal" href="#module-bet.sampling.useLUQ" title="bet.sampling.useLUQ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">useLUQ</span></code></a> provides methods for interfacing with the LUQ package.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Example: Optimizing space-time measurements of temperature on a thin plate &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Example: Optimizing space-time measurements of temperature on a thin plate</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/examples/example_rst_files/chooseOptQoIs_2d.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="example-optimizing-space-time-measurements-of-temperature-on-a-thin-plate">
+<span id="chooseqois"></span><h1>Example: Optimizing space-time measurements of temperature on a thin plate<a class="headerlink" href="#example-optimizing-space-time-measurements-of-temperature-on-a-thin-plate" title="Permalink to this headline">¶</a></h1>
+<p>Consider a thin 2-dimensional (square) metal plate constructed by welding
+together two rectangular metal plates of similar alloy types together.
+The alloy types differ due to variations in the manufacturing of the
+rectangular plates, so the thermal diffusivity is different on the left
+and right sides of the resulting square plate.
+We want to quantify uncertainties in these thermal diffusivities using
+the heat equation to model experiments where the square plates are subject
+to an external, localized, source at the center of the plate.
+Assuming we have exactly two contact thermometers with which to record
+exactly two temperature measurements during the experiment, the question
+is the following: what are the optimal placements of these thermometers
+in space-time?</p>
+<p>See the manuscript <a class="reference external" href="http://arxiv.org/abs/1601.06702">Experimental Design : Optimizing Quantities of Interest to
+Reliably Reduce the Uncertainty in Model Input Parameters</a> for details involving
+this problem and the simulations used to generate the data in Section 5.1.
+Here, we take the simulated data from the model problem saved as <a href="#id1"><span class="problematic" id="id2">*</span></a>.mat files
+that contains parameter samples chosen in clusters around 16 random
+points in the input space, and the corresponding QoIs (data) from the points
+in space shown in Figure 6 of the manuscript at the 50 time steps of the
+simulation (resulting in 1000 total different possible QoIs to choose from
+in space-time).
+We use the clusters of samples to compute gradients of the QoI using either
+radial basis function, forward, or centered finite difference schemes.
+These gradients are used to compute the average skewness in the possible 2D maps.
+We then choose the optimal set of 2 QoIs to use in the inverse problem by
+minimizing average skewness.</p>
+<p>We do not solve the stochastic inverse problem in this example.
+We simply show the process of choosing the optimal QoI according to the criteria
+of minimizing the average skewness property (to see more about skewness, the
+interested reader should refer to
+<a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution of a stochastic inverse problem for the Manning’s n parameter field in
+hydrodynamic models</a>
+where the concept was initially introduced).</p>
+<p>This example takes in samples, specifically chosen in clusters around 16 random points in Lambda, and corresponding QoIs (data) from a simulation modeling the variations in temperature of a thin plate forced by a localized source. It then calculates the gradients using a Radial Basis Function (or Forward Finite Difference or Centered Finite Difference) scheme and uses the gradient information to choose the optimal set of 2 QoIs to use in the inverse problem.  This optimality is with respect to the skewness of the gradient vectors.</p>
+<section id="step-0-setting-up-the-environment">
+<h2>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h2>
+<p>Import the necessary modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">scipy.io</span> <span class="k">as</span> <span class="nn">sio</span>
+<span class="kn">import</span> <span class="nn">bet.sensitivity.gradients</span> <span class="k">as</span> <span class="nn">grad</span>
+<span class="kn">import</span> <span class="nn">bet.sensitivity.chooseQoIs</span> <span class="k">as</span> <span class="nn">cqoi</span>
+<span class="kn">import</span> <span class="nn">bet.Comm</span> <span class="k">as</span> <span class="nn">comm</span>
+<span class="kn">import</span> <span class="nn">bet.sample</span> <span class="k">as</span> <span class="nn">sample</span>
+</pre></div>
+</div>
+</section>
+<section id="step-0-understanding-your-data-and-computing-derivatives">
+<h2>Step (0*): Understanding your data and computing derivatives<a class="headerlink" href="#step-0-understanding-your-data-and-computing-derivatives" title="Permalink to this headline">¶</a></h2>
+<p>Computing the skewness (or other criteria such as scaling of measures of
+inverse sets described in <a class="reference external" href="http://arxiv.org/abs/1601.06702">Experimental Design : Optimizing Quantities of Interest to
+Reliably Reduce the Uncertainty in Model Input Parameters</a>) requires a sensitivity analysis.
+If the code used to generate possible QoI data does not also produce derivatives
+with respect to model parameters (e.g., by using adjoints), then we can use
+several different types of finite differencing.
+Assuming the user wants to work strictly with random sampling (to possibly
+re-use samples in the parameter space for solving the resulting stochastic
+inverse problem), then we can compute derivatives using a radial basis function
+finite difference scheme.
+Otherwise, we can use typical finite differencing schemes (forward or centered)
+on regular grids of parameter samples.
+Understanding the code, derivative capabilities, and/or the types of sampling
+in the parameter space is crucial to setting up how the gradients of QoI are
+computed/loaded into this code.
+We provide data files for different types of sampling in the parameter space
+in <code class="docutils literal notranslate"><span class="pre">BET/examples/</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Select the type of finite difference scheme as either RBF, FFD, or CFD</span>
+<span class="n">fd_scheme</span> <span class="o">=</span> <span class="s1">&#39;RBF&#39;</span>
+
+<span class="c1"># Import the data from the FEniCS simulation (RBF or FFD or CFD clusters)</span>
+<span class="k">if</span> <span class="n">fd_scheme</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;RBF&#39;</span><span class="p">,</span> <span class="s1">&#39;FFD&#39;</span><span class="p">,</span> <span class="s1">&#39;CFD&#39;</span><span class="p">]:</span>
+    <span class="n">file_name</span> <span class="o">=</span> <span class="s1">&#39;heatplate_2d_16clusters&#39;</span> <span class="o">+</span> <span class="n">fd_scheme</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="o">+</span> <span class="s1">&#39;_1000qoi.mat&#39;</span>
+    <span class="n">matfile</span> <span class="o">=</span> <span class="n">sio</span><span class="o">.</span><span class="n">loadmat</span><span class="p">(</span><span class="n">file_name</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;no data files for selected finite difference scheme&#39;</span><span class="p">)</span>
+    <span class="n">exit</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-define-the-space-of-possible-qoi-maps">
+<h2>Step (1): Define the space of possible QoI maps<a class="headerlink" href="#step-1-define-the-space-of-possible-qoi-maps" title="Permalink to this headline">¶</a></h2>
+<p>In Figure 6 of the manuscript at
+<a class="reference external" href="http://arxiv.org/abs/1601.06702">Experimental Design : Optimizing Quantities of Interest to
+Reliably Reduce the Uncertainty in Model Input Parameters</a>, we see
+that there are 20 spatial points considered and 50 time steps for a total
+of 1000 different QoI.
+Since we assume we can only choose 2 of the possible QoI to define a particular
+QoI map, then we can define a space <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> of possible QoI maps
+by this set of 1000 choose 2 possible combinations of measurements.</p>
+<p>However, we can define a <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> of smaller cardinality by restricting
+the possible maps subject to certain considerations.
+The QoI are indexed so that the QoI corresponding to indices</p>
+<blockquote>
+<div><p>(i-1)*20 to i*20</p>
+</div></blockquote>
+<p>for i between 1 and 50 corresponds to the 20 labeled QoI from Figure 6
+at time step i.</p>
+<p>Using this information, we can check QoI either across the entire range
+of all space-time locations (<code class="docutils literal notranslate"><span class="pre">indexstart</span> <span class="pre">=</span> <span class="pre">0</span></code>, <code class="docutils literal notranslate"><span class="pre">indexstop</span> <span class="pre">=</span> <span class="pre">1000</span></code>), or,
+we can check the QoI at a particular time (e.g., setting <code class="docutils literal notranslate"><span class="pre">indexstart=0</span></code> and
+<code class="docutils literal notranslate"><span class="pre">indexstop</span> <span class="pre">=</span> <span class="pre">20</span></code> considers all the spatial QoI only at the first time step).</p>
+<p>In general, <code class="docutils literal notranslate"><span class="pre">indexstart</span></code> can be any integer between 0 and 998  and
+<code class="docutils literal notranslate"><span class="pre">indexstop</span></code> must be at least 2 greater than <code class="docutils literal notranslate"><span class="pre">indexstart</span></code> (so between
+2 and 1000 subject to the additional constraint that <code class="docutils literal notranslate"><span class="pre">indexstop</span></code>
+<span class="math notranslate nohighlight">\(\geq\)</span> <code class="docutils literal notranslate"><span class="pre">indexstart</span> <span class="pre">+</span> <span class="pre">2</span></code> to ensure that we check at least a single pair
+of QoI.):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">indexstart</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">indexstop</span> <span class="o">=</span> <span class="mi">20</span>
+<span class="n">qoiIndices</span> <span class="o">=</span> <span class="nb">range</span><span class="p">(</span><span class="n">indexstart</span><span class="p">,</span> <span class="n">indexstop</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-create-the-discretization-object-from-the-input-and-output-samples">
+<h2>Step (2): Create the discretization object from the input and output samples<a class="headerlink" href="#step-2-create-the-discretization-object-from-the-input-and-output-samples" title="Permalink to this headline">¶</a></h2>
+<p>Load the sampled parameter and QoI values:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Initialize the necessary sample objects</span>
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">output_samples</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
+
+<span class="c1"># Set the input sample values from the imported file</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">matfile</span><span class="p">[</span><span class="s1">&#39;samples&#39;</span><span class="p">])</span>
+
+<span class="c1"># Set the data fromthe imported file</span>
+<span class="n">output_samples</span><span class="o">.</span><span class="n">set_values</span><span class="p">(</span><span class="n">matfile</span><span class="p">[</span><span class="s1">&#39;data&#39;</span><span class="p">])</span>
+
+<span class="c1"># Create the cluster discretization</span>
+<span class="n">cluster_discretization</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">output_samples</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q">
+<h2>Step (3): Compute the gradients of all the maps in <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span><a class="headerlink" href="#step-3-compute-the-gradients-of-all-the-maps-in-mathcal-q" title="Permalink to this headline">¶</a></h2>
+<p>Using whichever finite difference scheme we have chosen for our sample set based
+on Step (0*) above, we now compute the gradients of each component of the QoI maps
+defining <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="c1"># Calculate the gradient vectors at each of the 16 centers for each of the</span>
+<span class="c1"># QoI maps</span>
+<span class="k">if</span> <span class="n">fd_scheme</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;RBF&#39;</span><span class="p">]:</span>
+    <span class="n">center_discretization</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_rbf</span><span class="p">(</span><span class="n">cluster_discretization</span><span class="p">,</span>
+        <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="k">elif</span> <span class="n">fd_scheme</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;FFD&#39;</span><span class="p">]:</span>
+    <span class="n">center_discretization</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_ffd</span><span class="p">(</span><span class="n">cluster_discretization</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">center_discretization</span> <span class="o">=</span> <span class="n">grad</span><span class="o">.</span><span class="n">calculate_gradients_cfd</span><span class="p">(</span><span class="n">cluster_discretization</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-4-compute-skewness-properties-of-the-maps-and-display-information">
+<h2>Step (4): Compute skewness properties of the maps and display information<a class="headerlink" href="#step-4-compute-skewness-properties-of-the-maps-and-display-information" title="Permalink to this headline">¶</a></h2>
+<p>We now examine the geometric property of average skewness on the possible QoI maps.
+The skewness defines an ordering on <span class="math notranslate nohighlight">\(\mathcal{Q}\)</span> that is useful in selecting
+the optimal QoI map. We can also compute skewness properties for any particular QoI map
+we want individually. The first step is extracting the subset of samples for which we
+actually computed derivatives, which are the centers of the clusters determined above:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_samples_centers</span> <span class="o">=</span> <span class="n">center_discretization</span><span class="o">.</span><span class="n">get_input_sample_set</span><span class="p">()</span>
+
+<span class="c1"># Choose a specific set of QoIs to check the average skewness of</span>
+<span class="n">index1</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">index2</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="p">(</span><span class="n">specific_skewness</span><span class="p">,</span> <span class="n">_</span><span class="p">)</span> <span class="o">=</span> <span class="n">cqoi</span><span class="o">.</span><span class="n">calculate_avg_skewness</span><span class="p">(</span><span class="n">input_samples_centers</span><span class="p">,</span>
+        <span class="n">qoi_set</span><span class="o">=</span><span class="p">[</span><span class="n">index1</span><span class="p">,</span> <span class="n">index2</span><span class="p">])</span>
+<span class="k">if</span> <span class="n">comm</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s1">&#39;The average skewness of the QoI map defined by indices &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index1</span><span class="p">)</span> <span class="o">+</span> \
+        <span class="s1">&#39; and &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">index2</span><span class="p">)</span> <span class="o">+</span> <span class="s1">&#39; is &#39;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">specific_skewness</span><span class="p">)</span>
+
+<span class="c1"># Compute the skewness for each of the possible QoI maps determined by choosing</span>
+<span class="c1"># any two QoI from the set defined by the indices selected by the</span>
+<span class="c1"># ``indexstart`` and ``indexend`` values</span>
+<span class="n">skewness_indices_mat</span> <span class="o">=</span> <span class="n">cqoi</span><span class="o">.</span><span class="n">chooseOptQoIs</span><span class="p">(</span><span class="n">input_samples_centers</span><span class="p">,</span> <span class="n">qoiIndices</span><span class="p">,</span>
+    <span class="n">num_optsets_return</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">measure</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">qoi1</span> <span class="o">=</span> <span class="n">skewness_indices_mat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+<span class="n">qoi2</span> <span class="o">=</span> <span class="n">skewness_indices_mat</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">comm</span><span class="o">.</span><span class="n">rank</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+    <span class="nb">print</span> <span class="s1">&#39;The 10 smallest condition numbers are in the first column, the </span><span class="se">\</span>
+<span class="s1">corresponding sets of QoIs are in the following columns.&#39;</span>
+    <span class="nb">print</span> <span class="n">skewness_indices_mat</span><span class="p">[:</span><span class="mi">10</span><span class="p">,</span> <span class="p">:]</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

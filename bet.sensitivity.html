@@ -1,0 +1,835 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bet.sensitivity package &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>bet.sensitivity package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/bet.sensitivity.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="bet-sensitivity-package">
+<h1>bet.sensitivity package<a class="headerlink" href="#bet-sensitivity-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-bet.sensitivity.chooseQoIs">
+<span id="bet-sensitivity-chooseqois-module"></span><h2>bet.sensitivity.chooseQoIs module<a class="headerlink" href="#module-bet.sensitivity.chooseQoIs" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for choosing optimal sets of QoIs to use in the
+stochastic inverse problem.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.calculate_avg_condnum">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">calculate_avg_condnum</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoi_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.calculate_avg_condnum" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the input space and
+given a specific set of QoIs, caculate the average condition number of the
+matrices formed by the gradient vectors of each QoI map at each center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None</p></li>
+<li><p><strong>qoi_set</strong> (<em>list</em>) – List of QoI indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(condnum, singvals) where condnum is a float and singvals
+has shape (num_centers, output_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.calculate_avg_measure">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">calculate_avg_measure</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoi_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bin_measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.calculate_avg_measure" title="Permalink to this definition">¶</a></dt>
+<dd><p>If you are using <code class="docutils literal notranslate"><span class="pre">bin_ratio</span></code> to define the hyperrectangle in the output
+space you must give this method gradient vectors normalized with
+respect to the 1-norm.  If you are using <code class="docutils literal notranslate"><span class="pre">bin_size</span></code> to define the
+hyperrectangle in the output space you must give this method the original
+gradient vectors. If you also give a <code class="docutils literal notranslate"><span class="pre">bin_measure</span></code>, this method will
+approximate the measure of the region of non-zero probability in the inverse
+solution.
+Given gradient vectors at some points (centers) in the input space and
+given a specific set of QoIs, calculate the expected measure of the
+inverse image of a box in the data space using local linear approximations
+of the map Q.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None</p></li>
+<li><p><strong>qoi_set</strong> (<em>list</em>) – List of QoI indices</p></li>
+<li><p><strong>bin_measure</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – The measure of the output_dim hyperrectangle to
+invert into the input space</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(avg_measure, singvals) where avg_measure is a float and singvals
+has shape (num_centers, output_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.calculate_avg_skewness">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">calculate_avg_skewness</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoi_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.calculate_avg_skewness" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the input space and
+given a specific set of QoIs, caculate the average skewness of the arrays
+formed by the gradient vectors of each QoI map at each center.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None</p></li>
+<li><p><strong>qoi_set</strong> (<em>list</em>) – List of QoI indices</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(hmean_skewG, skewgi) where hmean_skewG is the harmonic mean of
+skewness at each center in the input space (float) and skewgi
+has shape (num_centers, output_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.chooseOptQoIs">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">chooseOptQoIs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoiIndices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_qois_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_optsets_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_prod_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+set of QoIs to choose from, and the number of desired QoIs to return, this
+method returns the <code class="docutils literal notranslate"><span class="pre">num_optsets_return</span></code> best sets of QoIs with with
+repsect to either the average measure of the matrix formed by the
+gradient vectors of each QoI map, OR the average skewness of the inverse
+image of this set of QoIs, computed as the product of the singular values
+of the same matrix.  This method is brute force, i.e., if the method is
+given 10,000 QoIs and told to return the N best sets of 3, it will check all
+10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
+computationally expensive approach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None</p></li>
+<li><p><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) – Set of QoIs to consider.  Default is
+xrange(0, input_set._jacobians.shape[1])</p></li>
+<li><p><strong>num_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of desired QoIs to use in the
+inverse problem.  Default is input_dim</p></li>
+<li><p><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of best sets to return
+Default is 10</p></li>
+<li><p><strong>measure</strong> (<em>boolean</em>) – If measure is True, use <code class="docutils literal notranslate"><span class="pre">calculate_avg_measure</span></code>
+to determine optimal QoIs, else use <code class="docutils literal notranslate"><span class="pre">calculate_avg_skewness</span></code></p></li>
+<li><p><strong>remove_zeros</strong> (<em>boolean</em>) – If True, <code class="docutils literal notranslate"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><cite>np.ndarray</cite> of shape (num_optsets_returned, num_qois_returned + 1)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>measure_skewness_indices_mat</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.chooseOptQoIs_large">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">chooseOptQoIs_large</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoiIndices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_qois_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_optsets_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_prod_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measskew_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_large" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the input space, a large
+set of QoIs to choose from, and the number of desired QoIs to return, this
+method returns the set of optimal QoIs of size 2, 3, …  max_qois_return
+to use in the inverse problem by choosing the sets with the smallest
+average measure(skewness).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None.</p></li>
+<li><p><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) – Set of QoIs to consider from input_set._jacobians.
+Default is xrange(0, input_set._jacobians.shape[1])</p></li>
+<li><p><strong>max_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum number of desired QoIs to use in the
+inverse problem.  Default is input_dim</p></li>
+<li><p><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of best sets to return
+Default is 10</p></li>
+<li><p><strong>inner_prod_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Maximum acceptable average inner product
+between two QoI maps.</p></li>
+<li><p><strong>measskew_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Throw out all sets of QoIs with average
+measure(skewness) number greater than this.</p></li>
+<li><p><strong>measure</strong> (<em>boolean</em>) – If measure is True, use <code class="docutils literal notranslate"><span class="pre">calculate_avg_measure</span></code>
+to determine optimal QoIs, else use <code class="docutils literal notranslate"><span class="pre">calculate_avg_skewness</span></code></p></li>
+<li><p><strong>remove_zeros</strong> (<em>boolean</em>) – If True, <code class="docutils literal notranslate"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math notranslate nohighlight">\(\Lambda\)</span>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(measure_skewness_indices_mat, optsingvals) where
+measure_skewness_indices_mat has shape (num_optsets_return,
+num_qois_return+1) and optsingvals has shape (num_centers,
+num_qois_return, num_optsets_return)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">chooseOptQoIs_large_verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoiIndices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max_qois_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_optsets_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_prod_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measskew_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_large_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+large set of QoIs to choose from, and the number of desired QoIs to return,
+this method return the set of optimal QoIs of size 1, 2, … max_qois_return
+to use in the inverse problem by choosing the set with smallext average
+skewness.  Also a tensor that represents the singular values of the
+matrices formed by the gradient vectors of the optimal QoIs at each center
+is returned.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None.</p></li>
+<li><p><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) – Set of QoIs to consider from G.  Default is
+xrange(0, G.shape[1]).</p></li>
+<li><p><strong>max_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Maximum number of desired QoIs to use in the
+inverse problem.  Default is input_dim.</p></li>
+<li><p><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of best sets to return.  Default is
+10.</p></li>
+<li><p><strong>inner_prod_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Throw out one vectors from each pair of
+QoIs that has average inner product greater than this.  Default is 0.9.</p></li>
+<li><p><strong>measskew_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Throw out all sets of QoIs with average
+measure(skewness) number greater than this.  Default is max_float.</p></li>
+<li><p><strong>measure</strong> (<em>boolean</em>) – If measure is True, use <code class="docutils literal notranslate"><span class="pre">calculate_avg_measure</span></code>
+to determine optimal QoIs, else use <code class="docutils literal notranslate"><span class="pre">calculate_avg_skewness</span></code></p></li>
+<li><p><strong>remove_zeros</strong> (<em>boolean</em>) – If True, <code class="docutils literal notranslate"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math notranslate nohighlight">\(\Lambda\)</span>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(measure_skewness_indices_mat, optsingvals) where
+measure_skewness_indices_mat has shape (num_optsets_return,
+num_qois_return+1) and optsingvals is a list where each element has
+shape (num_centers, num_qois_return, num_optsets_return).
+num_qois_return will change for each element of the list.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">chooseOptQoIs_verbose</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoiIndices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_qois_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_optsets_return</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_prod_tol</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.chooseOptQoIs_verbose" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at some points (centers) in the parameter space, a
+set of QoIs to choose from, and the number of desired QoIs to return, this
+method returns the <code class="docutils literal notranslate"><span class="pre">num_optsets_return</span></code> best sets of QoIs with with
+repsect to either the average measure of the matrix formed by the
+gradient vectors of each QoI map, OR the average skewness of the inverse
+image of this set of QoIs, computed as the product of the singular values
+of the same matrix.  This method is brute force, i.e., if the method is
+given 10,000 QoIs and told to return the N best sets of 3, it will check all
+10,000 choose 3 possible sets.  See chooseOptQoIs_large for a less
+computationally expensive approach.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None</p></li>
+<li><p><strong>qoiIndices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of size (1, num QoIs to consider)) – Set of QoIs to consider.  Default is
+xrange(0, input_set._jacobians.shape[1])</p></li>
+<li><p><strong>num_qois_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of desired QoIs to use in the
+inverse problem.  Default is input_dim</p></li>
+<li><p><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of best sets to return
+Default is 10</p></li>
+<li><p><strong>measure</strong> (<em>boolean</em>) – If measure is True, use <code class="docutils literal notranslate"><span class="pre">calculate_avg_measure</span></code>
+to determine optimal QoIs, else use <code class="docutils literal notranslate"><span class="pre">calculate_avg_skewness</span></code></p></li>
+<li><p><strong>remove_zeros</strong> (<em>boolean</em>) – If True, <code class="docutils literal notranslate"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><cite>np.ndarray</cite> of shape (num_optsets_returned, num_qois_returned + 1)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>measure_skewness_indices_mat</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.find_good_sets">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">find_good_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">good_sets_prev</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">unique_indices</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_optsets_return</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measskew_tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">measure</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.find_good_sets" title="Permalink to this definition">¶</a></dt>
+<dd><div class="admonition-todo admonition" id="id1">
+<p class="admonition-title">Todo</p>
+<p>Use the idea we only know vectors are with 10% accuracy to guide
+inner_prod tol and skewness_tol.</p>
+</div>
+<p>Given gradient vectors at each center in the parameter space and given
+good sets of size (n - 1), return good sets of size n.  That is, return
+sets of size n that have average measure(skewness) less than some tolerance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None.</p></li>
+<li><p><strong>good_sets_prev</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of size (num_good_sets_prev, n -
+1)) – Good sets of QoIs of size n - 1.</p></li>
+<li><p><strong>unique_indices</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">np.ndarray</span></code> of size (num_unique_qois, 1)) – Unique QoIs to consider.</p></li>
+<li><p><strong>num_optsets_return</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of best sets to return</p></li>
+<li><p><strong>measskew_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Throw out all sets of QoIs with average
+measure(skewness) number greater than this.</p></li>
+<li><p><strong>measure</strong> (<em>boolean</em>) – If measure is True, use <code class="docutils literal notranslate"><span class="pre">calculate_avg_measure</span></code>
+to determine optimal QoIs, else use <code class="docutils literal notranslate"><span class="pre">calculate_avg_skewness</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(good_sets, best_sets, optsingvals_tensor) where good sets has
+size (num_good_sets, n), best sets has size (num_optsets_return,
+n + 1) and optsingvals_tensor has size (num_centers, n, input_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.chooseQoIs.find_unique_vecs">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.chooseQoIs.</span></span><span class="sig-name descname"><span class="pre">find_unique_vecs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner_prod_tol</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qoiIndices</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_zeros</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.chooseQoIs.find_unique_vecs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Given gradient vectors at each center in the parameter space, sort throught
+them and remove any QoI that has a zero vector at any center, then remove
+one from any pair of QoIs that have an average inner product greater than
+some tolerance, i.e., an average angle between the two vectors smaller than
+some tolerance.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _jacobians
+is not None</p></li>
+<li><p><strong>inner_prod_tol</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Maximum acceptable average inner product
+between two QoI maps</p></li>
+<li><p><strong>qoiIndices</strong> (:class:’<cite>np.ndarray</cite> of size (1, num QoIs to consider)) – Set of QoIs to consider</p></li>
+<li><p><strong>remove_zeros</strong> (<em>boolean</em>) – If True, <code class="docutils literal notranslate"><span class="pre">find_unique_vecs</span></code> will remove any
+QoIs that have a zero gradient vector at atleast one point in
+<span class="math notranslate nohighlight">\(\Lambda\)</span></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><cite>np.ndarray</cite> of shape (num_unique_vecs, 1)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>unique_vecs</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bet.sensitivity.gradients">
+<span id="bet-sensitivity-gradients-module"></span><h2>bet.sensitivity.gradients module<a class="headerlink" href="#module-bet.sensitivity.gradients" title="Permalink to this headline">¶</a></h2>
+<p>This module contains functions for approximating jacobians of QoI maps.
+All methods that cluster points around centers are written to return the
+input_set._values in the following order : CENTERS, FOLLOWED BY THE CLUSTER
+AROUND THE FIRST CENTER, THEN THE CLUSTER AROUND THE SECOND CENTER AND SO ON.</p>
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.calculate_gradients_cfd">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">calculate_gradients_cfd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_discretization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_cfd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate gradient vectors at <code class="docutils literal notranslate"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
+in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT
+ON USING :meth:~bet.sensitivity.pick_cfd_points TO CHOOSE SAMPLES FOR THE
+CFD STENCIL AROUND EACH CENTER.  THE ORDERING MATTERS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster_discretization</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Must contain input and output values for the
+sample clusters.</p></li>
+<li><p><strong>normalize</strong> (<em>boolean</em>) – If normalize is True, normalize each gradient
+vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A new <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> that contains only the
+centers of the clusters and their associated <code class="docutils literal notranslate"><span class="pre">_jacobians</span></code> which are
+tensor representation of the gradient vectors of each QoI map at each
+point in centers <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,
+output_dim, input_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.calculate_gradients_ffd">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">calculate_gradients_ffd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_discretization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_ffd" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate gradient vectors at <code class="docutils literal notranslate"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
+in the parameter space for each QoI map.  THIS METHOD IS DEPENDENT ON USING
+:meth:~bet.sensitivity.gradients.pick_ffd_points TO CHOOSE SAMPLES FOR THE
+FFD STENCIL AROUND EACH CENTER. THE ORDERING MATTERS.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster_discretization</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Must contain input and output values for the
+sample clusters.</p></li>
+<li><p><strong>normalize</strong> (<em>boolean</em>) – If normalize is True, normalize each gradient
+vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A new <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> that contains only the
+centers of the clusters and their associated <code class="docutils literal notranslate"><span class="pre">_jacobians</span></code> which are
+tensor representation of the gradient vectors of each QoI map at each
+point in centers <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,
+output_dim, input_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.calculate_gradients_rbf">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">calculate_gradients_rbf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cluster_discretization</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_centers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_neighbors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">RBF</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.calculate_gradients_rbf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Approximate gradient vectors at <code class="docutils literal notranslate"><span class="pre">num_centers,</span> <span class="pre">centers.shape[0]</span></code> points
+in the parameter space for each QoI map using a radial basis function
+interpolation method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>cluster_discretization</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Must contain input and output values for the
+sample clusters.</p></li>
+<li><p><strong>num_centers</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – The number of cluster centers.</p></li>
+<li><p><strong>num_neighbors</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of nearest neighbors to use in gradient
+approximation. Default value is <code class="docutils literal notranslate"><span class="pre">input_dim</span> <span class="pre">+</span> <span class="pre">2</span></code></p></li>
+<li><p><strong>RBF</strong> (<em>string</em>) – Choice of radial basis function. Default is Gaussian</p></li>
+<li><p><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Choice of shape parameter for radial basis function.
+Default value is 1.0</p></li>
+<li><p><strong>normalize</strong> (<em>boolean</em>) – If normalize is True, normalize each gradient
+vector</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A new <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> that contains only the
+centers of the clusters and their associated <code class="docutils literal notranslate"><span class="pre">_jacobians</span></code> which are
+tensor representation of the gradient vectors of each QoI map at each
+point in centers <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,
+output_dim, input_dim)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.pick_cfd_points">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">pick_cfd_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radii_vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.pick_cfd_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick 2*input_dim points, for each center, for centered finite difference
+gradient approximation.  The center are not needed for the CFD gradient
+approximation, they are returned for consistency with the other methods and
+because of the common need to have not just the gradient but also the QoI
+value at the centers in adaptive sampling algorithms.The points are returned
+in the order: centers, followed by the cluster around the first center, then
+the cluster around the second center and so on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _values is
+not None</p></li>
+<li><p><strong>radii_vec</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (input_dim,)) – The radius of the stencil, along each axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Centers and clusters of samples near each center (values are
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape ((<code class="docutils literal notranslate"><span class="pre">num_close+1</span></code>)*``num_centers``,
+<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.pick_ffd_points">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">pick_ffd_points</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radii_vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.pick_ffd_points" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick input_dim points, for each centers, for a forward finite
+difference gradient approximation.  The points are returned in the order:
+centers, followed by the cluster around the first center, then the cluster
+around the second center and so on.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute _values is
+not None</p></li>
+<li><p><strong>radii_vec</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (input_dim,)) – The radius of the stencil, along each axis</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Centers and clusters of samples near each center (values are
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape ((<code class="docutils literal notranslate"><span class="pre">num_close+1</span></code>)*``num_centers``,
+<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.radial_basis_function">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">radial_basis_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.radial_basis_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a chosen radial basis function.  Allow for the choice of several
+radial basis functions to use in
+:meth:~bet.sensitivity.gradients.calculate_gradients_rbf</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Distances from the reference point</p></li>
+<li><p><strong>kernel</strong> (<em>string</em>) – Choice of radial basis funtion. Default is C4Matern</p></li>
+<li><p><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Shape parameter for the radial basis function.
+Default is 1.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (r.shape)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Radial basis function evaluated for each element of r</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.radial_basis_function_dxi">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">radial_basis_function_dxi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">r</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xi</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">kernel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ep</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.radial_basis_function_dxi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate a partial derivative of a chosen radial basis function.  Allow for
+the choice of several radial basis functions to use in the
+:meth:~bet.sensitivity.gradients.calculate_gradients_rbf.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>r</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Distances from the reference point</p></li>
+<li><p><strong>xi</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – Distances from the reference point in dimension i</p></li>
+<li><p><strong>kernel</strong> (<em>string</em>) – Choice of radial basis funtion. Default is C4Matern</p></li>
+<li><p><strong>ep</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Shape parameter for the radial basis function.
+Default is 1.0</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (r.shape)</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Radial basis function evaluated for each element of r</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.sample_l1_ball">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">sample_l1_ball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_close</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radii_vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_l1_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick num_close points in a the L-1 ball of length 2*``radii_vec`` around a
+point in the input space, do this for each point in centers.  If this box
+extends outside of the domain of the input space, we sample the
+intersection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute
+<code class="docutils literal notranslate"><span class="pre">_values</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>num_close</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of points in each cluster</p></li>
+<li><p><strong>radii_vec</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>,)) – Each side of the box will have length <code class="docutils literal notranslate"><span class="pre">2*radii_vec[i]</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Centers and clusters of samples near each center (values are
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape ((<code class="docutils literal notranslate"><span class="pre">num_close+1</span></code>)*``num_centers``,
+<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.sample_linf_ball">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">sample_linf_ball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_close</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radii_vec</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_linf_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick num_close points in a the L-inifity ball of length 2*``radii_vec``
+around a point in the input space, do this for each point in centers.  If
+this box extends outside of the domain of the input space, we sample the
+intersection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute
+<code class="docutils literal notranslate"><span class="pre">_values</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>num_close</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of points in each cluster</p></li>
+<li><p><strong>radii_vec</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>,)) – Each side of the box will have length <code class="docutils literal notranslate"><span class="pre">2*radii_vec[i]</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Centers and clusters of samples near each center (values are
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape ((<code class="docutils literal notranslate"><span class="pre">num_close+1</span></code>)*``num_centers``,
+<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>))</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.sensitivity.gradients.sample_lp_ball">
+<span class="sig-prename descclassname"><span class="pre">bet.sensitivity.gradients.</span></span><span class="sig-name descname"><span class="pre">sample_lp_ball</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_close</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">p_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">2</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.sensitivity.gradients.sample_lp_ball" title="Permalink to this definition">¶</a></dt>
+<dd><p>Pick num_close points in a the Lp ball of length 2*``radii_vec`` around a
+point in the input space, do this for each point in centers.  If this box
+extends outside of the domain of the input space, we sample the
+intersection.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>) – The input sample set.  Make sure the attribute
+<code class="docutils literal notranslate"><span class="pre">_values</span></code> is not <code class="docutils literal notranslate"><span class="pre">None</span></code></p></li>
+<li><p><strong>num_close</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of points in each cluster</p></li>
+<li><p><strong>radii_vec</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>,)) – Each side of the box will have length <code class="docutils literal notranslate"><span class="pre">2*radii_vec[i]</span></code></p></li>
+<li><p><strong>p_num</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – <span class="math notranslate nohighlight">\(0 &lt; p \leq \infty\)</span>, p for the lp norm where
+infinity is <code class="docutils literal notranslate"><span class="pre">numpy.inf</span></code></p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>Centers and clusters of samples near each center (values are
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape ((<code class="docutils literal notranslate"><span class="pre">num_close+1</span></code>)*``num_centers``,
+<code class="docutils literal notranslate"><span class="pre">input_dim</span></code>))</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bet.sensitivity">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.sensitivity" title="Permalink to this headline">¶</a></h2>
+<p>This subpackage provides methods for approximating gradients of
+QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gradients</span></code></a> provides methods for approximating gradients of QoI maps.</p></li>
+<li><p><a class="reference internal" href="#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chooseQoIs</span></code></a> provides methods for choosing optimal QoIs to use in the inverse problem.</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

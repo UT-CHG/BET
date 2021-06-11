@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Overview &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Parallel" href="parallel.html" />
+    <link rel="prev" title="Welcome to BET’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Overview</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#mathematical-theory">Mathematical Theory</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#dependencies">Dependencies</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#license">License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#citing-bet">Citing BET</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#documentation">Documentation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#testing">Testing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contributors">Contributors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#contact">Contact</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#package-layout">Package Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#code-overview">Code Overview</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sample</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.util</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.Comm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.Comm</span></code> module</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.calculateP</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.sampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sampling</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.postProcess"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.postProcess</span></code> Sub-package</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#module-bet.sensitivity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sensitivity</span></code> Sub-package</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Overview</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/overview.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="overview">
+<span id="id1"></span><h1>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h1>
+<p>BET is an initialism of Butler, Estep and Tavener, the primary authors of a
+<a class="reference external" href="https://epubs.siam.org/doi/abs/10.1137/100785946">series</a>
+<a class="reference external" href="https://epubs.siam.org/doi/abs/10.1137/100785958">of</a>
+<a class="reference external" href="https://epubs.siam.org/doi/abs/10.1137/130930406">papers</a>
+that introduced the mathematical framework for measure-based data-consistent stochastic inversion, for which BET included
+a computational implementation. However, since it’s initial inception it has grown to include a broad range of
+<a class="reference external" href="https://iopscience.iop.org/article/10.1088/1361-6420/ab8f83/meta">data-</a>
+<a class="reference external" href="https://epubs.siam.org/doi/abs/10.1137/16M1087229">consistent</a>
+<a class="reference external" href="https://onlinelibrary.wiley.com/doi/abs/10.1002/nme.6078">methods</a>
+that can also be density-based.
+It has been applied to a wide variety of application problems, many of which can be found
+<a class="reference external" href="https://scholar.google.com/scholar?oi=bibs&amp;hl=en&amp;cites=915741139550333528,6038673497778212734,182199236207122617">here.</a></p>
+<section id="mathematical-theory">
+<h2>Mathematical Theory<a class="headerlink" href="#mathematical-theory" title="Permalink to this headline">¶</a></h2>
+<p>For more information about the methods and algorithms for the Measure-Based Data-Consistent framework, see <a class="reference external" href="http://dx.doi.org/10.1137/130930406">A Measure-Theoretic
+Computational Method for Inverse Sensitivity Problems III: Multiple Quantities of Interest</a> for the formulation of the stochastic
+inverse problem  along with proofs of existence
+and uniqueness of solutions, <a class="reference external" href="http://arxiv.org/abs/1407.3851">Solving Stochastic Inverse Problems using Sigma-Algebras on Contour Maps</a> for the convergence
+and error analysis of the non-intrusive algorithm, and
+<a class="reference external" href="http://dx.doi.org/10.1016/j.advwatres.2015.01.011">Definition and solution of a stochastic inverse problem for the Manning’s n parameter field in
+hydrodynamic models</a> for a less technical description
+of the method for engineers as well as application to a physically relevant problem
+in coastal ocean modeling.</p>
+<p>For more information about the methods and algorithms for Density-Based Data-Consistent framework see
+<a class="reference external" href="https://doi.org/10.1137/16M1087229">Combining Push-Forward Measures and Bayes’ Rule to Construct Consistent Solutions to Stochastic Inverse Problems</a> and
+<a class="reference external" href="https://iopscience.iop.org/article/10.1088/1361-6420/ab8f83/meta">Data-Consistent Inversion for Stochastic Input-to-Output Maps</a>.</p>
+</section>
+<section id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>The code currently resides at <a class="reference external" href="https://github.com/UT-CHG/BET">GitHub</a>.
+The current development branch of BET can be installed from GitHub,  using <code class="docutils literal notranslate"><span class="pre">pip</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pip install git+https://github.com/UT-CHG/BET
+</pre></div>
+</div>
+<p>Another option is to clone the repository and install BET using:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ python setup.py install
+</pre></div>
+</div>
+</section>
+<section id="dependencies">
+<h2>Dependencies<a class="headerlink" href="#dependencies" title="Permalink to this headline">¶</a></h2>
+<p>BET is tested on Python 3.6 and 3.7 (but should work on most recent Python 3 versions) and depends on
+<a class="reference external" href="http://www.numpy.org/">NumPy</a>, <a class="reference external" href="http://www.scipy.org/">SciPy</a>,
+<a class="reference external" href="http://matplotlib.org/">matplotlib</a>, <a class="reference external" href="https://pythonhosted.org/pyDOE/">pyDOE</a>,
+<a class="reference external" href="https://docs.pytest.org/">pytest</a>, and
+<a class="reference external" href="https://mpi4py.readthedocs.io/en/stable/">mpi4py</a> (optional) (see <code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code> for version information).
+For some optional features <a class="reference external" href="https://github.com/CU-Denver-UQ/LUQ">LUQ</a> is also required.</p>
+</section>
+<section id="license">
+<h2>License<a class="headerlink" href="#license" title="Permalink to this headline">¶</a></h2>
+<p><a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/LICENSE.txt">GNU Lesser General Public License (LGPL)</a></p>
+</section>
+<section id="citing-bet">
+<h2>Citing BET<a class="headerlink" href="#citing-bet" title="Permalink to this headline">¶</a></h2>
+<p>Please include the citation:</p>
+<p>Lindley Graham, Steven Mattis, Scott Walsh, Troy Butler, Michael Pilosov, and Damon McDougall.
+“BET: Butler, Estep, Tavener Method V2.0.0”. Zenodo, August 10, 2016.
+<a class="reference external" href="https://doi.org/10.5281/zenodo.59964">doi:10.5281/zenodo.59964</a></p>
+<p>Lindley Graham, Steven Mattis, Michael Pilosov, Scott Walsh, Troy Butler, Michael Pilosov, … Damon McDougall. (2020, July 9). UT-CHG/BET: BET v3.0.0 (Version v3.0.0). Zenodo. <a class="reference external" href="http://doi.org/10.5281/zenodo.3936258">http://doi.org/10.5281/zenodo.3936258</a></p>
+<p>or in BibTEX:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>  <span class="nd">@software</span><span class="p">{</span><span class="n">lindley_graham_2020_3936258</span><span class="p">,</span>
+  <span class="n">author</span>       <span class="o">=</span> <span class="p">{</span><span class="n">Lindley</span> <span class="n">Graham</span> <span class="ow">and</span>
+                  <span class="n">Steven</span> <span class="n">Mattis</span> <span class="ow">and</span>
+                  <span class="n">Michael</span> <span class="n">Pilosov</span> <span class="ow">and</span>
+                  <span class="n">Scott</span> <span class="n">Walsh</span> <span class="ow">and</span>
+                  <span class="n">Troy</span> <span class="n">Butler</span> <span class="ow">and</span>
+                  <span class="n">Wenjuan</span> <span class="n">Zhang</span> <span class="ow">and</span>
+                  <span class="n">Damon</span> <span class="n">McDougall</span><span class="p">},</span>
+<span class="n">title</span>          <span class="o">=</span>  <span class="n">UT</span><span class="o">-</span><span class="n">CHG</span><span class="o">/</span><span class="n">BET</span><span class="p">:</span> <span class="n">BET</span> <span class="n">v3</span><span class="mf">.0.0</span><span class="p">},</span>
+<span class="n">month</span>          <span class="o">=</span>  <span class="n">jul</span><span class="p">,</span>
+<span class="n">year</span>           <span class="o">=</span>  <span class="mi">2020</span><span class="p">,</span>
+<span class="n">publisher</span>      <span class="o">=</span>  <span class="p">{</span><span class="n">Zenodo</span><span class="p">},</span>
+<span class="n">version</span>        <span class="o">=</span>  <span class="p">{</span><span class="n">v3</span><span class="mf">.0.0</span><span class="p">},</span>
+<span class="n">doi</span>            <span class="o">=</span>  <span class="p">{</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.3936258</span><span class="p">},</span>
+<span class="n">url</span>            <span class="o">=</span>  <span class="p">{</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">doi</span><span class="o">.</span><span class="n">org</span><span class="o">/</span><span class="mf">10.5281</span><span class="o">/</span><span class="n">zenodo</span><span class="mf">.3936258</span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</section>
+<section id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>This code has been documented with sphinx. the documentation is available online at <a class="reference external" href="http://ut-chg.github.io/BET">http://ut-chg.github.io/BET</a>.
+To build documentation run
+<code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> in the <code class="docutils literal notranslate"><span class="pre">doc/</span></code> folder.</p>
+<p>To build/update the documentation use the following commands:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sphinx</span><span class="o">-</span><span class="n">apidoc</span> <span class="o">-</span><span class="n">f</span> <span class="o">-</span><span class="n">o</span> <span class="n">doc</span> <span class="n">bet</span>
+<span class="n">cd</span> <span class="n">doc</span><span class="o">/</span>
+<span class="n">make</span> <span class="n">html</span>
+<span class="n">make</span> <span class="n">html</span>
+</pre></div>
+</div>
+<p>This creates the relevant documentation at <code class="docutils literal notranslate"><span class="pre">bet/gh-pages/html</span></code>.
+To change the build location of the documentation you will need to update <code class="docutils literal notranslate"><span class="pre">doc/makefile</span></code>.</p>
+<p>You will need to run <code class="docutils literal notranslate"><span class="pre">sphinx-apidoc</span></code> and reinstall bet anytime a new module or method in the source code has been added.
+If only the <code class="docutils literal notranslate"><span class="pre">*.rst</span></code> files have changed then you can simply run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> twice in the doc folder.</p>
+</section>
+<section id="testing">
+<h2>Testing<a class="headerlink" href="#testing" title="Permalink to this headline">¶</a></h2>
+<p>To run the tests in the root directory with <code class="docutils literal notranslate"><span class="pre">pytest</span></code> in serial call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ pytest ./test/
+</pre></div>
+</div>
+<p>Some features of BET (primarily those associated with the measure-based approach) have the ability to work in parallel. To run tests in parallel call:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ mpirun -np NPROC pytest ./test/
+</pre></div>
+</div>
+<p>Make sure to have a working MPI environment (we recommend <a class="reference external" href="http://www.mpich.org/downloads/">mpich</a>).
+if you want to use parallel features.</p>
+</section>
+<section id="contributors">
+<h2>Contributors<a class="headerlink" href="#contributors" title="Permalink to this headline">¶</a></h2>
+<p>See the <a class="reference external" href="https://github.com/UT-CHG/BET/graphs/contributors">GitHub contributors page</a>.</p>
+</section>
+<section id="contact">
+<h2>Contact<a class="headerlink" href="#contact" title="Permalink to this headline">¶</a></h2>
+<p>BET is in active development. Hence, some features are still being added and you may find bugs we have overlooked.
+If you find something please report these problems to us through GitHub so that we can fix them. Thanks!</p>
+<p>Please note that we are using continuous integration and issues for bug tracking.</p>
+</section>
+<section id="package-layout">
+<h2>Package Layout<a class="headerlink" href="#package-layout" title="Permalink to this headline">¶</a></h2>
+<p>The package layout is as follows:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">bet</span><span class="o">/</span>
+  <span class="n">util</span>
+  <span class="n">Comm</span>
+  <span class="n">sample</span>
+  <span class="n">surrogates</span>
+  <span class="n">calculateP</span><span class="o">/</span>
+    <span class="n">calculateP</span>
+    <span class="n">calculateError</span>
+    <span class="n">simpleFunP</span>
+    <span class="n">calculateR</span>
+  <span class="n">sampling</span><span class="o">/</span>
+    <span class="n">basicSampling</span>
+    <span class="n">useLUQ</span>
+    <span class="n">LpGeneralizedSamples</span>
+  <span class="n">postProcess</span><span class="o">/</span>
+    <span class="n">plotP</span>
+    <span class="n">plotDomains</span>
+    <span class="n">postTools</span>
+    <span class="n">plotVoronoi</span>
+  <span class="n">sensitivity</span><span class="o">/</span>
+    <span class="n">gradients</span>
+    <span class="n">chooseQoIs</span>
+</pre></div>
+</div>
+</section>
+<section id="code-overview">
+<h2>Code Overview<a class="headerlink" href="#code-overview" title="Permalink to this headline">¶</a></h2>
+<section id="module-bet.sample">
+<span id="bet-sample-module"></span><h3><a class="reference internal" href="#module-bet.sample" title="bet.sample"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sample</span></code></a> module<a class="headerlink" href="#module-bet.sample" title="Permalink to this headline">¶</a></h3>
+<p>This module contains the main data structures and exceptions for BET. Notably:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a> provides the basic data structure for input and output sets</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> is the default sample set.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.voronoi_sample_set" title="bet.sample.voronoi_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">voronoi_sample_set</span></code></a> is a sample set based on a Voronoi discretization (same as default).</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.rectangle_sample_set" title="bet.sample.rectangle_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">rectangle_sample_set</span></code></a> is a sample set based on a hyper-rectangle.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.ball_sample_set" title="bet.sample.ball_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">ball_sample_set</span></code></a> is a sample set based on balls in R^n</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.cartesian_sample_set" title="bet.sample.cartesian_sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">cartesian_sample_set</span></code></a> is a sample set based on a Cartesian grid.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> provides the basic data structure for and input to output stochastic map.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.length_not_matching" title="bet.sample.length_not_matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">length_not_matching</span></code></a> is an Exception class.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.sample.dim_not_matching" title="bet.sample.dim_not_matching"><code class="xref py py-class docutils literal notranslate"><span class="pre">dim_not_matching</span></code></a> is an Exception class.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">evaluate_pdf()</span></code> evaluates probability density functions.</p></li>
+<li><p><code class="xref py py-func docutils literal notranslate"><span class="pre">evaluate_pdf_marginal()</span></code> evaluates marginal probability density functions.</p></li>
+</ul>
+</section>
+<section id="module-bet.util">
+<span id="bet-util-module"></span><h3><a class="reference internal" href="#module-bet.util" title="bet.util"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.util</span></code></a> module<a class="headerlink" href="#module-bet.util" title="Permalink to this headline">¶</a></h3>
+<p>This module contains general tools for BET including saving and loading objects, and reshaping objects. The most
+important methods are:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="bet.html#bet.util.get_global_values" title="bet.util.get_global_values"><code class="xref py py-mod docutils literal notranslate"><span class="pre">get_global_values</span></code></a> concatenates local arrays into global arrays.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.util.save_object" title="bet.util.save_object"><code class="xref py py-mod docutils literal notranslate"><span class="pre">save_object</span></code></a> saves all types of objects.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.util.load_object" title="bet.util.load_object"><code class="xref py py-mod docutils literal notranslate"><span class="pre">load_object</span></code></a> loads all types of saved objects.</p></li>
+<li><p><a class="reference internal" href="bet.html#bet.util.load_object_parallel" title="bet.util.load_object_parallel"><code class="xref py py-mod docutils literal notranslate"><span class="pre">load_object_parallel</span></code></a> loads all types of saved parallel objects.</p></li>
+</ul>
+</section>
+<section id="module-bet.Comm">
+<span id="bet-comm-module"></span><h3><a class="reference internal" href="#module-bet.Comm" title="bet.Comm"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.Comm</span></code></a> module<a class="headerlink" href="#module-bet.Comm" title="Permalink to this headline">¶</a></h3>
+<p>This module provides a workaround for people without mpi4py installed
+to run BET.</p>
+</section>
+<section id="module-bet.calculateP">
+<span id="bet-calculatep-sub-package"></span><h3><a class="reference internal" href="#module-bet.calculateP" title="bet.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.calculateP</span></code></a> Sub-package<a class="headerlink" href="#module-bet.calculateP" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage provides classes and methods for calculating the
+probability measure <span class="math notranslate nohighlight">\(P_{\Lambda}\)</span>.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateP" title="bet.calculateP.calculateP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateP</span></code></a> provides methods for approximating probability densities in the measure-based approach.</p></li>
+<li><p><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.simpleFunP" title="bet.calculateP.simpleFunP"><code class="xref py py-mod docutils literal notranslate"><span class="pre">simpleFunP</span></code></a> provides methods for creating simple function approximations of probability densities for the measure-based approach.</p></li>
+<li><p><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateR" title="bet.calculateP.calculateR"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateR</span></code></a> provides methods for density-based approach.</p></li>
+<li><p><a class="reference internal" href="bet.calculateP.html#module-bet.calculateP.calculateError" title="bet.calculateP.calculateError"><code class="xref py py-mod docutils literal notranslate"><span class="pre">calculateError</span></code></a> provides methods for approximating numerical and sampling errors.</p></li>
+</ul>
+</section>
+<section id="module-bet.sampling">
+<span id="bet-sampling-sub-package"></span><h3><a class="reference internal" href="#module-bet.sampling" title="bet.sampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sampling</span></code></a> Sub-package<a class="headerlink" href="#module-bet.sampling" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage contains</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="bet.sampling.html#module-bet.sampling.basicSampling" title="bet.sampling.basicSampling"><code class="xref py py-mod docutils literal notranslate"><span class="pre">basicSampling</span></code></a> a general class and associated set of methods that sample spaces and solve models through an interface.</p></li>
+<li><p><a class="reference internal" href="bet.sampling.html#bet.sampling.basicSampling.sampler" title="bet.sampling.basicSampling.sampler"><code class="xref py py-class docutils literal notranslate"><span class="pre">sampler</span></code></a> requests data (QoI) at a specified set of parameter samples.</p></li>
+<li><p><a class="reference internal" href="bet.sampling.html#module-bet.sampling.LpGeneralizedSamples" title="bet.sampling.LpGeneralizedSamples"><code class="xref py py-mod docutils literal notranslate"><span class="pre">LpGeneralizedSamples</span></code></a> provides methods for sampling on balls in Lp spaces.</p></li>
+<li><p><a class="reference internal" href="bet.sampling.html#module-bet.sampling.useLUQ" title="bet.sampling.useLUQ"><code class="xref py py-mod docutils literal notranslate"><span class="pre">useLUQ</span></code></a> provides methods for interfacing with the LUQ package.</p></li>
+</ul>
+</section>
+<section id="module-bet.postProcess">
+<span id="bet-postprocess-sub-package"></span><h3><a class="reference internal" href="#module-bet.postProcess" title="bet.postProcess"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.postProcess</span></code></a> Sub-package<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage contains</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotP</span></code></a> plots <span class="math notranslate nohighlight">\(P\)</span> and/or volumes (<span class="math notranslate nohighlight">\(\mu\)</span>) of Voronoi cells</p></li>
+<li><p><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotDomains</span></code></a> plots the data domain <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> in 2D</p></li>
+<li><p><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">postTools</span></code></a> has tools for postprocessing</p></li>
+<li><p><a class="reference internal" href="bet.postProcess.html#module-bet.postProcess.compareP" title="bet.postProcess.compareP"><code class="xref py py-class docutils literal notranslate"><span class="pre">compareP</span></code></a> has tools for comparing measures</p></li>
+</ul>
+</section>
+<section id="module-bet.sensitivity">
+<span id="bet-sensitivity-sub-package"></span><h3><a class="reference internal" href="#module-bet.sensitivity" title="bet.sensitivity"><code class="xref py py-mod docutils literal notranslate"><span class="pre">bet.sensitivity</span></code></a> Sub-package<a class="headerlink" href="#module-bet.sensitivity" title="Permalink to this headline">¶</a></h3>
+<p>This subpackage provides methods for approximating gradients of
+QoI maps and choosing optimal QoIs to use in the inverse problem.</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.gradients" title="bet.sensitivity.gradients"><code class="xref py py-mod docutils literal notranslate"><span class="pre">gradients</span></code></a> provides methods for approximating gradients of QoI maps.</p></li>
+<li><p><a class="reference internal" href="bet.sensitivity.html#module-bet.sensitivity.chooseQoIs" title="bet.sensitivity.chooseQoIs"><code class="xref py py-mod docutils literal notranslate"><span class="pre">chooseQoIs</span></code></a> provides methods for choosing optimal QoIs to use in the inverse problem.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a> for detailed documentation of modules, classes, etc.</p>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+        <a href="parallel.html" class="btn btn-neutral float-right" title="Parallel" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to BET’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

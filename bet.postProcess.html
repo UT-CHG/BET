@@ -1,0 +1,1258 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>bet.postProcess package &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>bet.postProcess package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/bet.postProcess.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="bet-postprocess-package">
+<h1>bet.postProcess package<a class="headerlink" href="#bet-postprocess-package" title="Permalink to this headline">¶</a></h1>
+<section id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</section>
+<section id="module-bet.postProcess.compareP">
+<span id="bet-postprocess-comparep-module"></span><h2>bet.postProcess.compareP module<a class="headerlink" href="#module-bet.postProcess.compareP" title="Permalink to this headline">¶</a></h2>
+<dl class="py class">
+<dt class="sig sig-object py" id="bet.postProcess.compareP.compare">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.compareP.</span></span><span class="sig-name descname"><span class="pre">compare</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">set1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set1_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">set2_init</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.compareP.compare" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/2.7/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></a></p>
+<p>This class allows for the statistical distance between probability measures
+to be calculated.
+The probability measures may be defined by Voronoi tesselations, weighted Kernel Density Estimates,
+Gaussian Mixture Models, random variables with known parameters, and multi-dimensional
+normal distributions.
+This object can be thought of as a more flexible version of an abstraction
+of a metric, a measure of distance between two probability measures.
+It <code class="docutils literal notranslate"><span class="pre">d(x,y)</span></code> takes two arguments, one to the left (<code class="docutils literal notranslate"><span class="pre">x</span></code>),
+and one to the right (<code class="docutils literal notranslate"><span class="pre">y</span></code>). However, we do not enforce the properties
+that define a formal metric, instead we use the language of statistical distance.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.postProcess.compareP.compare.distance">
+<span class="sig-name descname"><span class="pre">distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">functional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tv'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.compareP.compare.distance" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the statistical distance between the probability measures
+evaluated at the comparison points.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>functional</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em> or </em><em>a function that takes in two lists/arrays and returns
+a scalar value</em><em> (</em><em>measure of similarity</em><em>)</em><em> Accepted strings are 'tv'</em><em> (</em><em>total variation</em><em>) </em><em>the
+default</em><em>, </em><em>'kl'</em><em> (</em><em>Kullback-Leibler</em><em>)</em><em>,
+</em><em>'mink'</em><em> (</em><em>minkowski</em><em>)</em><em>, </em><em>'2'</em><em> (</em><em>Euclidean norm</em><em>)</em><em>, </em><em>and 'hell'</em><em> (</em><em>Hellinger distance</em><em>)</em><em></em>) – functional defining type of statistical distance</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – whether or not to normalize the distance</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments for <cite>functional</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The statistical distance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.postProcess.compareP.compare.distance_marginal">
+<span class="sig-name descname"><span class="pre">distance_marginal</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">normalize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">functional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.compareP.compare.distance_marginal" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the statistical distance between the marginals of the probability measures
+evaluated at equally spaced points on an interval. If the interval is not defined,
+one is computed by the maximum and minimum values. This domain is extended by the proportion
+set by <cite>compare_factor</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – index of the marginal</p></li>
+<li><p><strong>interval</strong> (list, tuple, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – interval over which to integrate. None by default.</p></li>
+<li><p><strong>num_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – number of evaluation points. 1000 by default.</p></li>
+<li><p><strong>compare_factor</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Proportion to increase domain. Only used if
+<cite>interval</cite> is None. 0 by default.</p></li>
+<li><p><strong>normalize</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – whether or not to normalize the probabilities to sum to 1</p></li>
+<li><p><strong>functional</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em> or </em><em>a function that takes in two lists/arrays and returns
+a scalar value</em><em> (</em><em>measure of similarity</em><em>)</em><em> Accepted strings are 'tv'</em><em> (</em><em>total variation</em><em>)</em><em>, </em><em>'kl'</em><em> (</em><em>Kullback-Leibler</em><em>)
+</em><em>'mink'</em><em> (</em><em>minkowski</em><em>)</em><em>, </em><em>'2'</em><em> (</em><em>Euclidean norm</em><em>)</em><em>, </em><em>and 'hell'</em><em> (</em><em>Hellinger distance</em><em>)</em><em></em>) – functional defining type of statistical distance</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments for <cite>functional</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The statistical distance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.postProcess.compareP.compare.distance_marginal_quad">
+<span class="sig-name descname"><span class="pre">distance_marginal_quad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">functional</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'tv'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.compareP.compare.distance_marginal_quad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute the  statistical distance between the marginals of the probability measures
+by integrating using <cite>scipy.integrate.quadrature</cite>.. If the interval is not defined,
+one is computed by the maximum and minimum values. This domain is extended by the proportion
+set by <cite>compare_factor</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – index of the marginal</p></li>
+<li><p><strong>interval</strong> (list, tuple, or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – interval over which to integrate. None by default.</p></li>
+<li><p><strong>compare_factor</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Proportion to increase domain. Only used if
+<cite>interval</cite> is None. 0 by default.</p></li>
+<li><p><strong>functional</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a><em> or </em><em>a function that takes in two lists/arrays and returns
+a scalar value</em><em> (</em><em>measure of similarity</em><em>)</em><em> Accepted strings are 'tv'</em><em> (</em><em>total variation</em><em>)</em><em>,
+</em><em>'mink'</em><em> (</em><em>minkowski</em><em>)</em><em>, </em><em>'2'</em><em> (</em><em>Euclidean norm</em><em>)</em><em>, </em><em>'kl'</em><em> (</em><em>Kullback-Leibler</em><em>) </em><em>and 'hell'</em><em> (</em><em>Hellinger distance</em><em>)</em><em></em>) – functional defining type of statistical distance</p></li>
+<li><p><strong>kwargs</strong> – Keyword arguments for <cite>scipy.integrate.quadrature</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)">float</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>The statistical distance</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.postProcess.compareP.compare.evaluate_pdfs">
+<span class="sig-name descname"><span class="pre">evaluate_pdfs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.compareP.compare.evaluate_pdfs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Evaluate probability density functions associated with the probability measures at
+the comparison points.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="bet.postProcess.compareP.compare.set_compare_set">
+<span class="sig-name descname"><span class="pre">set_compare_set</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">compare_set</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">compare_factor</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">0.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.compareP.compare.set_compare_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Set values where the left and right probability measures should be compared.
+If <cite>compare_set</cite> is of type <a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set</span></code></a>, then the values from
+that object are used. If <cite>compare_set</cite> is of type <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, then the
+values in that array are used. If <cite>compare_set</cite> is of type int, then that number
+of uniformly distributed are sampled from a domain containing all of the values
+for set1 and set2. If compare_factor is set to be greater than 0, then this domain
+is increased by that proportion in every direction. Increasing the size of the
+sampling domain may catch areas of nonzero probability.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>compare_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set</span></code></a>, <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>, or int 10000 by default.) – Set containing values on which to compare.</p></li>
+<li><p><strong>compare_factor</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Proportion to increase domain for sampling. Only used if <cite>compare_set</cite> is type int.
+0 by default.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</section>
+<section id="module-bet.postProcess.plotDomains">
+<span id="bet-postprocess-plotdomains-module"></span><h2>bet.postProcess.plotDomains module<a class="headerlink" href="#module-bet.postProcess.plotDomains" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods used to plot two-dimensional domains and/or
+two-dimensional slices/projections of domains.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.bad_object">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">bad_object</span></span><a class="headerlink" href="#bet.postProcess.plotDomains.bad_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the wrong type of object is used.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.dim_not_matching">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">dim_not_matching</span></span><a class="headerlink" href="#bet.postProcess.plotDomains.dim_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the dimension is inconsistent.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_2D">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$x$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$y$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter2d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a two-dimensional scatter plot of the samples within the sample
+object colored by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise probability
+density values).  A reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be chosen by the
+user.  This reference sample will be plotted as a mauve circle twice the
+size of the other markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – contains samples to create scatter plot</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – indicies of the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – values to color the samples by</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_2D_input">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_2D_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda_1$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda_2$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter2d_input'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a two-dimensional scatter plot of the input samples within the
+discretization object colored by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values).  A reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – contains samples (<cite>my_disc._input_sample_set`</cite>) to create
+scatter plot</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – indicies of the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or string (volumes, probabilities,
+radii, normalized radii, or error id)) – values to color the samples by</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_2D_multi">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_2D_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter2Dm'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates two-dimensional projections of scatter plots of samples colored
+by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise probability density values). A
+reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be chosen by the user. This reference
+sample will be plotted as a mauve circle twice the size of the other
+markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Object containing the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – values to color the <code class="docutils literal notranslate"><span class="pre">samples</span></code> by</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>label_char</strong> (<em>string</em>) – character to use to label coordinate axes</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>img_folder</strong> (<em>string</em>) – folder to save the plots to</p></li>
+<li><p><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> or </em><em>string</em>) – default 1. If int then flag to show all combinations with a
+given dimension (<span class="math notranslate nohighlight">\(\lambda_i\)</span>) or if <code class="docutils literal notranslate"><span class="pre">all</span></code> show all combinations.</p></li>
+<li><p><strong>filename</strong> – filename to save the figure as</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_2D_multi_input">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_2D_multi_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter2Dm_input'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_multi_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates two-dimensional projections of scatter plots of samples colored
+by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise probability density values). A
+reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be chosen by the user. This reference
+sample will be plotted as a mauve circle twice the size of the other
+markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or string (volumes, probabilities,
+radii, normalized radii, or error id)) – values to color the <code class="docutils literal notranslate"><span class="pre">samples</span></code> by</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>label_char</strong> (<em>string</em>) – character to use to label coordinate axes</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>img_folder</strong> (<em>string</em>) – folder to save the plots to</p></li>
+<li><p><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> or </em><em>string</em>) – default 1. If int then flag to show all combinations with a
+given dimension (<span class="math notranslate nohighlight">\(\lambda_i\)</span>) or if <code class="docutils literal notranslate"><span class="pre">all</span></code> show all combinations.</p></li>
+<li><p><strong>filename</strong> – filename to save the figure as</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_2D_multi_output">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_2D_multi_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter2Dm_output'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_multi_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates two-dimensional projections of scatter plots of samples colored
+by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise probability density values). A
+reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be chosen by the user. This reference
+sample will be plotted as a mauve circle twice the size of the other
+markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or string (volumes, probabilities,
+radii, normalized radii, or error id)) – values to color the <code class="docutils literal notranslate"><span class="pre">samples</span></code> by</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>label_char</strong> (<em>string</em>) – character to use to label coordinate axes</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>img_folder</strong> (<em>string</em>) – folder to save the plots to</p></li>
+<li><p><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> or </em><em>string</em>) – default 1. If int then flag to show all combinations with a
+given dimension (<span class="math notranslate nohighlight">\(q_i\)</span>) or if <code class="docutils literal notranslate"><span class="pre">all</span></code> show all combinations.</p></li>
+<li><p><strong>filename</strong> – filename to save the figure as</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_2D_output">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_2D_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_1$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_2$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter2d_output'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_2D_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a two-dimensional scatter plot of the output samples within the
+discretization object colored by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values).  A reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – indicies of the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or string (volumes, probabilities,
+radii, normalized radii, or error id)) – values to color the samples by</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_3D">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_3D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'x'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'y'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'z'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter3d'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a three-dimensional scatter plot of samples within the sample
+object colored by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise probability
+density values). A reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be chosen by the
+user.  This reference sample will be plotted as a mauve circle twice the
+size of the other markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Object containing the samples to plot</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – indicies of the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – values to color the samples by</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>zlabel</strong> (<em>string</em>) – z-axis label</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_3D_input">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_3D_input</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda_1$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda_2$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$\\lambda_3$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter3d_input'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D_input" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a three-dimensional scatter plot of input samples within the
+discretization object colored by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values). A reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+sample_obj = my_disc.get_input_sample_set() <code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – indicies of the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or string (volumes, probabilities,
+radii, normalized radii, or error id)) – values to color the samples by</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>zlabel</strong> (<em>string</em>) – z-axis label</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_3D_output">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_3D_output</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">my_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">color</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_1$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_2$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">zlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_3$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cbar_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'scatter3d_output'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_3D_output" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a three-dimensional scatter plot of output samples within the
+discretization object colored by <code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise
+probability density values). A reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be
+chosen by the user.  This reference sample will be plotted as a mauve
+circle twice the size of the other markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>my_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – contains samples (<cite>my_disc._output_sample_set`</cite>) to create
+scatter plot</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – indicies of the samples to plot</p></li>
+<li><p><strong>color</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> or string (volumes, probabilities,
+radii, normalized radii, or error id)) – values to color the samples by</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>zlabel</strong> (<em>string</em>) – z-axis label</p></li>
+<li><p><strong>cbar_label</strong> (<em>string</em>) – color bar label</p></li>
+<li><p><strong>filename</strong> (<em>string</em>) – filename to save the figure as</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.scatter_rhoD">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">scatter_rhoD</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_obj</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_sample</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_nos</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">io_flag</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'input'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rho_D</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">dim_nums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label_char</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.scatter_rhoD" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create scatter plots of samples within the sample object colored by
+<code class="docutils literal notranslate"><span class="pre">color</span></code> (usually an array of pointwise probability density values).  A
+reference sample (<code class="docutils literal notranslate"><span class="pre">ref_sample</span></code>) can be chosen by the user.  This reference
+sample will be plotted as a mauve circle twice the size of the other
+markers.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filename</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_obj</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Object containing the samples to plot</p></li>
+<li><p><strong>ref_sample</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (ndim,)) – reference parameter value</p></li>
+<li><p><strong>sample_nos</strong> (<em>list</em>) – sample numbers to plot</p></li>
+<li><p><strong>io_flag</strong> (<em>string</em>) – Either <cite>input</cite> or <cite>output</cite>. If <code class="docutils literal notranslate"><span class="pre">sample_obj</span></code> is a
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a> object flag whether or not put plot
+input or output.</p></li>
+<li><p><strong>rho_D</strong> (callable function that takes a <code class="xref py py-class docutils literal notranslate"><span class="pre">np.array</span></code> and returns a
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a>) – probability density function on D</p></li>
+<li><p><strong>dim_nums</strong> (<em>list</em>) – integers representing domain coordinate
+numbers to plot (e.g. i, where <span class="math notranslate nohighlight">\(\x_i\)</span> is a coordinate in the
+input/output space).</p></li>
+<li><p><strong>label_char</strong> (<em>string</em>) – character to use to label coordinate axes</p></li>
+<li><p><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – 2 or 3, flag to determine whether or not to show
+pairwise or tripletwise parameter sample scatter plots in 2 or 3
+dimensions</p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.show_data_domain_2D">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">show_data_domain_2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xlabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_1$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ylabel</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'$q_2$'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">triangles</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">save</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filenames</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 2-D a single data domain D using a triangulation based on the first
+two coordinates (parameters) of the generating samples where <span class="math notranslate nohighlight">\(Q={q_1,
+q_i}\)</span> for <code class="docutils literal notranslate"><span class="pre">i=Q_nums</span></code>, with a marker for various <span class="math notranslate nohighlight">\(Q_{ref}\)</span>. Assumes
+that the first dimension of data is <span class="math notranslate nohighlight">\(q_1\)</span>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in BOTH <code class="docutils literal notranslate"><span class="pre">filenames</span></code> and
+<code class="docutils literal notranslate"><span class="pre">file_extension</span></code>.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>) – Object containing the samples to plot</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (M, 2)) – reference data value</p></li>
+<li><p><strong>ref_markers</strong> (<em>list</em>) – list of marker types for <span class="math notranslate nohighlight">\(Q_{ref}\)</span></p></li>
+<li><p><strong>ref_colors</strong> (<em>list</em>) – list of colors for <span class="math notranslate nohighlight">\(Q_{ref}\)</span></p></li>
+<li><p><strong>xlabel</strong> (<em>string</em>) – x-axis label</p></li>
+<li><p><strong>ylabel</strong> (<em>string</em>) – y-axis label</p></li>
+<li><p><strong>triangles</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">tri.Triuangulation.triangles</span></code>) – triangulation defined by <code class="docutils literal notranslate"><span class="pre">samples</span></code></p></li>
+<li><p><strong>save</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to save the figure</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – flag whether or not to show the figure</p></li>
+<li><p><strong>filenames</strong> (<em>list</em>) – file names for the unmarked and marked domain plots</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotDomains.show_data_domain_multi">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotDomains.</span></span><span class="sig-name descname"><span class="pre">show_data_domain_multi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_disc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Q_nums</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">img_folder</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'figs/'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_markers</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ref_colors</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">showdim</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">markersize</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">75</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotDomains.show_data_domain_multi" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plots 2-D projections of the data domain D using a triangulation based on
+the first two coordinates (parameters) of the generating samples where
+<span class="math notranslate nohighlight">\(Q={q_1, q_i}\)</span> for <code class="docutils literal notranslate"><span class="pre">i=Q_nums</span></code>, with a marker for various
+<span class="math notranslate nohighlight">\(Q_{ref}\)</span>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_disc</strong> (<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing the samples to plot</p></li>
+<li><p><strong>Q_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (M, mdim)) – reference data value</p></li>
+<li><p><strong>Q_nums</strong> (<em>list</em>) – dimensions of the QoI to plot</p></li>
+<li><p><strong>img_folder</strong> (<em>string</em>) – folder to save the plots to</p></li>
+<li><p><strong>ref_markers</strong> (<em>list</em>) – list of marker types for <span class="math notranslate nohighlight">\(Q_{ref}\)</span></p></li>
+<li><p><strong>ref_colors</strong> (<em>list</em>) – list of colors for <span class="math notranslate nohighlight">\(Q_{ref}\)</span></p></li>
+<li><p><strong>showdim</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a><em> or </em><em>string</em>) – default 1. If int then flag to show all combinations with a
+given dimension (<span class="math notranslate nohighlight">\(q_i\)</span>) or if <code class="docutils literal notranslate"><span class="pre">all</span></code> show all combinations.</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extension</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bet.postProcess.plotP">
+<span id="bet-postprocess-plotp-module"></span><h2>bet.postProcess.plotP module<a class="headerlink" href="#module-bet.postProcess.plotP" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for plotting probabilities.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.bad_object">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">bad_object</span></span><a class="headerlink" href="#bet.postProcess.plotP.bad_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the wrong type of object is used.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.calculate_1D_marginal_probs">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">calculate_1D_marginal_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.calculate_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This estimates every marginal of a Voronoi probability measure
+described by the probabilities within the sample_set object with histograms.
+If the sample_set object is a discretization object, we assume
+that the probabilities to be plotted are from the input space on the
+emulated samples (if they exist) or the samples.
+(<code class="docutils literal notranslate"><span class="pre">discretization._emulated_input_sample_set._probabilties_local</span></code> or
+<code class="docutils literal notranslate"><span class="pre">discretization._input_sample_set._probabilties_local</span></code>).</p>
+<p>This assumes that the user has already run
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">prob_emulated()</span></code> or <a class="reference internal" href="bet.calculateP.html#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><code class="xref py py-meth docutils literal notranslate"><span class="pre">prob()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>nbins</strong> (:int or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,)) – Number of bins in each direction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(bins, marginals)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.calculate_2D_marginal_probs">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">calculate_2D_marginal_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nbins</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.calculate_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates every pair of marginals (or joint in 2d case) of
+input probability measure defined on a rectangular grid for Voronoi probabilities using histograms..
+If the sample_set object is a discretization object, we assume
+that the probabilities to be plotted are from the input space on the
+emulated samples (if they exist) or samples
+(<code class="docutils literal notranslate"><span class="pre">discretization._emulated_input_sample_set._probabilties_local</span></code> or
+<code class="docutils literal notranslate"><span class="pre">discretization._input_sample_set._probabilties_local</span></code>).</p>
+<p>This assumes that the user has already run
+<code class="xref py py-meth docutils literal notranslate"><span class="pre">prob_emulated()</span></code> or <a class="reference internal" href="bet.calculateP.html#bet.calculateP.calculateP.prob" title="bet.calculateP.calculateP.prob"><code class="xref py py-meth docutils literal notranslate"><span class="pre">prob()</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>nbins</strong> (int or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,)) – Number of bins in each direction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(bins, marginals)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.dim_not_matching">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">dim_not_matching</span></span><a class="headerlink" href="#bet.postProcess.plotP.dim_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the dimension is inconsistent.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.missing_attribute">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">missing_attribute</span></span><a class="headerlink" href="#bet.postProcess.plotP.missing_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for missing attribute.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.plot_1D_marginal_probs">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">plot_1D_marginal_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marginals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_1D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes plots of every single marginal probability of
+input probability measure on a 1D  grid from histograms.
+If the sample_set object is a discretization object, we assume
+that the probabilities to be plotted are from the input space.
+Useful for visualizing solutions of measure-based inverse problems.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in the file name.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marginals</strong> (dictionary with int as keys and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of
+shape (nbins+1,) as values :param bins: Endpoints of bins used in
+calculating marginals) – 1D marginal probabilities</p></li>
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Prefix for output files.</p></li>
+<li><p><strong>lam_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,) or None) – True parameters.</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to display interactive plots.</p></li>
+<li><p><strong>lambda_label</strong> (<em>list of length nbins of strings</em><em> or </em><a class="reference external" href="https://docs.python.org/2.7/library/constants.html#None" title="(in Python v2.7)"><em>None</em></a>) – Label for each parameter for plots.</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extenstion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.plot_1d_marginal_densities">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">plot_1d_marginal_densities</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">i</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_points</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">1000</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sets_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sets_label_initial</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">title</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">initials</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inputs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">savefile</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_1d_marginal_densities" title="Permalink to this definition">¶</a></dt>
+<dd><p>Plot 1D marginal probability density functions in direction <cite>i</cite>. Useful for visualizing
+solutions of density-based inverse problems.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sets</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.sample_set</span></code></a> or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">bet.sample.discretization</span></code></a> or list or tuple of these) – Object containing sample sets to plot marginals for.</p></li>
+<li><p><strong>i</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – index of direction to take marginal</p></li>
+<li><p><strong>interval</strong> (<em>list</em>) – Interval over which to plot.</p></li>
+<li><p><strong>num_points</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#int" title="(in Python v2.7)"><em>int</em></a>) – Number of points to evaluate PDFs at.</p></li>
+<li><p><strong>label</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Label for parameter i</p></li>
+<li><p><strong>sets_label</strong> (<em>List</em><em> or </em><em>tuple of strings.</em>) – Labels for sets</p></li>
+<li><p><strong>sets_label_initial</strong> (<em>List</em><em> or </em><em>tuple of strings.</em>) – Labels for sets’ initial probabilities</p></li>
+<li><p><strong>title</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – “Title for plot”</p></li>
+<li><p><strong>initials</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to plot initial probabilities</p></li>
+<li><p><strong>inputs</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether to use input or output sample sets for disretizations</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to show interactive figure</p></li>
+<li><p><strong>savefile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – filename to save to</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.plot_2D_marginal_contours">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">plot_2D_marginal_contours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marginals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_num</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">8</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_refs</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_domain</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">contour_font_size</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">20</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_2D_marginal_contours" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes contour plots of every pair of marginals (or joint in 2d case)
+of input probability measure on a rectangular grid.
+If the sample_set object is a discretization object, we assume
+that the probabilities to be plotted are from the input space.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in the file name.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marginals</strong> (dictionary with tuples of 2 integers as keys and
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,) as values) – 2D marginal probabilities</p></li>
+<li><p><strong>bins</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,2)) – Endpoints of bins used in calculating marginals</p></li>
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Prefix for output files.</p></li>
+<li><p><strong>lam_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,) or None) – True parameters.</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to display interactive plots.</p></li>
+<li><p><strong>lambda_label</strong> (<em>list of length nbins of strings</em><em> or </em><a class="reference external" href="https://docs.python.org/2.7/library/constants.html#None" title="(in Python v2.7)"><em>None</em></a>) – Label for each parameter for plots.</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extenstion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.plot_2D_marginal_probs">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">plot_2D_marginal_probs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marginals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">plot_surface</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.plot_2D_marginal_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes plots of every pair of marginals (or joint in 2d case) of
+input probability measure on a rectangular grid from histograms.
+If the sample_set object is a discretization object, we assume
+that the probabilities to be plotted are from the input space.
+Useful for visualizing solutions of measure-based inverse problems.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in the file name.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marginals</strong> (dictionary with tuples of 2 integers as keys and
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,) as values) – 2D marginal probabilities</p></li>
+<li><p><strong>bins</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,2)) – Endpoints of bins used in calculating marginals</p></li>
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Prefix for output files.</p></li>
+<li><p><strong>lam_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,) or None) – True parameters.</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to display interactive plots.</p></li>
+<li><p><strong>lambda_label</strong> (<em>list of length nbins of strings</em><em> or </em><a class="reference external" href="https://docs.python.org/2.7/library/constants.html#None" title="(in Python v2.7)"><em>None</em></a>) – Label for each parameter for plots.</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extenstion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.smooth_marginals_1D">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">smooth_marginals_1D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marginals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.smooth_marginals_1D" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function smooths 1D marginal probabilities calculated from histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marginals</strong> (dictionary with int as keys and <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of
+shape (nbins+1,) as values) – 1D marginal probabilities</p></li>
+<li><p><strong>bins</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,)) – Endpoints of bins used in calculating marginals</p></li>
+<li><p><strong>sigma</strong> (float or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,)) – Smoothing parameter in each direction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>marginals_smooth</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotP.smooth_marginals_2D">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotP.</span></span><span class="sig-name descname"><span class="pre">smooth_marginals_2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">marginals</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">bins</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sigma</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">10.0</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotP.smooth_marginals_2D" title="Permalink to this definition">¶</a></dt>
+<dd><p>This function smooths 2D marginal probabilities calculated from histograms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>marginals</strong> (dictionary with tuples of 2 integers as keys and
+<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,) as values) – 2D marginal probabilities</p></li>
+<li><p><strong>bins</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (nbins+1,)) – Endpoints of bins used in calculating marginals</p></li>
+<li><p><strong>sigma</strong> (float or <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,)) – Smoothing parameter in each direction.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/2.7/library/stdtypes.html#dict" title="(in Python v2.7)">dict</a></p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>marginals_smooth</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bet.postProcess.plotVoronoi">
+<span id="bet-postprocess-plotvoronoi-module"></span><h2>bet.postProcess.plotVoronoi module<a class="headerlink" href="#module-bet.postProcess.plotVoronoi" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for Voronoi plots.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotVoronoi.bad_object">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotVoronoi.</span></span><span class="sig-name descname"><span class="pre">bad_object</span></span><a class="headerlink" href="#bet.postProcess.plotVoronoi.bad_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the wrong type of object is used.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotVoronoi.dim_not_matching">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotVoronoi.</span></span><span class="sig-name descname"><span class="pre">dim_not_matching</span></span><a class="headerlink" href="#bet.postProcess.plotVoronoi.dim_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the dimension is inconsistent.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.plotVoronoi.missing_attribute">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotVoronoi.</span></span><span class="sig-name descname"><span class="pre">missing_attribute</span></span><a class="headerlink" href="#bet.postProcess.plotVoronoi.missing_attribute" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for missing attribute.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotVoronoi.plot_1D_voronoi">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotVoronoi.</span></span><span class="sig-name descname"><span class="pre">plot_1D_voronoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotVoronoi.plot_1D_voronoi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes a 1d Voronoi plot of the input probability measure for a
+1D Voronoi sample set. If the sample_set object is a discretization
+object, we assume that the probabilities to be plotted are from
+the input space.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in the file name.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>density</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Plot prob. density instead of prob. measure.</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Prefix for output files.</p></li>
+<li><p><strong>lam_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,) or None) – Reference parameters.</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to display interactive plots.</p></li>
+<li><p><strong>lambda_label</strong> (<em>list of length nbins of strings</em><em> or </em><a class="reference external" href="https://docs.python.org/2.7/library/constants.html#None" title="(in Python v2.7)"><em>None</em></a>) – Label for each parameter for plots.</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extenstion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotVoronoi.plot_2D_voronoi">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotVoronoi.</span></span><span class="sig-name descname"><span class="pre">plot_2D_voronoi</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">density</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colormap_type</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'BuGn'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filename</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'file'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lam_ref</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interactive</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">lambda_label</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">file_extension</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'.png'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotVoronoi.plot_2D_voronoi" title="Permalink to this definition">¶</a></dt>
+<dd><p>This makes a 2D Voronoi plot of the input probability measure for a
+2D Voronoi sample set. If the sample_set object is a discretization
+object, we assume that the probabilities to be plotted are from
+the input space.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Do not specify the file extension in the file name.</p>
+</div>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>density</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Plot prob. density instead of prob. measure.</p></li>
+<li><p><strong>colormap_type</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – type of color map to use</p></li>
+<li><p><strong>filename</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) – Prefix for output files.</p></li>
+<li><p><strong>lam_ref</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">ndarray</span></code></a> of shape (ndim,) or None) – Reference parameters.</p></li>
+<li><p><strong>interactive</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Whether or not to display interactive plots.</p></li>
+<li><p><strong>lambda_label</strong> (<em>list of length nbins of strings</em><em> or </em><a class="reference external" href="https://docs.python.org/2.7/library/constants.html#None" title="(in Python v2.7)"><em>None</em></a>) – Label for each parameter for plots.</p></li>
+<li><p><strong>file_extension</strong> (<em>string</em>) – file extenstion</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.plotVoronoi.voronoi_finite_polygons_2d">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.plotVoronoi.</span></span><span class="sig-name descname"><span class="pre">voronoi_finite_polygons_2d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">vor</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.plotVoronoi.voronoi_finite_polygons_2d" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reconstruct infinite Voronoi regions in a 2D diagram to finite
+regions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>vor</strong> (<code class="xref py py-class docutils literal notranslate"><span class="pre">scipy.spatial.Voronoi</span></code>) – Voronoi input diagram</p></li>
+<li><p><strong>radius</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – Distance to points at infinity. Optional.</p></li>
+<li><p><strong>regions</strong> (<em>list of tuples</em>) – Indices of vertices in each revised Voronoi regions.</p></li>
+<li><p><strong>vertices</strong> – Coordinates for revised Voronoi vertices.</p></li>
+</ul>
+</dd>
+</dl>
+<p>Same as coordinates
+of input vertices, with ‘points at infinity’ appended to the end.
+:type vertices: list of tuples
+:rtype: tuple
+:returns (regions, vertices)</p>
+</dd></dl>
+
+</section>
+<section id="module-bet.postProcess.postTools">
+<span id="bet-postprocess-posttools-module"></span><h2>bet.postProcess.postTools module<a class="headerlink" href="#module-bet.postProcess.postTools" title="Permalink to this headline">¶</a></h2>
+<p>This module provides methods for postprocessing probabilities and data.</p>
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.postTools.bad_object">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.postTools.</span></span><span class="sig-name descname"><span class="pre">bad_object</span></span><a class="headerlink" href="#bet.postProcess.postTools.bad_object" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the wrong type of object is used.</p>
+</dd></dl>
+
+<dl class="py exception">
+<dt class="sig sig-object py" id="bet.postProcess.postTools.dim_not_matching">
+<em class="property"><span class="pre">exception</span> </em><span class="sig-prename descclassname"><span class="pre">bet.postProcess.postTools.</span></span><span class="sig-name descname"><span class="pre">dim_not_matching</span></span><a class="headerlink" href="#bet.postProcess.postTools.dim_not_matching" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></p>
+<p>Exception for when the dimension is inconsistent.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.postTools.sample_highest_prob">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.postTools.</span></span><span class="sig-name descname"><span class="pre">sample_highest_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">top_percentile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sample_highest_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates the highest probability samples whose probability sum to a
+given value.
+The number of high probability samples that sum to the value,
+a new sample_set, and the indices are returned.
+This uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">sort_by_rho()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top_percentile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – ratio of highest probability samples to select</p></li>
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>indices</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) – sorting indices</p></li>
+<li><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Flag whether or not to sort</p></li>
+<li><p><strong>sample_set_out</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing sorted samples and probabilities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>( num_samples, sample_set_out, indices)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.postTools.sample_lowest_prob">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.postTools.</span></span><span class="sig-name descname"><span class="pre">sample_lowest_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">bottom_percentile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sample_lowest_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates the lowest probability samples whose probability sum to a
+given value.
+The number of low probability samples that sum to the value,
+a new sample_set, and the indices are returned.
+This uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">sort_by_rho()</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>top_percentile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – ratio of highest probability samples to select</p></li>
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>indices</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) – sorting indices of unsorted <code class="docutils literal notranslate"><span class="pre">P_samples</span></code></p></li>
+<li><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Flag whether or not to sort</p></li>
+<li><p><strong>sample_set_out</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a>
+or <a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing sorted samples and probabilities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>( num_samples, sample_set_out, indices)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.postTools.sample_prob">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.postTools.</span></span><span class="sig-name descname"><span class="pre">sample_prob</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">percentile</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sort</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">descending</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sample_prob" title="Permalink to this definition">¶</a></dt>
+<dd><p>This calculates the highest/lowest probability samples whose probability
+sum to a given value.
+A new sample_set with the samples corresponding to these highest/lowest
+probability samples is returned along with the number of samples and
+the indices.
+This uses <code class="xref py py-meth docutils literal notranslate"><span class="pre">sort_by_rho()</span></code>.
+The <code class="docutils literal notranslate"><span class="pre">descending</span></code> flag determines whether or not to calcuate the
+highest/lowest.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>percentile</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#float" title="(in Python v2.7)"><em>float</em></a>) – ratio of highest probability samples to select</p></li>
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>indices</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) – sorting indices</p></li>
+<li><p><strong>sort</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Flag whether or not to sort</p></li>
+<li><p><strong>descending</strong> (<a class="reference external" href="https://docs.python.org/2.7/library/functions.html#bool" title="(in Python v2.7)"><em>bool</em></a>) – Flag order of sorting</p></li>
+<li><p><strong>sample_set_out</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing sorted samples and probabilities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>( num_samples, sample_set_out, data)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="bet.postProcess.postTools.sort_by_rho">
+<span class="sig-prename descclassname"><span class="pre">bet.postProcess.postTools.</span></span><span class="sig-name descname"><span class="pre">sort_by_rho</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sample_set</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#bet.postProcess.postTools.sort_by_rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>This sorts the samples within the sample_set by probability density.
+If a discretization object is given, then the QoI data is also sorted
+to maintain the correspondence.
+Any volumes present in the input space (or just the sample object)
+are also sorted.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>sample_set</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set_base" title="bet.sample.sample_set_base"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set_base</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing samples and probabilities</p></li>
+<li><p><strong>indices</strong> (<a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.20)"><code class="xref py py-class docutils literal notranslate"><span class="pre">numpy.ndarray</span></code></a> of shape (num_samples,)) – sorting indices</p></li>
+<li><p><strong>sample_set_out</strong> (<a class="reference internal" href="bet.html#bet.sample.sample_set" title="bet.sample.sample_set"><code class="xref py py-class docutils literal notranslate"><span class="pre">sample_set</span></code></a> or
+<a class="reference internal" href="bet.html#bet.sample.discretization" title="bet.sample.discretization"><code class="xref py py-class docutils literal notranslate"><span class="pre">discretization</span></code></a>) – Object containing sorted samples and probabilities</p></li>
+</ul>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p>tuple</p>
+</dd>
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>(sample_set_out, indicices)</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+<section id="module-bet.postProcess">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-bet.postProcess" title="Permalink to this headline">¶</a></h2>
+<p>This subpackage contains</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="#module-bet.postProcess.plotP" title="bet.postProcess.plotP"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotP</span></code></a> plots <span class="math notranslate nohighlight">\(P\)</span> and/or volumes (<span class="math notranslate nohighlight">\(\mu\)</span>) of Voronoi cells</p></li>
+<li><p><a class="reference internal" href="#module-bet.postProcess.plotDomains" title="bet.postProcess.plotDomains"><code class="xref py py-class docutils literal notranslate"><span class="pre">plotDomains</span></code></a> plots the data domain <span class="math notranslate nohighlight">\(\mathcal{D}\)</span> in 2D</p></li>
+<li><p><a class="reference internal" href="#module-bet.postProcess.postTools" title="bet.postProcess.postTools"><code class="xref py py-class docutils literal notranslate"><span class="pre">postTools</span></code></a> has tools for postprocessing</p></li>
+<li><p><a class="reference internal" href="#module-bet.postProcess.compareP" title="bet.postProcess.compareP"><code class="xref py py-class docutils literal notranslate"><span class="pre">compareP</span></code></a> has tools for comparing measures</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

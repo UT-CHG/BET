@@ -1,0 +1,443 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Example: Linear Map with Uniform Sampling &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Example: Linear Map with Uniform Sampling</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/examples/example_rst_files/linearMapUniformSampling.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="example-linear-map-with-uniform-sampling">
+<span id="linearmap"></span><h1>Example: Linear Map with Uniform Sampling<a class="headerlink" href="#example-linear-map-with-uniform-sampling" title="Permalink to this headline">¶</a></h1>
+<p>We will walk through the following <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/linearMap/linearMapUniformSampling.py">example</a>.
+This example solves a stochastic inverse problem for a
+linear 3-to-2 map. We refer to the map as the QoI map,
+or just a QoI. We refer to the range of the QoI map as
+the data space.
+The 3-D input space is discretized with i.i.d. uniform
+random samples or a regular grid of samples.
+We refer to the input space as the
+parameter space, and use parameter to refer to a particular
+point (e.g., a particular random sample) in this space.
+A reference parameter is used to define a reference QoI datum
+and a uniform probability measure is defined on a small box
+centered at this datum.
+The measure on the data space is discretized either randomly
+or deterministically, and this discretized measure is then
+inverted by BET to determine a probability measure on the
+parameter space whose support contains the measurable sets
+of probable parameters.
+We often use emulation to estimate the measures of sets when
+random sampling is used.
+1D and 2D marginals are calculated, smoothed, and plotted.</p>
+<p>The actual process is quite simple requiring a total of 5 steps
+to solve the stochastic inverse problem with BET excluding any
+post-processing
+the user may want.
+In general the user will probably not write code with various
+options as was done here for pedagogical purposes.
+We break down the actual example included with BET step-by-step
+below, but first, to showcase the overall simplicitly, we show
+the “entire” code (omitting setting the environment,
+post-processing, and commenting) required
+for solving
+the stochastic inverse problem using some default options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
+
+<span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">)</span>
+
+<span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">Q_ref</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
+<span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+    <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+    <span class="n">cells_per_dimension</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+
+<span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="step-0-setting-up-the-environment">
+<h2>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h2>
+<p>Import the necessary modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">simpleFunP</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="k">as</span> <span class="nn">calculateP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotP</span> <span class="k">as</span> <span class="nn">plotP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotDomains</span> <span class="k">as</span> <span class="nn">plotD</span>
+<span class="kn">import</span> <span class="nn">bet.sample</span> <span class="k">as</span> <span class="nn">samp</span>
+<span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="k">as</span> <span class="nn">bsam</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-define-interface-to-the-model">
+<h2>Step (1): Define interface to the model<a class="headerlink" href="#step-1-define-interface-to-the-model" title="Permalink to this headline">¶</a></h2>
+<p>Import the Python script interface to the (simple Python) <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/linearMap/myModel.py">model</a>
+that takes as input a numpy array of model input parameter samples,
+generated from the sampler (see below), evaluates the model to
+generate QoI samples, and returns the QoI samples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myModel</span> <span class="kn">import</span> <span class="n">my_model</span>
+</pre></div>
+</div>
+<p>Define the sampler that will be used to create the discretization
+object, which is the fundamental object used by BET to compute
+solutions to the stochastic inverse problem.
+The sampler and my_model is the interface of BET to the model,
+and it allows BET to create input/output samples of the model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-describe-and-sample-the-input-space">
+<h2>Step (2): Describe and sample the input space<a class="headerlink" href="#step-2-describe-and-sample-the-input-space" title="Permalink to this headline">¶</a></h2>
+<p>Initialize the (3-dimensional) input parameter sample set object
+and set the parameter domain to be a unit-cube:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">]],</span> <span class="mi">3</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="suggested-changes-for-user-1">
+<h3>Suggested changes for user (1)<a class="headerlink" href="#suggested-changes-for-user-1" title="Permalink to this headline">¶</a></h3>
+<p>Try with and without random sampling.</p>
+<p>If using random sampling, try <code class="docutils literal notranslate"><span class="pre">num_samples</span> <span class="pre">=</span> <span class="pre">1E3</span></code> and
+<code class="docutils literal notranslate"><span class="pre">num_samples</span> <span class="pre">=</span> <span class="pre">1E4</span></code>.
+See what happens when <code class="docutils literal notranslate"><span class="pre">num_samples</span> <span class="pre">=</span> <span class="pre">1E2</span></code>.
+Try using <code class="docutils literal notranslate"><span class="pre">'lhs'</span></code> instead of <code class="docutils literal notranslate"><span class="pre">'random'</span></code> in the random_sample_set.</p>
+<p>If using regular sampling, try different numbers of samples
+per dimension:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">randomSampling</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">randomSampling</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mf">1E3</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">15</span><span class="p">,</span> <span class="mi">15</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="suggested-changes-for-user-2">
+<h3>Suggested changes for user (2)<a class="headerlink" href="#suggested-changes-for-user-2" title="Permalink to this headline">¶</a></h3>
+<p>A standard Monte Carlo (MC) assumption is that every Voronoi cell
+has the same volume. If a regular grid of samples was used, then
+the standard MC assumption is true.</p>
+<p>See what happens if the MC assumption is not assumed to be true, and
+if different numbers of points are used to estimate the volumes of
+the Voronoi cells:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MC_assumption</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">if</span> <span class="n">MC_assumption</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume</span><span class="p">(</span><span class="n">n_mc_points</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-3-generate-qoi-samples">
+<h2>Step (3): Generate QoI samples<a class="headerlink" href="#step-3-generate-qoi-samples" title="Permalink to this headline">¶</a></h2>
+<p>Create the discretization object holding all the input (parameter) samples
+and output (QoI) samples using the sampler:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+                                               <span class="n">savefile</span> <span class="o">=</span> <span class="s1">&#39;3to2_discretization.txt.gz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>At this point, all of the model information has been extracted for BET
+(with the possibly exception of evaluating the model to generate a
+reference QoI datum or a distribution of the QoI), so the model is no
+longer required for evaluation.
+The user could do Steps (0)-(3) in a separate script, and then simply load
+the discretization object as part of a separate BET script that does the
+remaining steps.
+When the model is expensive to evaluate, this is an attractive option
+since we can now solve the stochastic inverse problem (with many
+different distributions defined on the data space) without ever
+having to re-solve the model (so long as we are happy with the resolution
+provided by the current discretization of the parameter and data spaces).</p>
+</section>
+<section id="step-4-describe-the-data-distribution">
+<h2>Step (4): Describe the data distribution<a class="headerlink" href="#step-4-describe-the-data-distribution" title="Permalink to this headline">¶</a></h2>
+<p>This problem is nominally a “parameter identification under uncertainty”
+problem.
+Thus, we take a reference QoI datum (from one more model solve), and
+define a distribution “around” this datum.</p>
+<section id="suggested-changes-for-user-3">
+<h3>Suggested changes for user (3)<a class="headerlink" href="#suggested-changes-for-user-3" title="Permalink to this headline">¶</a></h3>
+<p>Try different reference parameters that produce different
+reference QoI data.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">Q_ref</span> <span class="o">=</span>  <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the reference samples and discretization to generate plots (this
+is completely optional):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_2D_multi</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span> <span class="n">param_ref</span><span class="p">,</span> <span class="n">showdim</span> <span class="o">=</span> <span class="s1">&#39;all&#39;</span><span class="p">,</span>
+                       <span class="n">filename</span> <span class="o">=</span> <span class="s1">&#39;linearMap_ParameterSamples.eps&#39;</span><span class="p">)</span>
+<span class="n">plotD</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span> <span class="o">=</span> <span class="n">Q_ref</span><span class="p">,</span> <span class="n">file_extension</span><span class="o">=</span><span class="s1">&#39;eps&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="suggested-changes-for-user-4">
+<h3>Suggested changes for user (4)<a class="headerlink" href="#suggested-changes-for-user-4" title="Permalink to this headline">¶</a></h3>
+<p>Try different ways of discretizing the probability measure on the data
+space defined as a uniform
+probability measure on a rectangle centered at Q_ref whose
+size is determined by scaling the circumscribing box of the data space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">randomDataDiscretization</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">randomDataDiscretization</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+        <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">cells_per_dimension</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">simpleFunP</span><span class="o">.</span><span class="n">uniform_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+        <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">M</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_d_emulate</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-5-solve-the-stochastic-inverse-problem">
+<h2>Step (5): Solve the stochastic inverse problem<a class="headerlink" href="#step-5-solve-the-stochastic-inverse-problem" title="Permalink to this headline">¶</a></h2>
+<p>Calculate probablities on the parameter space (which are stored within
+the discretization object):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-6-optional-post-processing">
+<h2>Step (6) [Optional]: Post-processing<a class="headerlink" href="#step-6-optional-post-processing" title="Permalink to this headline">¶</a></h2>
+<p>There are ways to determine “optimal” smoothing parameters (e.g., see CV, GCV,
+and other similar methods), but we have not incorporated these into the code
+as lower-dimensional marginal plots generally have limited value in understanding
+the structure of a high dimensional non-parametric probability measure.</p>
+<p>The user may want to change <code class="docutils literal notranslate"><span class="pre">nbins</span></code> or <code class="docutils literal notranslate"><span class="pre">sigma</span></code> in the <code class="docutils literal notranslate"><span class="pre">plotP.*</span></code> inputs
+(which influences the
+kernel density estimation with smaller values of <code class="docutils literal notranslate"><span class="pre">sigma</span></code> implying a density
+estimate that
+looks more like a histogram and larger values smoothing out the values
+more).</p>
+<p>In general, the user will have to tune these for any given problem especially
+when looking at marginals of higher-dimensional problems with parameter ranges
+that have disparate scales (assuming the parameters were not first normalized
+as part of a “un-dimensionalization” of the space, which is highly encouraged):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+                                                        <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+
+<span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;linearMap&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s2">&quot;.eps&quot;</span><span class="p">,</span> <span class="n">plot_surface</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+                                                        <span class="n">nbins</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.2</span><span class="p">)</span>
+
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;linearMap&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">,</span> <span class="n">file_extension</span> <span class="o">=</span> <span class="s2">&quot;.eps&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

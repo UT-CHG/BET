@@ -1,0 +1,455 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>Example: FEniCS &mdash; BET 3.0.0 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../../_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="../../_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../../" src="../../_static/documentation_options.js"></script>
+        <script data-url_root="../../" id="documentation_options" src="../../_static/documentation_options.js"></script>
+        <script src="../../_static/jquery.js"></script>
+        <script src="../../_static/underscore.js"></script>
+        <script src="../../_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="../../_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="../../genindex.html" />
+    <link rel="search" title="Search" href="../../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../../index.html" class="icon icon-home"> BET
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                3.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="../../overview.html">Overview</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../parallel.html">Parallel</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../examples_overview.html">Examples</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../todo_list.html">Todo List</a></li>
+</ul>
+
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../../index.html">BET</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../../index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Example: FEniCS</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="../../_sources/examples/example_rst_files/FEniCS.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <section id="example-fenics">
+<span id="fenicsexample"></span><h1>Example: FEniCS<a class="headerlink" href="#example-fenics" title="Permalink to this headline">¶</a></h1>
+<p>We will walk through the following <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/BET_script.py">example</a>.
+This example will only run in serial using serial runs of a model
+(described below).
+If the user takes Steps (0)-(3) and runs them in a separate script,
+then the saved discretization object can be loaded into a different script
+containing Steps (4)-(5) (and optionally including Step (6)) to solve
+the stochastic inverse problem in parallel using BET.
+To see an example describing how to run multiple instances of the (serial)
+model with different parameters, see
+<a class="reference internal" href="FEniCSMultipleSerial.html#fenicsmultipleserialexample"><span class="std std-ref">Example: Multiple Serial FEniCS</span></a> for more information.
+This example requires the following external packages not shipped
+with BET:</p>
+<ul class="simple">
+<li><p>An installation of <a class="reference external" href="http://fenicsproject.org/">FEniCS</a></p></li>
+</ul>
+<p>that can be run using the same
+python as used for installing BET.</p>
+<p>This example generates samples for a KL expansion associated with
+a covariance defined by <code class="docutils literal notranslate"><span class="pre">cov</span></code> in <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/computeSaveKL.py">computeSaveKL.py</a>
+on an L-shaped mesh
+that defines the permeability field for a Poisson equation solved in
+<a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel.py">myModel.py</a>.</p>
+<p>The quantities of interest (QoI) are defined as two spatial
+averages of the solution to the PDE.</p>
+<p>The user defines the dimension of the parameter space (corresponding
+to the number of KL terms) and the number of samples in this space.</p>
+<p>Even though we are coupling to the state-of-the-art FEniCS code for
+solving a PDE, we again see that the actual process for solving
+the stochastic inverse problem is quite simple requiring a total of
+5 steps with BET excluding any
+post-processing
+the user may want.
+In general the user will probably not write code with various
+options as was done here for pedagogical purposes.
+We break down the actual example included with BET step-by-step
+below, but first, to showcase the overall simplicitly, we show
+the “entire” code (omitting setting the environment,
+post-processing, and commenting) required
+for solving
+the stochastic inverse problem using some default options:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+
+<span class="n">num_KL_terms</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">computeSaveKL</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+<span class="n">KL_term_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.0</span>
+<span class="n">KL_term_max</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="n">KL_term_min</span><span class="p">,</span> <span class="n">KL_term_max</span><span class="p">]],</span>
+                                   <span class="n">num_KL_terms</span><span class="p">,</span>
+                                   <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
+
+<span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span><span class="n">input_samples</span><span class="p">)</span>
+
+<span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">num_KL_terms</span><span class="p">))</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
+<span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+    <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+    <span class="n">cells_per_dimension</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+</pre></div>
+</div>
+<section id="step-0-setting-up-the-environment">
+<h2>Step (0): Setting up the environment<a class="headerlink" href="#step-0-setting-up-the-environment" title="Permalink to this headline">¶</a></h2>
+<p>Import the necessary modules:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.simpleFunP</span> <span class="k">as</span> <span class="nn">simpleFunP</span>
+<span class="kn">import</span> <span class="nn">bet.calculateP.calculateP</span> <span class="k">as</span> <span class="nn">calculateP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotP</span> <span class="k">as</span> <span class="nn">plotP</span>
+<span class="kn">import</span> <span class="nn">bet.postProcess.plotDomains</span> <span class="k">as</span> <span class="nn">plotD</span>
+<span class="kn">import</span> <span class="nn">bet.sample</span> <span class="k">as</span> <span class="nn">samp</span>
+<span class="kn">import</span> <span class="nn">bet.sampling.basicSampling</span> <span class="k">as</span> <span class="nn">bsam</span>
+</pre></div>
+</div>
+</section>
+<section id="step-1-define-interface-to-the-model">
+<h2>Step (1): Define interface to the model<a class="headerlink" href="#step-1-define-interface-to-the-model" title="Permalink to this headline">¶</a></h2>
+<p>Import the Python script interface to the <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel.py">model</a>
+using FEniCS
+that takes as input a numpy array of model input parameter samples,
+generated from the sampler (see below), evaluates the model to
+generate QoI samples, and returns the QoI samples:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">myModel</span> <span class="kn">import</span> <span class="n">my_model</span>
+</pre></div>
+</div>
+<p>Define the sampler that will be used to create the discretization
+object, which is the fundamental object used by BET to compute
+solutions to the stochastic inverse problem.
+The sampler and my_model is the interface of BET to the model,
+and it allows BET to create input/output samples of the model:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">sampler</span> <span class="o">=</span> <span class="n">bsam</span><span class="o">.</span><span class="n">sampler</span><span class="p">(</span><span class="n">my_model</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-2-describe-and-sample-the-input-space">
+<h2>Step (2): Describe and sample the input space<a class="headerlink" href="#step-2-describe-and-sample-the-input-space" title="Permalink to this headline">¶</a></h2>
+<p>We compute and save the KL expansion once so that this part, which
+can be computationally expensive, can be done just once and then
+commented out for future runs of the code using the same set of KL
+coefficients defining the parameter space:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">Compute_Save_KL</span> <span class="kn">import</span> <span class="n">computeSaveKL</span>
+<span class="n">num_KL_terms</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">computeSaveKL</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>We then initialize the parameter space and assume that any KL
+coefficient belongs to the interval [-3.0,3.0]:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">input_samples</span> <span class="o">=</span> <span class="n">samp</span><span class="o">.</span><span class="n">sample_set</span><span class="p">(</span><span class="n">num_KL_terms</span><span class="p">)</span>
+<span class="n">KL_term_min</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.0</span>
+<span class="n">KL_term_max</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">input_samples</span><span class="o">.</span><span class="n">set_domain</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">repeat</span><span class="p">([[</span><span class="n">KL_term_min</span><span class="p">,</span> <span class="n">KL_term_max</span><span class="p">]],</span>
+                               <span class="n">num_KL_terms</span><span class="p">,</span>
+                               <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">))</span>
+</pre></div>
+</div>
+<section id="suggested-changes-for-user-1">
+<h3>Suggested changes for user (1)<a class="headerlink" href="#suggested-changes-for-user-1" title="Permalink to this headline">¶</a></h3>
+<p>Try with and without random sampling.</p>
+<p>If using regular sampling, try different numbers of samples
+per dimension (note that if <code class="docutils literal notranslate"><span class="pre">num_KL_terms</span></code> is not equal to 2, then
+the user needs to be careful using regular sampling):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">randomSampling</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">randomSampling</span> <span class="ow">is</span> <span class="kc">True</span><span class="p">:</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">random_sample_set</span><span class="p">(</span><span class="s1">&#39;random&#39;</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples</span><span class="o">=</span><span class="mf">1E2</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">input_samples</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">regular_sample_set</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">num_samples_per_dim</span><span class="o">=</span><span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span>
+</pre></div>
+</div>
+</section>
+<section id="suggested-changes-for-user-2">
+<h3>Suggested changes for user (2)<a class="headerlink" href="#suggested-changes-for-user-2" title="Permalink to this headline">¶</a></h3>
+<p>A standard Monte Carlo (MC) assumption is that every Voronoi cell
+has the same volume. If a regular grid of samples was used, then
+the standard MC assumption is true.</p>
+<p>See what happens if the MC assumption is not assumed to be true, and
+if different numbers of points are used to estimate the volumes of
+the Voronoi cells:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">MC_assumption</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="k">if</span> <span class="n">MC_assumption</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume</span><span class="p">(</span><span class="n">n_mc_points</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">input_samples</span><span class="o">.</span><span class="n">estimate_volume_mc</span><span class="p">()</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-3-generate-qoi-samples">
+<h2>Step (3): Generate QoI samples<a class="headerlink" href="#step-3-generate-qoi-samples" title="Permalink to this headline">¶</a></h2>
+<p>Create the discretization object holding all the input (parameter) samples
+and output (QoI) samples using the sampler:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_discretization</span> <span class="o">=</span> <span class="n">sampler</span><span class="o">.</span><span class="n">compute_QoI_and_create_discretization</span><span class="p">(</span>
+                            <span class="n">input_samples</span><span class="p">,</span> <span class="n">savefile</span><span class="o">=</span><span class="s1">&#39;FEniCS_Example.txt.gz&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>At this point, all of the model information has been extracted for BET
+(with the possibly exception of evaluating the model to generate a
+reference QoI datum or a distribution of the QoI), so the model is no
+longer required for evaluation.
+The user could do Steps (0)-(3) in a separate script, and then simply load
+the discretization object as part of a separate BET script that does the
+remaining steps.
+When the model is expensive to evaluate, this is an attractive option
+since we can now solve the stochastic inverse problem (with many
+different distributions defined on the data space) without ever
+having to re-solve the model (so long as we are happy with the resolution
+provided by the current discretization of the parameter and data spaces).</p>
+</section>
+<section id="step-4-describe-the-data-distribution">
+<h2>Step (4): Describe the data distribution<a class="headerlink" href="#step-4-describe-the-data-distribution" title="Permalink to this headline">¶</a></h2>
+<p>This problem is nominally a “parameter identification under uncertainty”
+problem.
+Thus, we take a reference QoI datum (from one more model solve), and
+define a distribution “around” this datum.</p>
+<section id="suggested-changes-for-user-3">
+<h3>Suggested changes for user (3)<a class="headerlink" href="#suggested-changes-for-user-3" title="Permalink to this headline">¶</a></h3>
+<p>Try different reference parameters that produce different
+reference QoI data.:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">param_ref</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="n">num_KL_terms</span><span class="p">))</span>
+<span class="n">Q_ref</span> <span class="o">=</span> <span class="n">my_model</span><span class="p">(</span><span class="n">param_ref</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Use the reference samples and discretization to generate plots (this
+is completely optional):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">plotD</span><span class="o">.</span><span class="n">scatter_2D</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span> <span class="n">ref_sample</span><span class="o">=</span><span class="n">param_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span>
+                 <span class="n">filename</span><span class="o">=</span><span class="s1">&#39;FEniCS_ParameterSamples.eps&#39;</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">Q_ref</span><span class="o">.</span><span class="n">size</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+    <span class="n">plotD</span><span class="o">.</span><span class="n">show_data_domain_2D</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span>
+            <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;eps&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="suggested-changes-for-user-4">
+<h3>Suggested changes for user (4)<a class="headerlink" href="#suggested-changes-for-user-4" title="Permalink to this headline">¶</a></h3>
+<p>Try different ways of discretizing the probability measure on D defined
+as a uniform probability measure on a rectangle or interval depending
+on choice of QoI_num in <a class="reference external" href="https://github.com/UT-CHG/BET/blob/master/examples/FEniCS/myModel.py">myModel.py</a>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">randomDataDiscretization</span> <span class="o">=</span> <span class="kc">False</span>
+<span class="k">if</span> <span class="n">randomDataDiscretization</span> <span class="ow">is</span> <span class="kc">False</span><span class="p">:</span>
+    <span class="n">simpleFunP</span><span class="o">.</span><span class="n">regular_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+        <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">cells_per_dimension</span> <span class="o">=</span> <span class="mi">3</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="n">simpleFunP</span><span class="o">.</span><span class="n">uniform_partition_uniform_distribution_rectangle_scaled</span><span class="p">(</span>
+        <span class="n">data_set</span><span class="o">=</span><span class="n">my_discretization</span><span class="p">,</span> <span class="n">Q_ref</span><span class="o">=</span><span class="n">Q_ref</span><span class="p">,</span> <span class="n">rect_scale</span><span class="o">=</span><span class="mf">0.25</span><span class="p">,</span>
+        <span class="n">M</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">num_d_emulate</span><span class="o">=</span><span class="mf">1E5</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<section id="step-5-solve-the-stochastic-inverse-problem">
+<h2>Step (5): Solve the stochastic inverse problem<a class="headerlink" href="#step-5-solve-the-stochastic-inverse-problem" title="Permalink to this headline">¶</a></h2>
+<p>Calculate probablities on the parameter space (which are stored within
+the discretization object):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">calculateP</span><span class="o">.</span><span class="n">prob</span><span class="p">(</span><span class="n">my_discretization</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="step-6-optional-post-processing">
+<h2>Step (6) [Optional]: Post-processing<a class="headerlink" href="#step-6-optional-post-processing" title="Permalink to this headline">¶</a></h2>
+<p>The user may want to play around with <code class="docutils literal notranslate"><span class="pre">nbins</span></code> and <code class="docutils literal notranslate"><span class="pre">sigma</span></code> if different
+input domains or different discretizations other than the defaults above
+are used:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals2D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_2D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+                                                        <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">marginals2D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_2D</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_2D_marginal_probs</span><span class="p">(</span><span class="n">marginals2D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;FEniCS&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;.eps&quot;</span><span class="p">,</span>
+                             <span class="n">plot_surface</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="p">(</span><span class="n">bins</span><span class="p">,</span> <span class="n">marginals1D</span><span class="p">)</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">calculate_1D_marginal_probs</span><span class="p">(</span><span class="n">input_samples</span><span class="p">,</span>
+                                                        <span class="n">nbins</span><span class="o">=</span><span class="mi">20</span><span class="p">)</span>
+<span class="n">marginals1D</span> <span class="o">=</span> <span class="n">plotP</span><span class="o">.</span><span class="n">smooth_marginals_1D</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">sigma</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+<span class="n">plotP</span><span class="o">.</span><span class="n">plot_1D_marginal_probs</span><span class="p">(</span><span class="n">marginals1D</span><span class="p">,</span> <span class="n">bins</span><span class="p">,</span> <span class="n">input_samples</span><span class="p">,</span> <span class="n">filename</span><span class="o">=</span><span class="s2">&quot;FEniCS&quot;</span><span class="p">,</span>
+                             <span class="n">lam_ref</span><span class="o">=</span><span class="n">param_ref</span><span class="p">[</span><span class="mi">0</span><span class="p">,:],</span> <span class="n">file_extension</span><span class="o">=</span><span class="s2">&quot;.eps&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2020, The BET Development Team (Lindley Graham, Steven Mattis, Troy Butler, Scott Walsh, Michael Pilosov)..
+      <span class="lastupdated">
+        Last updated on Jun 11, 2021.
+      </span>
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
