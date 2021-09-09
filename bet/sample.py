@@ -67,8 +67,9 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
     Evaluate the probability density function defined by `prob_type` and `prob_parameters`
     at points defined by `vals`.
 
-    :param prob_type: Type of probability description. Options are 'kde' (weighted kernel
-        density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
+    :param prob_type: Type of probability description. Options are 'kde_marginals' (weighted kernel
+        density estimate), 'kde' (multidimensional kde), 'rv' (random variable), 
+        'gmm' (Gaussian mixture model), and 'voronoi'.
     :type prob_type: str
     :param prob_parameters: Parameters that define the probability measure of type `prob_type`
     :param vals: Values at which to evaluate the PDF.
@@ -77,10 +78,22 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
     :rtype `numpy.ndarray`
     """
     dim = vals.shape[1]
-    if prob_type == "kde":
+    if prob_type == "kde_marginals":
         mar = np.ones((vals.shape[0], ))
         for i in range(dim):
             mar *= evaluate_pdf_marginal(prob_type, prob_parameters, vals, i)
+        return mar
+    elif prob_type == "kde":
+        mar = np.ones((vals.shape[0],))
+        if type(prob_parameters) == "scipy.stats.kde.gaussian_kde":
+            if prob_parameters.d == dim:
+                # vals are neval x dim, gkde from scipy takes dim x neval
+                mar = prob_parameters.pdf(vals.T) 
+            else:
+                raise wrong_input('Dimension of kde and vals do not match.')
+        else:
+            raise wrong_input('This kde must be a scipy.stats gkde object' + \
+                              '(note that previous version of "kde" has been renamed "kde_marginals")')
         return mar
     elif prob_type == "rv":
         mar = np.ones((vals.shape[0],))
@@ -126,7 +139,7 @@ def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
     elif len(vals.shape) == 1:
         x = vals
 
-    if prob_type == "kde":
+    if prob_type == "kde_marginals":
         param_marginals, cluster_weights = prob_parameters
         num_clusters = len(cluster_weights)
         mar = np.zeros(x.shape[0])
@@ -530,7 +543,7 @@ class sample_set_base(object):
     def set_prob_type(self, prob_type):
         """
         Set the type of updated probability measure.
-        :param prob_type: Type of updated probability measure ('kde', 'gmm', 'voronoi', 'rv')
+        :param prob_type: Type of updated probability measure ('kde_marginals', 'kde', 'gmm', 'voronoi', 'rv')
         :type prob_type: str
         """
         self._prob_type = prob_type
