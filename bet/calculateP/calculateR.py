@@ -138,11 +138,15 @@ def invert_to_kde(discretization, bw_method=None):
     """
     from scipy.stats import gaussian_kde
 
-    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    obs_set = discretization.get_output_observed_set()
+    predict_set = discretization.get_output_sample_set()
 
     rs, r, lam_ptr = invert(discretization, bw_method)
-
-    obs_set = discretization.get_output_observed_set()
+    
+    if predict_set.get_cluster_maps() is None:
+        num_clusters = int(np.max(predict_set.get_region()) + 1)
+    else:
+        num_clusters = len(predict_set.get_cluster_maps())
 
     # Compute marginal probabilities for each parameter and initial condition.
     param_marginals = []
@@ -180,9 +184,14 @@ def invert_rejection_sampling(discretization, bw_method=None):
     :return: sample set containing samples
     :rtype: :class:`bet.sample.sample_set`
     """
-    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    predict_set = discretization.get_output_sample_set()
 
     rs, r, lam_ptr = invert(discretization, bw_method)
+    
+    if predict_set.get_cluster_maps() is None:
+        num_clusters = int(np.max(predict_set.get_region()) + 1)
+    else:
+        num_clusters = len(predict_set.get_cluster_maps())
 
     discretization.get_input_sample_set().local_to_global()
     new_vals = []
@@ -236,11 +245,15 @@ def invert_to_gmm(discretization, bw_method=None):
         cov1 = cov1 / sum_weights
         return mean1, cov1
 
-    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    obs_set = discretization.get_output_observed_set()
+    predict_set = discretization.get_output_sample_set()
 
     rs, r, lam_ptr = invert(discretization, bw_method)
-
-    obs_set = discretization.get_output_observed_set()
+    
+    if predict_set.get_cluster_maps() is None:
+        num_clusters = int(np.max(predict_set.get_region()) + 1)
+    else:
+        num_clusters = len(predict_set.get_cluster_maps())
 
     # Compute multivariate normal for each cluster
     means = []
@@ -294,11 +307,16 @@ def invert_to_multivariate_gaussian(discretization, bw_method=None):
         cov1 = cov1 / sum_weights
         return mean1, cov1
 
-    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
-
-    rs, r, lam_ptr = invert(discretization, bw_method)
-
     obs_set = discretization.get_output_observed_set()
+    predict_set = discretization.get_output_sample_set()
+    
+    rs, r, lam_ptr = invert(discretization, bw_method)
+    
+    if predict_set.get_cluster_maps() is None:
+        num_clusters = int(np.max(predict_set.get_region()) + 1)
+    else:
+        num_clusters = len(predict_set.get_cluster_maps())
+
 
     # Compute multivariate normal
     cluster_weights = []
@@ -365,11 +383,15 @@ def invert_to_random_variable(discretization, rv, num_reweighted=10000, bw_metho
     else:
         raise bet.sample.wrong_input("rv must be a string, list, or tuple.")
 
-    predict_kdes, obs_kdes, num_clusters = generate_output_kdes(discretization, bw_method)
+    obs_set = discretization.get_output_observed_set()
+    predict_set = discretization.get_output_sample_set()
 
     rs, r, lam_ptr = invert(discretization, bw_method)
-
-    obs_set = discretization.get_output_observed_set()
+    
+    if predict_set.get_cluster_maps() is None:
+        num_clusters = int(np.max(predict_set.get_region()) + 1)
+    else:
+        num_clusters = len(predict_set.get_cluster_maps())
 
     # Compute multivariate normal
     cluster_weights = []
