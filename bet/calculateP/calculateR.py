@@ -16,6 +16,112 @@ import bet.sample
 import numpy as np
 import logging
 
+def generate_densities(discretization, which_samples, density_method, method_args=None):
+    """
+    Generate density estimates on sample set(s) in the discretization indicated by "which_sample".
+
+    :param discretization: Discretization used to calculate density estimates
+    :type discretization: :class:`bet.sample.discretization`
+    :param which_samples: indicates which samples to compute the density estimate. Options are 
+        'predict' (for predicted sample set), 'observe' (for observed sample set), and 'output' (for both)
+    :type which_samples: str
+    :param density_method: name of the method used to implement density estimation. Options are
+        'kde' (`scipy.stats.gaussian_kde` implementation), 
+        'clustered_kde' (computes gkdes on clusters defined by cluster_maps in the discretization),
+        'gmm' (fits a Gaussian Mixture model using `sklearn.mixture.GaussianMixture`)
+    :type density_method: str
+    :param method_args: dictionary of arguments to be passed to the density estimation method 
+        (e.g., bandwidth params, etc.). See specific density estimation implementation for details.
+    :type method_args: dict
+
+    :modifies: discretization object. Specifically, this function saves density estimates to the 
+        appropriate `sample_set_base` objects associated with the discretization object.
+        
+    :returns: list of density estimate objects from density estimation method.
+    :rtype: list of :class: depends on the density estimation method chosen.
+    """
+    # allows modification of discretization
+    discretization.local_to_global()
+    
+    # determine which sample sets to compute the density estimation
+    if which_samples == "predict":
+        this_sample_list = [discretization.get_output_sample_set()]
+    elif which_samples == "observe":
+        this_sample_list = [discretization.get_output_observed_set()]
+    elif which_samples == "output":
+        this_sample_list = [discretization.get_output_sample_set(), discretization.get_output_observed_set()]
+    else:
+        raise ValueError("Must specify the specific sample set to compute the density estimation.")
+    
+    # evaluates density estimation method on the samples
+    output_densities = []
+    output_density_type = None # this must be correct keyword for `sample.evaluate_pdf`
+    
+    if density_method == "kde":
+        from scipy.stats import gaussian_kde
+        for this_sample_set in this_sample_list:
+            output_densities.append(gaussian_kde(this_sample_set.get_values().T, **method_args))
+        output_density_type = "kde"
+        
+        
+    elif density_method == "clustered_kde":
+        for this_sample_set in this_sample_list:
+            output_densities.append(generate_clustered_kdes(this_sample_set, **method_args))
+        output_density_type = "clustered_kde"
+        
+    # save output densities to sample set
+    for this_sample_set, dens in zip(this_sample_list,output_densities):
+        this_sample_set.set_prob_type(output_density_type)
+        this_sample_set.set_prob_parameters(dens)
+    
+    
+    return output_density_type, output_densities
+
+def generate_clustered_kdes(sample_set_base, kde_args=None):
+    """
+    Generates clustered kernel density estimate (similar to function `generate_output_kde`).
+    *Note that initial weights must now be passed as weights through the dictionary kde_args.
+    
+    :param sample_set_base: Sample set object used to calculate density estimates
+    :type sample_set_base: :class:`bet.sample.sample_set_base`
+    :param kde_args: Dictionary of arguments passed to `scipy.stats.kde.gaussian_kde`. Note that
+            this includes bandwidth parameters as well as weights for the kde estimate.
+    :type kde_args: dict
+    
+    :returns: list of `gaussian_kde` and corresponding list of cluster weights
+    :rtype: list, list
+    """
+    from scipy.stats import gaussian_kde
+    
+    if sample_set_base.get_region() is None:
+        sample_set_base.set_region(np.array([0] * sample_set_base.check_num()))
+    
+    if sample_set_base.get_cluster_maps() is None:
+        num_clusters = int(np.max(sample_set_base.get_region()) + 1)
+    else:
+        num_clusters = len(sample_set_base.get_cluster_maps())
+    
+    clustered_kdes = []
+    cluster_weights = []
+    num_obs = sample_set_base.check_num()
+    for i in range(num_clusters):
+        if sample_set_base.get_cluster_maps() is not None:
+            if len(sample_set_base.get_cluster_maps()) > 1:
+                clustered_kdes.append(gaussian_kde(sample_set_base.get_cluster_maps()[i].T, **kde_args))                
+                cluster_weights.append(len(np.where(sample_set_base.get_region() == i)[0]) / num_obs)
+            else:
+                clustered_kdes.append(None)
+                cluster_weights.append(None)
+        else:
+            values_pointer = np.where(sample_set_base.get_region() == i)[0]
+            if len(values_pointer) > 1:
+                clustered_kdes.append(gaussian_kde(sample_set_base.get_values()[values_pointer].T, **kde_args))
+                cluster_weights.append(len(values_pointer)/num_obs)
+            else:
+                clustered_kdes.append(None)
+                cluster_weights.append(None)
+    
+    return clustered_kdes, cluster_weights
 
 def generate_output_kdes(discretization, bw_method=None):
     """
@@ -161,7 +267,7 @@ def invert_to_kde(discretization, bw_method=None):
                 param_marginals[i].append(gaussian_kde(params[lam_ptr[j], i], weights=r[j], bw_method=bw_method))
             else:
                 param_marginals[i].append(None)
-    discretization.get_input_sample_set().set_prob_type("kde")
+    discretization.get_input_sample_set().set_prob_type("kde_marginals")
     discretization.get_input_sample_set().set_prob_parameters((param_marginals, cluster_weights))
     print('Diagnostic for clusters [sample average of ratios in each cluster]: ', rs)
     return param_marginals, cluster_weights

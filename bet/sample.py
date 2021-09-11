@@ -85,7 +85,7 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
         return mar
     elif prob_type == "kde":
         mar = np.ones((vals.shape[0],))
-        if type(prob_parameters) == "scipy.stats.kde.gaussian_kde":
+        if isinstance(prob_parameters,scipy.stats.kde.gaussian_kde):
             if prob_parameters.d == dim:
                 # vals are neval x dim, gkde from scipy takes dim x neval
                 mar = prob_parameters.pdf(vals.T) 
@@ -95,9 +95,19 @@ def evaluate_pdf(prob_type, prob_parameters, vals):
             raise wrong_input('This kde must be a scipy.stats gkde object' + \
                               '(note that previous version of "kde" has been renamed "kde_marginals")')
         return mar
+    elif prob_type == "clustered_kde":
+        cluster_kdes, cluster_weights = prob_parameters
+        num_clusters = len(cluster_weights)
+        mar = np.zeros((vals.shape[0],))
+        for j in range(num_clusters):
+            if cluster_kdes[j].d != dim:
+                raise wrong_input('Dimension of clustered kde {} does not match vals.'.format(j))
+            else:
+                mar += cluster_kdes[j](vals.T) * cluster_weights[j]
+        return mar
     elif prob_type == "rv":
         mar = np.ones((vals.shape[0],))
-        for i in range(dim):
+        for i in range(dim): #this assumes independence of each dimension
             mar *= evaluate_pdf_marginal(prob_type, prob_parameters, vals, i)
         return mar
     elif prob_type == "gmm":
@@ -120,7 +130,7 @@ def evaluate_pdf_marginal(prob_type, prob_parameters, vals, i):
     Evaluate the marginal probability density function of index `i` defined by `prob_type`
     and `prob_parameters` at points defined by `vals`.
 
-    :param prob_type: Type of probability description. Options are 'kde' (weighted kernel
+    :param prob_type: Type of probability description. Options are 'kde_marginals' (weighted kernel
         density estimate), 'rv' (random variable), 'gmm' (Gaussian mixture model), and 'voronoi'.
     :type prob_type: str
     :param prob_parameters: Parameters that define the probability measure of type `prob_type`
